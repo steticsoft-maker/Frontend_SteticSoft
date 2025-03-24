@@ -1,0 +1,149 @@
+.productos-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #fff5e6;
+    /* Fondo cálido */
+}
+
+.productos-title {
+    font-size: 3rem;
+    /* Tamaño grande para destacar */
+    text-align: center;
+    /* Centrado horizontalmente */
+    margin-top: 20px;
+    margin-bottom: 40px;
+    color: #d2691e;
+    /* Tono cálido y elegante */
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    /* Sombra ligera para dinamismo */
+    animation: fadeIn 1.5s ease-in-out;
+    /* Animación para hacerlo dinámico */
+}
+
+/* Animación */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.productos-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.productos-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    /* Sombra suave */
+    padding: 25px;
+    text-align: center;
+    width: 280px;
+    transition: transform 0.3s ease;
+}
+
+.productos-card:hover {
+    transform: scale(1.05);
+}
+
+.productos-image {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.primary-button,
+.add-button {
+    margin: 10px 5px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.primary-button {
+    background-color: #ff7f50;
+    /* Coral */
+    color: white;
+}
+
+.primary-button:hover {
+    background-color: #d2691e;
+    /* Coral oscuro */
+}
+
+.add-button {
+    background-color: #28a745;
+    /* Verde */
+    color: white;
+}
+
+.add-button:hover {
+    background-color: #218838;
+}
+
+.cart-icon {
+    position: fixed;
+    top: 100px;
+    /* Más arriba para acercarlo al Navbar */
+    right: 40px;
+    /* Más a la izquierda, dejando espacio al borde derecho */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    /* Asegura que quede por encima de otros elementos */
+}
+
+.cart-count {
+    background-color: #ff0000;
+    /* Fondo rojo para indicar cantidad */
+    color: white;
+    border-radius: 50%;
+    padding: 3px 8px;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
+/* Modal del carrito */
+.cart-modal {
+    position: fixed;
+    top: 20%;
+    right: 20px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+}
