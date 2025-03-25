@@ -18,10 +18,13 @@ import Clientes from "../modules/Clientes/Clientes"; // Módulo de clientes
 import Compras from "../modules/Compras/Compras"; // Módulo de compras
 import Empleados from "../modules/Empleados/Empleados"; // Módulo de empleados
 import Insumos from "../modules/Insumos/Insumos"; // Módulo de insumos
+import CategoriaInsumos from "../modules/Insumos/CategoriaInsumos";
 import Proveedores from "../modules/Proveedores/Proveedores"; // Módulo de proveedores
 import Ventas from "../modules/Ventas/Ventas"; // Módulo de ventas
 import ServiciosAdministrador from "../modules/Servicios/ServiciosAdministrador";
+import CategoriaServicio from "../modules/Servicios/CategoriaServicio";
 import ProductoAdministrador from "../modules/Productos/ProductoAdministrador";
+import CategoriaProducto from "../modules/Productos/CategoriaProducto";
 
 
 
@@ -43,10 +46,13 @@ function AppRouter() {
         <Route path="/compras" element={<PrivateRoute><Compras /></PrivateRoute>} />
         <Route path="/empleados" element={<PrivateRoute><Empleados /></PrivateRoute>} />
         <Route path="/insumos" element={<PrivateRoute><Insumos /></PrivateRoute>} />
+        <Route path="/categoriainsumos" element={<PrivateRoute><CategoriaInsumos /></PrivateRoute>} />
         <Route path="/proveedores" element={<PrivateRoute><Proveedores /></PrivateRoute>} />
         <Route path="/ventas" element={<PrivateRoute><Ventas /></PrivateRoute>} />
         <Route path="/productoadministrador" element={<PrivateRoute><ProductoAdministrador /></PrivateRoute>} />
+        <Route path="/categoriaproducto" element={<PrivateRoute><CategoriaProducto /></PrivateRoute>} />
         <Route path="/serviciosadministrador" element={<PrivateRoute><ServiciosAdministrador /></PrivateRoute>} />
+        <Route path="/categoriaproducto" element={<PrivateRoute><CategoriaServicio /></PrivateRoute>} />
 
       </Routes>
     </Router>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaUserCircle,
@@ -13,8 +13,6 @@ import {
   FaClipboardList,
   FaTasks,
   FaServicestack,
-  FaArrowLeft,
-  FaDashcube,
   FaChartLine,
   FaSignOutAlt, // Icono para cerrar sesión
 } from "react-icons/fa";
@@ -23,9 +21,18 @@ import "./NavbarAdmin.css"; // Archivo de estilos exclusivo del Navbar
 const NavbarAdmin = () => {
   const navigate = useNavigate();
 
+  // Estados para controlar el despliegue de los submenús
+  const [showInsumos, setShowInsumos] = useState(false);
+  const [showProductos, setShowProductos] = useState(false);
+  const [showServicios, setShowServicios] = useState(false);
+
+  // Funciones para alternar la visibilidad de los submenús
+  const toggleInsumos = () => setShowInsumos(!showInsumos);
+  const toggleProductos = () => setShowProductos(!showProductos);
+  const toggleServicios = () => setShowServicios(!showServicios);
+
   const handleLogout = () => {
-    // Acción de cerrar sesión (puedes incluir lógica adicional, como limpiar datos almacenados)
-    navigate("/login");
+    navigate("/login"); // Acción de cerrar sesión, navegando al login
   };
 
   return (
@@ -68,9 +75,70 @@ const NavbarAdmin = () => {
         >
           <FaUserTie className="dashboard-icon" /> Empleados
         </button>
-        <button onClick={() => navigate("/insumos")} className="dashboard-link">
-          <FaTags className="dashboard-icon" /> Insumos
+
+        {/* Menú desplegable de Categoria Insumos */}
+        <button onClick={toggleInsumos} className="dashboard-link">
+          <FaTags className="dashboard-icon" /> Insumos - Categoria
         </button>
+        {showInsumos && (
+          <div className="nested-links">
+            <button
+              onClick={() => navigate("/insumos")}
+              className="nested-link"
+            >
+              Insumos
+            </button>
+            <button
+              onClick={() => navigate("/categoriainsumos")}
+              className="nested-link"
+            >
+              Categoría Insumos
+            </button>
+          </div>
+        )}
+
+        {/* Menú desplegable de Categoria Productos */}
+        <button onClick={toggleProductos} className="dashboard-link">
+          <FaTasks className="dashboard-icon" /> Productos - Categoria
+        </button>
+        {showProductos && (
+          <div className="nested-links">
+            <button
+              onClick={() => navigate("/productoadministrador")}
+              className="nested-link"
+            >
+              Productos
+            </button>
+            <button
+              onClick={() => navigate("/categoriaproducto")}
+              className="nested-link"
+            >
+              Categoría Productos
+            </button>
+          </div>
+        )}
+
+        {/* Menú desplegable de Categoria Servicios */}
+        <button onClick={toggleServicios} className="dashboard-link">
+          <FaServicestack className="dashboard-icon" /> Servicios - Categoria
+        </button>
+        {showServicios && (
+          <div className="nested-links">
+            <button
+              onClick={() => navigate("/serviciosadministrador")}
+              className="nested-link"
+            >
+              Servicios
+            </button>
+            <button
+              onClick={() => navigate("/categoriaservicio")}
+              className="nested-link"
+            >
+              Categoría Servicios
+            </button>
+          </div>
+        )}
+
         <button
           onClick={() => navigate("/proveedores")}
           className="dashboard-link"
@@ -85,18 +153,6 @@ const NavbarAdmin = () => {
         </button>
         <button onClick={() => navigate("/ventas")} className="dashboard-link">
           <FaClipboardList className="dashboard-icon" /> Ventas
-        </button>
-        <button
-          onClick={() => navigate("/productoadministrador")}
-          className="dashboard-link"
-        >
-          <FaTasks className="dashboard-icon" /> Productos
-        </button>
-        <button
-          onClick={() => navigate("/serviciosadministrador")}
-          className="dashboard-link"
-        >
-          <FaServicestack className="dashboard-icon" /> Servicios
         </button>
       </nav>
       <div className="logout-section">
