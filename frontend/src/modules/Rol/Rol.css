@@ -1,0 +1,244 @@
+/* Contenedor general del módulo */
+.rol-container {
+    display: flex;
+    height: 100vh;
+    /* Asegura que el módulo ocupe toda la altura del viewport */
+    overflow: hidden;
+    /* Evita cualquier barra de desplazamiento adicional */
+}
+
+/* Contenido principal del módulo */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    margin-left: 45px;
+    /* Ajustado para mantener separación adecuada */
+    background-color: #f5f5f5;
+    /* Fondo claro */
+    overflow-y: auto;
+    /* Permite scroll vertical */
+    box-sizing: border-box;
+}
+
+/* Navbar lateral */
+.dashboard-sidebar {
+    width: 230px;
+    /* Tamaño reducido del Navbar (antes era mayor) */
+    background-color: #34495e;
+    /* Color oscuro consistente */
+    min-height: 100%;
+    /* Asegura que cubra toda la altura */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    /* Sombra para separarlo del contenido */
+}
+
+/* Ajuste para íconos y contenido del Navbar */
+.dashboard-links {
+    padding: 8px;
+    /* Espacio reducido alrededor de los enlaces */
+}
+
+.dashboard-link {
+    font-size: 1.1rem;
+    /* Tamaño de texto ajustado para legibilidad */
+    padding: 10px 15px;
+    /* Ajuste de espaciado interno */
+    margin-bottom: 5px;
+    /* Menor separación entre enlaces */
+    background-color: transparent;
+    color: #ecf0f1;
+    /* Texto claro */
+    border: none;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.dashboard-link:hover {
+    background-color: #2c3e50;
+    /* Fondo más oscuro al pasar el cursor */
+}
+
+/* Barra de búsqueda */
+.search-input {
+    margin-bottom: 20px;
+    padding: 12px;
+    /* Mayor tamaño interno */
+    width: 100%;
+    /* Ocupa todo el ancho disponible */
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    /* Fondo blanco */
+    color: black;
+    /* Texto en negro */
+}
+
+/* Botón principal para acciones */
+.action-button {
+    margin-top: 30px;
+    /* Separación adecuada entre elementos */
+    margin-bottom: 30px;
+    /* Mayor espacio entre botones y tabla */
+    padding: 15px 30px;
+    /* Tamaño más grande para claridad visual */
+    font-size: 1.2rem;
+    /* Texto más grande para mayor impacto */
+    background-color: #4caf50;
+    /* Verde */
+    color: white;
+    /* Texto blanco */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-button:hover {
+    background-color: #45a049;
+    /* Color más oscuro al pasar el cursor */
+    transform: scale(1.05);
+    /* Efecto de zoom */
+}
+
+/* Tabla de Roles */
+.roles-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Colapsa los bordes */
+    margin-top: 20px;
+}
+
+.roles-table th {
+    background-color: #34495e;
+    /* Color de fondo de encabezados */
+    color: white;
+    /* Texto blanco */
+    padding: 15px;
+    /* Mayor tamaño interno */
+    text-align: center;
+    font-size: 1.1rem;
+    /* Tamaño de texto más grande */
+}
+
+.roles-table td {
+    text-align: center;
+    /* Centra el contenido */
+    padding: 15px;
+    border: 1px solid #ddd;
+    /* Bordes claros */
+    color: #34495e;
+    /* Texto oscuro */
+    font-size: 1rem;
+    /* Ajuste del tamaño del texto */
+}
+
+/* Switch para anular/activar roles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    /* Tamaño más grande para mejor interacción */
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    /* Color de fondo por defecto */
+    border-radius: 34px;
+    cursor: pointer;
+    transition: 0.4s;
+    /* Animación suave */
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    /* Botón de la palanca */
+    border-radius: 50%;
+    transition: 0.4s;
+    /* Animación del botón */
+}
+
+input:checked+.slider {
+    background-color: #4caf50;
+    /* Color verde cuando está activado */
+}
+
+input:checked+.slider:before {
+    transform: translateX(16px);
+    /* Desplaza el botón a la derecha */
+}
+
+/* Grupo de checkboxes */
+.checkbox-group {
+    margin: 20px 0;
+    /* Espaciado entre el grupo y otros elementos */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Mayor espaciado entre checkboxes */
+}
+
+/* Estilo para cada checkbox */
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.checkbox-item input {
+    margin-right: 10px;
+    /* Espaciado entre el checkbox y el texto */
+}
+
+/* Paginación */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    /* Botones distribuidos horizontalmente */
+    margin-top: 30px;
+    /* Espaciado superior más grande */
+}
+
+.pagination button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    background-color: #4caf50;
+    /* Verde */
+    color: white;
+    /* Texto blanco */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    /* Color gris cuando el botón está deshabilitado */
+    cursor: not-allowed;
+    /* Cursor no permitido */
+}
+
+.pagination button:hover:enabled {
+    background-color: #45a049;
+    /* Color más oscuro al pasar el cursor si está habilitado */
+}

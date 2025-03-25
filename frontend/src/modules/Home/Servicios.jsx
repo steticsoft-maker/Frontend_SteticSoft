@@ -65,7 +65,7 @@ function Servicios() {
 
   const handleOrder = () => {
     alert(
-      `Tu pedido de servicio ha sido registrado con éxito.\nHorario seleccionado: ${selectedSchedule}.\nGracias por utilizar nuestros servicios. El pago será contra entrega.`
+      `Tu pedido de servicio ha sido registrado con éxito.\nHorario seleccionado: ${selectedSchedule}.\nGracias por utilizar nuestros servicios. \nEl pago debe ser realizado al finalizar el servicio.`
     );
     setCart([]);
     localStorage.removeItem("cart");

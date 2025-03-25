@@ -11,7 +11,8 @@ import Register from "../modules/Auth/Register";
 import Dashboard from "../modules/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute";
 
-
+import Rol from "../modules/Rol/Rol";
+import Usuarios from "../modules/Usuarios/Usuarios";
 import Abastecimiento from "../modules/Abastecimiento/Abastecimiento"; // Módulo de abastecimiento
 import Clientes from "../modules/Clientes/Clientes"; // Módulo de clientes
 import Compras from "../modules/Compras/Compras"; // Módulo de compras
@@ -35,6 +36,8 @@ function AppRouter() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/Dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/Rol" element={<PrivateRoute><Rol /></PrivateRoute>} />
+        <Route path="/Usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />
         <Route path="/abastecimiento" element={<PrivateRoute><Abastecimiento /></PrivateRoute>} />
         <Route path="/clientes" element={<PrivateRoute><Clientes /></PrivateRoute>} />
         <Route path="/compras" element={<PrivateRoute><Compras /></PrivateRoute>} />

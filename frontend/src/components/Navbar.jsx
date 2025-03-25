@@ -16,7 +16,7 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo">Mi Plataforma</Link>
+        <Link to="/" className="navbar-logo">SteticSoft</Link>
         <ul className="navbar-list">
           <li><Link to="/Productos" className="navbar-link">Productos</Link></li>
           <li><Link to="/Servicios" className="navbar-link">Servicios</Link></li>

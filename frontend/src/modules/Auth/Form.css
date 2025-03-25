@@ -6,8 +6,7 @@
     /* Ocupa todo el alto de la página */
     width: 100vw;
     /* Asegura que ocupe todo el ancho */
-    background-color: #fff5e6;
-    /* Fondo cálido */
+    background-color: rgb(245, 245, 245);    /* Fondo cálido */
     margin: 0;
     /* Elimina cualquier margen externo */
 }
@@ -32,7 +31,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #fff5e6;
+    background-color: rgb(245, 245, 245);
 }
 
 .form-box {
