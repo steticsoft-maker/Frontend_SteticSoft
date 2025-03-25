@@ -1,0 +1,80 @@
+.insumos-container {
+    display: flex;
+    height: 100vh;
+}
+
+.insumos-content {
+    flex: 1;
+    padding: 40px;
+    margin-left: 100px;
+    background-color: #f5f5f5;
+    overflow-y: auto;
+}
+
+h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.search-bar input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.success { background-color: #28a745; }
+.danger { background-color: #dc3545; }
+.warning { background-color: #ffc107; color: black; }
+.info { background-color: #007bff; }
+
+.insumos-table {
+    background: white;
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #343a40;
+    color: white;
+}
+
+.modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+}
