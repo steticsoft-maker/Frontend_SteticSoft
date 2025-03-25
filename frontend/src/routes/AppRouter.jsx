@@ -52,7 +52,7 @@ function AppRouter() {
         <Route path="/productoadministrador" element={<PrivateRoute><ProductoAdministrador /></PrivateRoute>} />
         <Route path="/categoriaproducto" element={<PrivateRoute><CategoriaProducto /></PrivateRoute>} />
         <Route path="/serviciosadministrador" element={<PrivateRoute><ServiciosAdministrador /></PrivateRoute>} />
-        <Route path="/categoriaproducto" element={<PrivateRoute><CategoriaServicio /></PrivateRoute>} />
+        <Route path="/categoriaservicio" element={<PrivateRoute><CategoriaServicio /></PrivateRoute>} />
 
       </Routes>
     </Router>
