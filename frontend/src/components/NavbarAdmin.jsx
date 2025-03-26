@@ -14,7 +14,9 @@ import {
   FaTasks,
   FaServicestack,
   FaChartLine,
-  FaSignOutAlt, // Icono para cerrar sesión
+  FaSignOutAlt,
+  FaCalendar,
+  FaCalendarCheck, // Icono para cerrar sesión
 } from "react-icons/fa";
 import "./NavbarAdmin.css"; // Archivo de estilos exclusivo del Navbar
 
@@ -74,6 +76,9 @@ const NavbarAdmin = () => {
           className="dashboard-link"
         >
           <FaUserTie className="dashboard-icon" /> Empleados
+        </button>
+        <button onClick={() => navigate("/horarioempleado")} className="dashboard-link">
+          <FaCalendar className="dashboard-icon" /> Novedades
         </button>
 
         {/* Menú desplegable de Categoria Insumos */}
@@ -153,6 +158,10 @@ const NavbarAdmin = () => {
         </button>
         <button onClick={() => navigate("/ventas")} className="dashboard-link">
           <FaClipboardList className="dashboard-icon" /> Ventas
+        </button>
+
+        <button onClick={() => navigate("/citas")} className="dashboard-link">
+          <FaCalendarCheck className="dashboard-icon" /> Citas
         </button>
       </nav>
       <div className="logout-section">
