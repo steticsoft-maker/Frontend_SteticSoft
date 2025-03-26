@@ -1,0 +1,118 @@
+/* Contenedor general de ventas */
+.ventas-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    margin-left: 45px;
+    background-color: #f5f5f5;
+    overflow-y: auto;
+}
+
+/* Barra de búsqueda */
+.search-input {
+    margin-bottom: 20px;
+    padding: 12px;
+    width: 100%;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+}
+
+/* Botón para agregar ventas */
+.add-sale-button {
+    padding: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-sale-button:hover {
+    background-color: #45a049;
+}
+
+/* Tabla de Ventas */
+.ventas-table {
+    padding: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.ventas-table th {
+    background-color: #34495e;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.ventas-table td {
+    text-align: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    color: #34495e;
+}
+
+/* Estado de venta */
+.estado-activo {
+    background-color: #4caf50;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.estado-anulado {
+    background-color: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* Botones de acciones */
+.action-button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.view-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.view-button:hover {
+    background-color: #2980b9;
+}
+
+.cancel-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #c0392b;
+}
+
+.pdf-button {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.pdf-button:hover {
+    background-color: #1c2833;
+}
