@@ -4,37 +4,38 @@ import {
   FaUserCircle,
   FaRandom,
   FaUsers,
-  FaBox,
   FaAddressBook,
-  FaShoppingCart,
-  FaUserTie,
-  FaTags,
-  FaBuilding,
   FaClipboardList,
-  FaTasks,
   FaServicestack,
   FaChartLine,
   FaSignOutAlt,
   FaCalendar,
-  FaCalendarCheck, // Icono para cerrar sesión
+  FaShoppingCart,
+  FaTags,
+  FaBuilding,
+  FaTasks,
+  FaBox,
+  FaCalendarCheck,
 } from "react-icons/fa";
 import "./NavbarAdmin.css"; // Archivo de estilos exclusivo del Navbar
 
 const NavbarAdmin = () => {
   const navigate = useNavigate();
 
-  // Estados para controlar el despliegue de los submenús
-  const [showInsumos, setShowInsumos] = useState(false);
-  const [showProductos, setShowProductos] = useState(false);
-  const [showServicios, setShowServicios] = useState(false);
+  // Estados para controlar el despliegue de los submenús por proceso
+  const [showConfiguracion, setShowConfiguracion] = useState(false);
+  const [showVentas, setShowVentas] = useState(false);
+  const [showCompras, setShowCompras] = useState(false);
+  const [showCitas, setShowCitas] = useState(false);
 
   // Funciones para alternar la visibilidad de los submenús
-  const toggleInsumos = () => setShowInsumos(!showInsumos);
-  const toggleProductos = () => setShowProductos(!showProductos);
-  const toggleServicios = () => setShowServicios(!showServicios);
+  const toggleConfiguracion = () => setShowConfiguracion(!showConfiguracion);
+  const toggleVentas = () => setShowVentas(!showVentas);
+  const toggleCompras = () => setShowCompras(!showCompras);
+  const toggleCitas = () => setShowCitas(!showCitas);
 
   const handleLogout = () => {
-    navigate("/login"); // Acción de cerrar sesión, navegando al login
+    navigate("/login"); // Navega al login para cerrar sesión
   };
 
   return (
@@ -44,7 +45,7 @@ const NavbarAdmin = () => {
         <p className="admin-label">Admin</p>
       </div>
       <nav className="dashboard-links">
-        {/* Retorno al Dashboard */}
+        {/* Dashboard */}
         <button
           onClick={() => navigate("/dashboard")}
           className="dashboard-link"
@@ -52,62 +53,57 @@ const NavbarAdmin = () => {
           <FaChartLine className="dashboard-icon" /> Dashboard
         </button>
 
-        {/* Resto de los enlaces */}
-        <button onClick={() => navigate("/Rol")} className="dashboard-link">
-          <FaRandom className="dashboard-icon" /> Roles
+        {/* Configuración */}
+        <button onClick={toggleConfiguracion} className="dashboard-link">
+          <FaRandom className="dashboard-icon" /> Configuración
         </button>
-        <button
-          onClick={() => navigate("/Usuarios")}
-          className="dashboard-link"
-        >
-          <FaUsers className="dashboard-icon" /> Usuarios
-        </button>
-        <button
-          onClick={() => navigate("/clientes")}
-          className="dashboard-link"
-        >
-          <FaAddressBook className="dashboard-icon" /> Clientes
-        </button>
-        <button onClick={() => navigate("/compras")} className="dashboard-link">
-          <FaShoppingCart className="dashboard-icon" /> Compras
-        </button>
-        <button
-          onClick={() => navigate("/empleados")}
-          className="dashboard-link"
-        >
-          <FaUserTie className="dashboard-icon" /> Empleados
-        </button>
-        <button onClick={() => navigate("/horarioempleado")} className="dashboard-link">
-          <FaCalendar className="dashboard-icon" /> Novedades
-        </button>
-
-        {/* Menú desplegable de Categoria Insumos */}
-        <button onClick={toggleInsumos} className="dashboard-link">
-          <FaTags className="dashboard-icon" /> Insumos - Categoria
-        </button>
-        {showInsumos && (
+        {showConfiguracion && (
           <div className="nested-links">
-            <button
-              onClick={() => navigate("/insumos")}
-              className="nested-link"
-            >
-              Insumos
+            <button onClick={() => navigate("/Rol")} className="nested-link">
+              Roles
             </button>
             <button
-              onClick={() => navigate("/categoriainsumos")}
+              onClick={() => navigate("/Usuarios")}
               className="nested-link"
             >
-              Categoría Insumos
+              Usuarios
             </button>
           </div>
         )}
 
-        {/* Menú desplegable de Categoria Productos */}
-        <button onClick={toggleProductos} className="dashboard-link">
-          <FaTasks className="dashboard-icon" /> Productos - Categoria
+        {/* Ventas */}
+        <button onClick={toggleVentas} className="dashboard-link">
+          <FaClipboardList className="dashboard-icon" /> Ventas
         </button>
-        {showProductos && (
+        {showVentas && (
           <div className="nested-links">
+            <button onClick={() => navigate("/ventas")} className="nested-link">
+              Ventas
+            </button>
+            <button
+              onClick={() => navigate("/pedidos")}
+              className="nested-link"
+            >
+              Pedidos
+            </button>
+            <button
+              onClick={() => navigate("/clientes")}
+              className="nested-link"
+            >
+              Clientes
+            </button>
+            <button
+              onClick={() => navigate("/serviciosadministrador")}
+              className="nested-link"
+            >
+              Servicios
+            </button>
+            <button
+              onClick={() => navigate("/categoriaservicio")}
+              className="nested-link"
+            >
+              Categoría Servicios
+            </button>
             <button
               onClick={() => navigate("/productoadministrador")}
               className="nested-link"
@@ -123,49 +119,66 @@ const NavbarAdmin = () => {
           </div>
         )}
 
-        {/* Menú desplegable de Categoria Servicios */}
-        <button onClick={toggleServicios} className="dashboard-link">
-          <FaServicestack className="dashboard-icon" /> Servicios - Categoria
+        {/* Compras */}
+        <button onClick={toggleCompras} className="dashboard-link">
+          <FaShoppingCart className="dashboard-icon" /> Compras
         </button>
-        {showServicios && (
+        {showCompras && (
           <div className="nested-links">
             <button
-              onClick={() => navigate("/serviciosadministrador")}
+              onClick={() => navigate("/compras")}
               className="nested-link"
             >
-              Servicios
+              Compras
             </button>
             <button
-              onClick={() => navigate("/categoriaservicio")}
+              onClick={() => navigate("/proveedores")}
               className="nested-link"
             >
-              Categoría Servicios
+              Proveedores
+            </button>
+            <button
+              onClick={() => navigate("/insumos")}
+              className="nested-link"
+            >
+              Insumos
+            </button>
+            <button
+              onClick={() => navigate("/categoriainsumos")}
+              className="nested-link"
+            >
+              Categoría Insumos
+            </button>
+            <button
+              onClick={() => navigate("/abastecimiento")}
+              className="nested-link"
+            >
+              Abastecimiento
             </button>
           </div>
         )}
 
-        <button
-          onClick={() => navigate("/proveedores")}
-          className="dashboard-link"
-        >
-          <FaBuilding className="dashboard-icon" /> Proveedores
-        </button>
-        <button
-          onClick={() => navigate("/abastecimiento")}
-          className="dashboard-link"
-        >
-          <FaBox className="dashboard-icon" /> Abastecimiento
-        </button>
-        <button onClick={() => navigate("/ventas")} className="dashboard-link">
-          <FaClipboardList className="dashboard-icon" /> Ventas
-        </button>
-
-        <button onClick={() => navigate("/citas")} className="dashboard-link">
+        {/* Citas */}
+        <button onClick={toggleCitas} className="dashboard-link">
           <FaCalendarCheck className="dashboard-icon" /> Citas
         </button>
+        {showCitas && (
+          <div className="nested-links">
+            <button
+              onClick={() => navigate("/horarioempleado")}
+              className="nested-link"
+            >
+              Horario de Citas (Novedades)
+            </button>
+            <button onClick={() => navigate("/citas")} className="nested-link">
+              Citas
+            </button>
+          </div>
+        )}
       </nav>
+
+      {/* Botón de cerrar sesión */}
       <div className="logout-section">
-        {/* Botón de cerrar sesión */}
         <button onClick={handleLogout} className="dashboard-link logout-button">
           <FaSignOutAlt className="dashboard-icon" /> Cerrar Sesión
         </button>

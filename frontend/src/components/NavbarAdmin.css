@@ -1,17 +1,26 @@
+/* Contenedor del Sidebar */
 .dashboard-sidebar {
     width: 250px;
-    background-color: #34495e;
-    /* Fondo oscuro del Navbar lateral */
+    background: linear-gradient(to bottom, #2c3e50, #34495e);
+    /* Degradado agradable */
     color: #ecf0f1;
     /* Texto claro */
-    padding: 25px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    /* Sombra ligera */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    /* Sombra ligeramente más pronunciada */
+    position: relative;
+    height: 100vh;
+    /* Asegura que cubra toda la pantalla */
+    overflow-y: auto;
+    /* Scroll vertical si el contenido es muy largo */
+    border-right: 2px solid #2c3e50;
+    /* Borde elegante para diferenciarlo del contenido */
 }
 
+/* Sección de administrador */
 .admin-section {
     text-align: center;
     margin-bottom: 20px;
@@ -19,63 +28,95 @@
 
 .admin-icon {
     font-size: 4rem;
-    color: #ecf0f1;
+    color: #1abc9c;
+    /* Icono con color verde claro */
 }
 
 .admin-label {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    /* Texto un poco más grande */
     font-weight: bold;
+    text-transform: uppercase;
+    /* Texto en mayúsculas para destacar */
+    letter-spacing: 1px;
 }
 
+/* Lista de enlaces */
 .dashboard-links {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Espaciado entre los enlaces */
 }
 
+/* Estilo de los enlaces */
 .dashboard-link {
     background-color: transparent;
     color: #ecf0f1;
     border: none;
-    padding: 10px;
+    padding: 12px 20px;
+    /* Más espacio para hacerlo más táctil */
     text-align: left;
     font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
     width: 100%;
     display: flex;
     align-items: center;
-    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    /* Bordes redondeados */
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .dashboard-link:hover {
-    background-color: #2c3e50;
+    background-color: #1abc9c;
+    /* Fondo verde atractivo al pasar el mouse */
+    transform: scale(1.02);
+    /* Efecto de zoom ligero */
 }
 
+/* Iconos de los enlaces */
 .dashboard-icon {
-    margin-right: 10px;
-    font-size: 1.2rem;
+    margin-right: 12px;
+    font-size: 1.4rem;
+    /* Iconos ligeramente más grandes */
 }
 
+/* Enlaces anidados */
 .nested-links {
     margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    /* Separador visual elegante */
 }
 
 .nested-link {
     background-color: transparent;
-    color: #ecf0f1;
+    color: #bdc3c7;
+    /* Texto gris claro */
     border: none;
-    padding: 10px;
-    cursor: pointer;
+    padding: 8px 15px;
     text-align: left;
     display: block;
+    cursor: pointer;
+    border-radius: 5px;
+    /* Bordes redondeados */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .nested-link:hover {
-    background-color: #2c3e50;
+    background-color: #16a085;
+    /* Fondo verde oscuro */
+    color: #ffffff;
+    /* Texto blanco */
 }
 
+/* Botón de logout */
 .logout-button {
-    margin-top: 20px;
-    background-color: #e74c3c;
-    /* Color para el botón de logout */
+    margin-top: auto;
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    /* Degradado rojo */
     color: #ecf0f1;
     border: none;
     padding: 15px;
@@ -85,9 +126,62 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    /* Bordes redondeados */
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .logout-button:hover {
-    background-color: #c0392b;
+    background: #c0392b;
+    /* Rojo más oscuro */
+    transform: scale(1.05);
+    /* Efecto de zoom */
+}
+
+/* Media Query: Ajuste para pantallas pequeñas */
+@media (max-width: 1024px) {
+    .dashboard-sidebar {
+        width: 220px;
+        /* Sidebar más estrecho */
+    }
+
+    .dashboard-link {
+        font-size: 0.9rem;
+        /* Texto ligeramente reducido */
+        padding: 10px 15px;
+    }
+
+    .admin-icon {
+        font-size: 3.5rem;
+        /* Icono más pequeño */
+    }
+
+    .admin-label {
+        font-size: 1rem;
+        /* Texto más compacto */
+    }
+}
+
+/* Media Query: Ajuste para pantallas extra pequeñas */
+@media (max-width: 768px) {
+    .dashboard-sidebar {
+        width: 180px;
+    }
+
+    .dashboard-link {
+        font-size: 0.8rem;
+        /* Texto más compacto */
+        padding: 8px 10px;
+    }
+
+    .dashboard-icon {
+        font-size: 1.1rem;
+        /* Icono más pequeño */
+    }
+
+    .logout-button {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+        /* Texto reducido */
+    }
 }
