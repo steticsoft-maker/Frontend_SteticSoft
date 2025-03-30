@@ -216,4 +216,4 @@ const Compras = () => {
   );
 };
 
-export default Comp
+export default Compras;
