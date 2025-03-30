@@ -4,11 +4,10 @@ import "./proveedores.css";
 
 const Proveedores = () => {
     const [proveedores, setProveedores] = useState([
-        { id: 1, nombre: "Proveedor A", nit: "123456789", telefono: "3001234567", correo: "proveedorA@example.com", estado: "Activo" },
-        { id: 2, nombre: "Proveedor B", nit: "987654321", telefono: "3109876543", correo: "proveedorB@example.com", estado: "Inactivo" },
-        { id: 3, nombre: "Proveedor c", nit: "763522321", telefono: "7835198234", correo: "proveedorc@example.com", estado: "Inactivo" },
-        { id: 4, nombre: "Proveedor d", nit: "877812316", telefono: "1241297032", correo: "proveedord@example.com", estado: "Inactivo" },
-
+        { nombre: "Proveedor A", nit: "123456789", telefono: "3001234567", correo: "proveedorA@example.com", estado: "Activo" },
+        { nombre: "Proveedor B", nit: "987654321", telefono: "3109876543", correo: "proveedorB@example.com", estado: "Inactivo" },
+        { nombre: "Proveedor C", nit: "763522321", telefono: "7835198234", correo: "proveedorc@example.com", estado: "Inactivo" },
+        { nombre: "Proveedor D", nit: "877812316", telefono: "1241297032", correo: "proveedord@example.com", estado: "Inactivo" },
     ]);
 
     const [search, setSearch] = useState("");
@@ -19,11 +18,11 @@ const Proveedores = () => {
 
     const filteredProveedores = proveedores.filter(p =>
         p.nombre.toLowerCase().includes(search.toLowerCase()) ||
-        p.nit.toLowerCase().includes(search.toLowerCase())
+        p.nit.includes(search)
     );
 
     const openModal = (type, proveedor = null) => {
-        setModal({ open: true, type, proveedor: proveedor || { id: Date.now(), nombre: "", nit: "", telefono: "", correo: "", estado: "Activo" } });
+        setModal({ open: true, type, proveedor: proveedor || { nombre: "", nit: "", telefono: "", correo: "", estado: "Activo" } });
     };
 
     const closeModal = () => {
@@ -34,21 +33,21 @@ const Proveedores = () => {
         if (modal.type === "agregar") {
             setProveedores([...proveedores, nuevoProveedor]);
         } else {
-            setProveedores(proveedores.map(p => (p.id === nuevoProveedor.id ? nuevoProveedor : p)));
+            setProveedores(proveedores.map(p => (p.nit === nuevoProveedor.nit ? nuevoProveedor : p)));
         }
         closeModal();
     };
 
-    const confirmDeleteProveedor = (id) => setConfirmDelete(id);
+    const confirmDeleteProveedor = (nit) => setConfirmDelete(nit);
 
     const deleteProveedor = () => {
-        setProveedores(proveedores.filter(p => p.id !== confirmDelete));
+        setProveedores(proveedores.filter(p => p.nit !== confirmDelete));
         setConfirmDelete(null);
     };
 
-    const toggleEstado = (id) => {
+    const toggleEstado = (nit) => {
         setProveedores(proveedores.map(p =>
-            p.id === id ? { ...p, estado: p.estado === "Activo" ? "Inactivo" : "Activo" } : p
+            p.nit === nit ? { ...p, estado: p.estado === "Activo" ? "Inactivo" : "Activo" } : p
         ));
     };
 
@@ -68,7 +67,6 @@ const Proveedores = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Nombre</th>
                                 <th>NIT</th>
                                 <th>Teléfono</th>
@@ -79,24 +77,21 @@ const Proveedores = () => {
                         </thead>
                         <tbody>
                             {filteredProveedores.map(proveedor => (
-                                <tr key={proveedor.id}>
-                                    <td>{proveedor.id}</td>
+                                <tr key={proveedor.nit}>
                                     <td>{proveedor.nombre}</td>
                                     <td>{proveedor.nit}</td>
                                     <td>{proveedor.telefono}</td>
                                     <td>{proveedor.correo}</td>
                                     <td>
-                                        <span className={`estado ${proveedor.estado.toLowerCase()}`}>
-                                            {proveedor.estado}
-                                        </span>
+                                        <label className="switch">
+                                            <input type="checkbox" checked={proveedor.estado === "Activo"} onChange={() => toggleEstado(proveedor.nit)} />
+                                            <span className="slider"></span>
+                                        </label>
                                     </td>
                                     <td className="acciones">
                                         <button className="btn info" onClick={() => openModal("ver", proveedor)}>Ver</button>
-                                        <button className="btn warning" onClick={() => openModal("editar", proveedor)}>Editar</button>
-                                        <button className="btn danger" onClick={() => confirmDeleteProveedor(proveedor.id)}>Eliminar</button>
-                                        <button className="btn" onClick={() => toggleEstado(proveedor.id)}>
-                                            {proveedor.estado === "Activo" ? "Desactivar" : "Activar"}
-                                        </button>
+                                        <button className="btn info" onClick={() => openModal("editar", proveedor)}>Editar</button>
+                                        <button className="btn danger" onClick={() => confirmDeleteProveedor(proveedor.nit)}>Eliminar</button>
                                     </td>
                                 </tr>
                             ))}
@@ -111,7 +106,6 @@ const Proveedores = () => {
                             {modal.type === "ver" ? (
                                 <>
                                     <h3>Detalles del Proveedor</h3>
-                                    <p><strong>ID:</strong> {modal.proveedor.id}</p>
                                     <p><strong>Nombre:</strong> {modal.proveedor.nombre}</p>
                                     <p><strong>NIT:</strong> {modal.proveedor.nit}</p>
                                     <p><strong>Teléfono:</strong> {modal.proveedor.telefono}</p>
@@ -122,8 +116,6 @@ const Proveedores = () => {
                             ) : (
                                 <>
                                     <h3>{modal.type === "agregar" ? "Agregar Proveedor" : "Editar Proveedor"}</h3>
-                                    <label>ID</label>
-                                    <input type="text" value={modal.proveedor.id} disabled />
                                     <label>Nombre</label>
                                     <input
                                         type="text"
@@ -136,6 +128,7 @@ const Proveedores = () => {
                                         type="text"
                                         placeholder="NIT"
                                         value={modal.proveedor.nit}
+                                        disabled={modal.type !== "agregar"}
                                         onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, nit: e.target.value } })}
                                     />
                                     <label>Teléfono</label>
