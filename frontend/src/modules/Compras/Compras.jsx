@@ -4,76 +4,66 @@ import "./Compras.css";
 
 const Compras = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [showDetails, setShowDetails] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedCompra, setSelectedCompra] = useState(null);
-  const [productos, setProductos] = useState([]);
   const [compras, setCompras] = useState([
-    { id: "001", proveedor: "Proveedor A", fecha: "24/03/2025", total: "$500,000", estado: "Completado" },
-    { id: "002", proveedor: "Proveedor B", fecha: "22/03/2025", total: "$320,000", estado: "Pendiente" },
+    { proveedor: "Proveedor A", fecha: "24/03/2025", total: "$500,000", estado: "Completado", productos: [] },
+    { proveedor: "Proveedor B", fecha: "22/03/2025", total: "$320,000", estado: "Pendiente", productos: [] },
   ]);
 
-  const [compra, setCompra] = useState({
-    proveedor: "",
-    nit: "",
-    telefono: "",
-    correo: "",
-    direccion: ""  // Nuevo campo agregado
-  });
-  
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedCompra, setSelectedCompra] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newCompra, setNewCompra] = useState({ proveedor: "", fecha: "", productos: [] });
 
-  // Función para alternar el modal de agregar compras
-  const toggleModal = () => {
-    setShowModal(!showModal);
-    if (!showModal) {
-      setCompra({ proveedor: "", nit: "", telefono: "", correo: "" });
-      setProductos([]);
+  const handleAnular = (index) => {
+    if (window.confirm("¿Está seguro de que desea anular esta compra?")) {
+      const updatedCompras = [...compras];
+      updatedCompras[index].estado = "Anulada";
+      setCompras(updatedCompras);
     }
   };
 
-  const handleChange = (e) => {
-    setCompra({ ...compra, [e.target.name]: e.target.value });
+  const handleGenerarPDF = () => {
+    alert("Función de generación de PDF en desarrollo.");
   };
 
-  const agregarProducto = () => {
-    setProductos([...productos, { id: Date.now(), nombre: "", cantidad: 1, precio: 0 }]);
-  };
-
-  const eliminarProducto = (id) => {
-    setProductos(productos.filter((producto) => producto.id !== id));
-  };
-
-  const handleProductoChange = (id, e) => {
-    const { name, value } = e.target;
-    setProductos(
-      productos.map((producto) =>
-        producto.id === id ? { ...producto, [name]: value } : producto
-      )
-    );
-  };
-
-  // Función para confirmar anulación y actualizar el estado
-  const handleAnular = (id) => {
-    const confirmacion = window.confirm(`¿Estás seguro de que deseas anular la compra con ID ${id}?`);
-    if (confirmacion) {
-      setCompras((prevCompras) =>
-        prevCompras.map((compra) =>
-          compra.id === id ? { ...compra, estado: "Anulada" } : compra
-        )
-      );
-      alert(`Compra con ID ${id} anulada correctamente.`);
-    }
-  };
-
-  // Función para simular la generación de PDF
-  const handleGenerarPDF = (id) => {
-    alert(`Se está generando el PDF de la compra con ID ${id}...`);
-  };
-
-  // Función para mostrar detalles en el modal
-  const handleVerDetalles = (compra) => {
+  const handleShowDetails = (compra) => {
     setSelectedCompra(compra);
-    setShowDetails(true);
+    setShowDetailsModal(true);
+  };
+
+  const handleEstadoChange = (index) => {
+    const updatedCompras = [...compras];
+    updatedCompras[index].estado = updatedCompras[index].estado === "Pendiente" ? "Completado" : "Pendiente";
+    setCompras(updatedCompras);
+  };
+
+  const handleAddCompra = () => {
+    setCompras([...compras, { ...newCompra, total: calcularTotal(newCompra.productos), estado: "Pendiente" }]);
+    setShowAddModal(false);
+    setNewCompra({ proveedor: "", fecha: "", productos: [] });
+  };
+
+  const handleAddProducto = () => {
+    setNewCompra({
+      ...newCompra,
+      productos: [...newCompra.productos, { nombre: "", cantidad: 1, precio: 0, total: 0 }]
+    });
+  };
+
+  const handleRemoveProducto = (index) => {
+    const updatedProductos = newCompra.productos.filter((_, i) => i !== index);
+    setNewCompra({ ...newCompra, productos: updatedProductos });
+  };
+
+  const handleChangeProducto = (index, field, value) => {
+    const updatedProductos = [...newCompra.productos];
+    updatedProductos[index][field] = field === "cantidad" || field === "precio" ? parseFloat(value) || 0 : value;
+    updatedProductos[index].total = updatedProductos[index].cantidad * updatedProductos[index].precio;
+    setNewCompra({ ...newCompra, productos: updatedProductos });
+  };
+
+  const calcularTotal = (productos) => {
+    return `$${productos.reduce((acc, prod) => acc + prod.total, 0).toLocaleString()}`;
   };
 
   return (
@@ -82,7 +72,6 @@ const Compras = () => {
       <div className="compras-content">
         <h2 className="title-h2">Gestión de Compras</h2>
 
-        {/* Barra de búsqueda */}
         <div className="search-bar">
           <input
             type="text"
@@ -93,14 +82,15 @@ const Compras = () => {
         </div>
 
         <div className="compras-buttons">
-          <button className="btn success" onClick={toggleModal}>Agregar Compra</button>
+          <button className="btn success" onClick={() => setShowAddModal(true)}>
+            Agregar Compra
+          </button>
         </div>
 
         <div className="compras-table">
           <table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Proveedor</th>
                 <th>Fecha</th>
                 <th>Total</th>
@@ -109,82 +99,119 @@ const Compras = () => {
               </tr>
             </thead>
             <tbody>
-              {compras.map((compra) => (
-                <tr key={compra.id}>
-                  <td>{compra.id}</td>
-                  <td>{compra.proveedor}</td>
-                  <td>{compra.fecha}</td>
-                  <td>{compra.total}</td>
-                  <td className={`estado ${compra.estado.toLowerCase()}`}>{compra.estado}</td>
-                  <td className="acciones">
-                    {compra.estado !== "Anulada" && (
-                      <button className="btn danger" onClick={() => handleAnular(compra.id)}>Anular</button>
-                    )}
-                    <button className="btn warning" onClick={() => handleGenerarPDF(compra.id)}>PDF</button>
-                    <button className="btn info" onClick={() => handleVerDetalles(compra)}>Detalles</button>
-                  </td>
-                </tr>
-              ))}
+              {compras
+                .filter((compra) =>
+                  compra.proveedor.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((compra, index) => (
+                  <tr key={index}>
+                    <td>{compra.proveedor}</td>
+                    <td>{compra.fecha}</td>
+                    <td>{compra.total}</td>
+                    <td className={`estado ${compra.estado.toLowerCase()}`}>
+                      {compra.estado === "Anulada" ? (
+                        <span>Anulada</span>
+                      ) : (
+                        <label className="switch">
+                          <input
+                            type="checkbox"
+                            checked={compra.estado === "Completado"}
+                            onChange={() => handleEstadoChange(index)}
+                          />
+                          <span className="slider"></span>
+                        </label>
+                      )}
+                    </td>
+                    <td className="acciones">
+                      {compra.estado !== "Anulada" && (
+                        <button className="btn danger" onClick={() => handleAnular(index)}>
+                          Anular
+                        </button>
+                      )}
+                      <button className="btn info" onClick={handleGenerarPDF}>PDF</button>
+                      <button className="btn info" onClick={() => handleShowDetails(compra)}>Detalles</button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
-
-        {/* Modal para agregar compra */}
-{showModal && (
-  <div className="modal">
-    <div className="modal-content">
-      <h3>Registrar Compra</h3>
-
-      <label>Proveedor:</label>
-      <input type="text" name="proveedor" value={compra.proveedor} onChange={handleChange} />
-
-      <label>NIT:</label>
-      <input type="text" name="nit" value={compra.nit} onChange={handleChange} />
-
-      <label>Teléfono:</label>
-      <input type="text" name="telefono" value={compra.telefono} onChange={handleChange} />
-
-      <label>Correo:</label>
-      <input type="email" name="correo" value={compra.correo} onChange={handleChange} />
-
-      <label>Dirección:</label>  {/* Nuevo input */}
-      <input type="text" name="direccion" value={compra.direccion} onChange={handleChange} />
-
-      <h4>Productos</h4>
-      {productos.map((producto) => (
-        <div key={producto.id} className="producto-item">
-          <input type="text" name="nombre" placeholder="Nombre" value={producto.nombre} onChange={(e) => handleProductoChange(producto.id, e)} />
-          <input type="number" name="cantidad" placeholder="Cantidad" value={producto.cantidad} onChange={(e) => handleProductoChange(producto.id, e)} />
-          <input type="number" name="precio" placeholder="Precio" value={producto.precio} onChange={(e) => handleProductoChange(producto.id, e)} />
-          <button className="btn danger" onClick={() => eliminarProducto(producto.id)}>X</button>
-        </div>
-      ))}
-
-      <button className="btn success" onClick={agregarProducto}>Agregar Producto</button>
-      <div className="modal-buttons">
-        <button className="btn primary" onClick={toggleModal} >Registrar Compra</button>
-        <button className="btn danger" onClick={toggleModal}>Cancelar</button>
       </div>
-    </div>
-  </div>
+
+      {showAddModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Agregar Compra</h2>
+            <input
+              type="text"
+              placeholder="Proveedor"
+              value={newCompra.proveedor}
+              onChange={(e) => setNewCompra({ ...newCompra, proveedor: e.target.value })}
+            />
+            <input
+              type="date"
+              value={newCompra.fecha}
+              onChange={(e) => setNewCompra({ ...newCompra, fecha: e.target.value })}
+            />
+
+            <h3>Productos</h3>
+            {newCompra.productos.map((producto, index) => (
+              <div key={index} className="producto-item">
+                <input
+                  type="text"
+                  placeholder="Nombre"
+                  value={producto.nombre}
+                  onChange={(e) => handleChangeProducto(index, "nombre", e.target.value)}
+                />
+                <input
+                  type="number"
+                  placeholder="Cantidad"
+                  value={producto.cantidad}
+                  onChange={(e) => handleChangeProducto(index, "cantidad", e.target.value)}
+                />
+                <input
+                  type="number"
+                  placeholder="Precio Unitario"
+                  value={producto.precio}
+                  onChange={(e) => handleChangeProducto(index, "precio", e.target.value)}
+                />
+                <span>Total: ${producto.total.toLocaleString()}</span>
+                <button className="btn danger" onClick={() => handleRemoveProducto(index)}>Eliminar</button>
+              </div>
+            ))}
+            <button className="btn success" onClick={handleAddProducto}>Agregar Producto</button>
+
+            <h3>Total: {calcularTotal(newCompra.productos)}</h3>
+
+            <button className="btn success" onClick={handleAddCompra}>Guardar Compra</button>
+            <button className="btn close" onClick={() => setShowAddModal(false)}>Cancelar</button>
+          </div>
+        </div>
+      )}
+      
+      {showDetailsModal && selectedCompra && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Detalles de la Compra</h2>
+            <p><strong>Proveedor:</strong> {selectedCompra.proveedor}</p>
+            <p><strong>Fecha:</strong> {selectedCompra.fecha}</p>
+            <p><strong>Total:</strong> {selectedCompra.total}</p>
+            <h3>Productos</h3>
+            <ul>
+              {selectedCompra.productos.length > 0 ? (selectedCompra.productos.map((producto, index) => (
+                <li key={index}>
+                  {producto.nombre} - {producto.cantidad} x ${producto.precio.toLocaleString()} = ${producto.total.toLocaleString()}
+                  </li>
+                  ))
+                ) : (
+                <p>No hay productos registrados.</p>
+                )}
+                </ul>
+                <button className="btn close" onClick={() => setShowDetailsModal(false)}>Cerrar</button>
+                </div>
+      </div>
 )}
 
-
-        {/* Modal para ver detalles */}
-        {showDetails && selectedCompra && (
-          <div className="modal-detalle">
-            <div className="modal-content-detalle">
-              <h3>Detalles de la Compra</h3>
-              <p><strong>ID:</strong> {selectedCompra.id}</p>
-              <p><strong>Proveedor:</strong> {selectedCompra.proveedor}</p>
-              <p><strong>Fecha:</strong> {selectedCompra.fecha}</p>
-              <p><strong>Total:</strong> {selectedCompra.total}</p>
-              <p><strong>Estado:</strong> {selectedCompra.estado}</p>
-              <button className="btn close" onClick={() => setShowDetails(false)}>Cerrar</button>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

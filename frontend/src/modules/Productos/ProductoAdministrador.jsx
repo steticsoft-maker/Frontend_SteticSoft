@@ -4,8 +4,10 @@ import "./ProductosAdministrador.css";
 
 const Productos = () => {
   const initialProductos = [
+
     { id: 1, nombre: "Producto A", categoria: "Categoría 1", precio: 10000, stock: 50, estado: true, foto: null },
     { id: 2, nombre: "Producto B", categoria: "Categoría 2", precio: 20000, stock: 30, estado: false, foto: null },
+
 
     {
       id: 1,
@@ -25,6 +27,8 @@ const Productos = () => {
       estado: false,
       foto: null,
     },
+
+
 
   ];
 
@@ -191,7 +195,10 @@ const Productos = () => {
               <>
                 <h2>
 
+
                   {modalType === "create" ? "Agregar Producto" : "Editar Producto"}
+
+
 
                   {modalType === "create"
                     ? "Agregar Producto"
@@ -206,7 +213,10 @@ const Productos = () => {
                       categoria: formData.get("categoria"),
                       precio: parseFloat(formData.get("precio")),
                       stock: parseInt(formData.get("stock"), 10),
+
                       estado: modalType === "create" ? true : currentProducto.estado,
+
+
 
                       estado:
                         modalType === "create" ? true : currentProducto.estado,
@@ -257,7 +267,11 @@ const Productos = () => {
                   />
                   {currentProducto?.foto && (
 
-                    <><img src={currentProducto.foto} alt="Vista previa" width="100" /><img src={currentProducto.foto} alt="Vista previa" width="100" /></>
+
+                    <><><img src={currentProducto.foto} alt="Vista previa" width="100" /><img src={currentProducto.foto} alt="Vista previa" width="100" /></><img
+                        src={currentProducto.foto}
+                        alt="Vista previa"
+                        width="100" /></>
 
                   )}
                   <button type="submit" className="action-button">

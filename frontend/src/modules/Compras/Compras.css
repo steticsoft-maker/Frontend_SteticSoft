@@ -271,3 +271,31 @@ th {
     height: 500px;
     border-radius: 8px;
 }
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 400px;
+  border-radius: 8px;
+  background: white;
+}
+
+/* Contenedor de productos */
+.productos-container {
+  width: 100%;
+  margin-bottom: 10px; /* Espacio para que el botón de agregar producto quede más arriba */
+}
+
+/* Botón Agregar Producto */
+.btn.agregar-producto {
+  margin-bottom: 15px; /* Separa el botón de agregar producto de los demás */
+}
+
+/* Botones inferiores */
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  width: auto;
+}

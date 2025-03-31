@@ -4,14 +4,14 @@ import "./insumos.css";
 
 const Insumos = () => {
     const [insumos, setInsumos] = useState([
-        { id: 1, nombre: "Shampoo", categoria: "Cuidado Capilar", cantidad: 20, precio: 15000, estado: "Activo" },
-        { id: 2, nombre: "Tinte Rojo", categoria: "Coloración", cantidad: 10, precio: 25000, estado: "Inactivo" },
-        { id: 3, nombre: "labial", categoria: "maquillaje", cantidad: 10, precio: 30000, estado: "Inactivo" },
-        { id: 4, nombre: "crema de manos", categoria: "cuidado personal", cantidad: 30, precio: 40000, estado: "Inactivo" }
+        { nombre: "Shampoo", categoria: "Cuidado Capilar", cantidad: 20, precio: 15000, estado: "Activo" },
+        { nombre: "Tinte Rojo", categoria: "Coloración", cantidad: 10, precio: 25000, estado: "Inactivo" },
+        { nombre: "Labial", categoria: "Maquillaje", cantidad: 10, precio: 30000, estado: "Inactivo" },
+        { nombre: "Crema de manos", categoria: "Cuidado Personal", cantidad: 30, precio: 40000, estado: "Inactivo" }
     ]);
 
     const [search, setSearch] = useState("");
-    const [modal, setModal] = useState({ open: false, type: "", insumo: null });
+    const [modal, setModal] = useState({ open: false, type: "", index: null });
     const [confirmDelete, setConfirmDelete] = useState(null);
 
     const handleSearch = (e) => setSearch(e.target.value);
@@ -21,33 +21,33 @@ const Insumos = () => {
         i.categoria.toLowerCase().includes(search.toLowerCase())
     );
 
-    const openModal = (type, insumo = null) => {
-        setModal({ open: true, type, insumo: insumo || { id: Date.now(), nombre: "", categoria: "", cantidad: 0, precio: 0 } });
+    const openModal = (type, index = null) => {
+        setModal({ open: true, type, index });
     };
 
     const closeModal = () => {
-        setModal({ open: false, type: "", insumo: null });
+        setModal({ open: false, type: "", index: null });
     };
 
     const saveInsumo = (nuevoInsumo) => {
         if (modal.type === "agregar") {
             setInsumos([...insumos, nuevoInsumo]);
         } else {
-            setInsumos(insumos.map(i => (i.id === nuevoInsumo.id ? nuevoInsumo : i)));
+            setInsumos(insumos.map((i, idx) => (idx === modal.index ? nuevoInsumo : i)));
         }
         closeModal();
     };
 
-    const confirmDeleteInsumo = (id) => setConfirmDelete(id);
+    const confirmDeleteInsumo = (index) => setConfirmDelete(index);
 
     const deleteInsumo = () => {
-        setInsumos(insumos.filter(i => i.id !== confirmDelete));
+        setInsumos(insumos.filter((_, idx) => idx !== confirmDelete));
         setConfirmDelete(null);
     };
 
-    const toggleEstado = (id) => {
-        setInsumos(insumos.map(i =>
-            i.id === id ? { ...i, estado: i.estado === "Activo" ? "Inactivo" : "Activo" } : i
+    const toggleEstado = (index) => {
+        setInsumos(insumos.map((i, idx) =>
+            idx === index ? { ...i, estado: i.estado === "Activo" ? "Inactivo" : "Activo" } : i
         ));
     };
 
@@ -67,7 +67,6 @@ const Insumos = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Categoría</th>
                                 <th>Cantidad</th>
@@ -77,25 +76,26 @@ const Insumos = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredInsumos.map(insumo => (
-                                <tr key={insumo.id}>
-                                    <td>{insumo.id}</td>
+                            {filteredInsumos.map((insumo, index) => (
+                                <tr key={index}>
                                     <td>{insumo.nombre}</td>
                                     <td>{insumo.categoria}</td>
                                     <td>{insumo.cantidad}</td>
                                     <td>${insumo.precio.toLocaleString()}</td>
                                     <td>
-                                        <span className={`estado ${insumo.estado.toLowerCase()}`}>
-                                            {insumo.estado}
-                                        </span>
+                                        <label className="switch">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={insumo.estado === "Activo"} 
+                                                onChange={() => toggleEstado(index)} 
+                                            />
+                                            <span className="slider round"></span>
+                                        </label>
                                     </td>
                                     <td className="acciones">
-                                        <button className="btn info" onClick={() => openModal("ver", insumo)}>Ver</button>
-                                        <button className="btn warning" onClick={() => openModal("editar", insumo)}>Editar</button>
-                                        <button className="btn danger" onClick={() => confirmDeleteInsumo(insumo.id)}>Eliminar</button>
-                                        <button className="btn" onClick={() => toggleEstado(insumo.id)}>
-                                            {insumo.estado === "Activo" ? "Desactivar" : "Activar"}
-                                        </button>
+                                        <button className="btn info" onClick={() => openModal("ver", index)}>Ver</button>
+                                        <button className="btn info" onClick={() => openModal("editar", index)}>Editar</button>
+                                        <button className="btn danger" onClick={() => confirmDeleteInsumo(index)}>Eliminar</button>
                                     </td>
                                 </tr>
                             ))}
@@ -110,50 +110,55 @@ const Insumos = () => {
                             {modal.type === "ver" ? (
                                 <>
                                     <h3>Detalles del Insumo</h3>
-                                    <p><strong>ID:</strong> {modal.insumo.id}</p>
-                                    <p><strong>Nombre:</strong> {modal.insumo.nombre}</p>
-                                    <p><strong>Categoría:</strong> {modal.insumo.categoria}</p>
-                                    <p><strong>Cantidad:</strong> {modal.insumo.cantidad}</p>
-                                    <p><strong>Precio:</strong> ${modal.insumo.precio.toLocaleString()}</p>
-                                    <p><strong>Estado:</strong> {modal.insumo.estado}</p>
+                                    <p><strong>Nombre:</strong> {insumos[modal.index]?.nombre}</p>
+                                    <p><strong>Categoría:</strong> {insumos[modal.index]?.categoria}</p>
+                                    <p><strong>Cantidad:</strong> {insumos[modal.index]?.cantidad}</p>
+                                    <p><strong>Precio:</strong> ${insumos[modal.index]?.precio.toLocaleString()}</p>
+                                    <p><strong>Estado:</strong> {insumos[modal.index]?.estado}</p>
                                     <button className="btn close" onClick={closeModal}>Cerrar</button>
                                 </>
                             ) : (
                                 <>
                                     <h3>{modal.type === "agregar" ? "Agregar Insumo" : "Editar Insumo"}</h3>
-                                    <label>ID</label>
-                                    <input
-                                        type="text"
-                                        value={modal.insumo.id}
-                                        disabled
-                                    />
                                     <label>Nombre</label>
                                     <input
                                         type="text"
                                         placeholder="Nombre"
-                                        value={modal.insumo.nombre}
-                                        onChange={(e) => setModal({ ...modal, insumo: { ...modal.insumo, nombre: e.target.value } })}
+                                        value={insumos[modal.index]?.nombre || ""}
+                                        onChange={(e) => {
+                                            const updated = { ...insumos[modal.index], nombre: e.target.value };
+                                            setInsumos(insumos.map((i, idx) => (idx === modal.index ? updated : i)));
+                                        }}
                                     />
                                     <label>Categoría</label>
                                     <input
                                         type="text"
                                         placeholder="Categoría"
-                                        value={modal.insumo.categoria}
-                                        onChange={(e) => setModal({ ...modal, insumo: { ...modal.insumo, categoria: e.target.value } })}
+                                        value={insumos[modal.index]?.categoria || ""}
+                                        onChange={(e) => {
+                                            const updated = { ...insumos[modal.index], categoria: e.target.value };
+                                            setInsumos(insumos.map((i, idx) => (idx === modal.index ? updated : i)));
+                                        }}
                                     />
                                     <label>Cantidad</label>
                                     <input
                                         type="number"
                                         placeholder="Cantidad"
-                                        value={modal.insumo.cantidad}
-                                        onChange={(e) => setModal({ ...modal, insumo: { ...modal.insumo, cantidad: Number(e.target.value) } })}
+                                        value={insumos[modal.index]?.cantidad || 0}
+                                        onChange={(e) => {
+                                            const updated = { ...insumos[modal.index], cantidad: Number(e.target.value) };
+                                            setInsumos(insumos.map((i, idx) => (idx === modal.index ? updated : i)));
+                                        }}
                                     />
                                     <label>Precio</label>
                                     <input
                                         type="number"
                                         placeholder="Precio"
-                                        value={modal.insumo.precio}
-                                        onChange={(e) => setModal({ ...modal, insumo: { ...modal.insumo, precio: Number(e.target.value) } })}
+                                        value={insumos[modal.index]?.precio || 0}
+                                        onChange={(e) => {
+                                            const updated = { ...insumos[modal.index], precio: Number(e.target.value) };
+                                            setInsumos(insumos.map((i, idx) => (idx === modal.index ? updated : i)));
+                                        }}
                                     />
                                     <button className="btn success" onClick={closeModal}>Guardar</button>
                                     <button className="btn close" onClick={closeModal}>Cancelar</button>
@@ -164,7 +169,7 @@ const Insumos = () => {
                 )}
 
                 {/* Confirmación de eliminación */}
-                {confirmDelete && (
+                {confirmDelete !== null && (
                     <div className="modal">
                         <div className="modal-content">
                             <h3>¿Eliminar Insumo?</h3>

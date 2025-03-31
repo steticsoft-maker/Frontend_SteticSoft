@@ -19,11 +19,7 @@ const CategoriaInsumos = () => {
   ]);
 
   const [search, setSearch] = useState("");
-  const [modal, setModal] = useState({
-    open: false,
-    type: "",
-    categoria: null,
-  });
+  const [modal, setModal] = useState({ open: false, type: "", categoria: null });
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   const handleSearch = (e) => setSearch(e.target.value);
@@ -31,20 +27,14 @@ const CategoriaInsumos = () => {
   const filteredCategorias = categorias.filter(
     (c) =>
       c.nombre.toLowerCase().includes(search.toLowerCase()) ||
-      (c.descripcion &&
-        c.descripcion.toLowerCase().includes(search.toLowerCase()))
+      (c.descripcion && c.descripcion.toLowerCase().includes(search.toLowerCase()))
   );
 
   const openModal = (type, categoria = null) => {
     setModal({
       open: true,
       type,
-      categoria: categoria || {
-        id: Date.now(),
-        nombre: "",
-        descripcion: "",
-        estado: "Activo",
-      },
+      categoria: categoria || { id: Date.now(), nombre: "", descripcion: "", estado: "Activo" },
     });
   };
 
@@ -73,9 +63,7 @@ const CategoriaInsumos = () => {
   const toggleEstado = (id) => {
     setCategorias(
       categorias.map((c) =>
-        c.id === id
-          ? { ...c, estado: c.estado === "Activo" ? "Inactivo" : "Activo" }
-          : c
+        c.id === id ? { ...c, estado: c.estado === "Activo" ? "Inactivo" : "Activo" } : c
       )
     );
   };
@@ -87,12 +75,7 @@ const CategoriaInsumos = () => {
         <h2 className="title-h2">Gestión de Categorías de Insumos</h2>
 
         <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Buscar categoría..."
-            value={search}
-            onChange={handleSearch}
-          />
+          <input type="text" placeholder="Buscar categoría..." value={search} onChange={handleSearch} />
         </div>
 
         <button className="btn success" onClick={() => openModal("agregar")}>
@@ -117,37 +100,19 @@ const CategoriaInsumos = () => {
                   <td>{categoria.nombre}</td>
                   <td>{categoria.descripcion || "Sin descripción"}</td>
                   <td>
-                    <span
-                      className={`estado ${categoria.estado.toLowerCase()}`}
-                    >
-                      {categoria.estado}
-                    </span>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={categoria.estado === "Activo"}
+                        onChange={() => toggleEstado(categoria.id)}
+                      />
+                      <span className="slider"></span>
+                    </label>
                   </td>
                   <td className="acciones">
-                    <button
-                      className="btn info"
-                      onClick={() => openModal("ver", categoria)}
-                    >
-                      Ver
-                    </button>
-                    <button
-                      className="btn warning"
-                      onClick={() => openModal("editar", categoria)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="btn danger"
-                      onClick={() => confirmDeleteCategoria(categoria.id)}
-                    >
-                      Eliminar
-                    </button>
-                    <button
-                      className="btn"
-                      onClick={() => toggleEstado(categoria.id)}
-                    >
-                      {categoria.estado === "Activo" ? "Desactivar" : "Activar"}
-                    </button>
+                    <button className="btn info" onClick={() => openModal("ver", categoria)}>Ver</button>
+                    <button className="btn info" onClick={() => openModal("editar", categoria)}>Editar</button>
+                    <button className="btn danger" onClick={() => confirmDeleteCategoria(categoria.id)}>Eliminar</button>
                   </td>
                 </tr>
               ))}
@@ -162,30 +127,15 @@ const CategoriaInsumos = () => {
               {modal.type === "ver" ? (
                 <>
                   <h3>Detalles de la Categoría</h3>
-                  <p>
-                    <strong>ID:</strong> {modal.categoria.id}
-                  </p>
-                  <p>
-                    <strong>Nombre:</strong> {modal.categoria.nombre}
-                  </p>
-                  <p>
-                    <strong>Descripción:</strong>{" "}
-                    {modal.categoria.descripcion || "Sin descripción"}
-                  </p>
-                  <p>
-                    <strong>Estado:</strong> {modal.categoria.estado}
-                  </p>
-                  <button className="btn close" onClick={closeModal}>
-                    Cerrar
-                  </button>
+                  <p><strong>ID:</strong> {modal.categoria.id}</p>
+                  <p><strong>Nombre:</strong> {modal.categoria.nombre}</p>
+                  <p><strong>Descripción:</strong> {modal.categoria.descripcion || "Sin descripción"}</p>
+                  <p><strong>Estado:</strong> {modal.categoria.estado}</p>
+                  <button className="btn close" onClick={closeModal}>Cerrar</button>
                 </>
               ) : (
                 <>
-                  <h3>
-                    {modal.type === "agregar"
-                      ? "Agregar Categoría"
-                      : "Editar Categoría"}
-                  </h3>
+                  <h3>{modal.type === "agregar" ? "Agregar Categoría" : "Editar Categoría"}</h3>
                   <label>ID</label>
                   <input type="text" value={modal.categoria.id} disabled />
                   <label>Nombre</label>
@@ -194,13 +144,7 @@ const CategoriaInsumos = () => {
                     placeholder="Nombre"
                     value={modal.categoria.nombre}
                     onChange={(e) =>
-                      setModal({
-                        ...modal,
-                        categoria: {
-                          ...modal.categoria,
-                          nombre: e.target.value,
-                        },
-                      })
+                      setModal({ ...modal, categoria: { ...modal.categoria, nombre: e.target.value } })
                     }
                   />
                   <label>Descripción (Opcional)</label>
@@ -208,24 +152,11 @@ const CategoriaInsumos = () => {
                     placeholder="Descripción"
                     value={modal.categoria.descripcion}
                     onChange={(e) =>
-                      setModal({
-                        ...modal,
-                        categoria: {
-                          ...modal.categoria,
-                          descripcion: e.target.value,
-                        },
-                      })
+                      setModal({ ...modal, categoria: { ...modal.categoria, descripcion: e.target.value } })
                     }
                   />
-                  <button
-                    className="btn success"
-                    onClick={() => saveCategoria(modal.categoria)}
-                  >
-                    Guardar
-                  </button>
-                  <button className="btn close" onClick={closeModal}>
-                    Cancelar
-                  </button>
+                  <button className="btn success" onClick={() => saveCategoria(modal.categoria)}>Guardar</button>
+                  <button className="btn close" onClick={closeModal}>Cancelar</button>
                 </>
               )}
             </div>
@@ -238,15 +169,8 @@ const CategoriaInsumos = () => {
             <div className="modal-content">
               <h3>¿Eliminar Categoría?</h3>
               <p>Esta acción no se puede deshacer.</p>
-              <button className="btn danger" onClick={deleteCategoria}>
-                Eliminar
-              </button>
-              <button
-                className="btn close"
-                onClick={() => setConfirmDelete(null)}
-              >
-                Cancelar
-              </button>
+              <button className="btn danger" onClick={deleteCategoria}>Eliminar</button>
+              <button className="btn close" onClick={() => setConfirmDelete(null)}>Cancelar</button>
             </div>
           </div>
         )}
