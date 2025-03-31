@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../../components/NavbarAdmin";
 import "./CategoriaInsumos.css";
 
@@ -110,9 +112,15 @@ const CategoriaInsumos = () => {
                     </label>
                   </td>
                   <td className="acciones">
-                    <button className="btn info" onClick={() => openModal("ver", categoria)}>Ver</button>
-                    <button className="btn info" onClick={() => openModal("editar", categoria)}>Editar</button>
-                    <button className="btn danger" onClick={() => confirmDeleteCategoria(categoria.id)}>Eliminar</button>
+                    <button className="btn info" onClick={() => openModal("ver", categoria)}>
+                      <FontAwesomeIcon icon={faEye} />
+                    </button>
+                    <button className="btn info" onClick={() => openModal("editar", categoria)}>
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                    <button className="btn danger" onClick={() => confirmDeleteCategoria(categoria.id)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../../components/NavbarAdmin";
 import "./insumos.css";
 
@@ -12,6 +14,7 @@ const Insumos = () => {
 
     const [search, setSearch] = useState("");
     const [modal, setModal] = useState({ open: false, type: "", index: null });
+    const [formData, setFormData] = useState({ nombre: "", categoria: "", cantidad: 0, precio: 0 });
     const [confirmDelete, setConfirmDelete] = useState(null);
 
     const handleSearch = (e) => setSearch(e.target.value);
@@ -23,17 +26,23 @@ const Insumos = () => {
 
     const openModal = (type, index = null) => {
         setModal({ open: true, type, index });
+
+        if (type === "editar" && index !== null) {
+            setFormData(insumos[index]); // Cargar datos en el formulario
+        } else if (type === "agregar") {
+            setFormData({ nombre: "", categoria: "", cantidad: 0, precio: 0 });
+        }
     };
 
     const closeModal = () => {
         setModal({ open: false, type: "", index: null });
     };
 
-    const saveInsumo = (nuevoInsumo) => {
+    const saveInsumo = () => {
         if (modal.type === "agregar") {
-            setInsumos([...insumos, nuevoInsumo]);
-        } else {
-            setInsumos(insumos.map((i, idx) => (idx === modal.index ? nuevoInsumo : i)));
+            setInsumos([...insumos, formData]);
+        } else if (modal.type === "editar" && modal.index !== null) {
+            setInsumos(insumos.map((i, idx) => (idx === modal.index ? formData : i)));
         }
         closeModal();
     };
@@ -93,9 +102,15 @@ const Insumos = () => {
                                         </label>
                                     </td>
                                     <td className="acciones">
-                                        <button className="btn info" onClick={() => openModal("ver", index)}>Ver</button>
-                                        <button className="btn info" onClick={() => openModal("editar", index)}>Editar</button>
-                                        <button className="btn danger" onClick={() => confirmDeleteInsumo(index)}>Eliminar</button>
+                                        <button className="btn info" onClick={() => openModal("ver", index)}>
+                                            <FontAwesomeIcon icon={faEye} />
+                                        </button>
+                                        <button className="btn info" onClick={() => openModal("editar", index)}>
+                                            <FontAwesomeIcon icon={faEdit} />
+                                        </button>
+                                        <button className="btn danger" onClick={() => confirmDeleteInsumo(index)}>
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -123,44 +138,28 @@ const Insumos = () => {
                                     <label>Nombre</label>
                                     <input
                                         type="text"
-                                        placeholder="Nombre"
-                                        value={insumos[modal.index]?.nombre || ""}
-                                        onChange={(e) => {
-                                            const updated = { ...insumos[modal.index], nombre: e.target.value };
-                                            setInsumos(insumos.map((i, idx) => (idx === modal.index ? updated : i)));
-                                        }}
+                                        value={formData.nombre}
+                                        onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                                     />
                                     <label>Categoría</label>
                                     <input
                                         type="text"
-                                        placeholder="Categoría"
-                                        value={insumos[modal.index]?.categoria || ""}
-                                        onChange={(e) => {
-                                            const updated = { ...insumos[modal.index], categoria: e.target.value };
-                                            setInsumos(insumos.map((i, idx) => (idx === modal.index ? updated : i)));
-                                        }}
+                                        value={formData.categoria}
+                                        onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
                                     />
                                     <label>Cantidad</label>
                                     <input
                                         type="number"
-                                        placeholder="Cantidad"
-                                        value={insumos[modal.index]?.cantidad || 0}
-                                        onChange={(e) => {
-                                            const updated = { ...insumos[modal.index], cantidad: Number(e.target.value) };
-                                            setInsumos(insumos.map((i, idx) => (idx === modal.index ? updated : i)));
-                                        }}
+                                        value={formData.cantidad}
+                                        onChange={(e) => setFormData({ ...formData, cantidad: Number(e.target.value) })}
                                     />
                                     <label>Precio</label>
                                     <input
                                         type="number"
-                                        placeholder="Precio"
-                                        value={insumos[modal.index]?.precio || 0}
-                                        onChange={(e) => {
-                                            const updated = { ...insumos[modal.index], precio: Number(e.target.value) };
-                                            setInsumos(insumos.map((i, idx) => (idx === modal.index ? updated : i)));
-                                        }}
+                                        value={formData.precio}
+                                        onChange={(e) => setFormData({ ...formData, precio: Number(e.target.value) })}
                                     />
-                                    <button className="btn success" onClick={closeModal}>Guardar</button>
+                                    <button className="btn success" onClick={saveInsumo}>Guardar</button>
                                     <button className="btn close" onClick={closeModal}>Cancelar</button>
                                 </>
                             )}
