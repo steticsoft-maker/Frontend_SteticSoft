@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* Contenedor general */
 .productos-container {
     display: flex;
@@ -241,7 +240,7 @@ img {
     border: 1px solid #ddd;
     border-radius: 5px;
 }
-=======
+
 /* Contenedor general */
 .productos-container {
     display: flex;
@@ -484,4 +483,3 @@ img {
     border: 1px solid #ddd;
     border-radius: 5px;
 }
->>>>>>> 590f49866d56d7036528c32361929a0a82a593b5

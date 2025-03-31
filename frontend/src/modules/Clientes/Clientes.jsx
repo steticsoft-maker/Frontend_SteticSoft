@@ -8,7 +8,7 @@ const Clientes = () => {
       id: 1,
       nombre: "Juan Pérez",
       email: "juan.perez@gmail.com",
-      telefono: "3211234567",
+      telefono: "3211234567", 
       direccion: "Calle Principal 123",
       estado: true, // Activo = true, Inactivo = false
     },

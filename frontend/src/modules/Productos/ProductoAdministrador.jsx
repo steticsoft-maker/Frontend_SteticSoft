@@ -4,10 +4,9 @@ import "./ProductosAdministrador.css";
 
 const Productos = () => {
   const initialProductos = [
-<<<<<<< HEAD
     { id: 1, nombre: "Producto A", categoria: "Categoría 1", precio: 10000, stock: 50, estado: true, foto: null },
     { id: 2, nombre: "Producto B", categoria: "Categoría 2", precio: 20000, stock: 30, estado: false, foto: null },
-=======
+
     {
       id: 1,
       nombre: "Producto A",
@@ -26,7 +25,7 @@ const Productos = () => {
       estado: false,
       foto: null,
     },
->>>>>>> 590f49866d56d7036528c32361929a0a82a593b5
+
   ];
 
   const [productos, setProductos] = useState(initialProductos);
@@ -191,13 +190,12 @@ const Productos = () => {
             ) : (
               <>
                 <h2>
-<<<<<<< HEAD
+
                   {modalType === "create" ? "Agregar Producto" : "Editar Producto"}
-=======
+
                   {modalType === "create"
                     ? "Agregar Producto"
                     : "Editar Producto"}
->>>>>>> 590f49866d56d7036528c32361929a0a82a593b5
                 </h2>
                 <form
                   onSubmit={(e) => {
@@ -208,12 +206,10 @@ const Productos = () => {
                       categoria: formData.get("categoria"),
                       precio: parseFloat(formData.get("precio")),
                       stock: parseInt(formData.get("stock"), 10),
-<<<<<<< HEAD
                       estado: modalType === "create" ? true : currentProducto.estado,
-=======
+
                       estado:
                         modalType === "create" ? true : currentProducto.estado,
->>>>>>> 590f49866d56d7036528c32361929a0a82a593b5
                       foto: currentProducto?.foto || null,
                     };
                     handleSave(producto);
@@ -260,15 +256,9 @@ const Productos = () => {
                     onChange={handleFileUpload}
                   />
                   {currentProducto?.foto && (
-<<<<<<< HEAD
-                    <img src={currentProducto.foto} alt="Vista previa" width="100" />
-=======
-                    <img
-                      src={currentProducto.foto}
-                      alt="Vista previa"
-                      width="100"
-                    />
->>>>>>> 590f49866d56d7036528c32361929a0a82a593b5
+
+                    <><img src={currentProducto.foto} alt="Vista previa" width="100" /><img src={currentProducto.foto} alt="Vista previa" width="100" /></>
+
                   )}
                   <button type="submit" className="action-button">
                     Guardar
