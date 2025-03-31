@@ -80,6 +80,7 @@ const Ventas = () => {
           onChange={(e) => setBusqueda(e.target.value)}
           className="search-input"
         />
+        <button className="action-button">Agregar Venta</button>
         <table className="ventas-table">
           <thead>
             <tr>
