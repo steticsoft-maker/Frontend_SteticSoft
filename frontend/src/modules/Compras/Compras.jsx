@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBan, faFilePdf, faEye } from "@fortawesome/free-solid-svg-icons";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./Compras.css";
 
@@ -125,12 +127,16 @@ const Compras = () => {
                     <td className="acciones">
                       {compra.estado !== "Anulada" && (
                         <button className="btn danger" onClick={() => handleAnular(index)}>
-                          Anular
-                        </button>
-                      )}
-                      <button className="btn info" onClick={handleGenerarPDF}>PDF</button>
-                      <button className="btn info" onClick={() => handleShowDetails(compra)}>Detalles</button>
-                    </td>
+                          <FontAwesomeIcon icon={faBan} />
+                          </button>
+                        )}
+                        <button className="btn info" onClick={handleGenerarPDF}>
+                          <FontAwesomeIcon icon={faFilePdf} />
+                          </button>
+                          <button className="btn info" onClick={() => handleShowDetails(compra)}>
+                            <FontAwesomeIcon icon={faEye} />
+                            </button>
+                            </td>
                   </tr>
                 ))}
             </tbody>
