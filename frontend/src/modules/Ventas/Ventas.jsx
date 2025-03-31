@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import NavbarAdmin from "../../components/NavbarAdmin";
+import ProcesoVentas from "./ProcesoVentas"; // Componente de agregar ventas
 import "./Ventas.css";
+import "./ProcesoVentas.css";
 
 const Ventas = () => {
   const initialVentas = [
@@ -9,7 +11,7 @@ const Ventas = () => {
       fecha: "2025-03-28",
       cliente: "Juan Pérez",
       total: 50000,
-      estado: true, // True = Activa, False = Anulada
+      estado: true,
     },
     {
       id: 2,
@@ -26,10 +28,16 @@ const Ventas = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentVenta, setCurrentVenta] = useState(null);
   const [busqueda, setBusqueda] = useState("");
+  const [mostrarProcesoVentas, setMostrarProcesoVentas] = useState(false); // Maneja si se muestra el proceso de ventas
 
   useEffect(() => {
     localStorage.setItem("ventas", JSON.stringify(ventas));
   }, [ventas]);
+
+  const guardarVenta = (nuevaVenta) => {
+    setVentas([...ventas, nuevaVenta]); // Agregar la nueva venta al estado
+    setMostrarProcesoVentas(false); // Regresar a la tabla principal
+  };
 
   const openModal = (venta) => {
     setCurrentVenta(venta);
@@ -49,8 +57,7 @@ const Ventas = () => {
   };
 
   const handlePDF = (venta) => {
-    // Aquí puedes usar una librería como jsPDF para generar el PDF
-    alert(`Generar PDF para la venta de ${venta.cliente} con ID ${venta.id}.`);
+    alert(`Generar PDF para la venta de ${venta.cliente}.`);
   };
 
   const filteredVentas = ventas.filter((v) =>
@@ -73,69 +80,77 @@ const Ventas = () => {
       <NavbarAdmin />
       <div className="main-content">
         <h1>Gestión de Ventas</h1>
-        <input
-          type="text"
-          placeholder="Buscar venta por cliente..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="search-input"
-        />
-        <button className="action-button">Agregar Venta</button>
-        <table className="ventas-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Cliente</th>
-              <th>Total</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayedVentas.map((venta) => (
-              <tr key={venta.id}>
-                <td>{venta.fecha}</td>
-                <td>{venta.cliente}</td>
-                <td>{venta.total}</td>
-                <td>
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={venta.estado}
-                      onChange={() => toggleEstado(venta.id)}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                </td>
-                <td>
-                  <button
-                    className="table-button"
-                    onClick={() => openModal(venta)}
-                  >
-                    Detalles
-                  </button>
-                  <button
-                    className="table-button pdf-button"
-                    onClick={() => handlePDF(venta)}
-                  >
-                    PDF
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="pagination">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => changePage(index + 1)}
-              disabled={currentPage === index + 1}
-            >
-              {index + 1}
+        {mostrarProcesoVentas ? (
+          <ProcesoVentas guardarVenta={guardarVenta} />
+        ) : (
+          <>
+            <input
+              type="text"
+              placeholder="Buscar venta por cliente..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              className="search-input"
+            />
+            <button className="action-button" onClick={() => setMostrarProcesoVentas(true)}>
+              Agregar Venta
             </button>
-          ))}
-        </div>
+            <table className="ventas-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayedVentas.map((venta, index) => (
+                  <tr key={index}>
+                    <td>{venta.fecha}</td>
+                    <td>{venta.cliente}</td>
+                    <td>${venta.total.toFixed(2)}</td>
+                    <td>
+                      <label className="switch">
+                        <input
+                          type="checkbox"
+                          checked={venta.estado}
+                          onChange={() => toggleEstado(venta.id)}
+                        />
+                        <span className="slider"></span>
+                      </label>
+                    </td>
+                    <td>
+                      <button
+                        className="table-button"
+                        onClick={() => openModal(venta)}
+                      >
+                        Detalles
+                      </button>
+                      <button
+                        className="table-button pdf-button"
+                        onClick={() => handlePDF(venta)}
+                      >
+                        PDF
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="pagination">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => changePage(index + 1)}
+                  disabled={currentPage === index + 1}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       {showModal && currentVenta && (
         <div className="modal">
@@ -148,7 +163,7 @@ const Ventas = () => {
               <strong>Cliente:</strong> {currentVenta.cliente}
             </p>
             <p>
-              <strong>Total:</strong> {currentVenta.total}
+              <strong>Total:</strong> ${currentVenta.total.toFixed(2)}
             </p>
             <p>
               <strong>Estado:</strong>{" "}
