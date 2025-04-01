@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FaEye, FaFilePdf } from "react-icons/fa"; // Importar íconos
 import NavbarAdmin from "../../components/NavbarAdmin";
 import ProcesoVentas from "./ProcesoVentas"; // Componente de agregar ventas
 import "./Ventas.css";
@@ -91,7 +92,10 @@ const Ventas = () => {
               onChange={(e) => setBusqueda(e.target.value)}
               className="search-input"
             />
-            <button className="action-button" onClick={() => setMostrarProcesoVentas(true)}>
+            <button
+              className="action-button"
+              onClick={() => setMostrarProcesoVentas(true)}
+            >
               Agregar Venta
             </button>
             <table className="ventas-table">
@@ -125,13 +129,13 @@ const Ventas = () => {
                         className="table-button"
                         onClick={() => openModal(venta)}
                       >
-                        Detalles
+                        <FaEye /> {/* Ícono "Ver" */}
                       </button>
                       <button
                         className="table-button pdf-button"
                         onClick={() => handlePDF(venta)}
                       >
-                        PDF
+                        <FaFilePdf /> {/* Ícono "PDF" */}
                       </button>
                     </td>
                   </tr>

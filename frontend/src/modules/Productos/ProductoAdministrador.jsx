@@ -1,35 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa"; // Importar íconos
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./ProductosAdministrador.css";
 
 const Productos = () => {
   const initialProductos = [
-
     { id: 1, nombre: "Producto A", categoria: "Categoría 1", precio: 10000, stock: 50, estado: true, foto: null },
     { id: 2, nombre: "Producto B", categoria: "Categoría 2", precio: 20000, stock: 30, estado: false, foto: null },
-
-
-    {
-      id: 1,
-      nombre: "Producto A",
-      categoria: "Categoría 1",
-      precio: 10000,
-      stock: 50,
-      estado: true,
-      foto: null,
-    },
-    {
-      id: 2,
-      nombre: "Producto B",
-      categoria: "Categoría 2",
-      precio: 20000,
-      stock: 30,
-      estado: false,
-      foto: null,
-    },
-
-
-
   ];
 
   const [productos, setProductos] = useState(initialProductos);
@@ -141,20 +118,23 @@ const Productos = () => {
                   <button
                     className="table-button"
                     onClick={() => openModal("details", producto)}
+                    title="Ver"
                   >
-                    Ver
+                    <FaEye /> {/* Ícono de FontAwesome para "Ver" */}
                   </button>
                   <button
                     className="table-button"
                     onClick={() => openModal("edit", producto)}
+                    title="Editar"
                   >
-                    Editar
+                    <FaEdit /> {/* Ícono de FontAwesome para "Editar" */}
                   </button>
                   <button
                     className="table-button delete-button"
                     onClick={() => handleDelete(producto.id)}
+                    title="Eliminar"
                   >
-                    Eliminar
+                    <FaTrash /> {/* Ícono de FontAwesome para "Eliminar" */}
                   </button>
                 </td>
               </tr>
@@ -194,15 +174,7 @@ const Productos = () => {
             ) : (
               <>
                 <h2>
-
-
                   {modalType === "create" ? "Agregar Producto" : "Editar Producto"}
-
-
-
-                  {modalType === "create"
-                    ? "Agregar Producto"
-                    : "Editar Producto"}
                 </h2>
                 <form
                   onSubmit={(e) => {
@@ -213,11 +185,6 @@ const Productos = () => {
                       categoria: formData.get("categoria"),
                       precio: parseFloat(formData.get("precio")),
                       stock: parseInt(formData.get("stock"), 10),
-
-                      estado: modalType === "create" ? true : currentProducto.estado,
-
-
-
                       estado:
                         modalType === "create" ? true : currentProducto.estado,
                       foto: currentProducto?.foto || null,
@@ -266,13 +233,11 @@ const Productos = () => {
                     onChange={handleFileUpload}
                   />
                   {currentProducto?.foto && (
-
-
-                    <><><img src={currentProducto.foto} alt="Vista previa" width="100" /><img src={currentProducto.foto} alt="Vista previa" width="100" /></><img
-                        src={currentProducto.foto}
-                        alt="Vista previa"
-                        width="100" /></>
-
+                    <img
+                      src={currentProducto.foto}
+                      alt="Vista previa"
+                      width="100"
+                    />
                   )}
                   <button type="submit" className="action-button">
                     Guardar

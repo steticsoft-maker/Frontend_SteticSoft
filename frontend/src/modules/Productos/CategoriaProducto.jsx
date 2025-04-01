@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa"; // Importar íconos
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./CategoriaProducto.css";
 
@@ -22,7 +23,7 @@ const Categorias = () => {
 
   const [categorias, setCategorias] = useState(initialCategorias);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "edit" o "details"
+  const [modalType, setModalType] = useState(""); // "create", "edit", "details"
   const [currentCategoria, setCurrentCategoria] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [showProductos, setShowProductos] = useState(false); // Controla el botón desplegable
@@ -31,10 +32,10 @@ const Categorias = () => {
     localStorage.setItem("categorias", JSON.stringify(categorias));
   }, [categorias]);
 
-  const openModal = (type, categoria = null) => {
+  const openModal = (type) => {
     setModalType(type);
-    setCurrentCategoria(categoria);
     setShowModal(true);
+    if (type === "create") setCurrentCategoria(null); // Restablece el formulario para agregar categoría
   };
 
   const closeModal = () => {
@@ -45,7 +46,9 @@ const Categorias = () => {
   };
 
   const handleSave = (categoria) => {
-    if (modalType === "edit") {
+    if (modalType === "create") {
+      setCategorias([...categorias, { ...categoria, id: Date.now(), estado: true, productos: [] }]);
+    } else if (modalType === "edit") {
       const updatedCategorias = categorias.map((cat) =>
         cat.id === currentCategoria.id ? { ...currentCategoria, ...categoria } : cat
       );
@@ -114,20 +117,23 @@ const Categorias = () => {
                   <button
                     className="table-button"
                     onClick={() => openModal("details", categoria)}
+                    title="Ver"
                   >
-                    Ver
+                    <FaEye /> {/* Ícono de FontAwesome para "Ver" */}
                   </button>
                   <button
                     className="table-button"
                     onClick={() => openModal("edit", categoria)}
+                    title="Editar"
                   >
-                    Editar
+                    <FaEdit /> {/* Ícono de FontAwesome para "Editar" */}
                   </button>
                   <button
                     className="table-button delete-button"
                     onClick={() => handleDelete(categoria.id)}
+                    title="Eliminar"
                   >
-                    Eliminar
+                    <FaTrash /> {/* Ícono de FontAwesome para "Eliminar" */}
                   </button>
                 </td>
               </tr>
@@ -135,42 +141,12 @@ const Categorias = () => {
           </tbody>
         </table>
       </div>
-      {showModal && currentCategoria && (
+      {showModal && (
         <div className="modal">
           <div className="modal-content">
-            {modalType === "details" ? (
+            {modalType === "create" && (
               <>
-                <h2>Detalles de la Categoría</h2>
-                <p>
-                  <strong>Nombre:</strong> {currentCategoria.nombre}
-                </p>
-                <p>
-                  <strong>Descripción:</strong> {currentCategoria.descripcion}
-                </p>
-                <p>
-                  <strong>Estado:</strong>{" "}
-                  {currentCategoria.estado ? "Activa" : "Inactiva"}
-                </p>
-                <button
-                  className="action-button"
-                  onClick={() => setShowProductos(!showProductos)}
-                >
-                  {showProductos ? "Ocultar Productos" : "Mostrar Productos"}
-                </button>
-                {showProductos && (
-                  <ul className="productos-list">
-                    {currentCategoria.productos.map((producto, index) => (
-                      <li key={index}>{producto}</li>
-                    ))}
-                  </ul>
-                )}
-                <button className="close-button" onClick={closeModal}>
-                  Cerrar
-                </button>
-              </>
-            ) : (
-              <>
-                <h2>Editar Categoría</h2>
+                <h2>Agregar Categoría</h2>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -182,19 +158,8 @@ const Categorias = () => {
                     handleSave(categoria);
                   }}
                 >
-                  <input
-                    type="text"
-                    name="nombre"
-                    placeholder="Nombre"
-                    defaultValue={currentCategoria?.nombre || ""}
-                    required
-                  />
-                  <textarea
-                    name="descripcion"
-                    placeholder="Descripción"
-                    defaultValue={currentCategoria?.descripcion || ""}
-                    required
-                  />
+                  <input type="text" name="nombre" placeholder="Nombre" required />
+                  <textarea name="descripcion" placeholder="Descripción" required />
                   <div className="button-group">
                     <button type="submit" className="action-button">
                       Guardar

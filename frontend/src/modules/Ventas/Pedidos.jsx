@@ -1,36 +1,43 @@
 import React, { useState, useEffect } from "react";
+import { FaEye, FaTrash } from "react-icons/fa"; // Importar íconos
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./Pedidos.css";
 
 const Pedidos = () => {
   const initialPedidos = [
-    {
-      id: 1,
-      cliente: "Juan Pérez",
-      fecha: "2025-04-01",
-      total: 150000,
-      estado: true, // Activo = true, Cancelado = false
-      productos: ["Laptop", "Celular"],
-    },
-    {
-      id: 2,
-      cliente: "María Gómez",
-      fecha: "2025-03-30",
-      total: 80000,
-      estado: false,
-      productos: ["Sofá", "Mesa"],
-    },
+    { id: 1, cliente: "Cliente A", fecha: "2025-04-01", total: 50000, estado: true },
+    { id: 2, cliente: "Cliente B", fecha: "2025-04-02", total: 75000, estado: false },
+  ];
+
+  const initialProductos = [
+    { id: 1, nombre: "Producto A", precio: 10000 },
+    { id: 2, nombre: "Producto B", precio: 20000 },
+    { id: 3, nombre: "Producto C", precio: 15000 },
   ];
 
   const [pedidos, setPedidos] = useState(initialPedidos);
+  const [productos] = useState(initialProductos);
+  const [selectedProductos, setSelectedProductos] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "edit" o "details"
+  const [modalType, setModalType] = useState(""); // "create", "details"
   const [currentPedido, setCurrentPedido] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     localStorage.setItem("pedidos", JSON.stringify(pedidos));
   }, [pedidos]);
+
+  const handleSave = (pedido) => {
+    if (modalType === "create") {
+      const total = selectedProductos.reduce((acc, prod) => acc + prod.precio, 0);
+      setPedidos([
+        ...pedidos,
+        { ...pedido, id: Date.now(), total, productos: selectedProductos },
+      ]);
+    }
+    setSelectedProductos([]);
+    closeModal();
+  };
 
   const openModal = (type, pedido = null) => {
     setModalType(type);
@@ -42,14 +49,6 @@ const Pedidos = () => {
     setShowModal(false);
     setModalType("");
     setCurrentPedido(null);
-  };
-
-  const handleSave = (pedido) => {
-    const updatedPedidos = pedidos.map((p) =>
-      p.id === currentPedido.id ? { ...currentPedido, ...pedido } : p
-    );
-    setPedidos(updatedPedidos);
-    closeModal();
   };
 
   const handleDelete = (id) => {
@@ -65,8 +64,20 @@ const Pedidos = () => {
     setPedidos(updatedPedidos);
   };
 
-  const filteredPedidos = pedidos.filter((p) =>
-    p.cliente.toLowerCase().includes(busqueda.toLowerCase())
+  const handleProductSelect = (id) => {
+    const product = productos.find((p) => p.id === id);
+    if (!selectedProductos.includes(product)) {
+      setSelectedProductos([...selectedProductos, product]);
+    }
+  };
+
+  const handleProductRemove = (id) => {
+    setSelectedProductos(selectedProductos.filter((p) => p.id !== id));
+  };
+
+  // Filtrar pedidos según la búsqueda
+  const filteredPedidos = pedidos.filter((pedido) =>
+    pedido.cliente.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -76,11 +87,14 @@ const Pedidos = () => {
         <h1>Gestión de Pedidos</h1>
         <input
           type="text"
-          placeholder="Buscar pedido por cliente..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar por cliente..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="search-input"
         />
+        <button className="action-button" onClick={() => openModal("create")}>
+          Agregar Pedido
+        </button>
         <table className="pedidos-table">
           <thead>
             <tr>
@@ -112,19 +126,13 @@ const Pedidos = () => {
                     className="table-button"
                     onClick={() => openModal("details", pedido)}
                   >
-                    Ver
-                  </button>
-                  <button
-                    className="table-button"
-                    onClick={() => openModal("edit", pedido)}
-                  >
-                    Editar
+                    <FaEye /> {/* Ícono para "Ver" */}
                   </button>
                   <button
                     className="table-button delete-button"
                     onClick={() => handleDelete(pedido.id)}
                   >
-                    Eliminar
+                    <FaTrash /> {/* Ícono para "Eliminar" */}
                   </button>
                 </td>
               </tr>
@@ -132,10 +140,10 @@ const Pedidos = () => {
           </tbody>
         </table>
       </div>
-      {showModal && currentPedido && (
+      {showModal && (
         <div className="modal">
           <div className="modal-content">
-            {modalType === "details" ? (
+            {modalType === "details" && currentPedido ? (
               <>
                 <h2>Detalles del Pedido</h2>
                 <p>
@@ -149,23 +157,15 @@ const Pedidos = () => {
                 </p>
                 <p>
                   <strong>Estado:</strong>{" "}
-                  {currentPedido.estado ? "Activo" : "Cancelado"}
+                  {currentPedido.estado ? "Activo" : "Inactivo"}
                 </p>
-                <p>
-                  <strong>Productos:</strong>
-                </p>
-                <ul className="productos-list">
-                  {currentPedido.productos.map((producto, index) => (
-                    <li key={index}>{producto}</li>
-                  ))}
-                </ul>
                 <button className="close-button" onClick={closeModal}>
                   Cerrar
                 </button>
               </>
             ) : (
               <>
-                <h2>Editar Pedido</h2>
+                <h2>Agregar Pedido</h2>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -173,39 +173,42 @@ const Pedidos = () => {
                     const pedido = {
                       cliente: formData.get("cliente"),
                       fecha: formData.get("fecha"),
-                      total: parseFloat(formData.get("total")),
+                      estado: true,
                     };
                     handleSave(pedido);
                   }}
                 >
-                  <input
-                    type="text"
-                    name="cliente"
-                    placeholder="Cliente"
-                    defaultValue={currentPedido?.cliente || ""}
-                    required
-                  />
-                  <input
-                    type="date"
-                    name="fecha"
-                    defaultValue={currentPedido?.fecha || ""}
-                    required
-                  />
-                  <input
-                    type="number"
-                    name="total"
-                    placeholder="Total"
-                    defaultValue={currentPedido?.total || ""}
-                    required
-                  />
-                  <div className="button-group">
-                    <button type="submit" className="action-button">
-                      Guardar
-                    </button>
-                    <button className="close-button" onClick={closeModal}>
-                      Cancelar
-                    </button>
-                  </div>
+                  <input type="text" name="cliente" placeholder="Cliente" required />
+                  <input type="date" name="fecha" required />
+                  <h3>Productos</h3>
+                  <select
+                    onChange={(e) =>
+                      handleProductSelect(parseInt(e.target.value, 10))
+                    }
+                  >
+                    <option value="">Seleccionar producto</option>
+                    {productos.map((producto) => (
+                      <option key={producto.id} value={producto.id}>
+                        {producto.nombre} - ${producto.precio}
+                      </option>
+                    ))}
+                  </select>
+                  <ul>
+                    {selectedProductos.map((producto) => (
+                      <li key={producto.id}>
+                        {producto.nombre} - ${producto.precio}{" "}
+                        <button onClick={() => handleProductRemove(producto.id)}>
+                          Eliminar
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <button type="submit" className="action-button">
+                    Guardar
+                  </button>
+                  <button className="close-button" onClick={closeModal}>
+                    Cancelar
+                  </button>
                 </form>
               </>
             )}

@@ -25,7 +25,7 @@ const Clientes = () => {
 
   const [clientes, setClientes] = useState(initialClientes);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "edit" o "details"
+  const [modalType, setModalType] = useState(""); // "edit", "details" o "create"
   const [currentCliente, setCurrentCliente] = useState(null);
   const [busqueda, setBusqueda] = useState("");
 
@@ -46,10 +46,14 @@ const Clientes = () => {
   };
 
   const handleSave = (cliente) => {
-    const updatedClientes = clientes.map((c) =>
-      c.id === currentCliente.id ? { ...currentCliente, ...cliente } : c
-    );
-    setClientes(updatedClientes);
+    if (modalType === "create") {
+      setClientes([...clientes, { ...cliente, id: Date.now(), estado: true }]);
+    } else {
+      const updatedClientes = clientes.map((c) =>
+        c.id === currentCliente.id ? { ...currentCliente, ...cliente } : c
+      );
+      setClientes(updatedClientes);
+    }
     closeModal();
   };
 
@@ -82,6 +86,9 @@ const Clientes = () => {
           onChange={(e) => setBusqueda(e.target.value)}
           className="search-input"
         />
+        <button className="action-button" onClick={() => openModal("create")}>
+          Agregar Cliente
+        </button>
         <table className="clientes-table">
           <thead>
             <tr>
@@ -114,20 +121,23 @@ const Clientes = () => {
                   <button
                     className="table-button"
                     onClick={() => openModal("details", cliente)}
+                    title="Ver"
                   >
-                    <FaEye /> Ver
+                    <FaEye /> {/* Ícono de FontAwesome para "Ver" */}
                   </button>
                   <button
                     className="table-button"
                     onClick={() => openModal("edit", cliente)}
+                    title="Editar"
                   >
-                    <FaEdit /> Editar
+                    <FaEdit /> {/* Ícono de FontAwesome para "Editar" */}
                   </button>
                   <button
                     className="table-button delete-button"
                     onClick={() => handleDelete(cliente.id)}
+                    title="Eliminar"
                   >
-                    <FaTrash /> Eliminar
+                    <FaTrash /> {/* Ícono de FontAwesome para "Eliminar" */}
                   </button>
                 </td>
               </tr>
@@ -135,10 +145,10 @@ const Clientes = () => {
           </tbody>
         </table>
       </div>
-      {showModal && currentCliente && (
+      {showModal && (
         <div className="modal">
           <div className="modal-content">
-            {modalType === "details" ? (
+            {modalType === "details" && currentCliente ? (
               <>
                 <h2>Detalles del Cliente</h2>
                 <p>
@@ -160,6 +170,34 @@ const Clientes = () => {
                 <button className="close-button" onClick={closeModal}>
                   Cerrar
                 </button>
+              </>
+            ) : modalType === "create" ? (
+              <>
+                <h2>Agregar Cliente</h2>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const cliente = {
+                      nombre: formData.get("nombre"),
+                      email: formData.get("email"),
+                      telefono: formData.get("telefono"),
+                      direccion: formData.get("direccion"),
+                    };
+                    handleSave(cliente);
+                  }}
+                >
+                  <input type="text" name="nombre" placeholder="Nombre" required />
+                  <input type="email" name="email" placeholder="Email" required />
+                  <input type="text" name="telefono" placeholder="Teléfono" required />
+                  <input type="text" name="direccion" placeholder="Dirección" required />
+                  <button type="submit" className="action-button">
+                    Guardar
+                  </button>
+                  <button className="close-button" onClick={closeModal}>
+                    Cancelar
+                  </button>
+                </form>
               </>
             ) : (
               <>
@@ -189,22 +227,19 @@ const Clientes = () => {
                     name="email"
                     placeholder="Email"
                     defaultValue={currentCliente?.email || ""}
-                    required
-                  />
+                    required />
                   <input
                     type="text"
                     name="telefono"
                     placeholder="Teléfono"
                     defaultValue={currentCliente?.telefono || ""}
-                    required
-                  />
+                    required />
                   <input
                     type="text"
                     name="direccion"
                     placeholder="Dirección"
                     defaultValue={currentCliente?.direccion || ""}
-                    required
-                  />
+                    required />
                   <button type="submit" className="action-button">
                     Guardar
                   </button>
