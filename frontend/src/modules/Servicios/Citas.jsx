@@ -13,6 +13,10 @@ function Citas() {
     titulo: "",
     fecha: "",
     hora: "",
+    cliente: "",
+    empleado: "",
+    estado: "Activo",
+    servicio: "",
   });
 
   // Abre el modal al hacer clic en una fecha
@@ -32,10 +36,14 @@ function Citas() {
     const evento = {
       title: nuevaCita.titulo,
       start: `${nuevaCita.fecha}T${nuevaCita.hora}`,
+      cliente: nuevaCita.cliente,
+      empleado: nuevaCita.empleado,
+      estado: nuevaCita.estado,
+      servicio: nuevaCita.servicio,
     };
     setEventos([...eventos, evento]);
     setMostrarModal(false);
-    setNuevaCita({ titulo: "", fecha: "", hora: "" });
+    setNuevaCita({ titulo: "", fecha: "", hora: "", cliente: "", empleado: "", estado: "Activo", servicio: "" });
   };
 
   return (
@@ -45,7 +53,7 @@ function Citas() {
         <h1>Calendario de Citas</h1>
         <p>Seleccione una fecha para agendar una cita.</p>
 
-        {/* Calendario reducido */}
+        {/* Calendario amplio */}
         <div className="calendar-wrapper">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -79,6 +87,44 @@ function Citas() {
                   value={nuevaCita.hora}
                   onChange={manejarCambio}
                 />
+              </label>
+              <label>
+                Cliente:
+                <input
+                  type="text"
+                  name="cliente"
+                  value={nuevaCita.cliente}
+                  onChange={manejarCambio}
+                />
+              </label>
+              <label>
+                Empleado:
+                <input
+                  type="text"
+                  name="empleado"
+                  value={nuevaCita.empleado}
+                  onChange={manejarCambio}
+                />
+              </label>
+              <label>
+                Servicio:
+                <input
+                  type="text"
+                  name="servicio"
+                  value={nuevaCita.servicio}
+                  onChange={manejarCambio}
+                />
+              </label>
+              <label>
+                Estado:
+                <select
+                  name="estado"
+                  value={nuevaCita.estado}
+                  onChange={manejarCambio}
+                >
+                  <option value="Activo">Activo</option>
+                  <option value="Cancelado">Cancelado</option>
+                </select>
               </label>
               <div className="modal-buttons">
                 <button onClick={guardarCita}>Guardar</button>
