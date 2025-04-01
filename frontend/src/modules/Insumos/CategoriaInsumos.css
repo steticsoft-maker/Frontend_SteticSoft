@@ -9,7 +9,7 @@
 /* Contenido principal */
 
 .categorias-content {
-    padding: 30px;
+    padding: 50px;
 }
 
 
@@ -17,7 +17,7 @@
 
 .search-bar input {
     margin-bottom: 20px;
-    padding: 12px;
+    padding: 15px;
     width: 100%;
     font-size: 1rem;
     border: 1px solid #ccc;
