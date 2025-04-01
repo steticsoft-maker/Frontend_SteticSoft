@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import NavbarAdmin from "../../components/NavbarAdmin"; // Invoca el NavbarAdmin
+import NavbarAdmin from "../../components/NavbarAdmin"; // Invocar el NavbarAdmin
 import "./Citas.css";
 
 function Citas() {
@@ -15,13 +15,13 @@ function Citas() {
     hora: "",
   });
 
-  // Maneja clic en fechas para abrir el modal
+  // Abre el modal al hacer clic en una fecha
   const manejarClicFecha = (seleccion) => {
     setNuevaCita({ ...nuevaCita, fecha: seleccion.dateStr });
     setMostrarModal(true);
   };
 
-  // Maneja cambios en el formulario del modal
+  // Maneja los cambios en el formulario del modal
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setNuevaCita({ ...nuevaCita, [name]: value });
@@ -33,27 +33,29 @@ function Citas() {
       title: nuevaCita.titulo,
       start: `${nuevaCita.fecha}T${nuevaCita.hora}`,
     };
-    setEventos([...eventos, evento]); // Agregar nueva cita
-    setMostrarModal(false); // Cierra el modal
-    setNuevaCita({ titulo: "", fecha: "", hora: "" }); // Limpia el formulario
+    setEventos([...eventos, evento]);
+    setMostrarModal(false);
+    setNuevaCita({ titulo: "", fecha: "", hora: "" });
   };
 
   return (
     <div className="citas-container">
       <NavbarAdmin /> {/* Incluye el navbar */}
       <div className="main-content">
-        <h1>Citas</h1>
-        <p>Bienvenido al Dashboard de Administración.</p>
+        <h1>Calendario de Citas</h1>
+        <p>Seleccione una fecha para agendar una cita.</p>
 
-        {/* Calendario */}
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          events={eventos} // Mostrar eventos agendados
-          dateClick={manejarClicFecha} // Manejar clic en fechas
-          selectable={true}
-          editable={true}
-        />
+        {/* Calendario reducido */}
+        <div className="calendar-wrapper">
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            initialView="dayGridMonth"
+            events={eventos} // Mostrar eventos agendados
+            dateClick={manejarClicFecha} // Manejar clic en fechas
+            selectable={true}
+            editable={true}
+          />
+        </div>
 
         {/* Modal para agendar cita */}
         {mostrarModal && (

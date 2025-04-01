@@ -59,6 +59,7 @@ function AppRouter() {
         <Route path="/citas" element={<PrivateRoute><Citas /></PrivateRoute>} />
         <Route path="/pedidos" element={<PrivateRoute><Pedidos /></PrivateRoute>} />
         <Route path="/procesoventas" element={<PrivateRoute><ProcesoVentas /></PrivateRoute>} />
+        <Route path="/citas" element={<PrivateRoute><Citas /></PrivateRoute>} />
 
       </Routes>
     </Router>
