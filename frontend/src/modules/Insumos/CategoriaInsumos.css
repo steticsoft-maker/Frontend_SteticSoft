@@ -1,24 +1,23 @@
 /* Contenedor general */
+
 .categorias-container {
     display: flex;
-    height: 100vh;
+    height: 100%;
 }
+
 
 /* Contenido principal */
+
 .categorias-content {
-    flex: 1;
-    padding: 30px;
-    margin-left: 45px;
-    background-color: #f9f9f9;
-    overflow-y: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 50px;
 }
 
+
 /* Barra de búsqueda */
+
 .search-bar input {
     margin-bottom: 20px;
-    padding: 12px;
+    padding: 15px;
     width: 100%;
     font-size: 1rem;
     border: 1px solid #ccc;
@@ -27,7 +26,9 @@
     color: black;
 }
 
+
 /* Botón principal */
+
 .btn {
     padding: 10px 20px;
     font-size: 1rem;
@@ -82,7 +83,9 @@
     background-color: #5a6268;
 }
 
+
 /* Tabla de categorías */
+
 .categorias-table {
     width: 100%;
     border-collapse: collapse;
@@ -113,7 +116,9 @@
     color: #dc3545;
 }
 
+
 /* Modal */
+
 .modal {
     position: fixed;
     top: 0;
@@ -136,12 +141,16 @@
     max-width: 500px;
 }
 
+
 /* Botones en el modal */
+
 .modal-content .btn {
     margin: 10px 5px;
 }
 
+
 /* Encabezados */
+
 h2.title-h2 {
     font-size: 1.5rem;
     color: #34495e;
@@ -149,7 +158,9 @@ h2.title-h2 {
     font-weight: bold;
 }
 
+
 /* Área de texto */
+
 textarea {
     width: 100%;
     min-height: 80px;
@@ -162,7 +173,9 @@ textarea {
     color: black;
 }
 
+
 /* Efectos al texto */
+
 .text-bold {
     font-weight: bold;
     color: #333;
