@@ -2,14 +2,48 @@ import React, { useState } from "react";
 import "./ProcesoVentas.css";
 
 const ProcesoVentas = ({ guardarVenta }) => {
+  // Clientes de ejemplo
   const clientesFalsos = [
-    { id: 1, nombre: "Juan Pérez", documento: "123456789", telefono: "3001234567", direccion: "Calle 1" },
-    { id: 2, nombre: "María Gómez", documento: "987654321", telefono: "3019876543", direccion: "Carrera 2" },
-    { id: 3, nombre: "Luis Martínez", documento: "1122334455", telefono: "3021122334", direccion: "Avenida 3" },
+    {
+      id: 1,
+      nombre: "Juan Pérez",
+      documento: "123456789",
+      telefono: "3001234567",
+      direccion: "Calle 1",
+    },
+    {
+      id: 2,
+      nombre: "María Gómez",
+      documento: "987654321",
+      telefono: "3019876543",
+      direccion: "Carrera 2",
+    },
+    {
+      id: 3,
+      nombre: "Luis Martínez",
+      documento: "1122334455",
+      telefono: "3021122334",
+      direccion: "Avenida 3",
+    },
   ];
 
+  // Productos de ejemplo
+  const catalogoProductos = [
+    { id: 1, nombre: "Producto A", precio: 10000 },
+    { id: 2, nombre: "Producto B", precio: 20000 },
+    { id: 3, nombre: "Producto C", precio: 15000 },
+  ];
+
+  // Servicios de ejemplo
+  const catalogoServicios = [
+    { id: 1, nombre: "Servicio A", precio: 50000 },
+    { id: 2, nombre: "Servicio B", precio: 75000 },
+    { id: 3, nombre: "Servicio C", precio: 60000 },
+  ];
+
+  // Estados de componentes
   const [modoCita, setModoCita] = useState(""); // "directa" o "indirecta"
-  const [mostrarClientes, setMostrarClientes] = useState(false); // Controla si se muestra el menú de clientes
+  const [mostrarClientes, setMostrarClientes] = useState(false);
   const [datosCliente, setDatosCliente] = useState({
     nombre: "",
     documento: "",
@@ -18,23 +52,29 @@ const ProcesoVentas = ({ guardarVenta }) => {
   });
 
   const [itemsTabla, setItemsTabla] = useState([]);
-  const [mostrarCatalogoProductos, setMostrarCatalogoProductos] = useState(false);
-  const [mostrarCatalogoServicios, setMostrarCatalogoServicios] = useState(false);
+  const [mostrarCatalogoProductos, setMostrarCatalogoProductos] =
+    useState(false);
+  const [mostrarCatalogoServicios, setMostrarCatalogoServicios] =
+    useState(false);
 
+  // Seleccionar cliente
   const seleccionarCliente = (cliente) => {
     setDatosCliente(cliente); // Llena automáticamente los campos con los datos del cliente
     setMostrarClientes(false);
   };
 
+  // Agregar un producto o servicio a la tabla
   const agregarItemATabla = (item) => {
     const nuevoItem = { ...item, cantidad: 1 };
     setItemsTabla([...itemsTabla, nuevoItem]);
   };
 
+  // Eliminar un producto o servicio de la tabla
   const eliminarItemDeTabla = (index) => {
     setItemsTabla(itemsTabla.filter((_, i) => i !== index));
   };
 
+  // Actualizar la cantidad de un producto o servicio en la tabla
   const actualizarCantidad = (index, nuevaCantidad) => {
     const nuevaTabla = itemsTabla.map((item, i) =>
       i === index ? { ...item, cantidad: nuevaCantidad } : item
@@ -42,10 +82,15 @@ const ProcesoVentas = ({ guardarVenta }) => {
     setItemsTabla(nuevaTabla);
   };
 
-  const subtotal = itemsTabla.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+  // Cálculos para resumen
+  const subtotal = itemsTabla.reduce(
+    (acc, item) => acc + item.precio * item.cantidad,
+    0
+  );
   const iva = subtotal * 0.19; // IVA del 19%
   const total = subtotal + iva;
 
+  // Guardar nueva venta
   const guardarNuevaVenta = () => {
     const nuevaVenta = {
       cliente: datosCliente.nombre || "Cliente Anónimo",
@@ -59,7 +104,7 @@ const ProcesoVentas = ({ guardarVenta }) => {
       fecha: new Date().toISOString().slice(0, 10), // Fecha actual en formato YYYY-MM-DD
     };
 
-    guardarVenta(nuevaVenta); // Llama al callback para enviar la venta al componente principal
+    guardarVenta(nuevaVenta); // Callback para enviar la venta al componente principal
     setDatosCliente({ nombre: "", documento: "", telefono: "", direccion: "" });
     setItemsTabla([]);
     alert("¡Venta guardada exitosamente!");
@@ -79,7 +124,9 @@ const ProcesoVentas = ({ guardarVenta }) => {
           Cita Directa
         </button>
         <button
-          className={`indirecta-button ${modoCita === "indirecta" ? "activo" : ""}`}
+          className={`indirecta-button ${
+            modoCita === "indirecta" ? "activo" : ""
+          }`}
           onClick={() => setModoCita("indirecta")}
         >
           Cita Indirecta
@@ -94,25 +141,36 @@ const ProcesoVentas = ({ guardarVenta }) => {
             {clientesFalsos.map((cliente) => (
               <li key={cliente.id}>
                 {cliente.nombre} - {cliente.documento}
-                <button onClick={() => seleccionarCliente(cliente)}>Seleccionar</button>
+                <button onClick={() => seleccionarCliente(cliente)}>
+                  Seleccionar
+                </button>
               </li>
             ))}
           </ul>
-          <button className="cerrar-button" onClick={() => setMostrarClientes(false)}>
+          <button
+            className="cerrar-button"
+            onClick={() => setMostrarClientes(false)}
+          >
             Cerrar
           </button>
         </div>
       )}
 
       {/* Campos de Cliente */}
-      <div className={`datos-cliente ${modoCita === "indirecta" ? "" : "bloqueado"}`}>
+      <div
+        className={`datos-cliente ${
+          modoCita === "indirecta" ? "" : "bloqueado"
+        }`}
+      >
         <h3>Información del Cliente</h3>
         <label>
           Nombre:
           <input
             type="text"
             value={datosCliente.nombre}
-            onChange={(e) => setDatosCliente({ ...datosCliente, nombre: e.target.value })}
+            onChange={(e) =>
+              setDatosCliente({ ...datosCliente, nombre: e.target.value })
+            }
             disabled={modoCita !== "indirecta"}
           />
         </label>
@@ -121,7 +179,9 @@ const ProcesoVentas = ({ guardarVenta }) => {
           <input
             type="text"
             value={datosCliente.documento}
-            onChange={(e) => setDatosCliente({ ...datosCliente, documento: e.target.value })}
+            onChange={(e) =>
+              setDatosCliente({ ...datosCliente, documento: e.target.value })
+            }
             disabled={modoCita !== "indirecta"}
           />
         </label>
@@ -130,7 +190,9 @@ const ProcesoVentas = ({ guardarVenta }) => {
           <input
             type="text"
             value={datosCliente.telefono}
-            onChange={(e) => setDatosCliente({ ...datosCliente, telefono: e.target.value })}
+            onChange={(e) =>
+              setDatosCliente({ ...datosCliente, telefono: e.target.value })
+            }
             disabled={modoCita !== "indirecta"}
           />
         </label>
@@ -139,7 +201,9 @@ const ProcesoVentas = ({ guardarVenta }) => {
           <input
             type="text"
             value={datosCliente.direccion}
-            onChange={(e) => setDatosCliente({ ...datosCliente, direccion: e.target.value })}
+            onChange={(e) =>
+              setDatosCliente({ ...datosCliente, direccion: e.target.value })
+            }
             disabled={modoCita !== "indirecta"}
           />
         </label>
@@ -167,7 +231,9 @@ const ProcesoVentas = ({ guardarVenta }) => {
             {catalogoProductos.map((producto) => (
               <li key={producto.id}>
                 {producto.nombre} - ${producto.precio}
-                <button onClick={() => agregarItemATabla(producto)}>Agregar</button>
+                <button onClick={() => agregarItemATabla(producto)}>
+                  Agregar
+                </button>
               </li>
             ))}
           </ul>
@@ -188,7 +254,9 @@ const ProcesoVentas = ({ guardarVenta }) => {
             {catalogoServicios.map((servicio) => (
               <li key={servicio.id}>
                 {servicio.nombre} - ${servicio.precio}
-                <button onClick={() => agregarItemATabla(servicio)}>Agregar</button>
+                <button onClick={() => agregarItemATabla(servicio)}>
+                  Agregar
+                </button>
               </li>
             ))}
           </ul>
@@ -227,7 +295,9 @@ const ProcesoVentas = ({ guardarVenta }) => {
               </td>
               <td>${item.precio}</td>
               <td>
-                <button onClick={() => eliminarItemDeTabla(index)}>Eliminar</button>
+                <button onClick={() => eliminarItemDeTabla(index)}>
+                  Eliminar
+                </button>
               </td>
             </tr>
           ))}
@@ -236,9 +306,15 @@ const ProcesoVentas = ({ guardarVenta }) => {
 
       {/* Resumen de la venta */}
       <div className="resumen-venta">
-        <p><strong>Subtotal:</strong> ${subtotal.toFixed(2)}</p>
-        <p><strong>IVA (19%):</strong> ${iva.toFixed(2)}</p>
-        <p><strong>Total:</strong> ${total.toFixed(2)}</p>
+        <p>
+          <strong>Subtotal:</strong> ${subtotal.toFixed(2)}
+        </p>
+        <p>
+          <strong>IVA (19%):</strong> ${iva.toFixed(2)}
+        </p>
+        <p>
+          <strong>Total:</strong> ${total.toFixed(2)}
+        </p>
       </div>
 
       {/* Botón para guardar venta */}
