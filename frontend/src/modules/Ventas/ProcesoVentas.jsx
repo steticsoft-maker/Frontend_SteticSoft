@@ -59,7 +59,7 @@ const ProcesoVentas = ({ guardarVenta }) => {
 
   // Seleccionar cliente
   const seleccionarCliente = (cliente) => {
-    setDatosCliente(cliente); // Llena automáticamente los campos con los datos del cliente
+    setDatosCliente(cliente);
     setMostrarClientes(false);
   };
 
@@ -104,7 +104,7 @@ const ProcesoVentas = ({ guardarVenta }) => {
       fecha: new Date().toISOString().slice(0, 10), // Fecha actual en formato YYYY-MM-DD
     };
 
-    guardarVenta(nuevaVenta); // Callback para enviar la venta al componente principal
+    guardarVenta(nuevaVenta);
     setDatosCliente({ nombre: "", documento: "", telefono: "", direccion: "" });
     setItemsTabla([]);
     alert("¡Venta guardada exitosamente!");
@@ -133,7 +133,6 @@ const ProcesoVentas = ({ guardarVenta }) => {
         </button>
       </div>
 
-      {/* Ventana emergente para clientes en Cita Directa */}
       {mostrarClientes && (
         <div className="clientes-emergente">
           <h3>Seleccionar Cliente</h3>
@@ -156,7 +155,6 @@ const ProcesoVentas = ({ guardarVenta }) => {
         </div>
       )}
 
-      {/* Campos de Cliente */}
       <div
         className={`datos-cliente ${
           modoCita === "indirecta" ? "" : "bloqueado"
@@ -175,7 +173,7 @@ const ProcesoVentas = ({ guardarVenta }) => {
           />
         </label>
         <label>
-          Número de Documento:
+          Documento:
           <input
             type="text"
             value={datosCliente.documento}
@@ -208,8 +206,6 @@ const ProcesoVentas = ({ guardarVenta }) => {
           />
         </label>
       </div>
-
-      {/* Botones para abrir catálogos */}
       <button
         className="catalogo-button"
         onClick={() => setMostrarCatalogoProductos(true)}
@@ -223,7 +219,6 @@ const ProcesoVentas = ({ guardarVenta }) => {
         Agregar Servicio
       </button>
 
-      {/* Catálogo de productos */}
       {mostrarCatalogoProductos && (
         <div className="catalogo-emergente">
           <h3>Catálogo de Productos</h3>
@@ -231,7 +226,15 @@ const ProcesoVentas = ({ guardarVenta }) => {
             {catalogoProductos.map((producto) => (
               <li key={producto.id}>
                 {producto.nombre} - ${producto.precio}
-                <button onClick={() => agregarItemATabla(producto)}>
+                <button
+                  onClick={() =>
+                    agregarItemATabla({
+                      ...producto,
+                      estado:
+                        producto.estado !== undefined ? producto.estado : true, // Evita duplicados
+                    })
+                  }
+                >
                   Agregar
                 </button>
               </li>
@@ -246,7 +249,6 @@ const ProcesoVentas = ({ guardarVenta }) => {
         </div>
       )}
 
-      {/* Catálogo de servicios */}
       {mostrarCatalogoServicios && (
         <div className="catalogo-emergente">
           <h3>Catálogo de Servicios</h3>
@@ -254,7 +256,15 @@ const ProcesoVentas = ({ guardarVenta }) => {
             {catalogoServicios.map((servicio) => (
               <li key={servicio.id}>
                 {servicio.nombre} - ${servicio.precio}
-                <button onClick={() => agregarItemATabla(servicio)}>
+                <button
+                  onClick={() =>
+                    agregarItemATabla({
+                      ...servicio,
+                      estado:
+                        servicio.estado !== undefined ? servicio.estado : true, // Evita duplicados
+                    })
+                  }
+                >
                   Agregar
                 </button>
               </li>
@@ -269,7 +279,6 @@ const ProcesoVentas = ({ guardarVenta }) => {
         </div>
       )}
 
-      {/* Tabla de productos/servicios */}
       <table className="tabla-items">
         <thead>
           <tr>
