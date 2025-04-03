@@ -138,18 +138,6 @@ const NavbarAdmin = () => {
               Proveedores
             </button>
             <button
-              onClick={() => navigate("/insumos")}
-              className="nested-link"
-            >
-              Insumos
-            </button>
-            <button
-              onClick={() => navigate("/categoriainsumos")}
-              className="nested-link"
-            >
-              Categoría Insumos
-            </button>
-            <button
               onClick={() => navigate("/abastecimiento")}
               className="nested-link"
             >
