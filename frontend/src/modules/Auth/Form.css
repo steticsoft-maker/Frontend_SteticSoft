@@ -4,28 +4,20 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    /* Ocupa todo el alto de la página */
     width: 100vw;
-    /* Asegura que ocupe todo el ancho */
     background-color: rgb(245, 245, 245);
-    /* Fondo cálido */
     margin: 0;
-    /* Elimina cualquier margen externo */
 }
 
 /* Caja del formulario */
 .form-box {
     background-color: #fff;
-    /* Fondo del formulario */
-    padding: 50px;
+    padding: 40px;
+    /* Reducido para acercar todos los elementos */
     border-radius: 15px;
-    /* Bordes suaves */
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-    /* Sombra elegante */
     width: 100%;
-    /* Ancho completo disponible */
     max-width: 600px;
-    /* Máximo ancho del formulario */
     text-align: center;
 }
 
@@ -33,22 +25,26 @@
 .form-title {
     font-size: 2.5rem;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    /* Reducido para acercar al siguiente elemento */
 }
 
 /* Contenido del formulario */
 .form-content {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
+    /* Reducido para acercar los campos entre sí */
 }
 
 /* Inputs del formulario */
 .form-input {
-    padding: 15px;
+    padding: 10px;
+    /* Reducido para un diseño más compacto */
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    /* Ligero ajuste en el tamaño */
     color: #333;
     background-color: #f9f9f9;
 }
@@ -58,12 +54,36 @@
     border-color: #ff7f50;
 }
 
+/* Checkbox dentro del formulario */
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    /* Espaciado más compacto entre el checkbox y la etiqueta */
+    margin: 10px 0;
+    /* Reducido para acercar el checkbox */
+}
+
+.form-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.form-checkbox label {
+    font-size: 1rem;
+    color: #333;
+    font-weight: normal;
+}
+
 /* Botón principal */
 .primary-button {
     background-color: #ff7f50;
     color: white;
     border: none;
-    padding: 15px;
+    padding: 12px;
+    /* Reducido para compacidad */
     border-radius: 10px;
     font-size: 1.2rem;
     cursor: pointer;
@@ -79,7 +99,8 @@
     background-color: #ddd;
     color: #333;
     border: none;
-    padding: 12px 20px;
+    padding: 10px 20px;
+    /* Ajustado para consistencia */
     border-radius: 10px;
     font-size: 1rem;
     cursor: pointer;
@@ -92,33 +113,8 @@
 
 /* Acciones del formulario */
 .form-actions {
-    margin-top: 30px;
+    margin-top: 20px;
+    /* Reducido para acercar los botones */
     display: flex;
     justify-content: space-around;
-}
-
-/* Checkbox dentro del formulario */
-.form-checkbox {
-    display: flex;
-    /* Posición en línea */
-    align-items: center;
-    /* Alinea verticalmente con el texto */
-    justify-content: flex-start;
-    /* Ajusta la posición al lado izquierdo */
-    gap: 10px;
-    /* Espacio entre el checkbox y el texto */
-    margin: 15px 0;
-    /* Separación entre el checkbox y otros elementos */
-}
-
-.form-checkbox input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
-.form-checkbox label {
-    font-size: 1rem;
-    color: #333;
-    font-weight: normal;
 }
