@@ -19,7 +19,7 @@ function Register() {
       return;
     }
     if (!isCheckboxChecked) {
-      alert("Por favor, confirma que no estás ingresando contenido malicioso.");
+      alert("Acepto los terminos.");
       return;
     }
 

@@ -15,7 +15,7 @@ function Login() {
       return;
     }
     if (!isCheckboxChecked) {
-      alert("Por favor, confirma que no estás ingresando contenido malicioso.");
+      alert("Recordar usuario");
       return;
     }
 
