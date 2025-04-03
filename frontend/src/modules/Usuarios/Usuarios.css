@@ -2,6 +2,7 @@
 .usuarios-container {
     display: flex;
     height: 100vh;
+    /* Altura completa del viewport */
 }
 
 /* Contenido principal */
@@ -13,54 +14,91 @@
     overflow-y: auto;
 }
 
-/* Barra de búsqueda */
-.search-input {
+/* Contenedor de acciones (búsqueda + botón) */
+.actions-container {
+    display: flex;
+    /* Muestra la búsqueda y el botón en la misma fila */
+    justify-content: space-between;
+    /* Distribuye los elementos horizontalmente */
+    align-items: center;
+    /* Alinea verticalmente los elementos */
     margin-bottom: 20px;
-    padding: 12px;
-    width: 100%;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: white;
-    color: black;
+    /* Espaciado inferior */
 }
 
-/* Botón principal */
-.action-button {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    background-color: #4caf50;
-    color: white;
-    border: none;
+/* Barra de búsqueda */
+.search-input {
+    padding: 30px;
+    /* Espaciado interno */
+    width: 70%;
+    /* Ajusta el ancho para alinearse con el botón */
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    /* Borde gris claro */
     border-radius: 5px;
+    /* Bordes redondeados */
+    background-color: white;
+    /* Fondo blanco */
+    color: black;
+    /* Texto negro */
+    margin-right: 35px;
+    /* Agrega espacio entre la barra y el botón */
+}
+
+/* Botón principal (Agregar Usuario) */
+.action-button {
+    padding: 22px 20px;
+    /* Espaciado interno */
+    font-size: 1rem;
+    /* Tamaño de fuente */
+    background-color: #4caf50;
+    /* Fondo verde */
+    color: rgb(255, 255, 255);
+    /* Texto blanco */
+    border: none;
+    /* Sin borde */
+    border-radius: 5px;
+    /* Bordes redondeados */
     cursor: pointer;
+    /* Cambia el cursor al pasar */
+    transition: background-color 0.3s ease;
 }
 
 .action-button:hover {
     background-color: #45a049;
+    /* Fondo verde oscuro al pasar */
 }
 
 /* Tabla de Usuarios */
 .usuarios-table {
     width: 100%;
+    /* Ancho completo */
     border-collapse: collapse;
-    margin-top: 20px;
+    /* Elimina los espacios entre celdas */
+    margin-top: 15px;
+    /* Espaciado superior */
 }
 
 .usuarios-table th {
     background-color: #34495e;
+    /* Azul oscuro */
     color: white;
+    /* Texto blanco */
     padding: 15px;
+    /* Espaciado interno */
     text-align: center;
+    /* Texto centrado */
 }
 
 .usuarios-table td {
     text-align: center;
+    /* Texto centrado */
     padding: 15px;
+    /* Espaciado interno */
     border: 1px solid #ddd;
+    /* Borde gris claro */
     color: #34495e;
+    /* Azul oscuro */
 }
 
 /* Switch para anular usuario */
@@ -68,11 +106,14 @@
     position: relative;
     display: inline-block;
     width: 40px;
+    /* Ancho del switch */
     height: 24px;
+    /* Altura del switch */
 }
 
 .switch input {
     opacity: 0;
+    /* Esconde el checkbox original */
     width: 0;
     height: 0;
 }
@@ -85,7 +126,9 @@
     bottom: 0;
     background-color: #ccc;
     border-radius: 34px;
+    /* Bordes redondeados */
     cursor: pointer;
+    /* Cambia el cursor */
     transition: 0.4s;
 }
 
@@ -93,20 +136,25 @@
     content: "";
     position: absolute;
     height: 18px;
+    /* Altura del "punto" */
     width: 18px;
+    /* Ancho del "punto" */
     left: 3px;
     bottom: 3px;
     background-color: white;
+    /* Fondo blanco */
     border-radius: 50%;
     transition: 0.4s;
 }
 
 input:checked+.slider {
     background-color: #4caf50;
+    /* Verde activo */
 }
 
 input:checked+.slider:before {
     transform: translateX(16px);
+    /* Desplaza el "punto" */
 }
 
 /* Estilo para el menú desplegable de roles */
@@ -130,7 +178,7 @@ select[name="rol"]:focus {
     /* Efecto visual */
 }
 
-/* Grupo de permisos (si los hay en futuro ajustes) */
+/* Grupo de permisos */
 .checkbox-group {
     margin: 20px 0;
     display: flex;
@@ -147,6 +195,41 @@ select[name="rol"]:focus {
 
 .checkbox-item input {
     margin-right: 10px;
+}
+
+/* Botones del formulario */
+.save-button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: #3498db !important;
+    /* Azul */
+    color: white !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+    background-color: #2980b9;
+    /* Azul oscuro al pasar */
+}
+
+.cancel-button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: #e74c3c !important;
+    /* Rojo */
+    color: white !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+    background-color: #c0392b ;
+    /* Rojo oscuro al pasar */
 }
 
 /* Paginación */
