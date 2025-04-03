@@ -23,7 +23,49 @@ ChartJS.register(
 );
 
 function Dashboard() {
-  // Datos ficticios de productos más vendidos
+  // Datos ficticios de productos más vendidos por día
+  const productDayData = {
+    labels: ["Producto 1", "Producto 2", "Producto 3"],
+    datasets: [
+      {
+        label: "Ventas por día",
+        data: [50, 120, 80],
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Datos ficticios de productos más vendidos por semana
+  const productWeekData = {
+    labels: ["Producto A", "Producto B", "Producto C"],
+    datasets: [
+      {
+        label: "Ventas por semana",
+        data: [300, 450, 600],
+        backgroundColor: "rgba(255, 206, 86, 0.6)",
+        borderColor: "rgba(255, 206, 86, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Datos ficticios de productos más vendidos por mes
+  const productMonthData = {
+    labels: ["Producto X", "Producto Y", "Producto Z"],
+    datasets: [
+      {
+        label: "Ventas por mes",
+        data: [800, 1200, 1500],
+        backgroundColor: "rgba(153, 102, 255, 0.6)",
+        borderColor: "rgba(153, 102, 255, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Datos ficticios de productos más vendidos globalmente
   const productData = {
     labels: ["Día", "Semana", "Mes"],
     datasets: [
@@ -37,7 +79,7 @@ function Dashboard() {
     ],
   };
 
-  // Datos ficticios de servicios más vendidos
+  // Datos ficticios de servicios más vendidos globalmente
   const serviceData = {
     labels: ["Día", "Semana", "Mes"],
     datasets: [
@@ -79,7 +121,6 @@ function Dashboard() {
       },
       y: {
         beginAtZero: true,
-        max: 1000,
         grid: {
           drawBorder: false,
         },
@@ -93,19 +134,38 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* Navbar lateral reutilizado */}
       <NavbarAdmin />
-      {/* Contenido principal */}
       <main className="dashboard-main">
         <h1 className="dashboard-header">Dashboard de Administración</h1>
         <div className="charts-container">
-          <div className="chart">
-            <h2>Producto Más Vendido</h2>
-            <Bar data={productData} options={chartOptions} />
+          {/* Primera fila */}
+          <div className="row">
+            <div className="chart">
+              <h2>Producto Más Vendido</h2>
+              <Bar data={productData} options={chartOptions} />
+            </div>
+            <div className="chart">
+              <h2>Servicio Más Vendido</h2>
+              <Bar data={serviceData} options={chartOptions} />
+            </div>
           </div>
-          <div className="chart">
-            <h2>Servicio Más Vendido</h2>
-            <Bar data={serviceData} options={chartOptions} />
+
+          {/* Segunda fila */}
+          <div className="row">
+            <div className="chart">
+              <h2>Producto Más Vendido por Día</h2>
+              <Bar data={productDayData} options={chartOptions} />
+            </div>
+            <div className="chart">
+              <h2>Producto Más Vendido por Semana</h2>
+              <Bar data={productWeekData} options={chartOptions} />
+            </div>
+          </div>
+
+          {/* Fila independiente */}
+          <div className="chart-full-width">
+            <h2>Producto Más Vendido por Mes</h2>
+            <Bar data={productMonthData} options={chartOptions} />
           </div>
         </div>
       </main>

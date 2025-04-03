@@ -17,17 +17,23 @@ html {
 .dashboard-container {
     display: flex;
     height: 100vh;
-    /* Altura completa del viewport */
+    /* Ocupa toda la altura del viewport */
+    width: 100vw;
+    /* Asegura que ocupe toda la anchura */
+    box-sizing: border-box;
+    /* Incluye padding y bordes en las dimensiones */
 }
 
 /* Área principal del Dashboard */
 .dashboard-main {
     flex: 1;
-    /* Ocupa el espacio restante */
-    padding: 50px;
+    padding: 40px;
+    /* Mantiene el padding compacto */
     background-color: #f5f5f5;
     overflow-y: auto;
     /* Scroll automático si hay mucho contenido */
+    height: 100%;
+    box-sizing: border-box;
 }
 
 /* Cabecera del Dashboard */
@@ -37,22 +43,60 @@ html {
     color: #2c3e50;
 }
 
-/* Contenedor de Gráficas */
+/* Contenedor general de las gráficas */
 .charts-container {
     display: flex;
-    gap: 20px;
-    justify-content: space-between;
-    height: 400px;
-    /* Ajuste para acomodar gráficos nuevos */
+    flex-direction: column;
+    /* Apila las filas verticalmente */
+    gap: 25px;
+    /* Espaciado reducido entre filas */
 }
 
+/* Fila para las gráficas */
+.row {
+    display: flex;
+    justify-content: space-between;
+    /* Coloca las gráficas lado a lado */
+    gap: 15px;
+    /* Espaciado reducido entre gráficas */
+    width: 100%;
+    /* Asegura que las filas ocupen todo el ancho */
+    box-sizing: border-box;
+}
+
+/* Gráficas individuales */
 .chart {
-    width: 35%;
-    padding: 65px;
-    border-radius: 8px;
+    flex: 1;
+    max-width: 38%;
+    /* Reduce el ancho para ajustarlo mejor */
+    max-height: 400px;
+    /* Mantiene el tamaño vertical actual */
+    padding: 15px;
+    border-radius: 6px;
     text-align: center;
     background-color: #ffffff;
     /* Fondo blanco */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     /* Sombra ligera */
+    overflow: hidden;
+    /* Previene desbordamientos */
+}
+
+/* Gráfica independiente (Venta por mes) */
+.chart-full-width {
+    width: 100%;
+    max-width: 450px;
+    /* Reduce ligeramente el ancho máximo */
+    max-height: 400px;
+    /* Mantiene el tamaño vertical actual */
+    margin: 0 auto;
+    /* Centra la gráfica horizontalmente */
+    padding: 15px;
+    border-radius: 6px;
+    background-color: #ffffff;
+    /* Fondo blanco */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Sombra ligera */
+    overflow: hidden;
+    /* Previene desbordamientos */
 }
