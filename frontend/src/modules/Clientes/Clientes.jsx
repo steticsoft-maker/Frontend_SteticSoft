@@ -79,21 +79,23 @@ const Clientes = () => {
       <NavbarAdmin />
       <div className="main-content">
         <h1>Gestión de Clientes</h1>
-        <input
-          type="text"
-          placeholder="Buscar cliente..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="search-input"
-        />
-        <button className="action-button" onClick={() => openModal("create")}>
-          Agregar Cliente
-        </button>
+        <div className="header-actions">
+          <input
+            type="text"
+            placeholder="Buscar cliente..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="search-input"
+          />
+          <button className="action-button" onClick={() => openModal("create")}>
+            Agregar Cliente
+          </button>
+        </div>
         <table className="clientes-table">
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Email</th>
+              <th>Correo</th>
               <th>Teléfono</th>
               <th>Dirección</th>
               <th>Estado</th>
@@ -155,7 +157,7 @@ const Clientes = () => {
                   <strong>Nombre:</strong> {currentCliente.nombre}
                 </p>
                 <p>
-                  <strong>Email:</strong> {currentCliente.email}
+                  <strong>Correo:</strong> {currentCliente.email}
                 </p>
                 <p>
                   <strong>Teléfono:</strong> {currentCliente.telefono}
@@ -180,7 +182,7 @@ const Clientes = () => {
                     const formData = new FormData(e.target);
                     const cliente = {
                       nombre: formData.get("nombre"),
-                      email: formData.get("email"),
+                      email: formData.get("Correo"),
                       telefono: formData.get("telefono"),
                       direccion: formData.get("direccion"),
                     };
@@ -188,7 +190,7 @@ const Clientes = () => {
                   }}
                 >
                   <input type="text" name="nombre" placeholder="Nombre" required />
-                  <input type="email" name="email" placeholder="Email" required />
+                  <input type="email" name="email" placeholder="Correo" required />
                   <input type="text" name="telefono" placeholder="Teléfono" required />
                   <input type="text" name="direccion" placeholder="Dirección" required />
                   <button type="submit" className="action-button">

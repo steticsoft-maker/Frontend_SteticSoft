@@ -78,17 +78,19 @@ const Categorias = () => {
     <div className="categorias-container">
       <NavbarAdmin />
       <div className="main-content">
-        <h1>Gestión de Categorías</h1>
-        <input
-          type="text"
-          placeholder="Buscar categoría..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="search-input"
-        />
-        <button className="action-button" onClick={() => openModal("create")}>
-          Agregar Categoría
-        </button>
+        <h1>Gestión Categorías de Productos</h1>
+        <div className="header-actions">
+          <input
+            type="text"
+            placeholder="Buscar categoría..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="search-input"
+          />
+          <button className="action-button" onClick={() => openModal("create")}>
+            Agregar Categoría
+          </button>
+        </div>
         <table className="categorias-table">
           <thead>
             <tr>
@@ -159,7 +161,7 @@ const Categorias = () => {
                   }}
                 >
                   <input type="text" name="nombre" placeholder="Nombre" required />
-                  <textarea name="descripcion" placeholder="Descripción" required />
+                  <textarea className="DescripcionAgregarCategoria" name="descripcion" placeholder="Descripción" required />
                   <div className="button-group">
                     <button type="submit" className="action-button">
                       Guardar

@@ -31,8 +31,8 @@
     margin-bottom: 30px; /* Separación inferior */
     padding: 15px 30px; /* Espaciado interno */
     font-size: 1.2rem; /* Tamaño de fuente */
-    background-color: #4caf50; /* Fondo verde */
-    color: white; /* Texto blanco */
+    background-color: #3498db !important; /* Fondo verde */
+    color: white !important; /* Texto blanco */
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
     cursor: pointer; /* Cambia el cursor al pasar */
@@ -120,7 +120,7 @@ input:checked+.slider:before {
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
     color: white; /* Texto blanco */
-    background-color: #3498db; /* Fondo azul */
+    background-color: #3498db !important; /* Fondo azul */
     cursor: pointer; /* Cambia el cursor */
     transition: background-color 0.3s ease; /* Transición suave */
 }
@@ -162,8 +162,8 @@ input:checked+.slider:before {
 .close-button {
     margin-top: 20px; /* Separación superior */
     padding: 10px 20px; /* Espaciado interno */
-    background-color: #e74c3c; /* Fondo rojo */
-    color: white; /* Texto blanco */
+    background-color: #e74c3c !important; /* Fondo rojo */
+    color: white !important; /* Texto blanco */
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
     cursor: pointer; /* Cambia el cursor */
@@ -172,3 +172,34 @@ input:checked+.slider:before {
 .close-button:hover {
     background-color: #c0392b; /* Fondo rojo oscuro al pasar el mouse */
 }
+/* Contenedor para la barra de búsqueda y el botón */
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    width: 70%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: #218838;
+  }
+  

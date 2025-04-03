@@ -258,7 +258,7 @@ img {
 
 /* Barra de búsqueda */
 .search-input {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding: 12px;
     width: 100%;
     font-size: 1rem;
@@ -483,3 +483,61 @@ img {
     border: 1px solid #ddd;
     border-radius: 5px;
 }
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px; /* Espaciado entre la barra de búsqueda y el botón */
+  }
+  
+  .search-input {
+    width: 70%; /* Ajusta el ancho de la barra de búsqueda */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: #218838;
+  }
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Espaciado entre botones */
+    margin-top: 15px;
+  }
+  
+  .save-button {
+    background-color: #007bff !important;
+    color: white !important;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .save-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .delete-button {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border: none;
+    padding: 10  

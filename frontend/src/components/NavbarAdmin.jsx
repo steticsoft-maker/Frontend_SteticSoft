@@ -81,12 +81,6 @@ const NavbarAdmin = () => {
               Ventas
             </button>
             <button
-              onClick={() => navigate("/pedidos")}
-              className="nested-link"
-            >
-              Pedidos
-            </button>
-            <button
               onClick={() => navigate("/clientes")}
               className="nested-link"
             >

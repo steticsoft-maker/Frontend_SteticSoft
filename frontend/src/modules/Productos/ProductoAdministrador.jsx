@@ -76,16 +76,18 @@ const Productos = () => {
       <NavbarAdmin />
       <div className="main-content">
         <h1>Gestión de Productos</h1>
-        <input
-          type="text"
-          placeholder="Buscar producto..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="search-input"
-        />
-        <button className="action-button" onClick={() => openModal("create")}>
-          Agregar Producto
-        </button>
+        <div className="header-actions">
+          <input
+            type="text"
+            placeholder="Buscar producto..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="search-input"
+          />
+          <button className="action-button" onClick={() => openModal("create")}>
+            Agregar Producto
+          </button>
+        </div>
         <table className="productos-table">
           <thead>
             <tr>
@@ -120,21 +122,21 @@ const Productos = () => {
                     onClick={() => openModal("details", producto)}
                     title="Ver"
                   >
-                    <FaEye /> {/* Ícono de FontAwesome para "Ver" */}
+                    <FaEye />
                   </button>
                   <button
                     className="table-button"
                     onClick={() => openModal("edit", producto)}
                     title="Editar"
                   >
-                    <FaEdit /> {/* Ícono de FontAwesome para "Editar" */}
+                    <FaEdit />
                   </button>
                   <button
                     className="table-button delete-button"
                     onClick={() => handleDelete(producto.id)}
                     title="Eliminar"
                   >
-                    <FaTrash /> {/* Ícono de FontAwesome para "Eliminar" */}
+                    <FaTrash />
                   </button>
                 </td>
               </tr>
@@ -227,11 +229,14 @@ const Productos = () => {
                     defaultValue={currentProducto?.stock || ""}
                     required
                   />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                  />
+                  <label>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                    />
+                  </label>
                   {currentProducto?.foto && (
                     <img
                       src={currentProducto.foto}
@@ -239,12 +244,18 @@ const Productos = () => {
                       width="100"
                     />
                   )}
-                  <button type="submit" className="action-button">
-                    Guardar
-                  </button>
-                  <button className="close-button" onClick={closeModal}>
-                    Cancelar
-                  </button>
+                  <div className="form-buttons">
+                    <button type="submit" className="save-button">
+                      Guardar
+                    </button>
+                    <button
+                      type="button"
+                      className="delete-button"
+                      onClick={closeModal}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 </form>
               </>
             )}
