@@ -71,7 +71,7 @@ function Login() {
               onChange={(e) => setIsCheckboxChecked(e.target.checked)}
             />
             <label htmlFor="sql-check">
-              Confirmo que no estoy ingresando datos maliciosos o scripts.
+              Recordar usuario.
             </label>
           </div>
           <button type="submit" className="primary-button">
