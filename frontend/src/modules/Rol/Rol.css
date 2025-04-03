@@ -187,44 +187,107 @@ input:checked+.slider:before {
     /* Desplaza el botón a la derecha */
 }
 
-/* Grupo de checkboxes */
-.checkbox-group {
-    margin: 20px 0;
-    /* Espaciado entre el grupo y otros elementos */
+/* Modal de creación/edición */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo translúcido */
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-    /* Mayor espaciado entre checkboxes */
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra horizontalmente */
+    z-index: 1000; /* Asegura que esté encima de otros elementos */
 }
 
-/* Estilo para cada checkbox */
-.checkbox-item {
-    display: flex;
-    align-items: center;
+/* Contenido del modal */
+.modal-content {
+    background-color: white;
+    width: 80%; /* Aumenta el tamaño del modal */
+    max-width: 900px; /* Ancho máximo */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para mayor enfoque */
+    overflow-y: auto; /* Permite scroll si es necesario */
+    max-height: 90vh; /* Limita la altura del modal */
+    box-sizing: border-box;
+}
+
+/* Títulos y subtítulos dentro del modal */
+.modal-content h2 {
+    text-align: center; /* Centra el texto */
+    margin-bottom: 20px;
+    color: #34495e; /* Azul oscuro */
+    font-size: 1.8rem;
+}
+
+/* Entradas y selectores en el formulario */
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
     font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
-.checkbox-item input {
-    margin-right: 10px;
-    /* Espaciado entre el checkbox y el texto */
+/* Grupo de checkboxes dentro del modal */
+.checkbox-group {
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Organización en dos columnas */
+    gap: 15px;
+}
+
+/* Botones del modal */
+.save-button {
+    width: calc(50% - 10px); /* Mitad del ancho menos espacio entre botones */
+    padding: 12px;
+    font-size: 1rem;
+    background-color: #3498db; /* Azul */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px; /* Espaciado entre botones */
+}
+
+.save-button:hover {
+    background-color: #2980b9; /* Azul oscuro al pasar el cursor */
+}
+
+.cancel-button {
+    width: calc(50% - 10px); /* Mitad del ancho menos espacio entre botones */
+    padding: 12px;
+    font-size: 1rem;
+    background-color: #e74c3c; /* Rojo */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+    background-color: #c0392b; /* Rojo oscuro al pasar el cursor */
 }
 
 /* Paginación */
 .pagination {
+    margin-top: 20px;
     display: flex;
     justify-content: space-between;
-    /* Botones distribuidos horizontalmente */
-    margin-top: 30px;
-    /* Espaciado superior más grande */
 }
 
 .pagination button {
-    padding: 10px 15px;
+    padding: 10px 20px;
     font-size: 1rem;
-    background-color: #4caf50;
-    /* Verde */
+    background-color: #4caf50; /* Verde */
     color: white;
-    /* Texto blanco */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -232,13 +295,10 @@ input:checked+.slider:before {
 }
 
 .pagination button:disabled {
-    background-color: #ccc;
-    /* Color gris cuando el botón está deshabilitado */
+    background-color: #ccc; /* Gris claro si está deshabilitado */
     cursor: not-allowed;
-    /* Cursor no permitido */
 }
 
 .pagination button:hover:enabled {
-    background-color: #45a049;
-    /* Color más oscuro al pasar el cursor si está habilitado */
+    background-color: #45a049; /* Verde oscuro al pasar el cursor */
 }

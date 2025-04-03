@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./Rol.css";
+import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
+
 
 const Rol = () => {
-  // Roles pre-registrados
   const initialRoles = [
     {
       id: 1,
@@ -16,19 +17,19 @@ const Rol = () => {
         "Gestionar abastecimiento",
         "Configuraciones avanzadas",
       ],
-      anulado: false,
+      anulado: true,
     },
     {
       id: 2,
       nombre: "Empleado",
       permisos: ["Visualizar reportes", "Gestionar inventario"],
-      anulado: false,
+      anulado: true,
     },
     {
       id: 3,
       nombre: "Cliente",
       permisos: ["Visualizar reportes"],
-      anulado: false,
+      anulado: true,
     },
   ];
 
@@ -47,19 +48,17 @@ const Rol = () => {
   const [currentRol, setCurrentRol] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [paginaActual, setPaginaActual] = useState(1); // Página actual para paginación
-  const itemsPorPagina = 3; // Número de permisos por página
+  const itemsPorPagina = 3;
 
   const permisosPaginados = permisosDisponibles.slice(
     (paginaActual - 1) * itemsPorPagina,
     paginaActual * itemsPorPagina
   );
 
-  // Guardar roles en LocalStorage cuando cambie el estado
   useEffect(() => {
     localStorage.setItem("roles", JSON.stringify(roles));
   }, [roles]);
 
-  // Manejar creación/edición de roles
   const handleSave = (rol) => {
     const permisosSeleccionados = permisosDisponibles
       .filter((permiso) => rol.permisos.includes(permiso.name))
@@ -78,28 +77,24 @@ const Rol = () => {
     closeModal();
   };
 
-  // Abrir modal
   const openModal = (type, rol = null) => {
     setModalType(type);
     setCurrentRol(rol || { permisos: [] });
     setShowModal(true);
   };
 
-  // Cerrar modal
   const closeModal = () => {
     setShowModal(false);
     setModalType("");
     setCurrentRol(null);
   };
 
-  // Eliminar un rol
   const handleDelete = (id) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este rol?")) {
       setRoles(roles.filter((r) => r.id !== id));
     }
   };
 
-  // Cambiar estado del rol (anulado/activo)
   const toggleAnular = (id) => {
     const updatedRoles = roles.map((r) =>
       r.id === id ? { ...r, anulado: !r.anulado } : r
@@ -107,7 +102,6 @@ const Rol = () => {
     setRoles(updatedRoles);
   };
 
-  // Filtrar roles por búsqueda
   const filteredRoles = roles.filter((r) =>
     r.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
@@ -118,18 +112,18 @@ const Rol = () => {
       <div className="main-content">
         <h1>Gestión de Roles</h1>
         {/* Buscador */}
-        <input
-          type="text"
-          placeholder="Buscar rol..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="search-input"
-        />
-
-        {/* Botón para crear rol */}
-        <button className="action-button" onClick={() => openModal("create")}>
-          Crear Rol
-        </button>
+        <div className="actions-container">
+          <input
+            type="text"
+            placeholder="Buscar rol..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="search-input"
+          />
+          <button className="action-button" onClick={() => openModal("create")}>
+            Crear Rol
+          </button>
+        </div>
 
         {/* Tabla de roles */}
         <table className="roles-table">
@@ -137,7 +131,7 @@ const Rol = () => {
             <tr>
               <th>Nombre del Rol</th>
               <th>Permisos</th>
-              <th>Anulado</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -161,24 +155,29 @@ const Rol = () => {
                   </label>
                 </td>
                 <td>
-                  <button
-                    className="table-button"
-                    onClick={() => openModal("details", rol)}
-                  >
-                    Ver
-                  </button>
-                  <button
-                    className="table-button"
-                    onClick={() => openModal("edit", rol)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="table-button delete-button"
-                    onClick={() => handleDelete(rol.id)}
-                  >
-                    Eliminar
-                  </button>
+                  <div className="table-actions">
+                    <button
+                      className="table-button"
+                      onClick={() => openModal("details", rol)}
+                      title="Ver"
+                    >
+                      <FaEye />
+                    </button>
+                    <button
+                      className="table-button"
+                      onClick={() => openModal("edit", rol)}
+                      title="Editar"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      className="table-button delete-button"
+                      onClick={() => handleDelete(rol.id)}
+                      title="Eliminar"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -202,7 +201,7 @@ const Rol = () => {
                 <p>
                   <strong>Anulado:</strong> {currentRol.anulado ? "Sí" : "No"}
                 </p>
-                <button className="close-button" onClick={closeModal}>
+                <button className="cancel-button" onClick={closeModal}>
                   Cerrar
                 </button>
               </>
@@ -236,7 +235,7 @@ const Rol = () => {
 
                   <div className="checkbox-group">
                     <h3>Seleccionar Permisos:</h3>
-                    {permisosPaginados.map((permiso, index) => (
+                    {permisosPaginados.map((permiso) => (
                       <label key={permiso.id} className="checkbox-item">
                         <input
                           type="checkbox"
@@ -272,10 +271,15 @@ const Rol = () => {
                     </button>
                   </div>
 
-                  <button type="submit" className="action-button">
+                  {/* Botones del formulario */}
+                  <button type="submit" className="save-button">
                     Guardar
                   </button>
-                  <button className="close-button" onClick={closeModal}>
+                  <button
+                    type="button"
+                    className="cancel-button"
+                    onClick={closeModal}
+                  >
                     Cancelar
                   </button>
                 </form>
