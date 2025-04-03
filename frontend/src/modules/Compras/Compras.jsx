@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faFilePdf, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faFilePdf, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./Compras.css";
 
@@ -14,8 +14,12 @@ const Compras = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedCompra, setSelectedCompra] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newCompra, setNewCompra] = useState({ proveedor: "", fecha: "", productos: [] });
-
+  const [newCompra, setNewCompra] = useState({
+    proveedor: "",
+    fecha: new Date().toISOString().split("T")[0], // Fecha en formato YYYY-MM-DD
+    productos: []
+  });
+  
   const handleAnular = (index) => {
     if (window.confirm("¿Está seguro de que desea anular esta compra?")) {
       const updatedCompras = [...compras];
@@ -125,17 +129,17 @@ const Compras = () => {
                       )}
                     </td>
                     <td className="acciones">
-                      {compra.estado !== "Anulada" && (
+                    <button className="btnVerCompra" onClick={() => handleShowDetails(compra)}>
+                            <FontAwesomeIcon icon={faEye} />
+                            </button>
+                        <button className="btnPDFCompra" onClick={handleGenerarPDF}>
+                          <FontAwesomeIcon icon={faFilePdf} />
+                          </button>
+                          {compra.estado !== "Anulada" && (
                         <button className="btn danger" onClick={() => handleAnular(index)}>
                           <FontAwesomeIcon icon={faBan} />
                           </button>
                         )}
-                        <button className="btn info" onClick={handleGenerarPDF}>
-                          <FontAwesomeIcon icon={faFilePdf} />
-                          </button>
-                          <button className="btn info" onClick={() => handleShowDetails(compra)}>
-                            <FontAwesomeIcon icon={faEye} />
-                            </button>
                             </td>
                   </tr>
                 ))}
@@ -182,15 +186,21 @@ const Compras = () => {
                   onChange={(e) => handleChangeProducto(index, "precio", e.target.value)}
                 />
                 <span>Total: ${producto.total.toLocaleString()}</span>
-                <button className="btn danger" onClick={() => handleRemoveProducto(index)}>Eliminar</button>
+                <button className="btn-remove" onClick={() => handleRemoveProducto(index)}>
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+
               </div>
             ))}
             <button className="btn success" onClick={handleAddProducto}>Agregar Producto</button>
 
             <h3>Total: {calcularTotal(newCompra.productos)}</h3>
 
-            <button className="btn success" onClick={handleAddCompra}>Guardar Compra</button>
-            <button className="btn close" onClick={() => setShowAddModal(false)}>Cancelar</button>
+            <div className="button-row">
+              <button className="btn success" onClick={handleAddCompra}>Guardar Compra</button>
+              <button className="btn close" onClick={() => setShowAddModal(false)}>Cancelar</button>
+            </div>
+
           </div>
         </div>
       )}
