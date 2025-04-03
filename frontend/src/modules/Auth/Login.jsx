@@ -4,10 +4,21 @@ import "./Form.css";
 
 function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false); // Estado para el checkbox
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
+
+    if (!credentials.email || !credentials.password) {
+      alert("Por favor, completa todos los campos.");
+      return;
+    }
+    if (!isCheckboxChecked) {
+      alert("Recordar usuario");
+      return;
+    }
+
     const admin = {
       email: "admin@gmail.com",
       password: "admin123",
@@ -52,6 +63,17 @@ function Login() {
             }
             className="form-input"
           />
+          <div className="form-checkbox">
+            <input
+              type="checkbox"
+              id="sql-check"
+              checked={isCheckboxChecked}
+              onChange={(e) => setIsCheckboxChecked(e.target.checked)}
+            />
+            <label htmlFor="sql-check">
+              Recordar usuario.
+            </label>
+          </div>
           <button type="submit" className="primary-button">
             Entrar
           </button>

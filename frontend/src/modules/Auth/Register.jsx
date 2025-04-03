@@ -3,18 +3,23 @@ import { useNavigate } from "react-router-dom";
 import "./Form.css";
 
 function Register() {
-  const [user, setUser] = useState({ email: "", password: "" });
+  const [user, setUser] = useState({ name: "", email: "", password: "" }); // Se agregó el campo "name"
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false); // Estado para el checkbox
   const navigate = useNavigate();
 
   const handleRegister = (e) => {
     e.preventDefault();
-    if (!user.email || !user.password || !confirmPassword) {
+    if (!user.name || !user.email || !user.password || !confirmPassword) {
       alert("Por favor, completa todos los campos.");
       return;
     }
     if (user.password !== confirmPassword) {
       alert("Las contraseñas no coinciden.");
+      return;
+    }
+    if (!isCheckboxChecked) {
+      alert("Acepto los terminos.");
       return;
     }
 
@@ -28,6 +33,13 @@ function Register() {
       <div className="form-box">
         <h2 className="form-title">Registro</h2>
         <form className="form-content" onSubmit={handleRegister}>
+          <input
+            type="text"
+            placeholder="Nombre completo"
+            value={user.name}
+            onChange={(e) => setUser({ ...user, name: e.target.value })}
+            className="form-input"
+          />
           <input
             type="email"
             placeholder="Correo electrónico"
@@ -49,11 +61,31 @@ function Register() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="form-input"
           />
-          <button type="submit" className="primary-button">Registrarse</button>
+          <div className="form-checkbox">
+            <input
+              type="checkbox"
+              id="sql-check"
+              checked={isCheckboxChecked}
+              onChange={(e) => setIsCheckboxChecked(e.target.checked)}
+            />
+            <label htmlFor="sql-check">
+              Acepto los terminos
+            </label>
+          </div>
+          <button type="submit" className="primary-button">
+            Registrarse
+          </button>
         </form>
         <div className="form-actions">
-          <button className="secondary-button" onClick={() => navigate("/")}>Regresar</button>
-          <button className="secondary-button" onClick={() => navigate("/login")}>Iniciar Sesión</button>
+          <button className="secondary-button" onClick={() => navigate("/")}>
+            Regresar
+          </button>
+          <button
+            className="secondary-button"
+            onClick={() => navigate("/login")}
+          >
+            Iniciar Sesión
+          </button>
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@
     border-radius: 8px;
 }
 
-/* Barra de búsqueda mod*/
+/* Barra de búsqueda */
 .search-bar input {
     margin-bottom: 20px;
     padding: 12px;
@@ -97,6 +97,30 @@
     max-width: 500px;
 }
 
+/* Estilo para el formulario dentro del modal */
+.modal-content form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Ajustar los inputs para ocupar el 100% de su columna */
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Alinear los botones en una sola fila */
+.modal-content .btn-container {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
 /* Botones en el modal */
 .modal-content .btn {
     margin: 10px 5px;
@@ -109,17 +133,19 @@
 }
 
 .modal-content .btn.success {
-    background-color: #4caf50;
+    background-color: #3498db;
     color: white;
+    width: 140px;
 }
 
 .modal-content .btn.success:hover {
-    background-color: #45a049;
+    background-color: #1974b1;
 }
 
 .modal-content .btn.close {
     background-color: #dc3545;
     color: white;
+    width: 140px;
 }
 
 .modal-content .btn.close:hover {
@@ -138,4 +164,16 @@ h2.title-h2 {
 .text-bold {
     font-weight: bold;
     color: #333;
+}
+
+.btnAgregarProveedor {
+    background-color: #3498db;
+}
+
+.btnVer {
+    background-color: #3498db;
+}
+
+.btnEditar {
+    background-color: #3498db;
 }
