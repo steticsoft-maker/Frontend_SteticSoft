@@ -1,3 +1,4 @@
+/* Contenedor general */
 .form-container {
     display: flex;
     justify-content: center;
@@ -6,11 +7,13 @@
     /* Ocupa todo el alto de la página */
     width: 100vw;
     /* Asegura que ocupe todo el ancho */
-    background-color: rgb(245, 245, 245);    /* Fondo cálido */
+    background-color: rgb(245, 245, 245);
+    /* Fondo cálido */
     margin: 0;
     /* Elimina cualquier margen externo */
 }
 
+/* Caja del formulario */
 .form-box {
     background-color: #fff;
     /* Fondo del formulario */
@@ -26,36 +29,21 @@
     text-align: center;
 }
 
-.form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: rgb(245, 245, 245);
-}
-
-.form-box {
-    background-color: #fff;
-    padding: 50px;
-    border-radius: 15px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
-}
-
+/* Título del formulario */
 .form-title {
     font-size: 2.5rem;
     color: #333;
     margin-bottom: 20px;
 }
 
+/* Contenido del formulario */
 .form-content {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
+/* Inputs del formulario */
 .form-input {
     padding: 15px;
     border: 1px solid #ddd;
@@ -70,6 +58,7 @@
     border-color: #ff7f50;
 }
 
+/* Botón principal */
 .primary-button {
     background-color: #ff7f50;
     color: white;
@@ -85,6 +74,7 @@
     background-color: #d2691e;
 }
 
+/* Botón secundario */
 .secondary-button {
     background-color: #ddd;
     color: #333;
@@ -100,8 +90,35 @@
     background-color: #bbb;
 }
 
+/* Acciones del formulario */
 .form-actions {
     margin-top: 30px;
     display: flex;
     justify-content: space-around;
+}
+
+/* Checkbox dentro del formulario */
+.form-checkbox {
+    display: flex;
+    /* Posición en línea */
+    align-items: center;
+    /* Alinea verticalmente con el texto */
+    justify-content: flex-start;
+    /* Ajusta la posición al lado izquierdo */
+    gap: 10px;
+    /* Espacio entre el checkbox y el texto */
+    margin: 15px 0;
+    /* Separación entre el checkbox y otros elementos */
+}
+
+.form-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.form-checkbox label {
+    font-size: 1rem;
+    color: #333;
+    font-weight: normal;
 }
