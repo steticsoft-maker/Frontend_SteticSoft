@@ -1,0 +1,130 @@
+/* Contenedor General */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Asegura que ocupe toda la pantalla */
+    background-color: #f0f0f0; /* Fondo neutro para la página */
+}
+
+/* Contenedor Principal */
+.agregar-compra-container {
+    display: flex;
+    height: 100vh;
+    max-width: 1500px;
+    margin: 20px auto;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Contenido Principal */
+.agregar-compra-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+/* Título */
+.titulo-compra {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Formulario */
+.formulario-compra {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.formulario-compra label {
+    font-weight: bold;
+}
+
+.formulario-compra input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+/* Botones */
+.botones-compra {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    color: white;
+}
+
+/* Tabla de productos */
+.productos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.productos-table th, .productos-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.productos-table th {
+    background-color: #26415e;
+    color: white;
+}
+
+/* Totales */
+.total-container {
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.btn-guardar {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-cancelar {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-agregar-producto {
+    background-color: #3498db;
+    margin: 10px;
+}
+
+.seleccionar-proveedor {
+    background-color: white;
+    color: black;
+}
+
+.LaFecha {
+    background-color: white;
+    color: black;
+}
+
+.btn-icono-eliminar {
+    background-color: #e74c3c;
+}
+
+.seleccionar-producto {
+    background-color: white;
+    color: black;
+}
