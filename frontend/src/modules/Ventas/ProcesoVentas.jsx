@@ -155,57 +155,62 @@ const ProcesoVentas = ({ guardarVenta }) => {
         </div>
       )}
 
-      <div
-        className={`datos-cliente ${
-          modoCita === "indirecta" ? "" : "bloqueado"
-        }`}
-      >
-        <h3>Información del Cliente</h3>
-        <label>
-          Nombre:
-          <input
-            type="text"
-            value={datosCliente.nombre}
-            onChange={(e) =>
-              setDatosCliente({ ...datosCliente, nombre: e.target.value })
-            }
-            disabled={modoCita !== "indirecta"}
-          />
-        </label>
-        <label>
-          Documento:
-          <input
-            type="text"
-            value={datosCliente.documento}
-            onChange={(e) =>
-              setDatosCliente({ ...datosCliente, documento: e.target.value })
-            }
-            disabled={modoCita !== "indirecta"}
-          />
-        </label>
-        <label>
-          Teléfono:
-          <input
-            type="text"
-            value={datosCliente.telefono}
-            onChange={(e) =>
-              setDatosCliente({ ...datosCliente, telefono: e.target.value })
-            }
-            disabled={modoCita !== "indirecta"}
-          />
-        </label>
-        <label>
-          Dirección:
-          <input
-            type="text"
-            value={datosCliente.direccion}
-            onChange={(e) =>
-              setDatosCliente({ ...datosCliente, direccion: e.target.value })
-            }
-            disabled={modoCita !== "indirecta"}
-          />
-        </label>
-      </div>
+<div
+  className={`datos-cliente ${
+    modoCita === "indirecta" ? "" : "bloqueado"
+  }`}
+>
+  <h3>Información del Cliente</h3>
+  <div className="form-group">
+    <label htmlFor="nombre">Nombre:</label>
+    <input
+      id="nombre"
+      type="text"
+      value={datosCliente.nombre}
+      onChange={(e) =>
+        setDatosCliente({ ...datosCliente, nombre: e.target.value })
+      }
+      disabled={modoCita !== "indirecta"}
+    />
+  </div>
+  <div className="form-group">
+    <label htmlFor="documento">Documento:</label>
+    <input
+      id="documento"
+      type="text"
+      value={datosCliente.documento}
+      onChange={(e) =>
+        setDatosCliente({ ...datosCliente, documento: e.target.value })
+      }
+      disabled={modoCita !== "indirecta"}
+    />
+  </div>
+  <div className="form-group">
+    <label htmlFor="telefono">Teléfono:</label>
+    <input
+      id="telefono"
+      type="text"
+      value={datosCliente.telefono}
+      onChange={(e) =>
+        setDatosCliente({ ...datosCliente, telefono: e.target.value })
+      }
+      disabled={modoCita !== "indirecta"}
+    />
+  </div>
+  <div className="form-group">
+    <label htmlFor="direccion">Dirección:</label>
+    <input
+      id="direccion"
+      type="text"
+      value={datosCliente.direccion}
+      onChange={(e) =>
+        setDatosCliente({ ...datosCliente, direccion: e.target.value })
+      }
+      disabled={modoCita !== "indirecta"}
+    />
+  </div>
+</div>
+
       <button
         className="catalogo-button"
         onClick={() => setMostrarCatalogoProductos(true)}
@@ -279,39 +284,42 @@ const ProcesoVentas = ({ guardarVenta }) => {
         </div>
       )}
 
-      <table className="tabla-items">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {itemsTabla.map((item, index) => (
-            <tr key={index}>
-              <td>{item.nombre}</td>
-              <td>
-                <input
-                  type="number"
-                  min="1"
-                  value={item.cantidad}
-                  onChange={(e) =>
-                    actualizarCantidad(index, parseInt(e.target.value, 10))
-                  }
-                />
-              </td>
-              <td>${item.precio}</td>
-              <td>
-                <button onClick={() => eliminarItemDeTabla(index)}>
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+<table className="tabla-items">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Cantidad</th>
+      <th>Precio Unitario</th>
+      <th>Precio Total</th> {/* Nuevo campo */}
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {itemsTabla.map((item, index) => (
+      <tr key={index}>
+        <td>{item.nombre}</td>
+        <td>
+          <input
+            type="number"
+            min="1"
+            value={item.cantidad}
+            onChange={(e) =>
+              actualizarCantidad(index, parseInt(e.target.value, 10))
+            }
+          />
+        </td>
+        <td>${item.precio.toFixed(2)}</td>
+        <td>${(item.precio * item.cantidad).toFixed(2)}</td> {/* Cálculo dinámico */}
+        <td>
+          <button onClick={() => eliminarItemDeTabla(index)}>
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
 
       {/* Resumen de la venta */}
       <div className="resumen-venta">

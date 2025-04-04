@@ -12,14 +12,14 @@ const Ventas = () => {
       fecha: "2025-03-28",
       cliente: "Juan Pérez",
       total: 50000,
-      estado: true,
+      estado: "Activa", // Estado inicial
     },
     {
       id: 2,
       fecha: "2025-03-29",
       cliente: "María Gómez",
       total: 120000,
-      estado: true,
+      estado: "En proceso",
     },
   ];
 
@@ -50,9 +50,9 @@ const Ventas = () => {
     setCurrentVenta(null);
   };
 
-  const toggleEstado = (id) => {
-    const updatedVentas = ventas.map((v) =>
-      v.id === id ? { ...v, estado: !v.estado } : v
+  const handleEstadoChange = (id, nuevoEstado) => {
+    const updatedVentas = ventas.map((venta) =>
+      venta.id === id ? { ...venta, estado: nuevoEstado } : venta
     );
     setVentas(updatedVentas);
   };
@@ -61,8 +61,8 @@ const Ventas = () => {
     alert(`Generar PDF para la venta de ${venta.cliente}.`);
   };
 
-  const filteredVentas = ventas.filter((v) =>
-    v.cliente.toLowerCase().includes(busqueda.toLowerCase())
+  const filteredVentas = ventas.filter((venta) =>
+    venta.cliente.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   // Paginación
@@ -85,19 +85,21 @@ const Ventas = () => {
           <ProcesoVentas guardarVenta={guardarVenta} />
         ) : (
           <>
-            <input
-              type="text"
-              placeholder="Buscar venta por cliente..."
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              className="search-input"
-            />
-            <button
-              className="action-button"
-              onClick={() => setMostrarProcesoVentas(true)}
-            >
-              Agregar Venta
-            </button>
+            <div className="header-actions">
+              <input
+                type="text"
+                placeholder="Buscar venta por cliente..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                className="search-input"
+              />
+              <button
+                className="action-button"
+                onClick={() => setMostrarProcesoVentas(true)}
+              >
+                Agregar Venta
+              </button>
+            </div>
             <table className="ventas-table">
               <thead>
                 <tr>
@@ -109,20 +111,23 @@ const Ventas = () => {
                 </tr>
               </thead>
               <tbody>
-                {displayedVentas.map((venta, index) => (
-                  <tr key={index}>
+                {displayedVentas.map((venta) => (
+                  <tr key={venta.id}>
                     <td>{venta.fecha}</td>
                     <td>{venta.cliente}</td>
                     <td>${venta.total.toFixed(2)}</td>
                     <td>
-                      <label className="switch">
-                        <input
-                          type="checkbox"
-                          checked={venta.estado}
-                          onChange={() => toggleEstado(venta.id)}
-                        />
-                        <span className="slider"></span>
-                      </label>
+                      <select
+                        value={venta.estado}
+                        onChange={(e) => handleEstadoChange(venta.id, e.target.value)}
+                        className={`estado-select estado-${venta.estado
+                          .toLowerCase()
+                          .replace(" ", "-")}`} // Clase dinámica según estado
+                      >
+                        <option value="En proceso">En proceso</option>
+                        <option value="Activa">Activa</option>
+                        <option value="Inactiva">Inactiva</option>
+                      </select>
                     </td>
                     <td>
                       <button
@@ -170,8 +175,7 @@ const Ventas = () => {
               <strong>Total:</strong> ${currentVenta.total.toFixed(2)}
             </p>
             <p>
-              <strong>Estado:</strong>{" "}
-              {currentVenta.estado ? "Activa" : "Anulada"}
+              <strong>Estado:</strong> {currentVenta.estado}
             </p>
             <button className="close-button" onClick={closeModal}>
               Cerrar

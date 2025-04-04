@@ -200,3 +200,57 @@ input:checked + .slider:before {
 .close-button:hover {
     background-color: #c0392b;
 }
+/* Contenedor para barra de búsqueda y botón en la misma fila */
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    width: 70%; /* Ajusta el ancho de la barra de búsqueda */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: #218838;
+  }
+/* Estilo base para el campo desplegable */
+.estado-select {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Colores dinámicos según estado */
+  .estado-en-proceso {
+    background-color: #f3f025 !important; /* Amarillo */
+  }
+  
+  .estado-activa {
+    background-color: #28a745 !important; /* Verde */
+  }
+  
+  .estado-inactiva {
+    background-color: #c0bfbf !important; /* Gris */
+  }
+    
