@@ -6,10 +6,10 @@ import "./proveedores.css";
 
 const Proveedores = () => {
     const [proveedores, setProveedores] = useState([
-        { nombre: "Proveedor A", documento: "123456789", telefono: "3001234567", correo: "proveedorA@example.com", direccion: "Calle 1 # 23-45", estado: "Activo" },
-        { nombre: "Proveedor B", documento: "987654321", telefono: "3109876543", correo: "proveedorB@example.com", direccion: "Carrera 10 # 45-67", estado: "Inactivo" },
-        { nombre: "Proveedor C", documento: "763522321", telefono: "7835198234", correo: "proveedorc@example.com", direccion: "Avenida 5 # 12-34", estado: "Inactivo" },
-        { nombre: "Proveedor D", documento: "877812316", telefono: "1241297032", correo: "proveedord@example.com", direccion: "Diagonal 8 # 56-78", estado: "Inactivo" },
+        { nombre: "Proveedor A", documento: "123456789", telefono: "3001234567", email: "proveedorA@example.com", direccion: "Calle 1 # 23-45", estado: "Activo" },
+        { nombre: "Proveedor B", documento: "987654321", telefono: "3109876543", email: "proveedorB@example.com", direccion: "Carrera 10 # 45-67", estado: "Inactivo" },
+        { nombre: "Proveedor C", documento: "763522321", telefono: "7835198234", email: "proveedorc@example.com", direccion: "Avenida 5 # 12-34", estado: "Inactivo" },
+        { nombre: "Proveedor D", documento: "877812316", telefono: "1241297032", corremaileo: "proveedord@example.com", direccion: "Diagonal 8 # 56-78", estado: "Inactivo" },
     ]);
 
     const [search, setSearch] = useState("");
@@ -27,7 +27,7 @@ const Proveedores = () => {
         setModal({ 
             open: true, 
             type, 
-            proveedor: proveedor || { nombre: "", documento: "", telefono: "", correo: "", direccion: "", estado: "Activo" } 
+            proveedor: proveedor || { nombre: "", documento: "", telefono: "", email: "", direccion: "", estado: "Activo" } 
         });
     };
 
@@ -76,7 +76,7 @@ const Proveedores = () => {
                                 <th>Nombre</th>
                                 <th>Documento</th>
                                 <th>Teléfono</th>
-                                <th>Correo</th>
+                                <th>email</th>
                                 <th>Dirección</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
@@ -88,7 +88,7 @@ const Proveedores = () => {
                                     <td>{proveedor.nombre}</td>
                                     <td>{proveedor.documento}</td>
                                     <td>{proveedor.telefono}</td>
-                                    <td>{proveedor.correo}</td>
+                                    <td>{proveedor.email}</td>
                                     <td>{proveedor.direccion}</td>
                                     <td>
                                         <label className="switch">
@@ -123,7 +123,7 @@ const Proveedores = () => {
                                     <p><strong>Nombre:</strong> {modal.proveedor.nombre}</p>
                                     <p><strong>Documento:</strong> {modal.proveedor.documento}</p>
                                     <p><strong>Teléfono:</strong> {modal.proveedor.telefono}</p>
-                                    <p><strong>Correo:</strong> {modal.proveedor.correo}</p>
+                                    <p><strong>email:</strong> {modal.proveedor.email}</p>
                                     <p><strong>Dirección:</strong> {modal.proveedor.direccion}</p>
                                     <p><strong>Estado:</strong> {modal.proveedor.estado}</p>
                                     <button className="btn close" onClick={closeModal}>Cerrar</button>
@@ -152,9 +152,9 @@ const Proveedores = () => {
                                     />
                                     <input
                                         type="email"
-                                        placeholder="Correo"
-                                        value={modal.proveedor.correo}
-                                        onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, correo: e.target.value } })}
+                                        placeholder="email"
+                                        value={modal.proveedor.email}
+                                        onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, email: e.target.value } })}
                                     />
                                     <input
                                         type="text"
