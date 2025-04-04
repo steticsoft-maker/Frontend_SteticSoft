@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faFilePdf, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faFilePdf, faBan } from "@fortawesome/free-solid-svg-icons";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./Compras.css";
 
 const Compras = () => {
+  const navigate = useNavigate(); // Inicializa el hook de navegación
   const [searchTerm, setSearchTerm] = useState("");
   const [compras, setCompras] = useState([
     { proveedor: "Proveedor A", fecha: "24/03/2025", total: "$500,000", estado: "Completado", productos: [] },
@@ -13,13 +15,7 @@ const Compras = () => {
 
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedCompra, setSelectedCompra] = useState(null);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newCompra, setNewCompra] = useState({
-    proveedor: "",
-    fecha: new Date().toISOString().split("T")[0], // Fecha en formato YYYY-MM-DD
-    productos: []
-  });
-  
+
   const handleAnular = (index) => {
     if (window.confirm("¿Está seguro de que desea anular esta compra?")) {
       const updatedCompras = [...compras];
@@ -43,35 +39,6 @@ const Compras = () => {
     setCompras(updatedCompras);
   };
 
-  const handleAddCompra = () => {
-    setCompras([...compras, { ...newCompra, total: calcularTotal(newCompra.productos), estado: "Pendiente" }]);
-    setShowAddModal(false);
-    setNewCompra({ proveedor: "", fecha: "", productos: [] });
-  };
-
-  const handleAddProducto = () => {
-    setNewCompra({
-      ...newCompra,
-      productos: [...newCompra.productos, { nombre: "", cantidad: 1, precio: 0, total: 0 }]
-    });
-  };
-
-  const handleRemoveProducto = (index) => {
-    const updatedProductos = newCompra.productos.filter((_, i) => i !== index);
-    setNewCompra({ ...newCompra, productos: updatedProductos });
-  };
-
-  const handleChangeProducto = (index, field, value) => {
-    const updatedProductos = [...newCompra.productos];
-    updatedProductos[index][field] = field === "cantidad" || field === "precio" ? parseFloat(value) || 0 : value;
-    updatedProductos[index].total = updatedProductos[index].cantidad * updatedProductos[index].precio;
-    setNewCompra({ ...newCompra, productos: updatedProductos });
-  };
-
-  const calcularTotal = (productos) => {
-    return `$${productos.reduce((acc, prod) => acc + prod.total, 0).toLocaleString()}`;
-  };
-
   return (
     <div className="compras-container">
       <NavbarAdmin />
@@ -88,7 +55,7 @@ const Compras = () => {
         </div>
 
         <div className="compras-buttons">
-          <button className="btn success" onClick={() => setShowAddModal(true)}>
+          <button className="btn success" onClick={() => navigate("/agregar-compra")}>
             Agregar Compra
           </button>
         </div>
@@ -129,18 +96,18 @@ const Compras = () => {
                       )}
                     </td>
                     <td className="acciones">
-                    <button className="btnVerCompra" onClick={() => handleShowDetails(compra)}>
-                            <FontAwesomeIcon icon={faEye} />
-                            </button>
-                        <button className="btnPDFCompra" onClick={handleGenerarPDF}>
-                          <FontAwesomeIcon icon={faFilePdf} />
-                          </button>
-                          {compra.estado !== "Anulada" && (
-                        <button className="btn danger" onClick={() => handleAnular(index)}>
+                      <button className="btnVerCompra" onClick={() => handleShowDetails(compra)} title="Ver detalles">
+                        <FontAwesomeIcon icon={faEye} />
+                      </button>
+                      <button className="btnPDFCompra" onClick={handleGenerarPDF} title="Generar PDF">
+                        <FontAwesomeIcon icon={faFilePdf} />
+                      </button>
+                      {compra.estado !== "Anulada" && (
+                        <button className="btn danger" onClick={() => handleAnular(index)} title="Anular compra">
                           <FontAwesomeIcon icon={faBan} />
-                          </button>
-                        )}
-                            </td>
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
             </tbody>
@@ -148,63 +115,6 @@ const Compras = () => {
         </div>
       </div>
 
-      {showAddModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Agregar Compra</h2>
-            <input
-              type="text"
-              placeholder="Proveedor"
-              value={newCompra.proveedor}
-              onChange={(e) => setNewCompra({ ...newCompra, proveedor: e.target.value })}
-            />
-            <input
-              type="date"
-              value={newCompra.fecha}
-              onChange={(e) => setNewCompra({ ...newCompra, fecha: e.target.value })}
-            />
-
-            <h3>Productos</h3>
-            {newCompra.productos.map((producto, index) => (
-              <div key={index} className="producto-item">
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  value={producto.nombre}
-                  onChange={(e) => handleChangeProducto(index, "nombre", e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Cantidad"
-                  value={producto.cantidad}
-                  onChange={(e) => handleChangeProducto(index, "cantidad", e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Precio Unitario"
-                  value={producto.precio}
-                  onChange={(e) => handleChangeProducto(index, "precio", e.target.value)}
-                />
-                <span>Total: ${producto.total.toLocaleString()}</span>
-                <button className="btn-remove" onClick={() => handleRemoveProducto(index)}>
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-
-              </div>
-            ))}
-            <button className="btn success" onClick={handleAddProducto}>Agregar Producto</button>
-
-            <h3>Total: {calcularTotal(newCompra.productos)}</h3>
-
-            <div className="button-row">
-              <button className="btn success" onClick={handleAddCompra}>Guardar Compra</button>
-              <button className="btn close" onClick={() => setShowAddModal(false)}>Cancelar</button>
-            </div>
-
-          </div>
-        </div>
-      )}
-      
       {showDetailsModal && selectedCompra && (
         <div className="modal">
           <div className="modal-content">
@@ -214,20 +124,20 @@ const Compras = () => {
             <p><strong>Total:</strong> {selectedCompra.total}</p>
             <h3>Productos</h3>
             <ul>
-              {selectedCompra.productos.length > 0 ? (selectedCompra.productos.map((producto, index) => (
-                <li key={index}>
-                  {producto.nombre} - {producto.cantidad} x ${producto.precio.toLocaleString()} = ${producto.total.toLocaleString()}
+              {selectedCompra.productos.length > 0 ? (
+                selectedCompra.productos.map((producto, index) => (
+                  <li key={index}>
+                    {producto.nombre} - {producto.cantidad} x ${producto.precio.toLocaleString()} = ${producto.total.toLocaleString()}
                   </li>
-                  ))
-                ) : (
+                ))
+              ) : (
                 <p>No hay productos registrados.</p>
-                )}
-                </ul>
-                <button className="btn close" onClick={() => setShowDetailsModal(false)}>Cerrar</button>
-                </div>
-      </div>
-)}
-
+              )}
+            </ul>
+            <button className="btn close" onClick={() => setShowDetailsModal(false)}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
