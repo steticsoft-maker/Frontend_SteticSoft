@@ -1,5 +1,5 @@
 import React from "react";
-import NavbarAdmin from "../../components/NavbarAdmin"; // Importando el Navbar desde components
+import NavbarAdmin from "../../components/NavbarAdmin";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,7 +12,6 @@ import {
 } from "chart.js";
 import "./Dashboard.css";
 
-// Registrar los módulos de Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,7 +22,6 @@ ChartJS.register(
 );
 
 function Dashboard() {
-  // Datos ficticios de productos más vendidos por día
   const productDayData = {
     labels: ["Producto 1", "Producto 2", "Producto 3"],
     datasets: [
@@ -37,7 +35,6 @@ function Dashboard() {
     ],
   };
 
-  // Datos ficticios de productos más vendidos por semana
   const productWeekData = {
     labels: ["Producto A", "Producto B", "Producto C"],
     datasets: [
@@ -51,7 +48,6 @@ function Dashboard() {
     ],
   };
 
-  // Datos ficticios de productos más vendidos por mes
   const productMonthData = {
     labels: ["Producto X", "Producto Y", "Producto Z"],
     datasets: [
@@ -65,13 +61,12 @@ function Dashboard() {
     ],
   };
 
-  // Datos ficticios de productos más vendidos globalmente
   const productData = {
     labels: ["Día", "Semana", "Mes"],
     datasets: [
       {
         label: "Producto más vendido",
-        data: [400, 750, 900], // Valores ajustados
+        data: [400, 750, 900],
         backgroundColor: "rgba(54, 162, 235, 0.6)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
@@ -79,13 +74,12 @@ function Dashboard() {
     ],
   };
 
-  // Datos ficticios de servicios más vendidos globalmente
   const serviceData = {
     labels: ["Día", "Semana", "Mes"],
     datasets: [
       {
         label: "Servicio más vendido",
-        data: [450, 600, 800], // Valores ajustados
+        data: [450, 600, 800],
         backgroundColor: "rgba(255, 99, 132, 0.6)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
@@ -93,7 +87,7 @@ function Dashboard() {
     ],
   };
 
-  // Opciones para gráficos ajustadas
+  // Ajustes de tamaño
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -102,32 +96,14 @@ function Dashboard() {
         display: true,
         position: "top",
       },
-      tooltip: {
-        enabled: true,
-      },
-    },
-    layout: {
-      padding: 20,
     },
     scales: {
       x: {
-        beginAtZero: true,
-        grid: {
-          display: false,
-        },
-        ticks: {
-          maxRotation: 0,
-        },
+        grid: { display: false },
       },
       y: {
         beginAtZero: true,
-        grid: {
-          drawBorder: false,
-        },
-        ticks: {
-          stepSize: 100,
-          precision: 0,
-        },
+        grid: { drawBorder: false },
       },
     },
   };
@@ -138,34 +114,41 @@ function Dashboard() {
       <main className="dashboard-main">
         <h1 className="dashboard-header">Dashboard de Administración</h1>
         <div className="charts-container">
-          {/* Primera fila */}
           <div className="row">
             <div className="chart">
               <h2>Producto Más Vendido</h2>
-              <Bar data={productData} options={chartOptions} />
+              <div className="chart-wrapper">
+                <Bar data={productData} options={chartOptions} />
+              </div>
             </div>
             <div className="chart">
               <h2>Servicio Más Vendido</h2>
-              <Bar data={serviceData} options={chartOptions} />
+              <div className="chart-wrapper">
+                <Bar data={serviceData} options={chartOptions} />
+              </div>
             </div>
           </div>
 
-          {/* Segunda fila */}
           <div className="row">
             <div className="chart">
               <h2>Producto Más Vendido por Día</h2>
-              <Bar data={productDayData} options={chartOptions} />
+              <div className="chart-wrapper">
+                <Bar data={productDayData} options={chartOptions} />
+              </div>
             </div>
             <div className="chart">
               <h2>Producto Más Vendido por Semana</h2>
-              <Bar data={productWeekData} options={chartOptions} />
+              <div className="chart-wrapper">
+                <Bar data={productWeekData} options={chartOptions} />
+              </div>
             </div>
           </div>
 
-          {/* Fila independiente */}
           <div className="chart-full-width">
             <h2>Producto Más Vendido por Mes</h2>
-            <Bar data={productMonthData} options={chartOptions} />
+            <div className="chart-wrapper">
+              <Bar data={productMonthData} options={chartOptions} />
+            </div>
           </div>
         </div>
       </main>

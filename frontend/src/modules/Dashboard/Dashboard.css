@@ -1,110 +1,81 @@
-/* Estilo global */
+/* Estilos generales */
 body,
 html {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
-    /* Fondo claro uniforme */
     color: #2c3e50;
-    /* Color del texto */
     height: 100%;
     overflow: hidden;
-    /* Evita scroll innecesario */
 }
 
-/* Contenedor principal del Dashboard */
 .dashboard-container {
     display: flex;
     height: 100vh;
-    /* Altura completa del viewport */
     width: 100vw;
-    /* Ocupa todo el ancho del viewport */
     box-sizing: border-box;
-    /* Asegura que los bordes no desborden */
 }
 
-/* Área principal del Dashboard */
 .dashboard-main {
     flex: 1;
-    /* Ocupa el espacio restante */
     padding: 30px;
-    /* Ajusta el padding para maximizar espacio */
     background-color: #f5f5f5;
     overflow-y: auto;
-    /* Scroll automático si hay mucho contenido */
     box-sizing: border-box;
 }
 
-/* Cabecera del Dashboard */
 .dashboard-header {
     font-size: 2rem;
     margin-bottom: 20px;
     color: #2c3e50;
 }
 
-/* Contenedor de Gráficas */
+/* Contenedor de gráficas */
 .charts-container {
     display: flex;
     flex-direction: column;
-    /* Apila las filas verticalmente */
-    gap: 50px;
-    /* Incrementa el espacio entre filas */
+    gap: 40px;
     width: 100%;
-    /* Asegura que el contenedor ocupe todo el ancho */
     box-sizing: border-box;
 }
 
-/* Fila para las gráficas */
 .row {
     display: flex;
     justify-content: space-between;
-    /* Ocupa el ancho completo entre gráficas */
     gap: 20px;
-    /* Espaciado entre gráficas dentro de la fila */
     width: 100%;
-    /* Asegura que la fila ocupe todo el ancho */
     box-sizing: border-box;
 }
 
-/* Gráficas individuales */
+/* Ajuste de tamaño de gráficas */
 .chart {
     flex: 1;
     width: calc(50% - 20px);
-    /* Asegura que la gráfica ocupe la mitad del espacio disponible con gap incluido */
-    max-height: 450px;
-    /* Mantiene la altura actual */
-    padding: 50px;
-    /* Ajusta el padding para proporcionar espacio interno */
+    max-height: 400px;
+    padding: 30px;
     border-radius: 8px;
-    /* Bordes redondeados */
     text-align: center;
     background-color: #ffffff;
-    /* Fondo blanco */
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    /* Sombra ligera */
     overflow: hidden;
-    /* Previene desbordamientos */
 }
 
-/* Gráfica independiente (Venta de producto por mes y similares) */
+/* Nueva clase para controlar el tamaño interno */
+.chart-wrapper {
+    width: 100%;
+    height: 300px;
+}
+
+/* Ajuste para gráfica de ancho completo */
 .chart-full-width {
     width: 100%;
-    /* Asegura que la gráfica ocupe todo el ancho disponible */
-    max-width: 600px;
-    /* Limita el ancho máximo */
-    max-height: 450px;
-    /* Mantiene la altura actual */
+    max-width: 800px;
+    max-height: 400px;
     margin: 0 auto;
-    /* Centra las gráficas horizontalmente */
-    padding: 50px;
-    /* Padding consistente */
+    padding: 30px;
     border-radius: 8px;
-    /* Bordes redondeados */
     background-color: #ffffff;
-    /* Fondo blanco */
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    /* Sombra ligera */
     overflow: hidden;
-    /* Previene desbordamientos */
 }

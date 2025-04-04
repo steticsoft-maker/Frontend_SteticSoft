@@ -1,145 +1,83 @@
-/* Contenedor general del módulo */
+/* Contenedor general */
 .rol-container {
     display: flex;
     height: 100vh;
-    /* Asegura que el módulo ocupe toda la altura del viewport */
-    overflow: hidden;
-    /* Evita cualquier barra de desplazamiento adicional */
 }
 
-/* Contenido principal del módulo */
+/* Contenido principal */
 .main-content {
     flex: 1;
-    padding: 30px;
-    margin-left: 45px;
-    /* Ajustado para mantener separación adecuada */
+    padding: 20px 30px;
     background-color: #f5f5f5;
-    /* Fondo claro */
     overflow-y: auto;
-    /* Permite scroll vertical */
-    box-sizing: border-box;
 }
 
-/* Navbar lateral */
-.dashboard-sidebar {
-    width: 230px;
-    /* Tamaño reducido del Navbar (antes era mayor) */
-    background-color: #34495e;
-    /* Color oscuro consistente */
-    min-height: 100%;
-    /* Asegura que cubra toda la altura */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    /* Sombra para separarlo del contenido */
-}
-
-/* Ajuste para íconos y contenido del Navbar */
-.dashboard-links {
-    padding: 8px;
-    /* Espacio reducido alrededor de los enlaces */
-}
-
-.dashboard-link {
-    font-size: 1.1rem;
-    /* Tamaño de texto ajustado para legibilidad */
-    padding: 10px 15px;
-    /* Ajuste de espaciado interno */
-    margin-bottom: 5px;
-    /* Menor separación entre enlaces */
-    background-color: transparent;
-    color: #ecf0f1;
-    /* Texto claro */
-    border: none;
+/* Contenedor de acciones (búsqueda + botón) */
+.actions-container {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    transition: background-color 0.3s ease;
-}
-
-.dashboard-link:hover {
-    background-color: #2c3e50;
-    /* Fondo más oscuro al pasar el cursor */
+    margin-bottom: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 /* Barra de búsqueda */
 .search-input {
-    margin-bottom: 20px;
-    padding: 12px;
-    /* Mayor tamaño interno */
+    padding: 10px 15px;
     width: 100%;
-    /* Ocupa todo el ancho disponible */
+    max-width: 500px;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: white;
-    /* Fondo blanco */
     color: black;
-    /* Texto en negro */
+    flex: 1;
 }
 
-/* Botón principal para acciones */
+/* Botón principal (Agregar Rol) */
 .action-button {
-    margin-top: 30px;
-    /* Separación adecuada entre elementos */
-    margin-bottom: 30px;
-    /* Mayor espacio entre botones y tabla */
-    padding: 15px 30px;
-    /* Tamaño más grande para claridad visual */
-    font-size: 1.2rem;
-    /* Texto más grande para mayor impacto */
+    padding: 10px 20px;
+    font-size: 1rem;
     background-color: #4caf50;
-    /* Verde */
     color: white;
-    /* Texto blanco */
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
 }
 
 .action-button:hover {
     background-color: #45a049;
-    /* Color más oscuro al pasar el cursor */
-    transform: scale(1.05);
-    /* Efecto de zoom */
 }
 
 /* Tabla de Roles */
 .roles-table {
     width: 100%;
     border-collapse: collapse;
-    /* Colapsa los bordes */
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .roles-table th {
     background-color: #34495e;
-    /* Color de fondo de encabezados */
     color: white;
-    /* Texto blanco */
-    padding: 15px;
-    /* Mayor tamaño interno */
+    padding: 12px;
     text-align: center;
-    font-size: 1.1rem;
-    /* Tamaño de texto más grande */
 }
 
 .roles-table td {
     text-align: center;
-    /* Centra el contenido */
-    padding: 15px;
+    padding: 12px;
     border: 1px solid #ddd;
-    /* Bordes claros */
     color: #34495e;
-    /* Texto oscuro */
-    font-size: 1rem;
-    /* Ajuste del tamaño del texto */
 }
 
-/* Switch para anular/activar roles */
+/* Switch para anular rol */
 .switch {
     position: relative;
     display: inline-block;
     width: 40px;
-    /* Tamaño más grande para mejor interacción */
     height: 24px;
 }
 
@@ -156,11 +94,9 @@
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    /* Color de fondo por defecto */
     border-radius: 34px;
     cursor: pointer;
     transition: 0.4s;
-    /* Animación suave */
 }
 
 .slider:before {
@@ -171,122 +107,113 @@
     left: 3px;
     bottom: 3px;
     background-color: white;
-    /* Botón de la palanca */
     border-radius: 50%;
     transition: 0.4s;
-    /* Animación del botón */
 }
 
 input:checked+.slider {
     background-color: #4caf50;
-    /* Color verde cuando está activado */
 }
 
 input:checked+.slider:before {
     transform: translateX(16px);
-    /* Desplaza el botón a la derecha */
 }
 
-/* Modal de creación/edición */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo translúcido */
-    display: flex;
-    align-items: center; /* Centra verticalmente */
-    justify-content: center; /* Centra horizontalmente */
-    z-index: 1000; /* Asegura que esté encima de otros elementos */
-}
-
-/* Contenido del modal */
-.modal-content {
-    background-color: white;
-    width: 80%; /* Aumenta el tamaño del modal */
-    max-width: 900px; /* Ancho máximo */
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para mayor enfoque */
-    overflow-y: auto; /* Permite scroll si es necesario */
-    max-height: 90vh; /* Limita la altura del modal */
-    box-sizing: border-box;
-}
-
-/* Títulos y subtítulos dentro del modal */
-.modal-content h2 {
-    text-align: center; /* Centra el texto */
-    margin-bottom: 20px;
-    color: #34495e; /* Azul oscuro */
-    font-size: 1.8rem;
-}
-
-/* Entradas y selectores en el formulario */
-.modal-content input,
-.modal-content select {
+/* Estilo para el menú desplegable de roles */
+select[name="rol"] {
     width: 100%;
     padding: 12px;
-    margin-bottom: 15px;
+    margin: 10px 0;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box;
+    background-color: #fff;
+    color: #34495e;
+    cursor: pointer;
 }
 
-/* Grupo de checkboxes dentro del modal */
+select[name="rol"]:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Grupo de permisos */
 .checkbox-group {
-    margin-top: 15px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Organización en dos columnas */
-    gap: 15px;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-/* Botones del modal */
-.save-button {
-    width: calc(50% - 10px); /* Mitad del ancho menos espacio entre botones */
-    padding: 12px;
+/* Estilo para cada checkbox */
+.checkbox-item {
+    display: flex;
+    align-items: center;
     font-size: 1rem;
-    background-color: #3498db; /* Azul */
-    color: white;
+}
+
+.checkbox-item input {
+    margin-right: 10px;
+}
+
+/* Estilo base para botones del formulario */
+.save-button,
+.cancel-button,
+.edit-button {
+    width: 120px;
+    /* Ajusta según necesidad */
+    padding: 8px 12px;
+    font-size: 14px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-right: 10px; /* Espaciado entre botones */
+    margin-right: 10px;
+}
+
+/* Botón Guardar */
+.save-button {
+    background-color: #3498db !important;
+    color: white !important;
 }
 
 .save-button:hover {
-    background-color: #2980b9; /* Azul oscuro al pasar el cursor */
+    background-color: #2980b9;
 }
 
+/* Botón Cancelar */
 .cancel-button {
-    width: calc(50% - 10px); /* Mitad del ancho menos espacio entre botones */
-    padding: 12px;
-    font-size: 1rem;
-    background-color: #e74c3c; /* Rojo */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    background-color: #e74c3c !important;
+    color: white !important;
 }
 
 .cancel-button:hover {
-    background-color: #c0392b; /* Rojo oscuro al pasar el cursor */
+    background-color: #c0392b;
 }
 
+/* Botón Editar */
+.edit-button {
+    background-color: #f1c40f;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #d4ac0d;
+}
 /* Paginación */
 .pagination {
-    margin-top: 20px;
     display: flex;
     justify-content: space-between;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .pagination button {
-    padding: 10px 20px;
+    padding: 8px 14px;
     font-size: 1rem;
-    background-color: #4caf50; /* Verde */
+    background-color: #4caf50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -295,10 +222,10 @@ input:checked+.slider:before {
 }
 
 .pagination button:disabled {
-    background-color: #ccc; /* Gris claro si está deshabilitado */
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
 .pagination button:hover:enabled {
-    background-color: #45a049; /* Verde oscuro al pasar el cursor */
+    background-color: #45a049;
 }

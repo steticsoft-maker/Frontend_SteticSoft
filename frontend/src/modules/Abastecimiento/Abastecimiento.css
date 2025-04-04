@@ -2,72 +2,61 @@
 .abastecimiento-container {
     display: flex;
     height: 100vh;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+    background-color: #eef2f3;
 }
 
 /* Contenido principal */
 .main-content {
     flex: 1;
-    padding: 20px;
+    padding: 30px;
+    margin-left: 45px;
+    background-color: #ffffff;
     overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Título del módulo */
-.abastecimiento-title {
-    font-size: 2rem;
-    color: #34495e;
+/* Título */
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 1.8rem;
     margin-bottom: 20px;
 }
 
-/* Barra de búsqueda */
-.search-bar {
+/* Barra de búsqueda y botón de agregar */
+.actions-container {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+    gap: 15px;
 }
 
+/* Campo de búsqueda */
 .search-input {
     flex: 1;
     padding: 10px;
     font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: white;
-    /* Fondo blanco */
-    color: black;
-    /* Letras negras */
+    border-radius: 6px;
 }
 
-.search-input:focus {
-    border-color: #4caf50;
-    /* Resaltado al enfocar */
-    outline: none;
-}
-
-/* Espaciado entre buscador y botón */
-.actions {
-    margin-top: 20px;
-    /* Separa el botón del buscador */
-    margin-bottom: 20px;
-}
-
+/* Botón de agregar */
 .action-button {
+    background-color: #3498db;
+    color: white;
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
+    font-weight: bold;
+    border-radius: 8px;
     cursor: pointer;
-    margin-bottom: 30px;
-    /* Añadimos 3-4 cm de separación */
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: none;
+    transition: background 0.3s ease;
 }
 
 .action-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-    /* Efecto al pasar el cursor */
+    background-color: #2980b9;
 }
 
 /* Tabla de productos */
@@ -76,45 +65,44 @@
     border-collapse: collapse;
     background-color: white;
     border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.productos-table th,
-.productos-table td {
-    text-align: center;
-    padding: 10px;
-    border: 1px solid #ddd;
 }
 
 .productos-table th {
-    background-color: #34495e;
-    color: #fff;
+    background-color: #3498db;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
 }
 
 .productos-table td {
-    color: #34495e;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
-/* Botones dentro de la tabla */
+/* Botones de acción en la tabla */
+.icon-actions {
+    display: flex;
+    gap: 8px;
+}
+
 .table-button {
-    padding: 5px 10px;
-    margin: 0 5px;
-    font-size: 0.9rem;
-    background-color: #3498db;
-    color: white;
+    background: none;
     border: none;
-    border-radius: 3px;
+    font-size: 16px;
     cursor: pointer;
-    transition: opacity 0.3s ease;
+    padding: 5px;
+    transition: color 0.3s ease;
 }
 
-.table-button.delete-button {
-    background-color: #e74c3c;
+.delete-button {
+    color: #e74c3c;
 }
 
-.table-button:hover {
-    opacity: 0.8;
+.delete-button:hover {
+    color: #c0392b;
 }
 
 /* Modal */
@@ -124,68 +112,139 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    z-index: 999;
 }
 
+/* Contenedor del modal más grande */
 .modal-content {
     background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 500px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    border-radius: 12px;
+    width: 650px;
+    /* Aumentado el tamaño */
+    max-width: 95%;
     text-align: center;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilo de los campos de formulario */
-.modal-content form input {
-    display: block;
-    /* Organiza los campos verticalmente */
+/* Formulario dentro del modal */
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
     width: 100%;
-    /* Ocupa todo el ancho disponible */
-    padding: 12px;
-    /* Incrementa el tamaño interno */
-    margin-bottom: 15px;
-    /* Espacio entre los campos */
+}
+
+/* Contenedor para alinear los campos en una sola fila */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+}
+
+/* Ajuste de tamaño de cada input en el modal */
+.input-container {
+    flex: 1;
+}
+
+.input-container label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 10px;
     font-size: 1rem;
-    /* Tamaño de fuente legible */
     border: 1px solid #ccc;
-    /* Bordes claros */
-    border-radius: 5px;
-    background-color: white;
-    /* Fondo blanco */
-    color: black;
-    /* Texto negro */
-    box-sizing: border-box;
-    /* Asegura que padding no desborde */
+    border-radius: 6px;
 }
 
-/* Efecto al enfocar los campos */
-.modal-content form input:focus {
-    border-color: #4caf50;
-    /* Resalta el borde */
-    outline: none;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-    /* Efecto visual */
+/* Botones alineados correctamente */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
 }
 
-/* Botón para cerrar el modal */
-.close-button {
-    padding: 10px 20px;
+/* Botón de guardar */
+.save-button {
+    background-color: #2ecc71;
+    color: white;
+    padding: 12px 20px;
     font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.save-button:hover {
+    background-color: #27ae60;
+}
+
+/* Botón cancelar o cerrar */
+.cancel-button {
     background-color: #e74c3c;
     color: white;
-    border: none;
-    border-radius: 5px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background 0.3s ease;
+    border: none;
 }
 
-.close-button:hover {
+.cancel-button:hover {
     background-color: #c0392b;
-    transform: scale(1.05);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .productos-table th,
+    .productos-table td {
+        padding: 10px;
+    }
+
+    .modal-content {
+        width: 90%;
+    }
+
+    .actions-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .action-button,
+    .save-button,
+    .cancel-button {
+        width: 100%;
+    }
 }
