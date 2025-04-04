@@ -7,7 +7,6 @@ import Servicios from "../modules/Home/Servicios";
 import Novedades from "../modules/Home/Novedades";
 import Register from "../modules/Auth/Register";
 
-
 import Dashboard from "../modules/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute";
 
@@ -16,6 +15,7 @@ import Usuarios from "../modules/Usuarios/Usuarios";
 import Abastecimiento from "../modules/Abastecimiento/Abastecimiento"; // Módulo de abastecimiento
 import Clientes from "../modules/Clientes/Clientes"; // Módulo de clientes
 import Compras from "../modules/Compras/Compras"; // Módulo de compras
+import AgregarCompra from "../modules/Compras/agregarCompra"; // Importa el nuevo componente
 import Proveedores from "../modules/Proveedores/Proveedores"; // Módulo de proveedores
 import Ventas from "../modules/Ventas/Ventas"; // Módulo de ventas
 import ServiciosAdministrador from "../modules/Servicios/ServiciosAdministrador";
@@ -24,9 +24,8 @@ import ProductoAdministrador from "../modules/Productos/ProductoAdministrador";
 import CategoriaProducto from "../modules/Productos/CategoriaProducto";
 import Citas from "../modules/Servicios/Citas";
 import HorarioEmpleado from "../modules/Empleados/HorarioCitas";
+import Pedidos from "../modules/Ventas/Pedidos";
 import ProcesoVentas from "../modules/Ventas/ProcesoVentas";
-
-
 
 function AppRouter() {
   return (
@@ -44,6 +43,7 @@ function AppRouter() {
         <Route path="/abastecimiento" element={<PrivateRoute><Abastecimiento /></PrivateRoute>} />
         <Route path="/clientes" element={<PrivateRoute><Clientes /></PrivateRoute>} />
         <Route path="/compras" element={<PrivateRoute><Compras /></PrivateRoute>} />
+        <Route path="/agregar-compra" element={<PrivateRoute><AgregarCompra /></PrivateRoute>} /> {/* Nueva ruta */}
         <Route path="/horarioempleado" element={<PrivateRoute><HorarioEmpleado /></PrivateRoute>} />
         <Route path="/proveedores" element={<PrivateRoute><Proveedores /></PrivateRoute>} />
         <Route path="/ventas" element={<PrivateRoute><Ventas /></PrivateRoute>} />
@@ -52,8 +52,8 @@ function AppRouter() {
         <Route path="/serviciosadministrador" element={<PrivateRoute><ServiciosAdministrador /></PrivateRoute>} />
         <Route path="/categoriaservicio" element={<PrivateRoute><CategoriaServicio /></PrivateRoute>} />
         <Route path="/citas" element={<PrivateRoute><Citas /></PrivateRoute>} />
+        <Route path="/pedidos" element={<PrivateRoute><Pedidos /></PrivateRoute>} />
         <Route path="/procesoventas" element={<PrivateRoute><ProcesoVentas /></PrivateRoute>} />
-
       </Routes>
     </Router>
   );
