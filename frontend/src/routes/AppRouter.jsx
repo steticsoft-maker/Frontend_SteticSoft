@@ -15,7 +15,7 @@ import Usuarios from "../modules/Usuarios/Usuarios";
 import Abastecimiento from "../modules/Abastecimiento/Abastecimiento"; // Módulo de abastecimiento
 import Clientes from "../modules/Clientes/Clientes"; // Módulo de clientes
 import Compras from "../modules/Compras/Compras"; // Módulo de compras
-import AgregarCompra from "../modules/Compras/agregarCompra"; // Importa el nuevo componente
+import AgregarCompra from "../modules/Compras/AgregarCompra"; // Importa el nuevo componente
 import Insumos from "../modules/Insumos/Insumos";
 import CategoriaInsumos from "../modules/Insumos/CategoriaInsumos";
 import Proveedores from "../modules/Proveedores/Proveedores"; // Módulo de proveedores
