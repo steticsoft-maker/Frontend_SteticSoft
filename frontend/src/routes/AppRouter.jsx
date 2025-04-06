@@ -16,6 +16,8 @@ import Abastecimiento from "../modules/Abastecimiento/Abastecimiento"; // Módul
 import Clientes from "../modules/Clientes/Clientes"; // Módulo de clientes
 import Compras from "../modules/Compras/Compras"; // Módulo de compras
 import AgregarCompra from "../modules/Compras/agregarCompra"; // Importa el nuevo componente
+import Insumos from "../modules/Insumos/Insumos";
+import CategoriaInsumos from "../modules/Insumos/CategoriaInsumos";
 import Proveedores from "../modules/Proveedores/Proveedores"; // Módulo de proveedores
 import Ventas from "../modules/Ventas/Ventas"; // Módulo de ventas
 import ServiciosAdministrador from "../modules/Servicios/ServiciosAdministrador";
@@ -44,6 +46,8 @@ function AppRouter() {
         <Route path="/clientes" element={<PrivateRoute><Clientes /></PrivateRoute>} />
         <Route path="/compras" element={<PrivateRoute><Compras /></PrivateRoute>} />
         <Route path="/agregar-compra" element={<PrivateRoute><AgregarCompra /></PrivateRoute>} /> {/* Nueva ruta */}
+        <Route path="/insumos" element={<PrivateRoute><Insumos /></PrivateRoute>} />
+        <Route path="/CategoriaInsumos" element={<PrivateRoute><CategoriaInsumos /></PrivateRoute>} />
         <Route path="/horarioempleado" element={<PrivateRoute><HorarioEmpleado /></PrivateRoute>} />
         <Route path="/proveedores" element={<PrivateRoute><Proveedores /></PrivateRoute>} />
         <Route path="/ventas" element={<PrivateRoute><Ventas /></PrivateRoute>} />
