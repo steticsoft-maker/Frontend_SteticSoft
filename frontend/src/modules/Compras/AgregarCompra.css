@@ -8,91 +8,81 @@
     background-color: #f0f0f0; /* Fondo neutro para la página */
 }
 
-/* Contenedor Principal */
+  /* Contenedor Principal */
 .agregar-compra-container {
     display: flex;
     height: 100vh;
-    max-width: 1500px;
+    width: 1400px;
     margin: 20px auto;
-    background: #f8f9fa;
     border-radius: 8px;
+    background: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Contenido Principal */
+  /* Contenido Principal */
 .agregar-compra-content {
     flex-grow: 1;
-    padding: 20px;
+    padding: 25px;
 }
 
-/* Título */
-.titulo-compra {
+  /* Título */
+.agregar-compra-title {
     text-align: center;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: bold;
+    margin-bottom: 20px;
+}
+
+  /* Formulario */
+.form-group {
     margin-bottom: 15px;
 }
 
-/* Formulario */
-.formulario-compra {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.formulario-compra label {
+.form-group label {
+    display: block;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
-.formulario-compra input {
-    width: 100%;
+.seleccionar-proveedor,
+.LaFecha,
+.seleccionar-producto {
+    width: 90%;
     padding: 8px;
     border: 1px solid #ced4da;
     border-radius: 4px;
+    background-color: white;
+    color: black;
 }
 
-/* Botones */
-.botones-compra {
+  /* Botones */
+.btn-agregar-producto {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.btn-agregar-producto:hover {
+    background-color: #2980b9;
+}
+
+.agregar-compra-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
-}
-
-.btn {
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    color: white;
-}
-
-/* Tabla de productos */
-.productos-table {
-    width: 100%;
-    border-collapse: collapse;
     margin-top: 20px;
-    background: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.productos-table th, .productos-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.productos-table th {
-    background-color: #26415e;
-    color: white;
-}
-
-/* Totales */
-.total-container {
-    text-align: right;
-    font-size: 18px;
+.btn-guardar,
+.btn-cancelar {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
     font-weight: bold;
-    margin-top: 15px;
 }
 
 .btn-guardar {
@@ -100,31 +90,62 @@
     color: white;
 }
 
+.btn-guardar:hover {
+    background-color: #195f8d;
+}
+
 .btn-cancelar {
     background-color: #e74c3c;
     color: white;
 }
 
-.btn-agregar-producto {
-    background-color: #3498db;
-    margin: 10px;
-}
-
-.seleccionar-proveedor {
-    background-color: white;
-    color: black;
-}
-
-.LaFecha {
-    background-color: white;
-    color: black;
+.btn-cancelar:hover {
+    background-color: #c0392b;
 }
 
 .btn-icono-eliminar {
     background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.seleccionar-producto {
-    background-color: white;
-    color: black;
+.btn-icono-eliminar:hover {
+    background-color: #c0392b;
+}
+
+  /* Tabla */
+.agregar-compra-table {
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+.agregar-compra-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.agregar-compra-table th,
+.agregar-compra-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.agregar-compra-table th {
+    background-color: #3498db;
+    color: white;
+}
+
+  /* Total */
+.agregar-compra-total {
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
 }
