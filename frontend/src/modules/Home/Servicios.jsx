@@ -139,7 +139,7 @@ function Servicios() {
         </div>
       )}
 
-      <h1 className="servicios-title">Servicios Disponibles ✨</h1>
+      <h1 className="servicios-title">Servicios Disponibles</h1>
       <div className="servicios-grid">
         {services.map((service) => (
           <div key={service.id} className="servicios-card">
