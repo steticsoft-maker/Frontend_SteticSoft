@@ -124,7 +124,7 @@ const Proveedores = () => {
                                     <p><strong>Nombre:</strong> {modal.proveedor.nombre}</p>
                                     <p><strong>Documento:</strong> {modal.proveedor.documento}</p>
                                     <p><strong>Teléfono:</strong> {modal.proveedor.telefono}</p>
-                                    <p><strong>email:</strong> {modal.proveedor.email}</p>
+                                    <p><strong>Email:</strong> {modal.proveedor.email}</p>
                                     <p><strong>Dirección:</strong> {modal.proveedor.direccion}</p>
                                     <p><strong>Estado:</strong> {modal.proveedor.estado}</p>
                                     <button className="btn close" onClick={closeModal}>Cerrar</button>
