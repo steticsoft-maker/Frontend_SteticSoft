@@ -77,34 +77,30 @@ const AgregarCompra = () => {
           <h2 className="agregar-compra-title">Agregar Compra</h2>
 
           <div className="form-group">
-            <label htmlFor="proveedor">
-              Proveedor: <span style={{ color: "red" }}>*</span>
-            </label>
-            <select
-              id="proveedor"
-              value={proveedor}
-              onChange={(e) => setProveedor(e.target.value)}
-              className="seleccionar-proveedor"
-            >
-              <option value="">Seleccione un proveedor</option>
-              <option value="Proveedor 1">Proveedor 1</option>
-              <option value="Proveedor 2">Proveedor 2</option>
-              <option value="Proveedor 3">Proveedor 3</option>
-            </select>
-          </div>
+    <select
+        id="proveedor"
+        value={proveedor}
+        onChange={(e) => setProveedor(e.target.value)}
+        className="seleccionar-proveedor"
+    >
+        <option value="">Seleccione un proveedor *</option>
+        <option value="Proveedor 1">Proveedor 1</option>
+        <option value="Proveedor 2">Proveedor 2</option>
+        <option value="Proveedor 3">Proveedor 3</option>
+    </select>
+</div>
 
-          <div className="form-group">
-            <label htmlFor="fecha">
-              Fecha: <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              type="date"
-              id="fecha"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              className="LaFecha"
-            />
-          </div>
+<div className="form-group">
+    <input
+        type="date"
+        id="fecha"
+        value={fecha}
+        onChange={(e) => setFecha(e.target.value)}
+        className="LaFecha"
+        placeholder="Fecha *"
+    />
+</div>
+
 
           <button className="btn-agregar-producto" onClick={handleAgregarProducto}>
             Agregar Producto
