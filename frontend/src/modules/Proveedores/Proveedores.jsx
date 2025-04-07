@@ -9,12 +9,12 @@ const Proveedores = () => {
         { nombre: "Proveedor A", documento: "123456789", telefono: "3001234567", email: "proveedorA@example.com", direccion: "Calle 1 # 23-45", estado: "Activo" },
         { nombre: "Proveedor B", documento: "987654321", telefono: "3109876543", email: "proveedorB@example.com", direccion: "Carrera 10 # 45-67", estado: "Inactivo" },
         { nombre: "Proveedor C", documento: "763522321", telefono: "7835198234", email: "proveedorc@example.com", direccion: "Avenida 5 # 12-34", estado: "Inactivo" },
-        { nombre: "Proveedor D", documento: "877812316", telefono: "1241297032", corremaileo: "proveedord@example.com", direccion: "Diagonal 8 # 56-78", estado: "Inactivo" },
+        { nombre: "Proveedor D", documento: "877812316", telefono: "1241297032", email: "proveedord@example.com", direccion: "Diagonal 8 # 56-78", estado: "Inactivo" },
     ]);
 
     const [search, setSearch] = useState("");
     const [modal, setModal] = useState({ open: false, type: "", proveedor: null });
-    const [confirmDelete, setConfirmDelete] = useState(null);
+    const [confirmDelete, setConfirmDelete] = useState(null); // Modal de eliminación
 
     const handleSearch = (e) => setSearch(e.target.value);
 
@@ -44,12 +44,10 @@ const Proveedores = () => {
         closeModal();
     };
 
-    const confirmDeleteProveedor = (documento) => {
-        if (window.confirm("¿Estás seguro de que deseas eliminar este proveedor?")) {
-            setProveedores(proveedores.filter(p => p.documento !== documento));
-        }
+    const deleteProveedor = () => {
+        setProveedores(proveedores.filter(p => p.documento !== confirmDelete.documento));
+        setConfirmDelete(null);
     };
-    
 
     const toggleEstado = (documento) => {
         setProveedores(proveedores.map(p =>
@@ -63,11 +61,14 @@ const Proveedores = () => {
             <div className="proveedores-content">
                 <h2 className="title-h2">Gestión de Proveedores</h2>
 
-                <div className="search-bar">
-                    <input type="text" placeholder="Buscar proveedor..." value={search} onChange={handleSearch} />
+                <div className="top-bar">
+                    <div className="search-bar">
+                        <input type="text" placeholder="Buscar proveedor..." value={search} onChange={handleSearch} />
+                    </div>
+                    <button className="btnAgregarProveedor" onClick={() => openModal("agregar")}>
+                        Agregar Proveedor
+                    </button>
                 </div>
-
-                <button className="btnAgregarProveedor" onClick={() => openModal("agregar")}>Agregar Proveedor</button>
 
                 <div className="proveedores-table">
                     <table>
@@ -103,7 +104,7 @@ const Proveedores = () => {
                                         <button className="btnEditar" onClick={() => openModal("editar", proveedor)}>
                                             <FontAwesomeIcon icon={faEdit} />
                                         </button>
-                                        <button className="btn danger" onClick={() => confirmDeleteProveedor(proveedor.documento)}>
+                                        <button className="btn danger" onClick={() => setConfirmDelete(proveedor)}>
                                             <FontAwesomeIcon icon={faTrash} />
                                         </button>
                                     </td>
@@ -113,7 +114,7 @@ const Proveedores = () => {
                     </table>
                 </div>
 
-                {/* Modal */}
+                {/* Modal principal */}
                 {modal.open && (
                     <div className="modal">
                         <div className="modal-content">
@@ -131,41 +132,49 @@ const Proveedores = () => {
                             ) : (
                                 <>
                                     <h3>{modal.type === "agregar" ? "Agregar Proveedor" : "Editar Proveedor"}</h3>
-                                    <input
-                                        type="text"
-                                        placeholder="Nombre"
-                                        value={modal.proveedor.nombre}
+                                    
+                                    <label>Nombre <span className="required-asterisk">*</span></label>
+                                    <input type="text" value={modal.proveedor.nombre}
                                         onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, nombre: e.target.value } })}
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Documento"
-                                        value={modal.proveedor.documento}
+                                        placeholder="Nombre" />
+
+                                    <label>Documento <span className="required-asterisk">*</span></label>
+                                    <input type="text" value={modal.proveedor.documento}
                                         disabled={modal.type !== "agregar"}
                                         onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, documento: e.target.value } })}
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Teléfono"
-                                        value={modal.proveedor.telefono}
+                                        placeholder="Documento" />
+
+                                    <label>Teléfono <span className="required-asterisk">*</span></label>
+                                    <input type="text" value={modal.proveedor.telefono}
                                         onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, telefono: e.target.value } })}
-                                    />
-                                    <input
-                                        type="email"
-                                        placeholder="email"
-                                        value={modal.proveedor.email}
+                                        placeholder="Teléfono" />
+
+                                    <label>Email <span className="required-asterisk">*</span></label>
+                                    <input type="email" value={modal.proveedor.email}
                                         onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, email: e.target.value } })}
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Dirección"
-                                        value={modal.proveedor.direccion}
+                                        placeholder="Email" />
+
+                                    <label>Dirección <span className="required-asterisk">*</span></label>
+                                    <input type="text" value={modal.proveedor.direccion}
                                         onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, direccion: e.target.value } })}
-                                    />
+                                        placeholder="Dirección" />
+
                                     <button className="btn success" onClick={() => saveProveedor(modal.proveedor)}>Guardar</button>
                                     <button className="btn close" onClick={closeModal}>Cancelar</button>
                                 </>
                             )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Modal de confirmación para eliminar */}
+                {confirmDelete && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <h3>¿Eliminar proveedor?</h3>
+                            <p>¿Estás seguro de que deseas eliminar al proveedor <strong>{confirmDelete.nombre}</strong>?</p>
+                            <button className="btn danger" onClick={deleteProveedor}>Eliminar</button>
+                            <button className="btn close" onClick={() => setConfirmDelete(null)}>Cancelar</button>
                         </div>
                     </div>
                 )}
