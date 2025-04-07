@@ -7,13 +7,11 @@ import "./CategoriaInsumos.css";
 const CategoriaInsumos = () => {
   const [categorias, setCategorias] = useState([
     {
-      id: 1,
       nombre: "Cuidado Capilar",
       descripcion: "Productos para el cuidado del cabello",
       estado: "Activo",
     },
     {
-      id: 2,
       nombre: "Coloración",
       descripcion: "Tintes y colorantes para el cabello",
       estado: "Inactivo",
@@ -36,7 +34,7 @@ const CategoriaInsumos = () => {
     setModal({
       open: true,
       type,
-      categoria: categoria || { id: Date.now(), nombre: "", descripcion: "", estado: "Activo" },
+      categoria: categoria || { nombre: "", descripcion: "", estado: "Activo" },
     });
   };
 
@@ -49,23 +47,25 @@ const CategoriaInsumos = () => {
       setCategorias([...categorias, nuevaCategoria]);
     } else {
       setCategorias(
-        categorias.map((c) => (c.id === nuevaCategoria.id ? nuevaCategoria : c))
+        categorias.map((c) =>
+          c.nombre === nuevaCategoria.nombre ? nuevaCategoria : c
+        )
       );
     }
     closeModal();
   };
 
-  const confirmDeleteCategoria = (id) => setConfirmDelete(id);
+  const confirmDeleteCategoria = (nombre) => setConfirmDelete(nombre);
 
   const deleteCategoria = () => {
-    setCategorias(categorias.filter((c) => c.id !== confirmDelete));
+    setCategorias(categorias.filter((c) => c.nombre !== confirmDelete));
     setConfirmDelete(null);
   };
 
-  const toggleEstado = (id) => {
+  const toggleEstado = (nombre) => {
     setCategorias(
       categorias.map((c) =>
-        c.id === id ? { ...c, estado: c.estado === "Activo" ? "Inactivo" : "Activo" } : c
+        c.nombre === nombre ? { ...c, estado: c.estado === "Activo" ? "Inactivo" : "Activo" } : c
       )
     );
   };
@@ -76,19 +76,24 @@ const CategoriaInsumos = () => {
       <div className="categorias-content">
         <h2 className="title-h2">Gestión de Categorías de Insumos</h2>
 
-        <div className="search-bar">
-          <input type="text" placeholder="Buscar categoría..." value={search} onChange={handleSearch} />
-        </div>
+        <div className="top-bar">
+  <input
+    type="text"
+    className="search-input"
+    placeholder="Buscar categoría..."
+    value={search}
+    onChange={handleSearch}
+  />
+  <button className="btnAgregarcategoria" onClick={() => openModal("agregar")}>
+    Agregar Categoría
+  </button>
+</div>
 
-        <button className="btn success" onClick={() => openModal("agregar")}>
-          Agregar Categoría
-        </button>
 
         <div className="categorias-table">
           <table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Estado</th>
@@ -97,8 +102,7 @@ const CategoriaInsumos = () => {
             </thead>
             <tbody>
               {filteredCategorias.map((categoria) => (
-                <tr key={categoria.id}>
-                  <td>{categoria.id}</td>
+                <tr key={categoria.nombre}>
                   <td>{categoria.nombre}</td>
                   <td>{categoria.descripcion || "Sin descripción"}</td>
                   <td>
@@ -106,7 +110,7 @@ const CategoriaInsumos = () => {
                       <input
                         type="checkbox"
                         checked={categoria.estado === "Activo"}
-                        onChange={() => toggleEstado(categoria.id)}
+                        onChange={() => toggleEstado(categoria.nombre)}
                       />
                       <span className="slider"></span>
                     </label>
@@ -118,7 +122,7 @@ const CategoriaInsumos = () => {
                     <button className="btn info" onClick={() => openModal("editar", categoria)}>
                       <FontAwesomeIcon icon={faEdit} />
                     </button>
-                    <button className="btn danger" onClick={() => confirmDeleteCategoria(categoria.id)}>
+                    <button className="btn danger" onClick={() => confirmDeleteCategoria(categoria.nombre)}>
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </td>
@@ -135,7 +139,6 @@ const CategoriaInsumos = () => {
               {modal.type === "ver" ? (
                 <>
                   <h3>Detalles de la Categoría</h3>
-                  <p><strong>ID:</strong> {modal.categoria.id}</p>
                   <p><strong>Nombre:</strong> {modal.categoria.nombre}</p>
                   <p><strong>Descripción:</strong> {modal.categoria.descripcion || "Sin descripción"}</p>
                   <p><strong>Estado:</strong> {modal.categoria.estado}</p>
@@ -144,9 +147,10 @@ const CategoriaInsumos = () => {
               ) : (
                 <>
                   <h3>{modal.type === "agregar" ? "Agregar Categoría" : "Editar Categoría"}</h3>
-                  <label>ID</label>
-                  <input type="text" value={modal.categoria.id} disabled />
-                  <label>Nombre</label>
+
+                  <label>
+                    Nombre <span className="required">*</span>
+                  </label>
                   <input
                     type="text"
                     placeholder="Nombre"
@@ -155,6 +159,7 @@ const CategoriaInsumos = () => {
                       setModal({ ...modal, categoria: { ...modal.categoria, nombre: e.target.value } })
                     }
                   />
+
                   <label>Descripción (Opcional)</label>
                   <textarea
                     placeholder="Descripción"
