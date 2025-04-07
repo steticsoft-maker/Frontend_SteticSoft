@@ -1,12 +1,13 @@
+// ...importaciones (sin cambios)
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faFilePdf, faBan } from "@fortawesome/free-solid-svg-icons";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./Compras.css";
 
 const Compras = () => {
-  const navigate = useNavigate(); // Inicializa el hook de navegación
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [compras, setCompras] = useState([
     { proveedor: "Proveedor A", fecha: "24/03/2025", total: "$500,000", estado: "Completado", productos: [] },
@@ -16,16 +17,28 @@ const Compras = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedCompra, setSelectedCompra] = useState(null);
 
+  const [showAnularModal, setShowAnularModal] = useState(false);
+  const [indexToAnular, setIndexToAnular] = useState(null);
+
+  const [showPDFModal, setShowPDFModal] = useState(false);
+
   const handleAnular = (index) => {
-    if (window.confirm("¿Está seguro de que desea anular esta compra?")) {
+    setIndexToAnular(index);
+    setShowAnularModal(true);
+  };
+
+  const confirmAnularCompra = () => {
+    if (indexToAnular !== null) {
       const updatedCompras = [...compras];
-      updatedCompras[index].estado = "Anulada";
+      updatedCompras[indexToAnular].estado = "Anulada";
       setCompras(updatedCompras);
+      setShowAnularModal(false);
+      setIndexToAnular(null);
     }
   };
 
   const handleGenerarPDF = () => {
-    alert("Función de generación de PDF en desarrollo.");
+    setShowPDFModal(true); // Mostrar modal en vez de alerta
   };
 
   const handleShowDetails = (compra) => {
@@ -45,17 +58,18 @@ const Compras = () => {
       <div className="compras-content">
         <h2 className="title-h2">Gestión de Compras</h2>
 
-        <div className="search-bar">
+        <div className="barra-superior">
           <input
             type="text"
             placeholder="Buscar compra..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            className="input-busqueda"
           />
-        </div>
-
-        <div className="compras-buttons">
-          <button className="btn success" onClick={() => navigate("/agregar-compra")}>
+          <button
+            className="btnAgregarCompra"
+            onClick={() => navigate("/agregar-compra")}
+          >
             Agregar Compra
           </button>
         </div>
@@ -96,14 +110,26 @@ const Compras = () => {
                       )}
                     </td>
                     <td className="acciones">
-                      <button className="btnVerCompra" onClick={() => handleShowDetails(compra)} title="Ver detalles">
+                      <button
+                        className="btnVerCompra"
+                        onClick={() => handleShowDetails(compra)}
+                        title="Ver detalles"
+                      >
                         <FontAwesomeIcon icon={faEye} />
                       </button>
-                      <button className="btnPDFCompra" onClick={handleGenerarPDF} title="Generar PDF">
+                      <button
+                        className="btnPDFCompra"
+                        onClick={handleGenerarPDF}
+                        title="Generar PDF"
+                      >
                         <FontAwesomeIcon icon={faFilePdf} />
                       </button>
                       {compra.estado !== "Anulada" && (
-                        <button className="btn danger" onClick={() => handleAnular(index)} title="Anular compra">
+                        <button
+                          className="btn danger"
+                          onClick={() => handleAnular(index)}
+                          title="Anular compra"
+                        >
                           <FontAwesomeIcon icon={faBan} />
                         </button>
                       )}
@@ -115,6 +141,7 @@ const Compras = () => {
         </div>
       </div>
 
+      {/* Modal de Detalles */}
       {showDetailsModal && selectedCompra && (
         <div className="modal">
           <div className="modal-content">
@@ -135,6 +162,35 @@ const Compras = () => {
               )}
             </ul>
             <button className="btn close" onClick={() => setShowDetailsModal(false)}>Cerrar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmación para Anular */}
+      {showAnularModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Confirmar Anulación</h2>
+            <p>¿Está seguro de que desea anular esta compra?</p>
+            <div className="modal-buttons">
+              <button className="btn danger" onClick={confirmAnularCompra}>
+                Sí, anular
+              </button>
+              <button className="btn close" onClick={() => setShowAnularModal(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para PDF en desarrollo */}
+      {showPDFModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Generar PDF</h2>
+            <p>La funcionalidad para generar el PDF está en desarrollo.</p>
+            <button className="btn close" onClick={() => setShowPDFModal(false)}>Cerrar</button>
           </div>
         </div>
       )}
