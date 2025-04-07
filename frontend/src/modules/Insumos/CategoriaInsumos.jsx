@@ -147,18 +147,12 @@ const CategoriaInsumos = () => {
               ) : (
                 <>
                   <h3>{modal.type === "agregar" ? "Agregar Categoría" : "Editar Categoría"}</h3>
-
-                  <label>
-                    Nombre <span className="required">*</span>
-                  </label>
                   <input
-                    type="text"
-                    placeholder="Nombre"
-                    value={modal.categoria.nombre}
-                    onChange={(e) =>
-                      setModal({ ...modal, categoria: { ...modal.categoria, nombre: e.target.value } })
-                    }
-                  />
+                  type="text"
+                  placeholder="Nombre *"
+                  value={modal.categoria.nombre}
+                  onChange={(e) =>
+                    setModal({ ...modal, categoria: { ...modal.categoria, nombre: e.target.value } })}/>
 
                   <label>Descripción (Opcional)</label>
                   <textarea
