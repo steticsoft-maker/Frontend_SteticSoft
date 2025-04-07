@@ -1,3 +1,4 @@
+// Reemplaza tu código completo por este actualizado:
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,7 +22,10 @@ const AgregarCompra = () => {
   const [total, setTotal] = useState(0);
 
   const handleAgregarProducto = () => {
-    setProductos([...productos, { nombre: "", cantidad: 1, precio: 0, total: 0 }]);
+    setProductos([
+      ...productos,
+      { nombre: "", cantidad: 1, precio: 0, total: 0 },
+    ]);
   };
 
   const handleEliminarProducto = (index) => {
@@ -32,12 +36,17 @@ const AgregarCompra = () => {
 
   const handleCambioProducto = (index, campo, valor) => {
     const nuevosProductos = [...productos];
+
     if (campo === "nombre") {
       const productoSeleccionado = productosFalsos.find((p) => p.nombre === valor);
+      nuevosProductos[index].nombre = valor;
       nuevosProductos[index].precio = productoSeleccionado ? productoSeleccionado.precio : 0;
+    } else if (campo === "cantidad") {
+      nuevosProductos[index].cantidad = Number(valor);
+    } else if (campo === "precio") {
+      nuevosProductos[index].precio = Number(valor);
     }
 
-    nuevosProductos[index][campo] = campo === "cantidad" || campo === "precio" ? Number(valor) : valor;
     nuevosProductos[index].total = nuevosProductos[index].cantidad * nuevosProductos[index].precio;
     setProductos(nuevosProductos);
     actualizarTotal(nuevosProductos);
@@ -56,8 +65,8 @@ const AgregarCompra = () => {
       total,
     };
 
-    console.log("Compra guardada (simulada):", compra); // Simula guardado
-    navigate("/compras"); // Redirige
+    console.log("Compra guardada (simulada):", compra);
+    navigate("/compras");
   };
 
   return (
@@ -68,7 +77,9 @@ const AgregarCompra = () => {
           <h2 className="agregar-compra-title">Agregar Compra</h2>
 
           <div className="form-group">
-            <label htmlFor="proveedor">Proveedor:</label>
+            <label htmlFor="proveedor">
+              Proveedor: <span style={{ color: "red" }}>*</span>
+            </label>
             <select
               id="proveedor"
               value={proveedor}
@@ -83,7 +94,9 @@ const AgregarCompra = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="fecha">Fecha:</label>
+            <label htmlFor="fecha">
+              Fecha: <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="date"
               id="fecha"
