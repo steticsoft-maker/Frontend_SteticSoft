@@ -19,7 +19,7 @@ body {
 
 .home-header h1 {
     font-size: 2.5rem;
-    color: #d2691e;
+    color: #eb0985;
 }
 
 .home-header p {
@@ -36,7 +36,7 @@ body {
 }
 
 .home-card {
-    background-color: #fffaf0;
+    background-color: #e9d5e2;
     /* Fondo cálido suave */
     border-radius: 10px;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
@@ -53,7 +53,7 @@ body {
 }
 
 .home-card h2 {
-    color: #cd5c5c;
+    color: #eb0985;
     margin-bottom: 10px;
 }
 
