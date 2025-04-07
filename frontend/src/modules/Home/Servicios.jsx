@@ -9,26 +9,56 @@ function Servicios() {
   const [services, setServices] = useState([
     {
       id: 1,
-      name: "Jardinería",
+      name: "Corte de Cabello Masculino",
       image: "ruta-a-la-imagen", // Reemplazar con la URL de la imagen
-      price: 50,
-      description: "Mantenimiento completo de jardines",
-      duration: "3 horas",
+      price: 25000,
+      description: "Corte moderno y a la medida",
+      duration: "45 minutos",
       fullDescription:
-        "Incluye poda, riego, fertilización y limpieza de jardines.",
+        "Servicio de corte con técnicas actualizadas, personalizado según tu estilo. Incluye lavado y finalizado con productos de calidad.",
     },
     {
       id: 2,
-      name: "Reparación de Electrodomésticos",
-      image: "ruta-a-la-imagen", // Reemplazar con la URL de la imagen
-      price: 100,
-      description: "Reparación general de electrodomésticos",
-      duration: "4 horas",
+      name: "Afeitado Clásico",
+      image: "ruta-a-la-imagen",
+      price: 15000,
+      description: "Afeitado tradicional con toalla caliente",
+      duration: "30 minutos",
       fullDescription:
-        "Servicio especializado para reparar electrodomésticos como lavadoras, refrigeradores y más.",
+        "Experiencia relajante con afeitado a navaja, aplicación de toalla caliente, espuma y loción refrescante.",
     },
-    // Más servicios...
+    {
+      id: 3,
+      name: "Tratamiento Capilar",
+      image: "ruta-a-la-imagen",
+      price: 35000,
+      description: "Nutrición intensiva para el cabello",
+      duration: "1 hora",
+      fullDescription:
+        "Tratamiento profundo con productos profesionales que revitalizan, hidratan y fortalecen tu cabello.",
+    },
+    {
+      id: 4,
+      name: "Diseño de Barba",
+      image: "ruta-a-la-imagen",
+      price: 20000,
+      description: "Estiliza y define tu barba",
+      duration: "40 minutos",
+      fullDescription:
+        "Corte y perfilado de barba según la forma de tu rostro. Incluye limpieza y aplicación de aceites esenciales.",
+    },
+    {
+      id: 5,
+      name: "Depilación Facial con Cera",
+      image: "ruta-a-la-imagen",
+      price: 18000,
+      description: "Elimina el vello no deseado de forma segura",
+      duration: "20 minutos",
+      fullDescription:
+        "Depilación con cera caliente para cejas, bozo o mejillas. Resultado limpio y duradero.",
+    },
   ]);
+
   const [cart, setCart] = useState([]);
   const [modalService, setModalService] = useState(null);
   const [showCart, setShowCart] = useState(false); // Estado para mostrar/ocultar el carrito
