@@ -132,35 +132,30 @@ const Proveedores = () => {
                             ) : (
                                 <>
                                     <h3>{modal.type === "agregar" ? "Agregar Proveedor" : "Editar Proveedor"}</h3>
-                                    
-                                    <label>Nombre <span className="required-asterisk">*</span></label>
                                     <input type="text" value={modal.proveedor.nombre}
-                                        onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, nombre: e.target.value } })}
-                                        placeholder="Nombre" />
+                                    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, nombre: e.target.value } })}
+                                    placeholder="Nombre *" />
 
-                                    <label>Documento <span className="required-asterisk">*</span></label>
                                     <input type="text" value={modal.proveedor.documento}
-                                        disabled={modal.type !== "agregar"}
-                                        onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, documento: e.target.value } })}
-                                        placeholder="Documento" />
+                                    disabled={modal.type !== "agregar"}
+                                    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, documento: e.target.value } })}
+                                    placeholder="Documento *" />
 
-                                    <label>Teléfono <span className="required-asterisk">*</span></label>
                                     <input type="text" value={modal.proveedor.telefono}
-                                        onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, telefono: e.target.value } })}
-                                        placeholder="Teléfono" />
+                                    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, telefono: e.target.value } })}
+                                    placeholder="Teléfono *" />
 
-                                    <label>Email <span className="required-asterisk">*</span></label>
-                                    <input type="email" value={modal.proveedor.email}
-                                        onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, email: e.target.value } })}
-                                        placeholder="Email" />
+<input type="email" value={modal.proveedor.email}
+    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, email: e.target.value } })}
+    placeholder="Email *" />
 
-                                    <label>Dirección <span className="required-asterisk">*</span></label>
-                                    <input type="text" value={modal.proveedor.direccion}
-                                        onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, direccion: e.target.value } })}
-                                        placeholder="Dirección" />
+<input type="text" value={modal.proveedor.direccion}
+    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, direccion: e.target.value } })}
+    placeholder="Dirección *" />
 
-                                    <button className="btn success" onClick={() => saveProveedor(modal.proveedor)}>Guardar</button>
-                                    <button className="btn close" onClick={closeModal}>Cancelar</button>
+<button className="btn success" onClick={() => saveProveedor(modal.proveedor)}>Guardar</button>
+<button className="btn close" onClick={closeModal}>Cancelar</button>
+
                                 </>
                             )}
                         </div>
