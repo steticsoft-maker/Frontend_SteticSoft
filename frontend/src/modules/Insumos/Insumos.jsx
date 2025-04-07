@@ -158,69 +158,62 @@ const Insumos = () => {
                             ) : (
                                 <>
                                     <h3>{modal.type === "agregar" ? "Agregar Insumo" : "Editar Insumo"}</h3>
-
                                     <form className="modal-form-grid">
                                         <div>
-                                            <label>Nombre <span className="required">*</span></label>
                                             <input
-                                                type="text"
-                                                value={formData.nombre}
-                                                onChange={(e) => {
-                                                    setFormData({ ...formData, nombre: e.target.value });
-                                                    setFormErrors({ ...formErrors, nombre: "" });
-                                                }}
-                                            />
+                                            type="text"
+                                            value={formData.nombre}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, nombre: e.target.value });
+                                                setFormErrors({ ...formErrors, nombre: "" });
+                                            }}
+                                            placeholder="Nombre *"/>
                                             {formErrors.nombre && <span className="error">{formErrors.nombre}</span>}
-                                        </div>
-
-                                        <div>
-                                            <label>Categoría <span className="required">*</span></label>
-                                            <select
+                                            </div>
+                                            <div>
+                                                <select
                                                 value={formData.categoria}
                                                 onChange={(e) => {
                                                     setFormData({ ...formData, categoria: e.target.value });
-                                                    setFormErrors({ ...formErrors, categoria: "" });
-                                                }}
-                                            >
-                                                <option value="">Seleccionar categoría</option>
-                                                {categoriasDisponibles.map((cat, idx) => (
-                                                    <option key={idx} value={cat}>{cat}</option>
-                                                ))}
-                                            </select>
-                                            {formErrors.categoria && <span className="error">{formErrors.categoria}</span>}
-                                        </div>
+                                                    setFormErrors({ ...formErrors, categoria: "" });}}>
+                                                        <option className="SeleccionarCategoria" value="">Asignar categoría *</option>
+                                                        {categoriasDisponibles.map((cat, idx) => (
+                                                            <option key={idx} value={cat}>{cat}</option>
+                                                            ))}
+                                                            </select>
+                                                            {formErrors.categoria && <span className="error">{formErrors.categoria}</span>}
+                                                            </div>
+                            <div>
+                                <input
+                                type="number"
+                                value={formData.cantidad}
+                                onChange={(e) => {
+                setFormData({ ...formData, cantidad: Number(e.target.value) });
+                setFormErrors({ ...formErrors, cantidad: "" });
+            }}
+            placeholder="Cantidad *"
+        />
+        {formErrors.cantidad && <span className="error">{formErrors.cantidad}</span>}
+    </div>
 
-                                        <div>
-                                            <label>Cantidad <span className="required">*</span></label>
-                                            <input
-                                                type="number"
-                                                value={formData.cantidad}
-                                                onChange={(e) => {
-                                                    setFormData({ ...formData, cantidad: Number(e.target.value) });
-                                                    setFormErrors({ ...formErrors, cantidad: "" });
-                                                }}
-                                            />
-                                            {formErrors.cantidad && <span className="error">{formErrors.cantidad}</span>}
-                                        </div>
+    <div>
+        <input
+            type="number"
+            value={formData.precio}
+            onChange={(e) => {
+                setFormData({ ...formData, precio: Number(e.target.value) });
+                setFormErrors({ ...formErrors, precio: "" });
+            }}
+            placeholder="Precio *"
+        />
+        {formErrors.precio && <span className="error">{formErrors.precio}</span>}
+    </div>
 
-                                        <div>
-                                            <label>Precio <span className="required">*</span></label>
-                                            <input
-                                                type="number"
-                                                value={formData.precio}
-                                                onChange={(e) => {
-                                                    setFormData({ ...formData, precio: Number(e.target.value) });
-                                                    setFormErrors({ ...formErrors, precio: "" });
-                                                }}
-                                            />
-                                            {formErrors.precio && <span className="error">{formErrors.precio}</span>}
-                                        </div>
-
-                                        <div className="full-width">
-                                            <button className="btn success" type="button" onClick={saveInsumo}>Guardar</button>
-                                            <button className="btn close" type="button" onClick={closeModal}>Cancelar</button>
-                                        </div>
-                                    </form>
+    <div className="full-width">
+        <button className="btn success" type="button" onClick={saveInsumo}>Guardar</button>
+        <button className="btn close" type="button" onClick={closeModal}>Cancelar</button>
+    </div>
+</form>
                                 </>
                             )}
                         </div>
