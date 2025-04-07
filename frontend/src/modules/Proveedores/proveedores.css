@@ -166,14 +166,43 @@ h2.title-h2 {
     color: #333;
 }
 
-.btnAgregarProveedor {
-    background-color: #3498db;
-}
-
 .btnVer {
     background-color: #3498db;
 }
 
 .btnEditar {
     background-color: #3498db;
+}
+
+.btnVer:hover {
+    background-color: #2980b9;
+}
+
+.btnEditar:hover {
+    background-color: #2980b9;
+}
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.search-bar {
+    flex: 1;
+}
+
+.btnAgregarProveedor {
+    padding: 12px 24px;
+    font-size: 1rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btnAgregarProveedor:hover {
+    background-color: #2980b9;
 }
