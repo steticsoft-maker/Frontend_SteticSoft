@@ -12,9 +12,12 @@ const Insumos = () => {
         { nombre: "Crema de manos", categoria: "Cuidado Personal", cantidad: 30, precio: 40000, estado: "Inactivo" }
     ]);
 
+    const categoriasDisponibles = ["Cuidado Capilar", "Coloración", "Maquillaje", "Cuidado Personal"];
+
     const [search, setSearch] = useState("");
     const [modal, setModal] = useState({ open: false, type: "", index: null });
     const [formData, setFormData] = useState({ nombre: "", categoria: "", cantidad: 0, precio: 0 });
+    const [formErrors, setFormErrors] = useState({});
     const [confirmDelete, setConfirmDelete] = useState(null);
 
     const handleSearch = (e) => setSearch(e.target.value);
@@ -26,9 +29,9 @@ const Insumos = () => {
 
     const openModal = (type, index = null) => {
         setModal({ open: true, type, index });
-
+        setFormErrors({});
         if (type === "editar" && index !== null) {
-            setFormData(insumos[index]); // Cargar datos en el formulario
+            setFormData(insumos[index]);
         } else if (type === "agregar") {
             setFormData({ nombre: "", categoria: "", cantidad: 0, precio: 0 });
         }
@@ -36,14 +39,27 @@ const Insumos = () => {
 
     const closeModal = () => {
         setModal({ open: false, type: "", index: null });
+        setFormErrors({});
     };
 
     const saveInsumo = () => {
+        const errors = {};
+        if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio";
+        if (!formData.categoria) errors.categoria = "Seleccione una categoría";
+        if (formData.cantidad <= 0) errors.cantidad = "La cantidad debe ser mayor que 0";
+        if (formData.precio <= 0) errors.precio = "El precio debe ser mayor que 0";
+
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
+
         if (modal.type === "agregar") {
-            setInsumos([...insumos, formData]);
+            setInsumos([...insumos, { ...formData, estado: "Activo" }]);
         } else if (modal.type === "editar" && modal.index !== null) {
             setInsumos(insumos.map((i, idx) => (idx === modal.index ? formData : i)));
         }
+
         closeModal();
     };
 
@@ -66,12 +82,19 @@ const Insumos = () => {
             <div className="insumos-content">
                 <h2 className="title-h2">Gestión de Insumos</h2>
 
-                <div className="search-bar">
-                    <input type="text" placeholder="Buscar insumo..." value={search} onChange={handleSearch} />
-                </div>
-
-                <button className="btn success" onClick={() => openModal("agregar")}>Agregar Insumo</button>
-
+                <div className="acciones-barra">
+                    <div className="search-bar">
+                        <input
+                        type="text"
+                        placeholder="Buscar insumo..."
+                        value={search}
+                        onChange={handleSearch}
+                        />
+                        </div>
+                        <button className="btn-agregar-insumo" onClick={() => openModal("agregar")}>
+                            Agregar Insumo
+                            </button>
+                            </div>
                 <div className="insumos-table">
                     <table>
                         <thead>
@@ -93,10 +116,10 @@ const Insumos = () => {
                                     <td>${insumo.precio.toLocaleString()}</td>
                                     <td>
                                         <label className="switch">
-                                            <input 
-                                                type="checkbox" 
-                                                checked={insumo.estado === "Activo"} 
-                                                onChange={() => toggleEstado(index)} 
+                                            <input
+                                                type="checkbox"
+                                                checked={insumo.estado === "Activo"}
+                                                onChange={() => toggleEstado(index)}
                                             />
                                             <span className="slider round"></span>
                                         </label>
@@ -135,32 +158,69 @@ const Insumos = () => {
                             ) : (
                                 <>
                                     <h3>{modal.type === "agregar" ? "Agregar Insumo" : "Editar Insumo"}</h3>
-                                    <label>Nombre</label>
-                                    <input
-                                        type="text"
-                                        value={formData.nombre}
-                                        onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                                    />
-                                    <label>Categoría</label>
-                                    <input
-                                        type="text"
-                                        value={formData.categoria}
-                                        onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                                    />
-                                    <label>Cantidad</label>
-                                    <input
-                                        type="number"
-                                        value={formData.cantidad}
-                                        onChange={(e) => setFormData({ ...formData, cantidad: Number(e.target.value) })}
-                                    />
-                                    <label>Precio</label>
-                                    <input
-                                        type="number"
-                                        value={formData.precio}
-                                        onChange={(e) => setFormData({ ...formData, precio: Number(e.target.value) })}
-                                    />
-                                    <button className="btn success" onClick={saveInsumo}>Guardar</button>
-                                    <button className="btn close" onClick={closeModal}>Cancelar</button>
+
+                                    <form className="modal-form-grid">
+                                        <div>
+                                            <label>Nombre <span className="required">*</span></label>
+                                            <input
+                                                type="text"
+                                                value={formData.nombre}
+                                                onChange={(e) => {
+                                                    setFormData({ ...formData, nombre: e.target.value });
+                                                    setFormErrors({ ...formErrors, nombre: "" });
+                                                }}
+                                            />
+                                            {formErrors.nombre && <span className="error">{formErrors.nombre}</span>}
+                                        </div>
+
+                                        <div>
+                                            <label>Categoría <span className="required">*</span></label>
+                                            <select
+                                                value={formData.categoria}
+                                                onChange={(e) => {
+                                                    setFormData({ ...formData, categoria: e.target.value });
+                                                    setFormErrors({ ...formErrors, categoria: "" });
+                                                }}
+                                            >
+                                                <option value="">Seleccionar categoría</option>
+                                                {categoriasDisponibles.map((cat, idx) => (
+                                                    <option key={idx} value={cat}>{cat}</option>
+                                                ))}
+                                            </select>
+                                            {formErrors.categoria && <span className="error">{formErrors.categoria}</span>}
+                                        </div>
+
+                                        <div>
+                                            <label>Cantidad <span className="required">*</span></label>
+                                            <input
+                                                type="number"
+                                                value={formData.cantidad}
+                                                onChange={(e) => {
+                                                    setFormData({ ...formData, cantidad: Number(e.target.value) });
+                                                    setFormErrors({ ...formErrors, cantidad: "" });
+                                                }}
+                                            />
+                                            {formErrors.cantidad && <span className="error">{formErrors.cantidad}</span>}
+                                        </div>
+
+                                        <div>
+                                            <label>Precio <span className="required">*</span></label>
+                                            <input
+                                                type="number"
+                                                value={formData.precio}
+                                                onChange={(e) => {
+                                                    setFormData({ ...formData, precio: Number(e.target.value) });
+                                                    setFormErrors({ ...formErrors, precio: "" });
+                                                }}
+                                            />
+                                            {formErrors.precio && <span className="error">{formErrors.precio}</span>}
+                                        </div>
+
+                                        <div className="full-width">
+                                            <button className="btn success" type="button" onClick={saveInsumo}>Guardar</button>
+                                            <button className="btn close" type="button" onClick={closeModal}>Cancelar</button>
+                                        </div>
+                                    </form>
                                 </>
                             )}
                         </div>
