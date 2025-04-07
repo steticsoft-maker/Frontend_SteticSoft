@@ -6,10 +6,10 @@ import "./proveedores.css";
 
 const Proveedores = () => {
     const [proveedores, setProveedores] = useState([
-        { nombre: "Proveedor A", documento: "123456789", telefono: "3001234567", email: "proveedorA@example.com", direccion: "Calle 1 # 23-45", estado: "Activo" },
-        { nombre: "Proveedor B", documento: "987654321", telefono: "3109876543", email: "proveedorB@example.com", direccion: "Carrera 10 # 45-67", estado: "Inactivo" },
-        { nombre: "Proveedor C", documento: "763522321", telefono: "7835198234", email: "proveedorc@example.com", direccion: "Avenida 5 # 12-34", estado: "Inactivo" },
-        { nombre: "Proveedor D", documento: "877812316", telefono: "1241297032", email: "proveedord@example.com", direccion: "Diagonal 8 # 56-78", estado: "Inactivo" },
+        { nombre: "Proveedor A", documento: "123456789", telefono: "3001234567", Email: "proveedorA@example.com", direccion: "Calle 1 # 23-45", estado: "Activo" },
+        { nombre: "Proveedor B", documento: "987654321", telefono: "3109876543", Email: "proveedorB@example.com", direccion: "Carrera 10 # 45-67", estado: "Inactivo" },
+        { nombre: "Proveedor C", documento: "763522321", telefono: "7835198234", Email: "proveedorc@example.com", direccion: "Avenida 5 # 12-34", estado: "Inactivo" },
+        { nombre: "Proveedor D", documento: "877812316", telefono: "1241297032", Email: "proveedord@example.com", direccion: "Diagonal 8 # 56-78", estado: "Inactivo" },
     ]);
 
     const [search, setSearch] = useState("");
