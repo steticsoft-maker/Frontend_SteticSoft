@@ -6,33 +6,29 @@
 }
 
 .productos-title {
-    font-size: 3rem;
+    font-size: 30px;
     /* Tamaño grande para destacar */
     text-align: center;
     /* Centrado horizontalmente */
     margin-top: 20px;
     margin-bottom: 40px;
-    color: #d2691e;
-    /* Tono cálido y elegante */
-    font-weight: bold;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    /* Sombra ligera para dinamismo */
-    animation: fadeIn 1.5s ease-in-out;
-    /* Animación para hacerlo dinámico */
+    color: #eb0985;
 }
 
+
 /* Animación */
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
         transform: translateY(-20px);
     }
-
     100% {
         opacity: 1;
         transform: translateY(0);
     }
 }
+
 .productos-grid {
     display: flex;
     flex-wrap: wrap;
@@ -73,13 +69,13 @@
 }
 
 .primary-button {
-    background-color: #ff7f50;
+    color: #eb0985;
     /* Coral */
     color: white;
 }
 
 .primary-button:hover {
-    background-color: #d2691e;
+    background-color: #bd096c;
     /* Coral oscuro */
 }
 
@@ -107,7 +103,7 @@
 }
 
 .cart-count {
-    background-color: #ff0000;
+    background-color: #eb0985;
     /* Fondo rojo para indicar cantidad */
     color: white;
     border-radius: 50%;
@@ -116,7 +112,9 @@
     margin-left: 5px;
 }
 
+
 /* Modal del carrito */
+
 .cart-modal {
     position: fixed;
     top: 20%;
@@ -128,7 +126,9 @@
     max-width: 300px;
 }
 
+
 /* Modal */
+
 .modal {
     position: fixed;
     top: 0;
