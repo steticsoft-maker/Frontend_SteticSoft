@@ -7,26 +7,76 @@ function Productos() {
   const [products, setProducts] = useState([
     {
       id: 1,
-      name: "Manzanas",
+      name: "Shampoo Hidratante",
       image: "ruta-a-la-imagen", // Reemplazar con una URL válida
-      price: 3,
-      description: "Manzanas frescas y jugosas",
-      weight: "1kg",
+      price: 25000,
+      description: "Limpieza profunda y brillo natural",
+      weight: "500ml",
       fullDescription:
-        "Manzanas frescas, ideales para ensaladas y snacks saludables.",
+        "Shampoo ideal para cabello seco, ayuda a hidratar profundamente y aporta suavidad.",
     },
     {
       id: 2,
-      name: "Plátanos",
+      name: "Tratamiento Capilar Keratina",
       image: "ruta-a-la-imagen", // Reemplazar con una URL válida
-      price: 2,
-      description: "Plátanos maduros",
-      weight: "1.5kg",
+      price: 40000,
+      description: "Repara y fortalece tu cabello",
+      weight: "300ml",
       fullDescription:
-        "Plátanos maduros listos para consumo, ideales para postres o snacks saludables.",
+        "Tratamiento con keratina que reestructura el cabello dañado y reduce el frizz.",
     },
-    // Más productos...
+    {
+      id: 3,
+      name: "Gel para Cabello",
+      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      price: 15000,
+      description: "Fijación fuerte sin residuos",
+      weight: "250g",
+      fullDescription:
+        "Gel profesional de larga duración, no deja residuos y mantiene el peinado todo el día.",
+    },
+    {
+      id: 4,
+      name: "Cera para Cabello",
+      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      price: 18000,
+      description: "Control total con acabado natural",
+      weight: "100g",
+      fullDescription:
+        "Cera ideal para estilos definidos con textura y brillo natural.",
+    },
+    {
+      id: 5,
+      name: "Tijeras Profesionales",
+      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      price: 70000,
+      description: "Acero inoxidable de alta precisión",
+      weight: "200g",
+      fullDescription:
+        "Tijeras profesionales para corte de cabello, ideales para estilistas exigentes.",
+    },
+    {
+      id: 6,
+      name: "Peine de Carbono",
+      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      price: 8000,
+      description: "Antiestático y resistente al calor",
+      weight: "50g",
+      fullDescription:
+        "Peine ideal para cortes y secado con secador. Resistente y flexible.",
+    },
+    {
+      id: 7,
+      name: "Labial",
+      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      price: 22000,
+      description: "Color intenso y labios humectados todo el día",
+      weight: "4g",
+      fullDescription:
+        "Labial de larga duración con fórmula cremosa que hidrata y protege tus labios. Disponible en tonos vibrantes y elegantes para cada ocasión.",
+    },
   ]);
+
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false); // Estado para mostrar/ocultar el carrito
 
@@ -99,7 +149,7 @@ function Productos() {
         </div>
       )}
 
-      <h1 className="productos-title">✨ Productos Disponibles ✨</h1>
+      <h1 className="productos-title">Productos Disponibles</h1>
       <div className="productos-grid">
         {products.map((product) => (
           <div key={product.id} className="productos-card">
