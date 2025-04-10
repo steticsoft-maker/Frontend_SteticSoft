@@ -27,7 +27,10 @@ const Compras = () => {
       fecha: "22/03/2025",
       total: "$320,000",
       estado: "Pendiente",
-      productos: [],
+      productos: [
+        { nombre: "Gel para cabello", cantidad: 4, precio: 40000, total: 160000 },
+        { nombre: "Labial", cantidad: 4, precio: 20000, total: 80000 },
+      ],
     },
   ]);
 
@@ -263,8 +266,7 @@ const Compras = () => {
             setShowPDFModal(false);
             URL.revokeObjectURL(pdfUrl);
             setPdfUrl(null);
-          }}
-        >
+          }}>
           Cerrar
         </button>
       </div>
