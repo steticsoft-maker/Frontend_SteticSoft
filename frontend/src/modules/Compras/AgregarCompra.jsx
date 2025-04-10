@@ -58,16 +58,48 @@ const AgregarCompra = () => {
   };
 
   const handleGuardarCompra = () => {
+    if (!proveedor) {
+      alert("Debe seleccionar un proveedor.");
+      return;
+    }
+  
+    if (productos.length === 0) {
+      alert("Debe agregar al menos un producto.");
+      return;
+    }
+  
+    for (let i = 0; i < productos.length; i++) {
+      if (!productos[i].nombre) {
+        alert(`Debe seleccionar un producto en la fila ${i + 1}.`);
+        return;
+      }
+      if (productos[i].cantidad <= 0) {
+        alert(`La cantidad debe ser mayor a 0 en la fila ${i + 1}.`);
+        return;
+      }
+    }
+  
     const compra = {
       proveedor,
       fecha,
       productos,
       total,
     };
-
-    console.log("Compra guardada (simulada):", compra);
+  
+    // Obtener compras actuales del localStorage
+    const comprasGuardadas = JSON.parse(localStorage.getItem("compras")) || [];
+  
+    // Agregar la nueva compra
+    comprasGuardadas.push(compra);
+  
+    // Guardar nuevamente en localStorage
+    localStorage.setItem("compras", JSON.stringify(comprasGuardadas));
+  
+    alert("Compra guardada exitosamente.");
     navigate("/compras");
   };
+  
+
 
   return (
     <div className="container">
