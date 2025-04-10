@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faFilePdf, faBan } from "@fortawesome/free-solid-svg-icons";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./Compras.css";
 
@@ -10,8 +12,23 @@ const Compras = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [compras, setCompras] = useState([
-    { proveedor: "Proveedor A", fecha: "24/03/2025", total: "$500,000", estado: "Completado", productos: [] },
-    { proveedor: "Proveedor B", fecha: "22/03/2025", total: "$320,000", estado: "Pendiente", productos: [] },
+    {
+      proveedor: "Proveedor A",
+      fecha: "24/03/2025",
+      total: "$500,000",
+      estado: "Completado",
+      productos: [
+        { nombre: "Shampoo", cantidad: 2, precio: 10000, total: 20000 },
+        { nombre: "Tinte", cantidad: 3, precio: 25000, total: 75000 },
+      ],
+    },
+    {
+      proveedor: "Proveedor B",
+      fecha: "22/03/2025",
+      total: "$320,000",
+      estado: "Pendiente",
+      productos: [],
+    },
   ]);
 
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -21,6 +38,7 @@ const Compras = () => {
   const [indexToAnular, setIndexToAnular] = useState(null);
 
   const [showPDFModal, setShowPDFModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
 
   const handleAnular = (index) => {
     setIndexToAnular(index);
@@ -37,9 +55,38 @@ const Compras = () => {
     }
   };
 
-  const handleGenerarPDF = () => {
-    setShowPDFModal(true); // Mostrar modal en vez de alerta
+  const handleGenerarPDF = (compra) => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Detalle de Compra", 14, 20);
+  
+    doc.setFontSize(12);
+    doc.text(`Proveedor: ${compra.proveedor}`, 14, 30);
+    doc.text(`Fecha: ${compra.fecha}`, 14, 36);
+    doc.text(`Total: ${compra.total}`, 14, 42);
+  
+    const productos = compra.productos.length > 0
+      ? compra.productos.map((prod, i) => [
+          i + 1,
+          prod.nombre,
+          prod.cantidad,
+          `$${prod.precio.toLocaleString()}`,
+          `$${prod.total.toLocaleString()}`,
+        ])
+      : [["-", "No hay productos", "-", "-", "-"]];
+  
+    autoTable(doc, {
+      head: [["#", "Nombre", "Cantidad", "Precio Unitario", "Total"]],
+      body: productos,
+      startY: 50,
+    });
+  
+    const pdfBlob = doc.output("blob");
+    const url = URL.createObjectURL(pdfBlob);
+    setPdfUrl(url);
+    setShowPDFModal(true);
   };
+  
 
   const handleShowDetails = (compra) => {
     setSelectedCompra(compra);
@@ -48,7 +95,10 @@ const Compras = () => {
 
   const handleEstadoChange = (index) => {
     const updatedCompras = [...compras];
-    updatedCompras[index].estado = updatedCompras[index].estado === "Pendiente" ? "Completado" : "Pendiente";
+    updatedCompras[index].estado =
+      updatedCompras[index].estado === "Pendiente"
+        ? "Completado"
+        : "Pendiente";
     setCompras(updatedCompras);
   };
 
@@ -88,7 +138,9 @@ const Compras = () => {
             <tbody>
               {compras
                 .filter((compra) =>
-                  compra.proveedor.toLowerCase().includes(searchTerm.toLowerCase())
+                  compra.proveedor
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
                 )
                 .map((compra, index) => (
                   <tr key={index}>
@@ -119,7 +171,7 @@ const Compras = () => {
                       </button>
                       <button
                         className="btnPDFCompra"
-                        onClick={handleGenerarPDF}
+                        onClick={() => handleGenerarPDF(compra)}
                         title="Generar PDF"
                       >
                         <FontAwesomeIcon icon={faFilePdf} />
@@ -184,16 +236,41 @@ const Compras = () => {
         </div>
       )}
 
-      {/* Modal para PDF en desarrollo */}
-      {showPDFModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Generar PDF</h2>
-            <p>La funcionalidad para generar el PDF está en desarrollo.</p>
-            <button className="btn close" onClick={() => setShowPDFModal(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
+{/* Modal para vista previa del PDF */}
+{showPDFModal && pdfUrl && (
+  <div className="modal">
+    <div className="modal-content">
+      <h2>Vista Previa del PDF</h2>
+      <iframe
+        src={pdfUrl}
+        title="Vista previa PDF"
+        width="550px"
+        height="500px"
+        style={{ border: "1px solid #ccc" }}
+      />
+      <div className="modal-buttons">
+        <a
+          href={pdfUrl}
+          download="Compra.pdf"
+          className="btn"
+          style={{ marginRight: "10px" }}
+        >
+          Descargar PDF
+        </a>
+        <button
+          className="btn close"
+          onClick={() => {
+            setShowPDFModal(false);
+            URL.revokeObjectURL(pdfUrl);
+            setPdfUrl(null);
+          }}
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
