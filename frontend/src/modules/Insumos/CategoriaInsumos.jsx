@@ -21,6 +21,7 @@ const CategoriaInsumos = () => {
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState({ open: false, type: "", categoria: null });
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [error, setError] = useState("");
 
   const handleSearch = (e) => setSearch(e.target.value);
 
@@ -31,6 +32,7 @@ const CategoriaInsumos = () => {
   );
 
   const openModal = (type, categoria = null) => {
+    setError("");
     setModal({
       open: true,
       type,
@@ -40,20 +42,47 @@ const CategoriaInsumos = () => {
 
   const closeModal = () => {
     setModal({ open: false, type: "", categoria: null });
+    setError("");
   };
 
   const saveCategoria = (nuevaCategoria) => {
+    const nombreTrimmed = nuevaCategoria.nombre.trim();
+  
+    // Validar que no esté vacío
+    if (!nombreTrimmed) {
+      const mensaje = "El nombre es obligatorio.";
+      setError(mensaje);
+      alert(mensaje);
+      return;
+    }
+  
+    // Validar que el nombre sea único (ignorando si es edición y no cambió el nombre)
+    const nombreDuplicado = categorias.some(
+      (c) =>
+        c.nombre.toLowerCase() === nombreTrimmed.toLowerCase() &&
+        (modal.type === "agregar" || c.nombre !== modal.categoria.nombre)
+    );
+  
+    if (nombreDuplicado) {
+      const mensaje = "Ya existe una categoría con ese nombre.";
+      setError(mensaje);
+      alert(mensaje);
+      return;
+    }
+  
     if (modal.type === "agregar") {
-      setCategorias([...categorias, nuevaCategoria]);
+      setCategorias([...categorias, { ...nuevaCategoria, nombre: nombreTrimmed }]);
     } else {
       setCategorias(
         categorias.map((c) =>
-          c.nombre === nuevaCategoria.nombre ? nuevaCategoria : c
+          c.nombre === modal.categoria.nombre ? { ...nuevaCategoria, nombre: nombreTrimmed } : c
         )
       );
     }
+  
     closeModal();
   };
+
 
   const confirmDeleteCategoria = (nombre) => setConfirmDelete(nombre);
 
@@ -77,18 +106,17 @@ const CategoriaInsumos = () => {
         <h2 className="title-h2">Gestión de Categorías de Insumos</h2>
 
         <div className="top-bar">
-  <input
-    type="text"
-    className="search-input"
-    placeholder="Buscar categoría..."
-    value={search}
-    onChange={handleSearch}
-  />
-  <button className="btnAgregarcategoria" onClick={() => openModal("agregar")}>
-    Agregar Categoría
-  </button>
-</div>
-
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Buscar categoría..."
+            value={search}
+            onChange={handleSearch}
+          />
+          <button className="btnAgregarcategoria" onClick={() => openModal("agregar")}>
+            Agregar Categoría
+          </button>
+        </div>
 
         <div className="categorias-table">
           <table>
@@ -148,12 +176,13 @@ const CategoriaInsumos = () => {
                 <>
                   <h3>{modal.type === "agregar" ? "Agregar Categoría" : "Editar Categoría"}</h3>
                   <input
-                  type="text"
-                  placeholder="Nombre *"
-                  value={modal.categoria.nombre}
-                  onChange={(e) =>
-                    setModal({ ...modal, categoria: { ...modal.categoria, nombre: e.target.value } })}/>
-
+                    type="text"
+                    placeholder="Nombre *"
+                    value={modal.categoria.nombre}
+                    onChange={(e) =>
+                      setModal({ ...modal, categoria: { ...modal.categoria, nombre: e.target.value } })
+                    }
+                  />
                   <label>Descripción (Opcional)</label>
                   <textarea
                     placeholder="Descripción"
@@ -162,8 +191,10 @@ const CategoriaInsumos = () => {
                       setModal({ ...modal, categoria: { ...modal.categoria, descripcion: e.target.value } })
                     }
                   />
-                  <button className="btn success" onClick={() => saveCategoria(modal.categoria)}>Guardar</button>
-                  <button className="btn close" onClick={closeModal}>Cancelar</button>
+                  <div className="button-group">
+                    <button className="btn success" onClick={() => saveCategoria(modal.categoria)}>Guardar</button>
+                    <button className="btn close" onClick={closeModal}>Cancelar</button>
+                  </div>
                 </>
               )}
             </div>
