@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaShoppingCart } from "react-icons/fa"; // Ícono de carrito
 import Navbar from "../../components/Navbar"; // Componente Navbar
 import "./Productos.css";
@@ -8,7 +8,7 @@ function Productos() {
     {
       id: 1,
       name: "Shampoo Hidratante",
-      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      image: "https://www.oboticario.com.co/cdn/shop/files/52076-3-MATCH-SHAMP-CIEN-CURV-300ml_1500x.jpg?v=1727714610",
       price: 25000,
       description: "Limpieza profunda y brillo natural",
       weight: "500ml",
@@ -18,7 +18,7 @@ function Productos() {
     {
       id: 2,
       name: "Tratamiento Capilar Keratina",
-      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      image: "https://cdn.pixabay.com/photo/2020/10/30/13/22/cosmetics-5699635_960_720.jpg",
       price: 40000,
       description: "Repara y fortalece tu cabello",
       weight: "300ml",
@@ -28,7 +28,7 @@ function Productos() {
     {
       id: 3,
       name: "Gel para Cabello",
-      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      image: "https://cdn.pixabay.com/photo/2021/03/31/13/46/hair-gel-6140266_960_720.jpg",
       price: 15000,
       description: "Fijación fuerte sin residuos",
       weight: "250g",
@@ -38,7 +38,7 @@ function Productos() {
     {
       id: 4,
       name: "Cera para Cabello",
-      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      image: "https://cdn.pixabay.com/photo/2021/06/06/19/16/hair-wax-6315070_960_720.jpg",
       price: 18000,
       description: "Control total con acabado natural",
       weight: "100g",
@@ -48,7 +48,7 @@ function Productos() {
     {
       id: 5,
       name: "Tijeras Profesionales",
-      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      image: "https://cdn.pixabay.com/photo/2016/11/22/23/44/barber-1853931_960_720.jpg",
       price: 70000,
       description: "Acero inoxidable de alta precisión",
       weight: "200g",
@@ -58,7 +58,7 @@ function Productos() {
     {
       id: 6,
       name: "Peine de Carbono",
-      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      image: "https://cdn.pixabay.com/photo/2016/10/21/20/59/hairbrush-1751262_960_720.jpg",
       price: 8000,
       description: "Antiestático y resistente al calor",
       weight: "50g",
@@ -68,7 +68,7 @@ function Productos() {
     {
       id: 7,
       name: "Labial",
-      image: "ruta-a-la-imagen", // Reemplazar con una URL válida
+      image: "https://cdn.pixabay.com/photo/2014/10/22/18/04/lipstick-498871_960_720.jpg",
       price: 22000,
       description: "Color intenso y labios humectados todo el día",
       weight: "4g",
@@ -80,6 +80,8 @@ function Productos() {
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false); // Estado para mostrar/ocultar el carrito
 
+  const productosRef = useRef(null); // 🔹 Referencia para scroll automático
+
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(savedCart);
@@ -88,6 +90,12 @@ function Productos() {
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
+
+  useEffect(() => {
+    if (productosRef.current) {
+      productosRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   const addToCart = (product) => {
     const existingProduct = cart.find((item) => item.id === product.id);
@@ -149,7 +157,10 @@ function Productos() {
         </div>
       )}
 
-      <h1 className="productos-title">Productos Disponibles</h1>
+      <h1 className="productos-title" ref={productosRef}>
+        Productos Disponibles
+      </h1>
+
       <div className="productos-grid">
         {products.map((product) => (
           <div key={product.id} className="productos-card">
