@@ -144,18 +144,18 @@ const Proveedores = () => {
                                     <input type="text" value={modal.proveedor.telefono}
                                     onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, telefono: e.target.value } })}
                                     placeholder="Teléfono *" />
+                                    <input type="email" value={modal.proveedor.email}
+                                    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, email: e.target.value } })}
+                                    placeholder="Email *" />
 
-<input type="email" value={modal.proveedor.email}
-    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, email: e.target.value } })}
-    placeholder="Email *" />
+                                    <input type="text" value={modal.proveedor.direccion}
+                                    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, direccion: e.target.value } })}
+                                    placeholder="Dirección *" />
 
-<input type="text" value={modal.proveedor.direccion}
-    onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, direccion: e.target.value } })}
-    placeholder="Dirección *" />
-
-<button className="btn success" onClick={() => saveProveedor(modal.proveedor)}>Guardar</button>
-<button className="btn close" onClick={closeModal}>Cancelar</button>
-
+                                    <div>
+                                    <button className="btn success" onClick={() => saveProveedor(modal.proveedor)}>Guardar</button>
+                                    <button className="btn close" onClick={closeModal}>Cancelar</button>
+                                    </div>
                                 </>
                             )}
                         </div>
