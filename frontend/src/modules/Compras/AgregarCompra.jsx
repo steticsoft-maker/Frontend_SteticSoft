@@ -126,7 +126,7 @@ const AgregarCompra = () => {
                         value={producto.nombre}
                         onChange={(e) => handleCambioProducto(index, "nombre", e.target.value)}
                       >
-                        <option value="">Seleccione un producto</option>
+                        <option className="Seleccionar-un-Producto" value="">Seleccione un producto</option>
                         {productosFalsos.map((prod) => (
                           <option key={prod.nombre} value={prod.nombre}>
                             {prod.nombre}
