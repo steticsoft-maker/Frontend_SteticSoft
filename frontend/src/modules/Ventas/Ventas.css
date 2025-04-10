@@ -1,10 +1,13 @@
 /* Contenedor general */
+
 .ventas-container {
     display: flex;
     height: 100vh;
 }
 
+
 /* Contenido principal */
+
 .main-content {
     flex: 1;
     padding: 30px;
@@ -13,7 +16,9 @@
     overflow-y: auto;
 }
 
+
 /* Barra de búsqueda */
+
 .search-input {
     margin-bottom: 20px;
     padding: 12px;
@@ -25,12 +30,15 @@
     color: black;
 }
 
+
 /* Botón principal de Agregar Venta */
+
 .action-button {
     margin-bottom: 30px;
     padding: 12px 25px;
     font-size: 1.1rem;
-    background-color: #4caf50; /* Verde atractivo */
+    background-color: #4caf50;
+    /* Verde atractivo */
     color: white;
     border: none;
     border-radius: 5px;
@@ -38,10 +46,13 @@
 }
 
 .action-button:hover {
-    background-color: #45a049; /* Verde más oscuro al pasar */
+    background-color: #45a049;
+    /* Verde más oscuro al pasar */
 }
 
+
 /* Tabla de Ventas */
+
 .ventas-table {
     width: 100%;
     border-collapse: collapse;
@@ -49,8 +60,10 @@
 }
 
 .ventas-table th {
-    background-color: #34495e; /* Azul oscuro */
-    color: white; /* Texto blanco */
+    background-color: #34495e;
+    /* Azul oscuro */
+    color: white;
+    /* Texto blanco */
     padding: 15px;
     text-align: center;
     font-weight: bold;
@@ -65,7 +78,9 @@
     font-size: 0.9rem;
 }
 
+
 /* Paginación */
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -76,7 +91,8 @@
 .pagination button {
     padding: 10px 15px;
     font-size: 1rem;
-    background-color: #4caf50; /* Verde consistente */
+    background-color: #4caf50;
+    /* Verde consistente */
     color: white;
     border: none;
     border-radius: 5px;
@@ -93,7 +109,9 @@
     background-color: #45a049;
 }
 
+
 /* Switch de estado */
+
 .switch {
     position: relative;
     display: inline-block;
@@ -131,15 +149,17 @@
     transition: 0.4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #4caf50;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     transform: translateX(16px);
 }
 
+
 /* Botones de acciones en la tabla */
+
 .table-button {
     padding: 8px 15px;
     margin: 5px;
@@ -147,24 +167,30 @@ input:checked + .slider:before {
     border: none;
     border-radius: 5px;
     color: white;
-    background-color: #3498db; /* Azul claro */
+    background-color: #3498db;
+    /* Azul claro */
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .table-button:hover {
-    background-color: #2980b9; /* Azul más oscuro */
+    background-color: #2980b9;
+    /* Azul más oscuro */
 }
 
 .pdf-button {
-    background-color: #f39c12; /* Naranja */
+    background-color: #f39c12;
+    /* Naranja */
 }
 
 .pdf-button:hover {
-    background-color: #e67e22; /* Naranja más oscuro */
+    background-color: #e67e22;
+    /* Naranja más oscuro */
 }
 
+
 /* Modal */
+
 .modal {
     position: fixed;
     top: 0;
@@ -200,23 +226,27 @@ input:checked + .slider:before {
 .close-button:hover {
     background-color: #c0392b;
 }
+
+
 /* Contenedor para barra de búsqueda y botón en la misma fila */
+
 .header-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-  }
-  
-  .search-input {
-    width: 70%; /* Ajusta el ancho de la barra de búsqueda */
+}
+
+.search-input {
+    width: 70%;
+    /* Ajusta el ancho de la barra de búsqueda */
     padding: 10px;
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 5px;
-  }
-  
-  .action-button {
+}
+
+.action-button {
     background-color: #28a745;
     color: white;
     border: none;
@@ -225,12 +255,15 @@ input:checked + .slider:before {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
-  
-  .action-button:hover {
+}
+
+.action-button:hover {
     background-color: #218838;
-  }
+}
+
+
 /* Estilo base para el campo desplegable */
+
 .estado-select {
     padding: 5px;
     border: 1px solid #ddd;
@@ -239,18 +272,33 @@ input:checked + .slider:before {
     text-align: center;
     width: 100%;
     transition: background-color 0.3s ease;
-  }
-  
-  /* Colores dinámicos según estado */
-  .estado-en-proceso {
-    background-color: #f3f025 !important; /* Amarillo */
-  }
-  
-  .estado-activa {
-    background-color: #28a745 !important; /* Verde */
-  }
-  
-  .estado-inactiva {
-    background-color: #c0bfbf !important; /* Gris */
-  }
-    
+}
+
+
+/* Colores dinámicos según estado */
+
+.estado-en-proceso {
+    background-color: #f3f025 !important;
+    /* Amarillo */
+}
+
+.estado-activa {
+    background-color: #28a745 !important;
+    /* Verde */
+}
+
+.estado-inactiva {
+    background-color: #c0bfbf !important;
+    /* Gris */
+}
+
+.pdf-modal {
+    width: 80%;
+    max-width: 900px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
