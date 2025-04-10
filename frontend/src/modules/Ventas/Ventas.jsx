@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaFilePdf } from "react-icons/fa"; // Importar íconos
+import { FaEye, FaFilePdf } from "react-icons/fa";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 import NavbarAdmin from "../../components/NavbarAdmin";
-import ProcesoVentas from "./ProcesoVentas"; // Componente de agregar ventas
+import ProcesoVentas from "./ProcesoVentas";
 import "./Ventas.css";
 import "./ProcesoVentas.css";
 
@@ -12,7 +15,7 @@ const Ventas = () => {
       fecha: "2025-03-28",
       cliente: "Juan Pérez",
       total: 50000,
-      estado: "Activa", // Estado inicial
+      estado: "Activa",
     },
     {
       id: 2,
@@ -25,20 +28,24 @@ const Ventas = () => {
 
   const [ventas, setVentas] = useState(initialVentas);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(3); // Ventas por página
+  const [itemsPerPage] = useState(3);
   const [showModal, setShowModal] = useState(false);
   const [currentVenta, setCurrentVenta] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-  const [mostrarProcesoVentas, setMostrarProcesoVentas] = useState(false); // Maneja si se muestra el proceso de ventas
+  const [mostrarProcesoVentas, setMostrarProcesoVentas] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("ventas", JSON.stringify(ventas));
   }, [ventas]);
 
   const guardarVenta = (nuevaVenta) => {
-    setVentas([...ventas, nuevaVenta]); // Agregar la nueva venta al estado
-    setMostrarProcesoVentas(false); // Regresar a la tabla principal
+    setVentas([...ventas, nuevaVenta]);
+    setMostrarProcesoVentas(false);
   };
+
+  const [showPDFModal, setShowPDFModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+
 
   const openModal = (venta) => {
     setCurrentVenta(venta);
@@ -58,14 +65,28 @@ const Ventas = () => {
   };
 
   const handlePDF = (venta) => {
-    alert(`Generar PDF para la venta de ${venta.cliente}.`);
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Detalle de Venta", 14, 20);
+  
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${venta.fecha}`, 14, 30);
+    doc.text(`Cliente: ${venta.cliente}`, 14, 38);
+    doc.text(`Total: $${venta.total.toFixed(2)}`, 14, 46);
+    doc.text(`Estado: ${venta.estado}`, 14, 54);
+  
+    const pdfBlob = doc.output("blob");
+    const pdfBlobUrl = URL.createObjectURL(pdfBlob);
+    setPdfUrl(pdfBlobUrl);
+    setShowPDFModal(true);
   };
+  
+  
 
   const filteredVentas = ventas.filter((venta) =>
     venta.cliente.toLowerCase().includes(busqueda.toLowerCase())
   );
 
-  // Paginación
   const totalPages = Math.ceil(filteredVentas.length / itemsPerPage);
   const displayedVentas = filteredVentas.slice(
     (currentPage - 1) * itemsPerPage,
@@ -122,7 +143,7 @@ const Ventas = () => {
                         onChange={(e) => handleEstadoChange(venta.id, e.target.value)}
                         className={`estado-select estado-${venta.estado
                           .toLowerCase()
-                          .replace(" ", "-")}`} // Clase dinámica según estado
+                          .replace(" ", "-")}`}
                       >
                         <option value="En proceso">En proceso</option>
                         <option value="Activa">Activa</option>
@@ -134,13 +155,13 @@ const Ventas = () => {
                         className="table-button"
                         onClick={() => openModal(venta)}
                       >
-                        <FaEye /> {/* Ícono "Ver" */}
+                        <FaEye />
                       </button>
                       <button
                         className="table-button pdf-button"
                         onClick={() => handlePDF(venta)}
                       >
-                        <FaFilePdf /> {/* Ícono "PDF" */}
+                        <FaFilePdf />
                       </button>
                     </td>
                   </tr>
@@ -183,6 +204,33 @@ const Ventas = () => {
           </div>
         </div>
       )}
+      {showPDFModal && pdfUrl && (
+  <div className="modal">
+    <div className="modal-content pdf-modal">
+      <h2>Vista previa del PDF</h2>
+      <iframe
+        src={pdfUrl}
+        title="Vista previa PDF"
+        width="550px"
+        height="500px"
+        style={{ border: "1px solid #ccc" }}
+      />
+      <div className="modal-actions">
+        <button
+          className="close-button"
+          onClick={() => {
+            setShowPDFModal(false);
+            URL.revokeObjectURL(pdfUrl);
+            setPdfUrl(null);
+          }}
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
