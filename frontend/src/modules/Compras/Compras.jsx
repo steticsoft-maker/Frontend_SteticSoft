@@ -252,14 +252,6 @@ const Compras = () => {
         style={{ border: "1px solid #ccc" }}
       />
       <div className="modal-buttons">
-        <a
-          href={pdfUrl}
-          download="Compra.pdf"
-          className="btn"
-          style={{ marginRight: "10px" }}
-        >
-          Descargar PDF
-        </a>
         <button
           className="btn close"
           onClick={() => {
