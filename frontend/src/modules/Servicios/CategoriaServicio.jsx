@@ -1,146 +1,113 @@
 import React, { useState, useEffect } from "react";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import NavbarAdmin from "../../components/NavbarAdmin";
-import "./Categoria.css";
+import "./categoria.css";
 
-const Categorias = () => {
-  // Categorías pre-registradas
-  const initialCategorias = [
-    {
-      id: 1,
-      nombre: "Belleza",
-      descripcion: "Servicios relacionados con el cuidado estético",
-      anulado: false,
-    },
-    {
-      id: 2,
-      nombre: "Bienestar",
-      descripcion: "Servicios para mejorar la salud y relajación",
-      anulado: false,
-    },
-    {
-      id: 3,
-      nombre: "Uñas",
-      descripcion: "Servicios de manicura y pedicura",
-      anulado: false,
-    },
-  ];
-
-  // Estados
-  const [categorias, setCategorias] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "create", "edit", "details"
-  const [currentCategoria, setCurrentCategoria] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // Inicializar datos si no existen en localStorage
-  const initializeData = () => {
-    const storedCategorias = localStorage.getItem("categorias");
-    if (!storedCategorias) {
-      localStorage.setItem("categorias", JSON.stringify(initialCategorias));
-      return initialCategorias;
-    }
-    return JSON.parse(storedCategorias);
+const CategoriaServicios = () => {
+  // Cargar datos iniciales desde localStorage o usar los predeterminados
+  const loadInitialData = () => {
+    const savedServicios = localStorage.getItem("servicios");
+    return savedServicios ? JSON.parse(savedServicios) : [
+      { 
+        id: 1, 
+        nombre: " Categoría  A", 
+        descripcion: "Descripción del servicio A", 
+        estado: true, 
+        foto: null 
+      },
+      { 
+        id: 2, 
+        nombre: "Categoría B", 
+        descripcion: "", 
+        estado: false, 
+        foto: null 
+      },
+    ];
   };
 
-  // Cargar datos al montar el componente
-  useEffect(() => {
-    const categoriasData = initializeData();
-    setCategorias(categoriasData);
-    setIsInitialized(true);
-  }, []);
+  const [servicios, setServicios] = useState(loadInitialData());
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState(""); // "create", "edit", "details"
+  const [currentServicio, setCurrentServicio] = useState(null);
+  const [busqueda, setBusqueda] = useState("");
 
-  // Guardar categorías en localStorage cuando cambien
+  // Guardar en localStorage cada vez que cambien los servicios
   useEffect(() => {
-    if (isInitialized) {
-      localStorage.setItem("categorias", JSON.stringify(categorias));
-      // Disparar evento para notificar a otros componentes
-      window.dispatchEvent(new Event("storage"));
-    }
-  }, [categorias, isInitialized]);
+    localStorage.setItem("servicios", JSON.stringify(servicios));
+  }, [servicios]);
 
-  // Manejar creación/edición de categorías
-  const handleSave = (categoria) => {
+  const handleSave = (servicio) => {
     if (modalType === "create") {
-      setCategorias([...categorias, categoria]);
-    } else if (modalType === "edit" && currentCategoria) {
-      const updatedCategorias = categorias.map((c) =>
-        c.id === currentCategoria.id ? { ...categoria } : c
+      // Generar un ID único para el nuevo servicio
+      const newId = servicios.length > 0 ? Math.max(...servicios.map(s => s.id)) + 1 : 1;
+      setServicios([...servicios, { ...servicio, id: newId }]);
+    } else {
+      const updatedServicios = servicios.map((s) =>
+        s.id === currentServicio.id ? { ...currentServicio, ...servicio } : s
       );
-      setCategorias(updatedCategorias);
+      setServicios(updatedServicios);
     }
     closeModal();
   };
 
-  // Abrir modal
-  const openModal = (type, categoria = null) => {
+
+  const openModal = (type, servicio = null) => {
     setModalType(type);
-    setCurrentCategoria(
-      categoria || {
-        id: Date.now(),
-        nombre: "",
-        descripcion: "",
-        anulado: false,
-      }
-    );
+    setCurrentServicio(servicio);
     setShowModal(true);
   };
 
-  // Cerrar modal
   const closeModal = () => {
     setShowModal(false);
     setModalType("");
-    setCurrentCategoria(null);
+    setCurrentServicio(null);
   };
 
-  // Eliminar una categoría
   const handleDelete = (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar esta categoría?")) {
-      setCategorias(categorias.filter((c) => c.id !== id));
+    if (window.confirm("¿Estás seguro de que deseas eliminar este servicio?")) {
+      setServicios(servicios.filter((s) => s.id !== id));
     }
   };
 
-  // Cambiar estado de la categoría (anulado/activo)
-  const toggleAnular = (id) => {
-    const updatedCategorias = categorias.map((c) =>
-      c.id === id ? { ...c, anulado: !c.anulado } : c
+  const toggleEstado = (id) => {
+    const updatedServicios = servicios.map((s) =>
+      s.id === id ? { ...s, estado: !s.estado } : s
     );
-    setCategorias(updatedCategorias);
+    setServicios(updatedServicios);
   };
 
-  // Filtrar categorías por búsqueda
-  const filteredCategorias = categorias.filter(
-    (c) =>
-      c.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      (c.descripcion &&
-        c.descripcion.toLowerCase().includes(busqueda.toLowerCase()))
+  const handleFileUpload = (e) => {
+    if (e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setCurrentServicio((prev) => ({ ...prev, foto: reader.result }));
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  const filteredServicios = servicios.filter((s) =>
+    s.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
-    <div className="categorias-container">
+    <div className="servicios-container">
       <NavbarAdmin />
       <div className="main-content">
-        <h1>Gestión de Categorías</h1>
-
-        {/* Buscador */}
-        <input
-          type="text"
-          placeholder="Buscar categoría..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="search-input"
-        />
-
-        {/* Botón para crear categoría */}
-        <button
-          className="action-button"
-          onClick={() => openModal("create")}
-        >
-          Crear Categoría
-        </button>
-
-        {/* Tabla de categorías */}
-        <table className="categorias-table">
+        <h1>Categorías de Servicios</h1>
+        <div className="header-actions">
+          <input
+            type="text"
+            placeholder="Buscar categoría servicio..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="search-input"
+          />
+          <button className="action-button" onClick={() => openModal("create")}>
+            Agregar Servicio
+          </button>
+        </div>
+        <table className="servicios-table">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -150,43 +117,41 @@ const Categorias = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredCategorias.map((categoria) => (
-              <tr key={categoria.id} className={categoria.anulado ? "inactive" : ""}>
-                <td>{categoria.nombre}</td>
-                <td className="descripcion-cell">
-                  {categoria.descripcion || "Sin descripción"}
-                </td>
+            {filteredServicios.map((servicio) => (
+              <tr key={servicio.id}>
+                <td>{servicio.nombre}</td>
+                <td>{servicio.descripcion || "Sin descripción"}</td>
                 <td>
                   <label className="switch">
                     <input
                       type="checkbox"
-                      checked={categoria.anulado || false}
-                      onChange={() => toggleAnular(categoria.id)}
+                      checked={servicio.estado}
+                      onChange={() => toggleEstado(servicio.id)}
                     />
                     <span className="slider"></span>
                   </label>
-                  <span className="status-text">
-                    {categoria.anulado ? "Inactivo" : "Activo"}
-                  </span>
                 </td>
                 <td>
                   <button
                     className="table-button"
-                    onClick={() => openModal("details", categoria)}
+                    onClick={() => openModal("details", servicio)}
+                    title="Ver"
                   >
-                    Ver
+                    <FaEye />
                   </button>
                   <button
                     className="table-button"
-                    onClick={() => openModal("edit", categoria)}
+                    onClick={() => openModal("edit", servicio)}
+                    title="Editar"
                   >
-                    Editar
+                    <FaEdit />
                   </button>
                   <button
                     className="table-button delete-button"
-                    onClick={() => handleDelete(categoria.id)}
+                    onClick={() => handleDelete(servicio.id)}
+                    title="Eliminar"
                   >
-                    Eliminar
+                    <FaTrash />
                   </button>
                 </td>
               </tr>
@@ -194,101 +159,104 @@ const Categorias = () => {
           </tbody>
         </table>
       </div>
-
-      {/* Modal para Crear/Editar/Detalles */}
       {showModal && (
         <div className="modal">
           <div className="modal-content">
-            {modalType === "details" && currentCategoria ? (
+            {modalType === "details" && currentServicio ? (
               <>
-                <h2>Detalles de la Categoría</h2>
-                <div className="detail-group">
-                  <strong>Nombre:</strong>
-                  <p>{currentCategoria.nombre}</p>
+                <h2>Detalles del Servicio</h2>
+                <div className="form-group">
+                  <label>Nombre:</label>
+                  <p>{currentServicio.nombre}</p>
                 </div>
-                <div className="detail-group">
-                  <strong>Descripción:</strong>
-                  <p>{currentCategoria.descripcion || "Sin descripción"}</p>
+                <div className="form-group">
+                  <label>Descripción:</label>
+                  <p>{currentServicio.descripcion || "No especificada"}</p>
                 </div>
-                <div className="detail-group">
-                  <strong>Estado:</strong>
-                  <p>{currentCategoria.anulado ? "Inactivo" : "Activo"}</p>
+                <div className="form-group">
+                  <label>Estado:</label>
+                  <p>{currentServicio.estado ? "Activo" : "Inactivo"}</p>
                 </div>
-                <button className="close-button" onClick={closeModal}>
-                  Cerrar
-                </button>
+                {currentServicio.foto && (
+                  <div className="form-group">
+                    <label>Imagen:</label>
+                    <img src={currentServicio.foto} alt="Servicio" width="200" />
+                  </div>
+                )}
+                <div className="form-buttons">
+                  <button className="close-button" onClick={closeModal}>
+                    Cerrar
+                  </button>
+                </div>
               </>
             ) : (
               <>
                 <h2>
-                  {modalType === "create" ? "Crear Categoría" : "Editar Categoría"}
+                  {modalType === "create" ? "Agregar Servicio" : "Editar Servicio"}
                 </h2>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
                     const formData = new FormData(e.target);
-                    const categoria = {
-                      id: currentCategoria ? currentCategoria.id : Date.now(),
+                    const servicio = {
                       nombre: formData.get("nombre"),
                       descripcion: formData.get("descripcion"),
-                      anulado: formData.get("anulado") === "on",
+                      estado: modalType === "create" ? true : currentServicio.estado,
+                      foto: currentServicio?.foto || null,
                     };
-                    handleSave(categoria);
+                    handleSave(servicio);
                   }}
                 >
                   <div className="form-group">
-                    <label htmlFor="nombre">Nombre:</label>
-                    <input
-                      type="text"
-                      id="nombre"
-                      name="nombre"
-                      placeholder="Nombre de la categoría"
-                      defaultValue={currentCategoria?.nombre || ""}
-                      required
-                    />
+                    <label>
+                      Nombre<span className="required">*</span>
+                      <input
+                        type="text"
+                        name="nombre"
+                        placeholder="Nombre del servicio"
+                        defaultValue={currentServicio?.nombre || ""}
+                        required
+                      />
+                    </label>
                   </div>
-
+                  
                   <div className="form-group">
-                    <label htmlFor="descripcion">Descripción (opcional):</label>
-                    <textarea
-                      id="descripcion"
-                      name="descripcion"
-                      placeholder="Descripción breve de la categoría"
-                      defaultValue={currentCategoria?.descripcion || ""}
-                      rows="3"
-                    />
+                    <label>
+                      Descripción
+                      <textarea
+                        name="descripcion"
+                        placeholder="Descripción del servicio"
+                        defaultValue={currentServicio?.descripcion || ""}
+                        rows="3"
+                      />
+                    </label>
                   </div>
-
-                  {modalType === "edit" && (
-                    <div className="form-group">
-                      <label htmlFor="anulado">Estado:</label>
-                      <label className="switch">
-                        <input
-                          type="checkbox"
-                          id="anulado"
-                          name="anulado"
-                          defaultChecked={currentCategoria?.anulado || false}
+                  
+                  <div className="form-group">
+                    <label>
+                      Imagen
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                      />
+                    </label>
+                    {currentServicio?.foto && (
+                      <div className="image-preview">
+                        <img
+                          src={currentServicio.foto}
+                          alt="Vista previa"
+                          width="100"
                         />
-                        <span className="slider"></span>
-                      </label>
-                      <span className="status-text">
-                        {currentCategoria?.anulado ? "Inactivo" : "Activo"}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="form-actions">
-                    <button
-                      type="submit"
-                      className="action-button"
-                    >
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="form-buttons">
+                  <button type="submit" className="save-button">
                       Guardar
                     </button>
-                    <button
-                      type="button"
-                      className="close-button"
-                      onClick={closeModal}
-                    >
+                    <button type="button" className="cancel-button" onClick={closeModal}>
                       Cancelar
                     </button>
                   </div>
@@ -302,4 +270,4 @@ const Categorias = () => {
   );
 };
 
-export default Categorias;
+export default CategoriaServicios;
