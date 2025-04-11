@@ -183,55 +183,59 @@ const ProcesoVentas = ({ guardarVenta }) => {
   }`}
 >
   <h3>Información del Cliente</h3>
-  <div className="form-group">
-    <label htmlFor="nombre">Nombre:</label>
-    <input
-      id="nombre"
-      type="text"
-      value={datosCliente.nombre}
-      onChange={(e) =>
-        setDatosCliente({ ...datosCliente, nombre: e.target.value })
-      }
-      disabled={modoCita !== "indirecta"}
-    />
-  </div>
-  <div className="form-group">
-    <label htmlFor="documento">Documento:</label>
-    <input
-      id="documento"
-      type="text"
-      value={datosCliente.documento}
-      onChange={(e) =>
-        setDatosCliente({ ...datosCliente, documento: e.target.value })
-      }
-      disabled={modoCita !== "indirecta"}
-    />
-  </div>
-  <div className="form-group">
-    <label htmlFor="telefono">Teléfono:</label>
-    <input
-      id="telefono"
-      type="text"
-      value={datosCliente.telefono}
-      onChange={(e) =>
-        setDatosCliente({ ...datosCliente, telefono: e.target.value })
-      }
-      disabled={modoCita !== "indirecta"}
-    />
-  </div>
-  <div className="form-group">
-    <label htmlFor="direccion">Dirección:</label>
-    <input
-      id="direccion"
-      type="text"
-      value={datosCliente.direccion}
-      onChange={(e) =>
-        setDatosCliente({ ...datosCliente, direccion: e.target.value })
-      }
-      disabled={modoCita !== "indirecta"}
-    />
+  <div className="formulario-cliente">
+    <div className="campo-cliente">
+      <input
+        id="nombre"
+        type="text"
+        placeholder="Nombre"
+        value={datosCliente.nombre}
+        onChange={(e) =>
+          setDatosCliente({ ...datosCliente, nombre: e.target.value })
+        }
+        disabled={modoCita !== "indirecta"}
+      />
+    </div>
+    <div className="campo-cliente">
+      <input
+        id="documento"
+        type="text"
+        placeholder="Documento"
+        value={datosCliente.documento}
+        onChange={(e) =>
+          setDatosCliente({ ...datosCliente, documento: e.target.value })
+        }
+        disabled={modoCita !== "indirecta"}
+      />
+    </div>
+    <div className="campo-cliente">
+      <input
+        id="telefono"
+        type="text"
+        placeholder="Teléfono"
+        value={datosCliente.telefono}
+        onChange={(e) =>
+          setDatosCliente({ ...datosCliente, telefono: e.target.value })
+        }
+        disabled={modoCita !== "indirecta"}
+      />
+    </div>
+    <div className="campo-cliente">
+      <input
+        id="direccion"
+        type="text"
+        placeholder="Dirección"
+        value={datosCliente.direccion}
+        onChange={(e) =>
+          setDatosCliente({ ...datosCliente, direccion: e.target.value })
+        }
+        disabled={modoCita !== "indirecta"}
+      />
+    </div>
   </div>
 </div>
+
+
 
       <button
         className="catalogo-button"
@@ -356,12 +360,20 @@ const ProcesoVentas = ({ guardarVenta }) => {
         </p>
       </div>
 
-      {/* Botón para guardar venta */}
-      <button className="guardar-venta-button" onClick={guardarNuevaVenta}>
-        Guardar Venta
-      </button>
+      {/* Botones de acción */}
+<div className="botones-accion">
+  <button className="guardar-venta-button" onClick={guardarNuevaVenta}>
+    Guardar Venta
+  </button>
+  <button className="cancelar-venta-button" onClick={() => navigate("/ventas")}>
+    Cancelar Venta
+  </button>
+</div>
+
+
     </div>
   );
+  
 };
 
 export default ProcesoVentas;
