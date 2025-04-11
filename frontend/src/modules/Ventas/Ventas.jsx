@@ -33,6 +33,8 @@ const Ventas = () => {
   const [currentVenta, setCurrentVenta] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [mostrarProcesoVentas, setMostrarProcesoVentas] = useState(false);
+  const [showPDFModal, setShowPDFModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("ventas", JSON.stringify(ventas));
@@ -42,10 +44,6 @@ const Ventas = () => {
     setVentas([...ventas, nuevaVenta]);
     setMostrarProcesoVentas(false);
   };
-
-  const [showPDFModal, setShowPDFModal] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState(null);
-
 
   const openModal = (venta) => {
     setCurrentVenta(venta);
@@ -68,20 +66,18 @@ const Ventas = () => {
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.text("Detalle de Venta", 14, 20);
-  
+
     doc.setFontSize(12);
     doc.text(`Fecha: ${venta.fecha}`, 14, 30);
     doc.text(`Cliente: ${venta.cliente}`, 14, 38);
     doc.text(`Total: $${venta.total.toFixed(2)}`, 14, 46);
     doc.text(`Estado: ${venta.estado}`, 14, 54);
-  
+
     const pdfBlob = doc.output("blob");
     const pdfBlobUrl = URL.createObjectURL(pdfBlob);
     setPdfUrl(pdfBlobUrl);
     setShowPDFModal(true);
   };
-  
-  
 
   const filteredVentas = ventas.filter((venta) =>
     venta.cliente.toLowerCase().includes(busqueda.toLowerCase())
@@ -140,8 +136,10 @@ const Ventas = () => {
                     <td>
                       <select
                         value={venta.estado}
-                        onChange={(e) => handleEstadoChange(venta.id, e.target.value)}
-                        className={`estado-select estado-${venta.estado
+                        onChange={(e) =>
+                          handleEstadoChange(venta.id, e.target.value)
+                        }
+                        className={`estado-select estado-${(venta.estado || "")
                           .toLowerCase()
                           .replace(" ", "-")}`}
                       >
@@ -182,6 +180,7 @@ const Ventas = () => {
           </>
         )}
       </div>
+
       {showModal && currentVenta && (
         <div className="modal">
           <div className="modal-content">
@@ -204,33 +203,33 @@ const Ventas = () => {
           </div>
         </div>
       )}
-      {showPDFModal && pdfUrl && (
-  <div className="modal">
-    <div className="modal-content pdf-modal">
-      <h2>Vista previa del PDF</h2>
-      <iframe
-        src={pdfUrl}
-        title="Vista previa PDF"
-        width="550px"
-        height="500px"
-        style={{ border: "1px solid #ccc" }}
-      />
-      <div className="modal-actions">
-        <button
-          className="close-button"
-          onClick={() => {
-            setShowPDFModal(false);
-            URL.revokeObjectURL(pdfUrl);
-            setPdfUrl(null);
-          }}
-        >
-          Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-)}
 
+      {showPDFModal && pdfUrl && (
+        <div className="modal">
+          <div className="modal-content pdf-modal">
+            <h2>Vista previa del PDF</h2>
+            <iframe
+              src={pdfUrl}
+              title="Vista previa PDF"
+              width="550px"
+              height="500px"
+              style={{ border: "1px solid #ccc" }}
+            />
+            <div className="modal-actions">
+              <button
+                className="close-button"
+                onClick={() => {
+                  setShowPDFModal(false);
+                  URL.revokeObjectURL(pdfUrl);
+                  setPdfUrl(null);
+                }}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
