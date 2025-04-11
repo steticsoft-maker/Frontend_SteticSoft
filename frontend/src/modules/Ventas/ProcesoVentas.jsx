@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ProcesoVentas.css";
 
 const ProcesoVentas = ({ guardarVenta }) => {
@@ -51,6 +52,9 @@ const ProcesoVentas = ({ guardarVenta }) => {
     direccion: "",
   });
 
+  const navigate = useNavigate();
+
+
   const [itemsTabla, setItemsTabla] = useState([]);
   const [mostrarCatalogoProductos, setMostrarCatalogoProductos] =
     useState(false);
@@ -90,25 +94,43 @@ const ProcesoVentas = ({ guardarVenta }) => {
   const iva = subtotal * 0.19; // IVA del 19%
   const total = subtotal + iva;
 
-  // Guardar nueva venta
   const guardarNuevaVenta = () => {
+    if (itemsTabla.length === 0) {
+      alert("Debes agregar al menos un producto o servicio antes de guardar la venta.");
+      return;
+    }
+  
+    if (
+      (modoCita === "directa" && datosCliente.nombre === "") ||
+      (modoCita === "indirecta" &&
+        (datosCliente.nombre === "" ||
+          datosCliente.documento === "" ||
+          datosCliente.telefono === "" ||
+          datosCliente.direccion === ""))
+    ) {
+      alert("Por favor selecciona o completa la información del cliente.");
+      return;
+    }
+  
     const nuevaVenta = {
-      cliente: datosCliente.nombre || "Cliente Anónimo",
-      documento: datosCliente.documento || "Sin documento",
-      telefono: datosCliente.telefono || "Sin teléfono",
-      direccion: datosCliente.direccion || "Sin dirección",
+      cliente: datosCliente.nombre,
+      documento: datosCliente.documento,
+      telefono: datosCliente.telefono,
+      direccion: datosCliente.direccion,
       items: itemsTabla,
       subtotal,
       iva,
       total,
-      fecha: new Date().toISOString().slice(0, 10), // Fecha actual en formato YYYY-MM-DD
+      fecha: new Date().toISOString().slice(0, 10),
     };
-
+  
     guardarVenta(nuevaVenta);
     setDatosCliente({ nombre: "", documento: "", telefono: "", direccion: "" });
     setItemsTabla([]);
     alert("¡Venta guardada exitosamente!");
+    navigate("/ventas");
   };
+  
 
   return (
     <div className="proceso-ventas-main">
