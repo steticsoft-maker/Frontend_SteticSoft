@@ -1,4 +1,3 @@
-// ...importaciones (sin cambios)
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -62,12 +61,12 @@ const Compras = () => {
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text("Detalle de Compra", 14, 20);
-  
+
     doc.setFontSize(12);
     doc.text(`Proveedor: ${compra.proveedor}`, 14, 30);
     doc.text(`Fecha: ${compra.fecha}`, 14, 36);
     doc.text(`Total: ${compra.total}`, 14, 42);
-  
+
     const productos = compra.productos.length > 0
       ? compra.productos.map((prod, i) => [
           i + 1,
@@ -77,19 +76,18 @@ const Compras = () => {
           `$${prod.total.toLocaleString()}`,
         ])
       : [["-", "No hay productos", "-", "-", "-"]];
-  
+
     autoTable(doc, {
       head: [["#", "Nombre", "Cantidad", "Precio Unitario", "Total"]],
       body: productos,
       startY: 50,
     });
-  
+
     const pdfBlob = doc.output("blob");
     const url = URL.createObjectURL(pdfBlob);
     setPdfUrl(url);
     setShowPDFModal(true);
   };
-  
 
   const handleShowDetails = (compra) => {
     setSelectedCompra(compra);
@@ -196,39 +194,54 @@ const Compras = () => {
         </div>
       </div>
 
-      {/* Modal de Detalles */}
       {showDetailsModal && selectedCompra && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Detalles de la Compra</h2>
+            <h2>Detalle de Compra</h2>
             <p><strong>Proveedor:</strong> {selectedCompra.proveedor}</p>
             <p><strong>Fecha:</strong> {selectedCompra.fecha}</p>
             <p><strong>Total:</strong> {selectedCompra.total}</p>
-            <h3>Productos</h3>
-            <ul>
-              {selectedCompra.productos.length > 0 ? (
-                selectedCompra.productos.map((producto, index) => (
-                  <li key={index}>
-                    {producto.nombre} - {producto.cantidad} x ${producto.precio.toLocaleString()} = ${producto.total.toLocaleString()}
-                  </li>
-                ))
-              ) : (
-                <p>No hay productos registrados.</p>
-              )}
-            </ul>
-            <button className="btn close" onClick={() => setShowDetailsModal(false)}>Cerrar</button>
+
+            <table className="detalle-compra-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre</th>
+                  <th>Cantidad</th>
+                  <th>Precio Unitario</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedCompra.productos.map((producto, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{producto.nombre}</td>
+                    <td>{producto.cantidad}</td>
+                    <td>${producto.precio.toLocaleString()}</td>
+                    <td>${producto.total.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <button
+              className="btn close detail"
+              onClick={() => setShowDetailsModal(false)}
+            >
+              Cerrar
+            </button>
           </div>
         </div>
       )}
 
-      {/* Modal de Confirmación para Anular */}
       {showAnularModal && (
         <div className="modal">
           <div className="modal-content">
             <h2>Confirmar Anulación</h2>
             <p>¿Está seguro de que desea anular esta compra?</p>
-            <div className="modal-buttons">
-              <button className="btn danger" onClick={confirmAnularCompra}>
+            <div className="modal-buttons-anular">
+              <button className="confirmar" onClick={confirmAnularCompra}>
                 Sí, anular
               </button>
               <button className="btn close" onClick={() => setShowAnularModal(false)}>
@@ -239,32 +252,31 @@ const Compras = () => {
         </div>
       )}
 
-{/* Modal para vista previa del PDF */}
-{showPDFModal && pdfUrl && (
-  <div className="modal">
-    <div className="modal-content">
-      <h2>Vista Previa del PDF</h2>
-      <iframe
-        src={pdfUrl}
-        title="Vista previa PDF"
-        width="550px"
-        height="500px"
-        style={{ border: "1px solid #ccc" }}
-      />
-      <div className="modal-buttons">
-        <button
-          className="btn close"
-          onClick={() => {
-            setShowPDFModal(false);
-            URL.revokeObjectURL(pdfUrl);
-            setPdfUrl(null);
-          }}>
-          Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      {showPDFModal && pdfUrl && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Vista Previa del PDF</h2>
+            <iframe
+              src={pdfUrl}
+              title="Vista previa PDF"
+              width="550px"
+              height="500px"
+              style={{ border: "1px solid #ccc" }}
+            />
+            <div className="modal-buttons">
+              <button
+                className="btn close pdf"
+                onClick={() => {
+                  setShowPDFModal(false);
+                  URL.revokeObjectURL
+                  (pdfUrl);
+                }}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
