@@ -14,6 +14,7 @@ const Proveedores = () => {
 
     const [search, setSearch] = useState("");
     const [modal, setModal] = useState({ open: false, type: "", proveedor: null });
+    const [modalMensaje, setModalMensaje] = useState(""); // Estado para mensajes de validación
     const [confirmDelete, setConfirmDelete] = useState(null);
 
     const handleSearch = (e) => setSearch(e.target.value);
@@ -35,7 +36,37 @@ const Proveedores = () => {
         setModal({ open: false, type: "", proveedor: null });
     };
 
+    const mostrarModal = (mensaje) => {
+        setModalMensaje(mensaje);
+    };
+
+    const cerrarModalMensaje = () => {
+        setModalMensaje("");
+    };
+
     const saveProveedor = (nuevoProveedor) => {
+        // Validaciones del proveedor
+        if (!nuevoProveedor.nombre) {
+            mostrarModal("El nombre del proveedor es obligatorio.");
+            return;
+        }
+        if (!nuevoProveedor.documento) {
+            mostrarModal("El número de documento es obligatorio.");
+            return;
+        }
+        if (!nuevoProveedor.telefono) {
+            mostrarModal("El teléfono del proveedor es obligatorio.");
+            return;
+        }
+        if (!nuevoProveedor.email || !/\S+@\S+\.\S+/.test(nuevoProveedor.email)) {
+            mostrarModal("El email del proveedor es inválido o está vacío.");
+            return;
+        }
+        if (!nuevoProveedor.direccion) {
+            mostrarModal("La dirección del proveedor es obligatoria.");
+            return;
+        }
+
         if (modal.type === "agregar") {
             setProveedores([...proveedores, nuevoProveedor]);
         } else {
@@ -62,7 +93,7 @@ const Proveedores = () => {
                 <h2 className="title-h2">Gestión de Proveedores</h2>
 
                 <div className="top-bar">
-                        <input type="text" placeholder="Buscar proveedor..." value={search} onChange={handleSearch} />
+                    <input type="text" placeholder="Buscar proveedor..." value={search} onChange={handleSearch} />
                     <button className="btnAgregarProveedor" onClick={() => openModal("agregar")}>
                         Agregar Proveedor
                     </button>
@@ -152,9 +183,9 @@ const Proveedores = () => {
                                         <input
                                             type="text"
                                             value={modal.proveedor.documento}
-                                            disabled={modal.type !== "agregar"}
                                             onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, documento: e.target.value } })}
-                                            placeholder="Número de documento *"/>
+                                            placeholder="Número de documento *"
+                                        />
                                     </div>
 
                                     <input
@@ -178,12 +209,22 @@ const Proveedores = () => {
                                         placeholder="Dirección *"
                                     />
 
-                                    <div className="btn-Editar-Proveedor">
+<div className="btn-Editar-Proveedor">
                                         <button className="btn success" onClick={() => saveProveedor(modal.proveedor)}>Guardar</button>
                                         <button className="btn close" onClick={closeModal}>Cancelar</button>
                                     </div>
                                 </>
                             )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Modal de validaciones */}
+                {modalMensaje && (
+                    <div className="modal-overlay">
+                        <div className="modal-container">
+                            <p>{modalMensaje}</p>
+                            <button onClick={cerrarModalMensaje}>Cerrar</button>
                         </div>
                     </div>
                 )}
@@ -196,7 +237,7 @@ const Proveedores = () => {
                             <p>¿Estás seguro de que deseas eliminar al proveedor <strong>{confirmDelete.nombre}</strong>?</p>
                             <div className="btn-container">
                                 <button className="btn danger" onClick={deleteProveedor}>Eliminar</button>
-                                <button className="btn close Cancelar" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+                                <button className="btnCancelar" onClick={() => setConfirmDelete(null)}>Cancelar</button>
                             </div>
                         </div>
                     </div>
