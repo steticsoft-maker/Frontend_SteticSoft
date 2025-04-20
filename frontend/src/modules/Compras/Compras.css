@@ -1,14 +1,22 @@
+/* Estructura General */
 .compras-container {
   display: flex;
   height: 100vh;
+  display: flex;
+    height: 100vh;
+    width: 1710px;
+    margin: 20px auto;
+    border-radius: 8px;
+    background: #f5f5f5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .compras-content {
-    flex: 1;
-    padding: 30px;
-    margin-left: 45px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
+  flex: 1;
+  padding: 30px;
+  margin-left: 45px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
 }
 
 h2 {
@@ -19,7 +27,7 @@ h2 {
 /* Barra de búsqueda */
 .barra-superior {
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   align-items: center;
   gap: 10px;
   margin-bottom: 30px;
@@ -42,18 +50,17 @@ h2 {
 }
 
 /* Botones */
-.btnAgregarCompra{
-    padding: 12px 24px;
-    font-size: 1rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-
+.btnAgregarCompra {
+  padding: 12px 24px;
+  font-size: 1rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.btnAgregarCompra:hover{
+.btnAgregarCompra:hover {
   background-color: #1f6696;
 }
 
@@ -65,7 +72,7 @@ h2 {
 .compras-table {
   background-color: #f5f5f5;
   font-size: 18px;
-  width: 920px;
+  width: 1200px;
   height: 1000px;
   padding: 20px;
   margin-top: 20px;
@@ -76,6 +83,7 @@ h2 {
 .compras-table th {
   background-color: #34495e;
   color: white;
+  width: 20%;
 }
 
 /* Estados */
@@ -86,11 +94,10 @@ h2 {
   text-align: center;
 }
 
-
-.estado.anulada {
-  background: #d9534f;
-  color: white;
-  border-radius: 15px;
+.estado-anulada {
+  font-size: 1rem;
+  color: #d9534f;
+  font-weight: bold;
 }
 
 /* Modal */
@@ -109,12 +116,49 @@ h2 {
 .modal-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 400px;
+  align-items: flex-start; /* Alineación hacia la izquierda */
+  width: 600px; /* Ampliado para mayor espacio */
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  padding: 25px;
+}
+
+.detalle-compra-table th {
+  margin: 10px 0;
+  font-size: 1rem;
+  background-color: #007bff;
+  text-align: left; /* Asegura la alineación */
+}
+
+.detalle-compra-info p {
+  margin: 10px 0;
+  font-size: 1rem;
+  color: #333;
+  text-align: left; /* Asegura la alineación */
+}
+
+.detalle-compra-productos h3 {
+  font-size: 1.2rem;
+  color: #007bff;
+  margin-bottom: 10px;
+  text-align: left; /* Encabezado alineado */
+}
+
+.detalle-compra-productos ul {
+  list-style: none;
+  padding: 0;
+  text-align: left; /* Asegura alineación en la lista */
+}
+
+.detalle-compra-productos li {
+  background: #e1eaf5;
+  margin: 5px 0;
+  padding: 8px;
   border-radius: 8px;
-  background: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 1.20rem;
+  text-align: left; /* Alinea cada ítem */
 }
 
 .modal-content input {
@@ -130,19 +174,61 @@ h2 {
   margin: 5px 0;
 }
 
-.btn.close {
-  margin-top: 10px;
-  background: #d9534f;
-  color: white;
-  padding: 8px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
+.btn.close.detail {
+  margin-top: 20px !important;
+  background: #d9534f !important;
+  color: white !important;
+  padding: 8px 15px !important;
+  border: none !important;
+  cursor: pointer !important;
+  border-radius: 5px !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
 }
 
-.btn.close:hover {
-  background: #c9302c;
+.btn.close.detail:hover {
+  background: #c9302c !important;
 }
+
+.btn.close.pdf {
+  margin-top: 20px !important;
+  background: #d9534f !important;
+  color: white !important;
+  padding: 8px 15px !important;
+  border: none !important;
+  cursor: pointer !important;
+  border-radius: 5px !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+
+.btn.close.pdf:hover {
+  background: #c9302c !important;
+}
+
+.modal-buttons-anular{
+  margin-top: 20px !important;
+  color: white !important;
+  padding: 8px 15px !important;
+  border: none !important;
+  cursor: pointer !important;
+  border-radius: 5px !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+
+.confirmar{
+  background-color: #3498db;
+  padding: 11px 19px;
+  border-radius: 5px !important;
+}
+
 
 /* Modal Detalle */
 .modal-detalle {
@@ -153,14 +239,16 @@ h2 {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Alineación superior */
   justify-content: center;
+  padding-top: 50px;
 }
 
 .modal-content-detalle {
+  text-align: left !important; /* Prioridad alta para forzar alineación */
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start; /* Asegura alineación izquierda */
   background: white;
   padding: 20px;
   width: 600px;
@@ -168,10 +256,17 @@ h2 {
   border-radius: 8px;
 }
 
+.modal-content-detalle * {
+  text-align: left !important; /* Evita cualquier herencia de estilos conflictivos */
+  align-self: flex-start;
+}
+
+
+/* Producto */
 .producto-item {
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center;    /* Centra verticalmente */
+  justify-content: center;
+  align-items: center;
   gap: 10px;
 }
 
@@ -185,7 +280,7 @@ h2 {
 }
 
 .btn-remove {
-  margin: 0 auto !important; /* Centra horizontalmente dentro de un contenedor */
+  margin: 0 auto !important;
   display: block !important;
   background-color: red !important;
   color: white !important;
@@ -193,22 +288,24 @@ h2 {
   cursor: pointer !important;
   width: 50px !important;
 }
+
 .btn-remove:hover {
   background-color: darkred !important;
 }
 
 .button-row {
-  display: flex;               /* Activa Flexbox */
-  justify-content: space-between; /* Espacia los botones */
-  width: 100%;                 /* Ajusta al ancho del modal */
-  margin-top: 10px;            /* Espaciado superior */
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .button-row .btn {
-  flex: 1;                     /* Distribuye el ancho de los botones proporcionalmente */
-  margin: 0 5px;               /* Espaciado horizontal entre botones */
+  flex: 1;
+  margin: 0 5px;
 }
 
 .required-asterisk {
   color: red;
 }
+
