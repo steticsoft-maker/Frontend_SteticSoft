@@ -1,5 +1,4 @@
-// Reemplaza tu código completo por este actualizado:
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -19,19 +18,19 @@ const AgregarCompra = () => {
   const [proveedor, setProveedor] = useState("");
   const [fecha, setFecha] = useState(new Date().toISOString().split("T")[0]);
   const [productos, setProductos] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
+  const [iva, setIva] = useState(0);
   const [total, setTotal] = useState(0);
 
+
   const handleAgregarProducto = () => {
-    setProductos([
-      ...productos,
-      { nombre: "", cantidad: 1, precio: 0, total: 0 },
-    ]);
+    setProductos([...productos, { nombre: "", cantidad: 1, precio: 0, total: 0 }]);
   };
 
   const handleEliminarProducto = (index) => {
     const nuevosProductos = productos.filter((_, i) => i !== index);
     setProductos(nuevosProductos);
-    actualizarTotal(nuevosProductos);
+    actualizarTotales(nuevosProductos);
   };
 
   const handleCambioProducto = (index, campo, valor) => {
@@ -49,11 +48,16 @@ const AgregarCompra = () => {
 
     nuevosProductos[index].total = nuevosProductos[index].cantidad * nuevosProductos[index].precio;
     setProductos(nuevosProductos);
-    actualizarTotal(nuevosProductos);
+    actualizarTotales(nuevosProductos);
   };
 
-  const actualizarTotal = (productos) => {
-    const nuevoTotal = productos.reduce((sum, prod) => sum + prod.total, 0);
+  const actualizarTotales = (productos) => {
+    const nuevoSubtotal = productos.reduce((sum, prod) => sum + prod.total, 0);
+    const nuevoIva = nuevoSubtotal * 0.19;
+    const nuevoTotal = nuevoSubtotal + nuevoIva;
+
+    setSubtotal(nuevoSubtotal);
+    setIva(nuevoIva);
     setTotal(nuevoTotal);
   };
 
@@ -62,12 +66,12 @@ const AgregarCompra = () => {
       alert("Debe seleccionar un proveedor.");
       return;
     }
-  
+
     if (productos.length === 0) {
       alert("Debe agregar al menos un producto.");
       return;
     }
-  
+
     for (let i = 0; i < productos.length; i++) {
       if (!productos[i].nombre) {
         alert(`Debe seleccionar un producto en la fila ${i + 1}.`);
@@ -78,28 +82,23 @@ const AgregarCompra = () => {
         return;
       }
     }
-  
+
     const compra = {
       proveedor,
       fecha,
       productos,
+      subtotal,
+      iva,
       total,
     };
-  
-    // Obtener compras actuales del localStorage
+
     const comprasGuardadas = JSON.parse(localStorage.getItem("compras")) || [];
-  
-    // Agregar la nueva compra
     comprasGuardadas.push(compra);
-  
-    // Guardar nuevamente en localStorage
     localStorage.setItem("compras", JSON.stringify(comprasGuardadas));
-  
+
     alert("Compra guardada exitosamente.");
     navigate("/compras");
   };
-  
-
 
   return (
     <div className="container">
@@ -107,30 +106,45 @@ const AgregarCompra = () => {
         <NavbarAdmin />
         <div className="agregar-compra-content">
           <h2 className="agregar-compra-title">Agregar Compra</h2>
+          <div className="form-group">
+          <div className="numero-compra-cuadro">
+    <span className="numero-compra">Id: 4</span>
+  </div>
+              <select
+              id="proveedor"
+              value={proveedor}
+              onChange={(e) => setProveedor(e.target.value)}
+              className="seleccionar-proveedor"
+            >
+              <option value="">Seleccione un proveedor *</option>
+              <option value="Proveedor 1">Proveedor 1</option>
+              <option value="Proveedor 2">Proveedor 2</option>
+              <option value="Proveedor 3">Proveedor 3</option>
+            </select>
+          </div>
 
           <div className="form-group">
-    <select
-        id="proveedor"
-        value={proveedor}
-        onChange={(e) => setProveedor(e.target.value)}
-        className="seleccionar-proveedor"
-    >
-        <option value="">Seleccione un proveedor *</option>
-        <option value="Proveedor 1">Proveedor 1</option>
-        <option value="Proveedor 2">Proveedor 2</option>
-        <option value="Proveedor 3">Proveedor 3</option>
-    </select>
+  <label htmlFor="fechaCompra">Fecha de Compra:</label>
+  <input
+    type="date"
+    id="fechaCompra"
+    value={fecha}
+    onChange={(e) => setFecha(e.target.value)}
+    className="LaFecha"
+    placeholder="Seleccione la fecha de compra"
+  />
 </div>
 
 <div className="form-group">
-    <input
-        type="date"
-        id="fecha"
-        value={fecha}
-        onChange={(e) => setFecha(e.target.value)}
-        className="LaFecha"
-        placeholder="Fecha *"
-    />
+  <label htmlFor="fechaEntrega">Fecha de Entrega:</label>
+  <input
+    type="date"
+    id="fechaEntrega"
+    value=""
+    onChange={(e) => console.log("Fecha de entrega:", e.target.value)}
+    className="LaFecha"
+    placeholder="Seleccione la fecha de entrega"
+  />
 </div>
 
 
@@ -158,7 +172,7 @@ const AgregarCompra = () => {
                         value={producto.nombre}
                         onChange={(e) => handleCambioProducto(index, "nombre", e.target.value)}
                       >
-                        <option className="Seleccionar-un-Producto" value="">Seleccione un producto</option>
+                        <option value="">Seleccione un producto</option>
                         {productosFalsos.map((prod) => (
                           <option key={prod.nombre} value={prod.nombre}>
                             {prod.nombre}
@@ -199,7 +213,11 @@ const AgregarCompra = () => {
             </table>
           </div>
 
-          <div className="agregar-compra-total">Total: ${total.toFixed(0)}</div>
+          <div className="agregar-compra-totales">
+            <p>Subtotal: ${subtotal.toFixed(0)}</p>
+            <p>IVA (19%): ${iva.toFixed(0)}</p>
+            <p><strong>Total: ${total.toFixed(0)}</strong></p>
+          </div>
 
           <div className="agregar-compra-buttons">
             <button className="btn-guardar" onClick={handleGuardarCompra}>
