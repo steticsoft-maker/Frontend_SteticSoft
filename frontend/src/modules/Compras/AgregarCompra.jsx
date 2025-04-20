@@ -13,15 +13,25 @@ const productosFalsos = [
   { nombre: "Gel fijador", precio: 7000 },
 ];
 
+const Modal = ({ mensaje, onClose }) => (
+  <div className="modal-overlay">
+    <div className="modal-container">
+      <p>{mensaje}</p>
+      <button onClick={onClose}>Cerrar</button>
+    </div>
+  </div>
+);
+
 const AgregarCompra = () => {
   const navigate = useNavigate();
   const [proveedor, setProveedor] = useState("");
   const [fecha, setFecha] = useState(new Date().toISOString().split("T")[0]);
+  const [fechaEntrega, setFechaEntrega] = useState("");
   const [productos, setProductos] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const [iva, setIva] = useState(0);
   const [total, setTotal] = useState(0);
-
+  const [modalMensaje, setModalMensaje] = useState("");
 
   const handleAgregarProducto = () => {
     setProductos([...productos, { nombre: "", cantidad: 1, precio: 0, total: 0 }]);
@@ -61,24 +71,32 @@ const AgregarCompra = () => {
     setTotal(nuevoTotal);
   };
 
+  const mostrarModal = (mensaje) => {
+    setModalMensaje(mensaje);
+  };
+
+  const cerrarModal = () => {
+    setModalMensaje("");
+  };
+
   const handleGuardarCompra = () => {
     if (!proveedor) {
-      alert("Debe seleccionar un proveedor.");
+      mostrarModal("Debe seleccionar un proveedor.");
       return;
     }
 
     if (productos.length === 0) {
-      alert("Debe agregar al menos un producto.");
+      mostrarModal("Debe agregar al menos un producto.");
       return;
     }
 
     for (let i = 0; i < productos.length; i++) {
       if (!productos[i].nombre) {
-        alert(`Debe seleccionar un producto en la fila ${i + 1}.`);
+        mostrarModal(`Debe seleccionar un producto en la fila ${i + 1}.`);
         return;
       }
       if (productos[i].cantidad <= 0) {
-        alert(`La cantidad debe ser mayor a 0 en la fila ${i + 1}.`);
+        mostrarModal(`La cantidad debe ser mayor a 0 en la fila ${i + 1}.`);
         return;
       }
     }
@@ -86,6 +104,7 @@ const AgregarCompra = () => {
     const compra = {
       proveedor,
       fecha,
+      fechaEntrega,
       productos,
       subtotal,
       iva,
@@ -96,7 +115,7 @@ const AgregarCompra = () => {
     comprasGuardadas.push(compra);
     localStorage.setItem("compras", JSON.stringify(comprasGuardadas));
 
-    alert("Compra guardada exitosamente.");
+    mostrarModal("Compra guardada exitosamente.");
     navigate("/compras");
   };
 
@@ -107,10 +126,10 @@ const AgregarCompra = () => {
         <div className="agregar-compra-content">
           <h2 className="agregar-compra-title">Agregar Compra</h2>
           <div className="form-group">
-          <div className="numero-compra-cuadro">
-    <span className="numero-compra">Id: 4</span>
-  </div>
-              <select
+            <div className="numero-compra-cuadro">
+              <span className="numero-compra">Id: 4</span>
+            </div>
+            <select
               id="proveedor"
               value={proveedor}
               onChange={(e) => setProveedor(e.target.value)}
@@ -124,29 +143,28 @@ const AgregarCompra = () => {
           </div>
 
           <div className="form-group">
-  <label htmlFor="fechaCompra">Fecha de Compra:</label>
-  <input
-    type="date"
-    id="fechaCompra"
-    value={fecha}
-    onChange={(e) => setFecha(e.target.value)}
-    className="LaFecha"
-    placeholder="Seleccione la fecha de compra"
-  />
-</div>
+            <label htmlFor="fechaCompra">Fecha de Compra:</label>
+            <input
+              type="date"
+              id="fechaCompra"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              className="LaFecha"
+              placeholder="Seleccione la fecha de compra"
+            />
+          </div>
 
-<div className="form-group">
-  <label htmlFor="fechaEntrega">Fecha de Entrega:</label>
-  <input
-    type="date"
-    id="fechaEntrega"
-    value=""
-    onChange={(e) => console.log("Fecha de entrega:", e.target.value)}
-    className="LaFecha"
-    placeholder="Seleccione la fecha de entrega"
-  />
-</div>
-
+          <div className="form-group">
+            <label htmlFor="fechaEntrega">Fecha de Entrega:</label>
+            <input
+              type="date"
+              id="fechaEntrega"
+              value={fechaEntrega}
+              onChange={(e) => setFechaEntrega(e.target.value)}
+              className="LaFecha"
+              placeholder="Seleccione la fecha de entrega"
+            />
+          </div>
 
           <button className="btn-agregar-producto" onClick={handleAgregarProducto}>
             Agregar Producto
@@ -216,7 +234,9 @@ const AgregarCompra = () => {
           <div className="agregar-compra-totales">
             <p>Subtotal: ${subtotal.toFixed(0)}</p>
             <p>IVA (19%): ${iva.toFixed(0)}</p>
-            <p><strong>Total: ${total.toFixed(0)}</strong></p>
+            <p>
+              <strong>Total: ${total.toFixed(0)}</strong>
+            </p>
           </div>
 
           <div className="agregar-compra-buttons">
@@ -229,6 +249,7 @@ const AgregarCompra = () => {
           </div>
         </div>
       </div>
+      {modalMensaje && <Modal mensaje={modalMensaje} onClose={cerrarModal} />}
     </div>
   );
 };
