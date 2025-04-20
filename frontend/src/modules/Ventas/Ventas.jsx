@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaFilePdf } from "react-icons/fa";
+import { FaEye, FaFilePdf, FaBan } from "react-icons/fa";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 import NavbarAdmin from "../../components/NavbarAdmin";
 import ProcesoVentas from "./ProcesoVentas";
@@ -16,6 +16,10 @@ const Ventas = () => {
       cliente: "Juan Pérez",
       total: 50000,
       estado: "Activa",
+      productos: [
+        { nombre: "Producto A", cantidad: 2, precio: 10000, total: 20000 },
+        { nombre: "Producto B", cantidad: 3, precio: 20000, total: 60000 },
+      ],
     },
     {
       id: 2,
@@ -23,6 +27,9 @@ const Ventas = () => {
       cliente: "María Gómez",
       total: 120000,
       estado: "En proceso",
+      productos: [
+        { nombre: "Producto C", cantidad: 1, precio: 120000, total: 120000 },
+      ],
     },
   ];
 
@@ -64,19 +71,42 @@ const Ventas = () => {
 
   const handlePDF = (venta) => {
     const doc = new jsPDF();
+
     doc.setFontSize(18);
     doc.text("Detalle de Venta", 14, 20);
 
     doc.setFontSize(12);
-    doc.text(`Fecha: ${venta.fecha}`, 14, 30);
-    doc.text(`Cliente: ${venta.cliente}`, 14, 38);
-    doc.text(`Total: $${venta.total.toFixed(2)}`, 14, 46);
-    doc.text(`Estado: ${venta.estado}`, 14, 54);
+    doc.text(`Cliente: ${venta.cliente}`, 14, 30);
+    doc.text(`Fecha: ${venta.fecha}`, 14, 36);
+    doc.text(`Total: $${venta.total.toFixed(2)}`, 14, 42);
+    doc.text(`Estado: ${venta.estado}`, 14, 48);
+
+    const productos = venta.productos.map((prod, index) => [
+      index + 1,
+      prod.nombre,
+      prod.cantidad,
+      `$${prod.precio.toLocaleString()}`,
+      `$${prod.total.toLocaleString()}`,
+    ]);
+
+    autoTable(doc, {
+      head: [["#", "Producto/Servicio", "Cantidad", "Precio Unitario", "Total"]],
+      body: productos,
+      startY: 55,
+    });
 
     const pdfBlob = doc.output("blob");
-    const pdfBlobUrl = URL.createObjectURL(pdfBlob);
-    setPdfUrl(pdfBlobUrl);
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    setPdfUrl(pdfUrl);
     setShowPDFModal(true);
+  };
+
+  const handleAnularVenta = (id) => {
+    const updatedVentas = ventas.map((venta) =>
+      venta.id === id ? { ...venta, estado: "Anulada" } : venta
+    );
+    setVentas(updatedVentas);
+    alert("La venta ha sido anulada exitosamente");
   };
 
   const filteredVentas = ventas.filter((venta) =>
@@ -146,6 +176,7 @@ const Ventas = () => {
                         <option value="En proceso">En proceso</option>
                         <option value="Activa">Activa</option>
                         <option value="Inactiva">Inactiva</option>
+                        <option value="Anulada">Anulada</option>
                       </select>
                     </td>
                     <td>
@@ -160,6 +191,12 @@ const Ventas = () => {
                         onClick={() => handlePDF(venta)}
                       >
                         <FaFilePdf />
+                      </button>
+                      <button
+                        className="table-button anular-button"
+                        onClick={() => handleAnularVenta(venta.id)}
+                      >
+                        <FaBan />
                       </button>
                     </td>
                   </tr>
@@ -207,7 +244,7 @@ const Ventas = () => {
       {showPDFModal && pdfUrl && (
         <div className="modal">
           <div className="modal-content pdf-modal">
-            <h2>Vista previa del PDF</h2>
+            <h2>Vista Previa del PDF</h2>
             <iframe
               src={pdfUrl}
               title="Vista previa PDF"
@@ -221,7 +258,6 @@ const Ventas = () => {
                 onClick={() => {
                   setShowPDFModal(false);
                   URL.revokeObjectURL(pdfUrl);
-                  setPdfUrl(null);
                 }}
               >
                 Cerrar
