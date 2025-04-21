@@ -202,4 +202,47 @@ input:checked+.slider:before {
   .action-button:hover {
     background-color: #218838;
   }
+/* Contenedor general para los botones */
+.modal-content form .button-group {
+    display: flex; /* Alinea los botones en una sola fila */
+    justify-content: space-between; /* Espacio uniforme entre botones */
+    margin-top: 20px; /* Separación superior con los campos del formulario */
+}
+
+/* Estilo uniforme para ambos botones */
+.modal-content form .action-button,
+.modal-content form .close-button {
+    width: 48%; /* Ambos botones ocupan el mismo ancho y están alineados */
+    padding: 10px 0; /* Altura uniforme */
+    font-size: 16px; /* Texto legible */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar */
+    text-align: center; /* Texto centrado */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Pequeña sombra para efecto */
+}
+
+/* Estilo del botón "Guardar" */
+.modal-content form .action-button {
+    background-color: #28a745; /* Verde */
+    color: white; /* Texto blanco */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.modal-content form .action-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar */
+}
+
+/* Estilo del botón "Cancelar" */
+.modal-content form .close-button {
+    background-color: #dc3545; /* Rojo */
+    color: white; /* Texto blanco */
+    transition: background-color 0.3s ease; /* Transición suave */
+    margin-top: 19 px;
+}
+
+.modal-content form .close-button:hover {
+    background-color: #b02a37; /* Rojo más oscuro al pasar */
+    margin-top: 19 px;
+}
   

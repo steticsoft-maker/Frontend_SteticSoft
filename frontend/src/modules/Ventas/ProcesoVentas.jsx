@@ -143,7 +143,7 @@ const ProcesoVentas = ({ guardarVenta }) => {
             setMostrarClientes(true);
           }}
         >
-          Cita Directa
+          Venta Directa
         </button>
         <button
           className={`indirecta-button ${
@@ -151,7 +151,7 @@ const ProcesoVentas = ({ guardarVenta }) => {
           }`}
           onClick={() => setModoCita("indirecta")}
         >
-          Cita Indirecta
+          Venta Indirecta
         </button>
       </div>
 

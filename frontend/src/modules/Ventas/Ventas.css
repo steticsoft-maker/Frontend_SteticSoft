@@ -278,7 +278,7 @@ input:checked+.slider:before {
 /* Colores dinámicos según estado */
 
 .estado-en-proceso {
-    background-color: #f3f025 !important;
+    background-color: #e08f15 !important;
     /* Amarillo */
 }
 
@@ -293,8 +293,67 @@ input:checked+.slider:before {
 }
 
 .pdf-modal {
-    width: 80%;
-    max-width: 900px;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.pdf-modal h2 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Tabla de detalles dentro del modal */
+.ventas-detalle-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+  
+.ventas-detalle-table th,
+.ventas-detalle-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 14px;
+}
+  
+.ventas-detalle-table th {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+  
+.ventas-detalle-table td {
+    text-align: center;
+}
+  
+.ventas-detalle-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+  
+.ventas-detalle-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+/* Botón cerrar */
+.btn.close.pdf {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+  
+.btn.close.pdf:hover {
+    background-color: #b02a37;
 }
 
 .modal-actions {
@@ -302,3 +361,17 @@ input:checked+.slider:before {
     justify-content: space-between;
     margin-top: 15px;
 }
+.anular-button {
+    background-color: #dc3545 !important;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .anular-button:hover {
+    background-color: #b02a37 !important;
+  }
+  

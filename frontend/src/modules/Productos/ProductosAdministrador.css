@@ -180,8 +180,30 @@ input:checked+.slider:before {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    width: 500px;
+    width: 800px;
+    text-align: left; /* Alineación del texto a la izquierda */
     text-align: center;
+    flex-direction: column; /* Garantiza estructura flexible */
+}
+
+.modal-content .form-row {
+    display: flex; /* Coloca los campos en línea */
+    justify-content: space-between; /* Espaciado uniforme */
+    gap: 15px; /* Espacio entre los campos */
+    margin-bottom: 15px; /* Espaciado inferior */
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content input[type="file"],
+.modal-content textarea,
+.modal-content select {
+    flex: 1; /* Los campos ocupan el mismo espacio */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .close-button {
@@ -541,3 +563,4 @@ img {
     color: white !important;
     border: none;
     padding: 10  
+}
