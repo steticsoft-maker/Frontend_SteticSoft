@@ -26,28 +26,33 @@ const Categorias = () => {
   const [modalType, setModalType] = useState(""); // "create", "edit", "details"
   const [currentCategoria, setCurrentCategoria] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-  const [showProductos, setShowProductos] = useState(false); // Controla el botón desplegable
 
   useEffect(() => {
     localStorage.setItem("categorias", JSON.stringify(categorias));
   }, [categorias]);
 
-  const openModal = (type) => {
+  const openModal = (type, categoria = null) => {
     setModalType(type);
     setShowModal(true);
-    if (type === "create") setCurrentCategoria(null); // Restablece el formulario para agregar categoría
+    if (type === "create") {
+      setCurrentCategoria(null); // Restablece el formulario para agregar categoría
+    } else if (type === "details" || type === "edit") {
+      setCurrentCategoria(categoria); // Establece la categoría seleccionada para detalles o edición
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
     setModalType("");
     setCurrentCategoria(null);
-    setShowProductos(false); // Restablece el desplegable
   };
 
   const handleSave = (categoria) => {
     if (modalType === "create") {
-      setCategorias([...categorias, { ...categoria, id: Date.now(), estado: true, productos: [] }]);
+      setCategorias([
+        ...categorias,
+        { ...categoria, id: Date.now(), estado: true, productos: [] },
+      ]);
     } else if (modalType === "edit") {
       const updatedCategorias = categorias.map((cat) =>
         cat.id === currentCategoria.id ? { ...currentCategoria, ...categoria } : cat
@@ -160,11 +165,82 @@ const Categorias = () => {
                     handleSave(categoria);
                   }}
                 >
-                  <input type="text" name="nombre" placeholder="Nombre" required />
-                  <textarea className="DescripcionAgregarCategoria" name="descripcion" placeholder="Descripción" required />
+                  <input
+                    type="text"
+                    name="nombre"
+                    placeholder="Nombre"
+                    required
+                  />
+                  <textarea
+                    className="DescripcionAgregarCategoria"
+                    name="descripcion"
+                    placeholder="Descripción"
+                    required
+                  />
                   <div className="button-group">
                     <button type="submit" className="action-button">
                       Guardar
+                    </button>
+                    <button className="close-button" onClick={closeModal}>
+                      Cancelar
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+            {modalType === "details" && currentCategoria && (
+              <>
+                <h2>Detalles de la Categoría</h2>
+                <p>
+                  <strong>Nombre:</strong> {currentCategoria.nombre}
+                </p>
+                <p>
+                  <strong>Descripción:</strong> {currentCategoria.descripcion}
+                </p>
+                <p>
+                  <strong>Estado:</strong>{" "}
+                  {currentCategoria.estado ? "Activa" : "Inactiva"}
+                </p>
+                <p>
+                  <strong>Productos:</strong>{" "}
+                  {currentCategoria.productos.join(", ")}
+                </p>
+                <button className="close-button" onClick={closeModal}>
+                  Cerrar
+                </button>
+              </>
+            )}
+            {modalType === "edit" && currentCategoria && (
+              <>
+                <h2>Editar Categoría</h2>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const categoria = {
+                      nombre: formData.get("nombre"),
+                      descripcion: formData.get("descripcion"),
+                    };
+                    handleSave(categoria);
+                  }}
+                >
+                  <input
+                    type="text"
+                    name="nombre"
+                    placeholder="Nombre"
+                    defaultValue={currentCategoria.nombre}
+                    required
+                  />
+                  <textarea
+                    className="DescripcionAgregarCategoria"
+                    name="descripcion"
+                    placeholder="Descripción"
+                    defaultValue={currentCategoria.descripcion}
+                    required
+                  />
+                  <div className="button-group">
+                    <button type="submit" className="action-button">
+                      Guardar Cambios
                     </button>
                     <button className="close-button" onClick={closeModal}>
                       Cancelar
@@ -181,4 +257,3 @@ const Categorias = () => {
 };
 
 export default Categorias;
- 
