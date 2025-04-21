@@ -258,3 +258,41 @@ select[name="rol"]:focus {
 .pagination button:hover:enabled {
     background-color: #45a049;
 }
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.form-buttons button {
+    flex: 1 1 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.save-button {
+    background-color: #007bff !important;
+    color: #fff !important;
+}
+
+.save-button:hover {
+    background-color: #2980b9 !important;
+}
+
+.cancel-button {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+}
+
+.cancel-button:hover {
+    background-color: #c0392b !important;
+}

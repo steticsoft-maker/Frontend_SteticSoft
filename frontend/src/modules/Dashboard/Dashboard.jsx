@@ -87,6 +87,28 @@ function Dashboard() {
     ],
   };
 
+  
+  const DataIVASubtotal = {
+    labels: ["Totales"],
+    datasets: [
+      {
+        label: "Subtotal",
+        data: [800],
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "IVA",
+        data: [450],
+        backgroundColor: "rgba(255, 206, 86, 0.6)",
+        borderColor: "rgba(255, 206, 86, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+
   // Ajustes de tamaño
   const chartOptions = {
     responsive: true,
@@ -144,10 +166,18 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="chart-full-width">
-            <h2>Producto Más Vendido por Mes</h2>
-            <div className="chart-wrapper">
-              <Bar data={productMonthData} options={chartOptions} />
+          <div className="row">
+            <div className="chart-full-width">
+              <h2>Producto Más Vendido por Mes</h2>
+              <div className="chart-wrapper">
+                <Bar data={productMonthData} options={chartOptions} />
+              </div>
+            </div>
+            <div className="chart-full-width">
+              <h2>Subtotal y IVA</h2>
+              <div className="chart-wrapper">
+                <Bar data={DataIVASubtotal} options={chartOptions} />
+              </div>
             </div>
           </div>
         </div>

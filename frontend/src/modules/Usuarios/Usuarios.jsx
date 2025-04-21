@@ -4,10 +4,12 @@ import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
 import "./Usuarios.css";
 
 const Usuarios = () => {
+  // Datos iniciales con el nuevo campo tipoDocumento
   const initialUsuarios = [
     {
       id: 1,
       nombre: "Administrador",
+      tipoDocumento: "CC",
       documento: "123456789",
       email: "Admin@gmail.com",
       telefono: "3200000000",
@@ -18,6 +20,7 @@ const Usuarios = () => {
     {
       id: 2,
       nombre: "Pepe",
+      tipoDocumento: "TI",
       documento: "987654321",
       email: "Pepe@gmail.com",
       telefono: "3209999999",
@@ -27,11 +30,16 @@ const Usuarios = () => {
     },
   ];
 
+  // Estados principales
   const [usuarios, setUsuarios] = useState(initialUsuarios);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(""); // "create", "edit", "details"
   const [currentUsuario, setCurrentUsuario] = useState(null);
   const [busqueda, setBusqueda] = useState("");
+
+  // Estados para los modales extra
+  const [modalMensaje, setModalMensaje] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
@@ -61,10 +69,15 @@ const Usuarios = () => {
     setCurrentUsuario(null);
   };
 
+  // En lugar de window.confirm, se usa el modal de confirmación
   const handleDelete = (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
-      setUsuarios(usuarios.filter((u) => u.id !== id));
-    }
+    const usuario = usuarios.find((u) => u.id === id);
+    setConfirmDelete(usuario);
+  };
+
+  const deleteUsuario = () => {
+    setUsuarios(usuarios.filter((u) => u.id !== confirmDelete.id));
+    setConfirmDelete(null);
   };
 
   const toggleAnular = (id) => {
@@ -72,6 +85,11 @@ const Usuarios = () => {
       u.id === id ? { ...u, anulado: !u.anulado } : u
     );
     setUsuarios(updatedUsuarios);
+  };
+
+  // Función para cerrar el modal de validación
+  const cerrarModalMensaje = () => {
+    setModalMensaje("");
   };
 
   const filteredUsuarios = usuarios.filter((u) =>
@@ -83,7 +101,7 @@ const Usuarios = () => {
       <NavbarAdmin />
       <div className="main-content">
         <h1>Gestión de Usuarios</h1>
-        {/* Buscador */}
+
         <div className="actions-container">
           <input
             type="text"
@@ -97,12 +115,12 @@ const Usuarios = () => {
           </button>
         </div>
 
-        {/* Tabla de usuarios */}
         <table className="usuarios-table">
           <thead>
             <tr>
+              <th>Tipo de Documento</th>
+              <th>Número de Documento</th>
               <th>Nombre</th>
-              <th>Documento</th>
               <th>Email</th>
               <th>Teléfono</th>
               <th>Dirección</th>
@@ -114,8 +132,9 @@ const Usuarios = () => {
           <tbody>
             {filteredUsuarios.map((usuario) => (
               <tr key={usuario.id}>
-                <td>{usuario.nombre}</td>
+                <td>{usuario.tipoDocumento}</td>
                 <td>{usuario.documento}</td>
+                <td>{usuario.nombre}</td>
                 <td>{usuario.email}</td>
                 <td>{usuario.telefono}</td>
                 <td>{usuario.direccion}</td>
@@ -178,7 +197,12 @@ const Usuarios = () => {
                   <strong>Nombre:</strong> {currentUsuario.nombre}
                 </p>
                 <p>
-                  <strong>Documento:</strong> {currentUsuario.documento}
+                  <strong>Tipo de Documento:</strong>{" "}
+                  {currentUsuario.tipoDocumento}
+                </p>
+                <p>
+                  <strong>Número de Documento:</strong>{" "}
+                  {currentUsuario.documento}
                 </p>
                 <p>
                   <strong>Email:</strong> {currentUsuario.email}
@@ -212,6 +236,7 @@ const Usuarios = () => {
                     const usuario = {
                       id: currentUsuario ? currentUsuario.id : Date.now(),
                       nombre: formData.get("nombre"),
+                      tipoDocumento: formData.get("tipoDocumento"),
                       documento: formData.get("documento"),
                       email: formData.get("email"),
                       telefono: formData.get("telefono"),
@@ -229,10 +254,23 @@ const Usuarios = () => {
                     defaultValue={currentUsuario?.nombre || ""}
                     required
                   />
+
+                  <select
+                    name="tipoDocumento"
+                    defaultValue={currentUsuario?.tipoDocumento || ""}
+                    required
+                  >
+                    <option value="" disabled>
+                      Seleccione tipo de documento
+                    </option>
+                    <option value="CC">CC</option>
+                    <option value="TI">TI</option>
+                  </select>
+
                   <input
                     type="text"
                     name="documento"
-                    placeholder="Documento"
+                    placeholder="Número de Documento"
                     defaultValue={currentUsuario?.documento || ""}
                     required
                   />
@@ -268,19 +306,56 @@ const Usuarios = () => {
                     <option value="Empleado">Empleado</option>
                     <option value="Cliente">Cliente</option>
                   </select>
-                  <button type="submit" className="save-button">
-                    Guardar
-                  </button>
-                  <button
-                    type="button"
-                    className="cancel-button"
-                    onClick={closeModal}
-                  >
-                    Cancelar
-                  </button>
+
+                  <div className="form-buttons">
+                    <button type="submit" className="save-button">
+                      Guardar
+                    </button>
+                    <button
+                      type="button"
+                      className="cancel-button"
+                      onClick={closeModal}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 </form>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal de validaciones */}
+      {modalMensaje && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <p>{modalMensaje}</p>
+            <button onClick={cerrarModalMensaje}>Cerrar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación para eliminar */}
+      {confirmDelete && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>¿Eliminar usuario?</h3>
+            <p>
+              ¿Estás seguro de que deseas eliminar al usuario{" "}
+              <strong>{confirmDelete.nombre}</strong>?
+            </p>
+            <div className="btn-container">
+              <button className="btn danger" onClick={deleteUsuario}>
+                Eliminar
+              </button>
+              <button
+                className="btnCancelar"
+                onClick={() => setConfirmDelete(null)}
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
         </div>
       )}

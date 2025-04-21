@@ -1,9 +1,9 @@
-// Rol.jsx
 import React, { useState, useEffect } from "react";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import "./Rol.css";
 import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
 
+// Modal para selección de permisos
 const ModalPermisos = ({
   visible,
   permisos,
@@ -12,15 +12,21 @@ const ModalPermisos = ({
   onSave,
 }) => {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
   const [seleccionTemp, setSeleccionTemp] = useState([...seleccionados]);
-  const porPagina = 5;
 
-  const filtrados = permisos.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
-  const totalPaginas = Math.ceil(filtrados.length / porPagina);
-  const paginados = filtrados.slice((page - 1) * porPagina, page * porPagina);
+  // Agrupamos los permisos por módulo
+  const permisosPorModulo = permisos.reduce((acc, permiso) => {
+    const modulo = permiso.name.split(":")[0]?.trim() || "General";
+    if (!acc[modulo]) {
+      acc[modulo] = [];
+    }
+    acc[modulo].push(permiso);
+    return acc;
+  }, {});
+
+  useEffect(() => {
+    setSeleccionTemp([...seleccionados]);
+  }, [seleccionados]);
 
   const toggle = (permiso) => {
     setSeleccionTemp((prev) =>
@@ -30,18 +36,45 @@ const ModalPermisos = ({
     );
   };
 
+  const toggleModulo = (modulo) => {
+    const permisosModulo = permisosPorModulo[modulo];
+    const todosSeleccionados = permisosModulo.every((p) =>
+      seleccionTemp.some((sp) => sp.id === p.id)
+    );
+
+    if (todosSeleccionados) {
+      // Deseleccionar todos
+      setSeleccionTemp((prev) =>
+        prev.filter((p) => !permisosModulo.some((pm) => pm.id === p.id))
+      );
+    } else {
+      // Seleccionar todos
+      const nuevos = permisosModulo.filter(
+        (p) => !seleccionTemp.some((sp) => sp.id === p.id)
+      );
+      setSeleccionTemp([...seleccionTemp, ...nuevos]);
+    }
+  };
+
+  const toggleTodos = () => {
+    if (seleccionTemp.length === permisos.length) {
+      setSeleccionTemp([]);
+    } else {
+      setSeleccionTemp([...permisos]);
+    }
+  };
+
   const guardar = () => {
     onSave(seleccionTemp);
     onClose();
     setSearch("");
-    setPage(1);
   };
 
   if (!visible) return null;
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content permisos-modal">
         <h3>Seleccionar Permisos</h3>
         <input
           type="text"
@@ -50,29 +83,52 @@ const ModalPermisos = ({
           onChange={(e) => setSearch(e.target.value)}
           className="search-input"
         />
-        <div className="checkbox-group">
-          {paginados.map((permiso) => (
-            <label key={permiso.id} className="checkbox-item">
-              <input
-                type="checkbox"
-                checked={seleccionTemp.some((p) => p.id === permiso.id)}
-                onChange={() => toggle(permiso)}
-              />
-              {permiso.name}
-            </label>
-          ))}
-        </div>
-        <div className="pagination">
-          <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-            Anterior
+
+        <div className="permisos-container">
+          <button onClick={toggleTodos} className="select-all-button">
+            {seleccionTemp.length === permisos.length
+              ? "Deseleccionar todos"
+              : "Seleccionar todos"}
           </button>
-          <button
-            disabled={page === totalPaginas}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Siguiente
-          </button>
+
+          {Object.entries(permisosPorModulo)
+            .filter(
+              ([modulo]) =>
+                modulo.toLowerCase().includes(search.toLowerCase()) ||
+                permisosPorModulo[modulo].some((p) =>
+                  p.name.toLowerCase().includes(search.toLowerCase())
+                )
+            )
+            .map(([modulo, permisos]) => (
+              <div key={modulo} className="modulo-container">
+                <div className="modulo-header">
+                  <input
+                    type="checkbox"
+                    checked={permisos.every((p) =>
+                      seleccionTemp.some((sp) => sp.id === p.id)
+                    )}
+                    onChange={() => toggleModulo(modulo)}
+                    className="modulo-checkbox"
+                  />
+                  <h4>{modulo}</h4>
+                </div>
+                <div className="permisos-list">
+                  {permisos.map((permiso) => (
+                    <label key={permiso.id} className="permiso-item">
+                      <input
+                        type="checkbox"
+                        checked={seleccionTemp.some((p) => p.id === permiso.id)}
+                        onChange={() => toggle(permiso)}
+                        className="permiso-checkbox"
+                      />
+                      <span>{permiso.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
         </div>
+
         <div className="modal-actions">
           <button onClick={guardar} className="save-button">
             Guardar
@@ -91,47 +147,59 @@ const Rol = () => {
     {
       id: 1,
       nombre: "Administrador",
+      descripcion: "Acceso completo a todos los módulos del sistema",
       permisos: [
-        "Crear usuario",
-        "Editar usuario",
-        "Eliminar usuario",
-        "Visualizar Empleados",
-        "Gestionar abastecimiento",
-        "Configuraciones avanzadas",
+        "Usuarios: Crear",
+        "Usuarios: Editar",
+        "Usuarios: Eliminar",
+        "Usuarios: Visualizar",
+        "Ventas: Crear",
+        "Ventas: Anular",
+        "Ventas: Reportes",
+        "Inventario: Gestionar",
+        "Configuracion: Administrar",
       ],
-      anulado: true,
+      anulado: false,
     },
     {
       id: 2,
-      nombre: "Empleado",
-      permisos: ["Visualizar reportes", "Gestionar inventario"],
-      anulado: true,
+      nombre: "Vendedor",
+      descripcion: "Acceso a módulo de ventas e inventario",
+      permisos: ["Ventas: Crear", "Ventas: Reportes", "Inventario: Consultar"],
+      anulado: false,
     },
     {
       id: 3,
-      nombre: "Cliente",
-      permisos: ["Visualizar reportes"],
+      nombre: "Consulta",
+      descripcion: "Solo permisos de visualización",
+      permisos: ["Ventas: Reportes", "Inventario: Consultar"],
       anulado: true,
     },
   ];
 
   const permisosDisponibles = [
-    { id: 1, name: "Crear usuario" },
-    { id: 2, name: "Editar usuario" },
-    { id: 3, name: "Eliminar usuario" },
-    { id: 4, name: "Visualizar Empleados" },
-    { id: 5, name: "Gestionar abastecimiento" },
-    { id: 6, name: "Configuraciones avanzadas" },
-    { id: 7, name: "Visualizar reportes" },
-    { id: 8, name: "Gestionar inventario" },
+    { id: 1, name: "Usuarios: Crear" },
+    { id: 2, name: "Usuarios: Editar" },
+    { id: 3, name: "Usuarios: Eliminar" },
+    { id: 4, name: "Usuarios: Visualizar" },
+    { id: 5, name: "Ventas: Crear" },
+    { id: 6, name: "Ventas: Editar" },
+    { id: 7, name: "Ventas: Anular" },
+    { id: 8, name: "Ventas: Reportes" },
+    { id: 9, name: "Inventario: Gestionar" },
+    { id: 10, name: "Inventario: Consultar" },
+    { id: 11, name: "Configuracion: Administrar" },
+    { id: 12, name: "Configuracion: Basicas" },
   ];
 
   const [roles, setRoles] = useState(initialRoles);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "create", "edit", "details"
+  const [modalType, setModalType] = useState("");
   const [currentRol, setCurrentRol] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [permisosTemp, setPermisosTemp] = useState([]);
+  const [showPermisosModal, setShowPermisosModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("roles", JSON.stringify(roles));
@@ -157,7 +225,9 @@ const Rol = () => {
 
   const openModal = (type, rol = null) => {
     setModalType(type);
-    setCurrentRol(rol || { nombre: "", permisos: [], anulado: true });
+    setCurrentRol(
+      rol || { nombre: "", descripcion: "", permisos: [], anulado: false }
+    );
     setPermisosTemp(
       rol
         ? permisosDisponibles.filter((p) => rol.permisos.includes(p.name))
@@ -173,9 +243,13 @@ const Rol = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("¿Eliminar este rol?")) {
-      setRoles(roles.filter((r) => r.id !== id));
-    }
+    const rol = roles.find((r) => r.id === id);
+    setConfirmDelete(rol);
+  };
+
+  const deleteRol = () => {
+    setRoles(roles.filter((r) => r.id !== confirmDelete.id));
+    setConfirmDelete(null);
   };
 
   const toggleAnular = (id) => {
@@ -215,6 +289,7 @@ const Rol = () => {
           <thead>
             <tr>
               <th>Nombre del Rol</th>
+              <th>Descripción</th>
               <th>Permisos</th>
               <th>Estado</th>
               <th>Acciones</th>
@@ -224,6 +299,7 @@ const Rol = () => {
             {filteredRoles.map((rol) => (
               <tr key={rol.id}>
                 <td>{rol.nombre}</td>
+                <td>{rol.descripcion}</td>
                 <td>
                   {rol.permisos.length > 3
                     ? rol.permisos.slice(0, 3).join(", ") + "..."
@@ -287,10 +363,14 @@ const Rol = () => {
                     <strong>Nombre:</strong> {currentRol.nombre}
                   </p>
                   <p>
+                    <strong>Descripción:</strong> {currentRol.descripcion}
+                  </p>
+                  <p>
                     <strong>Permisos:</strong> {currentRol.permisos.join(", ")}
                   </p>
                   <p>
-                    <strong>Anulado:</strong> {currentRol.anulado ? "Sí" : "No"}
+                    <strong>Estado:</strong>{" "}
+                    {currentRol.anulado ? "Inactivo" : "Activo"}
                   </p>
                   <button className="cancel-button" onClick={closeModal}>
                     Cerrar
@@ -303,40 +383,66 @@ const Rol = () => {
                     onSubmit={(e) => {
                       e.preventDefault();
                       const nombre = e.target.nombre.value;
-                      handleSave({ ...currentRol, nombre });
+                      const descripcion = e.target.descripcion.value;
+                      handleSave({ ...currentRol, nombre, descripcion });
                     }}
                   >
-                    <input
-                      type="text"
-                      name="nombre"
-                      defaultValue={currentRol.nombre}
-                      required
-                      placeholder="Nombre del rol"
-                      className="search-input"
-                    />
+                    <div className="form-group">
+                      <label>
+                        <span className="required"></span>
+                      </label>
+                      <input
+                        type="text"
+                        name="nombre"
+                        defaultValue={currentRol.nombre}
+                        required
+                        placeholder="Nombre del rol*"
+                        className="form-input"
+                      />
+                    </div>
 
-                    <button
-                      type="button"
-                      className="action-button"
-                      onClick={() => setShowModal("permisos")}
-                    >
-                      Agregar permisos
-                    </button>
+                    <div className="form-group">
+                      <label></label>
+                      <textarea
+                        name="descripcion"
+                        defaultValue={currentRol.descripcion}
+                        placeholder="Descripción del rol"
+                        className="form-input"
+                        rows="3"
+                      />
+                    </div>
 
-                    <div className="checkbox-group">
-                      <h4>Permisos seleccionados:</h4>
-                      {permisosTemp.map((p) => (
-                        <div key={p.id} className="checkbox-item">
-                          {p.name}
-                          <button
-                            style={{ color: "red", marginLeft: 10 }}
-                            onClick={() => eliminarPermiso(p.id)}
-                            type="button"
-                          >
-                            Eliminar
-                          </button>
-                        </div>
-                      ))}
+                    <div className="form-group">
+                      <label>Permisos</label>
+                      <button
+                        type="button"
+                        className="action-button"
+                        onClick={() => setShowPermisosModal(true)}
+                      >
+                        Seleccionar permisos
+                      </button>
+
+                      <div className="selected-permissions">
+                        <h4>Permisos seleccionados:</h4>
+                        {permisosTemp.length > 0 ? (
+                          <ul className="permissions-list">
+                            {permisosTemp.map((p) => (
+                              <li key={p.id} className="permission-item">
+                                {p.name}
+                                <button
+                                  type="button"
+                                  className="remove-permission"
+                                  onClick={() => eliminarPermiso(p.id)}
+                                >
+                                  ×
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p>No se han seleccionado permisos</p>
+                        )}
+                      </div>
                     </div>
 
                     <div className="form-buttons">
@@ -355,14 +461,37 @@ const Rol = () => {
                 </>
               )}
             </div>
+          </div>
+        )}
 
-            <ModalPermisos
-              visible={showModal === "permisos"}
-              permisos={permisosDisponibles}
-              seleccionados={permisosTemp}
-              onClose={() => setShowModal(true)}
-              onSave={setPermisosTemp}
-            />
+        <ModalPermisos
+          visible={showPermisosModal}
+          permisos={permisosDisponibles}
+          seleccionados={permisosTemp}
+          onClose={() => setShowPermisosModal(false)}
+          onSave={(nuevos) => setPermisosTemp(nuevos)}
+        />
+
+        {confirmDelete && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>¿Eliminar rol?</h3>
+              <p>
+                ¿Estás seguro de que deseas eliminar el rol{" "}
+                <strong>{confirmDelete.nombre}</strong>?
+              </p>
+              <div className="btn-container">
+                <button className="btn danger" onClick={deleteRol}>
+                  Eliminar
+                </button>
+                <button
+                  className="btnCancelar"
+                  onClick={() => setConfirmDelete(null)}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -43,6 +43,7 @@ function Login() {
   return (
     <div className="form-container">
       <div className="form-box">
+        <img src="/logo.png" alt="Project Logo" className="form-logo" />
         <h2 className="form-title">Iniciar Sesión</h2>
         <form className="form-content" onSubmit={handleLogin}>
           <input
@@ -70,9 +71,7 @@ function Login() {
               checked={isCheckboxChecked}
               onChange={(e) => setIsCheckboxChecked(e.target.checked)}
             />
-            <label htmlFor="sql-check">
-              Recordar usuario.
-            </label>
+            <label htmlFor="sql-check">Recordar usuario.</label>
           </div>
           <button type="submit" className="primary-button">
             Entrar

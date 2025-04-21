@@ -13,7 +13,7 @@
     background-color: #ffffff;
     overflow-y: auto;
     border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Título */
@@ -24,7 +24,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Barra de búsqueda y botón de agregar */
+/* Acciones (búsqueda y botón agregar) */
 .actions-container {
     display: flex;
     justify-content: space-between;
@@ -33,7 +33,6 @@ h1 {
     gap: 15px;
 }
 
-/* Campo de búsqueda */
 .search-input {
     flex: 1;
     padding: 10px;
@@ -42,16 +41,15 @@ h1 {
     border-radius: 6px;
 }
 
-/* Botón de agregar */
 .action-button {
     background-color: #3498db;
-    color: white;
+    color: #fff;
     padding: 10px 20px;
     font-size: 1rem;
     font-weight: bold;
     border-radius: 8px;
-    cursor: pointer;
     border: none;
+    cursor: pointer;
     transition: background 0.3s ease;
 }
 
@@ -63,15 +61,15 @@ h1 {
 .productos-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
+    background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
 .productos-table th {
     background-color: #3498db;
-    color: white;
+    color: #fff;
     padding: 12px;
     text-align: left;
     font-weight: bold;
@@ -82,7 +80,7 @@ h1 {
     border-bottom: 1px solid #ddd;
 }
 
-/* Botones de acción en la tabla */
+/* Iconos en la tabla */
 .icon-actions {
     display: flex;
     gap: 8px;
@@ -105,7 +103,7 @@ h1 {
     color: #c0392b;
 }
 
-/* Modal */
+/* Modal y contenido */
 .modal {
     position: fixed;
     top: 0;
@@ -119,39 +117,34 @@ h1 {
     z-index: 999;
 }
 
-/* Contenedor del modal más grande */
 .modal-content {
-    background: white;
+    background: #fff;
     padding: 25px;
     border-radius: 12px;
     width: 650px;
-    /* Aumentado el tamaño */
     max-width: 95%;
     text-align: center;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Formulario dentro del modal */
+/* Formulario del modal */
 .modal-form {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 15px;
     width: 100%;
 }
 
-/* Contenedor para alinear los campos en una sola fila */
 .form-row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+    flex-wrap: wrap;
     gap: 15px;
+    width: 100%;
 }
 
-/* Ajuste de tamaño de cada input en el modal */
 .input-container {
     flex: 1;
+    min-width: 200px;
 }
 
 .input-container label {
@@ -161,15 +154,17 @@ h1 {
     text-align: left;
 }
 
-.input-container input {
+.input-container input,
+.input-container select {
     width: 100%;
     padding: 10px;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 6px;
+    box-sizing: border-box;
 }
 
-/* Botones alineados correctamente */
+/* Botones del formulario */
 .modal-buttons {
     display: flex;
     justify-content: center;
@@ -178,41 +173,36 @@ h1 {
     width: 100%;
 }
 
-/* Botón de guardar */
-.save-button {
-    background-color: #2ecc71;
-    color: white;
+.modal-buttons button {
+    flex: 1;
     padding: 12px 20px;
     font-size: 1rem;
     font-weight: bold;
+    border: none;
     border-radius: 8px;
     cursor: pointer;
-    border: none;
     transition: background 0.3s ease;
+}
+
+.save-button {
+    background-color: #2ecc71;
+    color: #fff;
 }
 
 .save-button:hover {
     background-color: #27ae60;
 }
 
-/* Botón cancelar o cerrar */
 .cancel-button {
     background-color: #e74c3c;
-    color: white;
-    padding: 12px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    border: none;
+    color: #fff;
 }
 
 .cancel-button:hover {
     background-color: #c0392b;
 }
 
-/* Responsivo */
+/* Responsive */
 @media (max-width: 768px) {
     .main-content {
         margin-left: 0;
@@ -235,16 +225,13 @@ h1 {
 
     .form-row {
         flex-direction: column;
-        gap: 10px;
     }
 
-    .search-input {
-        width: 100%;
+    .modal-buttons {
+        flex-direction: column;
     }
 
-    .action-button,
-    .save-button,
-    .cancel-button {
+    .modal-buttons button {
         width: 100%;
     }
 }

@@ -4,6 +4,7 @@ import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
 import "./Abastecimiento.css";
 
 const Abastecimiento = () => {
+  // Datos iniciales de productos de abastecimiento
   const initialProductos = [
     {
       id: 1,
@@ -21,24 +22,67 @@ const Abastecimiento = () => {
     },
   ];
 
+  // Estados principales
   const [productos, setProductos] = useState(initialProductos);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState("");
+  const [modalType, setModalType] = useState(""); // "create", "edit", "details"
   const [currentProducto, setCurrentProducto] = useState(null);
   const [busqueda, setBusqueda] = useState("");
+
+  // Estados para los modales de selección
   const [showProductModal, setShowProductModal] = useState(false);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
-  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
+
+  // Estados para las selecciones en el formulario
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
+
+  // Estados para búsquedas internas de los modales
+  const [busquedaProductoModal, setBusquedaProductoModal] = useState("");
+  const [busquedaEmpleadoModal, setBusquedaEmpleadoModal] = useState("");
+
+  // Estado para el modal de confirmación de eliminación de producto
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("abastecimiento", JSON.stringify(productos));
   }, [productos]);
 
-  const openProductModal = () => setShowProductModal(true);
+  // Listas de productos y empleados disponibles (simulados)
+  const productosDisponibles = [
+    "Shampoo Profesional",
+    "Tijeras de Corte",
+    "Secadora",
+    "Peine",
+  ];
+  const empleados = ["Carlos López", "Ana Pérez", "Luis Torres"];
+
+  // Filtrado para la búsqueda en la tabla principal
+  const filteredProductos = productos.filter((p) =>
+    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
+  // Filtrado para la búsqueda en el modal de selección de producto
+  const filteredProductosModal = productosDisponibles.filter((prod) =>
+    prod.toLowerCase().includes(busquedaProductoModal.toLowerCase())
+  );
+
+  // Filtrado para la búsqueda en el modal de selección de empleado
+  const filteredEmpleadosModal = empleados.filter((emp) =>
+    emp.toLowerCase().includes(busquedaEmpleadoModal.toLowerCase())
+  );
+
+  // Funciones para abrir y cerrar los modales de selección
+  const openProductModal = () => {
+    setBusquedaProductoModal("");
+    setShowProductModal(true);
+  };
   const closeProductModal = () => setShowProductModal(false);
 
-  const openEmployeeModal = () => setShowEmployeeModal(true);
+  const openEmployeeModal = () => {
+    setBusquedaEmpleadoModal("");
+    setShowEmployeeModal(true);
+  };
   const closeEmployeeModal = () => setShowEmployeeModal(false);
 
   const handleSave = (producto) => {
@@ -56,8 +100,8 @@ const Abastecimiento = () => {
   const openModal = (type, producto = null) => {
     setModalType(type);
     setCurrentProducto(producto);
-    setEmpleadoSeleccionado(producto?.empleado || null);
-    setProductoSeleccionado(producto?.nombre || null);
+    setEmpleadoSeleccionado(producto ? producto.empleado : null);
+    setProductoSeleccionado(producto ? producto.nombre : null);
     setShowModal(true);
   };
 
@@ -69,23 +113,16 @@ const Abastecimiento = () => {
     setProductoSeleccionado(null);
   };
 
+  // Para eliminación: se activa el modal de confirmación en lugar de window.confirm
   const handleDelete = (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
-      setProductos(productos.filter((p) => p.id !== id));
-    }
+    const prod = productos.find((p) => p.id === id);
+    setConfirmDelete(prod);
   };
 
-  const filteredProductos = productos.filter((p) =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
-  );
-
-  const empleados = ["Carlos López", "Ana Pérez", "Luis Torres"];
-  const productosDisponibles = [
-    "Shampoo Profesional",
-    "Tijeras de Corte",
-    "Secadora",
-    "Peine",
-  ];
+  const deleteProducto = () => {
+    setProductos(productos.filter((p) => p.id !== confirmDelete.id));
+    setConfirmDelete(null);
+  };
 
   return (
     <div className="abastecimiento-container">
@@ -105,6 +142,7 @@ const Abastecimiento = () => {
           </button>
         </div>
 
+        {/* Tabla de abastecimientos */}
         <table className="productos-table">
           <thead>
             <tr>
@@ -148,80 +186,83 @@ const Abastecimiento = () => {
             ))}
           </tbody>
         </table>
+      </div>
 
-        {showModal && (
-          <div className="modal">
-            <div className="modal-content">
-              {modalType === "details" && currentProducto ? (
-                <>
-                  <h2>Detalles del Producto</h2>
-                  <p>
-                    <strong>Nombre:</strong> {currentProducto.nombre}
-                  </p>
-                  <p>
-                    <strong>Cantidad:</strong> {currentProducto.cantidad}
-                  </p>
-                  <p>
-                    <strong>Empleado:</strong> {currentProducto.empleado}
-                  </p>
-                  <p>
-                    <strong>Fecha de Ingreso:</strong>{" "}
-                    {currentProducto.fechaIngreso}
-                  </p>
-                  <button className="cancel-button" onClick={closeModal}>
-                    Cerrar
-                  </button>
-                </>
-              ) : (
-                <>
-                  <h2>
-                    {modalType === "create"
-                      ? "Agregar Producto"
-                      : "Editar Producto"}
-                  </h2>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      const formData = new FormData(e.target);
-                      const producto = {
-                        id: currentProducto ? currentProducto.id : Date.now(),
-                        nombre: productoSeleccionado,
-                        cantidad: Number(formData.get("cantidad")),
-                        empleado: empleadoSeleccionado,
-                        fechaIngreso: new Date().toISOString().split("T")[0],
-                      };
-                      handleSave(producto);
-                    }}
+      {/* Modal para Agregar / Editar / Ver Detalles */}
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            {modalType === "details" && currentProducto ? (
+              <>
+                <h2>Detalles del Producto</h2>
+                <p>
+                  <strong>Nombre:</strong> {currentProducto.nombre}
+                </p>
+                <p>
+                  <strong>Cantidad:</strong> {currentProducto.cantidad}
+                </p>
+                <p>
+                  <strong>Empleado:</strong> {currentProducto.empleado}
+                </p>
+                <p>
+                  <strong>Fecha de Ingreso:</strong>{" "}
+                  {currentProducto.fechaIngreso}
+                </p>
+                <button className="cancel-button" onClick={closeModal}>
+                  Cerrar
+                </button>
+              </>
+            ) : (
+              <>
+                <h2>
+                  {modalType === "create"
+                    ? "Agregar Producto"
+                    : "Editar Producto"}
+                </h2>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const producto = {
+                      id: currentProducto ? currentProducto.id : Date.now(),
+                      nombre: productoSeleccionado,
+                      cantidad: Number(formData.get("cantidad")),
+                      empleado: empleadoSeleccionado,
+                      fechaIngreso: new Date().toISOString().split("T")[0],
+                    };
+                    handleSave(producto);
+                  }}
+                >
+                  <button
+                    type="button"
+                    className="action-button"
+                    onClick={openProductModal}
                   >
-                    <button
-                      type="button"
-                      className="action-button"
-                      onClick={openProductModal}
-                    >
-                      Seleccionar Producto
-                    </button>
-                    <p>
-                      <strong>Producto Seleccionado:</strong>{" "}
-                      {productoSeleccionado || "Ninguno"}
-                    </p>
-                    <input
-                      type="number"
-                      name="cantidad"
-                      placeholder="Cantidad"
-                      defaultValue={currentProducto?.cantidad || ""}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="action-button"
-                      onClick={openEmployeeModal}
-                    >
-                      Seleccionar Empleado
-                    </button>
-                    <p>
-                      <strong>Empleado Seleccionado:</strong>{" "}
-                      {empleadoSeleccionado || "Ninguno"}
-                    </p>
+                    Seleccionar Producto
+                  </button>
+                  <p>
+                    <strong>Producto Seleccionado:</strong>{" "}
+                    {productoSeleccionado || "Ninguno"}
+                  </p>
+                  <button
+                    type="button"
+                    className="action-button"
+                    onClick={openEmployeeModal}
+                  >
+                    Seleccionar Empleado
+                  </button>
+                  <p>
+                    <strong>Empleado Seleccionado:</strong>{" "}
+                    {empleadoSeleccionado || "Ninguno"}
+                  </p>
+                  <input
+                    type="number"
+                    name="cantidad"
+                    placeholder="Cantidad*"
+                    defaultValue={currentProducto?.cantidad || ""}
+                    required
+                  />
+                  <div className="form-buttons">
                     <button type="submit" className="save-button">
                       Guardar
                     </button>
@@ -232,63 +273,101 @@ const Abastecimiento = () => {
                     >
                       Cancelar
                     </button>
-                  </form>
-                </>
-              )}
-            </div>
+                  </div>
+                </form>
+              </>
+            )}
           </div>
-        )}
+        </div>
+      )}
 
-        {showEmployeeModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>Seleccionar Empleado</h2>
-              <ul className="employee-list">
-                {empleados.map((emp) => (
-                  <li key={emp}>
-                    <button
-                      onClick={() => {
-                        setEmpleadoSeleccionado(emp);
-                        closeEmployeeModal();
-                      }}
-                    >
-                      {emp}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <button className="cancel-button" onClick={closeEmployeeModal}>
-                Cerrar
+      {/* Modal para selección de Empleado con buscador */}
+      {showEmployeeModal && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <h2>Seleccionar Empleado</h2>
+            <input
+              type="text"
+              placeholder="Buscar empleado..."
+              value={busquedaEmpleadoModal}
+              onChange={(e) => setBusquedaEmpleadoModal(e.target.value)}
+            />
+            <ul className="selection-list">
+              {filteredEmpleadosModal.map((emp) => (
+                <li key={emp}>
+                  <button
+                    onClick={() => {
+                      setEmpleadoSeleccionado(emp);
+                      closeEmployeeModal();
+                    }}
+                  >
+                    {emp}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button className="cancel-button" onClick={closeEmployeeModal}>
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para selección de Producto con buscador */}
+      {showProductModal && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <h2>Seleccionar Producto</h2>
+            <input
+              type="text"
+              placeholder="Buscar producto..."
+              value={busquedaProductoModal}
+              onChange={(e) => setBusquedaProductoModal(e.target.value)}
+            />
+            <ul className="selection-list">
+              {filteredProductosModal.map((prod) => (
+                <li key={prod}>
+                  <button
+                    onClick={() => {
+                      setProductoSeleccionado(prod);
+                      closeProductModal();
+                    }}
+                  >
+                    {prod}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button className="cancel-button" onClick={closeProductModal}>
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación para eliminar un producto */}
+      {confirmDelete && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>¿Eliminar producto?</h3>
+            <p>
+              ¿Estás seguro de que deseas eliminar el producto{" "}
+              <strong>{confirmDelete.nombre}</strong>?
+            </p>
+            <div className="btn-container">
+              <button className="btn danger" onClick={deleteProducto}>
+                Eliminar
+              </button>
+              <button
+                className="btnCancelar"
+                onClick={() => setConfirmDelete(null)}
+              >
+                Cancelar
               </button>
             </div>
           </div>
-        )}
-
-        {showProductModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>Seleccionar Producto</h2>
-              <ul className="employee-list">
-                {productosDisponibles.map((prod) => (
-                  <li key={prod}>
-                    <button
-                      onClick={() => {
-                        setProductoSeleccionado(prod);
-                        closeProductModal();
-                      }}
-                    >
-                      {prod}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <button className="cancel-button" onClick={closeProductModal}>
-                Cerrar
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
