@@ -1,234 +1,367 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
-import NavbarAdmin from "../../components/NavbarAdmin";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEdit, faTrash, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import Navbar from "../../components/NavbarAdmin";
 import "./horarios.css";
 
 const Horarios = () => {
-  const loadInitialData = () => {
-    const savedHorarios = localStorage.getItem("horarios");
-    return savedHorarios ? JSON.parse(savedHorarios) : [];
-  };
+  const [horarios, setHorarios] = useState(() => {
+    const stored = localStorage.getItem("horariosCitas");
+    return stored ? JSON.parse(stored) : [];
+  });
+  
+  const [search, setSearch] = useState("");
+  const [modal, setModal] = useState({ open: false, type: "", index: null });
+  const [formData, setFormData] = useState({ 
+    encargado: "",
+    fechaInicio: "",
+    fechaFin: "",
+    dias: [{ dia: "", horaInicio: "", horaFin: "" }]
+  });
+  const [formErrors, setFormErrors] = useState({});
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
-  const [horarios, setHorarios] = useState(loadInitialData());
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "create", "edit", "details"
-  const [currentHorario, setCurrentHorario] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
-
+  // Guardar en localStorage
   useEffect(() => {
-    localStorage.setItem("horarios", JSON.stringify(horarios));
+    localStorage.setItem("horariosCitas", JSON.stringify(horarios));
   }, [horarios]);
 
-  const encargados = ["María", "Juan", "Lucía", "Carlos"]; // Simulación de encargados
+  const encargados = ["María", "Juan", "Lucía", "Carlos"];
+  const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
-  const handleSave = (horario) => {
-    if (modalType === "create") {
-      const newId = horarios.length > 0 ? Math.max(...horarios.map(h => h.id)) + 1 : 1;
-      setHorarios([...horarios, { ...horario, id: newId }]);
-    } else {
-      const updated = horarios.map((h) =>
-        h.id === currentHorario.id ? { ...currentHorario, ...horario } : h
-      );
-      setHorarios(updated);
+  const handleSearch = (e) => setSearch(e.target.value);
+
+  const filteredHorarios = horarios.filter(h =>
+    h.encargado.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const openModal = (type, index = null) => {
+    setModal({ open: true, type, index });
+    setFormErrors({});
+    
+    if (type === "editar" && index !== null) {
+      setFormData(horarios[index]);
+    } else if (type === "agregar") {
+      setFormData({ 
+        encargado: "",
+        fechaInicio: "",
+        fechaFin: "",
+        dias: [{ dia: "", horaInicio: "", horaFin: "" }]
+      });
+    } else if (type === "ver" && index !== null) {
+      setFormData(horarios[index]);
     }
-    closeModal();
-  };
-
-  const openModal = (type, horario = null) => {
-    setModalType(type);
-    setCurrentHorario(horario);
-    setShowModal(true);
   };
 
   const closeModal = () => {
-    setShowModal(false);
-    setModalType("");
-    setCurrentHorario(null);
+    setModal({ open: false, type: "", index: null });
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este horario?")) {
-      setHorarios(horarios.filter((h) => h.id !== id));
+  const handleDiaChange = (index, field, value) => {
+    const updatedDias = [...formData.dias];
+    updatedDias[index][field] = value;
+    setFormData({ ...formData, dias: updatedDias });
+  };
+
+  const addDia = () => {
+    setFormData({ 
+      ...formData, 
+      dias: [...formData.dias, { dia: "", horaInicio: "", horaFin: "" }]
+    });
+  };
+
+  const removeDia = (index) => {
+    if (formData.dias.length > 1) {
+      const updatedDias = formData.dias.filter((_, i) => i !== index);
+      setFormData({ ...formData, dias: updatedDias });
     }
   };
 
-  const toggleEstado = (id) => {
-    const updated = horarios.map((h) =>
-      h.id === id ? { ...h, estado: !h.estado } : h
-    );
-    setHorarios(updated);
+  const saveHorario = () => {
+    const errors = {};
+    if (!formData.encargado.trim()) errors.encargado = "El encargado es obligatorio";
+    if (!formData.fechaInicio) errors.fechaInicio = "La fecha de inicio es obligatoria";
+    if (!formData.fechaFin) errors.fechaFin = "La fecha de fin es obligatoria";
+    
+    formData.dias.forEach((dia, idx) => {
+      if (!dia.dia) errors[`dia-${idx}`] = "El día es obligatorio";
+      if (!dia.horaInicio) errors[`horaInicio-${idx}`] = "La hora de inicio es obligatoria";
+      if (!dia.horaFin) errors[`horaFin-${idx}`] = "La hora de fin es obligatoria";
+    });
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    const horarioData = {
+      ...formData,
+      estado: true
+    };
+
+    if (modal.type === "agregar") {
+      setHorarios(prev => [...prev, horarioData]);
+    } else if (modal.type === "editar" && modal.index !== null) {
+      setHorarios(prev =>
+        prev.map((h, idx) => (idx === modal.index ? horarioData : h))
+      );
+    }
+
+    closeModal();
   };
 
-  const filteredHorarios = horarios.filter((h) =>
-    h.nombre?.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  const toggleEstado = (index) => {
+    setHorarios(prev =>
+      prev.map((h, idx) =>
+        idx === index ? { ...h, estado: !h.estado } : h
+      )
+    );
+  };
+
+  const deleteHorario = () => {
+    setHorarios(prev => prev.filter((_, idx) => idx !== confirmDelete));
+    setConfirmDelete(null);
+  };
 
   return (
-    <div className="servicios-container">
-      <NavbarAdmin />
-      <div className="main-content">
-        <h1>Horarios</h1>
-        <div className="header-actions">
-          <input
-            type="text"
-            placeholder="Buscar horario por nombre..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            className="search-input"
-          />
-          <button className="action-button" onClick={() => openModal("create")}>
+    <div className="horarios-container">
+      <Navbar />
+      <div className="horarios-content">
+        <h2>Horarios de Citas</h2>
+        <div className="acciones-barra">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Buscar por encargado..."
+              value={search}
+              onChange={handleSearch}
+            />
+          </div>
+          <button className="btn-agregar" onClick={() => openModal("agregar")}>
             Agregar Horario
           </button>
         </div>
 
-        <table className="servicios-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Encargado</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredHorarios.map((h) => (
-              <tr key={h.id}>
-                <td>{h.nombre || "Sin nombre"}</td>
-                <td>{h.encargado}</td>
-                <td>{h.fechaInicio} - {h.fechaFin}</td>
-                <td>{h.horaInicio} - {h.horaFin}</td>
-                <td>
-                <label className="switch">
-                  <input
-                  type="checkbox"
-                  checked={h.estado}
-                  onChange={() => toggleEstado(h.id)}
-                  />
-                  <span className="slider round"></span>
-                </label>
-                </td>
-                <td>
-                  <button className="table-button" onClick={() => openModal("details", h)} title="Ver">
-                    <FaEye />
-                  </button>
-                  <button className="table-button" onClick={() => openModal("edit", h)} title="Editar">
-                    <FaEdit />
-                  </button>
-                  <button className="table-button delete-button" onClick={() => handleDelete(h.id)} title="Eliminar">
-                    <FaTrash />
-                  </button>
-                </td>
+        <div className="horarios-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Encargado</th>
+                <th>Periodo</th>
+                <th>Días y Horarios</th>
+                <th>Estado</th>
+                <th>Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredHorarios.map((horario, index) => (
+                <tr key={index}>
+                  <td>{horario.encargado}</td>
+                  <td>{horario.fechaInicio} a {horario.fechaFin}</td>
+                  <td>
+                    {horario.dias.map((dia, idx) => (
+                      <div key={idx} className="dia-horario">
+                        <strong>{dia.dia}:</strong> {dia.horaInicio} - {dia.horaFin}
+                      </div>
+                    ))}
+                  </td>
+                  <td>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={horario.estado}
+                        onChange={() => toggleEstado(index)}
+                      />
+                      <span className="slider round"></span>
+                    </label>
+                  </td>
+                  <td>
+                    <button className="btn info btn-blue" onClick={() => openModal("ver", index)}>
+                      <FontAwesomeIcon icon={faEye} />
+                    </button>
+                    <button className="btn info btn-blue" onClick={() => openModal("editar", index)}>
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                    <button className="btn danger btn-red" onClick={() => setConfirmDelete(index)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        {showModal && (
+        {/* Modal */}
+        {modal.open && (
           <div className="modal">
             <div className="modal-content">
-              {modalType === "details" && currentHorario ? (
+              {modal.type === "ver" ? (
                 <>
-                  <h2>Detalles del Horario</h2>
-                  <p><strong>Nombre:</strong> {currentHorario.nombre || "Sin nombre"}</p>
-                  <p><strong>Encargado:</strong> {currentHorario.encargado}</p>
-                  <p><strong>Fecha:</strong> {currentHorario.fechaInicio} - {currentHorario.fechaFin}</p>
-                  <p><strong>Hora:</strong> {currentHorario.horaInicio} - {currentHorario.horaFin}</p>
-                  <div className="form-buttons">
-                    <button className="close-button" onClick={closeModal}>Cerrar</button>
+                  <h3>Detalles del Horario</h3>
+                  <p><strong>Encargado:</strong> {formData.encargado}</p>
+                  <p><strong>Periodo:</strong> {formData.fechaInicio} a {formData.fechaFin}</p>
+                  <div>
+                    <strong>Días y Horarios:</strong>
+                    {formData.dias.map((dia, idx) => (
+                      <p key={idx}>
+                        {dia.dia}: {dia.horaInicio} - {dia.horaFin}
+                      </p>
+                    ))}
                   </div>
+                  <button className="btn close" onClick={closeModal}>Cerrar</button>
                 </>
               ) : (
                 <>
-                  <h2>{modalType === "create" ? "Agregar Horario" : "Editar Horario"}</h2>
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = new FormData(e.target);
-                    const horario = {
-                      nombre: form.get("nombre"),
-                      encargado: form.get("encargado"),
-                      fechaInicio: form.get("fechaInicio"),
-                      fechaFin: form.get("fechaFin"),
-                      horaInicio: form.get("horaInicio"),
-                      horaFin: form.get("horaFin"),
-                      estado: currentHorario?.estado ?? true
-                    };
-                    handleSave(horario);
-                  }}>
+                  <h3>{modal.type === "agregar" ? "Agregar Horario" : "Editar Horario"}</h3>
+                  <form className="modal-form-grid">
                     <div className="form-group">
-                      <label>Nombre
-                        <input
-                          type="text"
-                          name="nombre"
-                          defaultValue={currentHorario?.nombre || ""}
-                          placeholder="Nombre del horario"
-                        />
+                      <label className="asterisco">
+                        Encargado <span className="required">*</span>
                       </label>
+                      <select
+                        value={formData.encargado}
+                        onChange={(e) => {
+                          setFormData({ ...formData, encargado: e.target.value });
+                          setFormErrors({ ...formErrors, encargado: "" });
+                        }}
+                      >
+                        <option value="">Seleccionar encargado</option>
+                        {encargados.map((enc, idx) => (
+                          <option key={idx} value={enc}>{enc}</option>
+                        ))}
+                      </select>
+                      {formErrors.encargado && <span className="error">{formErrors.encargado}</span>}
                     </div>
 
                     <div className="form-group">
-                      <label>Encargado<span className="required">*</span>
-                        <select name="encargado" required defaultValue={currentHorario?.encargado || ""}>
-                          <option value="" disabled>Seleccionar encargado</option>
-                          {encargados.map((e) => (
-                            <option key={e} value={e}>{e}</option>
-                          ))}
-                        </select>
+                      <label className="asterisco">
+                        Fecha Inicio <span className="required">*</span>
                       </label>
+                      <input
+                        type="date"
+                        value={formData.fechaInicio}
+                        onChange={(e) => {
+                          setFormData({ ...formData, fechaInicio: e.target.value });
+                          setFormErrors({ ...formErrors, fechaInicio: "" });
+                        }}
+                      />
+                      {formErrors.fechaInicio && <span className="error">{formErrors.fechaInicio}</span>}
                     </div>
 
                     <div className="form-group">
-                      <label>Fecha Inicio<span className="required">*</span>
-                        <input
-                          type="date"
-                          name="fechaInicio"
-                          defaultValue={currentHorario?.fechaInicio || ""}
-                          required
-                        />
+                      <label className="asterisco">
+                        Fecha Fin <span className="required">*</span>
                       </label>
+                      <input
+                        type="date"
+                        value={formData.fechaFin}
+                        onChange={(e) => {
+                          setFormData({ ...formData, fechaFin: e.target.value });
+                          setFormErrors({ ...formErrors, fechaFin: "" });
+                        }}
+                        min={formData.fechaInicio}
+                      />
+                      {formErrors.fechaFin && <span className="error">{formErrors.fechaFin}</span>}
                     </div>
 
-                    <div className="form-group">
-                      <label>Fecha Fin<span className="required">*</span>
-                        <input
-                          type="date"
-                          name="fechaFin"
-                          defaultValue={currentHorario?.fechaFin || ""}
-                          required
-                        />
-                      </label>
-                    </div>
+                    <div className="form-group full-width">
+                      <label className="asterisco">Días y Horarios <span className="required">*</span></label>
+                      <div className="dia-container">
+                        {formData.dias.map((dia, idx) => (
+                          <div key={idx} className="dia-fields">
+                            <div className="dia-row">
+                              <div>
+                                <select
+                                  value={dia.dia}
+                                  onChange={(e) => {
+                                    handleDiaChange(idx, "dia", e.target.value);
+                                    setFormErrors({ ...formErrors, [`dia-${idx}`]: "" });
+                                  }}
+                                >
+                                  <option value="">Seleccionar día</option>
+                                  {diasSemana.map((d, i) => (
+                                    <option key={i} value={d}>{d}</option>
+                                  ))}
+                                </select>
+                                {formErrors[`dia-${idx}`] && <span className="error">{formErrors[`dia-${idx}`]}</span>}
+                              </div>
 
-                    <div className="form-group">
-                      <label>Hora Inicio<span className="required">*</span>
-                        <input
-                          type="time"
-                          name="horaInicio"
-                          defaultValue={currentHorario?.horaInicio || ""}
-                          required
-                        />
-                      </label>
-                    </div>
+                              <div>
+                                <input
+                                  type="time"
+                                  value={dia.horaInicio}
+                                  onChange={(e) => {
+                                    handleDiaChange(idx, "horaInicio", e.target.value);
+                                    setFormErrors({ ...formErrors, [`horaInicio-${idx}`]: "" });
+                                  }}
+                                />
+                                {formErrors[`horaInicio-${idx}`] && <span className="error">{formErrors[`horaInicio-${idx}`]}</span>}
+                              </div>
 
-                    <div className="form-group">
-                      <label>Hora Fin<span className="required">*</span>
-                        <input
-                          type="time"
-                          name="horaFin"
-                          defaultValue={currentHorario?.horaFin || ""}
-                          required
-                        />
-                      </label>
+                              <span>a</span>
+
+                              <div>
+                                <input
+                                  type="time"
+                                  value={dia.horaFin}
+                                  onChange={(e) => {
+                                    handleDiaChange(idx, "horaFin", e.target.value);
+                                    setFormErrors({ ...formErrors, [`horaFin-${idx}`]: "" });
+                                  }}
+                                  min={dia.horaInicio}
+                                />
+                                {formErrors[`horaFin-${idx}`] && <span className="error">{formErrors[`horaFin-${idx}`]}</span>}
+                              </div>
+
+                              {formData.dias.length > 1 && (
+                                <button 
+                                  type="button" 
+                                  className="btn danger btn-red btn-small"
+                                  onClick={() => removeDia(idx)}
+                                >
+                                  <FontAwesomeIcon icon={faMinus} />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button 
+                        type="button" 
+                        className="btn info btn-blue btn-small"
+                        onClick={addDia}
+                      >
+                        <FontAwesomeIcon icon={faPlus} /> Agregar otro día
+                      </button>
                     </div>
 
                     <div className="form-buttons">
-                      <button type="submit" className="save-button">Guardar</button>
-                      <button type="button" className="cancel-button" onClick={closeModal}>Cancelar</button>
+                      <button className="btn success" type="button" onClick={saveHorario}>
+                        Guardar
+                      </button>
+                      <button className="btn close" type="button" onClick={closeModal}>
+                        Cancelar
+                      </button>
                     </div>
                   </form>
                 </>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Confirmación de eliminación */}
+        {confirmDelete !== null && (
+          <div className="modal">
+            <div className="modal-confirm">
+              <h3>Confirmar eliminación</h3>
+              <p>¿Está seguro de que desea eliminar este horario?</p>
+              <div className="modal-confirm-buttons">
+                <button className="btn-blue" onClick={deleteHorario}>Sí, eliminar</button>
+                <button className="btn-red" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+              </div>
             </div>
           </div>
         )}

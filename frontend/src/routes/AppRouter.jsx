@@ -28,6 +28,7 @@ import Citas from "../modules/Servicios/Citas";
 import HorarioEmpleado from "../modules/Empleados/HorarioCitas";
 import Pedidos from "../modules/Ventas/Pedidos";
 import ProcesoVentas from "../modules/Ventas/ProcesoVentas";
+import ProcesoRoles from "../modules/Rol/ProcesoRoles";
 
 function AppRouter() {
   return (
@@ -41,6 +42,7 @@ function AppRouter() {
         <Route path="/register" element={<Register />} />
         <Route path="/Dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/Rol" element={<PrivateRoute><Rol /></PrivateRoute>} />
+        <Route path="/procesoroles" element={<PrivateRoute><ProcesoRoles /></PrivateRoute>} />
         <Route path="/Usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />
         <Route path="/abastecimiento" element={<PrivateRoute><Abastecimiento /></PrivateRoute>} />
         <Route path="/clientes" element={<PrivateRoute><Clientes /></PrivateRoute>} />

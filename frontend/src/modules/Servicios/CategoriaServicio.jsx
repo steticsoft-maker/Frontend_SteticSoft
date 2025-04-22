@@ -1,273 +1,212 @@
-import React, { useState, useEffect } from "react";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
-import NavbarAdmin from "../../components/NavbarAdmin";
+import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Navbar from "../../components/NavbarAdmin";
 import "./categoria.css";
 
-const CategoriaServicios = () => {
-  // Cargar datos iniciales desde localStorage o usar los predeterminados
-  const loadInitialData = () => {
-    const savedServicios = localStorage.getItem("servicios");
-    return savedServicios ? JSON.parse(savedServicios) : [
-      { 
-        id: 1, 
-        nombre: " Categoría  A", 
-        descripcion: "Descripción del servicio A", 
-        estado: true, 
-        foto: null 
-      },
-      { 
-        id: 2, 
-        nombre: "Categoría B", 
-        descripcion: "", 
-        estado: false, 
-        foto: null 
-      },
-    ];
-  };
+const CategoriasServicios = () => {
+  const [categorias, setCategorias] = useState(() => {
+    const stored = localStorage.getItem("categoriasServicios");
+    return stored ? JSON.parse(stored) : [];
+  });
+  const [search, setSearch] = useState("");
+  const [modal, setModal] = useState({ open: false, type: "", index: null });
+  const [formData, setFormData] = useState({ nombre: "", descripcion: "" });
+  const [formErrors, setFormErrors] = useState({});
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
-  const [servicios, setServicios] = useState(loadInitialData());
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "create", "edit", "details"
-  const [currentServicio, setCurrentServicio] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
-
-  // Guardar en localStorage cada vez que cambien los servicios
+  // Guardar cada vez que cambia
   useEffect(() => {
-    localStorage.setItem("servicios", JSON.stringify(servicios));
-  }, [servicios]);
+      localStorage.setItem("categoriasServicios", JSON.stringify(categorias));
+  }, [categorias]);
 
-  const handleSave = (servicio) => {
-    if (modalType === "create") {
-      // Generar un ID único para el nuevo servicio
-      const newId = servicios.length > 0 ? Math.max(...servicios.map(s => s.id)) + 1 : 1;
-      setServicios([...servicios, { ...servicio, id: newId }]);
-    } else {
-      const updatedServicios = servicios.map((s) =>
-        s.id === currentServicio.id ? { ...currentServicio, ...servicio } : s
-      );
-      setServicios(updatedServicios);
-    }
-    closeModal();
-  };
+  const handleSearch = (e) => setSearch(e.target.value);
 
+  const filteredCategorias = categorias.filter(c =>
+      c.nombre.toLowerCase().includes(search.toLowerCase()) ||
+      c.descripcion.toLowerCase().includes(search.toLowerCase())
+  );
 
-  const openModal = (type, servicio = null) => {
-    setModalType(type);
-    setCurrentServicio(servicio);
-    setShowModal(true);
+  const openModal = (type, index = null) => {
+      setModal({ open: true, type, index });
+      setFormErrors({});
+      if (type === "editar" && index !== null) {
+          setFormData(categorias[index]);
+      } else if (type === "agregar") {
+          setFormData({ nombre: "", descripcion: "" });
+      }
   };
 
   const closeModal = () => {
-    setShowModal(false);
-    setModalType("");
-    setCurrentServicio(null);
+      setModal({ open: false, type: "", index: null });
+      setFormErrors({});
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este servicio?")) {
-      setServicios(servicios.filter((s) => s.id !== id));
-    }
+  const saveCategoria = () => {
+      const errors = {};
+      if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio";
+
+      if (Object.keys(errors).length > 0) {
+          setFormErrors(errors);
+          return;
+      }
+
+      if (modal.type === "agregar") {
+          setCategorias(prev => [...prev, { ...formData, estado: "Activo" }]);
+      } else if (modal.type === "editar" && modal.index !== null) {
+          setCategorias(prev =>
+              prev.map((c, idx) => (idx === modal.index ? { ...formData, estado: c.estado } : c))
+          );
+      }
+
+      closeModal();
   };
 
-  const toggleEstado = (id) => {
-    const updatedServicios = servicios.map((s) =>
-      s.id === id ? { ...s, estado: !s.estado } : s
-    );
-    setServicios(updatedServicios);
+  const toggleEstado = (index) => {
+      setCategorias(prev =>
+          prev.map((c, idx) =>
+              idx === index ? { ...c, estado: c.estado === "Activo" ? "Inactivo" : "Activo" } : c
+          )
+      );
   };
 
-  const handleFileUpload = (e) => {
-    if (e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setCurrentServicio((prev) => ({ ...prev, foto: reader.result }));
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
+  const deleteCategoria = () => {
+      setCategorias(prev => prev.filter((_, idx) => idx !== confirmDelete));
+      setConfirmDelete(null);
   };
-
-  const filteredServicios = servicios.filter((s) =>
-    s.nombre.toLowerCase().includes(busqueda.toLowerCase())
-  );
 
   return (
-    <div className="servicios-container">
-      <NavbarAdmin />
-      <div className="main-content">
-        <h1>Categorías de Servicios</h1>
-        <div className="header-actions">
-          <input
-            type="text"
-            placeholder="Buscar categoría servicio..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            className="search-input"
-          />
-          <button className="action-button" onClick={() => openModal("create")}>
-            Agregar Servicio
-          </button>
-        </div>
-        <table className="servicios-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredServicios.map((servicio) => (
-              <tr key={servicio.id}>
-                <td>{servicio.nombre}</td>
-                <td>{servicio.descripcion || "Sin descripción"}</td>
-                <td>
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={servicio.estado}
-                      onChange={() => toggleEstado(servicio.id)}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                </td>
-                <td>
-                  <button
-                    className="table-button"
-                    onClick={() => openModal("details", servicio)}
-                    title="Ver"
-                  >
-                    <FaEye />
-                  </button>
-                  <button
-                    className="table-button"
-                    onClick={() => openModal("edit", servicio)}
-                    title="Editar"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    className="table-button delete-button"
-                    onClick={() => handleDelete(servicio.id)}
-                    title="Eliminar"
-                  >
-                    <FaTrash />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            {modalType === "details" && currentServicio ? (
-              <>
-                <h2>Detalles del Servicio</h2>
-                <div className="form-group">
-                  <label>Nombre:</label>
-                  <p>{currentServicio.nombre}</p>
-                </div>
-                <div className="form-group">
-                  <label>Descripción:</label>
-                  <p>{currentServicio.descripcion || "No especificada"}</p>
-                </div>
-                <div className="form-group">
-                  <label>Estado:</label>
-                  <p>{currentServicio.estado ? "Activo" : "Inactivo"}</p>
-                </div>
-                {currentServicio.foto && (
-                  <div className="form-group">
-                    <label>Imagen:</label>
-                    <img src={currentServicio.foto} alt="Servicio" width="200" />
-                  </div>
-                )}
-                <div className="form-buttons">
-                  <button className="close-button" onClick={closeModal}>
-                    Cerrar
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <h2>
-                  {modalType === "create" ? "Agregar Servicio" : "Editar Servicio"}
-                </h2>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.target);
-                    const servicio = {
-                      nombre: formData.get("nombre"),
-                      descripcion: formData.get("descripcion"),
-                      estado: modalType === "create" ? true : currentServicio.estado,
-                      foto: currentServicio?.foto || null,
-                    };
-                    handleSave(servicio);
-                  }}
-                >
-                  <div className="form-group">
-                    <label>
-                      Nombre<span className="required">*</span>
+      <div className="insumos-container">
+          <Navbar />
+          <div className="insumos-content">
+              <h2>Categorías de Servicios</h2>
+              <div className="acciones-barra">
+                  <div className="search-bar">
                       <input
-                        type="text"
-                        name="nombre"
-                        placeholder="Nombre del servicio"
-                        defaultValue={currentServicio?.nombre || ""}
-                        required
+                          type="text"
+                          placeholder="Buscar categoría..."
+                          value={search}
+                          onChange={handleSearch}
                       />
-                    </label>
                   </div>
-                  
-                  <div className="form-group">
-                    <label>
-                      Descripción
-                      <textarea
-                        name="descripcion"
-                        placeholder="Descripción del servicio"
-                        defaultValue={currentServicio?.descripcion || ""}
-                        rows="3"
-                      />
-                    </label>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label>
-                      Imagen
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileUpload}
-                      />
-                    </label>
-                    {currentServicio?.foto && (
-                      <div className="image-preview">
-                        <img
-                          src={currentServicio.foto}
-                          alt="Vista previa"
-                          width="100"
-                        />
+                  <button className="btn-agregar-insumo" onClick={() => openModal("agregar")}>
+                      Agregar Categoría
+                  </button>
+              </div>
+
+              <div className="insumos-table">
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Nombre</th>
+                              <th>Descripción</th>
+                              <th>Estado</th>
+                              <th>Acciones</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {filteredCategorias.map((cat, index) => (
+                              <tr key={index}>
+                                  <td>{cat.nombre}</td>
+                                  <td>{cat.descripcion || "—"}</td>
+                                  <td>
+                                      <label className="switch">
+                                          <input
+                                              type="checkbox"
+                                              checked={cat.estado === "Activo"}
+                                              onChange={() => toggleEstado(index)}
+                                          />
+                                          <span className="slider round"></span>
+                                      </label>
+                                  </td>
+                                  <td>
+                                      <button className="btn info  btn-blue" onClick={() => openModal("ver", index)}>
+                                          <FontAwesomeIcon icon={faEye} />
+                                      </button>
+                                      <button className="btn info btn-blue" onClick={() => openModal("editar", index)}>
+                                          <FontAwesomeIcon icon={faEdit} />
+                                      </button>
+                                      <button className="btn danger btn-red" onClick={() => setConfirmDelete(index)}>
+                                          <FontAwesomeIcon icon={faTrash} />
+                                      </button>
+                                  </td>
+                              </tr>
+                          ))}
+                      </tbody>
+                  </table>
+              </div>
+
+              {/* Modal */}
+              {modal.open && (
+                  <div className="modal">
+                      <div className="modal-content">
+                          {modal.type === "ver" ? (
+                              <>
+                                  <h3>Detalles de la Categoría</h3>
+                                  <p><strong>Nombre:</strong> {categorias[modal.index]?.nombre}</p>
+                                  <p><strong>Descripción:</strong> {categorias[modal.index]?.descripcion || "—"}</p>
+                                  <p><strong>Estado:</strong> {categorias[modal.index]?.estado}</p>
+                                  <button className="btn close" onClick={closeModal}>Cerrar</button>
+                              </>
+                          ) : (
+                              <>
+                                  <h3>{modal.type === "agregar" ? "Agregar Categoría" : "Editar Categoría"}</h3>
+                                  <form className="modal-form-grid">
+                                      <div className="full-width">
+                                          <label className="asterisco">
+                                              Nombre <span className="required">*</span>
+                                          </label>
+                                          <input
+                                              type="text"
+                                              value={formData.nombre}
+                                              onChange={(e) => {
+                                                  setFormData({ ...formData, nombre: e.target.value });
+                                                  setFormErrors({ ...formErrors, nombre: "" });
+                                              }}
+                                          />
+                                          {formErrors.nombre && <span className="error">{formErrors.nombre}</span>}
+                                      </div>
+                                      <div className="full-width">
+                                          <label>Descripción</label>
+                                          <input
+                                              type="text"
+                                              value={formData.descripcion}
+                                              onChange={(e) =>
+                                                  setFormData({ ...formData, descripcion: e.target.value })
+                                              }
+                                          />
+                                      </div>
+                                      <div className="full-width">
+                                          <button className="btn success" type="button" onClick={saveCategoria}>
+                                              Guardar
+                                          </button>
+                                          <button className="btn close" type="button" onClick={closeModal}>
+                                              Cancelar
+                                          </button>
+                                      </div>
+                                  </form>
+                              </>
+                          )}
                       </div>
-                    )}
                   </div>
-                  
-                  <div className="form-buttons">
-                  <button type="submit" className="save-button">
-                      Guardar
-                    </button>
-                    <button type="button" className="cancel-button" onClick={closeModal}>
-                      Cancelar
-                    </button>
+              )}
+
+              {/* Confirmación de eliminación */}
+              {confirmDelete !== null && (
+                  <div className="modal">
+                      <div className="modal-confirm">
+                          <h3>Confirmar eliminación</h3>
+                          <p>¿Está seguro de que desea eliminar esta categoría?</p>
+                          <div className="modal-confirm-buttons">
+                              <button className="btn-blue" onClick={deleteCategoria}>Sí, eliminar</button>
+                              <button className="btn-red" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+                          </div>
+                      </div>
                   </div>
-                </form>
-              </>
-            )}
+              )}
           </div>
-        </div>
-      )}
-    </div>
+      </div>
   );
 };
 
-export default CategoriaServicios;
+export default CategoriasServicios;

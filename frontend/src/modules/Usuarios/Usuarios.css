@@ -147,6 +147,11 @@
     transition: 0.4s;
 }
 
+.modal-content{
+    align-items: unset;
+    justify-content: unset;
+}
+
 input:checked+.slider {
     background-color: #4caf50;
     /* Verde activo */
@@ -156,6 +161,7 @@ input:checked+.slider:before {
     transform: translateX(16px);
     /* Desplaza el "punto" */
 }
+
 
 /* Estilo para el menú desplegable de roles */
 select[name="rol"] {
