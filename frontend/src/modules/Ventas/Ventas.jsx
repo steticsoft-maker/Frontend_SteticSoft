@@ -126,22 +126,22 @@ const Ventas = () => {
   return (
     <div className="ventas-container">
       <NavbarAdmin />
-      <div className="main-content">
+      <div className="ventasContent">
         <h1>Gestión de Ventas</h1>
         {mostrarProcesoVentas ? (
           <ProcesoVentas guardarVenta={guardarVenta} />
         ) : (
           <>
-            <div className="header-actions">
+            <div className="barraBusquedaBotonAgregarVenta">
               <input
                 type="text"
                 placeholder="Buscar venta por cliente..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="search-input"
+                className="barraBusquedaVenta"
               />
               <button
-                className="action-button"
+                className="botonAgregarVenta"
                 onClick={() => setMostrarProcesoVentas(true)}
               >
                 Agregar Venta
@@ -181,19 +181,19 @@ const Ventas = () => {
                     </td>
                     <td>
                       <button
-                        className="table-button"
+                        className="botonDetalleVenta"
                         onClick={() => openModal(venta)}
                       >
                         <FaEye />
                       </button>
                       <button
-                        className="table-button pdf-button"
+                        className="botonPdfVenta"
                         onClick={() => handlePDF(venta)}
                       >
                         <FaFilePdf />
                       </button>
                       <button
-                        className="table-button anular-button"
+                        className="botonAnularVenta"
                         onClick={() => handleAnularVenta(venta.id)}
                       >
                         <FaBan />
@@ -203,7 +203,7 @@ const Ventas = () => {
                 ))}
               </tbody>
             </table>
-            <div className="pagination">
+            <div className="paginacionVenta">
               {Array.from({ length: totalPages }, (_, index) => (
                 <button
                   key={index + 1}
@@ -219,8 +219,8 @@ const Ventas = () => {
       </div>
 
       {showModal && currentVenta && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-venta">
+          <div className="modal-content-venta">
             <h2>Detalles de la Venta</h2>
             <p>
               <strong>Fecha:</strong> {currentVenta.fecha}
@@ -234,7 +234,7 @@ const Ventas = () => {
             <p>
               <strong>Estado:</strong> {currentVenta.estado}
             </p>
-            <button className="close-button" onClick={closeModal}>
+            <button className="botonCerrarModalDetalleVenta" onClick={closeModal}>
               Cerrar
             </button>
           </div>
@@ -242,8 +242,8 @@ const Ventas = () => {
       )}
 
       {showPDFModal && pdfUrl && (
-        <div className="modal">
-          <div className="modal-content pdf-modal">
+        <div className="modal-venta">
+          <div className="modal-content-venta pdf-modal-venta">
             <h2>Vista Previa del PDF</h2>
             <iframe
               src={pdfUrl}
@@ -252,9 +252,9 @@ const Ventas = () => {
               height="500px"
               style={{ border: "1px solid #ccc" }}
             />
-            <div className="modal-actions">
+            <div className="modal-actions-venta">
               <button
-                className="close-button"
+                className="botonCerrarModalPdfVenta"
                 onClick={() => {
                   setShowPDFModal(false);
                   URL.revokeObjectURL(pdfUrl);

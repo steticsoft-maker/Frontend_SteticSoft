@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import Home from "../modules/Home/Home";
 import Login from "../modules/Auth/Login";
 import Productos from "../modules/Home/Productos";
@@ -8,25 +9,25 @@ import Novedades from "../modules/Home/Novedades";
 import Register from "../modules/Auth/Register";
 
 import Dashboard from "../modules/Dashboard/Dashboard";
+
 import PrivateRoute from "./PrivateRoute";
 
 import Rol from "../modules/Rol/Rol";
 import Usuarios from "../modules/Usuarios/Usuarios";
-import Abastecimiento from "../modules/Abastecimiento/Abastecimiento"; // Módulo de abastecimiento
-import Clientes from "../modules/Clientes/Clientes"; // Módulo de clientes
-import Compras from "../modules/Compras/Compras"; // Módulo de compras
-import AgregarCompra from "../modules/Compras/AgregarCompra"; // Importa el nuevo componente
+import Abastecimiento from "../modules/Abastecimiento/Abastecimiento"; 
+import Clientes from "../modules/Clientes/Clientes"; 
+import Compras from "../modules/Compras/Compras"; 
+import AgregarCompra from "../modules/Compras/AgregarCompra"; 
 import Insumos from "../modules/Insumos/Insumos";
 import CategoriaInsumos from "../modules/Insumos/CategoriaInsumos";
-import Proveedores from "../modules/Proveedores/Proveedores"; // Módulo de proveedores
-import Ventas from "../modules/Ventas/Ventas"; // Módulo de ventas
+import Proveedores from "../modules/Proveedores/Proveedores"; 
+import Ventas from "../modules/Ventas/Ventas";
 import ServiciosAdministrador from "../modules/Servicios/ServiciosAdministrador";
 import CategoriaServicio from "../modules/Servicios/CategoriaServicio";
 import ProductoAdministrador from "../modules/Productos/ProductoAdministrador";
 import CategoriaProducto from "../modules/Productos/CategoriaProducto";
 import Citas from "../modules/Servicios/Citas";
 import HorarioEmpleado from "../modules/Empleados/HorarioCitas";
-import Pedidos from "../modules/Ventas/Pedidos";
 import ProcesoVentas from "../modules/Ventas/ProcesoVentas";
 import ProcesoRoles from "../modules/Rol/ProcesoRoles";
 
@@ -47,7 +48,7 @@ function AppRouter() {
         <Route path="/abastecimiento" element={<PrivateRoute><Abastecimiento /></PrivateRoute>} />
         <Route path="/clientes" element={<PrivateRoute><Clientes /></PrivateRoute>} />
         <Route path="/compras" element={<PrivateRoute><Compras /></PrivateRoute>} />
-        <Route path="/agregar-compra" element={<PrivateRoute><AgregarCompra /></PrivateRoute>} /> {/* Nueva ruta */}
+        <Route path="/agregar-compra" element={<PrivateRoute><AgregarCompra /></PrivateRoute>} />
         <Route path="/insumos" element={<PrivateRoute><Insumos /></PrivateRoute>} />
         <Route path="/CategoriaInsumos" element={<PrivateRoute><CategoriaInsumos /></PrivateRoute>} />
         <Route path="/horarioempleado" element={<PrivateRoute><HorarioEmpleado /></PrivateRoute>} />
@@ -58,7 +59,6 @@ function AppRouter() {
         <Route path="/serviciosadministrador" element={<PrivateRoute><ServiciosAdministrador /></PrivateRoute>} />
         <Route path="/categoriaservicio" element={<PrivateRoute><CategoriaServicio /></PrivateRoute>} />
         <Route path="/citas" element={<PrivateRoute><Citas /></PrivateRoute>} />
-        <Route path="/pedidos" element={<PrivateRoute><Pedidos /></PrivateRoute>} />
         <Route path="/procesoventas" element={<PrivateRoute><ProcesoVentas /></PrivateRoute>} />
       </Routes>
     </Router>
