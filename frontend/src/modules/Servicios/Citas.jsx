@@ -143,7 +143,7 @@ function Citas() {
   return (
     <div className="citas-container">
       <NavbarAdmin />
-      <div className="main-content">
+      <div className="citasContent">
         <h1>Calendario de Citas</h1>
         <Calendar
           localizer={localizer}
@@ -170,8 +170,8 @@ function Citas() {
         />
 
         {mostrarModal && (
-          <div className="modal">
-            <div className="modal-content">
+          <div className="modal-citas">
+            <div className="modal-content-citas">
               <h3>{citaSeleccionada ? "Editar Cita" : "Nueva Cita"}</h3>
 
               <label>
@@ -232,16 +232,16 @@ function Citas() {
                 />
               </label>
 
-              <div className="modal-buttons">
-                <button onClick={guardarCita} className="btn-guardar">
+              <div className="botonesModalCitas">
+                <button onClick={guardarCita} className="botonGuardarCita">
                   <FontAwesomeIcon icon={faSave} /> Guardar
                 </button>
                 {citaSeleccionada && (
-                  <button onClick={eliminarCita} className="btn-eliminar">
+                  <button onClick={eliminarCita} className="botonEliminarcita">
                     <FontAwesomeIcon icon={faTrash} /> Eliminar
                   </button>
                 )}
-                <button onClick={cerrarModal} className="btn-cancelar">
+                <button onClick={cerrarModal} className="botonCancelarCita">
                   <FontAwesomeIcon icon={faTimes} /> Cancelar
                 </button>
               </div>

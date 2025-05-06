@@ -171,7 +171,7 @@
 }
 
 /* Estilos para el Modal */
-.modal-overlay {
+.modal-overlay-AgregarCompra {
     position: fixed;
     top: 0;
     left: 0;
@@ -183,7 +183,7 @@
     justify-content: center;
 }
 
-.modal-container {
+.modal-container-AgregarCompra {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -194,14 +194,14 @@
     padding: 25px; /* Espaciado consistente */
 }
 
-.modal-container p {
+.modal-container-AgregarCompra p {
     font-size: 1rem; /* Consistencia con fuentes del módulo */
     color: #333;
     margin-bottom: 20px; /* Espaciado adecuado */
     text-align: left; /* Alineación consistente con el módulo */
 }
 
-.modal-container button {
+.modal-container-AgregarCompra button {
     background-color: #3498db; /* Azul consistente */
     color: white;
     padding: 10px 20px;
@@ -213,6 +213,6 @@
     transition: background-color 0.2s ease; /* Animación al pasar el mouse */
 }
 
-.modal-container button:hover {
+.modal-container-AgregarCompra button:hover {
     background-color: #1f6696; /* Azul más oscuro para hover */
 }

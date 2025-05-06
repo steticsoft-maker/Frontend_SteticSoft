@@ -136,7 +136,7 @@ function Dashboard() {
       <main className="dashboard-main">
         <h1 className="dashboard-header">Dashboard de Administración</h1>
         <div className="charts-container">
-          <div className="row">
+          <div className="rowDashboard">
             <div className="chart">
               <h2>Producto Más Vendido</h2>
               <div className="chart-wrapper">
@@ -151,7 +151,7 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="row">
+          <div className="rowDashboard">
             <div className="chart">
               <h2>Producto Más Vendido por Día</h2>
               <div className="chart-wrapper">
@@ -166,7 +166,7 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="row">
+          <div className="rowDashboard">
             <div className="chart-full-width">
               <h2>Producto Más Vendido por Mes</h2>
               <div className="chart-wrapper">

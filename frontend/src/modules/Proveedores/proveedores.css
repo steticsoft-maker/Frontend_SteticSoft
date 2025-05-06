@@ -10,12 +10,11 @@
 }
 
 /* Contenido principal */
-.proveedores-content {
+.proveedoresContent {
     flex: 1;
     padding: 30px;
     margin-left: 45px;
     background-color: #f5f5f5;
-    overflow-y: auto;
     border-radius: 8px;
 }
 
@@ -49,13 +48,13 @@
 }
 
 /* Tabla de Proveedores */
-.proveedores-table {
+.tablaProveedores {
     width: 1300px;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-.proveedores-table th {
+.tablaProveedores th {
     background-color: #34495e;
     color: white;
     padding: 15px;
@@ -63,59 +62,60 @@
     font-size: 16px;
 }
 
-.proveedores-table td {
+.tablaProveedores td {
     text-align: center;
     padding: 15px;
     border: 1px solid #ddd;
     color: #34495e;
 }
 
-.proveedores-table .estado.activo {
+.tablaProveedores .estado.activo {
     font-weight: bold;
     color: #4caf50;
 }
 
-.proveedores-table .estado.inactivo {
+.tablaProveedores .estado.inactivo {
     font-weight: bold;
     color: #dc3545;
 }
 
 /* Modal */
-.modal {
+.modal-Proveedores {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 1000;
+    justify-content: center;
 }
 
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 500px;
+.modal-content-Proveedores {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alineación hacia la izquierda */
+    width: 600px; /* Ampliado para mayor espacio */
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    padding: 25px;
 }
 
-.modal-content strong {
+.modal-content-Proveedores strong {
     color: #3289e0;
 }
 
 /* Estilo para el formulario dentro del modal */
-.modal-content form {
+.modal-content-Proveedores form {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
 /* Ajustar los inputs para ocupar el 100% de su columna */
-.modal-content input {
+.modal-content-Proveedores input {
     width: 100%;
     padding: 10px;
     font-size: 1rem;
@@ -124,88 +124,91 @@
 }
 
 /* Alinear los botones en una sola fila */
-.modal-content .btn-container {
-    display: flex !important; /* Usar flexbox */
-    justify-content: center !important; /* Centrar horizontalmente */
-    align-items: center !important; /* Centrar verticalmente */
-    gap: 20px !important; /* Espacio uniforme entre botones */
-    margin-top: 20px !important; /* Separación del contenido superior */
+.modal-content-Proveedores .botonesEliminarProveedor {
+    display: flex ; /* Usar flexbox */
+    justify-content: center ; /* Centrar horizontalmente */
+    align-items: center ; /* Centrar verticalmente */
+    gap: 20px ; /* Espacio uniforme entre botones */
+    margin-top: 20px ; /* Separación del contenido superior */
     width: 100%; /* Asegura que los botones ocupen el contenedor */
 }
 
 /* Botones en el modal */
-.modal-content .btn {
-    padding: 12px 24px !important; /* Tamaño uniforme */
-    font-size: 1rem !important;
-    border: none !important;
-    border-radius: 5px !important;
-    cursor: pointer !important;
-    transition: background-color 0.3s ease !important;
+.modal-content-Proveedores .btn {
+    padding: 12px 24px ; /* Tamaño uniforme */
+    font-size: 1rem ;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.modal-content .btn.success {
-    background-color: #3498db !important;
-    color: white !important;
+.modal-content-Proveedores .btn.success {
+    background-color: #3498db;
+    color: white;
 }
 
-.modal-content .btn.success:hover {
-    background-color: #1974b1 !important;
+.modal-content-Proveedores .btn.success:hover {
+    background-color: #1974b1;
 }
 
-.modal-content .btn.close {
-    background-color: #dc3545 !important;
-    color: white !important;
+.modal-conten-Proveedorest .btn.close {
+    background-color: #dc3545 ;
+    color: white ;
 }
 
-.modal-content .btn.close:hover {
-    background-color: #c82333 !important;
+.modal-content-Proveedores .btn.close:hover {
+    background-color: #c82333 ;
 }
 
-.modal-content .btn.close.Cancelar {
-    background-color: #1974b1 !important;
-    color: white !important;
+.modal-content-Proveedores .btn.close.Cancelar {
+    background-color: #1974b1 ;
+    color: white ;
 }
 
-.modal-content .btn.close.Cancelar:hover {
-    background-color: #1a567e !important;
+.modal-content-Proveedores .btn.close.Cancelar:hover {
+    background-color: #1a567e ;
 }
 
-.modal-content .btn.close.cerrar {
-    display: flex !important; 
-    justify-content: center !important; /* Centra horizontalmente */
-    align-items: center !important; /* Centra verticalmente dentro del botón */
-    margin: 0 auto !important; /* Centra el botón dentro de su contenedor padre */
-    padding: 12px 24px !important; /* Tamaño uniforme */
-    font-size: 1rem !important;
-    border: none !important;
-    border-radius: 5px !important;
-    cursor: pointer !important;
-    background-color: #ca3241 !important; /* Fondo del botón */
-    color: white !important; /* Color del texto */
-    transition: background-color 0.3s ease !important; /* Animación al pasar el mouse */
+.modal-content-Proveedores .btn.close.cerrar {
+    display: flex ; 
+    justify-content: center ; /* Centra horizontalmente */
+    align-items: center ; /* Centra verticalmente dentro del botón */
+    margin: 0 auto ; /* Centra el botón dentro de su contenedor padre */
+    padding: 12px 24px ; /* Tamaño uniforme */
+    font-size: 1rem ;
+    border: none ;
+    border-radius: 5px ;
+    cursor: pointer ;
+    background-color: #ca3241 ; /* Fondo del botón */
+    color: white ; /* Color del texto */
+    transition: background-color 0.3s ease ; /* Animación al pasar el mouse */
 }
 
-.modal-content .btn.close.cerrar:hover {
-    background-color: #9b212e !important; /* Color al pasar el mouse */
+.modal-content-Proveedores .btn.close.cerrar:hover {
+    background-color: #9b212e ; /* Color al pasar el mouse */
 }
 
-.btn-Editar-Proveedor{
-    display: flex !important; 
-    justify-content: center !important; /* Centra horizontalmente */
-    align-items: center !important; /* Centra verticalmente dentro del botón */
-    margin: 0 auto !important; /* Centra el botón dentro de su contenedor padre */
-    padding: 12px 24px !important; /* Tamaño uniforme */
-    font-size: 1rem !important;
-    border: none !important;
-    border-radius: 5px !important;
-    cursor: pointer !important;
-    color: white !important; /* Color del texto */
-    transition: background-color 0.3s ease !important; /* Animación al pasar el mouse */
+.botonEditarProveedor{
+    display: flex ; 
+    justify-content: center ; /* Centra horizontalmente */
+    align-items: center ; /* Centra verticalmente dentro del botón */
+    margin: 0 auto ; /* Centra el botón dentro de su contenedor padre */
+    padding: 12px 24px ; /* Tamaño uniforme */
+    font-size: 1rem ;
+    border: none ;
+    border-radius: 5px ;
+    cursor: pointer ;
+    color: white ; /* Color del texto */
+    transition: background-color 0.3s ease ; /* Animación al pasar el mouse */
 }
 
+.iconosTablaProveedores{
+    display: flex;
+}
 
 /* Encabezado del componente */
-h2.title-h2 {
+h2.title-h2-Proveedores {
     font-size: 1.5rem;
     color: #34495e;
     margin-bottom: 20px;
@@ -218,23 +221,32 @@ h2.title-h2 {
     color: #333;
 }
 
-.btnVer {
+.botonVerDetallesProveedor {
     background-color: #3498db;
 }
 
-.btnEditar {
+.botonVerDetallesProveedor:hover {
+    background-color: #2980b9;
+}
+
+.botonEditarProveedor {
     background-color: #3498db;
 }
 
-.btnVer:hover {
+
+.botonEditarProveedor:hover {
     background-color: #2980b9;
 }
 
-.btnEditar:hover {
-    background-color: #2980b9;
+.botonEliminarProveedor{
+    background-color: #bd0e1f;
 }
 
-.top-bar {
+.botonEliminarProveedor:hover{
+    background-color: #9b212e;
+}
+
+.barraBusquedaBotonAgregarProveedor {
     display: flex;
     justify-content: left;
     align-items: center;
@@ -242,7 +254,7 @@ h2.title-h2 {
     margin-bottom: 30px;
 }
 
-.top-bar input {
+.barraBusquedaBotonAgregarProveedor input {
     width: 300px;
     height: 40px;
     padding: 0 10px;
@@ -253,7 +265,7 @@ h2.title-h2 {
     background-color: #fff;
 }
 
-.btnAgregarProveedor {
+.botonSuperiorAgregarProveedor {
     padding: 12px 24px;
     font-size: 1rem;
     background-color: #3498db;
@@ -264,54 +276,54 @@ h2.title-h2 {
 }
 
 
-.btnAgregarProveedor:hover {
-    background-color: #2980b9;
+.botonSuperiorAgregarProveedor:hover {
+    background-color: #1f6fa5;
 }
 
-.btnCancelar{
+.botonModalCancelarEliminarProveedor{
     background-color: #2980b9;
     height: 44px;
     width: 110px;
     border-radius: 5px;
 }
 
-.documento-input-wrapper {
+.documentoNaturalJuridicoProveedores {
     display: flex; /* Coloca los campos en fila */
     justify-content: space-between; /* Espaciado uniforme */
     align-items: center; /* Alineación vertical centrada */
     gap: 10px; /* Espacio entre los dos campos */
 }
 
-.documento-input-wrapper input {
-    width: 100% !important; /* Ocupa todo el ancho del contenedor */
-    padding: 12px !important; /* Espaciado interno */
-    border: 1px solid #ced4da !important; /* Borde uniforme */
-    border-radius: 4px !important; /* Bordes redondeados */
-    background-color: white !important; /* Fondo */
-    color: black !important; /* Texto */
-    font-size: px16 !important; /* Tamaño del texto */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important; /* Sombra */
+.documentoNaturalJuridicoProveedores input {
+    width: 100% ; /* Ocupa todo el ancho del contenedor */
+    padding: 12px ; /* Espaciado interno */
+    border: 1px solid #ced4da ; /* Borde uniforme */
+    border-radius: 4px ; /* Bordes redondeados */
+    background-color: white ; /* Fondo */
+    color: black ; /* Texto */
+    font-size: px16 ; /* Tamaño del texto */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) ; /* Sombra */
 }
 
-.tipo-documento-select {
-    width: auto !important; /* Mantiene un tamaño ajustado */
-    padding: 12px !important; /* Espaciado interno */
-    border: 1px solid #ced4da !important; /* Borde uniforme */
-    border-radius: 4px !important; /* Bordes redondeados */
-    background-color: white !important; /* Fondo */
-    color: black !important; /* Texto */
-    font-size: 16px !important; /* Tamaño del texto */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important; /* Sombra */
+.tipo-documento-proveedor-select {
+    width: auto ; /* Mantiene un tamaño ajustado */
+    padding: 12px ; /* Espaciado interno */
+    border: 1px solid #ced4da ; /* Borde uniforme */
+    border-radius: 4px ; /* Bordes redondeados */
+    background-color: white ; /* Fondo */
+    color: black ; /* Texto */
+    font-size: 16px ; /* Tamaño del texto */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) ; /* Sombra */
 }
 
-.tipo-documento-select:focus, 
-.documento-input-wrapper input:focus {
+.tipo-documento-proveedor-select:focus, 
+.documentoNaturalJuridicoProveedores input:focus {
     outline: none; /* Remueve el contorno predeterminado */
     border-color: #007bff; /* Color del borde al enfocarse */
 }
 
 /* Estilos para el Modal General */
-.modal-overlay {
+.modal-Proveedores-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -324,51 +336,10 @@ h2.title-h2 {
     z-index: 2000; /* Prioridad alta para que aparezca sobre otros modales */
 }
 
-.modal-container {
+.modal-Proveedores-container {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 15; /* Mayor índice para asegurar visibilidad */
-}
-
-.modal-container p {
-    margin-bottom: 20px;
-    font-size: 16px;
-    text-align: center;
-    color: #333;
-}
-
-.modal-container button {
-    background-color: #3498db;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.modal-container button:hover {
-    background-color: #2980b9;
-}
-
-/* Modal principal (Agregar/Editar Proveedor) */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 5; /* Índice más bajo para quedar debajo del modal de validación */
-}
-
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

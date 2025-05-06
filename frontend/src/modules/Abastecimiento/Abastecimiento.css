@@ -6,7 +6,7 @@
 }
 
 /* Contenido principal */
-.main-content {
+.main-content-abastecimiento {
     flex: 1;
     padding: 30px;
     margin-left: 45px;
@@ -25,7 +25,7 @@ h1 {
 }
 
 /* Acciones (búsqueda y botón agregar) */
-.actions-container {
+.containerAgregarBuscarAbastecimiento {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -33,7 +33,7 @@ h1 {
     gap: 15px;
 }
 
-.search-input {
+.inputBuscarAbastecimiento {
     flex: 1;
     padding: 10px;
     font-size: 1rem;
@@ -41,7 +41,7 @@ h1 {
     border-radius: 6px;
 }
 
-.action-button {
+.botonAgregarAbastecimiento {
     background-color: #3498db;
     color: #fff;
     padding: 10px 20px;
@@ -53,12 +53,12 @@ h1 {
     transition: background 0.3s ease;
 }
 
-.action-button:hover {
+.botonAgregarAbastecimiento:hover {
     background-color: #2980b9;
 }
 
 /* Tabla de productos */
-.productos-table {
+.tabla-abastecimiento {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
@@ -67,7 +67,7 @@ h1 {
     overflow: hidden;
 }
 
-.productos-table th {
+.tabla-abastecimiento th {
     background-color: #3498db;
     color: #fff;
     padding: 12px;
@@ -75,36 +75,34 @@ h1 {
     font-weight: bold;
 }
 
-.productos-table td {
+.tabla-abastecimiento td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
 
 /* Iconos en la tabla */
-.icon-actions {
+.icon-actions-abastecimiento {
     display: flex;
     gap: 8px;
 }
 
-.table-button {
-    background: none;
-    border: none;
+.table-icons-abastecimiento {
     font-size: 16px;
     cursor: pointer;
     padding: 5px;
     transition: color 0.3s ease;
 }
 
-.delete-button {
-    color: #e74c3c;
+.delete-button-abastecimiento {
+    background-color: #e74c3c;
 }
 
-.delete-button:hover {
-    color: #c0392b;
+.delete-button-abastecimiento:hover {
+    background-color: #86261b;
 }
 
 /* Modal y contenido */
-.modal {
+.modal-abastecimiento {
     position: fixed;
     top: 0;
     left: 0;
@@ -117,7 +115,7 @@ h1 {
     z-index: 999;
 }
 
-.modal-content {
+.modal-content-abastecimiento {
     background: #fff;
     padding: 25px;
     border-radius: 12px;
@@ -128,110 +126,72 @@ h1 {
 }
 
 /* Formulario del modal */
-.modal-form {
+.formularioModalAbastecimiento {
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
 }
 
-.form-row {
+.modal-container-seleccion-empleadoProducto{
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    width: 600px; /* Ancho ajustado para balance */
+    border-radius: 12px; /* Bordes más suaves */
+    background: linear-gradient(135deg, #ffffff, #f8f9fa); /* Fondo limpio */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Sombra para profundidad */
+    padding: 25px; /* Espaciado consistente */
 }
 
-.input-container {
-    flex: 1;
-    min-width: 200px;
+.inputBuscarProducto-empleado{
+    background-color: white;
+    color: black;
+    padding: 4px 12px;
 }
 
-.input-container label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    text-align: left;
+.inputCantidadAbastecimiento{
+    background-color: white;
+    color: black;
+    padding: 4px 12px;
 }
 
-.input-container input,
-.input-container select {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-/* Botones del formulario */
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-    width: 100%;
-}
-
-.modal-buttons button {
-    flex: 1;
-    padding: 12px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.save-button {
-    background-color: #2ecc71;
+.guardarModalAbastecimiento {
+    background-color: #3498db;
     color: #fff;
 }
 
-.save-button:hover {
-    background-color: #27ae60;
+.guardarModalAbastecimiento:hover {
+    background-color: #2171a7;
 }
 
-.cancel-button {
-    background-color: #e74c3c;
+.cerrarModalAbastecimiento {
+    background-color: #d9534f;
     color: #fff;
 }
 
-.cancel-button:hover {
-    background-color: #c0392b;
+.cerrarModalAbastecimiento:hover {
+    background-color: #972f24;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .main-content {
+    .main-content-abastecimiento {
         margin-left: 0;
-        padding: 20px;
+        padding: 50px;
     }
 
-    .productos-table th,
-    .productos-table td {
+    .tabla-abastecimiento th,
+    .tabla-abastecimiento td {
         padding: 10px;
     }
 
-    .modal-content {
+    .modal-content-abastecimiento {
         width: 90%;
     }
 
-    .actions-container {
+    .containerAgregarBuscar {
         flex-direction: column;
         gap: 10px;
-    }
-
-    .form-row {
-        flex-direction: column;
-    }
-
-    .modal-buttons {
-        flex-direction: column;
-    }
-
-    .modal-buttons button {
-        width: 100%;
     }
 }

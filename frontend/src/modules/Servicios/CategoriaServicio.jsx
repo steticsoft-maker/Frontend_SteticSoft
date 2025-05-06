@@ -76,12 +76,12 @@ const CategoriasServicios = () => {
   };
 
   return (
-      <div className="insumos-container">
+      <div className="CategoriaServicios-container">
           <Navbar />
-          <div className="insumos-content">
+          <div className="CategoriaServicios-content">
               <h2>Categorías de Servicios</h2>
-              <div className="acciones-barra">
-                  <div className="search-bar">
+              <div className="ContainerBarraBotonAgregarCategoriaServicio">
+                  <div className="barraBusquedaBotonAgregarCategoriaServicio">
                       <input
                           type="text"
                           placeholder="Buscar categoría..."
@@ -89,12 +89,12 @@ const CategoriasServicios = () => {
                           onChange={handleSearch}
                       />
                   </div>
-                  <button className="btn-agregar-insumo" onClick={() => openModal("agregar")}>
+                  <button className="botonAgregarCategoriaServicios" onClick={() => openModal("agregar")}>
                       Agregar Categoría
                   </button>
               </div>
 
-              <div className="insumos-table">
+              <div className="tablaCategoriaServicios">
                   <table>
                       <thead>
                           <tr>
@@ -120,13 +120,13 @@ const CategoriasServicios = () => {
                                       </label>
                                   </td>
                                   <td>
-                                      <button className="btn info  btn-blue" onClick={() => openModal("ver", index)}>
+                                      <button className="botonVerDetallesCategoriaServicios" onClick={() => openModal("ver", index)}>
                                           <FontAwesomeIcon icon={faEye} />
                                       </button>
-                                      <button className="btn info btn-blue" onClick={() => openModal("editar", index)}>
+                                      <button className="botonEditarCategoriaServicios" onClick={() => openModal("editar", index)}>
                                           <FontAwesomeIcon icon={faEdit} />
                                       </button>
-                                      <button className="btn danger btn-red" onClick={() => setConfirmDelete(index)}>
+                                      <button className="botonEliminarCategoriaServicios" onClick={() => setConfirmDelete(index)}>
                                           <FontAwesomeIcon icon={faTrash} />
                                       </button>
                                   </td>
@@ -138,23 +138,23 @@ const CategoriasServicios = () => {
 
               {/* Modal */}
               {modal.open && (
-                  <div className="modal">
-                      <div className="modal-content">
+                  <div className="modal-CategoriaServicios">
+                      <div className="modal-content-CategoriaServicios">
                           {modal.type === "ver" ? (
                               <>
                                   <h3>Detalles de la Categoría</h3>
                                   <p><strong>Nombre:</strong> {categorias[modal.index]?.nombre}</p>
                                   <p><strong>Descripción:</strong> {categorias[modal.index]?.descripcion || "—"}</p>
                                   <p><strong>Estado:</strong> {categorias[modal.index]?.estado}</p>
-                                  <button className="btn close" onClick={closeModal}>Cerrar</button>
+                                  <button className="botonCerrarModalVerDetalleCategoriaServicios" onClick={closeModal}>Cerrar</button>
                               </>
                           ) : (
                               <>
                                   <h3>{modal.type === "agregar" ? "Agregar Categoría" : "Editar Categoría"}</h3>
-                                  <form className="modal-form-grid">
-                                      <div className="full-width">
-                                          <label className="asterisco">
-                                              Nombre <span className="required">*</span>
+                                  <form className="modal-CategoriaServicios-form-grid">
+                                      <div className="camposAgregarCategoriaServicio">
+                                          <label className="asteriscoCampoObligatorioCategoriaServicio">
+                                              Nombre <span className="requiredCategoriaServicios">*</span>
                                           </label>
                                           <input
                                               type="text"
@@ -166,7 +166,7 @@ const CategoriasServicios = () => {
                                           />
                                           {formErrors.nombre && <span className="error">{formErrors.nombre}</span>}
                                       </div>
-                                      <div className="full-width">
+                                      <div className="camposAgregarCategoriaServicio">
                                           <label>Descripción</label>
                                           <input
                                               type="text"
@@ -176,11 +176,11 @@ const CategoriasServicios = () => {
                                               }
                                           />
                                       </div>
-                                      <div className="full-width">
-                                          <button className="btn success" type="button" onClick={saveCategoria}>
+                                      <div className="containerBotonesAgregarCategoriaServicios">
+                                          <button className="botonGuardarAgregarCategoriaServicios" type="button" onClick={saveCategoria}>
                                               Guardar
                                           </button>
-                                          <button className="btn close" type="button" onClick={closeModal}>
+                                          <button className="botonCerrarAgregarCategoriaServicios" type="button" onClick={closeModal}>
                                               Cancelar
                                           </button>
                                       </div>
@@ -193,13 +193,13 @@ const CategoriasServicios = () => {
 
               {/* Confirmación de eliminación */}
               {confirmDelete !== null && (
-                  <div className="modal">
-                      <div className="modal-confirm">
+                  <div className="modal-CategoriaServicios">
+                      <div className="modal-CategoriaServicios-confirm">
                           <h3>Confirmar eliminación</h3>
                           <p>¿Está seguro de que desea eliminar esta categoría?</p>
-                          <div className="modal-confirm-buttons">
-                              <button className="btn-blue" onClick={deleteCategoria}>Sí, eliminar</button>
-                              <button className="btn-red" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+                          <div className="modal-CategoriaServicios-confirm-buttons">
+                              <button className="botonConfirmarEliminarCategoriaServicios" onClick={deleteCategoria}>Sí, eliminar</button>
+                              <button className="botonCancelarEliminacionCategoriaServicios" onClick={() => setConfirmDelete(null)}>Cancelar</button>
                           </div>
                       </div>
                   </div>

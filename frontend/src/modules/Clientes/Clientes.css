@@ -5,7 +5,7 @@
 }
 
 /* Contenido principal */
-.main-content {
+.main-content-clientes {
     flex: 1; /* Permite que el contenido ocupe el espacio disponible */
     padding: 30px; /* Espaciado interno */
     margin-left: 45px; /* Separación del margen izquierdo */
@@ -14,7 +14,7 @@
 }
 
 /* Barra de búsqueda */
-.search-input {
+.barraBusquedaClientesInput {
     margin-bottom: 20px; /* Separación inferior */
     padding: 12px; /* Espaciado interno */
     width: 100%; /* Ocupa todo el ancho */
@@ -26,7 +26,7 @@
 }
 
 /* Estilo del botón de acción */
-.action-button {
+.buttonAgregarcliente {
     margin-top: 30px; /* Separación superior */
     margin-bottom: 30px; /* Separación inferior */
     padding: 15px 30px; /* Espaciado interno */
@@ -38,18 +38,18 @@
     cursor: pointer; /* Cambia el cursor al pasar */
 }
 
-.action-button:hover {
+.buttonAgregarcliente:hover {
     background-color: #45a049; /* Fondo verde oscuro al pasar el mouse */
 }
 
 /* Tabla de Clientes */
-.clientes-table {
+.tablaClientes {
     width: 100%; /* Tabla ocupa el 100% del ancho */
     border-collapse: collapse; /* Elimina espacios entre celdas */
     margin-top: 20px; /* Separación superior */
 }
 
-.clientes-table th {
+.tablaClientes th {
     background-color: #34495e; /* Fondo azul oscuro */
     color: white; /* Texto blanco */
     padding: 15px; /* Espaciado interno */
@@ -58,7 +58,7 @@
     font-size: 1rem; /* Tamaño de fuente */
 }
 
-.clientes-table td {
+.tablaClientes td {
     text-align: center; /* Texto centrado */
     padding: 15px; /* Espaciado interno */
     border: 1px solid #ddd; /* Borde gris claro */
@@ -113,82 +113,112 @@ input:checked+.slider:before {
 }
 
 /* Botones de acciones en la tabla */
-.table-button {
+.iconsTablaclientes {
     padding: 10px 20px; /* Espaciado interno */
     margin: 5px; /* Separación entre botones */
     font-size: 1rem; /* Tamaño de fuente */
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
     color: white; /* Texto blanco */
-    background-color: #3498db !important; /* Fondo azul */
+    background-color: #3498db; /* Fondo azul */
     cursor: pointer; /* Cambia el cursor */
     transition: background-color 0.3s ease; /* Transición suave */
 }
 
-.table-button:hover {
+.iconsTablaclientes:hover {
     background-color: #2980b9; /* Fondo azul oscuro al pasar el mouse */
 }
 
-.delete-button {
+.delete-button-elimnarCliente {
     background-color: #e74c3c; /* Fondo rojo */
 }
 
-.delete-button:hover {
+.delete-button-elimnarCliente:hover {
     background-color: #c0392b; /* Fondo rojo oscuro al pasar el mouse */
 }
 
 /* Modal */
-.modal {
-    position: fixed; /* Posición fija en la pantalla */
-    top: 0; /* Alineado superior */
-    left: 0; /* Alineado izquierdo */
-    width: 100%; /* Ocupa todo el ancho */
-    height: 100%; /* Ocupa toda la altura */
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
-    display: flex; /* Flexbox para centrar el contenido */
-    justify-content: center; /* Centrado horizontal */
-    align-items: center; /* Centrado vertical */
-    z-index: 999; /* Se asegura de que esté encima de otros elementos */
+.modal-clientes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
 }
 
-.modal-content {
-    background: white; /* Fondo blanco */
-    padding: 20px; /* Espaciado interno */
-    border-radius: 10px; /* Bordes redondeados */
-    width: 500px; /* Ancho del modal */
-    text-align: center; /* Texto centrado */
+.modal-content-clientes {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    width: 650px;
+    max-width: 95%;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.close-button {
+/* Formulario del modal */
+.formularioModalClientes {
+    display: flex;
+    padding: 80x 16px;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.formularioModalInputClientes {
+    width: 96%; /* Ancho completo */
+    padding: 12px; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 5px; /* Bordes redondeados */
+    background-color: white; /* Fondo blanco */
+    color: black;
+}
+
+.botonguardarClienteModal{
+    background-color: #3498db;
+}
+
+.botonguardarClienteModal:hover{
+    background-color: #206a9b;
+}
+
+
+.botonModalCancelar-Cerrar {
     margin-top: 20px; /* Separación superior */
     padding: 10px 20px; /* Espaciado interno */
-    background-color: #e74c3c !important; /* Fondo rojo */
-    color: white !important; /* Texto blanco */
+    background-color: #e74c3c; /* Fondo rojo */
+    color: white; /* Texto blanco */
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
     cursor: pointer; /* Cambia el cursor */
 }
 
-.close-button:hover {
+.botonModalCancelar-Cerrar:hover {
     background-color: #c0392b; /* Fondo rojo oscuro al pasar el mouse */
 }
 /* Contenedor para la barra de búsqueda y el botón */
-.header-actions {
+.containerAgregarbuscarClientes {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-  }
-  
-  .search-input {
+}
+
+.barraBusquedaClientesInput {
     width: 70%;
     padding: 10px;
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 5px;
-  }
-  
-  .action-button {
+}
+
+.buttonAgregarcliente {
     background-color: #28a745;
     color: white;
     border: none;
@@ -197,21 +227,16 @@ input:checked+.slider:before {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
-  
-  .action-button:hover {
-    background-color: #218838;
-  }
-/* Contenedor general para los botones */
-.modal-content form .button-group {
-    display: flex; /* Alinea los botones en una sola fila */
-    justify-content: space-between; /* Espacio uniforme entre botones */
-    margin-top: 20px; /* Separación superior con los campos del formulario */
 }
 
+.buttonAgregarcliente:hover {
+    background-color: #218838;
+}
+
+
 /* Estilo uniforme para ambos botones */
-.modal-content form .action-button,
-.modal-content form .close-button {
+.modal-content form .buttonAgregarcliente,
+.modal-content form .botonModalCancelar-Cerrar {
     width: 48%; /* Ambos botones ocupan el mismo ancho y están alineados */
     padding: 10px 0; /* Altura uniforme */
     font-size: 16px; /* Texto legible */
@@ -223,26 +248,25 @@ input:checked+.slider:before {
 }
 
 /* Estilo del botón "Guardar" */
-.modal-content form .action-button {
+.modal-content form .buttonAgregarcliente {
     background-color: #28a745; /* Verde */
     color: white; /* Texto blanco */
     transition: background-color 0.3s ease; /* Transición suave */
 }
 
-.modal-content form .action-button:hover {
+.modal-content form .buttonAgregarcliente:hover {
     background-color: #218838; /* Verde más oscuro al pasar */
 }
 
 /* Estilo del botón "Cancelar" */
-.modal-content form .close-button {
+.modal-content form .botonModalCancelar-Cerrar {
     background-color: #dc3545; /* Rojo */
     color: white; /* Texto blanco */
     transition: background-color 0.3s ease; /* Transición suave */
     margin-top: 19 px;
 }
 
-.modal-content form .close-button:hover {
+.modal-content form .botonModalCancelar-Cerrar:hover {
     background-color: #b02a37; /* Rojo más oscuro al pasar */
     margin-top: 19 px;
 }
-  

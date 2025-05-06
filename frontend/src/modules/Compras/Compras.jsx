@@ -106,26 +106,24 @@ const Compras = () => {
   return (
     <div className="compras-container">
       <NavbarAdmin />
-      <div className="compras-content">
+      <div className="comprasContenido">
         <h2 className="title-h2">Gestión de Compras</h2>
 
-        <div className="barra-superior">
+        <div className="container-busqueda-agregar">
           <input
+            className="inputBarraBusqueda"
             type="text"
             placeholder="Buscar compra..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="input-busqueda"
-          />
+            onChange={(e) => setSearchTerm(e.target.value)}/>
           <button
-            className="btnAgregarCompra"
-            onClick={() => navigate("/agregar-compra")}
-          >
+            className="botonSuperiorAgregarCompra"
+            onClick={() => navigate("/agregar-compra")}>
             Agregar Compra
           </button>
         </div>
 
-        <div className="compras-table">
+        <div className="tablaCompras">
           <table>
             <thead>
               <tr>
@@ -162,27 +160,24 @@ const Compras = () => {
                         </label>
                       )}
                     </td>
-                    <td className="acciones">
+                    <td className="accionesTablaCompras">
                       <button
-                        className="btnVerCompra"
+                        className="botonVerDetallesCompra"
                         onClick={() => handleShowDetails(compra)}
-                        title="Ver detalles"
-                      >
+                        title="Ver detalles">
                         <FontAwesomeIcon icon={faEye} />
                       </button>
                       <button
-                        className="btnPDFCompra"
+                        className="botonGenerarPDF"
                         onClick={() => handleGenerarPDF(compra)}
-                        title="Generar PDF"
-                      >
+                        title="Generar PDF">
                         <FontAwesomeIcon icon={faFilePdf} />
                       </button>
                       {compra.estado !== "Anulada" && (
                         <button
-                          className="btn danger"
+                          className="botonAnularCompra"
                           onClick={() => handleAnular(index)}
-                          title="Anular compra"
-                        >
+                          title="Anular compra">
                           <FontAwesomeIcon icon={faBan} />
                         </button>
                       )}
@@ -195,14 +190,14 @@ const Compras = () => {
       </div>
 
       {showDetailsModal && selectedCompra && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-compras">
+          <div className="modal-content-compras">
             <h2>Detalle de Compra</h2>
             <p><strong>Proveedor:</strong> {selectedCompra.proveedor}</p>
             <p><strong>Fecha:</strong> {selectedCompra.fecha}</p>
             <p><strong>Total:</strong> {selectedCompra.total}</p>
 
-            <table className="detalle-compra-table">
+            <table className="tablaDetallesCompras">
               <thead>
                 <tr>
                   <th>#</th>
@@ -226,9 +221,8 @@ const Compras = () => {
             </table>
 
             <button
-              className="btn close detail"
-              onClick={() => setShowDetailsModal(false)}
-            >
+              className="botonCerrarDetallesCompra"
+              onClick={() => setShowDetailsModal(false)}>
               Cerrar
             </button>
           </div>
@@ -236,15 +230,15 @@ const Compras = () => {
       )}
 
       {showAnularModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-compras">
+          <div className="modal-content-compras">
             <h2>Confirmar Anulación</h2>
             <p>¿Está seguro de que desea anular esta compra?</p>
-            <div className="modal-buttons-anular">
-              <button className="confirmar" onClick={confirmAnularCompra}>
+            <div className="modal-compras-buttons-anular">
+              <button className="botonConfirmarAnularCompra" onClick={confirmAnularCompra}>
                 Sí, anular
               </button>
-              <button className="btn close" onClick={() => setShowAnularModal(false)}>
+              <button className="botonCerrarModalAnularCompra" onClick={() => setShowAnularModal(false)}>
                 Cancelar
               </button>
             </div>
@@ -253,19 +247,18 @@ const Compras = () => {
       )}
 
       {showPDFModal && pdfUrl && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-compras">
+          <div className="modal-content-compras">
             <h2>Vista Previa del PDF</h2>
             <iframe
               src={pdfUrl}
               title="Vista previa PDF"
               width="550px"
               height="500px"
-              style={{ border: "1px solid #ccc" }}
-            />
-            <div className="modal-buttons">
+              style={{ border: "1px solid #ccc" }}/>
+            <div className="modal-compras-buttons">
               <button
-                className="btn close pdf"
+                className="botonCerrarModalAnularCompra-PDF"
                 onClick={() => {
                   setShowPDFModal(false);
                   URL.revokeObjectURL

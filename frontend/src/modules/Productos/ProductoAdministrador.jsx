@@ -74,21 +74,21 @@ const Productos = () => {
   return (
     <div className="productos-container">
       <NavbarAdmin />
-      <div className="main-content">
+      <div className="productoAdministradorContent">
         <h1>Gestión de Productos</h1>
-        <div className="header-actions">
+        <div className="BarraBusquedaAgregarProductoAdministrador">
           <input
             type="text"
             placeholder="Buscar producto..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="search-input"
+            className="inputBarraBusqueda"
           />
-          <button className="action-button" onClick={() => openModal("create")}>
+          <button className="botonAgregarProductoAdministrador" onClick={() => openModal("create")}>
             Agregar Producto
           </button>
         </div>
-        <table className="productos-table">
+        <table className="tablaProductosAdministrador">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -118,21 +118,21 @@ const Productos = () => {
                 </td>
                 <td>
                   <button
-                    className="table-button"
+                    className="iconBotonProductoAdministrador"
                     onClick={() => openModal("details", producto)}
                     title="Ver"
                   >
                     <FaEye />
                   </button>
                   <button
-                    className="table-button"
+                    className="iconBotonProductoAdministrador"
                     onClick={() => openModal("edit", producto)}
                     title="Editar"
                   >
                     <FaEdit />
                   </button>
                   <button
-                    className="table-button delete-button"
+                    className="iconBotonProductoAdministrador EliminarProductoAdministradorIcon"
                     onClick={() => handleDelete(producto.id)}
                     title="Eliminar"
                   >
@@ -145,8 +145,8 @@ const Productos = () => {
         </table>
       </div>
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modalProductosAdministrador">
+          <div className="modal-content-ProductosAdministrador">
             {modalType === "details" && currentProducto ? (
               <>
                 <h2>Detalles del Producto</h2>
@@ -169,7 +169,7 @@ const Productos = () => {
                 {currentProducto.foto && (
                   <img src={currentProducto.foto} alt="Producto" width="200" />
                 )}
-                <button className="close-button" onClick={closeModal}>
+                <button className="cerrarModalVerDetallesProductoAdministrador" onClick={closeModal}>
                   Cerrar
                 </button>
               </>
@@ -244,13 +244,13 @@ const Productos = () => {
                       width="100"
                     />
                   )}
-                  <div className="form-buttons">
-                    <button type="submit" className="save-button">
+                  <div className="botonesGuardarCancelarProductoAdministrador">
+                    <button type="submit" className="botonGuardarProducto">
                       Guardar
                     </button>
                     <button
                       type="button"
-                      className="delete-button"
+                      className="botonCancelarAgregarProducto"
                       onClick={closeModal}
                     >
                       Cancelar

@@ -126,23 +126,22 @@ const Horarios = () => {
   return (
     <div className="horarios-container">
       <Navbar />
-      <div className="horarios-content">
+      <div className="horariosCitasContent">
         <h2>Horarios de Citas</h2>
-        <div className="acciones-barra">
-          <div className="search-bar">
+        <div className="accionesBarraBusqueda-botonAgregar">
             <input
+              className="barraBusquedaHorarioCitas"
               type="text"
               placeholder="Buscar por encargado..."
               value={search}
               onChange={handleSearch}
             />
-          </div>
-          <button className="btn-agregar" onClick={() => openModal("agregar")}>
+          <button className="botonAgregarHorarioCitas" onClick={() => openModal("agregar")}>
             Agregar Horario
           </button>
         </div>
 
-        <div className="horarios-table">
+        <div className="tablaHorariosCitas">
           <table>
             <thead>
               <tr>
@@ -176,13 +175,13 @@ const Horarios = () => {
                     </label>
                   </td>
                   <td>
-                    <button className="btn info btn-blue" onClick={() => openModal("ver", index)}>
+                    <button className="botonVerDetallesHorarioCitas" onClick={() => openModal("ver", index)}>
                       <FontAwesomeIcon icon={faEye} />
                     </button>
-                    <button className="btn info btn-blue" onClick={() => openModal("editar", index)}>
+                    <button className="botonEditarHorarioCitas" onClick={() => openModal("editar", index)}>
                       <FontAwesomeIcon icon={faEdit} />
                     </button>
-                    <button className="btn danger btn-red" onClick={() => setConfirmDelete(index)}>
+                    <button className="botonEliminarHorarioCitas" onClick={() => setConfirmDelete(index)}>
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </td>
@@ -194,8 +193,8 @@ const Horarios = () => {
 
         {/* Modal */}
         {modal.open && (
-          <div className="modal">
-            <div className="modal-content">
+          <div className="modalHorariosCitas">
+            <div className="modal-content-HorariosCitas">
               {modal.type === "ver" ? (
                 <>
                   <h3>Detalles del Horario</h3>
@@ -209,15 +208,15 @@ const Horarios = () => {
                       </p>
                     ))}
                   </div>
-                  <button className="btn close" onClick={closeModal}>Cerrar</button>
+                  <button className="botonCerrarModalHorarioCitas" onClick={closeModal}>Cerrar</button>
                 </>
               ) : (
                 <>
                   <h3>{modal.type === "agregar" ? "Agregar Horario" : "Editar Horario"}</h3>
-                  <form className="modal-form-grid">
-                    <div className="form-group">
-                      <label className="asterisco">
-                        Encargado <span className="required">*</span>
+                  <form className="modalHorariosCitas-form-grid">
+                    <div className="form-fechaHorarioCitas">
+                      <label className="asteriscoHorarioCitas">
+                        Encargado <span className="requiredAsteriscoHorarioCitas">*</span>
                       </label>
                       <select
                         value={formData.encargado}
@@ -231,12 +230,12 @@ const Horarios = () => {
                           <option key={idx} value={enc}>{enc}</option>
                         ))}
                       </select>
-                      {formErrors.encargado && <span className="error">{formErrors.encargado}</span>}
+                      {formErrors.encargado && <span className="errorHorariocitas">{formErrors.encargado}</span>}
                     </div>
 
-                    <div className="form-group">
-                      <label className="asterisco">
-                        Fecha Inicio <span className="required">*</span>
+                    <div className="form-fechaHorarioCitas">
+                      <label className="asteriscoHorarioCitas">
+                        Fecha Inicio <span className="requiredAsteriscoHorarioCitas">*</span>
                       </label>
                       <input
                         type="date"
@@ -246,12 +245,12 @@ const Horarios = () => {
                           setFormErrors({ ...formErrors, fechaInicio: "" });
                         }}
                       />
-                      {formErrors.fechaInicio && <span className="error">{formErrors.fechaInicio}</span>}
+                      {formErrors.fechaInicio && <span className="errorHorariocitas">{formErrors.fechaInicio}</span>}
                     </div>
 
-                    <div className="form-group">
-                      <label className="asterisco">
-                        Fecha Fin <span className="required">*</span>
+                    <div className="form-fechaHorarioCitas">
+                      <label className="asteriscoHorarioCitas">
+                        Fecha Fin <span className="requiredAsteriscoHorarioCitas">*</span>
                       </label>
                       <input
                         type="date"
@@ -262,15 +261,15 @@ const Horarios = () => {
                         }}
                         min={formData.fechaInicio}
                       />
-                      {formErrors.fechaFin && <span className="error">{formErrors.fechaFin}</span>}
+                      {formErrors.fechaFin && <span className="errorHorariocitas">{formErrors.fechaFin}</span>}
                     </div>
 
-                    <div className="form-group full-width">
-                      <label className="asterisco">Días y Horarios <span className="required">*</span></label>
-                      <div className="dia-container">
+                    <div className="form-fechaHorarioCitas">
+                      <label className="asteriscoHorarioCitas">Días y Horarios <span className="requiredAsteriscoHorarioCitas">*</span></label>
+                      <div className="dia-containerDiasHorarios">
                         {formData.dias.map((dia, idx) => (
                           <div key={idx} className="dia-fields">
-                            <div className="dia-row">
+                            <div className="containerAgregarHorarioCitas">
                               <div>
                                 <select
                                   value={dia.dia}
@@ -284,7 +283,7 @@ const Horarios = () => {
                                     <option key={i} value={d}>{d}</option>
                                   ))}
                                 </select>
-                                {formErrors[`dia-${idx}`] && <span className="error">{formErrors[`dia-${idx}`]}</span>}
+                                {formErrors[`dia-${idx}`] && <span className="errorHorariocitas">{formErrors[`dia-${idx}`]}</span>}
                               </div>
 
                               <div>
@@ -296,7 +295,7 @@ const Horarios = () => {
                                     setFormErrors({ ...formErrors, [`horaInicio-${idx}`]: "" });
                                   }}
                                 />
-                                {formErrors[`horaInicio-${idx}`] && <span className="error">{formErrors[`horaInicio-${idx}`]}</span>}
+                                {formErrors[`horaInicio-${idx}`] && <span className="errorHorariocitas">{formErrors[`horaInicio-${idx}`]}</span>}
                               </div>
 
                               <span>a</span>
@@ -311,15 +310,14 @@ const Horarios = () => {
                                   }}
                                   min={dia.horaInicio}
                                 />
-                                {formErrors[`horaFin-${idx}`] && <span className="error">{formErrors[`horaFin-${idx}`]}</span>}
+                                {formErrors[`horaFin-${idx}`] && <span className="errorHorariocitas">{formErrors[`horaFin-${idx}`]}</span>}
                               </div>
 
                               {formData.dias.length > 1 && (
                                 <button 
                                   type="button" 
-                                  className="btn danger btn-red btn-small"
-                                  onClick={() => removeDia(idx)}
-                                >
+                                  className="botonEliminarDia"
+                                  onClick={() => removeDia(idx)}>
                                   <FontAwesomeIcon icon={faMinus} />
                                 </button>
                               )}
@@ -330,18 +328,18 @@ const Horarios = () => {
 
                       <button 
                         type="button" 
-                        className="btn info btn-blue btn-small"
+                        className="botonAgregarDia"
                         onClick={addDia}
                       >
                         <FontAwesomeIcon icon={faPlus} /> Agregar otro día
                       </button>
                     </div>
 
-                    <div className="form-buttons">
-                      <button className="btn success" type="button" onClick={saveHorario}>
+                    <div className="botonesAgregarHorarioCitasGuardarCancelar">
+                      <button className="botonGuardarHorario" type="button" onClick={saveHorario}>
                         Guardar
                       </button>
-                      <button className="btn close" type="button" onClick={closeModal}>
+                      <button className="botonCerrarModalAgregarHorario" type="button" onClick={closeModal}>
                         Cancelar
                       </button>
                     </div>
@@ -354,13 +352,13 @@ const Horarios = () => {
 
         {/* Confirmación de eliminación */}
         {confirmDelete !== null && (
-          <div className="modal">
-            <div className="modal-confirm">
+          <div className="modalHorariosCitas">
+            <div className="modalHorariosCitas-confirm">
               <h3>Confirmar eliminación</h3>
               <p>¿Está seguro de que desea eliminar este horario?</p>
-              <div className="modal-confirm-buttons">
-                <button className="btn-blue" onClick={deleteHorario}>Sí, eliminar</button>
-                <button className="btn-red" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+              <div className="modalHorariosCitas-confirm-buttons">
+                <button className="botonEliminarHorario" onClick={deleteHorario}>Sí, eliminar</button>
+                <button className="botonCancelarEliminarHorario" onClick={() => setConfirmDelete(null)}>Cancelar</button>
               </div>
             </div>
           </div>

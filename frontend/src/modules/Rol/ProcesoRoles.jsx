@@ -135,9 +135,9 @@ const ProcesoRoles = ({ guardarRol }) => {
     <div className="proceso-roles-main">
       <h1>{modoEdicion ? "Editar Rol" : "Crear Nuevo Rol"}</h1>
 
-      <div className="acciones">
+      <div className="accionesAgregarRol">
         <button
-          className={`nuevo-button ${!modoEdicion ? "activo" : ""}`}
+          className={`nuevo-button-rol ${!modoEdicion ? "activo" : ""}`}
           onClick={() => {
             setModoEdicion(false);
             setDatosRol({ nombre: "", descripcion: "", permisos: [] });
@@ -147,7 +147,7 @@ const ProcesoRoles = ({ guardarRol }) => {
           Nuevo Rol
         </button>
         <button
-          className={`editar-button ${modoEdicion ? "activo" : ""}`}
+          className={`editar-button-rol ${modoEdicion ? "activo" : ""}`}
           onClick={() => setMostrarRoles(true)}
         >
           Editar Rol Existente
@@ -161,12 +161,12 @@ const ProcesoRoles = ({ guardarRol }) => {
             {rolesExistentes.map((rol) => (
               <li key={rol.id}>
                 {rol.nombre}
-                <button className= "butonseleccionar" onClick={() => seleccionarRol(rol)}>Seleccionar</button>
+                <button className= "botonSeleccionarRol" onClick={() => seleccionarRol(rol)}>Seleccionar</button>
               </li>
             ))}
           </ul>
           <button
-            className="cerrar-button"
+            className="botonCerrarRolesEmergente"
             onClick={() => setMostrarRoles(false)}
           >
             Cerrar
@@ -174,10 +174,10 @@ const ProcesoRoles = ({ guardarRol }) => {
         </div>
       )}
 
-      <div className="datos-rol">
+      <div className="datosRolSeleccionado">
         <h3>Información del Rol</h3>
-        <div className="formulario-rol">
-          <div className="campo-rol">
+        <div className="formularioNuevoRol">
+          <div className="campoNombreRol">
             <input
               type="text"
               placeholder="Nombre del Rol"
@@ -189,7 +189,7 @@ const ProcesoRoles = ({ guardarRol }) => {
           </div>
           <br />
         </div>
-          <div className="descripcion-rol">
+          <div className="descripcionNuevoRol">
             <textarea
               placeholder="Descripción del Rol"
               value={datosRol.descripcion}
@@ -202,8 +202,7 @@ const ProcesoRoles = ({ guardarRol }) => {
 
       <button
         className="catalogo-button"
-        onClick={() => setMostrarPermisos(true)}
-      >
+        onClick={() => setMostrarPermisos(true)}>
         Seleccionar Permisos
       </button>
 

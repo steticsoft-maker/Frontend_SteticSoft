@@ -127,23 +127,23 @@ const Abastecimiento = () => {
   return (
     <div className="abastecimiento-container">
       <NavbarAdmin />
-      <div className="main-content">
+      <div className="main-content-abastecimiento">
         <h1>Gestión de Abastecimiento</h1>
-        <div className="actions-container">
+        <div className="containerAgregarBuscarabastecimiento">
           <input
             type="text"
             placeholder="Buscar producto..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="search-input"
+            className="inputBuscarAbastecimiento"
           />
-          <button className="action-button" onClick={() => openModal("create")}>
+          <button className="botonAgregarAbastecimiento" onClick={() => openModal("create")}>
             Agregar Producto
           </button>
         </div>
 
         {/* Tabla de abastecimientos */}
-        <table className="productos-table">
+        <table className="tabla-abastecimiento">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -161,21 +161,21 @@ const Abastecimiento = () => {
                 <td>{producto.empleado}</td>
                 <td>{producto.fechaIngreso}</td>
                 <td>
-                  <div className="icon-actions">
+                  <div className="icon-actions-abastecimiento">
                     <button
-                      className="table-button"
+                      className="table-icons-abastecimiento"
                       onClick={() => openModal("details", producto)}
                     >
                       <FaEye />
                     </button>
                     <button
-                      className="table-button"
+                      className="table-icons-abastecimiento"
                       onClick={() => openModal("edit", producto)}
                     >
                       <FaEdit />
                     </button>
                     <button
-                      className="table-button delete-button"
+                      className="table-icons-abastecimiento delete-button-abastecimiento"
                       onClick={() => handleDelete(producto.id)}
                     >
                       <FaTrash />
@@ -190,8 +190,8 @@ const Abastecimiento = () => {
 
       {/* Modal para Agregar / Editar / Ver Detalles */}
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-abastecimiento">
+          <div className="modal-content-abastecimiento">
             {modalType === "details" && currentProducto ? (
               <>
                 <h2>Detalles del Producto</h2>
@@ -208,7 +208,7 @@ const Abastecimiento = () => {
                   <strong>Fecha de Ingreso:</strong>{" "}
                   {currentProducto.fechaIngreso}
                 </p>
-                <button className="cancel-button" onClick={closeModal}>
+                <button className="cerrarModalAbastecimiento" onClick={closeModal}>
                   Cerrar
                 </button>
               </>
@@ -220,6 +220,7 @@ const Abastecimiento = () => {
                     : "Editar Producto"}
                 </h2>
                 <form
+                  className="formularioModalAbastecimiento"
                   onSubmit={(e) => {
                     e.preventDefault();
                     const formData = new FormData(e.target);
@@ -235,7 +236,7 @@ const Abastecimiento = () => {
                 >
                   <button
                     type="button"
-                    className="action-button"
+                    className="actionButtonAgregarEliminar"
                     onClick={openProductModal}
                   >
                     Seleccionar Producto
@@ -246,7 +247,7 @@ const Abastecimiento = () => {
                   </p>
                   <button
                     type="button"
-                    className="action-button"
+                    className="actionButtonAgregarEliminar"
                     onClick={openEmployeeModal}
                   >
                     Seleccionar Empleado
@@ -256,19 +257,20 @@ const Abastecimiento = () => {
                     {empleadoSeleccionado || "Ninguno"}
                   </p>
                   <input
+                    className="inputCantidadAbastecimiento"
                     type="number"
                     name="cantidad"
                     placeholder="Cantidad*"
                     defaultValue={currentProducto?.cantidad || ""}
                     required
                   />
-                  <div className="form-buttons">
-                    <button type="submit" className="save-button">
+                  <div className="botonGuardar-CancelarModal">
+                    <button type="submit" className="guardarModalAbastecimiento">
                       Guardar
                     </button>
                     <button
                       type="button"
-                      className="cancel-button"
+                      className="cerrarModalAbastecimiento"
                       onClick={closeModal}
                     >
                       Cancelar
@@ -284,15 +286,16 @@ const Abastecimiento = () => {
       {/* Modal para selección de Empleado con buscador */}
       {showEmployeeModal && (
         <div className="modal-overlay">
-          <div className="modal-container">
+          <div className="modal-container-seleccion-empleadoProducto">
             <h2>Seleccionar Empleado</h2>
             <input
+              className="inputBuscarProducto-empleado"
               type="text"
               placeholder="Buscar empleado..."
               value={busquedaEmpleadoModal}
               onChange={(e) => setBusquedaEmpleadoModal(e.target.value)}
             />
-            <ul className="selection-list">
+            <ul className="listaSeleccionarProducto-Empleado">
               {filteredEmpleadosModal.map((emp) => (
                 <li key={emp}>
                   <button
@@ -306,7 +309,7 @@ const Abastecimiento = () => {
                 </li>
               ))}
             </ul>
-            <button className="cancel-button" onClick={closeEmployeeModal}>
+            <button className="cerrarModalAbastecimiento" onClick={closeEmployeeModal}>
               Cerrar
             </button>
           </div>
@@ -316,15 +319,16 @@ const Abastecimiento = () => {
       {/* Modal para selección de Producto con buscador */}
       {showProductModal && (
         <div className="modal-overlay">
-          <div className="modal-container">
+          <div className="modal-container-seleccion-empleadoProducto">
             <h2>Seleccionar Producto</h2>
             <input
+              className="inputBuscarProducto-empleado"
               type="text"
               placeholder="Buscar producto..."
               value={busquedaProductoModal}
               onChange={(e) => setBusquedaProductoModal(e.target.value)}
             />
-            <ul className="selection-list">
+            <ul className="listaSeleccionarProducto-Empleado">
               {filteredProductosModal.map((prod) => (
                 <li key={prod}>
                   <button
@@ -338,7 +342,7 @@ const Abastecimiento = () => {
                 </li>
               ))}
             </ul>
-            <button className="cancel-button" onClick={closeProductModal}>
+            <button className="cerrarModalAbastecimiento" onClick={closeProductModal}>
               Cerrar
             </button>
           </div>
@@ -347,19 +351,19 @@ const Abastecimiento = () => {
 
       {/* Modal de confirmación para eliminar un producto */}
       {confirmDelete && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-abastecimiento">
+          <div className="modal-content-abastecimiento">
             <h3>¿Eliminar producto?</h3>
             <p>
               ¿Estás seguro de que deseas eliminar el producto{" "}
               <strong>{confirmDelete.nombre}</strong>?
             </p>
-            <div className="btn-container">
-              <button className="btn danger" onClick={deleteProducto}>
+            <div className="botonGuardar-CancelarModal">
+              <button className="cerrarModalAbastecimiento" onClick={deleteProducto}>
                 Eliminar
               </button>
               <button
-                className="btnCancelar"
+                className="guardarModalAbastecimiento"
                 onClick={() => setConfirmDelete(null)}
               >
                 Cancelar

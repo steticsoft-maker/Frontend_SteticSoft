@@ -18,15 +18,15 @@
 }
 
 /* Botones de modo */
-.acciones {
+.accionesAgregarRol {
     display: flex;
     justify-content: center;
     gap: 20px;
     margin-bottom: 20px;
 }
 
-.nuevo-button,
-.editar-button {
+.nuevo-button-rol,
+.editar-button-rol {
     background: #0066cc;
     color: white;
     border: none;
@@ -37,19 +37,19 @@
     transition: background 0.3s ease;
 }
 
-.nuevo-button:hover,
-.editar-button:hover {
+.nuevo-button-rol:hover,
+.editar-button-rol:hover {
     background: #004b99;
 }
 
-.nuevo-button.activo,
-.editar-button.activo {
+.nuevo-button-rol.activo,
+.editar-button-rol.activo {
     background: #004b99;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 /* Formulario de Información del Rol */
-.datos-rol {
+.datosRolSeleccionado {
     margin-top: 20px;
     padding: 20px;
     border: 1px solid #dddddd;
@@ -58,25 +58,25 @@
     
 }
 
-.formulario-rol {
+.formularioNuevoRol {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
 }
 
-.campo-rol {
+.campoNombreRol {
     flex: 1 1 45%;
     min-width: 250px;
     
 }
 
-.descripcion-rol{
+.descripcionNuevoRol{
     margin: 10px;
     margin-left: 10px;
 }
 
-.campo-rol input,
-.campo-rol textarea {
+.campoNombreRol input,
+.campoNombreRol textarea {
     width: 100%;
     padding: 8px;
     border: 1px solid #cccccc;
@@ -84,7 +84,7 @@
     font-size: 14px;
 }
 
-.campo-rol textarea {
+.campoNombreRol textarea {
     min-height: 80px;
     resize: vertical;
 }
@@ -124,7 +124,7 @@
     overflow-y: auto;
 }
 
-.butonseleccionar{
+.botonSeleccionarRol{
     background-color: #495ada;
     padding: 10px;
     margin-bottom: 10px;
@@ -236,7 +236,7 @@
 }
 
 /* Botón cerrar */
-.cerrar-button {
+.botonCerrarRolesEmergente {
     background-color: #dc3545;
     color: white;
     border: none;
@@ -250,11 +250,11 @@
 
 /* Responsividad */
 @media (max-width: 768px) {
-    .acciones {
+    .accionesAgregarRol {
         flex-direction: column;
     }
 
-    .campo-rol {
+    .campoNombreRol {
         flex: 1 1 100%;
     }
 

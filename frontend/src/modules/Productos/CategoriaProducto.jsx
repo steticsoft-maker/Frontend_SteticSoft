@@ -82,21 +82,21 @@ const Categorias = () => {
   return (
     <div className="categorias-container">
       <NavbarAdmin />
-      <div className="main-content">
+      <div className="CategoriaProductoContent">
         <h1>Gestión Categorías de Productos</h1>
-        <div className="header-actions">
+        <div className="BarraBusquedaBotonAgregarCategoriaProductos">
           <input
             type="text"
             placeholder="Buscar categoría..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="search-input"
+            className="inputBarraBusquedaCategoriaProductos"
           />
-          <button className="action-button" onClick={() => openModal("create")}>
+          <button className="botonAgregarCategoriaProducto" onClick={() => openModal("create")}>
             Agregar Categoría
           </button>
         </div>
-        <table className="categorias-table">
+        <table className="tablaCategoriaProductos">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -122,21 +122,21 @@ const Categorias = () => {
                 </td>
                 <td>
                   <button
-                    className="table-button"
+                    className="iconBotonVerDetallesCategoriaProductos"
                     onClick={() => openModal("details", categoria)}
                     title="Ver"
                   >
                     <FaEye /> {/* Ícono de FontAwesome para "Ver" */}
                   </button>
                   <button
-                    className="table-button"
+                    className="iconBotonEditarCategoriaProductos"
                     onClick={() => openModal("edit", categoria)}
                     title="Editar"
                   >
                     <FaEdit /> {/* Ícono de FontAwesome para "Editar" */}
                   </button>
                   <button
-                    className="table-button delete-button"
+                    className="iconBotonEliminarCategoriaProductos botonEliminarCategoriaProductos"
                     onClick={() => handleDelete(categoria.id)}
                     title="Eliminar"
                   >
@@ -149,8 +149,8 @@ const Categorias = () => {
         </table>
       </div>
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modalCategoriaProductos">
+          <div className="modal-content-CategoriaProductos">
             {modalType === "create" && (
               <>
                 <h2>Agregar Categoría</h2>
@@ -172,16 +172,16 @@ const Categorias = () => {
                     required
                   />
                   <textarea
-                    className="DescripcionAgregarCategoria"
+                    className="DescripcionAgregarCategoriaProductos"
                     name="descripcion"
                     placeholder="Descripción"
                     required
                   />
-                  <div className="button-group">
-                    <button type="submit" className="action-button">
+                  <div className="botonGuabotonGuardarCancelarAgregarCategoriaProductosrdar">
+                    <button type="submit" className="botonGuardarCategoriaProductos">
                       Guardar
                     </button>
-                    <button className="close-button" onClick={closeModal}>
+                    <button className="botonCancelarAgregarCategoriaProductos" onClick={closeModal}>
                       Cancelar
                     </button>
                   </div>
@@ -205,7 +205,7 @@ const Categorias = () => {
                   <strong>Productos:</strong>{" "}
                   {currentCategoria.productos.join(", ")}
                 </p>
-                <button className="close-button" onClick={closeModal}>
+                <button className="botonCerrarModalVerDetallesCategoriaProductos" onClick={closeModal}>
                   Cerrar
                 </button>
               </>
@@ -232,17 +232,17 @@ const Categorias = () => {
                     required
                   />
                   <textarea
-                    className="DescripcionAgregarCategoria"
+                    className="DescripcionAgregarCategoriaProductos"
                     name="descripcion"
                     placeholder="Descripción"
                     defaultValue={currentCategoria.descripcion}
                     required
                   />
-                  <div className="button-group">
-                    <button type="submit" className="action-button">
+                  <div className="botonGuardarCancelarEditarCategoriaProductos">
+                    <button type="submit" className="BotonGuardarCambiosEditarCategoriaProductos">
                       Guardar Cambios
                     </button>
-                    <button className="close-button" onClick={closeModal}>
+                    <button className="botonCerrarModalEditarCategoriaProductos" onClick={closeModal}>
                       Cancelar
                     </button>
                   </div>

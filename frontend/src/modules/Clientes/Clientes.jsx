@@ -89,21 +89,21 @@ const Clientes = () => {
   return (
     <div className="clientes-container">
       <NavbarAdmin />
-      <div className="main-content">
+      <div className="main-content-clientes">
         <h1>Gestión de Clientes</h1>
-        <div className="header-actions">
+        <div className="containerAgregarbuscarClientes">
           <input
             type="text"
             placeholder="Buscar cliente..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="search-input"
+            className="barraBusquedaClientesInput"
           />
-          <button className="action-button" onClick={() => openModal("create")}>
+          <button className="buttonAgregarcliente" onClick={() => openModal("create")}>
             Agregar Cliente
           </button>
         </div>
-        <table className="clientes-table">
+        <table className="tablaClientes">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -135,21 +135,21 @@ const Clientes = () => {
                 </td>
                 <td>
                   <button
-                    className="table-button"
+                    className="iconsTablaclientes"
                     onClick={() => openModal("details", cliente)}
                     title="Ver"
                   >
                     <FaEye />
                   </button>
                   <button
-                    className="table-button"
+                    className="iconsTablaclientes"
                     onClick={() => openModal("edit", cliente)}
                     title="Editar"
                   >
                     <FaEdit />
                   </button>
                   <button
-                    className="table-button delete-button"
+                    className="iconsTablaclientes delete-button-elimnarCliente"
                     onClick={() => handleDelete(cliente.id)}
                     title="Eliminar"
                   >
@@ -163,8 +163,8 @@ const Clientes = () => {
       </div>
 
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-clientes">
+          <div className="modal-content-clientes">
             {modalType === "details" && currentCliente ? (
               <>
                 <h2>Detalles del Cliente</h2>
@@ -199,7 +199,7 @@ const Clientes = () => {
                   <strong>Estado:</strong>{" "}
                   {currentCliente.estado ? "Activo" : "Inactivo"}
                 </p>
-                <button className="close-button" onClick={closeModal}>
+                <button className="botonModalCancelar-Cerrar" onClick={closeModal}>
                   Cerrar
                 </button>
               </>
@@ -207,6 +207,7 @@ const Clientes = () => {
               <>
                 <h2>Agregar Cliente</h2>
                 <form
+                  className="formularioModalClientes"
                   onSubmit={(e) => {
                     e.preventDefault();
                     const formData = new FormData(e.target);
@@ -224,7 +225,7 @@ const Clientes = () => {
                     };
                     handleSave(cliente);
                   }}
-                >
+                > <div className="formularioModalInputClientes">
                   <input type="text" name="nombre" placeholder="Nombre" required />
                   <input type="text" name="apellido" placeholder="Apellido" required />
                   <input type="email" name="email" placeholder="Correo" required />
@@ -235,12 +236,15 @@ const Clientes = () => {
                   <input type="text" name="ciudad" placeholder="Ciudad" required />
                   <input type="date" name="fechaNacimiento" placeholder="Fecha de Nacimiento" required />
                   <input type="password" name="password" placeholder="Contraseña" required />
-                  <button type="submit" className="action-button">
+                  </div>
+                  <div>
+                  <button type="submit" className="botonguardarClienteModal">
                     Guardar
                   </button>
-                  <button className="close-button" onClick={closeModal}>
+                  <button className="botonModalCancelar-Cerrar" onClick={closeModal}>
                     Cancelar
                   </button>
+                  </div>
                 </form>
               </>
             ) : (
@@ -258,7 +262,6 @@ const Clientes = () => {
                       direccion: formData.get("direccion"),
                       tipoDocumento: formData.get
                       ("tipoDocumento"),
-                      apellido: formData.get("apellido"),
                       numeroDocumento: formData.get("numeroDocumento"),
                       ciudad: formData.get("ciudad"),
                       fechaNacimiento: formData.get("fechaNacimiento"),
@@ -337,10 +340,10 @@ const Clientes = () => {
                     defaultValue={currentCliente?.password || ""}
                     required
                   />
-                  <button type="submit" className="action-button">
+                  <button type="submit" className="botonguardarClienteModal">
                     Guardar
                   </button>
-                  <button className="close-button" onClick={closeModal}>
+                  <button className="botonModalCancelar-Cerrar" onClick={closeModal}>
                     Cancelar
                   </button>
                 </form>

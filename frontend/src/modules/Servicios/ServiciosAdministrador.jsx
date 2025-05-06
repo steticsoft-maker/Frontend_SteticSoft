@@ -133,10 +133,10 @@ const Servicios = () => {
   return (
     <div className="servicios-container">
       <Navbar />
-      <div className="servicios-content">
+      <div className="serviciosAdministrador-content">
         <h2>Gestión de Servicios</h2>
-        <div className="acciones-barra">
-          <div className="search-bar">
+        <div className="barraBusqueda-BotonSuperiorAgregarServicio">
+          <div className="BarraBusquedaServicioAdministrador">
             <input
               type="text"
               placeholder="Buscar servicio..."
@@ -144,12 +144,12 @@ const Servicios = () => {
               onChange={handleSearch}
             />
           </div>
-          <button className="btn-agregar" onClick={() => openModal("agregar")}>
+          <button className="botonAgregarServicioAdministrador" onClick={() => openModal("agregar")}>
             Agregar Servicio
           </button>
         </div>
 
-        <div className="servicios-table">
+        <div className="tablaServiciosAdministrador">
           <table>
             <thead>
               <tr>
@@ -188,13 +188,13 @@ const Servicios = () => {
                     </label>
                   </td>
                   <td>
-                    <button className="btn info btn-blue" onClick={() => openModal("ver", index)}>
+                    <button className="botonVerDetallesServiciosAdministrador" onClick={() => openModal("ver", index)}>
                       <FontAwesomeIcon icon={faEye} />
                     </button>
-                    <button className="btn info btn-blue" onClick={() => openModal("editar", index)}>
+                    <button className="botonEditarServiciosAdministrador" onClick={() => openModal("editar", index)}>
                       <FontAwesomeIcon icon={faEdit} />
                     </button>
-                    <button className="btn danger btn-red" onClick={() => setConfirmDelete(index)}>
+                    <button className="botonEliminarServicioAdministrador" onClick={() => setConfirmDelete(index)}>
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </td>
@@ -206,8 +206,8 @@ const Servicios = () => {
 
         {/* Modal */}
         {modal.open && (
-          <div className="modal">
-            <div className="modal-content">
+          <div className="modalServicioAdministrador">
+            <div className="modal-content-ServicioAdministrador">
               {modal.type === "ver" ? (
                 <>
                   <h3>Detalles del Servicio</h3>
@@ -224,15 +224,15 @@ const Servicios = () => {
                       />
                     </div>
                   )}
-                  <button className="btn close" onClick={closeModal}>Cerrar</button>
+                  <button className="botonCerrarModalVerDetalleServicioAdministrador" onClick={closeModal}>Cerrar</button>
                 </>
               ) : (
                 <>
                   <h3>{modal.type === "agregar" ? "Agregar Servicio" : "Editar Servicio"}</h3>
-                  <form className="modal-form-grid">
-                    <div className="full-width">
-                      <label className="asterisco">
-                        Nombre <span className="required">*</span>
+                  <form className="modal-ServicioAdministrador-form-grid">
+                    <div className="CamposAgregarServicioAdministrador">
+                      <label className="asteriscoCamposServicioAdministrador">
+                        Nombre <span className="requiredServicioAdministrador">*</span>
                       </label>
                       <input
                         type="text"
@@ -245,7 +245,7 @@ const Servicios = () => {
                       {formErrors.nombre && <span className="error">{formErrors.nombre}</span>}
                     </div>
                     
-                    <div className="full-width">
+                    <div className="CamposAgregarServicioAdministrador">
                       <label className="asterisco">
                         Precio <span className="required">*</span>
                       </label>
@@ -262,7 +262,7 @@ const Servicios = () => {
                       {formErrors.precio && <span className="error">{formErrors.precio}</span>}
                     </div>
                     
-                    <div className="full-width">
+                    <div className="CamposAgregarServicioAdministrador">
                       <label>Categoría</label>
                       <select
                         value={formData.categoria}
@@ -275,7 +275,7 @@ const Servicios = () => {
                       </select>
                     </div>
                     
-                    <div className="full-width">
+                    <div className="CamposAgregarServicioAdministrador">
                       <label>Imagen</label>
                       <input
                         type="file"
@@ -291,7 +291,7 @@ const Servicios = () => {
                       )}
                     </div>
                     
-                    <div className="full-width">
+                    <div className="CamposAgregarServicioAdministrador">
                       <button className="btn success" type="button" onClick={saveServicio}>
                         Guardar
                       </button>
@@ -308,13 +308,13 @@ const Servicios = () => {
 
         {/* Confirmación de eliminación */}
         {confirmDelete !== null && (
-          <div className="modal">
-            <div className="modal-confirm">
+          <div className="modalServicioAdministrador">
+            <div className="modal-ServicioAdministrador-confirm">
               <h3>Confirmar eliminación</h3>
               <p>¿Está seguro de que desea eliminar este servicio?</p>
-              <div className="modal-confirm-buttons">
-                <button className="btn-blue" onClick={deleteServicio}>Sí, eliminar</button>
-                <button className="btn-red" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+              <div className="modalConfirmacionEliminarBotonesEliminarCancelar">
+                <button className="botonEliminarServicioAdministrador" onClick={deleteServicio}>Sí, eliminar</button>
+                <button className="botonCancelarEliminarServicioAdministrador" onClick={() => setConfirmDelete(null)}>Cancelar</button>
               </div>
             </div>
           </div>

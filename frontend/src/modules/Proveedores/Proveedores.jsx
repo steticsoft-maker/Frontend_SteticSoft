@@ -89,17 +89,17 @@ const Proveedores = () => {
     return (
         <div className="proveedores-container">
             <Navbar />
-            <div className="proveedores-content">
-                <h2 className="title-h2">Gestión de Proveedores</h2>
+            <div className="proveedoresContent">
+                <h2 className="title-h2-Proveedores">Gestión de Proveedores</h2>
 
-                <div className="top-bar">
+                <div className="barraBusquedaBotonAgregarProveedor">
                     <input type="text" placeholder="Buscar proveedor..." value={search} onChange={handleSearch} />
-                    <button className="btnAgregarProveedor" onClick={() => openModal("agregar")}>
+                    <button className="botonSuperiorAgregarProveedor" onClick={() => openModal("agregar")}>
                         Agregar Proveedor
                     </button>
                 </div>
 
-                <div className="proveedores-table">
+                <div className="tablaProveedores">
                     <table>
                         <thead>
                             <tr>
@@ -128,14 +128,14 @@ const Proveedores = () => {
                                             <span className="slider"></span>
                                         </label>
                                     </td>
-                                    <td className="acciones">
-                                        <button className="btnVer" onClick={() => openModal("ver", proveedor)}>
+                                    <td className="iconosTablaProveedores">
+                                        <button className="botonVerDetallesProveedor" onClick={() => openModal("ver", proveedor)}>
                                             <FontAwesomeIcon icon={faEye} />
                                         </button>
-                                        <button className="btnEditar" onClick={() => openModal("editar", proveedor)}>
+                                        <button className="botonEditarProveedor" onClick={() => openModal("editar", proveedor)}>
                                             <FontAwesomeIcon icon={faEdit} />
                                         </button>
-                                        <button className="btn danger" onClick={() => setConfirmDelete(proveedor)}>
+                                        <button className="botonEliminarProveedor" onClick={() => setConfirmDelete(proveedor)}>
                                             <FontAwesomeIcon icon={faTrash} />
                                         </button>
                                     </td>
@@ -147,8 +147,8 @@ const Proveedores = () => {
 
                 {/* Modal principal */}
                 {modal.open && (
-                    <div className="modal">
-                        <div className="modal-content">
+                    <div className="modal-Proveedores">
+                        <div className="modal-content-Proveedores">
                             {modal.type === "ver" ? (
                                 <>
                                     <h3>Detalles del Proveedor</h3>
@@ -159,7 +159,7 @@ const Proveedores = () => {
                                     <p><strong>Email:</strong> {modal.proveedor.email}</p>
                                     <p><strong>Dirección:</strong> {modal.proveedor.direccion}</p>
                                     <p><strong>Estado:</strong> {modal.proveedor.estado}</p>
-                                    <button className="btn close cerrar" onClick={closeModal}>Cerrar</button>
+                                    <button className="botonCerrarModalVerDetallesProveedores" onClick={closeModal}>Cerrar</button>
                                 </>
                             ) : (
                                 <>
@@ -172,11 +172,11 @@ const Proveedores = () => {
                                         placeholder="Nombre *"
                                     />
 
-                                    <div className="documento-input-wrapper">
+                                    <div className="documentoNaturalJuridicoProveedores">
                                         <select
                                             value={modal.proveedor.tipoDocumento}
                                             onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, tipoDocumento: e.target.value } })}
-                                            className="tipo-documento-select">
+                                            className="tipo-documento-proveedor-select">
                                             <option value="Natural">Natural</option>
                                             <option value="Jurídico">Jurídico</option>
                                         </select>
@@ -206,12 +206,11 @@ const Proveedores = () => {
                                         type="text"
                                         value={modal.proveedor.direccion}
                                         onChange={(e) => setModal({ ...modal, proveedor: { ...modal.proveedor, direccion: e.target.value } })}
-                                        placeholder="Dirección *"
-                                    />
+                                        placeholder="Dirección *"/>
 
-<div className="btn-Editar-Proveedor">
-                                        <button className="btn success" onClick={() => saveProveedor(modal.proveedor)}>Guardar</button>
-                                        <button className="btn close" onClick={closeModal}>Cancelar</button>
+                                    <div className="botonEditarProveedor">
+                                        <button className="botonGuardarEditarProveedor" onClick={() => saveProveedor(modal.proveedor)}>Guardar</button>
+                                        <button className="botonCancelarEditarProveedor" onClick={closeModal}>Cancelar</button>
                                     </div>
                                 </>
                             )}
@@ -221,8 +220,8 @@ const Proveedores = () => {
 
                 {/* Modal de validaciones */}
                 {modalMensaje && (
-                    <div className="modal-overlay">
-                        <div className="modal-container">
+                    <div className="modal-Proveedores-overlay">
+                        <div className="modal-Proveedores-container">
                             <p>{modalMensaje}</p>
                             <button onClick={cerrarModalMensaje}>Cerrar</button>
                         </div>
@@ -231,13 +230,13 @@ const Proveedores = () => {
 
                 {/* Modal de confirmación para eliminar */}
                 {confirmDelete && (
-                    <div className="modal">
-                        <div className="modal-content">
+                    <div className="modal-Proveedores">
+                        <div className="modal-content-Proveedores">
                             <h3>¿Eliminar proveedor?</h3>
                             <p>¿Estás seguro de que deseas eliminar al proveedor <strong>{confirmDelete.nombre}</strong>?</p>
-                            <div className="btn-container">
-                                <button className="btn danger" onClick={deleteProveedor}>Eliminar</button>
-                                <button className="btnCancelar" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+                            <div className="botonesEliminarProveedor">
+                                <button className="botonModalEliminarProveedor" onClick={deleteProveedor}>Eliminar</button>
+                                <button className="botonModalCancelarEliminarProveedor" onClick={() => setConfirmDelete(null)}>Cancelar</button>
                             </div>
                         </div>
                     </div>

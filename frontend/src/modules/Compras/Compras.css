@@ -11,7 +11,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.compras-content {
+.comprasContenido {
   flex: 1;
   padding: 30px;
   margin-left: 45px;
@@ -19,13 +19,9 @@
   border-radius: 8px;
 }
 
-h2 {
-  margin-bottom: 15px;
-  color: #333;
-}
 
-/* Barra de búsqueda */
-.barra-superior {
+/* Barra de búsqueda y botón agregar */
+.container-busqueda-agregar {
   display: flex;
   justify-content: left;
   align-items: center;
@@ -33,7 +29,7 @@ h2 {
   margin-bottom: 30px;
 }
 
-.barra-superior input {
+.container-busqueda-agregar input {
   width: 300px;
   height: 40px;
   padding: 0 10px;
@@ -44,13 +40,13 @@ h2 {
   background-color: #fff;
 }
 
-.barra-superior input:focus {
+.container-busqueda-agregar input:focus {
   outline: none;
   border-color: #007bff;
 }
 
 /* Botones */
-.btnAgregarCompra {
+.botonSuperiorAgregarCompra {
   padding: 12px 24px;
   font-size: 1rem;
   background-color: #3498db;
@@ -60,7 +56,7 @@ h2 {
   transition: background-color 0.2s ease;
 }
 
-.btnAgregarCompra:hover {
+.botonSuperiorAgregarCompra:hover {
   background-color: #1f6696;
 }
 
@@ -69,7 +65,7 @@ h2 {
 }
 
 /* Tabla de compras */
-.compras-table {
+.tablaCompras {
   background-color: #f5f5f5;
   font-size: 18px;
   width: 1200px;
@@ -80,7 +76,7 @@ h2 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.compras-table th {
+.tablaCompras th {
   background-color: #34495e;
   color: white;
   width: 20%;
@@ -89,6 +85,7 @@ h2 {
 /* Estados */
 .estado {
   padding: 5px 10px;
+  color: #ff1911;
   border-radius: 4px;
   font-weight: bold;
   text-align: center;
@@ -96,12 +93,12 @@ h2 {
 
 .estado-anulada {
   font-size: 1rem;
-  color: #d9534f;
+  color: #e21a13;
   font-weight: bold;
 }
 
 /* Modal */
-.modal {
+.modal-compras {
   position: fixed;
   top: 0;
   left: 0;
@@ -113,7 +110,7 @@ h2 {
   justify-content: center;
 }
 
-.modal-content {
+.modal-content-compras {
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Alineación hacia la izquierda */
@@ -124,44 +121,14 @@ h2 {
   padding: 25px;
 }
 
-.detalle-compra-table th {
+.tablaDetallesCompras th {
   margin: 10px 0;
   font-size: 1rem;
   background-color: #007bff;
   text-align: left; /* Asegura la alineación */
 }
 
-.detalle-compra-info p {
-  margin: 10px 0;
-  font-size: 1rem;
-  color: #333;
-  text-align: left; /* Asegura la alineación */
-}
-
-.detalle-compra-productos h3 {
-  font-size: 1.2rem;
-  color: #007bff;
-  margin-bottom: 10px;
-  text-align: left; /* Encabezado alineado */
-}
-
-.detalle-compra-productos ul {
-  list-style: none;
-  padding: 0;
-  text-align: left; /* Asegura alineación en la lista */
-}
-
-.detalle-compra-productos li {
-  background: #e1eaf5;
-  margin: 5px 0;
-  padding: 8px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  font-size: 1.20rem;
-  text-align: left; /* Alinea cada ítem */
-}
-
-.modal-content input {
+.modal-content-compras input {
   width: 100%;
   margin-bottom: 10px;
   border: 1px solid #ccc;
@@ -170,11 +137,11 @@ h2 {
   color: black;
 }
 
-.modal-content p {
+.modal-content-compras p {
   margin: 5px 0;
 }
 
-.btn.close.detail {
+.botonCerrarDetallesCompra {
   margin-top: 20px !important;
   background: #d9534f !important;
   color: white !important;
@@ -188,42 +155,42 @@ h2 {
   text-align: center !important;
 }
 
-.btn.close.detail:hover {
+.botonCerrarDetallesCompra:hover {
   background: #c9302c !important;
 }
 
 .btn.close.pdf {
-  margin-top: 20px !important;
-  background: #d9534f !important;
-  color: white !important;
-  padding: 8px 15px !important;
-  border: none !important;
-  cursor: pointer !important;
-  border-radius: 5px !important;
-  display: block !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  text-align: center !important;
+  margin-top: 20px;
+  background: #d9534f;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .btn.close.pdf:hover {
-  background: #c9302c !important;
+  background: #c9302c;
 }
 
-.modal-buttons-anular{
-  margin-top: 20px !important;
-  color: white !important;
-  padding: 8px 15px !important;
-  border: none !important;
-  cursor: pointer !important;
-  border-radius: 5px !important;
-  display: block !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  text-align: center !important;
+.modal-compras-buttons-anular{
+  margin-top: 20px;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
-.confirmar{
+.botonConfirmarAnularCompra{
   background-color: #3498db;
   padding: 11px 19px;
   border-radius: 5px !important;
@@ -231,7 +198,7 @@ h2 {
 
 
 /* Modal Detalle */
-.modal-detalle {
+.modal-compras-detalle {
   position: fixed;
   top: 0;
   left: 0;
@@ -244,7 +211,7 @@ h2 {
   padding-top: 50px;
 }
 
-.modal-content-detalle {
+.modal-content-compras-detalle {
   text-align: left !important; /* Prioridad alta para forzar alineación */
   display: flex;
   flex-direction: column;
@@ -256,7 +223,7 @@ h2 {
   border-radius: 8px;
 }
 
-.modal-content-detalle * {
+.modal-content-compras-detalle * {
   text-align: left !important; /* Evita cualquier herencia de estilos conflictivos */
   align-self: flex-start;
 }
@@ -271,11 +238,11 @@ h2 {
 }
 
 /* Botones de acciones */
-.btnVerCompra {
+.botonVerDetallesCompra {
   background-color: #3498db;
 }
 
-.btnPDFCompra {
+.botonGenerarPDF {
   background-color: #3498db;
 }
 

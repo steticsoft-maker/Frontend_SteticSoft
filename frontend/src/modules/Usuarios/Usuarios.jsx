@@ -99,18 +99,18 @@ const Usuarios = () => {
   return (
     <div className="usuarios-container">
       <NavbarAdmin />
-      <div className="main-content">
+      <div className="usuarios-content">
         <h1>Gestión de Usuarios</h1>
 
-        <div className="actions-container">
+        <div className="containerBarraBusquedaBotonAgregarUsuarios">
           <input
             type="text"
             placeholder="Buscar usuario..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="search-input"
+            className="BarraBusquedaInput"
           />
-          <button className="action-button" onClick={() => openModal("create")}>
+          <button className="botonCrearUsuario" onClick={() => openModal("create")}>
             Crear Usuario
           </button>
         </div>
@@ -155,23 +155,23 @@ const Usuarios = () => {
                 </td>
                 <td>
                   {usuario.rol !== "Administrador" && (
-                    <div className="icon-actions">
+                    <div className="iconosTablaUsuarios">
                       <button
-                        className="table-button"
+                        className="tablaBotonesUsuarios"
                         onClick={() => openModal("details", usuario)}
                         title="Ver"
                       >
                         <FaEye />
                       </button>
                       <button
-                        className="table-button"
+                        className="tablaBotonesUsuarios"
                         onClick={() => openModal("edit", usuario)}
                         title="Editar"
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="table-button delete-button"
+                        className="tablaBotonesUsuarios delete-button-usuarios"
                         onClick={() => handleDelete(usuario.id)}
                         title="Eliminar"
                       >
@@ -188,8 +188,8 @@ const Usuarios = () => {
 
       {/* Modal para Crear/Editar/Detalles */}
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-usuarios">
+          <div className="modal-content-usuarios">
             {modalType === "details" && currentUsuario ? (
               <>
                 <h2>Detalles del Usuario</h2>
@@ -307,13 +307,13 @@ const Usuarios = () => {
                     <option value="Cliente">Cliente</option>
                   </select>
 
-                  <div className="form-buttons">
-                    <button type="submit" className="save-button">
+                  <div className="containerBotonesGuardarCancelarAgregarUsuario">
+                    <button type="submit" className="botonGuardarAgregarUsuario">
                       Guardar
                     </button>
                     <button
                       type="button"
-                      className="cancel-button"
+                      className="botonCancelarAgregarUsuario"
                       onClick={closeModal}
                     >
                       Cancelar
@@ -328,8 +328,8 @@ const Usuarios = () => {
 
       {/* Modal de validaciones */}
       {modalMensaje && (
-        <div className="modal-overlay">
-          <div className="modal-container">
+        <div className="modal-overlay-usuarios">
+          <div className="modal-container-usuarios">
             <p>{modalMensaje}</p>
             <button onClick={cerrarModalMensaje}>Cerrar</button>
           </div>
@@ -338,8 +338,8 @@ const Usuarios = () => {
 
       {/* Modal de confirmación para eliminar */}
       {confirmDelete && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-usuarios">
+          <div className="modal-content-usuarios">
             <h3>¿Eliminar usuario?</h3>
             <p>
               ¿Estás seguro de que deseas eliminar al usuario{" "}

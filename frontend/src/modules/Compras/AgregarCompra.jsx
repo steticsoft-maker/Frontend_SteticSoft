@@ -14,8 +14,8 @@ const productosFalsos = [
 ];
 
 const Modal = ({ mensaje, onClose }) => (
-  <div className="modal-overlay">
-    <div className="modal-container">
+  <div className="modal-overlay-AgregarCompra">
+    <div className="modal-container-AgregarCompra">
       <p>{mensaje}</p>
       <button onClick={onClose}>Cerrar</button>
     </div>

@@ -86,23 +86,23 @@ const Rol = () => {
   return (
     <div className="rol-container">
       <NavbarAdmin />
-      <div className="main-content">
+      <div className="main-content-Roles">
         <h1>Gestión de Roles</h1>
 
-        <div className="actions-container">
+        <div className="barraBusquedaBotonCrearRol">
           <input
             type="text"
             placeholder="Buscar rol..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="search-input"
+            className="inputBarraBusquedaRoles"
           />
-          <button className="action-button" onClick={navigateToCreateRole}>
+          <button className="botonSuperiorCrearRol" onClick={navigateToCreateRole}>
             Crear Rol
           </button>
         </div>
 
-        <table className="roles-table">
+        <table className="tablaRoles">
           <thead>
             <tr>
               <th>Nombre del Rol</th>
@@ -137,9 +137,9 @@ const Rol = () => {
                   )}
                 </td>
                 <td>
-                  <div className="icon-actions">
+                  <div className="iconosTablaRoles">
                     <button
-                      className="table-button"
+                      className="botonVerDetallesRoles"
                       onClick={() => showRoleDetails(rol)}
                       title="Ver"
                     >
@@ -148,14 +148,14 @@ const Rol = () => {
                     {rol.nombre !== "Administrador" && (
                       <>
                         <button
-                          className="table-button"
+                          className="BotonEditarRoles"
                           onClick={() => navigateToEditRole(rol)}
                           title="Editar"
                         >
                           <FaEdit />
                         </button>
                         <button
-                          className="table-button delete-button"
+                          className="botonEliminarRoles"
                           onClick={() => handleDelete(rol.id)}
                           title="Eliminar"
                         >
@@ -172,8 +172,8 @@ const Rol = () => {
 
         {/* Modal de detalles (se mantiene como antes) */}
         {showDetailsModal && (
-          <div className="modal">
-            <div className="modal-content">
+          <div className="modal-roles">
+            <div className="modal-content-roles">
               <h2>Detalles del Rol</h2>
               <p>
                 <strong>Nombre:</strong> {selectedRole.nombre}
@@ -183,7 +183,8 @@ const Rol = () => {
               </p>
               <div>
                 <strong>Permisos:</strong>
-                <ul className="permisos-list">
+                <ul className="modalListaPermisos">
+
                   {selectedRole.permisos.map((permiso, index) => (
                     <li key={index}>{permiso}</li>
                   ))}
@@ -194,7 +195,7 @@ const Rol = () => {
                 {selectedRole.anulado ? "Inactivo" : "Activo"}
               </p>
               <button
-                className="cancel-button"
+                className="botonCerrarModalVerDetallesRoles"
                 onClick={() => setShowDetailsModal(false)}
               >
                 Cerrar
@@ -204,19 +205,19 @@ const Rol = () => {
         )}
 
         {confirmDelete && (
-          <div className="modal">
-            <div className="modal-content">
+          <div className="modal-roles">
+            <div className="modal-content-roles">
               <h3>¿Eliminar rol?</h3>
               <p>
                 ¿Estás seguro de que deseas eliminar el rol{" "}
                 <strong>{confirmDelete.nombre}</strong>?
               </p>
-              <div className="btn-container">
-                <button className="btn danger" onClick={deleteRol}>
+              <div className="BotonesEliminarCancelarRolesModalEliminar">
+                <button className="botonConfirmarEliminarRoles" onClick={deleteRol}>
                   Eliminar
                 </button>
                 <button
-                  className="btnCancelar"
+                  className="botonCancelarEliminarRol"
                   onClick={() => setConfirmDelete(null)}
                 >
                   Cancelar
