@@ -8,7 +8,7 @@
 
 /* Contenido principal */
 
-.main-content {
+.ventasContent {
     flex: 1;
     padding: 30px;
     margin-left: 45px;
@@ -19,7 +19,7 @@
 
 /* Barra de búsqueda */
 
-.search-input {
+.barraBusquedaVenta {
     margin-bottom: 20px;
     padding: 12px;
     width: 100%;
@@ -33,7 +33,7 @@
 
 /* Botón principal de Agregar Venta */
 
-.action-button {
+.botonAgregarVenta {
     margin-bottom: 30px;
     padding: 12px 25px;
     font-size: 1.1rem;
@@ -81,14 +81,14 @@
 
 /* Paginación */
 
-.pagination {
+.paginacionVenta {
     display: flex;
     justify-content: center;
     margin-top: 30px;
     gap: 10px;
 }
 
-.pagination button {
+.paginacionVenta button {
     padding: 10px 15px;
     font-size: 1rem;
     background-color: #4caf50;
@@ -100,12 +100,12 @@
     transition: background-color 0.3s ease;
 }
 
-.pagination button:disabled {
+.paginacionVenta button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
-.pagination button:hover:enabled {
+.paginacionVenta button:hover:enabled {
     background-color: #45a049;
 }
 
@@ -160,7 +160,7 @@ input:checked+.slider:before {
 
 /* Botones de acciones en la tabla */
 
-.table-button {
+.botonDetalleVenta {
     padding: 8px 15px;
     margin: 5px;
     font-size: 0.9rem;
@@ -173,17 +173,17 @@ input:checked+.slider:before {
     transition: background-color 0.3s ease;
 }
 
-.table-button:hover {
+.botonDetalleVenta:hover {
     background-color: #2980b9;
     /* Azul más oscuro */
 }
 
-.pdf-button {
+.botonPdfVenta {
     background-color: #f39c12;
     /* Naranja */
 }
 
-.pdf-button:hover {
+.botonPdfVenta:hover {
     background-color: #e67e22;
     /* Naranja más oscuro */
 }
@@ -191,7 +191,7 @@ input:checked+.slider:before {
 
 /* Modal */
 
-.modal {
+.modal-venta {
     position: fixed;
     top: 0;
     left: 0;
@@ -204,7 +204,7 @@ input:checked+.slider:before {
     z-index: 999;
 }
 
-.modal-content {
+.modal-content-venta {
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -213,7 +213,7 @@ input:checked+.slider:before {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.close-button {
+.botonCerrarModalPdfVenta {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: #e74c3c;
@@ -223,44 +223,19 @@ input:checked+.slider:before {
     cursor: pointer;
 }
 
-.close-button:hover {
+.botonCerrarModalPdfVenta:hover {
     background-color: #c0392b;
 }
 
 
 /* Contenedor para barra de búsqueda y botón en la misma fila */
 
-.header-actions {
+.barraBusquedaBotonAgregarVenta {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
-
-.search-input {
-    width: 70%;
-    /* Ajusta el ancho de la barra de búsqueda */
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.action-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.action-button:hover {
-    background-color: #218838;
-}
-
 
 /* Estilo base para el campo desplegable */
 
@@ -292,7 +267,7 @@ input:checked+.slider:before {
     /* Gris */
 }
 
-.pdf-modal {
+.pdf-modal-venta {
     max-width: 700px;
     margin: 20px auto;
     padding: 20px;
@@ -302,7 +277,7 @@ input:checked+.slider:before {
     text-align: center;
 }
 
-.pdf-modal h2 {
+.pdf-modal-venta h2 {
     margin-bottom: 20px;
     font-size: 18px;
     color: #333;
@@ -356,12 +331,12 @@ input:checked+.slider:before {
     background-color: #b02a37;
 }
 
-.modal-actions {
+.modal-actions-venta {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
 }
-.anular-button {
+.botonAnularVenta {
     background-color: #dc3545 !important;
     color: white;
     padding: 5px 10px;
@@ -371,7 +346,7 @@ input:checked+.slider:before {
     cursor: pointer;
   }
   
-  .anular-button:hover {
+  .botonAnularVenta:hover {
     background-color: #b02a37 !important;
   }
   
