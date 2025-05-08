@@ -1,313 +1,619 @@
-/* Contenedor general */
+/* ============================================================ */
+/* Estilos Generales del Contenedor Principal                  */
+/* ============================================================ */
 .usuarios-container {
     display: flex;
-    height: 100vh;
-    /* Altura completa del viewport */
+    min-height: 100vh;
+    background-color: #f4f7f6;
+    /* Fondo coherente con Rol.css */
+    font-family: 'Roboto', sans-serif;
+    /* Fuente coherente */
 }
 
-/* Contenido principal */
+/* Contenido principal (área de tabla y controles) */
 .usuarios-content {
     flex: 1;
+    /* Ocupa el espacio restante */
     padding: 30px;
+    /* Espaciado interno */
     margin-left: 45px;
-    background-color: #f5f5f5;
+    /* Espacio para NavbarAdmin si es fijo */
     overflow-y: auto;
+    /* Permite scroll si el contenido es largo */
+    max-width: 1200px;
+    /* Ancho máximo para el contenido */
+    margin: 0 auto;
+    /* Centra el contenido si hay espacio a los lados (junto a margin-left para offset) */
+    width: 100%;
+    /* Ocupa todo el ancho disponible hasta el max-width */
+    box-sizing: border-box;
+    /* Incluye padding en el width */
 }
 
-/* Contenedor de acciones (búsqueda + botón) */
-.containerBarraBusquedaBotonAgregarUsuarios {
-    display: flex;
-    /* Muestra la búsqueda y el botón en la misma fila */
-    justify-content: space-between;
-    /* Distribuye los elementos horizontalmente */
-    align-items: center;
-    /* Alinea verticalmente los elementos */
+.usuarios-content h1 {
+    text-align: center;
+    color: #2c3e50;
+    /* Color coherente */
     margin-bottom: 20px;
-    /* Espaciado inferior */
 }
 
-/* Barra de búsqueda */
-.BarraBusquedaInput {
-    padding: 30px;
-    /* Espaciado interno */
-    width: 70%;
-    /* Ajusta el ancho para alinearse con el botón */
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    /* Borde gris claro */
+/* ============================================================ */
+/* Estilos de la Barra de Búsqueda y Botón Agregar              */
+/* ============================================================ */
+.usuarios-accionesTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+    /* Espacio entre los elementos */
+    flex-wrap: wrap;
+    /* Permite que se envuelvan en pantallas pequeñas */
+}
+
+.usuarios-barraBusqueda {
+    padding: 10px 15px;
+    /* Espaciado interno coherente */
+    border: 1px solid #bdc3c7;
+    /* Borde coherente */
     border-radius: 5px;
-    /* Bordes redondeados */
+    /* Bordes redondeados coherentes */
+    font-size: 1rem;
+    /* Tamaño de fuente coherente */
+    flex-grow: 1;
+    /* Permite que la barra de búsqueda ocupe el espacio disponible */
+    min-width: 200px;
+    /* Ancho mínimo */
     background-color: white;
-    /* Fondo blanco */
-    color: black;
-    /* Texto negro */
-    margin-right: 35px;
-    /* Agrega espacio entre la barra y el botón */
+    color: #333;
+    /* Color de texto coherente */
+    box-sizing: border-box;
+    /* Incluye padding y borde en el width */
 }
 
-/* Botón principal (Agregar Usuario) */
-.botonCrearUsuario {
-    padding: 22px 20px;
-    /* Espaciado interno */
-    font-size: 1rem;
-    /* Tamaño de fuente */
-    background-color: #4caf50;
-    /* Fondo verde */
-    color: rgb(255, 255, 255);
-    /* Texto blanco */
+.usuarios-botonAgregar {
+    background-color: #2ecc71;
+    /* Verde coherente */
+    color: white;
     border: none;
-    /* Sin borde */
+    padding: 10px 20px;
     border-radius: 5px;
-    /* Bordes redondeados */
     cursor: pointer;
-    /* Cambia el cursor al pasar */
+    font-size: 1rem;
+    /* Tamaño de fuente coherente */
     transition: background-color 0.3s ease;
+    flex-shrink: 0;
+    /* Evita que se encoja */
 }
 
-.action-button:hover {
-    background-color: #45a049;
-    /* Fondo verde oscuro al pasar */
+.usuarios-botonAgregar:hover {
+    background-color: #27ae60;
+    /* Verde oscuro coherente */
 }
 
-/* Tabla de Usuarios */
+/* ============================================================ */
+/* Estilos de la Tabla de Usuarios                             */
+/* ============================================================ */
 .usuarios-table {
     width: 100%;
-    /* Ancho completo */
     border-collapse: collapse;
-    /* Elimina los espacios entre celdas */
-    margin-top: 15px;
-    /* Espaciado superior */
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra coherente */
+    background-color: #ffffff;
+    /* Fondo blanco coherente */
+}
+
+.usuarios-table th,
+.usuarios-table td {
+    border: 1px solid #dddddd;
+    /* Borde coherente */
+    text-align: left;
+    /* Alineación coherente si no se especifica otra */
+    padding: 12px;
+    /* Espaciado coherente */
+    vertical-align: middle;
+    /* Alineación vertical */
+    font-size: 0.9rem;
+    /* Tamaño de fuente coherente */
+    color: #34495e;
+    /* Color de texto coherente */
 }
 
 .usuarios-table th {
     background-color: #34495e;
-    /* Azul oscuro */
+    /* Azul oscuro coherente */
     color: white;
-    /* Texto blanco */
-    padding: 15px;
-    /* Espaciado interno */
+    font-weight: 600;
+    /* Peso de fuente coherente */
     text-align: center;
-    /* Texto centrado */
+    /* Centrado para encabezados */
 }
 
-.usuarios-table td {
-    text-align: center;
-    /* Texto centrado */
-    padding: 15px;
-    /* Espaciado interno */
-    border: 1px solid #ddd;
-    /* Borde gris claro */
-    color: #34495e;
-    /* Azul oscuro */
+.usuarios-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+    /* Fondo de filas pares coherente */
 }
 
-/* Switch para anular usuario */
+.usuarios-table tbody tr:hover {
+    background-color: #f0f0f0;
+    /* Fondo al pasar coherente */
+}
+
+/* Contenedor de iconos en la tabla */
+.usuarios-table-iconos {
+    display: flex;
+    gap: 10px;
+    /* Espacio entre iconos */
+    justify-content: center;
+    /* Centra los iconos en la celda */
+    align-items: center;
+}
+
+/* Estilos para botones de acción en la tabla (ahora con estilo de Rol.css) */
+.usuarios-table-button {
+    /* Estilos base para todos los botones de acción de tabla */
+    padding: 8px 12px;
+    /* Padding */
+    margin: 0;
+    font-size: 0.9rem;
+    /* Tamaño de fuente del icono */
+    border: none;
+    border-radius: 5px;
+    /* Bordes redondeados */
+    color: white;
+    /* Color del icono */
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Colores específicos para los botones de acción en la tabla (como en Rol.css) */
+.usuarios-table-button:nth-child(1) {
+    /* Estilo para el primer botón (Ver) */
+    background-color: #3498db;
+    /* Azul claro */
+}
+
+.usuarios-table-button:nth-child(1):hover {
+    background-color: #2980b9;
+    /* Azul más oscuro */
+}
+
+.usuarios-table-button:nth-child(2) {
+    /* Estilo para el segundo botón (Editar) */
+    background-color: #f39c12;
+    /* Naranja */
+}
+
+.usuarios-table-button:nth-child(2):hover {
+    background-color: #e67e22;
+    /* Naranja más oscuro */
+}
+
+.usuarios-table-button-delete {
+    /* Estilo específico para el botón Eliminar */
+    background-color: #e74c3c;
+    /* Rojo */
+}
+
+.usuarios-table-button-delete:hover {
+    background-color: #c0392b;
+    /* Rojo más oscuro */
+}
+
+/* Estilo para el switch (Reutiliza las clases del switch de Rol.css) */
 .switch {
     position: relative;
     display: inline-block;
     width: 40px;
-    /* Ancho del switch */
     height: 24px;
-    /* Altura del switch */
 }
 
 .switch input {
     opacity: 0;
-    /* Esconde el checkbox original */
     width: 0;
     height: 0;
 }
 
 .slider {
     position: absolute;
+    cursor: pointer;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: #ccc;
+    transition: .4s;
     border-radius: 34px;
-    /* Bordes redondeados */
-    cursor: pointer;
-    /* Cambia el cursor */
-    transition: 0.4s;
 }
 
 .slider:before {
-    content: "";
     position: absolute;
+    content: "";
     height: 18px;
-    /* Altura del "punto" */
     width: 18px;
-    /* Ancho del "punto" */
     left: 3px;
     bottom: 3px;
     background-color: white;
-    /* Fondo blanco */
+    transition: .4s;
     border-radius: 50%;
-    transition: 0.4s;
 }
 
-.modal-usuarios{
+input:checked+.slider {
+    background-color: #4CAF50;
+}
+
+input:checked+.slider:before {
+    transform: translateX(16px);
+}
+
+
+/* ============================================================ */
+/* Estilos de los Modales (General, Formulario, Detalles, Conf, Validation) */
+/* ============================================================ */
+
+/* Capa de fondo oscuro para cualquier modal */
+.usuarios-modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Fondo oscuro semitransparente */
+    z-index: 1000;
+    /* Alto z-index para estar encima del contenido principal */
     display: flex;
+    /* Usar flexbox para centrar el contenido */
     align-items: center;
+    /* Centrado vertical */
     justify-content: center;
+    /* Centrado horizontal */
+    overflow-y: auto;
+    /* Permite scroll si el contenido del modal es muy alto */
+    padding: 20px;
+    /* Padding general para evitar que el contenido toque los bordes en pantallas pequeñas */
+    box-sizing: border-box;
 }
 
-.modal-content-usuarios{
-    display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Alineación hacia la izquierda */
-  width: 600px; /* Ampliado para mayor espacio */
-  border-radius: 12px;
-  background: linear-gradient(135deg, #ffffff, #f8f9fa);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-  padding: 25px;
+/* Contenedor del contenido del modal (base) */
+.usuarios-modalContent {
+    background-color: #ffffff;
+    /* Fondo blanco */
+    padding: 30px;
+    /* Espaciado interno coherente */
+    border-radius: 12px;
+    /* Bordes redondeados coherentes */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    /* Sombra coherente */
+    width: 95%;
+    /* Ancho responsive */
+    max-height: 90vh;
+    /* Altura máxima antes de hacer scroll */
+    overflow-y: auto;
+    /* Scrollbar para el contenido del modal */
+    position: relative;
+    /* Necesario para cualquier posicionamiento absoluto/fijo interno */
+    box-sizing: border-box;
 }
 
-input:checked+.slider {
-    background-color: #4caf50;
-    /* Verde activo */
+/* Estilos específicos para el contenido del modal de Detalles */
+.usuarios-modalContent-details {
+    max-width: 500px;
+    /* Ancho máximo para el modal de detalles */
+    margin: auto;
+    /* Centra el bloque si el width es menor que el contenedor modalContent */
+    /* Los paddings y border-radius ya vienen de .usuarios-modalContent */
 }
 
-input:checked+.slider:before {
-    transform: translateX(16px);
-    /* Desplaza el "punto" */
-}
-
-
-/* Estilo para el menú desplegable de roles */
-select[name="rol"] {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
+.usuarios-modalContent-details h2 {
+    text-align: center;
     color: #34495e;
-    cursor: pointer;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
 
-select[name="rol"]:focus {
-    outline: none;
-    border-color: #4caf50;
-    /* Resalta el borde al seleccionar */
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-    /* Efecto visual */
+.usuarios-modalContent-details p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    color: #34495e;
 }
 
-/* Grupo de permisos */
-.checkbox-group {
-    margin: 20px 0;
+.usuarios-modalContent-details strong {
+    color: #2c3e50;
+}
+
+
+/* Estilos específicos para el contenido del modal de Formulario (Crear/Editar) */
+.usuarios-modalContent-form {
+    max-width: 600px;
+    /* Ancho máximo para el formulario */
+    margin: auto;
+    /* Centra el bloque */
+    /* Los paddings y border-radius ya vienen de .usuarios-modalContent */
+}
+
+.usuarios-modalContent-form h2 {
+    text-align: center;
+    color: #34495e;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.usuarios-modalContent-form form {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    /* Espacio entre grupos de formulario */
 }
 
-/* Estilo para cada checkbox */
-.checkbox-item {
+.usuarios-form-group {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+    /* Espacio entre label e input/select */
+}
+
+.usuarios-form-label {
+    font-weight: 600;
+    color: #34495e;
     font-size: 1rem;
 }
 
-.checkbox-item input {
-    margin-right: 10px;
+.usuarios-form-input,
+.usuarios-form-select {
+    padding: 10px 12px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    /* Incluye padding y borde en el width */
 }
 
-/* Botones del formulario */
-.botonGuardarAgregarUsuario {
-    padding: 12px 20px;
-    font-size: 1rem;
-    background-color: #3498db !important;
+.usuarios-form-input:focus,
+.usuarios-form-select:focus {
+    border-color: #3498db;
     /* Azul */
-    color: white !important;
-    border: none;
-    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    outline: none;
+}
+
+.usuarios-form-select {
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-.botonGuardarAgregarUsuario:hover {
-    background-color: #2980b9;
-    /* Azul oscuro al pasar */
+/* Estilos específicos para el contenido del modal de Confirmación */
+.usuarios-modalContent-confirm {
+    max-width: 400px;
+    /* Ancho más pequeño para la confirmación */
+    margin: auto;
+    text-align: center;
+    /* Centra el texto dentro del modal */
+    /* Los paddings y border-radius ya vienen de .usuarios-modalContent */
 }
 
-.cancel-button {
-    padding: 12px 20px;
-    font-size: 1rem;
-    background-color: #e74c3c !important;
-    /* Rojo */
-    color: white !important;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.usuarios-modalContent-confirm h3 {
+    text-align: center;
+    color: #e74c3c;
+    /* Rojo para confirmar eliminación */
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
-.cancel-button:hover {
-    background-color: #c0392b ;
-    /* Rojo oscuro al pasar */
+.usuarios-modalContent-confirm p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #34495e;
 }
 
-/* Paginación */
-.pagination {
+.usuarios-modalContent-confirm strong {
+    color: #2c3e50;
+}
+
+
+/* Estilos específicos para el contenido del modal de Validación */
+.usuarios-modalContent-validation {
+    max-width: 400px;
+    /* Ancho similar al de confirmación */
+    margin: auto;
+    text-align: center;
+    /* Los paddings y border-radius ya vienen de .usuarios-modalContent */
+}
+
+.usuarios-modalContent-validation h3 {
+    text-align: center;
+    color: #f39c12;
+    /* Naranja para validación/advertencia */
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.usuarios-modalContent-validation p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #34495e;
+}
+
+
+/* Contenedor de botones de acción en formularios/modales */
+.usuarios-form-actions {
     display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
+    justify-content: flex-end;
+    /* Alinea los botones a la derecha por defecto */
+    gap: 15px;
+    /* Espacio entre botones */
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    /* Separador visual */
 }
 
-.pagination button {
-    padding: 10px 15px;
+/* Estilos base para botones de formulario/modal */
+.usuarios-form-buttonGuardar,
+.usuarios-form-buttonCancelar,
+.usuarios-modalButton-cerrar {
+    /* Incluye el botón cerrar de detalles/validation */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     font-size: 1rem;
-    background-color: #4caf50;
+    transition: background-color 0.3s ease;
+    flex-grow: 1;
+    /* Permite que los botones se expandan en móviles */
+    text-align: center;
+    /* Centra el texto dentro del botón */
+}
+
+/* Colores específicos para botones de formulario/modal */
+.usuarios-form-buttonGuardar {
+    background-color: #2ecc71;
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-.pagination button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+/* Verde (Guardar) */
+.usuarios-form-buttonGuardar:hover {
+    background-color: #27ae60;
 }
 
-.pagination button:hover:enabled {
-    background-color: #45a049;
+.usuarios-form-buttonCancelar {
+    background-color: #95a5a6;
+    color: white;
 }
-.containerBotonesGuardarCancelarAgregarUsuario {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+
+/* Gris (Cancelar) */
+.usuarios-form-buttonCancelar:hover {
+    background-color: #7f8c8d;
+}
+
+.usuarios-modalButton-cerrar {
+    background-color: #3498db;
+    /* Azul (Cerrar Detalles/Validación) */
+    color: white;
+    display: block;
+    /* Hace que el botón de cerrar ocupe su propia línea */
+    width: 100%;
+    /* Le da el ancho completo dentro de su contenedor */
     margin-top: 20px;
 }
 
-.containerBotonesGuardarCancelarAgregarUsuario button {
-    flex: 1 1 0;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    box-sizing: border-box;
-    cursor: pointer;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
+.usuarios-modalButton-cerrar:hover {
+    background-color: #2980b9;
 }
 
-.cancel-button {
-    background-color: #dc3545 !important;
-    color: #fff !important;
-}
 
-.cancel-button:hover {
-    background-color: #c0392b !important;
+/* ============================================================ */
+/* Responsive Styles                                          */
+/* ============================================================ */
+@media (max-width: 768px) {
+    .usuarios-content {
+        padding: 15px;
+        /* Reducido para móviles */
+        margin-left: 0;
+        /* Ocupa todo el ancho */
+    }
+
+    .usuarios-accionesTop {
+        flex-direction: column;
+        /* Apila búsqueda y botón */
+        gap: 15px;
+    }
+
+    .usuarios-barraBusqueda {
+        max-width: 100%;
+        /* Ocupa todo el ancho */
+        margin-right: 0;
+        /* Elimina margen derecho */
+    }
+
+    .usuarios-botonAgregar {
+        width: 100%;
+        /* Botón ocupa todo el ancho */
+    }
+
+    .usuarios-table th,
+    .usuarios-table td {
+        padding: 10px 8px;
+        /* Menos padding en celdas */
+        font-size: 0.8rem;
+        /* Texto más pequeño */
+    }
+
+    .usuarios-table-iconos {
+        flex-direction: row;
+        /* Iconos en fila por defecto */
+        align-items: center;
+        justify-content: center;
+        /* Centrados si hay espacio */
+        gap: 8px;
+        /* Permite que en pantallas muy estrechas se apilen si es necesario */
+        flex-wrap: wrap;
+    }
+
+    .usuarios-table-button {
+        padding: 6px 10px;
+        /* Ajusta padding de botones de tabla */
+        font-size: 1em;
+    }
+
+
+    /* Ajustes para el contenido del modal en móvil */
+    .usuarios-modalContent {
+        padding: 20px;
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    /* Ajustes para el formulario dentro del modal en móvil */
+    .usuarios-modalContent-form form {
+        gap: 10px;
+        /* Menos espacio entre campos en móvil */
+    }
+
+    .usuarios-form-group {
+        gap: 6px;
+    }
+
+    /* Menos espacio en grupos */
+    .usuarios-form-label {
+        font-size: 0.9rem;
+    }
+
+    .usuarios-form-input,
+    .usuarios-form-select {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+    }
+
+
+    /* Ajustes para los botones de acción del formulario/modal en móvil */
+    .usuarios-form-actions {
+        flex-direction: column;
+        /* Apila los botones */
+        gap: 10px;
+    }
+
+    .usuarios-form-buttonGuardar,
+    .usuarios-form-buttonCancelar,
+    .usuarios-modalButton-cerrar {
+        width: 100%;
+        /* Botones ocupan todo el ancho */
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    /* Ajustes para modales pequeños (detalles, confirmación, validación) en móvil */
+    .usuarios-modalContent-details,
+    .usuarios-modalContent-confirm,
+    .usuarios-modalContent-validation {
+        max-width: 95%;
+        /* Asegura que no sean demasiado pequeños */
+        margin: auto;
+    }
 }
