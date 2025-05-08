@@ -96,7 +96,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start; /* Alineación hacia la izquierda */
-    width: 600px; /* Ampliado para mayor espacio */
+    width: 800px; /* Ampliado para mayor espacio */
     border-radius: 12px;
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
@@ -116,11 +116,13 @@
 
 /* Ajustar los inputs para ocupar el 100% de su columna */
 .modal-content-Proveedores input {
-    width: 100%;
+    width: 600px;
     padding: 10px;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
+    background-color: white;
+    margin: 10px;
 }
 
 /* Alinear los botones en una sola fila */
@@ -189,18 +191,54 @@
     background-color: #9b212e ; /* Color al pasar el mouse */
 }
 
+.modal-content-Proveedores input::placeholder {
+    color: #aaa; /* Color más visible para el placeholder */
+    opacity: 1; /* Asegura que el placeholder no desaparezca */
+}
+
+.modal-content-Proveedores input:not(:placeholder-shown) {
+    color: black; /* Cambia el color del texto cuando hay contenido */
+}
+
+.documento-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-documento {
+    width: 100%;
+    padding-right: 60px; /* Espacio para el select */
+}
+
+.select-tipo-documento {
+    right: 10px;
+    background: white;
+    color: black;
+    border: 1px solid #ccc;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
 .botonEditarProveedor{
     display: flex ; 
     justify-content: center ; /* Centra horizontalmente */
     align-items: center ; /* Centra verticalmente dentro del botón */
     margin: 0 auto ; /* Centra el botón dentro de su contenedor padre */
-    padding: 12px 24px ; /* Tamaño uniforme */
+    padding: 10px 20px ; /* Tamaño uniforme */
     font-size: 1rem ;
     border: none ;
     border-radius: 5px ;
     cursor: pointer ;
     color: white ; /* Color del texto */
     transition: background-color 0.3s ease ; /* Animación al pasar el mouse */
+    background-color: #3498db;
+}
+
+.botonEditarProveedor:hover{
+    background-color: #1d6b9e;
 }
 
 .iconosTablaProveedores{
@@ -229,13 +267,36 @@ h2.title-h2-Proveedores {
     background-color: #2980b9;
 }
 
-.botonEditarProveedor {
+.botonesGuardarCancelarAgregarEditarProveedor {
+    display: flex ; 
+    justify-content: center ; /* Centra horizontalmente */
+    align-items: center ; /* Centra verticalmente dentro del botón */
+    margin: auto ; /* Centra el botón dentro de su contenedor padre */
+    margin-bottom: 10px;
+    padding: 12px 24px ; /* Tamaño uniforme */
+    font-size: 1rem ;
+    color: white ; /* Color del texto */
+    transition: background-color 0.3s ease ; /* Animación al pasar el mouse */
+}
+
+.botonCerrarModalVerDetallesProveedores{
     background-color: #3498db;
 }
 
+.botonGuardarEditarProveedor{
+    background-color: #3498db;
+}
 
-.botonEditarProveedor:hover {
-    background-color: #2980b9;
+.botonGuardarEditarProveedor:hover{
+    background-color: #2677ad;
+}
+
+.botonCancelarEditarProveedor{
+    background-color: #bd0e1f;
+}
+
+.botonCancelarEditarProveedor:hover{
+    background-color: #7e1a24;
 }
 
 .botonEliminarProveedor{
@@ -287,24 +348,6 @@ h2.title-h2-Proveedores {
     border-radius: 5px;
 }
 
-.documentoNaturalJuridicoProveedores {
-    display: flex; /* Coloca los campos en fila */
-    justify-content: space-between; /* Espaciado uniforme */
-    align-items: center; /* Alineación vertical centrada */
-    gap: 10px; /* Espacio entre los dos campos */
-}
-
-.documentoNaturalJuridicoProveedores input {
-    width: 100% ; /* Ocupa todo el ancho del contenedor */
-    padding: 12px ; /* Espaciado interno */
-    border: 1px solid #ced4da ; /* Borde uniforme */
-    border-radius: 4px ; /* Bordes redondeados */
-    background-color: white ; /* Fondo */
-    color: black ; /* Texto */
-    font-size: px16 ; /* Tamaño del texto */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) ; /* Sombra */
-}
-
 .tipo-documento-proveedor-select {
     width: auto ; /* Mantiene un tamaño ajustado */
     padding: 12px ; /* Espaciado interno */
@@ -316,8 +359,7 @@ h2.title-h2-Proveedores {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) ; /* Sombra */
 }
 
-.tipo-documento-proveedor-select:focus, 
-.documentoNaturalJuridicoProveedores input:focus {
+.tipo-documento-proveedor-select:focus{
     outline: none; /* Remueve el contorno predeterminado */
     border-color: #007bff; /* Color del borde al enfocarse */
 }

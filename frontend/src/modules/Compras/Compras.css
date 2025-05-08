@@ -23,7 +23,7 @@
 /* Barra de búsqueda y botón agregar */
 .container-busqueda-agregar {
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
   margin-bottom: 30px;
@@ -193,9 +193,23 @@
 .botonConfirmarAnularCompra{
   background-color: #3498db;
   padding: 11px 19px;
-  border-radius: 5px !important;
+  border-radius: 5px;
 }
 
+.botonCerrarModalAnularCompra{
+  background-color: #e21a13;
+  padding: 11px 19px;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.botonCerrarModalAnularCompra-PDF{
+  display: flex;
+  justify-content: center;
+  background-color: #3498db;
+  padding: 11px 19px;
+  border-radius: 5px;
+}
 
 /* Modal Detalle */
 .modal-compras-detalle {
@@ -237,6 +251,11 @@
   gap: 10px;
 }
 
+.accionesTablaCompras{
+  display: flex;
+  justify-content: space-around;
+}
+
 /* Botones de acciones */
 .botonVerDetallesCompra {
   background-color: #3498db;
@@ -246,18 +265,12 @@
   background-color: #3498db;
 }
 
-.btn-remove {
-  margin: 0 auto !important;
-  display: block !important;
-  background-color: red !important;
-  color: white !important;
-  font-size: 0.8rem !important;
-  cursor: pointer !important;
-  width: 50px !important;
+.botonAnularCompra {
+  background-color: red;
 }
 
-.btn-remove:hover {
-  background-color: darkred !important;
+.botonAnularCompra:hover {
+  background-color: darkred;
 }
 
 .button-row {
