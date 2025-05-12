@@ -133,10 +133,10 @@ const Servicios = () => {
   return (
     <div className="servicios-container">
       <Navbar />
-      <div className="serviciosAdministrador-content">
-        <h2>Gestión de Servicios</h2>
+      <div className="servicios-content">
+        <h2 className="tituloServicios">Gestión de Servicios</h2>
         <div className="barraBusqueda-BotonSuperiorAgregarServicio">
-          <div className="BarraBusquedaServicioAdministrador">
+          <div className="BarraBusquedaServicio">
             <input
               type="text"
               placeholder="Buscar servicio..."
@@ -144,21 +144,21 @@ const Servicios = () => {
               onChange={handleSearch}
             />
           </div>
-          <button className="botonAgregarServicioAdministrador" onClick={() => openModal("agregar")}>
+          <button className="botonAgregarServicio" onClick={() => openModal("agregar")}>
             Agregar Servicio
           </button>
         </div>
 
-        <div className="tablaServiciosAdministrador">
-          <table>
+        <div className="tablaServicios">
+          <table className="tablaServicio">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Categoría</th>
-                <th>Imagen</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th className="thServicios">Nombre</th>
+                <th className="thServicios">Precio</th>
+                <th className="thServicios">Categoría</th>
+                <th className="thServicios">Imagen</th>
+                <th className="thServicios">Estado</th>
+                <th className="thServicios">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -188,13 +188,13 @@ const Servicios = () => {
                     </label>
                   </td>
                   <td>
-                    <button className="botonVerDetallesServiciosAdministrador" onClick={() => openModal("ver", index)}>
+                    <button className="botonVerDetallesServicios" onClick={() => openModal("ver", index)}>
                       <FontAwesomeIcon icon={faEye} />
                     </button>
-                    <button className="botonEditarServiciosAdministrador" onClick={() => openModal("editar", index)}>
+                    <button className="botonEditarServicios" onClick={() => openModal("editar", index)}>
                       <FontAwesomeIcon icon={faEdit} />
                     </button>
-                    <button className="botonEliminarServicioAdministrador" onClick={() => setConfirmDelete(index)}>
+                    <button className="botonEliminarServicios" onClick={() => setConfirmDelete(index)}>
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </td>
@@ -206,11 +206,11 @@ const Servicios = () => {
 
         {/* Modal */}
         {modal.open && (
-          <div className="modalServicioAdministrador">
-            <div className="modal-content-ServicioAdministrador">
+          <div className="modalServicio">
+            <div className="modal-content-Servicio">
               {modal.type === "ver" ? (
                 <>
-                  <h3>Detalles del Servicio</h3>
+                  <h3 className="tituloModalDetalleServicio">Detalles del Servicio</h3>
                   <p><strong>Nombre:</strong> {formData.nombre}</p>
                   <p><strong>Precio:</strong> ${formData.precio?.toFixed(2)}</p>
                   <p><strong>Categoría:</strong> {formData.categoria || "—"}</p>
@@ -224,17 +224,17 @@ const Servicios = () => {
                       />
                     </div>
                   )}
-                  <button className="botonCerrarModalVerDetalleServicioAdministrador" onClick={closeModal}>Cerrar</button>
+                  <button className="CerrarModalDetalleServicio" onClick={closeModal}>Cerrar</button>
                 </>
               ) : (
                 <>
                   <h3>{modal.type === "agregar" ? "Agregar Servicio" : "Editar Servicio"}</h3>
-                  <form className="modal-ServicioAdministrador-form-grid">
-                    <div className="CamposAgregarServicioAdministrador">
-                      <label className="asteriscoCamposServicioAdministrador">
-                        Nombre <span className="requiredServicioAdministrador">*</span>
+                  <form className="modal-Servicio-form-grid">
+                    <div className="CamposAgregarServicio">
+                      <label className="asteriscoCamposServicio">
+                        Nombre <span className="requiredServicio">*</span>
                       </label>
-                      <input
+                      <input className="input"
                         type="text"
                         value={formData.nombre}
                         onChange={(e) => {
@@ -245,11 +245,11 @@ const Servicios = () => {
                       {formErrors.nombre && <span className="error">{formErrors.nombre}</span>}
                     </div>
                     
-                    <div className="CamposAgregarServicioAdministrador">
+                    <div className="CamposAgregarServicio">
                       <label className="asterisco">
                         Precio <span className="required">*</span>
                       </label>
-                      <input
+                      <input className="input"
                         type="number"
                         value={formData.precio}
                         onChange={(e) => {
@@ -262,22 +262,22 @@ const Servicios = () => {
                       {formErrors.precio && <span className="error">{formErrors.precio}</span>}
                     </div>
                     
-                    <div className="CamposAgregarServicioAdministrador">
+                    <div className="CamposAgregarServicio">
                       <label>Categoría</label>
-                      <select
+                      <select className="input"
                         value={formData.categoria}
                         onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
                       >
-                        <option value="">Seleccione una categoría</option>
+                        <option value="" className="opcion">Seleccione una categorías</option>
                         {categorias.filter(c => c.estado === "Activo").map((cat, index) => (
                           <option key={index} value={cat.nombre}>{cat.nombre}</option>
                         ))}
                       </select>
                     </div>
                     
-                    <div className="CamposAgregarServicioAdministrador">
+                    <div className="CamposAgregarServicio">
                       <label>Imagen</label>
-                      <input
+                      <input className="input"
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange}
@@ -291,11 +291,11 @@ const Servicios = () => {
                       )}
                     </div>
                     
-                    <div className="CamposAgregarServicioAdministrador">
-                      <button className="btn success" type="button" onClick={saveServicio}>
+                    <div className="CamposAgregarServicio">
+                      <button className="botonEditarServicios" type="button" onClick={saveServicio}>
                         Guardar
                       </button>
-                      <button className="btn close" type="button" onClick={closeModal}>
+                      <button className="botonEliminarServicios" type="button" onClick={closeModal}>
                         Cancelar
                       </button>
                     </div>
@@ -308,13 +308,13 @@ const Servicios = () => {
 
         {/* Confirmación de eliminación */}
         {confirmDelete !== null && (
-          <div className="modalServicioAdministrador">
-            <div className="modal-ServicioAdministrador-confirm">
+          <div className="modalServicio">
+            <div className="modal-Servicio-confirm">
               <h3>Confirmar eliminación</h3>
               <p>¿Está seguro de que desea eliminar este servicio?</p>
-              <div className="modalConfirmacionEliminarBotonesEliminarCancelar">
-                <button className="botonEliminarServicioAdministrador" onClick={deleteServicio}>Sí, eliminar</button>
-                <button className="botonCancelarEliminarServicioAdministrador" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+              <div className="modalConfirmacionEliminar">
+                <button className="botonEliminarServicio" onClick={deleteServicio}>Sí, eliminar</button>
+                <button className="botonCancelarEliminarServicio" onClick={() => setConfirmDelete(null)}>Cancelar</button>
               </div>
             </div>
           </div>

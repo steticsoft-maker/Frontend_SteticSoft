@@ -1,10 +1,10 @@
-.CategoriaServicios-container {
+.Categoria-container {
   display: flex;
   height: 100vh;
   width: 1400px;
 }
 
-.CategoriaServicios-content {
+.Categoria-content {
   flex: 1;
   padding: 20px;
   margin-left: 100px;
@@ -15,14 +15,16 @@ h2 {
   color: #000000;
 }
 
-.barraBusquedaBotonAgregarCategoriaServicio input {
+.BusquedaBotonCategoria input {
   padding: 8px 12px;
   width: 250px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  background-color: white;
+  color: #000000;
 }
 
-.botonAgregarCategoriaServicios {
+.botonAgregarCategoria {
   background-color: #3498db;
   color: white;
   padding: 12px 24px;
@@ -32,11 +34,11 @@ h2 {
   transition: background-color 0.3s ease;
 }
 
-.botonAgregarCategoriaServicios:hover {
+.botonAgregarCategoria:hover {
   background-color: #2980b9;
 }
 
-.tablaCategoriaServicios {
+.tablaCategoria {
   background: white;
   width: 97%;
   padding: 15px;
@@ -103,7 +105,7 @@ input:checked + .slider:before {
   transform: translateX(16px);
 }
 
-.modal-CategoriaServicios {
+.modal-Categoria {
   position: fixed;
   top: 0;
   left: 0;
@@ -115,7 +117,7 @@ input:checked + .slider:before {
   justify-content: center;
 }
 
-.modal-content-CategoriaServicios {
+.modal-content-Categoria {
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Alineación hacia la izquierda */
@@ -126,14 +128,14 @@ input:checked + .slider:before {
   padding: 25px;
 }
 
-.modal-content-CategoriaServicios h3 {
+.modal-content-Categoria h3 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
-.modal-content-CategoriaServicios input,
-.modal-content-CategoriaServicios textarea {
+.modal-content-Categoria input,
+.modal-content-Categoria textarea {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -142,12 +144,12 @@ input:checked + .slider:before {
   margin-bottom: 10px;
 }
 
-.modal-content-CategoriaServicios label {
+.modal-content-Categoria label {
   font-weight: bold;
   color: #555;
 }
 
-.requiredCategoriaServicios {
+.requiredCategoria {
   color: red;
   font-weight: bold;
 }
@@ -165,21 +167,26 @@ input:checked + .slider:before {
   border-radius: 5px;
   color: white;
   cursor: pointer;
+  margin: 10px;
 }
 
-.btn.success {
-  background-color: #2ecc71;
+.btn-success {
+  background-color: #3498db;
 }
 
-.btn.danger {
+.btn-success:hover {
+  background-color: #2980b9;
+}
+
+.btn-danger {
   background-color: #dc3545;
 }
 
-.btn.close {
-  background-color: #95a5a6;
+.btn-danger:hover {
+  background-color: #c0392b;
 }
 
-.ContainerBarraBotonAgregarCategoriaServicio {
+.ContainerBotonAgregarCategoria {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -188,7 +195,12 @@ input:checked + .slider:before {
   gap: 10px;
 }
 
-.modal-CategoriaServicios-confirm {
+.campoAgregarCategoria{
+  background-color: white;
+  color: #000000;
+}
+
+.modal-Categoria-confirm {
   background: white;
   padding: 2rem;
   border-radius: 10px;
@@ -198,23 +210,23 @@ input:checked + .slider:before {
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.modal-CategoriaServicios-confirm h3 {
+.modal-Categoria-confirm h3 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
-.modal-CategoriaServicios-confirm p {
+.modal-Categoria-confirm p {
   margin-bottom: 1.5rem;
 }
 
-.modal-CategoriaServicios-confirm-buttons {
+.modal-Categoria-confirm-buttons {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
 
-.botonVerDetallesCategoriaServicios {
+.botonVerDetallesCategoria {
   background-color: #3498db;
   color: white;
   padding: 8px 16px;
@@ -225,11 +237,11 @@ input:checked + .slider:before {
   margin: 10px;
 }
 
-.botonVerDetallesCategoriaServicios:hover {
+.botonVerDetallesCategoria:hover {
   background-color: #1976D2;
 }
 
-.botonEditarCategoriaServicios {
+.botonEditarCategoria {
   background-color: #3498db;
   color: white;
   padding: 8px 16px;
@@ -240,11 +252,11 @@ input:checked + .slider:before {
   margin: 10px;
 }
 
-.botonEditarCategoriaServicios:hover {
+.botonEditarCategoria:hover {
   background-color: #1976D2;
 }
 
-.botonEliminarCategoriaServicios {
+.botonEliminarCategoria {
   background-color: #f44336;
   color: white;
   padding: 8px 16px;
@@ -255,12 +267,12 @@ input:checked + .slider:before {
   margin: 10px;
 }
 
-.botonEliminarCategoriaServicios:hover {
+.botonEliminarCategoria:hover {
   background-color: #d32f2f;
   margin: 10px;
 }
 
 
-.asteriscoCampoObligatorioCategoriaServicio{
+.asteriscoCampoObligatorioCategoria{
   width: 150px;
 }

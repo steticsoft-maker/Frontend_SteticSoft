@@ -4,25 +4,27 @@
   width: 1400px;
 }
 
-.serviciosAdministrador-content {
+.servicios-content {
   flex: 1;
   padding: 20px;
   margin-left: 100px;
 }
 
-h2 {
+.tituloServicios {
   margin-bottom: 15px;
   color: #000000;
 }
 
-.BarraBusquedaServicioAdministrador input {
+.BarraBusquedaServicio input {
   padding: 8px 12px;
   width: 250px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  background-color: #fff;
+  color: #000000;
 }
 
-.botonAgregarServicioAdministrador {
+.botonAgregarServicio {
   background-color: #3498db;
   color: white;
   padding: 12px 24px;
@@ -32,30 +34,76 @@ h2 {
   transition: background-color 0.3s ease;
 }
 
-.botonAgregarServicioAdministrador:hover {
+.botonAgregarServicio:hover {
   background-color: #2980b9;
 }
 
-.tablaServiciosAdministrador {
+.botonVerDetallesServicios {
+  background-color: #3498db;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.botonVerDetallesServicios:hover {
+  background-color: #2980b9;
+}
+
+.botonEditarServicios {
+  background-color: #3498db;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.botonEditarServicios:hover {
+  background-color: #2980b9;
+}
+
+.botonEliminarServicios {
+  background-color: #e74c3c;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.botonEliminarServicios:hover {
+  background-color: #c0392b;
+}
+
+.tablaServicio {
   background: white;
-  width: 97%;
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th, td {
+.input {
+  background: white;
+    color: black;
+}
+
+.thServicios, td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #ddd;
 }
 
-th {
+.thServicios {
   background-color: #34495e;
   color: white;
 }
@@ -103,7 +151,7 @@ input:checked + .slider:before {
   transform: translateX(16px);
 }
 
-.modalServicioAdministrador {
+.modalServicio {
   position: fixed;
   top: 0;
   left: 0;
@@ -115,7 +163,7 @@ input:checked + .slider:before {
   justify-content: center;
 }
 
-.modal-content-ServicioAdministrador {
+.modal-content-Servicio {
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Alineación hacia la izquierda */
@@ -126,15 +174,15 @@ input:checked + .slider:before {
   padding: 25px;
 }
 
-.modal-content-ServicioAdministrador h3 {
+.modal-content-Servicio h3 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
-.modal-content-ServicioAdministrador input,
-.modal-content-ServicioAdministrador textarea,
-.modal-content-ServicioAdministrador select {
+.modal-content-Servicio input,
+.modal-content-Servicio textarea,
+.modal-content-Servicio select {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -143,14 +191,14 @@ input:checked + .slider:before {
   margin-bottom: 10px;
 }
 
-.modal-content-ServicioAdministrador label {
+.modal-content-Servicio label {
   font-weight: bold;
   color: #555;
   display: block;
   margin-bottom: 5px;
 }
 
-.requiredServicioAdministrador {
+.requiredServicio {
   color: red;
   font-weight: bold;
 }
@@ -162,27 +210,6 @@ input:checked + .slider:before {
   margin-bottom: 8px;
 }
 
-.btn {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  margin: 5px;
-}
-
-.btn.success {
-  background-color: #2ecc71;
-}
-
-.btn.danger {
-  background-color: #dc3545;
-}
-
-.btn.close {
-  background-color: #95a5a6;
-}
-
 .barraBusqueda-BotonSuperiorAgregarServicio {
   display: flex;
   justify-content: space-between;
@@ -192,7 +219,7 @@ input:checked + .slider:before {
   gap: 10px;
 }
 
-.modal-ServicioAdministrador-confirm {
+.modal-Servicio-confirm {
   background: white;
   padding: 2rem;
   border-radius: 10px;
@@ -202,17 +229,17 @@ input:checked + .slider:before {
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.modal-ServicioAdministrador-confirm h3 {
+.modal-Servicio-confirm h3 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
-.modal-ServicioAdministrador-confirm p {
+.modal-Servicio-confirm p {
   margin-bottom: 1.5rem;
 }
 
-.modalConfirmacionEliminarBotonesEliminarCancelar {
+.modalConfirmacionEliminar{
   display: flex;
   justify-content: center;
   gap: 1rem;
@@ -246,7 +273,7 @@ input:checked + .slider:before {
   background-color: #d32f2f;
 }
 
-.asteriscoCamposServicioAdministrador {
+.asteriscoCamposServicio {
   width: 150px;
 }
 
@@ -259,11 +286,11 @@ input:checked + .slider:before {
   to { opacity: 1; }
 }
 
-.modal-ServicioAdministrador-form-grid {
+.modal-Servicio-form-grid {
   display: grid;
   gap: 15px;
 }
 
-.CamposAgregarServicioAdministrador {
+.CamposAgregarServicio {
   grid-column: span 2;
 }
