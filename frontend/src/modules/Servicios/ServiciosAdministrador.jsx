@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Navbar from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./servicios.css";
 
 const Servicios = () => {
@@ -132,7 +132,7 @@ const Servicios = () => {
 
   return (
     <div className="servicios-container">
-      <Navbar />
+      <NavbarAdmin />
       <div className="servicios-content">
         <h2 className="tituloServicios">Gestión de Servicios</h2>
         <div className="barraBusqueda-BotonSuperiorAgregarServicio">

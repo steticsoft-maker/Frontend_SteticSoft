@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Hook para redirección
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import "./Novedades.css";
 
 function Novedades() {

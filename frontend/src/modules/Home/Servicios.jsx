@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaShoppingCart } from "react-icons/fa"; // Ícono de carrito
 import { useNavigate } from "react-router-dom"; // Hook para redirección
-import Navbar from "../../components/Navbar"; // Componente Navbar
+import Navbar from "../../components/Navbar/Navbar";
 import "./Servicios.css";
 
 function Servicios() {

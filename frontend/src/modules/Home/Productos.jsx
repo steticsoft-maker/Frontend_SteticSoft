@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaShoppingCart } from "react-icons/fa"; // Ícono de carrito
-import Navbar from "../../components/Navbar"; // Componente Navbar
+import Navbar from "../../components/Navbar/Navbar";
 import "./Productos.css";
 
 function Productos() {
