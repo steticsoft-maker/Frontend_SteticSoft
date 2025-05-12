@@ -1,6 +1,3 @@
-/* ============================================================ */
-/* Estilos Generales del Contenedor Principal                  */
-/* ============================================================ */
 .usuarios-container {
     display: flex;
     min-height: 100vh;
@@ -37,9 +34,6 @@
     margin-bottom: 20px;
 }
 
-/* ============================================================ */
-/* Estilos de la Barra de Búsqueda y Botón Agregar              */
-/* ============================================================ */
 .usuarios-accionesTop {
     display: flex;
     justify-content: space-between;
@@ -91,9 +85,6 @@
     /* Verde oscuro coherente */
 }
 
-/* ============================================================ */
-/* Estilos de la Tabla de Usuarios                             */
-/* ============================================================ */
 .usuarios-table {
     width: 100%;
     border-collapse: collapse;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // Asumiendo que NavbarAdmin no cambia, mantenemos la importación
-import NavbarAdmin from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 // Asumiendo que los iconos no cambian, mantenemos la importación
 import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
 // Importamos el nuevo archivo CSS

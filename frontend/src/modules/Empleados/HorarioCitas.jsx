@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit, faTrash, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
-import Navbar from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./horarios.css";
 
 const Horarios = () => {
@@ -125,7 +125,7 @@ const Horarios = () => {
 
   return (
     <div className="horarios-container">
-      <Navbar />
+      <NavbarAdmin />
       <div className="horariosCitasContent">
         <h2>Horarios de Citas</h2>
         <div className="accionesBarraBusqueda-botonAgregar">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NavbarAdmin from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
 import "./Abastecimiento.css";
 

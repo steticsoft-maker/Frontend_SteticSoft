@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Navbar from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./proveedores.css";
 
 const Proveedores = () => {
@@ -101,7 +101,7 @@ const Proveedores = () => {
 
     return (
         <div className="proveedores-container">
-            <Navbar />
+            <NavbarAdmin />
             <div className="proveedoresContent">
                 <h2 className="title-h2-Proveedores">Gestión de Proveedores</h2>
 
