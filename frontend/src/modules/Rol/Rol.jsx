@@ -169,70 +169,11 @@ const ProcesoRolesFormModal = ({
         <div className="procesoRoles-container">
           {" "}
           {/* Reutilizamos la clase del contenedor, ajustada en CSS */}
-          <h1>{modoEdicion ? "Editar Rol" : "Crear Nuevo Rol"}</h1>
-          {/* Botones de modo Nuevo/Editar (solo si no estamos editando uno específico ya) */}
           {!modoEdicion && (
             <div className="procesoRoles-accionesModo">
-              <button
-                className={`procesoRoles-botonModoNuevo ${
-                  !modoEdicion ? "activo" : ""
-                }`}
-                onClick={() => {
-                  setModoEdicion(false);
-                  setDatosRol({
-                    id: null,
-                    nombre: "",
-                    descripcion: "",
-                    permisos: [],
-                    anulado: false,
-                  });
-                  setPermisosSeleccionados([]);
-                }}
-              >
-                Nuevo Rol
-              </button>
-              <button
-                className={`procesoRoles-botonModoEditar ${
-                  modoEdicion ? "activo" : ""
-                }`}
-                onClick={() => setMostrarPopupRoles(true)}
-              >
-                Editar Rol Existente
-              </button>
             </div>
           )}
           {/* Popup para seleccionar rol a editar */}
-          {mostrarPopupRoles && (
-            <div className="procesoRoles-popupSeleccionarRol">
-              <h3>Seleccionar Rol para Editar</h3>
-              <ul>
-                {existingRoles.map(
-                  (rol) =>
-                    // Excluir el rol "Administrador" y roles anulados de la lista de edición si aplica
-                    rol.nombre !== "Administrador" && (
-                      <li key={rol.id}>
-                        <span>
-                          {rol.nombre} ({rol.anulado ? "Inactivo" : "Activo"})
-                        </span>
-                        <button
-                          className="procesoRoles-botonSeleccionarRolEnPopup"
-                          onClick={() => seleccionarRolParaEdicion(rol)}
-                        >
-                          Seleccionar
-                        </button>
-                      </li>
-                    )
-                )}
-              </ul>
-              <button
-                className="procesoRoles-botonCerrarPopupSeleccionarRol"
-                onClick={() => setMostrarPopupRoles(false)}
-              >
-                Cerrar
-              </button>
-            </div>
-          )}
-          {/* Sección de información del Rol */}
           <div className="procesoRoles-seccionInformacionRol">
             <h3>Información del Rol</h3>
             <div className="procesoRoles-formularioInformacionRol">
@@ -396,10 +337,6 @@ const ProcesoRolesFormModal = ({
   );
 };
 
-// ============================================================
-// Componente Principal Rol
-// ============================================================
-
 const Rol = () => {
   // Define los permisos con IDs dentro de Rol.jsx para que el modal pueda acceder
   const modulosPermisos = [
@@ -434,10 +371,6 @@ const Rol = () => {
     },
   ];
 
-  // Define initialRoles usando nombres de permisos correspondientes a los IDs arriba
-  // NOTA: Si tus permisos en localStorage están guardados como NOMBRES,
-  // la lógica en el modal (mapeo de IDs a NOMBRES y viceversa) es correcta.
-  // Si están guardados como IDs, necesitarás ajustar el mapeo en el modal.
   const initialRoles = [
     {
       id: 1,

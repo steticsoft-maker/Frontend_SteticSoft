@@ -184,12 +184,12 @@
 
 .usuarios-table-button:nth-child(2) {
     /* Estilo para el segundo botón (Editar) */
-    background-color: #f39c12;
+    background-color: rgb(52, 152, 219);
     /* Naranja */
 }
 
 .usuarios-table-button:nth-child(2):hover {
-    background-color: #e67e22;
+    background-color: rgb(52, 152, 219);
     /* Naranja más oscuro */
 }
 
