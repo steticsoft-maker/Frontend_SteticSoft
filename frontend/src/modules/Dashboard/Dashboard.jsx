@@ -1,5 +1,5 @@
 import React from "react";
-import NavbarAdmin from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,

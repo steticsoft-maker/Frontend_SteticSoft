@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import NavbarAdmin from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./AgregarCompra.css";
 
 const productosFalsos = [

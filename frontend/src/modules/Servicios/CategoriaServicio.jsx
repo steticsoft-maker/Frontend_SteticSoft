@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Navbar from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./categoria.css";
 
 const CategoriasServicios = () => {
@@ -77,7 +77,7 @@ const CategoriasServicios = () => {
 
   return (
       <div className="Categoria-container">
-          <Navbar />
+          <NavbarAdmin />
           <div className="Categoria-content">
               <h2>Categorías de Servicios</h2>
               <div className="ContainerBotonAgregarCategoria">

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Navbar from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./insumos.css";
 
 const Insumos = () => {
@@ -78,7 +78,7 @@ const Insumos = () => {
 
     return (
         <div className="insumos-container">
-            <Navbar />
+            <NavbarAdmin />
             <div className="insumos-content">
                 <h2 className="title-h2">Gestión de Insumos</h2>
 

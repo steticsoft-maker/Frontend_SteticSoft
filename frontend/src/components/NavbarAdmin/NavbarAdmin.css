@@ -1,7 +1,7 @@
 /* Contenedor del Sidebar */
 .dashboard-sidebar {
     width: 250px;
-    background: linear-gradient(to bottom, #2c3e50, #34495e);
+    background: linear-gradient(to bottom, #f79ce3, #6d0b58);
     /* Degradado agradable */
     color: #ecf0f1;
     /* Texto claro */
@@ -9,15 +9,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 4px 0 5px rgba(0, 0, 0, 0.3);
     /* Sombra ligeramente más pronunciada */
     position: relative;
     height: 100vh;
-    /* Asegura que cubra toda la pantalla */
     overflow-y: auto;
-    /* Scroll vertical si el contenido es muy largo */
-    border-right: 2px solid #2c3e50;
-    /* Borde elegante para diferenciarlo del contenido */
 }
 
 /* Sección de administrador */
@@ -27,13 +23,14 @@
 }
 
 .admin-icon {
+    color: rgb(71, 6, 71);
     font-size: 4rem;
-    color: #1abc9c;
     /* Icono con color verde claro */
 }
 
 .admin-label {
-    font-size: 1.1rem;
+    color: black;
+    font-size: 1.3rem;
     /* Texto un poco más grande */
     font-weight: bold;
     text-transform: uppercase;
@@ -52,8 +49,9 @@
 
 /* Estilo de los enlaces */
 .dashboard-link {
-    background-color: transparent;
-    color: #ecf0f1;
+    margin-bottom: 12px;
+    background-color: #fc8de4;
+    color: #000000;
     border: none;
     padding: 12px 20px;
     /* Más espacio para hacerlo más táctil */
@@ -70,7 +68,7 @@
 }
 
 .dashboard-link:hover {
-    background-color: #1abc9c;
+    background-color: #ffa4eb;
     /* Fondo verde atractivo al pasar el mouse */
     transform: scale(1.02);
     /* Efecto de zoom ligero */
@@ -93,8 +91,7 @@
 
 .nested-link {
     background-color: transparent;
-    color: #bdc3c7;
-    /* Texto gris claro */
+    color: black;    /* Texto gris claro */
     border: none;
     padding: 8px 15px;
     text-align: left;
@@ -106,16 +103,16 @@
 }
 
 .nested-link:hover {
-    background-color: #16a085;
+    background-color: #ffa4eb;
     /* Fondo verde oscuro */
-    color: #ffffff;
+    color: #000000;
     /* Texto blanco */
 }
 
 /* Botón de logout */
 .logout-button {
-    margin-top: auto;
-    background: linear-gradient(to right, #e74c3c, #c0392b);
+    margin-top: 80px;
+    background: linear-gradient(to right, #c925a5, #36012b);
     /* Degradado rojo */
     color: #ecf0f1;
     border: none;
@@ -132,7 +129,7 @@
 }
 
 .logout-button:hover {
-    background: #c0392b;
+    background: #36012b;
     /* Rojo más oscuro */
     transform: scale(1.05);
     /* Efecto de zoom */
@@ -152,11 +149,13 @@
     }
 
     .admin-icon {
+        color: rgb(94, 11, 94);
         font-size: 3.5rem;
         /* Icono más pequeño */
     }
 
     .admin-label {
+        color: black;
         font-size: 1rem;
         /* Texto más compacto */
     }
@@ -180,6 +179,7 @@
     }
 
     .logout-button {
+        background: #36012b;
         padding: 10px 12px;
         font-size: 0.9rem;
         /* Texto reducido */

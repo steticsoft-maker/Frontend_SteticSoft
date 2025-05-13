@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaEye, FaFilePdf, FaBan } from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-
-import NavbarAdmin from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import ProcesoVentas from "./ProcesoVentas";
 import "./Ventas.css";
 import "./ProcesoVentas.css";

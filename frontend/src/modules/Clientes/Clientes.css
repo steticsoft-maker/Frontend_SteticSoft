@@ -2,15 +2,14 @@
 .clientes-container {
     display: flex; /* Organiza el contenido en fila */
     height: 100vh; /* Toma toda la altura de la pantalla */
+    width: 1400px; 
 }
 
 /* Contenido principal */
 .main-content-clientes {
     flex: 1; /* Permite que el contenido ocupe el espacio disponible */
     padding: 30px; /* Espaciado interno */
-    margin-left: 45px; /* Separación del margen izquierdo */
-    background-color: #f5f5f5; /* Fondo gris claro */
-    overflow-y: auto; /* Habilita scroll vertical si el contenido excede */
+    margin-left: 180px; /* Separación del margen izquierdo */
 }
 
 /* Barra de búsqueda */
@@ -44,9 +43,14 @@
 
 /* Tabla de Clientes */
 .tablaClientes {
-    width: 100%; /* Tabla ocupa el 100% del ancho */
-    border-collapse: collapse; /* Elimina espacios entre celdas */
-    margin-top: 20px; /* Separación superior */
+    background-color: #f5f5f5;
+    font-size: 18px;
+    width: auto;
+    height: auto;
+    padding: 20px;
+    margin-top: 20px;
+    border-collapse: collapse;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .tablaClientes th {
@@ -56,6 +60,7 @@
     text-align: center; /* Alineación centrada */
     font-weight: bold; /* Negrita */
     font-size: 1rem; /* Tamaño de fuente */
+    width: 20%;
 }
 
 .tablaClientes td {
@@ -114,8 +119,9 @@ input:checked+.slider:before {
 
 /* Botones de acciones en la tabla */
 .iconsTablaclientes {
+    display: flex;
+    justify-content: space-around;
     padding: 10px 20px; /* Espaciado interno */
-    margin: 5px; /* Separación entre botones */
     font-size: 1rem; /* Tamaño de fuente */
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */

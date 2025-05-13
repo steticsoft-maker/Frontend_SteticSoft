@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "moment/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import NavbarAdmin from "../../components/NavbarAdmin";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrash, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./Citas.css";
