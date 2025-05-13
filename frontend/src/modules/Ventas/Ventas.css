@@ -20,11 +20,10 @@
 }
 
 /* Barra de búsqueda */
-
 .barraBusquedaVenta {
     margin-bottom: 20px;
     padding: 12px;
-    width: 100%;
+    width: 600px;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -37,10 +36,10 @@
 
 .botonAgregarVenta {
     margin-bottom: 30px;
+    margin: 20px;
     padding: 12px 25px;
     font-size: 1.1rem;
     background-color: #b660a3;
-    /* Verde atractivo */
     color: white;
     border: none;
     border-radius: 5px;
