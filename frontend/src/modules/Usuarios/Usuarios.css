@@ -1,36 +1,41 @@
 .usuarios-container {
     display: flex;
-    min-height: 100vh;
-    background-color: #f4f7f6;
-    /* Fondo coherente con Rol.css */
+    height: 100vh;
+    /* Altura completa de la ventana visible */
+    background-color: transparent;
+    /* Elimina el fondo gris */
     font-family: 'Roboto', sans-serif;
-    /* Fuente coherente */
+}
+
+/* Estilo para el asterisco rojo en campos obligatorios */
+.required-asterisk {
+    color: red;
+    /* O el color rojo específico que uses en tu diseño */
+    margin-left: 2px;
+    /* Opcional: un pequeño espacio entre el texto y el asterisco */
 }
 
 /* Contenido principal (área de tabla y controles) */
 .usuarios-content {
     flex: 1;
-    /* Ocupa el espacio restante */
     padding: 30px;
-    /* Espaciado interno */
-    margin-left: 45px;
-    /* Espacio para NavbarAdmin si es fijo */
+    margin-left: 380px;
     overflow-y: auto;
-    /* Permite scroll si el contenido es largo */
-    max-width: 1200px;
-    /* Ancho máximo para el contenido */
-    margin: 0 auto;
-    /* Centra el contenido si hay espacio a los lados (junto a margin-left para offset) */
-    width: 100%;
-    /* Ocupa todo el ancho disponible hasta el max-width */
     box-sizing: border-box;
-    /* Incluye padding en el width */
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    /* Apila los hijos verticalmente */
+    align-items: center;
+    /* Centra los hijos horizontalmente */
+    justify-content: unset;
+    /* Centra los hijos verticalmente */
 }
 
 .usuarios-content h1 {
     text-align: center;
     color: #2c3e50;
-    /* Color coherente */
     margin-bottom: 20px;
 }
 
@@ -40,120 +45,95 @@
     align-items: center;
     margin-bottom: 20px;
     gap: 20px;
-    /* Espacio entre los elementos */
     flex-wrap: wrap;
-    /* Permite que se envuelvan en pantallas pequeñas */
+    width: 100%;
+    /* Ocupa el ancho dentro del contenedor flex centrado */
+    max-width: 1200px;
+    /* Ancho máximo para esta sección */
+    box-sizing: border-box;
 }
 
 .usuarios-barraBusqueda {
     padding: 10px 15px;
-    /* Espaciado interno coherente */
     border: 1px solid #bdc3c7;
-    /* Borde coherente */
     border-radius: 5px;
-    /* Bordes redondeados coherentes */
     font-size: 1rem;
-    /* Tamaño de fuente coherente */
     flex-grow: 1;
-    /* Permite que la barra de búsqueda ocupe el espacio disponible */
     min-width: 200px;
-    /* Ancho mínimo */
     background-color: white;
     color: #333;
-    /* Color de texto coherente */
     box-sizing: border-box;
-    /* Incluye padding y borde en el width */
 }
 
 .usuarios-botonAgregar {
     background-color: #2ecc71;
-    /* Verde coherente */
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
-    /* Tamaño de fuente coherente */
     transition: background-color 0.3s ease;
     flex-shrink: 0;
-    /* Evita que se encoja */
 }
 
 .usuarios-botonAgregar:hover {
     background-color: #27ae60;
-    /* Verde oscuro coherente */
 }
 
 .usuarios-table {
     width: 100%;
+    /* Ocupa el ancho dentro del contenedor flex centrado */
+    max-width: 1200px;
+    /* Ancho máximo para la tabla */
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    /* Sombra coherente */
     background-color: #ffffff;
-    /* Fondo blanco coherente */
+    box-sizing: border-box;
 }
 
 .usuarios-table th,
 .usuarios-table td {
     border: 1px solid #dddddd;
-    /* Borde coherente */
     text-align: left;
-    /* Alineación coherente si no se especifica otra */
     padding: 12px;
-    /* Espaciado coherente */
     vertical-align: middle;
-    /* Alineación vertical */
     font-size: 0.9rem;
-    /* Tamaño de fuente coherente */
     color: #34495e;
-    /* Color de texto coherente */
 }
 
 .usuarios-table th {
     background-color: #34495e;
-    /* Azul oscuro coherente */
     color: white;
     font-weight: 600;
-    /* Peso de fuente coherente */
     text-align: center;
-    /* Centrado para encabezados */
 }
 
 .usuarios-table tbody tr:nth-child(even) {
     background-color: #f9f9f9;
-    /* Fondo de filas pares coherente */
 }
 
 .usuarios-table tbody tr:hover {
     background-color: #f0f0f0;
-    /* Fondo al pasar coherente */
 }
 
 /* Contenedor de iconos en la tabla */
 .usuarios-table-iconos {
     display: flex;
     gap: 10px;
-    /* Espacio entre iconos */
     justify-content: center;
-    /* Centra los iconos en la celda */
     align-items: center;
 }
 
-/* Estilos para botones de acción en la tabla (ahora con estilo de Rol.css) */
+/* Estilos para botones de acción en la tabla */
 .usuarios-table-button {
-    /* Estilos base para todos los botones de acción de tabla */
     padding: 8px 12px;
-    /* Padding */
     margin: 0;
     font-size: 0.9rem;
-    /* Tamaño de fuente del icono */
     border: none;
     border-radius: 5px;
-    /* Bordes redondeados */
     color: white;
-    /* Color del icono */
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
     display: inline-flex;
@@ -161,41 +141,33 @@
     justify-content: center;
 }
 
-/* Colores específicos para los botones de acción en la tabla (como en Rol.css) */
+/* Colores específicos para botones de acción en la tabla */
 .usuarios-table-button:nth-child(1) {
-    /* Estilo para el primer botón (Ver) */
     background-color: #3498db;
-    /* Azul claro */
 }
 
 .usuarios-table-button:nth-child(1):hover {
     background-color: #2980b9;
-    /* Azul más oscuro */
 }
 
 .usuarios-table-button:nth-child(2) {
-    /* Estilo para el segundo botón (Editar) */
-    background-color: rgb(52, 152, 219);
+    background-color: #f39c12;
     /* Naranja */
 }
 
 .usuarios-table-button:nth-child(2):hover {
-    background-color: rgb(52, 152, 219);
-    /* Naranja más oscuro */
+    background-color: #e67e22;
 }
 
 .usuarios-table-button-delete {
-    /* Estilo específico para el botón Eliminar */
     background-color: #e74c3c;
-    /* Rojo */
 }
 
 .usuarios-table-button-delete:hover {
     background-color: #c0392b;
-    /* Rojo más oscuro */
 }
 
-/* Estilo para el switch (Reutiliza las clases del switch de Rol.css) */
+/* Estilo para el switch */
 .switch {
     position: relative;
     display: inline-block;
@@ -242,9 +214,7 @@ input:checked+.slider:before {
 }
 
 
-/* ============================================================ */
-/* Estilos de los Modales (General, Formulario, Detalles, Conf, Validation) */
-/* ============================================================ */
+/* Estilos de los Modales */
 
 /* Capa de fondo oscuro para cualquier modal */
 .usuarios-modalOverlay {
@@ -254,50 +224,40 @@ input:checked+.slider:before {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    /* Fondo oscuro semitransparente */
     z-index: 1000;
-    /* Alto z-index para estar encima del contenido principal */
     display: flex;
-    /* Usar flexbox para centrar el contenido */
     align-items: center;
-    /* Centrado vertical */
     justify-content: center;
-    /* Centrado horizontal */
     overflow-y: auto;
-    /* Permite scroll si el contenido del modal es muy alto */
     padding: 20px;
-    /* Padding general para evitar que el contenido toque los bordes en pantallas pequeñas */
     box-sizing: border-box;
 }
 
 /* Contenedor del contenido del modal (base) */
 .usuarios-modalContent {
     background-color: #ffffff;
-    /* Fondo blanco */
     padding: 30px;
-    /* Espaciado interno coherente */
     border-radius: 12px;
-    /* Bordes redondeados coherentes */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    /* Sombra coherente */
-    width: 95%;
-    /* Ancho responsive */
+    max-width: 600px;
+    /* Ancho máximo para el modal */
+    width: 100%;
+    /* Ocupa el ancho hasta el max-width */
+    margin: auto;
+    /* Centra el bloque dentro del overlay flex */
+
     max-height: 90vh;
     /* Altura máxima antes de hacer scroll */
     overflow-y: auto;
-    /* Scrollbar para el contenido del modal */
     position: relative;
-    /* Necesario para cualquier posicionamiento absoluto/fijo interno */
     box-sizing: border-box;
 }
 
 /* Estilos específicos para el contenido del modal de Detalles */
 .usuarios-modalContent-details {
     max-width: 500px;
-    /* Ancho máximo para el modal de detalles */
-    margin: auto;
-    /* Centra el bloque si el width es menor que el contenedor modalContent */
-    /* Los paddings y border-radius ya vienen de .usuarios-modalContent */
+    /* Ancho específico si es diferente al base */
+    /* Remove margin: auto here, handled by .usuarios-modalContent */
 }
 
 .usuarios-modalContent-details h2 {
@@ -315,16 +275,14 @@ input:checked+.slider:before {
 
 .usuarios-modalContent-details strong {
     color: #2c3e50;
+    margin-right: 5px;
 }
-
 
 /* Estilos específicos para el contenido del modal de Formulario (Crear/Editar) */
 .usuarios-modalContent-form {
     max-width: 600px;
-    /* Ancho máximo para el formulario */
-    margin: auto;
-    /* Centra el bloque */
-    /* Los paddings y border-radius ya vienen de .usuarios-modalContent */
+    /* Ancho específico si es diferente al base */
+    /* Remove margin: auto here, handled by .usuarios-modalContent */
 }
 
 .usuarios-modalContent-form h2 {
@@ -338,14 +296,12 @@ input:checked+.slider:before {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    /* Espacio entre grupos de formulario */
 }
 
 .usuarios-form-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    /* Espacio entre label e input/select */
 }
 
 .usuarios-form-label {
@@ -364,13 +320,11 @@ input:checked+.slider:before {
     background-color: #fff;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
-    /* Incluye padding y borde en el width */
 }
 
 .usuarios-form-input:focus,
 .usuarios-form-select:focus {
     border-color: #3498db;
-    /* Azul */
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
     outline: none;
 }
@@ -382,17 +336,13 @@ input:checked+.slider:before {
 /* Estilos específicos para el contenido del modal de Confirmación */
 .usuarios-modalContent-confirm {
     max-width: 400px;
-    /* Ancho más pequeño para la confirmación */
     margin: auto;
     text-align: center;
-    /* Centra el texto dentro del modal */
-    /* Los paddings y border-radius ya vienen de .usuarios-modalContent */
 }
 
 .usuarios-modalContent-confirm h3 {
     text-align: center;
     color: #e74c3c;
-    /* Rojo para confirmar eliminación */
     margin-top: 0;
     margin-bottom: 15px;
 }
@@ -411,16 +361,13 @@ input:checked+.slider:before {
 /* Estilos específicos para el contenido del modal de Validación */
 .usuarios-modalContent-validation {
     max-width: 400px;
-    /* Ancho similar al de confirmación */
     margin: auto;
     text-align: center;
-    /* Los paddings y border-radius ya vienen de .usuarios-modalContent */
 }
 
 .usuarios-modalContent-validation h3 {
     text-align: center;
     color: #f39c12;
-    /* Naranja para validación/advertencia */
     margin-top: 0;
     margin-bottom: 15px;
 }
@@ -435,21 +382,18 @@ input:checked+.slider:before {
 /* Contenedor de botones de acción en formularios/modales */
 .usuarios-form-actions {
     display: flex;
-    justify-content: flex-end;
-    /* Alinea los botones a la derecha por defecto */
+    justify-content: center;
+    /* Centra los botones */
     gap: 15px;
-    /* Espacio entre botones */
     margin-top: 20px;
     padding-top: 15px;
     border-top: 1px solid #eee;
-    /* Separador visual */
 }
 
 /* Estilos base para botones de formulario/modal */
 .usuarios-form-buttonGuardar,
 .usuarios-form-buttonCancelar,
 .usuarios-modalButton-cerrar {
-    /* Incluye el botón cerrar de detalles/validation */
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -457,40 +401,43 @@ input:checked+.slider:before {
     font-size: 1rem;
     transition: background-color 0.3s ease;
     flex-grow: 1;
-    /* Permite que los botones se expandan en móviles */
     text-align: center;
-    /* Centra el texto dentro del botón */
 }
 
 /* Colores específicos para botones de formulario/modal */
-.usuarios-form-buttonGuardar {
+.usuarios-form-actions .usuarios-form-buttonGuardar {
     background-color: #2ecc71;
     color: white;
 }
 
-/* Verde (Guardar) */
-.usuarios-form-buttonGuardar:hover {
+.usuarios-form-actions .usuarios-form-buttonGuardar:hover {
     background-color: #27ae60;
 }
 
-.usuarios-form-buttonCancelar {
+.usuarios-form-actions .usuarios-form-buttonCancelar {
     background-color: #95a5a6;
     color: white;
 }
 
-/* Gris (Cancelar) */
-.usuarios-form-buttonCancelar:hover {
+.usuarios-form-actions .usuarios-form-buttonCancelar:hover {
     background-color: #7f8c8d;
 }
 
+/* Delete confirmation button color */
+.usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar {
+    background-color: #e74c3c;
+}
+
+.usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar:hover {
+    background-color: #c0392b;
+}
+
+/* Close button style (for details and validation modals) */
 .usuarios-modalButton-cerrar {
     background-color: #3498db;
-    /* Azul (Cerrar Detalles/Validación) */
     color: white;
     display: block;
-    /* Hace que el botón de cerrar ocupe su propia línea */
     width: 100%;
-    /* Le da el ancho completo dentro de su contenedor */
     margin-top: 20px;
 }
 
@@ -499,112 +446,107 @@ input:checked+.slider:before {
 }
 
 
-/* ============================================================ */
-/* Responsive Styles                                          */
-/* ============================================================ */
+/* Responsive Styles */
 @media (max-width: 768px) {
     .usuarios-content {
         padding: 15px;
-        /* Reducido para móviles */
         margin-left: 0;
-        /* Ocupa todo el ancho */
+        max-width: 100%;
     }
 
     .usuarios-accionesTop {
         flex-direction: column;
-        /* Apila búsqueda y botón */
         gap: 15px;
     }
 
     .usuarios-barraBusqueda {
         max-width: 100%;
-        /* Ocupa todo el ancho */
         margin-right: 0;
-        /* Elimina margen derecho */
     }
 
     .usuarios-botonAgregar {
         width: 100%;
-        /* Botón ocupa todo el ancho */
     }
 
     .usuarios-table th,
     .usuarios-table td {
         padding: 10px 8px;
-        /* Menos padding en celdas */
         font-size: 0.8rem;
-        /* Texto más pequeño */
     }
 
     .usuarios-table-iconos {
         flex-direction: row;
-        /* Iconos en fila por defecto */
         align-items: center;
         justify-content: center;
-        /* Centrados si hay espacio */
         gap: 8px;
-        /* Permite que en pantallas muy estrechas se apilen si es necesario */
         flex-wrap: wrap;
     }
 
     .usuarios-table-button {
         padding: 6px 10px;
-        /* Ajusta padding de botones de tabla */
         font-size: 1em;
     }
 
-
-    /* Ajustes para el contenido del modal en móvil */
     .usuarios-modalContent {
         padding: 20px;
         width: 95%;
+        max-width: 95%;
         max-height: 95vh;
+        overflow-y: auto;
     }
 
-    /* Ajustes para el formulario dentro del modal en móvil */
-    .usuarios-modalContent-form form {
-        gap: 10px;
-        /* Menos espacio entre campos en móvil */
-    }
-
-    .usuarios-form-group {
-        gap: 6px;
-    }
-
-    /* Menos espacio en grupos */
-    .usuarios-form-label {
-        font-size: 0.9rem;
-    }
-
-    .usuarios-form-input,
-    .usuarios-form-select {
-        font-size: 0.9rem;
-        padding: 8px 10px;
-    }
-
-
-    /* Ajustes para los botones de acción del formulario/modal en móvil */
-    .usuarios-form-actions {
-        flex-direction: column;
-        /* Apila los botones */
-        gap: 10px;
-    }
-
-    .usuarios-form-buttonGuardar,
-    .usuarios-form-buttonCancelar,
-    .usuarios-modalButton-cerrar {
-        width: 100%;
-        /* Botones ocupan todo el ancho */
-        padding: 12px;
-        font-size: 1rem;
-    }
-
-    /* Ajustes para modales pequeños (detalles, confirmación, validación) en móvil */
     .usuarios-modalContent-details,
     .usuarios-modalContent-confirm,
     .usuarios-modalContent-validation {
         max-width: 95%;
-        /* Asegura que no sean demasiado pequeños */
         margin: auto;
+    }
+
+    .usuarios-modalContent-form {
+        max-width: 95%;
+        margin: auto;
+    }
+
+    .usuarios-modalContent-form .usuarios-label {
+        font-size: 0.9rem;
+    }
+
+    .usuarios-modalContent-form form {
+        gap: 10px;
+    }
+
+    .usuarios-modalContent-form .usuarios-form-group {
+        gap: 6px;
+    }
+
+    .usuarios-modalContent-form .usuarios-form-input,
+    .usuarios-modalContent-form .usuarios-select {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+    }
+
+    .usuarios-modalContent-form .usuarios-textarea {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+    }
+
+    .usuarios-form-actions {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .usuarios-form-actions .usuarios-form-buttonGuardar,
+    .usuarios-form-actions .usuarios-form-buttonCancelar {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .usuarios-modalButton-cerrar {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
     }
 }

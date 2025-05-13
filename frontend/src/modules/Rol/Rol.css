@@ -1,22 +1,33 @@
 /* Estilos generales del contenedor principal */
 .rol-container {
     display: flex;
-    min-height: 100vh;
-    background-color: #f4f7f6;
+    height: 100vh;
+    background-color: transparent;
     font-family: 'Roboto', sans-serif;
+}
+
+/* Estilo para el asterisco rojo en campos obligatorios */
+.required-asterisk {
+    color: red;
+    /* O el color rojo específico que uses en tu diseño */
+    margin-left: 2px;
+    /* Opcional: un pequeño espacio entre el texto y el asterisco */
 }
 
 /* Contenido principal (área de tabla y controles) */
 .rol-content {
     flex: 1;
+    margin-left: 220px;
     padding: 30px;
-    margin-left: 45px;
     overflow-y: auto;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
     box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
 }
+
 
 .rol-content h1 {
     text-align: center;
@@ -32,6 +43,9 @@
     margin-bottom: 20px;
     gap: 20px;
     flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
 }
 
 .rol-barraBusqueda {
@@ -65,10 +79,14 @@
 /* Estilos de la Tabla de Roles */
 .rol-table {
     width: 100%;
+    /* Fill available width within the centered block */
+    max-width: 1200px;
+    /* Max width for the table */
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
+    box-sizing: border-box;
 }
 
 .rol-table th,
@@ -191,6 +209,8 @@ input:checked+.slider:before {
 }
 
 
+/* Estilos de Modal */
+
 /* Capa de fondo oscuro para cualquier modal */
 .rol-modalOverlay {
     position: fixed;
@@ -201,8 +221,11 @@ input:checked+.slider:before {
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 1000;
     display: flex;
+    /* Centers the modal content */
     align-items: center;
+    /* Centers vertically */
     justify-content: center;
+    /* Centers horizontally */
     overflow-y: auto;
     padding: 20px;
     box-sizing: border-box;
@@ -214,9 +237,15 @@ input:checked+.slider:before {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    width: 50%;
-    /* Keep this as requested in the input code */
-    max-width: unset;
+    /* Remove original width and max-width: unset */
+    /* Use max-width and margin: auto for centering within flex overlay */
+    max-width: 600px;
+    /* Example reasonable max-width */
+    width: 100%;
+    /* Take full width up to max-width */
+    margin: auto;
+    /* Centers the block within the flex overlay */
+
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
@@ -225,8 +254,9 @@ input:checked+.slider:before {
 
 /* Estilos específicos para el contenido del modal de Detalles */
 .rol-modalContent-details {
+    /* Keep specific max-width if different from base .rol-modalContent */
     max-width: 500px;
-    margin: auto;
+    /* Remove margin: auto here, already handled by .rol-modalContent */
 }
 
 /* Titles and paragraphs within details */
@@ -244,6 +274,7 @@ input:checked+.slider:before {
     color: #34495e;
 }
 
+/* Strong text within details modal */
 .rol-modalContent-details strong {
     color: #2c3e50;
     margin-right: 5px;
@@ -288,7 +319,8 @@ input:checked+.slider:before {
 /* Estilos específicos para el contenido del modal de Formulario (Crear/Editar) */
 .rol-modalContent-form {
     max-width: 600px;
-    margin: auto;
+    /* Keep specific max-width */
+    /* Remove margin: auto here, already handled by .rol-modalContent */
 }
 
 /* Title within form modal */
@@ -322,6 +354,7 @@ input:checked+.slider:before {
     border-radius: 10px;
     background-color: #fdfefe;
     box-sizing: border-box;
+    /* Remove max-width and margin: auto from here */
 }
 
 /* Formulario Información Rol (inner fields container) */
@@ -466,10 +499,8 @@ input:checked+.slider:before {
     border: 1px solid #ecf0f1;
     border-radius: 10px;
     background-color: #fdfefe;
-    max-width: 600px;
-    width: 100%;
-    margin: auto;
     box-sizing: border-box;
+    /* Remove max-width and margin: auto from here */
 }
 
 /* Modulos grid container */
@@ -532,10 +563,8 @@ input:checked+.slider:before {
     border: 1px solid #ecf0f1;
     border-radius: 10px;
     background-color: #fdfefe;
-    max-width: 600px;
-    width: 100%;
-    margin: auto;
     box-sizing: border-box;
+    /* Remove max-width and margin: auto from here */
 }
 
 /* Message when no selected modules */
@@ -571,13 +600,18 @@ input:checked+.slider:before {
     padding-top: 15px;
     border-top: 1px solid #eee;
     width: 100%;
+    /* Remove max-width and margin: auto from here */
 }
 
 /* Specific max-width/centering for form actions within the form modal */
+/* Removed this specific rule as max-width is handled by parent modal content */
+/*
 .rol-modalContent-form .rol-form-actions {
     max-width: 600px;
     margin: auto;
 }
+*/
+
 
 /* Estilos base para botones de formulario/modal */
 .rol-form-buttonGuardar,
@@ -622,6 +656,8 @@ input:checked+.slider:before {
 }
 
 /* Close button style (for details and validation modals) */
+/* This rule duplicates the one inside .rol-modalContent-details, removed the duplicate */
+/* Keeping the general one */
 .rol-modalButton-cerrar {
     display: block;
     width: 100%;
@@ -646,6 +682,9 @@ input:checked+.slider:before {
     .rol-content {
         padding: 15px;
         margin-left: 0;
+        /* Remove sidebar margin on small screens */
+        max-width: 100%;
+        /* Allow full width on small screens */
     }
 
     .rol-accionesTop {
@@ -733,6 +772,7 @@ input:checked+.slider:before {
     .rol-modalContent-form .rol-seccionSeleccionarModulos,
     .rol-modalContent-form .rol-seccionModulosSeleccionados {
         max-width: 100%;
+        /* Allow sections to take full width within the modal */
         padding: 15px;
         box-sizing: border-box;
     }
@@ -761,6 +801,7 @@ input:checked+.slider:before {
         gap: 10px;
         width: 100%;
         max-width: 100%;
+        /* Allow actions to take full width within the modal */
         box-sizing: border-box;
     }
 

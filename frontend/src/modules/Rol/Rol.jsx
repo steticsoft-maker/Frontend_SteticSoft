@@ -15,9 +15,6 @@ const modulosPermisos = [
   { id: 7, nombre: "Inventario" },
   { id: 8, nombre: "Configuración" },
   { id: 9, nombre: "Dashboard" },
-  { id: 10, nombre: "Finanzas" },
-  { id: 11, nombre: "Comunicados" },
-  { id: 12, nombre: "Soporte" },
 ];
 
 // Datos iniciales de roles (igual que antes)
@@ -369,6 +366,8 @@ const Rol = () => {
                     {/* Clase reutilizada */}
                     <label htmlFor="nombreRolInput" className="rol-label">
                       Nombre del Rol:
+                      <span className="required-asterisk">*</span>{" "}
+                      {/* Asterisco rojo */}
                     </label>
                     <input
                       id="nombreRolInput"
@@ -389,6 +388,8 @@ const Rol = () => {
                   <div className="rol-campoContainer">
                     <label htmlFor="descripcionRolInput" className="rol-label">
                       Descripción del Rol:
+                      <span className="required-asterisk">*</span>{" "}
+                      {/* Asterisco rojo */}
                     </label>
                     <textarea
                       id="descripcionRolInput"
@@ -438,7 +439,7 @@ const Rol = () => {
                 >
                   {mostrarSeleccionModulos
                     ? "Ocultar Módulos"
-                    : "Seleccionar Módulos"}
+                    : "Seleccionar Módulos *"}
                 </button>
               )}
 

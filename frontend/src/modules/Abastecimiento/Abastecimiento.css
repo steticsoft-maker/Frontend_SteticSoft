@@ -2,25 +2,40 @@
 .abastecimiento-container {
     display: flex;
     height: 100vh;
-    background-color: #eef2f3;
+    background-color: transparent;
+    font-family: 'Roboto', sans-serif;
 }
 
-/* Contenido principal */
-.main-content-abastecimiento {
-    flex: 1;
-    padding: 30px;
-    margin-left: 45px;
-    background-color: #ffffff;
-    overflow-y: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Estilo para el asterisco rojo en campos obligatorios */
+.required-asterisk {
+    color: red;
+    /* O el color rojo específico que uses en tu diseño */
+    margin-left: 2px;
+    /* Opcional: un pequeño espacio entre el texto y el asterisco */
 }
+
+/* Contenido principal - Área next to sidebar */
+.main-content-area {
+    flex: 1;
+    padding: 20px;
+    margin-left: 380px;
+    /* Flexbox para centrar horizontalmente y alinear arriba verticalmente */
+    display: flex;
+    flex-direction: column;
+    /* Apila los hijos verticalmente */
+    align-items: center;
+    /* Centra los hijos horizontalmente (cross axis) */
+    justify-content: flex-start;
+    /* Alinea los hijos al inicio (arriba) (main axis) */
+    height: 100%;
+}
+
 
 /* Título */
-h1 {
+.abastecimiento-content-wrapper h1 {
     text-align: center;
-    color: #333;
-    font-size: 1.8rem;
+    color: #2c3e50;
+    font-size: 3.0rem;
     margin-bottom: 20px;
 }
 
@@ -30,67 +45,114 @@ h1 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    gap: 15px;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
 }
 
 .inputBuscarAbastecimiento {
     flex: 1;
-    padding: 10px;
+    padding: 10px 15px;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+    box-sizing: border-box;
+    min-width: 200px;
 }
 
 .botonAgregarAbastecimiento {
-    background-color: #3498db;
-    color: #fff;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 8px;
+    background-color: #2ecc71;
+    color: white;
     border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
 }
 
 .botonAgregarAbastecimiento:hover {
-    background-color: #2980b9;
+    background-color: #27ae60;
 }
 
 /* Tabla de productos */
 .tabla-abastecimiento {
     width: 100%;
+    max-width: 1200px;
     border-collapse: collapse;
-    background-color: #fff;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
-.tabla-abastecimiento th {
-    background-color: #3498db;
-    color: #fff;
-    padding: 12px;
+.tabla-abastecimiento th,
+.tabla-abastecimiento td {
+    border: 1px solid #dddddd;
     text-align: left;
-    font-weight: bold;
+    padding: 12px;
+    vertical-align: middle;
+    font-size: 0.9rem;
+    color: #34495e;
 }
 
-.tabla-abastecimiento td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+.tabla-abastecimiento th {
+    background-color: #34495e;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}
+
+.tabla-abastecimiento tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabla-abastecimiento tbody tr:hover {
+    background-color: #f0f0f0;
 }
 
 /* Iconos en la tabla */
 .icon-actions-abastecimiento {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 .table-icons-abastecimiento {
     font-size: 16px;
     cursor: pointer;
-    padding: 5px;
-    transition: color 0.3s ease;
+    padding: 8px 12px;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Colores específicos para los botones de acción en la tabla */
+.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(1) {
+    background-color: #3498db;
+}
+
+.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(1):hover {
+    background-color: #2980b9;
+}
+
+.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(2) {
+    background-color: #f39c12;
+}
+
+.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(2):hover {
+    background-color: #e67e22;
 }
 
 .delete-button-abastecimiento {
@@ -98,100 +160,376 @@ h1 {
 }
 
 .delete-button-abastecimiento:hover {
-    background-color: #86261b;
+    background-color: #c0392b;
 }
 
-/* Modal y contenido */
-.modal-abastecimiento {
+/* Estilos de los Modales */
+
+/* Capa de fondo oscuro para cualquier modal */
+.modal-abastecimiento-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 999;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.modal-content-abastecimiento {
-    background: #fff;
-    padding: 25px;
+/* Contenedor del contenido del modal principal (form/details) */
+.modal-abastecimiento-content {
+    background-color: #ffffff;
+    padding: 30px;
     border-radius: 12px;
-    width: 650px;
-    max-width: 95%;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-sizing: border-box;
     text-align: center;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Formulario del modal */
-.formularioModalAbastecimiento {
+/* Estilos específicos para el contenido del modal de Detalles */
+.modal-abastecimiento-content-details {
+    max-width: 500px;
+}
+
+/* Estilos del Formulario dentro del modal principal */
+.modal-abastecimiento-content .formularioModalAbastecimiento {
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
 }
 
-.modal-container-seleccion-empleadoProducto{
+/* Estilos específicos para el contenido del modal de Selección (Producto/Empleado) */
+.modal-abastecimiento-selection-container {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 600px; /* Ancho ajustado para balance */
-    border-radius: 12px; /* Bordes más suaves */
-    background: linear-gradient(135deg, #ffffff, #f8f9fa); /* Fondo limpio */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Sombra para profundidad */
-    padding: 25px; /* Espaciado consistente */
+    width: 600px;
+    max-width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    text-align: center;
 }
 
-.inputBuscarProducto-empleado{
-    background-color: white;
-    color: black;
-    padding: 4px 12px;
+/* Estilos específicos para el contenido del modal de Confirmación */
+.modal-abastecimiento-confirm {
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
 }
 
-.inputCantidadAbastecimiento{
-    background-color: white;
-    color: black;
-    padding: 4px 12px;
+.modal-abastecimiento-confirm h3 {
+    text-align: center;
+    color: #e74c3c;
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
-.guardarModalAbastecimiento {
+.modal-abastecimiento-confirm p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #34495e;
+}
+
+.modal-abastecimiento-confirm strong {
+    color: #2c3e50;
+}
+
+/* Estilos para los elementos del Formulario */
+
+/* Grupo de formulario */
+.form-group-abastecimiento {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+/* Labels */
+.form-label-abastecimiento {
+    font-weight: 600;
+    color: #34495e;
+    font-size: 1rem;
+    text-align: left;
+}
+
+/* Inputs y Selects */
+.form-input-abastecimiento,
+.form-select-abastecimiento {
+    padding: 10px 12px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Focus styles */
+.form-input-abastecimiento:focus,
+.form-select-abastecimiento:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    outline: none;
+}
+
+.form-select-abastecimiento {
+    cursor: pointer;
+}
+
+/* Botón para abrir modales de selección */
+.form-button-select-abastecimiento {
     background-color: #3498db;
-    color: #fff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-align: center;
 }
 
-.guardarModalAbastecimiento:hover {
-    background-color: #2171a7;
+.form-button-select-abastecimiento:hover {
+    background-color: #2980b9;
 }
 
-.cerrarModalAbastecimiento {
-    background-color: #d9534f;
-    color: #fff;
+/* Contenedor de botones de acción en formularios/modales */
+.form-actions-abastecimiento {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    width: 100%;
 }
 
-.cerrarModalAbastecimiento:hover {
-    background-color: #972f24;
+/* Estilos base para botones de formulario/modal */
+.form-button-guardar-abastecimiento,
+.form-button-cancelar-abastecimiento {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    flex-grow: 1;
+    text-align: center;
+}
+
+/* Colores específicos para botones de formulario/modal */
+.form-button-guardar-abastecimiento {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.form-button-guardar-abastecimiento:hover {
+    background-color: #27ae60;
+}
+
+.form-button-cancelar-abastecimiento {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.form-button-cancelar-abastecimiento:hover {
+    background-color: #7f8c8d;
+}
+
+/* Delete confirmation button color */
+.modal-abastecimiento-confirm .form-button-guardar-abastecimiento {
+    background-color: #e74c3c;
+}
+
+.modal-abastecimiento-confirm .form-button-guardar-abastecimiento:hover {
+    background-color: #c0392b;
+}
+
+/* Close button style */
+.modal-abastecimiento-button-cerrar {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+}
+
+.modal-abastecimiento-button-cerrar:hover {
+    background-color: #2980b9;
+}
+
+/* Estilos de los elementos dentro del modal de Selección */
+.modal-selection-input-abastecimiento {
+    padding: 10px 15px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: white;
+    color: #333;
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.modal-selection-list-abastecimiento {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.modal-selection-list-abastecimiento li {
+    border-bottom: 1px solid #eee;
+}
+
+.modal-selection-list-abastecimiento li:last-child {
+    border-bottom: none;
+}
+
+.modal-selection-list-abastecimiento li button {
+    background: none;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 1rem;
+    color: #333;
+}
+
+.modal-selection-list-abastecimiento li button:hover {
+    background-color: #e0e0e0;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .main-content-abastecimiento {
+    .main-content-area {
         margin-left: 0;
-        padding: 50px;
+        padding: 15px;
+    }
+
+    .abastecimiento-content-wrapper {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .containerAgregarBuscarAbastecimiento {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .inputBuscarAbastecimiento {
+        min-width: unset;
+    }
+
+    .botonAgregarAbastecimiento {
+        width: 100%;
     }
 
     .tabla-abastecimiento th,
     .tabla-abastecimiento td {
         padding: 10px;
+        font-size: 0.9rem;
     }
 
-    .modal-content-abastecimiento {
-        width: 90%;
+    .icon-actions-abastecimiento {
+        flex-wrap: wrap;
+        gap: 6px;
     }
 
-    .containerAgregarBuscar {
+    .table-icons-abastecimiento {
+        padding: 6px 10px;
+        font-size: 1em;
+    }
+
+    .modal-abastecimiento-content {
+        padding: 20px;
+        max-width: 95%;
+    }
+
+    .modal-abastecimiento-selection-container {
+        padding: 20px;
+        width: 95%;
+        max-width: 95%;
+    }
+
+    .modal-selection-list-abastecimiento {
+        max-height: 150px;
+    }
+
+    .modal-abastecimiento-content .formularioModalAbastecimiento {
+        gap: 10px;
+    }
+
+    .form-group-abastecimiento {
+        gap: 6px;
+    }
+
+    .form-label-abastecimiento {
+        font-size: 0.9rem;
+    }
+
+    .form-input-abastecimiento,
+    .form-select-abastecimiento,
+    .form-button-select-abastecimiento {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+    }
+
+    .form-actions-abastecimiento {
         flex-direction: column;
         gap: 10px;
+    }
+
+    .form-button-guardar-abastecimiento,
+    .form-button-cancelar-abastecimiento {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .modal-abastecimiento-button-cerrar {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .modal-abastecimiento-confirm {
+        max-width: 95%;
+        margin: auto;
     }
 }
