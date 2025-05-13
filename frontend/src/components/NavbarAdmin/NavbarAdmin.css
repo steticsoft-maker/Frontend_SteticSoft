@@ -68,7 +68,7 @@
 }
 
 .dashboard-link:hover {
-    background-color: #1abc9c;
+    background-color: #ffa4eb;
     /* Fondo verde atractivo al pasar el mouse */
     transform: scale(1.02);
     /* Efecto de zoom ligero */
@@ -103,9 +103,9 @@
 }
 
 .nested-link:hover {
-    background-color: #16a085;
+    background-color: #ffa4eb;
     /* Fondo verde oscuro */
-    color: #ffffff;
+    color: #000000;
     /* Texto blanco */
 }
 
