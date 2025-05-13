@@ -6,6 +6,11 @@
     font-family: 'Roboto', sans-serif;
 }
 
+/* Alinea a la izquierda el texto dentro del contenido de detalles */
+.abastecimiento-details-text p {
+    text-align: left;
+}
+
 /* Estilo para el asterisco rojo en campos obligatorios */
 .required-asterisk {
     color: red;

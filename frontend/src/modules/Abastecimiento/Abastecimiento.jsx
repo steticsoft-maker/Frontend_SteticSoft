@@ -232,13 +232,10 @@ const Abastecimiento = () => {
       {/* Modal Principal (Agregar / Editar / Ver Detalles) */}
       {showModal && (
         <div className="modal-abastecimiento-overlay">
-          {" "}
-          {/* Nueva clase consistente */}
           <div className="modal-abastecimiento-content">
-            {" "}
-            {/* Nueva clase consistente */}
             {modalType === "details" && currentProducto ? (
-              <>
+              /* Reemplazado Fragment con un div con la clase para alinear texto */
+              <div className="abastecimiento-details-text">
                 <h2>Detalles del Producto</h2>
                 <p>
                   <strong>Nombre:</strong> {currentProducto.nombre}
@@ -253,17 +250,17 @@ const Abastecimiento = () => {
                   <strong>Fecha de Ingreso:</strong>
                   {currentProducto.fechaIngreso}
                 </p>
+                {/* El botón de cerrar puede ir dentro o fuera de este div dependiendo del diseño deseado */}
                 <button
                   className="modal-abastecimiento-button-cerrar"
                   onClick={closeModal}
                 >
-                  {" "}
-                  {/* Nueva clase consistente */}
                   Cerrar
                 </button>
-              </>
+              </div>
             ) : (
               <>
+                {/* ... Código del formulario ... */}
                 <h2>
                   {modalType === "create"
                     ? "Agregar Producto"
@@ -286,17 +283,14 @@ const Abastecimiento = () => {
                 >
                   {/* Botones para abrir modales de selección */}
                   <div className="form-group-abastecimiento">
-                    {" "}
-                    {/* Nueva clase consistente */}
                     <label className="form-label-abastecimiento">
                       Producto:
                       <span className="required-asterisk">*</span>{" "}
                       {/* Asterisco rojo */}
-                    </label>{" "}
-                    {/* Nueva clase consistente */}
+                    </label>
                     <button
                       type="button"
-                      className="form-button-select-abastecimiento" // Nueva clase consistente
+                      className="form-button-select-abastecimiento"
                       onClick={openProductModal}
                     >
                       Seleccionar Producto
@@ -308,8 +302,6 @@ const Abastecimiento = () => {
                   </div>
 
                   <div className="form-group-abastecimiento">
-                    {" "}
-                    {/* Nueva clase consistente */}
                     <label className="form-label-abastecimiento">
                       Empleado:
                       <span className="required-asterisk">*</span>{" "}
@@ -317,7 +309,7 @@ const Abastecimiento = () => {
                     </label>
                     <button
                       type="button"
-                      className="form-button-select-abastecimiento" // Nueva clase consistente
+                      className="form-button-select-abastecimiento"
                       onClick={openEmployeeModal}
                     >
                       Seleccionar Empleado
@@ -330,8 +322,6 @@ const Abastecimiento = () => {
 
                   {/* Campo Cantidad */}
                   <div className="form-group-abastecimiento">
-                    {" "}
-                    {/* Nueva clase consistente */}
                     <label
                       htmlFor="cantidad"
                       className="form-label-abastecimiento"
@@ -339,11 +329,10 @@ const Abastecimiento = () => {
                       Cantidad:
                       <span className="required-asterisk">*</span>{" "}
                       {/* Asterisco rojo */}
-                    </label>{" "}
-                    {/* Nueva clase consistente */}
+                    </label>
                     <input
                       id="cantidad"
-                      className="form-input-abastecimiento" // Nueva clase consistente
+                      className="form-input-abastecimiento"
                       type="number"
                       name="cantidad"
                       placeholder="Cantidad"
@@ -354,19 +343,15 @@ const Abastecimiento = () => {
 
                   {/* Botones Guardar/Cancelar */}
                   <div className="form-actions-abastecimiento">
-                    {" "}
-                    {/* Nueva clase consistente */}
                     <button
                       type="submit"
                       className="form-button-guardar-abastecimiento"
                     >
-                      {" "}
-                      {/* Nueva clase consistente */}
                       Guardar
                     </button>
                     <button
                       type="button"
-                      className="form-button-cancelar-abastecimiento" // Nueva clase consistente
+                      className="form-button-cancelar-abastecimiento"
                       onClick={closeModal}
                     >
                       Cancelar
