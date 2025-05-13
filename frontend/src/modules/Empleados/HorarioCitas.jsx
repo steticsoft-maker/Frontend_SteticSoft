@@ -136,7 +136,7 @@ const Horarios = () => {
               value={search}
               onChange={handleSearch}
             />
-          <button className="botonAgregarHorarioCitas" onClick={() => openModal("agregar")}>
+          <button className="botonAgregarHorario" onClick={() => openModal("agregar")}>
             Agregar Horario
           </button>
         </div>
@@ -175,13 +175,13 @@ const Horarios = () => {
                     </label>
                   </td>
                   <td>
-                    <button className="botonVerDetallesHorarioCitas" onClick={() => openModal("ver", index)}>
+                    <button className="botonAgregar" onClick={() => openModal("ver", index)}>
                       <FontAwesomeIcon icon={faEye} />
                     </button>
-                    <button className="botonEditarHorarioCitas" onClick={() => openModal("editar", index)}>
+                    <button className="botonAgregar" onClick={() => openModal("editar", index)}>
                       <FontAwesomeIcon icon={faEdit} />
                     </button>
-                    <button className="botonEliminarHorarioCitas" onClick={() => setConfirmDelete(index)}>
+                    <button className="botonCerrar" onClick={() => setConfirmDelete(index)}>
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </td>
@@ -208,7 +208,7 @@ const Horarios = () => {
                       </p>
                     ))}
                   </div>
-                  <button className="botonCerrarModalHorarioCitas" onClick={closeModal}>Cerrar</button>
+                  <button className="botonCerrar" onClick={closeModal}>Cerrar</button>
                 </>
               ) : (
                 <>
@@ -316,7 +316,7 @@ const Horarios = () => {
                               {formData.dias.length > 1 && (
                                 <button 
                                   type="button" 
-                                  className="botonEliminarDia"
+                                  className="botonCerrar"
                                   onClick={() => removeDia(idx)}>
                                   <FontAwesomeIcon icon={faMinus} />
                                 </button>
@@ -328,7 +328,7 @@ const Horarios = () => {
 
                       <button 
                         type="button" 
-                        className="botonAgregarDia"
+                        className="botonAgregar"
                         onClick={addDia}
                       >
                         <FontAwesomeIcon icon={faPlus} /> Agregar otro día
@@ -336,10 +336,10 @@ const Horarios = () => {
                     </div>
 
                     <div className="botonesAgregarHorarioCitasGuardarCancelar">
-                      <button className="botonGuardarHorario" type="button" onClick={saveHorario}>
+                      <button className="botonAgregar" type="button" onClick={saveHorario}>
                         Guardar
                       </button>
-                      <button className="botonCerrarModalAgregarHorario" type="button" onClick={closeModal}>
+                      <button className="botonCerrar" type="button" onClick={closeModal}>
                         Cancelar
                       </button>
                     </div>
@@ -357,8 +357,8 @@ const Horarios = () => {
               <h3>Confirmar eliminación</h3>
               <p>¿Está seguro de que desea eliminar este horario?</p>
               <div className="modalHorariosCitas-confirm-buttons">
-                <button className="botonEliminarHorario" onClick={deleteHorario}>Sí, eliminar</button>
-                <button className="botonCancelarEliminarHorario" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+                <button className="botonAgregar" onClick={deleteHorario}>Sí, eliminar</button>
+                <button className="botonCerrar" onClick={() => setConfirmDelete(null)}>Cancelar</button>
               </div>
             </div>
           </div>

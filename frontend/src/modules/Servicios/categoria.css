@@ -46,20 +46,20 @@ h2 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-table {
-  width: 100%;
+.tablaCategoria table {
   border-collapse: collapse;
+  width: 100%;
 }
 
-th, td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
+.tablaCategoria th,
+.tablaCategoria td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
-th {
+.tablaCategoria th {
   background-color: #34495e;
-  color: white;
 }
 
 .switch input {

@@ -65,7 +65,7 @@ h2 {
   background-color: white;
 }
 
-.botonAgregarHorarioCitas {
+.botonAgregarHorario {
   background-color: #3498db;
   color: white;
   padding: 12px 24px;
@@ -75,11 +75,40 @@ h2 {
   transition: background-color 0.3s ease;
 }
 
-.botonAgregarHorarioCitas:hover {
+.botonAgregarHorario:hover {
   background-color: #2980b9;
 }
 
-.tablaHorariosCitas {
+.botonAgregar {
+  background-color: #3498db;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.botonAgregar:hover {
+  background-color: #2980b9;
+}
+.botonCerrar {
+  background-color: #e74c3c;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.botonCerrarDetalle:hover {
+  background-color: #c0392b;
+}
+
+.tablaHorarios {
   background: white;
   width: 97%;
   padding: 15px;

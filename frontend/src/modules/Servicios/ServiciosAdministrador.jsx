@@ -4,23 +4,26 @@ import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../../components/NavbarAdmin";
 import "./servicios.css";
 
+const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB (tamaño estándar permitido)
+const MAX_FILE_SIZE_MB = MAX_FILE_SIZE_BYTES / (1024 * 1024);
+
 const Servicios = () => {
   const [servicios, setServicios] = useState(() => {
     const stored = localStorage.getItem("servicios");
     return stored ? JSON.parse(stored) : [];
   });
-  
+
   const [categorias, setCategorias] = useState(() => {
     const stored = localStorage.getItem("categoriasServicios");
     return stored ? JSON.parse(stored) : [];
   });
-  
+
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState({ open: false, type: "", index: null });
-  const [formData, setFormData] = useState({ 
-    nombre: "", 
-    precio: "", 
-    categoria: "", 
+  const [formData, setFormData] = useState({
+    nombre: "",
+    precio: "",
+    categoria: "",
     imagen: null,
     imagenURL: ""
   });
@@ -53,10 +56,10 @@ const Servicios = () => {
     if (type === "editar" && index !== null) {
       setFormData(servicios[index]);
     } else if (type === "agregar") {
-      setFormData({ 
-        nombre: "", 
-        precio: "", 
-        categoria: "", 
+      setFormData({
+        nombre: "",
+        precio: "",
+        categoria: "",
         imagen: null,
         imagenURL: ""
       });
@@ -73,6 +76,10 @@ const Servicios = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        setFormErrors({ ...formErrors, imagen: `La imagen debe ser menor a ${MAX_FILE_SIZE_MB}MB` });
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData({
@@ -80,6 +87,7 @@ const Servicios = () => {
           imagen: file,
           imagenURL: reader.result
         });
+        setFormErrors({ ...formErrors, imagen: "" }); // Limpiar error si existe
       };
       reader.readAsDataURL(file);
     }
@@ -89,6 +97,7 @@ const Servicios = () => {
     const errors = {};
     if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio";
     if (!formData.precio || isNaN(formData.precio)) errors.precio = "Precio inválido";
+    if (formErrors.imagen) errors.imagen = formErrors.imagen; // Mantener el error de la imagen
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
@@ -107,9 +116,9 @@ const Servicios = () => {
       setServicios(prev => [...prev, servicioData]);
     } else if (modal.type === "editar" && modal.index !== null) {
       setServicios(prev =>
-        prev.map((s, idx) => (idx === modal.index ? { 
-          ...servicioData, 
-          estado: s.estado 
+        prev.map((s, idx) => (idx === modal.index ? {
+          ...servicioData,
+          estado: s.estado
         } : s))
       );
     }
@@ -169,10 +178,10 @@ const Servicios = () => {
                   <td>{serv.categoria || "—"}</td>
                   <td>
                     {serv.imagenURL ? (
-                      <img 
-                        src={serv.imagenURL} 
-                        alt={serv.nombre} 
-                        className="servicio-imagen" 
+                      <img
+                        src={serv.imagenURL}
+                        alt={serv.nombre}
+                        className="servicio-imagen"
                         style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                       />
                     ) : "—"}
@@ -217,9 +226,9 @@ const Servicios = () => {
                   {formData.imagenURL && (
                     <div>
                       <strong>Imagen:</strong>
-                      <img 
-                        src={formData.imagenURL} 
-                        alt={formData.nombre} 
+                      <img
+                        src={formData.imagenURL}
+                        alt={formData.nombre}
                         style={{ maxWidth: '200px', marginTop: '10px' }}
                       />
                     </div>
@@ -244,7 +253,7 @@ const Servicios = () => {
                       />
                       {formErrors.nombre && <span className="error">{formErrors.nombre}</span>}
                     </div>
-                    
+
                     <div className="CamposAgregarServicio">
                       <label className="asterisco">
                         Precio <span className="required">*</span>
@@ -261,20 +270,20 @@ const Servicios = () => {
                       />
                       {formErrors.precio && <span className="error">{formErrors.precio}</span>}
                     </div>
-                    
+
                     <div className="CamposAgregarServicio">
                       <label>Categoría</label>
                       <select className="input"
                         value={formData.categoria}
                         onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
                       >
-                        <option value="" className="opcion">Seleccione una categorías</option>
+                        <option value="" className="opcion">Seleccione una categoría</option>
                         {categorias.filter(c => c.estado === "Activo").map((cat, index) => (
                           <option key={index} value={cat.nombre}>{cat.nombre}</option>
                         ))}
                       </select>
                     </div>
-                    
+
                     <div className="CamposAgregarServicio">
                       <label>Imagen</label>
                       <input className="input"
@@ -282,15 +291,16 @@ const Servicios = () => {
                         accept="image/*"
                         onChange={handleImageChange}
                       />
+                      {formErrors.imagen && <span className="error">{formErrors.imagen}</span>}
                       {formData.imagenURL && (
-                        <img 
-                          src={formData.imagenURL} 
-                          alt="Vista previa" 
+                        <img
+                          src={formData.imagenURL}
+                          alt="Vista previa"
                           style={{ maxWidth: '100px', marginTop: '10px' }}
                         />
                       )}
                     </div>
-                    
+
                     <div className="CamposAgregarServicio">
                       <button className="botonEditarServicios" type="button" onClick={saveServicio}>
                         Guardar

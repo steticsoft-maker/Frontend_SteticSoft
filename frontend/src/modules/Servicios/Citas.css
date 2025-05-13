@@ -32,20 +32,17 @@
     justify-content: center;
 }
 
-/* Ajuste del calendario */
 .rbc-calendar {
     width: 100%;
     height: 100%;
 }
 
-/* Estilos de eventos */
 .rbc-event {
     font-size: 14px;
     padding: 6px;
     border-radius: 6px;
 }
 
-/* Lista de citas */
 .lista-citas {
     width: 100%;
     max-width: 600px;
@@ -56,13 +53,11 @@
     background-color: white;
 }
 
-/* Estilos de la tabla */
 .lista-citas table {
     width: 100%;
     border-collapse: collapse;
 }
 
-/* Encabezados */
 .lista-citas th {
     background-color: #3498db;
     color: white;
@@ -70,7 +65,6 @@
     text-align: left;
 }
 
-/* Filas */
 .lista-citas td {
     background-color: white;
     color: black;
@@ -78,13 +72,11 @@
     border-bottom: 1px solid #ddd;
 }
 
-/* Botones de acción */
 .btn-acciones {
     display: flex;
     justify-content: space-around;
 }
 
-/* Estilos de botones */
 .btn-acciones button {
     background: none;
     border: none;

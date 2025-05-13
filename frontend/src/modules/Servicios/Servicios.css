@@ -94,13 +94,13 @@
 
 .input {
   background: white;
-    color: black;
+  color: black;
 }
 
 .thServicios, td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
 .thServicios {
