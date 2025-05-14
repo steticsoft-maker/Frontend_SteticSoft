@@ -126,7 +126,7 @@ const Ventas = () => {
     <div className="ventas-container">
       <NavbarAdmin />
       <div className="ventasContent">
-        <h1>Gestión de Ventas</h1>
+        <h1 className="TituloVentas">Gestión de Ventas</h1>
         {mostrarProcesoVentas ? (
           <ProcesoVentas guardarVenta={guardarVenta} />
         ) : (
