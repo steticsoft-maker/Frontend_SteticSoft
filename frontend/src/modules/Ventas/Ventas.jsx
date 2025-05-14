@@ -131,7 +131,8 @@ const Ventas = () => {
           <ProcesoVentas guardarVenta={guardarVenta} />
         ) : (
           <>
-            <div className="barraBusquedaBotonAgregarVenta">
+            {/* Barra de búsqueda y botón en una misma línea */}
+            <div className="barraBotonContainer">
               <input
                 type="text"
                 placeholder="Buscar venta por cliente..."
@@ -146,6 +147,7 @@ const Ventas = () => {
                 Agregar Venta
               </button>
             </div>
+
             <table className="ventas-table">
               <thead>
                 <tr>
@@ -202,69 +204,9 @@ const Ventas = () => {
                 ))}
               </tbody>
             </table>
-            <div className="paginacionVenta">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => changePage(index + 1)}
-                  disabled={currentPage === index + 1}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
           </>
         )}
       </div>
-
-      {showModal && currentVenta && (
-        <div className="modal-venta">
-          <div className="modal-content-venta">
-            <h2>Detalles de la Venta</h2>
-            <p>
-              <strong>Fecha:</strong> {currentVenta.fecha}
-            </p>
-            <p>
-              <strong>Cliente:</strong> {currentVenta.cliente}
-            </p>
-            <p>
-              <strong>Total:</strong> ${currentVenta.total.toFixed(2)}
-            </p>
-            <p>
-              <strong>Estado:</strong> {currentVenta.estado}
-            </p>
-            <button className="botonCerrarModalDetalleVenta" onClick={closeModal}>
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showPDFModal && pdfUrl && (
-        <div className="modal-venta">
-          <div className="modal-content-venta pdf-modal-venta">
-            <h2>Vista Previa del PDF</h2>
-            <iframe
-              src={pdfUrl}
-              title="Vista previa PDF"
-              width="550px"
-              height="500px"
-              style={{ border: "1px solid #ccc" }}
-            />
-            <div className="modal-actions-venta">
-              <button
-                className="botonCerrarModalPdfVenta"
-                onClick={() => {
-                  setShowPDFModal(false);
-                  URL.revokeObjectURL(pdfUrl);
-                }}
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
