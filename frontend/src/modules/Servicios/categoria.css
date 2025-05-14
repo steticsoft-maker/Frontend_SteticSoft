@@ -25,7 +25,7 @@ h2 {
 }
 
 .botonAgregarCategoria {
-  background-color: #3498db;
+  background-color: #b660a3;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -35,7 +35,7 @@ h2 {
 }
 
 .botonAgregarCategoria:hover {
-  background-color: #2980b9;
+  background-color: #ac3a93;
 }
 
 .tablaCategoria {
@@ -53,13 +53,13 @@ h2 {
 
 .tablaCategoria th,
 .tablaCategoria td {
-  border: 1px solid #ddd;
+  border: 1px solid #e978d0;
   padding: 8px;
   text-align: left;
 }
 
 .tablaCategoria th {
-  background-color: #34495e;
+  background-color: #e978d0;
 }
 
 .switch input {
@@ -161,31 +161,6 @@ input:checked + .slider:before {
   margin-bottom: 8px;
 }
 
-.btn {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  margin: 10px;
-}
-
-.btn-success {
-  background-color: #3498db;
-}
-
-.btn-success:hover {
-  background-color: #2980b9;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-}
-
-.btn-danger:hover {
-  background-color: #c0392b;
-}
-
 .ContainerBotonAgregarCategoria {
   display: flex;
   justify-content: space-between;
@@ -227,7 +202,7 @@ input:checked + .slider:before {
 }
 
 .botonVerDetallesCategoria {
-  background-color: #3498db;
+  background-color: #f153cf;
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
@@ -238,11 +213,11 @@ input:checked + .slider:before {
 }
 
 .botonVerDetallesCategoria:hover {
-  background-color: #1976D2;
+  background-color: #ac3a93;
 }
 
 .botonEditarCategoria {
-  background-color: #3498db;
+  background-color: #f153cf;
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
@@ -253,11 +228,11 @@ input:checked + .slider:before {
 }
 
 .botonEditarCategoria:hover {
-  background-color: #1976D2;
+  background-color: #ac3a93;
 }
 
 .botonEliminarCategoria {
-  background-color: #f44336;
+  background-color: #f153cf;
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
@@ -268,7 +243,7 @@ input:checked + .slider:before {
 }
 
 .botonEliminarCategoria:hover {
-  background-color: #d32f2f;
+  background-color: #ac3a93;
   margin: 10px;
 }
 
