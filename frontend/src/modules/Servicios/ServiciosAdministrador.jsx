@@ -233,7 +233,7 @@ const Servicios = () => {
                       />
                     </div>
                   )}
-                  <button className="CerrarModalDetalleServicio" onClick={closeModal}>Cerrar</button>
+                  <button className="botonEliminarServicios" onClick={closeModal}>Cerrar</button>
                 </>
               ) : (
                 <>
@@ -323,8 +323,8 @@ const Servicios = () => {
               <h3>Confirmar eliminación</h3>
               <p>¿Está seguro de que desea eliminar este servicio?</p>
               <div className="modalConfirmacionEliminar">
-                <button className="botonEliminarServicio" onClick={deleteServicio}>Sí, eliminar</button>
-                <button className="botonCancelarEliminarServicio" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+                <button className="botonEditarServicios" onClick={deleteServicio}>Sí, eliminar</button>
+                <button className="botonEliminarServicios" onClick={() => setConfirmDelete(null)}>Cancelar</button>
               </div>
             </div>
           </div>

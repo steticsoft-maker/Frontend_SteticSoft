@@ -39,7 +39,7 @@
 }
 
 .botonVerDetallesServicios {
-  background-color: #3498db;
+  background-color: #fc8de4;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -50,11 +50,11 @@
 }
 
 .botonVerDetallesServicios:hover {
-  background-color: #2980b9;
+  background-color: #ac3a93;
 }
 
 .botonEditarServicios {
-  background-color: #3498db;
+  background-color: #fc8de4;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -65,11 +65,11 @@
 }
 
 .botonEditarServicios:hover {
-  background-color: #2980b9;
+  background-color: #ac3a93;
 }
 
 .botonEliminarServicios {
-  background-color: #e74c3c;
+  background-color: #f153cf;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -80,7 +80,7 @@
 }
 
 .botonEliminarServicios:hover {
-  background-color: #c0392b;
+  background-color: #ac3a93;
 }
 
 .tablaServicio {
@@ -243,34 +243,6 @@ input:checked + .slider:before {
   display: flex;
   justify-content: center;
   gap: 1rem;
-}
-
-.btn-blue {
-  background-color: #3498db;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.btn-blue:hover {
-  background-color: #1976D2;
-}
-
-.btn-red {
-  background-color: #f44336;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.btn-red:hover {
-  background-color: #d32f2f;
 }
 
 .asteriscoCamposServicio {
