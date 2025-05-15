@@ -278,3 +278,126 @@ input:checked + .slider:before {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.modalHorariosCitas-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-encargado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.form-encargado label {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 5px;
+  width: 80%;
+  text-align: center;
+}
+
+.form-encargado select {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  color: black;
+}
+
+.form-fechas {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.form-fechaHorarioCitas {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 50%;
+}
+
+.form-fechaHorarioCitas label {
+  font-weight: bold;
+  color: #555;
+}
+
+.form-dias-horarios-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.dias-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 0 200px;
+  width: 120%; 
+  justify-content: center; 
+}
+
+.dia-fields {
+  display: flex;
+  width: calc(33.33% - 10px);
+}
+
+.dia-fields.col-1 {
+  width: 80%; 
+}
+
+.dia-fields.col-2 {
+  width: calc(50% - 10px);
+}
+
+.dia-fields.col-multiple {
+  width: calc(33.33% - 10px);
+}
+
+.containerAgregarHorarioCitas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  width: 100%;
+}
+
+.containerAgregarHorarioCitas-inputs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.containerAgregarHorarioCitas-inputs > div {
+  flex: 1;
+}
+
+.containerAgregarHorarioCitas-inputs > span {
+  margin: 0 5px;
+}
+
+.botonRemoverDia {
+  margin-left: auto;
+}
+
+.botonAgregarDia {
+  margin-top: 15px;
+  width: 80%; 
+}
+
+.botonesAgregarHorarioCitasGuardarCancelar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

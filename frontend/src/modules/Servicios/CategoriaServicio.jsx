@@ -177,10 +177,10 @@ const CategoriasServicios = () => {
                                           />
                                       </div>
                                       <div className="containerBotonesAgregarCategoria">
-                                          <button className="btn btn-success" type="button" onClick={saveCategoria}>
+                                          <button className="botonEditarCategoria" type="button" onClick={saveCategoria}>
                                               Guardar
                                           </button>
-                                          <button className="btn btn-danger" type="button" onClick={closeModal}>
+                                          <button className="botonEliminarCategoria" type="button" onClick={closeModal}>
                                               Cancelar
                                           </button>
                                       </div>
@@ -198,8 +198,8 @@ const CategoriasServicios = () => {
                           <h3>Confirmar eliminación</h3>
                           <p>¿Está seguro de que desea eliminar esta categoría?</p>
                           <div className="modal-Categoria-confirm-buttons">
-                              <button className="btn btn-success" onClick={deleteCategoria}>Sí, eliminar</button>
-                              <button className="btn btn-danger" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+                              <button className="botonEditarCategoria" onClick={deleteCategoria}>Sí, eliminar</button>
+                              <button className="botonEliminarCategoria" onClick={() => setConfirmDelete(null)}>Cancelar</button>
                           </div>
                       </div>
                   </div>

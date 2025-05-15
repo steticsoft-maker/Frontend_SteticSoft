@@ -1,7 +1,6 @@
 .servicios-page {
     padding: 60px;
     font-family: Arial, sans-serif;
-    background-color: rgb(245, 245, 245);
     height: 100vh;
     /* Usa el 100% de la altura visible */
     overflow-y: auto;
@@ -42,34 +41,6 @@
     margin-bottom: 15px;
 }
 
-.primary-button,
-.add-button {
-    margin: 10px 5px;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.primary-button {
-    background-color: #eb0985;
-    color: white;
-}
-
-.primary-button:hover {
-    background-color: #c01071;
-}
-
-.add-button {
-    background-color: #28a745;
-    color: white;
-}
-
-.add-button:hover {
-    background-color: #218838;
-}
 
 .cart-icon {
     position: fixed;
@@ -125,9 +96,16 @@
     margin-top: 15px;
 }
 
-.primary-button,
-.secondary-button {
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 1rem;
+.botonAgregarServicio {
+  background-color: #b660a3;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.botonAgregarServicio:hover {
+  background-color: #ac3a93;
 }

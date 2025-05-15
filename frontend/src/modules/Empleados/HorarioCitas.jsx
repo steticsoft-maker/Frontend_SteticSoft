@@ -214,62 +214,66 @@ const Horarios = () => {
                 <>
                   <h3>{modal.type === "agregar" ? "Agregar Horario" : "Editar Horario"}</h3>
                   <form className="modalHorariosCitas-form-grid">
-                    <div className="form-fechaHorarioCitas">
-                      <label className="asteriscoHorarioCitas">
-                        Encargado <span className="requiredAsteriscoHorarioCitas">*</span>
-                      </label>
-                      <select
-                        value={formData.encargado}
-                        onChange={(e) => {
+                     <div className="form-encargado"> {/* Nuevo contenedor para el encargado */}
+                        <label className="asteriscoHorarioCitas">
+                            Encargado <span className="requiredAsteriscoHorarioCitas">*</span>
+                        </label>
+                        <select
+                          value={formData.encargado}
+                          onChange={(e) => {
                           setFormData({ ...formData, encargado: e.target.value });
                           setFormErrors({ ...formErrors, encargado: "" });
-                        }}
-                      >
-                        <option value="">Seleccionar encargado</option>
-                        {encargados.map((enc, idx) => (
+                          }}
+                          >
+                          <option value="">Seleccionar encargado</option>
+                            {encargados.map((enc, idx) => (
                           <option key={idx} value={enc}>{enc}</option>
-                        ))}
-                      </select>
-                      {formErrors.encargado && <span className="errorHorariocitas">{formErrors.encargado}</span>}
-                    </div>
+                          ))}
+                        </select>
+                        {formErrors.encargado && <span className="errorHorariocitas">{formErrors.encargado}</span>}
+                      </div>
 
-                    <div className="form-fechaHorarioCitas">
-                      <label className="asteriscoHorarioCitas">
-                        Fecha Inicio <span className="requiredAsteriscoHorarioCitas">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        value={formData.fechaInicio}
-                        onChange={(e) => {
-                          setFormData({ ...formData, fechaInicio: e.target.value });
-                          setFormErrors({ ...formErrors, fechaInicio: "" });
-                        }}
-                      />
-                      {formErrors.fechaInicio && <span className="errorHorariocitas">{formErrors.fechaInicio}</span>}
-                    </div>
+                      <div className="form-fechas"> {/* Nuevo contenedor para las fechas */}
+                        <div className="form-fechaHorarioCitas">
+                          <label className="asteriscoHorarioCitas">
+                            Fecha Inicio <span className="requiredAsteriscoHorarioCitas">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            value={formData.fechaInicio}
+                            onChange={(e) => {
+                            setFormData({ ...formData, fechaInicio: e.target.value });
+                            setFormErrors({ ...formErrors, fechaInicio: "" });
+                            }}
+                          />
+                          {formErrors.fechaInicio && <span className="errorHorariocitas">{formErrors.fechaInicio}</span>}
+                        </div>
 
-                    <div className="form-fechaHorarioCitas">
-                      <label className="asteriscoHorarioCitas">
-                        Fecha Fin <span className="requiredAsteriscoHorarioCitas">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        value={formData.fechaFin}
-                        onChange={(e) => {
-                          setFormData({ ...formData, fechaFin: e.target.value });
-                          setFormErrors({ ...formErrors, fechaFin: "" });
-                        }}
-                        min={formData.fechaInicio}
-                      />
-                      {formErrors.fechaFin && <span className="errorHorariocitas">{formErrors.fechaFin}</span>}
-                    </div>
+                        <div className="form-fechaHorarioCitas">
+                          <label className="asteriscoHorarioCitas">
+                            Fecha Fin <span className="requiredAsteriscoHorarioCitas">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            value={formData.fechaFin}
+                            onChange={(e) => {
+                              setFormData({ ...formData, fechaFin: e.target.value });
+                              setFormErrors({ ...formErrors, fechaFin: "" });
+                            }}
+                            min={formData.fechaInicio}
+                          />
+                          {formErrors.fechaFin && <span className="errorHorariocitas">{formErrors.fechaFin}</span>}
+                        </div>
+                      </div>
 
-                    <div className="form-fechaHorarioCitas">
-                      <label className="asteriscoHorarioCitas">Días y Horarios <span className="requiredAsteriscoHorarioCitas">*</span></label>
-                      <div className="dia-containerDiasHorarios">
-                        {formData.dias.map((dia, idx) => (
-                          <div key={idx} className="dia-fields">
-                            <div className="containerAgregarHorarioCitas">
+                      <div className="form-dias-horarios-container"> {/* Nuevo contenedor para días y   horarios */}
+                        <label className="asteriscoHorarioCitas">Días y Horarios <span className="requiredAsteriscoHorarioCitas">*</span></label>
+                        <div className="dias-grid"> {/* Grid para la disposición de los días */}
+                          {formData.dias.map((dia, idx) => (
+                          <div key={idx} className={`dia-fields col-${formData.dias.length <= 3 ? formData.dias.length : 'multiple'}`}>
+                          <div className="containerAgregarHorarioCitas">
+                            {/* ... Campos de selección de día y horas ... */}
+                            <div className="containerAgregarHorarioCitas-inputs">
                               <div>
                                 <select
                                   value={dia.dia}
@@ -280,70 +284,66 @@ const Horarios = () => {
                                 >
                                   <option value="">Seleccionar día</option>
                                   {diasSemana.map((d, i) => (
-                                    <option key={i} value={d}>{d}</option>
+                                  <option key={i} value={d}>{d}</option>
                                   ))}
                                 </select>
                                 {formErrors[`dia-${idx}`] && <span className="errorHorariocitas">{formErrors[`dia-${idx}`]}</span>}
                               </div>
-
-                              <div>
-                                <input
-                                  type="time"
-                                  value={dia.horaInicio}
-                                  onChange={(e) => {
-                                    handleDiaChange(idx, "horaInicio", e.target.value);
-                                    setFormErrors({ ...formErrors, [`horaInicio-${idx}`]: "" });
-                                  }}
-                                />
-                                {formErrors[`horaInicio-${idx}`] && <span className="errorHorariocitas">{formErrors[`horaInicio-${idx}`]}</span>}
-                              </div>
-
-                              <span>a</span>
-
-                              <div>
-                                <input
-                                  type="time"
-                                  value={dia.horaFin}
-                                  onChange={(e) => {
-                                    handleDiaChange(idx, "horaFin", e.target.value);
-                                    setFormErrors({ ...formErrors, [`horaFin-${idx}`]: "" });
-                                  }}
-                                  min={dia.horaInicio}
+                            <div>
+                              <input
+                                type="time"
+                                value={dia.horaInicio}
+                                onChange={(e) => {
+                                handleDiaChange(idx, "horaInicio", e.target.value);
+                                setFormErrors({ ...formErrors, [`horaInicio-${idx}`]: "" });
+                                }}
+                              />
+                              {formErrors[`horaInicio-${idx}`] && <span className="errorHorariocitas">{formErrors[`horaInicio-${idx}`]}</span>}
+                            </div>
+                            <span>a</span>
+                            <div>
+                              <input
+                                type="time"
+                                value={dia.horaFin}
+                                onChange={(e) => {
+                                handleDiaChange(idx, "horaFin", e.target.value);
+                                setFormErrors({ ...formErrors, [`horaFin-${idx}`]: "" });
+                                }}
+                                min={dia.horaInicio}
                                 />
                                 {formErrors[`horaFin-${idx}`] && <span className="errorHorariocitas">{formErrors[`horaFin-${idx}`]}</span>}
-                              </div>
-
-                              {formData.dias.length > 1 && (
-                                <button 
-                                  type="button" 
-                                  className="botonCerrar"
-                                  onClick={() => removeDia(idx)}>
-                                  <FontAwesomeIcon icon={faMinus} />
-                                </button>
-                              )}
                             </div>
+                            {formData.dias.length > 1 && (
+                            <button
+                              type="button"
+                              className="botonCerrar botonRemoverDia"
+                              onClick={() => removeDia(idx)}>
+                              <FontAwesomeIcon icon={faMinus} />
+                            </button>
+                            )}
                           </div>
+                        </div>
+                      </div>
                         ))}
                       </div>
-
-                      <button 
-                        type="button" 
-                        className="botonAgregar"
+                      <button
+                        type="button"
+                        className="botonAgregar botonAgregarDia"
                         onClick={addDia}
                       >
                         <FontAwesomeIcon icon={faPlus} /> Agregar otro día
                       </button>
-                    </div>
+                      </div>
 
-                    <div className="botonesAgregarHorarioCitasGuardarCancelar">
-                      <button className="botonAgregar" type="button" onClick={saveHorario}>
-                        Guardar
-                      </button>
-                      <button className="botonCerrar" type="button" onClick={closeModal}>
-                        Cancelar
-                      </button>
-                    </div>
-                  </form>
+                      <div className="botonesAgregarHorarioCitasGuardarCancelar">
+                        <button className="botonAgregar" type="button" onClick={saveHorario}>
+                          Guardar
+                        </button>
+                        <button className="botonCerrar" type="button" onClick={closeModal}>
+                          Cancelar
+                        </button>
+                      </div>
+                    </form>
                 </>
               )}
             </div>
