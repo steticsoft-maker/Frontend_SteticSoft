@@ -1,3 +1,4 @@
+/* Contenedor general */
 .usuarios-container {
     display: flex;
     height: 100vh;
@@ -5,6 +6,7 @@
     font-family: 'Roboto', sans-serif;
 }
 
+/* Estilo para el asterisco rojo (se mantiene) */
 .required-asterisk {
     color: red;
     margin-left: 2px;
@@ -15,21 +17,27 @@
     flex: 1;
     padding: 30px;
     margin-left: 280px;
+    /* Ajusta si tu sidebar tiene otro ancho */
     overflow-y: auto;
     box-sizing: border-box;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Centra horizontalmente */
     justify-content: unset;
+    /* Alinea al inicio verticalmente */
 }
 
+/* Título principal */
 .usuarios-content h1 {
     text-align: center;
-    color: #2c3e50;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
     margin-bottom: 20px;
 }
 
+/* Acciones (barra de búsqueda y botón agregar) */
 .usuarios-accionesTop {
     display: flex;
     justify-content: space-between;
@@ -42,9 +50,11 @@
     box-sizing: border-box;
 }
 
+/* Barra de búsqueda */
 .usuarios-barraBusqueda {
     padding: 10px 15px;
-    border: 1px solid #bdc3c7;
+    border: 1px solid #c287b5;
+    /* Borde basado en Ventas.css estado-select */
     border-radius: 5px;
     font-size: 1rem;
     flex-grow: 1;
@@ -54,8 +64,10 @@
     box-sizing: border-box;
 }
 
+/* Botón principal de Agregar Usuario */
 .usuarios-botonAgregar {
-    background-color: #2ecc71;
+    background-color: #b660a3;
+    /* Color de botón Agregar Venta */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -67,44 +79,63 @@
 }
 
 .usuarios-botonAgregar:hover {
-    background-color: #27ae60;
+    background-color: #6d0b58;
+    /* Color de título de Ventas.css para hover */
 }
 
+/* Tabla de Usuarios */
 .usuarios-table {
     width: 100%;
     max-width: 1200px;
     border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Sombra de Ventas.css */
     background-color: #ffffff;
     box-sizing: border-box;
+    border-radius: 8px;
+    /* Bordes redondeados de Ventas.css */
+    overflow: hidden;
 }
 
-.usuarios-table th,
+/* Encabezados de tabla */
+.usuarios-table th {
+    background-color: #e978d0;
+    /* Color de encabezado de tabla de Ventas.css */
+    color: black;
+    /* Color de texto de encabezado de tabla de Ventas.css */
+    font-weight: bold;
+    /* Peso de fuente de encabezado de tabla de Ventas.css */
+    text-align: center;
+    padding: 15px;
+    font-size: 1rem;
+    /* Tamaño de fuente de encabezado de tabla de Ventas.css */
+    border: 1px solid #e978d0;
+    /* Borde de celda de tabla de Ventas.css */
+}
+
+/* Celdas de tabla */
 .usuarios-table td {
-    border: 1px solid #dddddd;
+    border: 1px solid #e978d0;
+    /* Borde de celda de tabla de Ventas.css */
     text-align: left;
     padding: 15px;
-    /* Aumentado el padding */
     vertical-align: middle;
     font-size: 1rem;
-    /* Aumentado el tamaño de fuente */
-    color: #34495e;
+    color: black;
+    /* Color de texto de celda de tabla de Ventas.css */
 }
 
-.usuarios-table th {
-    background-color: #34495e;
-    color: white;
-    font-weight: 600;
-    text-align: center;
-}
-
+/* Fondos de filas pares (ajustado a un tono similar) */
 .usuarios-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f8eaf5;
+    /* Tono claro similar al fondo de Ventas */
 }
 
+/* Fondo al pasar el mouse (ajustado a un tono similar) */
 .usuarios-table tbody tr:hover {
-    background-color: #f0f0f0;
+    background-color: #f3d9ec;
+    /* Tono intermedio similar al hover de Ventas */
 }
 
 /* Contenedor de iconos en la tabla */
@@ -115,13 +146,11 @@
     align-items: center;
 }
 
-/* Estilos para botones de acción en la tabla (Ajustados) */
+/* Estilos para botones de acción en la tabla */
 .usuarios-table-button {
     padding: 10px 15px;
-    /* Aumentado el padding */
     margin: 0;
     font-size: 0.9rem;
-    /* Mantenido el tamaño del icono */
     border: none;
     border-radius: 5px;
     color: white;
@@ -133,23 +162,31 @@
 }
 
 /* Colores específicos para botones de acción en la tabla */
+/* Mapeo a colores de Ventas: Ver/Editar -> Light Pink/Purple, Eliminar -> Red */
 .usuarios-table-button:nth-child(1) {
-    background-color: #3498db;
+    /* Ver Detalles */
+    background-color: #fc8de4;
+    /* Color de botón Detalle/PDF de Ventas.css */
 }
 
 .usuarios-table-button:nth-child(1):hover {
-    background-color: #2980b9;
+    background-color: #d66abf;
+    /* Color hover de botón Detalle/PDF de Ventas.css */
 }
 
 .usuarios-table-button:nth-child(2) {
-    background-color: #f39c12;
+    /* Editar */
+    background-color: #fc8de4;
+    /* Usar el mismo color que Ver */
 }
 
 .usuarios-table-button:nth-child(2):hover {
-    background-color: #e67e22;
+    background-color: #d66abf;
+    /* Usar el mismo color hover que Ver */
 }
 
 .usuarios-table-button-delete {
+    /* Eliminar (se mantiene rojo) */
     background-color: #e74c3c;
 }
 
@@ -157,7 +194,7 @@
     background-color: #c0392b;
 }
 
-/* Estilo para el switch */
+/* Estilo para el switch (se mantiene verde/gris estándar) */
 .switch {
     position: relative;
     display: inline-block;
@@ -196,7 +233,8 @@
 }
 
 input:checked+.slider {
-    background-color: #4CAF50;
+    background-color: #2ecc71;
+    /* Verde para activo */
 }
 
 input:checked+.slider:before {
@@ -205,14 +243,15 @@ input:checked+.slider:before {
 
 /* Estilos de los Modales */
 
-/* Capa de fondo oscuro para cualquier modal */
+/* Capa de fondo oscuro para cualquier modal (se mantiene) */
 .usuarios-modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Fondo oscuro de Ventas.css */
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -224,11 +263,15 @@ input:checked+.slider:before {
 
 /* Contenedor del contenido del modal (base) */
 .usuarios-modalContent {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
+    background-color: white;
+    padding: 20px;
+    /* Padding de modal de Ventas.css */
+    border-radius: 10px;
+    /* Bordes redondeados de modal de Ventas.css */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Sombra de modal de Ventas.css */
+    max-width: 500px;
+    /* Ancho de modal de Ventas.css */
     width: 100%;
     margin: auto;
     max-height: 90vh;
@@ -240,11 +283,13 @@ input:checked+.slider:before {
 /* Estilos específicos para el contenido del modal de Detalles */
 .usuarios-modalContent-details {
     max-width: 500px;
+    /* Mismo ancho que el base */
 }
 
 .usuarios-modalContent-details h2 {
     text-align: center;
-    color: #34495e;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
     margin-top: 0;
     margin-bottom: 20px;
 }
@@ -252,22 +297,26 @@ input:checked+.slider:before {
 .usuarios-modalContent-details p {
     margin-bottom: 10px;
     line-height: 1.6;
-    color: #34495e;
+    color: #333;
+    /* Color de texto de Ventas.css */
 }
 
 .usuarios-modalContent-details strong {
-    color: #2c3e50;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
     margin-right: 5px;
 }
 
 /* Estilos específicos para el contenido del modal de Formulario (Crear/Editar) */
 .usuarios-modalContent-form {
-    max-width: 600px;
+    max-width: 500px;
+    /* Mismo ancho que el base */
 }
 
 .usuarios-modalContent-form h2 {
     text-align: center;
-    color: #34495e;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
     margin-top: 0;
     margin-bottom: 20px;
 }
@@ -286,14 +335,16 @@ input:checked+.slider:before {
 
 .usuarios-form-label {
     font-weight: 600;
-    color: #34495e;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
     font-size: 1rem;
 }
 
 .usuarios-form-input,
 .usuarios-form-select {
     padding: 10px 12px;
-    border: 1px solid #bdc3c7;
+    border: 1px solid #c287b5;
+    /* Borde basado en Ventas.css estado-select */
     border-radius: 5px;
     font-size: 1rem;
     color: #333;
@@ -304,8 +355,10 @@ input:checked+.slider:before {
 
 .usuarios-form-input:focus,
 .usuarios-form-select:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    border-color: #b660a3;
+    /* Color de botón Agregar Venta */
+    box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
+    /* Sombra basada en el color */
     outline: none;
 }
 
@@ -323,6 +376,7 @@ input:checked+.slider:before {
 .usuarios-modalContent-confirm h3 {
     text-align: center;
     color: #e74c3c;
+    /* Se mantiene rojo para confirmación */
     margin-top: 0;
     margin-bottom: 15px;
 }
@@ -330,14 +384,16 @@ input:checked+.slider:before {
 .usuarios-modalContent-confirm p {
     margin-bottom: 20px;
     line-height: 1.6;
-    color: #34495e;
+    color: #333;
+    /* Color de texto de Ventas.css */
 }
 
 .usuarios-modalContent-confirm strong {
-    color: #2c3e50;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
 }
 
-/* Estilos específicos para el contenido del modal de Validación */
+/* Estilos específicos para el contenido del modal de Validación (mapeado a un tono rosado claro) */
 .usuarios-modalContent-validation {
     max-width: 400px;
     margin: auto;
@@ -346,7 +402,8 @@ input:checked+.slider:before {
 
 .usuarios-modalContent-validation h3 {
     text-align: center;
-    color: #f39c12;
+    color: #e68bd2;
+    /* Color de estado 'en proceso' de Ventas.css */
     margin-top: 0;
     margin-bottom: 15px;
 }
@@ -354,7 +411,8 @@ input:checked+.slider:before {
 .usuarios-modalContent-validation p {
     margin-bottom: 20px;
     line-height: 1.6;
-    color: #34495e;
+    color: #333;
+    /* Color de texto de Ventas.css */
 }
 
 /* Contenedor de botones de acción en formularios/modales */
@@ -383,24 +441,28 @@ input:checked+.slider:before {
 
 /* Colores específicos para botones de formulario/modal */
 .usuarios-form-actions .usuarios-form-buttonGuardar {
-    background-color: #2ecc71;
+    background-color: #b660a3;
+    /* Color de botón Agregar Venta */
     color: white;
 }
 
 .usuarios-form-actions .usuarios-form-buttonGuardar:hover {
-    background-color: #27ae60;
+    background-color: #6d0b58;
+    /* Color de título de Ventas.css para hover */
 }
 
 .usuarios-form-actions .usuarios-form-buttonCancelar {
     background-color: #95a5a6;
+    /* Se mantiene gris estándar */
     color: white;
 }
 
 .usuarios-form-actions .usuarios-form-buttonCancelar:hover {
     background-color: #7f8c8d;
+    /* Se mantiene gris oscuro estándar */
 }
 
-/* Delete confirmation button color */
+/* Delete confirmation button color (se mantiene rojo) */
 .usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar {
     background-color: #e74c3c;
 }
@@ -409,9 +471,10 @@ input:checked+.slider:before {
     background-color: #c0392b;
 }
 
-/* Close button style (for details and validation modals) */
+/* Close button style (para detalles y validación) */
 .usuarios-modalButton-cerrar {
-    background-color: #3498db;
+    background-color: #b660a3;
+    /* Color de botón Agregar Venta */
     color: white;
     display: block;
     width: 100%;
@@ -419,10 +482,11 @@ input:checked+.slider:before {
 }
 
 .usuarios-modalButton-cerrar:hover {
-    background-color: #2980b9;
+    background-color: #6d0b58;
+    /* Color de título de Ventas.css para hover */
 }
 
-/* Responsive Styles */
+/* Responsive Styles (se mantienen) */
 @media (max-width: 768px) {
     .usuarios-content {
         padding: 15px;

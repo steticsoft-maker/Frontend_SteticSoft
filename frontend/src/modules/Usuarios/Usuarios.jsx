@@ -14,18 +14,18 @@ const Usuarios = () => {
       telefono: "3200000000",
       direccion: "Calle 123",
       rol: "Administrador",
-      anulado: false,
+      anulado: true,
     },
     {
       id: 2,
       nombre: "Pepe",
-      tipoDocumento: "TI",
+      tipoDocumento: "CC",
       documento: "987654321",
       email: "Pepe@gmail.com",
       telefono: "3209999999",
       direccion: "Calle 456",
       rol: "Cliente",
-      anulado: false,
+      anulado: true,
     },
     {
       id: 3,
@@ -36,7 +36,7 @@ const Usuarios = () => {
       telefono: "3101234567",
       direccion: "Avenida Siempre Viva 742",
       rol: "Empleado",
-      anulado: false,
+      anulado: true,
     },
   ];
 
@@ -45,10 +45,10 @@ const Usuarios = () => {
     return savedUsuarios ? JSON.parse(savedUsuarios) : initialUsuarios;
   });
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); // "create", "edit", "details", "validation"
+  const [modalType, setModalType] = useState(""); 
   const [currentUsuario, setCurrentUsuario] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-  const [modalMensaje, setModalMensaje] = useState(""); // Estado para mensajes de validación específicos
+  const [modalMensaje, setModalMensaje] = useState(""); 
 
   const [confirmDelete, setConfirmDelete] = useState(null);
 
@@ -59,11 +59,11 @@ const Usuarios = () => {
   const handleSave = (usuario) => {
     if (
       !usuario.nombre ||
-      !usuario.tipoDocumento || // Validar tipoDocumento también
+      !usuario.tipoDocumento ||
       !usuario.documento ||
       !usuario.email ||
-      !usuario.telefono || // Validar teléfono
-      !usuario.direccion || // Validar dirección
+      !usuario.telefono || 
+      !usuario.direccion || 
       !usuario.rol
     ) {
       setModalMensaje("Por favor, completa todos los campos obligatorios.");
@@ -72,7 +72,6 @@ const Usuarios = () => {
       return;
     }
 
-    // Validación de unicidad de documento
     const documentoExists = usuarios.some(
       (u) =>
         u.documento === usuario.documento &&
@@ -123,12 +122,12 @@ const Usuarios = () => {
     if (
       (type === "edit" || type === "details") &&
       usuario?.rol === "Administrador" &&
-      type !== "details" // Permitir ver detalles del Admin
+      type !== "details" 
     ) {
       alert("No se puede modificar al usuario 'Administrador' desde aquí.");
       return;
     }
-    setModalMensaje(""); // Limpiar mensaje de validación anterior
+    setModalMensaje("");
     setModalType(type);
     setCurrentUsuario(usuario);
     setShowModal(true);
@@ -138,7 +137,7 @@ const Usuarios = () => {
     setShowModal(false);
     setModalType("");
     setCurrentUsuario(null);
-    setModalMensaje(""); // Limpiar mensaje al cerrar cualquier modal
+    setModalMensaje(""); 
   };
 
   const openConfirmDeleteModal = (usuario) => {
@@ -244,12 +243,10 @@ const Usuarios = () => {
                 handleSave(usuarioData);
               }}
             >
-              {/* Reordenados para Tipo de Documento antes que Número de Documento */}
               <div className="usuarios-form-group">
                 <label htmlFor="tipoDocumento" className="usuarios-form-label">
                   Tipo de Documento:
                   <span className="required-asterisk">*</span>{" "}
-                  {/* Asterisco rojo */}
                 </label>
                 <select
                   id="tipoDocumento"
@@ -270,7 +267,6 @@ const Usuarios = () => {
                 <label htmlFor="documento" className="usuarios-form-label">
                   Número de Documento:
                   <span className="required-asterisk">*</span>{" "}
-                  {/* Asterisco rojo */}
                 </label>
                 <input
                   type="text"
@@ -282,13 +278,11 @@ const Usuarios = () => {
                   className="usuarios-form-input"
                 />
               </div>
-              {/* Fin Reordenamiento */}
 
               <div className="usuarios-form-group">
                 <label htmlFor="nombre" className="usuarios-form-label">
                   Nombre y Apellido:
                   <span className="required-asterisk">*</span>{" "}
-                  {/* Asterisco rojo */}
                 </label>
                 <input
                   type="text"
@@ -305,7 +299,6 @@ const Usuarios = () => {
                 <label htmlFor="email" className="usuarios-form-label">
                   Email:
                   <span className="required-asterisk">*</span>{" "}
-                  {/* Asterisco rojo */}
                 </label>
                 <input
                   type="email"
@@ -322,7 +315,6 @@ const Usuarios = () => {
                 <label htmlFor="telefono" className="usuarios-form-label">
                   Teléfono:
                   <span className="required-asterisk">*</span>{" "}
-                  {/* Asterisco rojo */}
                 </label>
                 <input
                   type="text"
@@ -339,7 +331,6 @@ const Usuarios = () => {
                 <label htmlFor="direccion" className="usuarios-form-label">
                   Dirección:
                   <span className="required-asterisk">*</span>{" "}
-                  {/* Asterisco rojo */}
                 </label>
                 <input
                   type="text"
@@ -356,7 +347,6 @@ const Usuarios = () => {
                 <label htmlFor="rol" className="usuarios-form-label">
                   Rol:
                   <span className="required-asterisk">*</span>{" "}
-                  {/* Asterisco rojo */}
                 </label>
                 <select
                   id="rol"
@@ -444,14 +434,11 @@ const Usuarios = () => {
         <table className="usuarios-table">
           <thead>
             <tr>
-              {/* Columnas a mostrar en la tabla */}
               <th>Tipo Doc.</th>
               <th># Documento</th>
               <th>Nombre</th>{" "}
-              {/* Asumo que "Nombre y Apellido" se muestra en esta columna */}
               <th>Email</th>
               <th>Teléfono</th>
-              {/* Eliminadas: <th>Dirección</th> y <th>Rol</th> */}
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -459,13 +446,11 @@ const Usuarios = () => {
           <tbody>
             {filteredUsuarios.map((usuario) => (
               <tr key={usuario.id}>
-                {/* Datos de las columnas a mostrar */}
                 <td>{usuario.tipoDocumento}</td>
                 <td>{usuario.documento}</td>
-                <td>{usuario.nombre}</td> {/* Muestra solo el nombre */}
+                <td>{usuario.nombre}</td> 
                 <td>{usuario.email}</td>
                 <td>{usuario.telefono}</td>
-                {/* Eliminadas: <td>{usuario.direccion}</td> y <td>{usuario.rol}</td> */}
                 <td>
                   {usuario.rol !== "Administrador" ? (
                     <label className="switch">
@@ -481,7 +466,6 @@ const Usuarios = () => {
                   )}
                 </td>
                 <td>
-                  {/* Los botones de acción siguen apareciendo */}
                   {usuario.rol !== "Administrador" ? (
                     <div className="usuarios-table-iconos">
                       <button
@@ -508,7 +492,6 @@ const Usuarios = () => {
                     </div>
                   ) : (
                     <div className="usuarios-table-iconos">
-                      {/* Solo botón de ver detalles para el Admin */}
                       <button
                         className="usuarios-table-button"
                         onClick={() => openModal("details", usuario)}
@@ -541,7 +524,7 @@ const Usuarios = () => {
             </p>
             <div className="usuarios-form-actions">
               <button
-                className="usuarios-form-buttonGuardar" // Reutiliza clase, color definido en CSS para confirmación
+                className="usuarios-form-buttonGuardar" 
                 onClick={deleteUsuario}
               >
                 Eliminar
