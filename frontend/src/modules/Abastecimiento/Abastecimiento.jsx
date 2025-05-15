@@ -120,7 +120,6 @@ const Abastecimiento = () => {
       setProductoSeleccionado(producto.nombre);
       setEmpleadoSeleccionado(producto.empleado);
     }
-    // Si es detalles, las selecciones no son necesarias en el formulario
     setShowModal(true); // Controla el modal principal (form/details)
     setModalType(type); // Asegura que modalType esté configurado
   };
@@ -129,10 +128,8 @@ const Abastecimiento = () => {
     setShowModal(false);
     setModalType("");
     setCurrentProducto(null);
-    // Resetear selecciones al cerrar el modal principal
     setProductoSeleccionado(null);
     setEmpleadoSeleccionado(null);
-    // Cerrar también modales de selección si estuvieran abiertos
     setShowProductModal(false);
     setShowEmployeeModal(false);
   };
@@ -150,14 +147,10 @@ const Abastecimiento = () => {
   return (
     <div className="abastecimiento-container">
       <NavbarAdmin />
-      {/* Área principal al lado de la barra lateral */}
       <div className="main-content-area">
-        {/* Contenedor para centrar el bloque de contenido (título, acciones, tabla) */}
         <div className="abastecimiento-content-wrapper">
           <h1>Gestión de Abastecimiento</h1>
           <div className="containerAgregarBuscarAbastecimiento">
-            {" "}
-            {/* Clase existente */}
             <input
               type="text"
               placeholder="Buscar producto..."
@@ -173,13 +166,10 @@ const Abastecimiento = () => {
             </button>
           </div>
 
-          {/* Tabla de abastecimientos */}
           <table className="tabla-abastecimiento">
             {" "}
-            {/* Clase existente */}
             <thead>
               <tr>
-                {/* Columnas a mostrar */}
                 <th>Nombre</th>
                 <th>Cantidad</th>
                 <th>Empleado Asignado</th>
@@ -190,13 +180,11 @@ const Abastecimiento = () => {
             <tbody>
               {filteredProductos.map((producto) => (
                 <tr key={producto.id}>
-                  {/* Datos de las columnas */}
                   <td>{producto.nombre}</td>
                   <td>{producto.cantidad}</td>
                   <td>{producto.empleado}</td>
                   <td>{producto.fechaIngreso}</td>
                   <td>
-                    {/* Iconos de acción */}
                     <div className="icon-actions-abastecimiento">
                       <button
                         className="table-icons-abastecimiento"
@@ -226,15 +214,11 @@ const Abastecimiento = () => {
             </tbody>
           </table>
         </div>{" "}
-        {/* Fin abastecimiento-content-wrapper */}
       </div>{" "}
-      {/* Fin main-content-area */}
-      {/* Modal Principal (Agregar / Editar / Ver Detalles) */}
       {showModal && (
         <div className="modal-abastecimiento-overlay">
           <div className="modal-abastecimiento-content">
             {modalType === "details" && currentProducto ? (
-              /* Reemplazado Fragment con un div con la clase para alinear texto */
               <div className="abastecimiento-details-text">
                 <h2>Detalles del Producto</h2>
                 <p>
@@ -250,7 +234,6 @@ const Abastecimiento = () => {
                   <strong>Fecha de Ingreso:</strong>
                   {currentProducto.fechaIngreso}
                 </p>
-                {/* El botón de cerrar puede ir dentro o fuera de este div dependiendo del diseño deseado */}
                 <button
                   className="modal-abastecimiento-button-cerrar"
                   onClick={closeModal}
@@ -260,7 +243,6 @@ const Abastecimiento = () => {
               </div>
             ) : (
               <>
-                {/* ... Código del formulario ... */}
                 <h2>
                   {modalType === "create"
                     ? "Agregar Producto"
@@ -276,12 +258,11 @@ const Abastecimiento = () => {
                       nombre: productoSeleccionado,
                       cantidad: Number(formData.get("cantidad")),
                       empleado: empleadoSeleccionado,
-                      fechaIngreso: new Date().toISOString().split("T")[0], // Captura la fecha actual
+                      fechaIngreso: new Date().toISOString().split("T")[0],
                     };
                     handleSave(producto);
                   }}
                 >
-                  {/* Botones para abrir modales de selección */}
                   <div className="form-group-abastecimiento">
                     <label className="form-label-abastecimiento">
                       Producto:
@@ -305,7 +286,6 @@ const Abastecimiento = () => {
                     <label className="form-label-abastecimiento">
                       Empleado:
                       <span className="required-asterisk">*</span>{" "}
-                      {/* Asterisco rojo */}
                     </label>
                     <button
                       type="button"
@@ -320,7 +300,6 @@ const Abastecimiento = () => {
                     </p>
                   </div>
 
-                  {/* Campo Cantidad */}
                   <div className="form-group-abastecimiento">
                     <label
                       htmlFor="cantidad"
@@ -328,7 +307,6 @@ const Abastecimiento = () => {
                     >
                       Cantidad:
                       <span className="required-asterisk">*</span>{" "}
-                      {/* Asterisco rojo */}
                     </label>
                     <input
                       id="cantidad"
@@ -340,8 +318,6 @@ const Abastecimiento = () => {
                       required
                     />
                   </div>
-
-                  {/* Botones Guardar/Cancelar */}
                   <div className="form-actions-abastecimiento">
                     <button
                       type="submit"
@@ -363,29 +339,20 @@ const Abastecimiento = () => {
           </div>
         </div>
       )}
-      {/* Modales de selección de Producto/Empleado */}
-      {/* Reutilizamos el mismo overlay principal para mantener la consistencia visual */}
       {(showEmployeeModal || showProductModal) && (
         <div className="modal-abastecimiento-overlay">
-          {" "}
-          {/* Reutiliza la clase de overlay principal */}
-          {/* Contenedor específico para el modal de selección */}
           <div className="modal-abastecimiento-selection-container">
-            {" "}
-            {/* Nueva clase consistente */}
             {showEmployeeModal && (
               <>
                 <h2>Seleccionar Empleado</h2>
                 <input
-                  className="modal-selection-input-abastecimiento" // Nueva clase consistente
+                  className="modal-selection-input-abastecimiento" 
                   type="text"
                   placeholder="Buscar empleado..."
                   value={busquedaEmpleadoModal}
                   onChange={(e) => setBusquedaEmpleadoModal(e.target.value)}
                 />
                 <ul className="modal-selection-list-abastecimiento">
-                  {" "}
-                  {/* Nueva clase consistente */}
                   {filteredEmpleadosModal.map((emp) => (
                     <li key={emp}>
                       <button
@@ -403,8 +370,6 @@ const Abastecimiento = () => {
                   className="modal-abastecimiento-button-cerrar"
                   onClick={closeEmployeeModal}
                 >
-                  {" "}
-                  {/* Reutiliza la clase del botón cerrar */}
                   Cerrar
                 </button>
               </>
@@ -413,15 +378,13 @@ const Abastecimiento = () => {
               <>
                 <h2>Seleccionar Producto</h2>
                 <input
-                  className="modal-selection-input-abastecimiento" // Nueva clase consistente
+                  className="modal-selection-input-abastecimiento"
                   type="text"
                   placeholder="Buscar producto..."
                   value={busquedaProductoModal}
                   onChange={(e) => setBusquedaProductoModal(e.target.value)}
                 />
                 <ul className="modal-selection-list-abastecimiento">
-                  {" "}
-                  {/* Nueva clase consistente */}
                   {filteredProductosModal.map((prod) => (
                     <li key={prod}>
                       <button
@@ -439,42 +402,31 @@ const Abastecimiento = () => {
                   className="modal-abastecimiento-button-cerrar"
                   onClick={closeProductModal}
                 >
-                  {" "}
-                  {/* Reutiliza la clase del botón cerrar */}
                   Cerrar
                 </button>
               </>
             )}
           </div>{" "}
-          {/* Fin modal-abastecimiento-selection-container */}
         </div>
       )}
       {/* Modal de confirmación para eliminar un producto */}
       {confirmDelete && (
         <div className="modal-abastecimiento-overlay">
-          {" "}
-          {/* Reutiliza la clase de overlay principal */}
           <div className="modal-abastecimiento-content modal-abastecimiento-confirm">
-            {" "}
-            {/* Reutiliza la clase base y añade una específica */}
             <h3>¿Eliminar producto?</h3>
             <p>
               ¿Estás seguro de que deseas eliminar el producto
               <strong>{confirmDelete.nombre}</strong>?
             </p>
             <div className="form-actions-abastecimiento">
-              {" "}
-              {/* Reutiliza la clase de botones de acción */}
               <button
                 className="form-button-guardar-abastecimiento"
                 onClick={deleteProducto}
               >
-                {" "}
-                {/* Reutiliza clase, CSS definirá color de eliminación */}
                 Eliminar
               </button>
               <button
-                className="form-button-cancelar-abastecimiento" // Reutiliza clase
+                className="form-button-cancelar-abastecimiento" 
                 onClick={() => setConfirmDelete(null)}
               >
                 Cancelar

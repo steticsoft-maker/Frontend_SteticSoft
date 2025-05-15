@@ -1,36 +1,27 @@
 .usuarios-container {
     display: flex;
     height: 100vh;
-    /* Altura completa de la ventana visible */
     background-color: transparent;
-    /* Elimina el fondo gris */
     font-family: 'Roboto', sans-serif;
 }
 
-/* Estilo para el asterisco rojo en campos obligatorios */
 .required-asterisk {
     color: red;
-    /* O el color rojo específico que uses en tu diseño */
     margin-left: 2px;
-    /* Opcional: un pequeño espacio entre el texto y el asterisco */
 }
 
 /* Contenido principal (área de tabla y controles) */
 .usuarios-content {
     flex: 1;
     padding: 30px;
-    margin-left: 380px;
+    margin-left: 280px;
     overflow-y: auto;
     box-sizing: border-box;
     height: 100%;
-
     display: flex;
     flex-direction: column;
-    /* Apila los hijos verticalmente */
     align-items: center;
-    /* Centra los hijos horizontalmente */
     justify-content: unset;
-    /* Centra los hijos verticalmente */
 }
 
 .usuarios-content h1 {
@@ -47,9 +38,7 @@
     gap: 20px;
     flex-wrap: wrap;
     width: 100%;
-    /* Ocupa el ancho dentro del contenedor flex centrado */
     max-width: 1200px;
-    /* Ancho máximo para esta sección */
     box-sizing: border-box;
 }
 
@@ -83,9 +72,7 @@
 
 .usuarios-table {
     width: 100%;
-    /* Ocupa el ancho dentro del contenedor flex centrado */
     max-width: 1200px;
-    /* Ancho máximo para la tabla */
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -97,9 +84,11 @@
 .usuarios-table td {
     border: 1px solid #dddddd;
     text-align: left;
-    padding: 12px;
+    padding: 15px;
+    /* Aumentado el padding */
     vertical-align: middle;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    /* Aumentado el tamaño de fuente */
     color: #34495e;
 }
 
@@ -126,11 +115,13 @@
     align-items: center;
 }
 
-/* Estilos para botones de acción en la tabla */
+/* Estilos para botones de acción en la tabla (Ajustados) */
 .usuarios-table-button {
-    padding: 8px 12px;
+    padding: 10px 15px;
+    /* Aumentado el padding */
     margin: 0;
     font-size: 0.9rem;
+    /* Mantenido el tamaño del icono */
     border: none;
     border-radius: 5px;
     color: white;
@@ -152,7 +143,6 @@
 
 .usuarios-table-button:nth-child(2) {
     background-color: #f39c12;
-    /* Naranja */
 }
 
 .usuarios-table-button:nth-child(2):hover {
@@ -213,7 +203,6 @@ input:checked+.slider:before {
     transform: translateX(16px);
 }
 
-
 /* Estilos de los Modales */
 
 /* Capa de fondo oscuro para cualquier modal */
@@ -240,14 +229,9 @@ input:checked+.slider:before {
     border-radius: 12px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     max-width: 600px;
-    /* Ancho máximo para el modal */
     width: 100%;
-    /* Ocupa el ancho hasta el max-width */
     margin: auto;
-    /* Centra el bloque dentro del overlay flex */
-
     max-height: 90vh;
-    /* Altura máxima antes de hacer scroll */
     overflow-y: auto;
     position: relative;
     box-sizing: border-box;
@@ -256,8 +240,6 @@ input:checked+.slider:before {
 /* Estilos específicos para el contenido del modal de Detalles */
 .usuarios-modalContent-details {
     max-width: 500px;
-    /* Ancho específico si es diferente al base */
-    /* Remove margin: auto here, handled by .usuarios-modalContent */
 }
 
 .usuarios-modalContent-details h2 {
@@ -281,8 +263,6 @@ input:checked+.slider:before {
 /* Estilos específicos para el contenido del modal de Formulario (Crear/Editar) */
 .usuarios-modalContent-form {
     max-width: 600px;
-    /* Ancho específico si es diferente al base */
-    /* Remove margin: auto here, handled by .usuarios-modalContent */
 }
 
 .usuarios-modalContent-form h2 {
@@ -357,7 +337,6 @@ input:checked+.slider:before {
     color: #2c3e50;
 }
 
-
 /* Estilos específicos para el contenido del modal de Validación */
 .usuarios-modalContent-validation {
     max-width: 400px;
@@ -378,12 +357,10 @@ input:checked+.slider:before {
     color: #34495e;
 }
 
-
 /* Contenedor de botones de acción en formularios/modales */
 .usuarios-form-actions {
     display: flex;
     justify-content: center;
-    /* Centra los botones */
     gap: 15px;
     margin-top: 20px;
     padding-top: 15px;
@@ -444,7 +421,6 @@ input:checked+.slider:before {
 .usuarios-modalButton-cerrar:hover {
     background-color: #2980b9;
 }
-
 
 /* Responsive Styles */
 @media (max-width: 768px) {

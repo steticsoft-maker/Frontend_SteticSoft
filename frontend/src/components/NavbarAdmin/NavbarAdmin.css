@@ -1,7 +1,7 @@
 /* Contenedor del Sidebar */
 .dashboard-sidebar {
     width: 250px;
-    background: linear-gradient(to bottom, #f79ce3, #6d0b58);
+    background-color:#fc8de4;
     /* Degradado agradable */
     color: #ecf0f1;
     /* Texto claro */
@@ -29,7 +29,7 @@
 }
 
 .admin-label {
-    color: black;
+    color: rgb(8, 8, 8);
     font-size: 1.3rem;
     /* Texto un poco más grande */
     font-weight: bold;
@@ -68,8 +68,9 @@
 }
 
 .dashboard-link:hover {
-    background-color: #ffa4eb;
+    background-color: #b660a3;
     /* Fondo verde atractivo al pasar el mouse */
+    color: #ffffff;
     transform: scale(1.02);
     /* Efecto de zoom ligero */
 }
@@ -85,15 +86,15 @@
 .nested-links {
     margin-left: 20px;
     padding-left: 10px;
-    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    border-left: 2px solid rgba(228, 103, 201, 0.836);
     /* Separador visual elegante */
 }
 
 .nested-link {
     background-color: transparent;
-    color: black;    /* Texto gris claro */
+    color: rgb(0, 0, 0);    /* Texto gris claro */
     border: none;
-    padding: 8px 15px;
+    padding: 10px 20px;
     text-align: left;
     display: block;
     cursor: pointer;
@@ -103,18 +104,18 @@
 }
 
 .nested-link:hover {
-    background-color: #ffa4eb;
+    background-color: #36012b;
     /* Fondo verde oscuro */
-    color: #000000;
+    color: #ffffff;
     /* Texto blanco */
 }
 
 /* Botón de logout */
 .logout-button {
-    margin-top: 80px;
-    background: linear-gradient(to right, #c925a5, #36012b);
+    margin-top: 90px;
+    background-color: #fc8de4;
     /* Degradado rojo */
-    color: #ecf0f1;
+    color: #000000;
     border: none;
     padding: 15px;
     font-size: 1rem;

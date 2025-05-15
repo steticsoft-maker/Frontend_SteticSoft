@@ -14,9 +14,7 @@
 /* Estilo para el asterisco rojo en campos obligatorios */
 .required-asterisk {
     color: red;
-    /* O el color rojo específico que uses en tu diseño */
     margin-left: 2px;
-    /* Opcional: un pequeño espacio entre el texto y el asterisco */
 }
 
 /* Contenido principal - Área next to sidebar */
@@ -24,17 +22,12 @@
     flex: 1;
     padding: 20px;
     margin-left: 380px;
-    /* Flexbox para centrar horizontalmente y alinear arriba verticalmente */
     display: flex;
     flex-direction: column;
-    /* Apila los hijos verticalmente */
     align-items: center;
-    /* Centra los hijos horizontalmente (cross axis) */
     justify-content: flex-start;
-    /* Alinea los hijos al inicio (arriba) (main axis) */
     height: 100%;
 }
-
 
 /* Título */
 .abastecimiento-content-wrapper h1 {
@@ -85,7 +78,7 @@
     background-color: #27ae60;
 }
 
-/* Tabla de productos */
+/* Tabla de productos (Ajustada para ser más grande y agradable) */
 .tabla-abastecimiento {
     width: 100%;
     max-width: 1200px;
@@ -101,9 +94,11 @@
 .tabla-abastecimiento td {
     border: 1px solid #dddddd;
     text-align: left;
-    padding: 12px;
+    padding: 15px;
+    /* Aumentado el padding */
     vertical-align: middle;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    /* Aumentado el tamaño de fuente */
     color: #34495e;
 }
 
@@ -130,10 +125,12 @@
     align-items: center;
 }
 
+/* Estilos para botones de acción en la tabla (Ajustados) */
 .table-icons-abastecimiento {
     font-size: 16px;
     cursor: pointer;
-    padding: 8px 12px;
+    padding: 10px 15px;
+    /* Aumentado el padding */
     transition: background-color 0.3s ease, opacity 0.3s ease;
     border: none;
     border-radius: 5px;
