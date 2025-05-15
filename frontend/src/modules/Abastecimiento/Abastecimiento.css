@@ -6,18 +6,27 @@
     font-family: 'Roboto', sans-serif;
 }
 
-/* Alinea a la izquierda el texto dentro del contenido de detalles */
+/* Alineación de texto en detalles */
 .abastecimiento-details-text p {
     text-align: left;
+    color: black;
+    /* Párrafos en negro */
 }
 
-/* Estilo para el asterisco rojo en campos obligatorios */
+/* Color para texto fuerte (strong) en detalles */
+.abastecimiento-details-text strong {
+    color: #6d0b58;
+    /* Color morado oscuro */
+    margin-right: 5px;
+    /* Mantener el espacio */
+}
+/* Asterisco rojo */
 .required-asterisk {
     color: red;
     margin-left: 2px;
 }
 
-/* Contenido principal - Área next to sidebar */
+/* Área principal */
 .main-content-area {
     flex: 1;
     padding: 20px;
@@ -32,7 +41,8 @@
 /* Título */
 .abastecimiento-content-wrapper h1 {
     text-align: center;
-    color: #2c3e50;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
     font-size: 3.0rem;
     margin-bottom: 20px;
 }
@@ -50,11 +60,13 @@
     box-sizing: border-box;
 }
 
+/* Input de búsqueda */
 .inputBuscarAbastecimiento {
     flex: 1;
     padding: 10px 15px;
     font-size: 1rem;
-    border: 1px solid #bdc3c7;
+    border: 1px solid #c287b5;
+    /* Borde basado en Ventas.css estado-select */
     border-radius: 5px;
     background-color: white;
     color: #333;
@@ -62,8 +74,10 @@
     min-width: 200px;
 }
 
+/* Botón Agregar Producto */
 .botonAgregarAbastecimiento {
-    background-color: #2ecc71;
+    background-color: #b660a3;
+    /* Color de botón Agregar Venta */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -75,46 +89,58 @@
 }
 
 .botonAgregarAbastecimiento:hover {
-    background-color: #27ae60;
+    background-color: #6d0b58;
+    /* Color de título de Ventas.css para hover */
 }
 
-/* Tabla de productos (Ajustada para ser más grande y agradable) */
+/* Tabla de productos */
 .tabla-abastecimiento {
     width: 100%;
     max-width: 1200px;
     border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra de Ventas.css */
     background-color: #ffffff;
     border-radius: 8px;
+    /* Bordes redondeados de Ventas.css */
     overflow: hidden;
 }
 
+/* Encabezados y celdas de tabla */
 .tabla-abastecimiento th,
 .tabla-abastecimiento td {
-    border: 1px solid #dddddd;
+    border: 1px solid #e978d0;
+    /* Borde de celda de tabla de Ventas.css */
     text-align: left;
     padding: 15px;
-    /* Aumentado el padding */
     vertical-align: middle;
     font-size: 1rem;
-    /* Aumentado el tamaño de fuente */
-    color: #34495e;
+    color: black;
+    /* Color de texto de celda de tabla de Ventas.css */
 }
 
+/* Encabezados de tabla */
 .tabla-abastecimiento th {
-    background-color: #34495e;
-    color: white;
-    font-weight: 600;
+    background-color: #e978d0;
+    /* Color de encabezado de tabla de Ventas.css */
+    color: black;
+    /* Color de texto de encabezado de tabla de Ventas.css */
+    font-weight: bold;
+    /* Peso de fuente de encabezado de tabla de Ventas.css */
     text-align: center;
 }
 
+/* Fondos de filas pares */
 .tabla-abastecimiento tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f8eaf5;
+    /* Tono claro similar al fondo de Ventas */
 }
 
+/* Fondo al pasar el mouse */
 .tabla-abastecimiento tbody tr:hover {
-    background-color: #f0f0f0;
+    background-color: #f3d9ec;
+    /* Tono intermedio similar al hover de filas */
 }
 
 /* Iconos en la tabla */
@@ -125,12 +151,11 @@
     align-items: center;
 }
 
-/* Estilos para botones de acción en la tabla (Ajustados) */
+/* Botones de acción en la tabla */
 .table-icons-abastecimiento {
     font-size: 16px;
     cursor: pointer;
     padding: 10px 15px;
-    /* Aumentado el padding */
     transition: background-color 0.3s ease, opacity 0.3s ease;
     border: none;
     border-radius: 5px;
@@ -140,41 +165,46 @@
     justify-content: center;
 }
 
-/* Colores específicos para los botones de acción en la tabla */
+/* Colores de botones de acción en la tabla (Ver) */
 .icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(1) {
-    background-color: #3498db;
+    background-color: #fc8de4;
+    /* Color de botón Detalle/PDF de Ventas.css */
 }
 
 .icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(1):hover {
-    background-color: #2980b9;
+    background-color: #d66abf;
+    /* Color hover de botón Detalle/PDF de Ventas.css */
 }
 
+/* Colores de botones de acción en la tabla (Editar) */
 .icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(2) {
-    background-color: #f39c12;
+    background-color: #fc8de4;
+    /* Usar el mismo color que Ver */
 }
 
 .icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(2):hover {
-    background-color: #e67e22;
+    background-color: #d66abf;
+    /* Usar el mismo color hover que Ver */
 }
 
+/* Botón eliminar */
 .delete-button-abastecimiento {
-    background-color: #e74c3c;
+    background-color: #b660a3;
 }
 
 .delete-button-abastecimiento:hover {
     background-color: #c0392b;
 }
 
-/* Estilos de los Modales */
-
-/* Capa de fondo oscuro para cualquier modal */
+/* Modal Overlay */
 .modal-abastecimiento-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Fondo oscuro de Ventas.css */
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -184,12 +214,15 @@
     box-sizing: border-box;
 }
 
-/* Contenedor del contenido del modal principal (form/details) */
+/* Contenido del modal principal */
 .modal-abastecimiento-content {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    padding: 20px;
+    /* Padding de modal de Ventas.css */
+    border-radius: 10px;
+    /* Bordes redondeados de modal de Ventas.css */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Sombra de modal de Ventas.css */
     max-width: 600px;
     width: 100%;
     margin: auto;
@@ -200,12 +233,12 @@
     text-align: center;
 }
 
-/* Estilos específicos para el contenido del modal de Detalles */
+/* Contenido del modal de Detalles */
 .modal-abastecimiento-content-details {
     max-width: 500px;
 }
 
-/* Estilos del Formulario dentro del modal principal */
+/* Formulario dentro del modal principal */
 .modal-abastecimiento-content .formularioModalAbastecimiento {
     display: flex;
     flex-direction: column;
@@ -213,12 +246,16 @@
     width: 100%;
 }
 
-/* Estilos específicos para el contenido del modal de Selección (Producto/Empleado) */
+/* Contenido del modal de Selección */
 .modal-abastecimiento-selection-container {
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background: white;
+    /* Fondo blanco */
+    padding: 20px;
+    /* Padding de modal de Ventas.css */
+    border-radius: 10px;
+    /* Bordes redondeados de modal de Ventas.css */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Sombra de modal de Ventas.css */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -230,13 +267,14 @@
     text-align: center;
 }
 
-/* Estilos específicos para el contenido del modal de Confirmación */
+/* Contenido del modal de Confirmación */
 .modal-abastecimiento-confirm {
     max-width: 400px;
     margin: auto;
     text-align: center;
 }
 
+/* Título en confirmación */
 .modal-abastecimiento-confirm h3 {
     text-align: center;
     color: #e74c3c;
@@ -244,17 +282,19 @@
     margin-bottom: 15px;
 }
 
+/* Párrafo en confirmación */
 .modal-abastecimiento-confirm p {
     margin-bottom: 20px;
     line-height: 1.6;
-    color: #34495e;
+    color: #333;
+    /* Color de texto consistente */
 }
 
+/* Texto fuerte en confirmación */
 .modal-abastecimiento-confirm strong {
-    color: #2c3e50;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
 }
-
-/* Estilos para los elementos del Formulario */
 
 /* Grupo de formulario */
 .form-group-abastecimiento {
@@ -267,7 +307,8 @@
 /* Labels */
 .form-label-abastecimiento {
     font-weight: 600;
-    color: #34495e;
+    color: #6d0b58;
+    /* Color de título de Ventas.css */
     font-size: 1rem;
     text-align: left;
 }
@@ -276,7 +317,8 @@
 .form-input-abastecimiento,
 .form-select-abastecimiento {
     padding: 10px 12px;
-    border: 1px solid #bdc3c7;
+    border: 1px solid #c287b5;
+    /* Borde basado en Ventas.css estado-select */
     border-radius: 5px;
     font-size: 1rem;
     color: #333;
@@ -286,21 +328,25 @@
     width: 100%;
 }
 
-/* Focus styles */
+/* Estilos de enfoque */
 .form-input-abastecimiento:focus,
 .form-select-abastecimiento:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    border-color: #b660a3;
+    /* Color de botón Agregar Venta */
+    box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
+    /* Sombra basada en el color */
     outline: none;
 }
 
+/* Select específico */
 .form-select-abastecimiento {
     cursor: pointer;
 }
 
 /* Botón para abrir modales de selección */
 .form-button-select-abastecimiento {
-    background-color: #3498db;
+    background-color: #b660a3;
+    /* Color de botón Agregar Venta */
     color: white;
     border: none;
     padding: 10px 15px;
@@ -313,10 +359,11 @@
 }
 
 .form-button-select-abastecimiento:hover {
-    background-color: #2980b9;
+    background-color: #6d0b58;
+    /* Color de título de Ventas.css para hover */
 }
 
-/* Contenedor de botones de acción en formularios/modales */
+/* Contenedor de botones de acción de formulario */
 .form-actions-abastecimiento {
     display: flex;
     justify-content: center;
@@ -327,7 +374,7 @@
     width: 100%;
 }
 
-/* Estilos base para botones de formulario/modal */
+/* Botones de formulario */
 .form-button-guardar-abastecimiento,
 .form-button-cancelar-abastecimiento {
     padding: 10px 20px;
@@ -340,26 +387,31 @@
     text-align: center;
 }
 
-/* Colores específicos para botones de formulario/modal */
+/* Botón Guardar */
 .form-button-guardar-abastecimiento {
-    background-color: #2ecc71;
+    background-color: #b660a3;
+    /* Color de botón Agregar Venta */
     color: white;
 }
 
 .form-button-guardar-abastecimiento:hover {
-    background-color: #27ae60;
+    background-color: #6d0b58;
+    /* Color de título de Ventas.css para hover */
 }
 
+/* Botón Cancelar */
 .form-button-cancelar-abastecimiento {
     background-color: #95a5a6;
+    /* Se mantiene gris estándar */
     color: white;
 }
 
 .form-button-cancelar-abastecimiento:hover {
     background-color: #7f8c8d;
+    /* Se mantiene gris oscuro estándar */
 }
 
-/* Delete confirmation button color */
+/* Botón Eliminar en confirmación */
 .modal-abastecimiento-confirm .form-button-guardar-abastecimiento {
     background-color: #e74c3c;
 }
@@ -368,9 +420,10 @@
     background-color: #c0392b;
 }
 
-/* Close button style */
+/* Botón Cerrar modal */
 .modal-abastecimiento-button-cerrar {
-    background-color: #3498db;
+    background-color: #b660a3;
+    /* Color de botón Agregar Venta */
     color: white;
     border: none;
     border-radius: 5px;
@@ -380,18 +433,21 @@
     display: block;
     width: 100%;
     margin-top: 20px;
-    padding: 10px;
+    padding: 10px 20px;
+    /* Espaciado consistente */
     text-align: center;
 }
 
 .modal-abastecimiento-button-cerrar:hover {
-    background-color: #2980b9;
+    background-color: #6d0b58;
+    /* Color de título de Ventas.css para hover */
 }
 
-/* Estilos de los elementos dentro del modal de Selección */
+/* Input de selección en modal */
 .modal-selection-input-abastecimiento {
     padding: 10px 15px;
-    border: 1px solid #bdc3c7;
+    border: 1px solid #c287b5;
+    /* Borde basado en Ventas.css estado-select */
     border-radius: 5px;
     font-size: 1rem;
     background-color: white;
@@ -401,6 +457,7 @@
     margin-bottom: 15px;
 }
 
+/* Lista de selección en modal */
 .modal-selection-list-abastecimiento {
     list-style: none;
     padding: 0;
@@ -408,19 +465,25 @@
     width: 100%;
     max-height: 200px;
     overflow-y: auto;
-    border: 1px solid #eee;
+    border: 1px solid #c287b5;
+    /* Borde basado en Ventas.css estado-select */
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #f8eaf5;
+    /* Fondo similar a filas pares */
 }
 
+/* Separador de items en lista de selección */
 .modal-selection-list-abastecimiento li {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #c287b5;
+    /* Borde basado en Ventas.css estado-select */
 }
 
+/* Último item sin separador */
 .modal-selection-list-abastecimiento li:last-child {
     border-bottom: none;
 }
 
+/* Botón de item en lista de selección */
 .modal-selection-list-abastecimiento li button {
     background: none;
     border: none;
@@ -433,78 +496,96 @@
     color: #333;
 }
 
+/* Hover en item de lista de selección */
 .modal-selection-list-abastecimiento li button:hover {
-    background-color: #e0e0e0;
+    background-color: #f3d9ec;
+    /* Fondo similar a hover de filas */
 }
 
 /* Responsive */
 @media (max-width: 768px) {
+
+    /* Área principal responsive */
     .main-content-area {
         margin-left: 0;
         padding: 15px;
     }
 
+    /* Contenedor de contenido responsive */
     .abastecimiento-content-wrapper {
         padding: 15px;
         max-width: 100%;
     }
 
+    /* Acciones responsive */
     .containerAgregarBuscarAbastecimiento {
         flex-direction: column;
         gap: 15px;
     }
 
+    /* Input búsqueda responsive */
     .inputBuscarAbastecimiento {
         min-width: unset;
     }
 
+    /* Botón agregar responsive */
     .botonAgregarAbastecimiento {
         width: 100%;
     }
 
+    /* Tabla responsive */
     .tabla-abastecimiento th,
     .tabla-abastecimiento td {
         padding: 10px;
         font-size: 0.9rem;
     }
 
+    /* Iconos tabla responsive */
     .icon-actions-abastecimiento {
         flex-wrap: wrap;
         gap: 6px;
     }
 
+    /* Botones tabla responsive */
     .table-icons-abastecimiento {
         padding: 6px 10px;
         font-size: 1em;
     }
 
+    /* Contenido modal responsive */
     .modal-abastecimiento-content {
         padding: 20px;
         max-width: 95%;
     }
 
+    /* Contenido modal selección responsive */
     .modal-abastecimiento-selection-container {
         padding: 20px;
         width: 95%;
         max-width: 95%;
     }
 
+    /* Lista selección modal responsive */
     .modal-selection-list-abastecimiento {
         max-height: 150px;
     }
 
+    /* Formulario modal responsive */
     .modal-abastecimiento-content .formularioModalAbastecimiento {
         gap: 10px;
     }
 
+    /* Grupo formulario responsive */
     .form-group-abastecimiento {
         gap: 6px;
     }
 
+    /* Label formulario responsive */
     .form-label-abastecimiento {
         font-size: 0.9rem;
     }
 
+    /* Inputs y selects formulario responsive */
     .form-input-abastecimiento,
     .form-select-abastecimiento,
     .form-button-select-abastecimiento {
@@ -512,11 +593,13 @@
         padding: 8px 10px;
     }
 
+    /* Botones acción formulario responsive */
     .form-actions-abastecimiento {
         flex-direction: column;
         gap: 10px;
     }
 
+    /* Botones guardar/cancelar responsive */
     .form-button-guardar-abastecimiento,
     .form-button-cancelar-abastecimiento {
         width: 100%;
@@ -524,12 +607,14 @@
         font-size: 1rem;
     }
 
+    /* Botón cerrar modal responsive */
     .modal-abastecimiento-button-cerrar {
         width: 100%;
         padding: 12px;
         font-size: 1rem;
     }
 
+    /* Contenido modal confirmación responsive */
     .modal-abastecimiento-confirm {
         max-width: 95%;
         margin: auto;

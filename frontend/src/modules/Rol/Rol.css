@@ -1,4 +1,4 @@
-/* Estilos generales del contenedor principal */
+/* Contenedor principal */
 .rol-container {
     display: flex;
     height: 100vh;
@@ -6,13 +6,13 @@
     font-family: 'Roboto', sans-serif;
 }
 
-/* Estilo para el asterisco rojo en campos obligatorios */
+/* Asterisco rojo */
 .required-asterisk {
     color: red;
     margin-left: 2px;
 }
 
-/* Contenido principal (área de tabla y controles) */
+/* Contenido principal */
 .rol-content {
     flex: 1;
     margin-left: 220px;
@@ -25,13 +25,14 @@
     align-items: center;
 }
 
+/* Título principal */
 .rol-content h1 {
     text-align: center;
-    color: #2c3e50;
+    color: #6d0b58;
     margin-bottom: 20px;
 }
 
-/* Estilos de la Barra de Búsqueda y Botón Agregar */
+/* Barra de Búsqueda y Botón Agregar */
 .rol-accionesTop {
     display: flex;
     justify-content: space-between;
@@ -44,9 +45,10 @@
     box-sizing: border-box;
 }
 
+/* Barra de búsqueda */
 .rol-barraBusqueda {
     padding: 10px 15px;
-    border: 1px solid #bdc3c7;
+    border: 1px solid #c287b5;
     border-radius: 5px;
     font-size: 1rem;
     flex-grow: 1;
@@ -56,8 +58,9 @@
     box-sizing: border-box;
 }
 
+/* Botón Agregar Rol */
 .rol-botonAgregar {
-    background-color: #2ecc71;
+    background-color: #b660a3;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -69,48 +72,54 @@
 }
 
 .rol-botonAgregar:hover {
-    background-color: #27ae60;
+    background-color: #6d0b58;
 }
 
-/* Estilos de la Tabla de Roles (Ajustada para ser más grande y agradable) */
+/* Tabla de Roles */
 .rol-table {
     width: 100%;
     max-width: 1200px;
     border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
     box-sizing: border-box;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.rol-table th,
+/* Encabezados de tabla */
+.rol-table th {
+    background-color: #e978d0;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    padding: 14px;
+    font-size: 1rem;
+    border: 1px solid #e978d0;
+}
+
+/* Celdas de tabla */
 .rol-table td {
-    border: 1px solid #dddddd;
+    border: 1px solid #e978d0;
     text-align: left;
     padding: 14px;
-    /* Aumentado el padding */
     vertical-align: middle;
     font-size: 1rem;
-    /* Aumentado el tamaño de fuente */
-    color: #34495e;
+    color: black;
 }
 
-.rol-table th {
-    background-color: #34495e;
-    color: white;
-    font-weight: 600;
-    text-align: center;
-}
-
+/* Fondos de filas pares */
 .rol-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f8eaf5;
 }
 
+/* Fondo al pasar el mouse */
 .rol-table tbody tr:hover {
-    background-color: #f0f0f0;
+    background-color: #f3d9ec;
 }
 
-/* Contenedor de iconos en la tabla */
+/* Iconos en la tabla */
 .rol-table-iconos {
     display: flex;
     gap: 10px;
@@ -118,13 +127,11 @@
     align-items: center;
 }
 
-/* Estilos para botones de acción en la tabla (Ajustados) */
+/* Botones de acción en la tabla */
 .rol-table-button {
     padding: 10px 15px;
-    /* Aumentado el padding */
     margin: 0;
     font-size: 0.9rem;
-    /* Mantenido el tamaño del icono */
     border: none;
     border-radius: 5px;
     color: white;
@@ -135,32 +142,27 @@
     justify-content: center;
 }
 
-/* Colores específicos para botones de acción en la tabla */
-.rol-table-iconos .rol-table-button:nth-child(1) {
-    background-color: #3498db;
-}
-
-.rol-table-iconos .rol-table-button:nth-child(1):hover {
-    background-color: #2980b9;
-}
-
+/* Colores de botones de acción en la tabla (Ver/Editar) */
+.rol-table-iconos .rol-table-button:nth-child(1),
 .rol-table-iconos .rol-table-button:nth-child(2) {
-    background-color: #f39c12;
+    background-color: #fc8de4;
 }
 
+.rol-table-iconos .rol-table-button:nth-child(1):hover,
 .rol-table-iconos .rol-table-button:nth-child(2):hover {
-    background-color: #e67e22;
+    background-color: #d66abf;
 }
 
+/* Botón eliminar */
 .rol-table-button-delete {
-    background-color: #e74c3c;
+    background-color: #b660a3;
 }
 
 .rol-table-button-delete:hover {
     background-color: #c0392b;
 }
 
-/* Estilo para el switch */
+/* Switch de estado */
 .switch {
     position: relative;
     display: inline-block;
@@ -199,23 +201,21 @@
 }
 
 input:checked+.slider {
-    background-color: #4CAF50;
+    background-color: #2ecc71;
 }
 
 input:checked+.slider:before {
     transform: translateX(16px);
 }
 
-/* Estilos de Modal */
-
-/* Capa de fondo oscuro para cualquier modal */
+/* Modal Overlay */
 .rol-modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -225,13 +225,13 @@ input:checked+.slider:before {
     box-sizing: border-box;
 }
 
-/* Contenedor del contenido del modal (base) */
+/* Contenido del modal (base) */
 .rol-modalContent {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 700px;
     width: 100%;
     margin: auto;
     max-height: 90vh;
@@ -240,16 +240,16 @@ input:checked+.slider:before {
     box-sizing: border-box;
 }
 
-/* Estilos específicos para el contenido del modal de Detalles */
+/* Contenido del modal de Detalles */
 .rol-modalContent-details {
     max-width: 500px;
 }
 
-/* Titles and paragraphs within details */
+/* Títulos y párrafos en detalles */
 .rol-modalContent-details h2,
 .rol-modalContent-details h3 {
     text-align: center;
-    color: #34495e;
+    color: #6d0b58;
     margin-top: 0;
     margin-bottom: 20px;
 }
@@ -257,16 +257,16 @@ input:checked+.slider:before {
 .rol-modalContent-details p {
     margin-bottom: 10px;
     line-height: 1.6;
-    color: #34495e;
+    color: #333;
 }
 
-/* Strong text within details modal */
+/* Texto fuerte en detalles */
 .rol-modalContent-details strong {
-    color: #2c3e50;
+    color: #6d0b58;
     margin-right: 5px;
 }
 
-/* List of modules in details modal */
+/* Lista de módulos en detalles */
 .rol-modalContent-details .rol-listaModulosDetalle {
     list-style: disc inside;
     padding-left: 20px;
@@ -276,18 +276,19 @@ input:checked+.slider:before {
     overflow-y: auto;
 }
 
+/* Item de lista en detalles */
 .rol-modalContent-details .rol-listaModulosDetalle li {
     padding: 4px 0;
     font-size: 0.9rem;
-    color: #34495e;
+    color: #333;
 }
 
-/* Close button in details */
+/* Botón cerrar en detalles */
 .rol-modalContent-details .rol-modalButton-cerrar {
     display: block;
     width: 100%;
-    padding: 10px;
-    background-color: #3498db;
+    padding: 10px 20px;
+    background-color: #b660a3;
     color: white;
     border: none;
     border-radius: 5px;
@@ -299,23 +300,23 @@ input:checked+.slider:before {
 }
 
 .rol-modalContent-details .rol-modalButton-cerrar:hover {
-    background-color: #2980b9;
+    background-color: #6d0b58;
 }
 
-/* Estilos específicos para el contenido del modal de Formulario (Crear/Editar) */
+/* Contenido del modal de Formulario */
 .rol-modalContent-form {
-    max-width: 600px;
+    max-width: 700px;
 }
 
-/* Title within form modal */
+/* Título en formulario */
 .rol-modalContent-form h2 {
     text-align: center;
-    color: #34495e;
+    color: #6d0b58;
     margin-top: 0;
     margin-bottom: 20px;
 }
 
-/* Admin message style */
+/* Mensaje de admin */
 .rol-modalContent-form .rol-admin-message {
     text-align: center;
     color: #e74c3c;
@@ -323,55 +324,55 @@ input:checked+.slider:before {
     font-weight: bold;
 }
 
-/* Form element container */
+/* Contenedor de elementos de formulario */
 .rol-modalContent-form form {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-/* Section Información del Rol container */
+/* Sección Información del Rol */
 .rol-modalContent-form .rol-seccionInformacionRol {
     margin-top: 0;
-    padding: 25px;
-    border: 1px solid #ecf0f1;
+    padding: 20px;
+    border: 1px solid #c287b5;
     border-radius: 10px;
-    background-color: #fdfefe;
+    background-color: white;
     box-sizing: border-box;
 }
 
-/* Formulario Información Rol (inner fields container) */
+/* Formulario Información Rol (campos internos) */
 .rol-modalContent-form .rol-formularioInformacionRol {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
 }
 
-/* Form group */
+/* Grupo de formulario */
 .rol-modalContent-form .rol-campoContainer {
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
-/* Labels (Ajustadas: centrado, fondo blanco, letras negras) */
+/* Labels */
 .rol-modalContent-form .rol-label {
     display: block;
     font-weight: 600;
-    color: black;
-    background-color: white;
-    text-align: center;
-    margin-bottom: 8px;
-    padding: 2px 0;
-    font-size: 15px;
+    color: #6d0b58;
+    text-align: left;
+    margin-bottom: 0;
+    padding: 0;
+    font-size: 1rem;
 }
 
-/* Inputs and Textareas */
+/* Inputs y Textareas */
 .rol-modalContent-form .rol-input,
 .rol-modalContent-form .rol-textarea,
 .rol-modalContent-form .rol-select {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #bdc3c7;
+    border: 1px solid #c287b5;
     border-radius: 5px;
     font-size: 1rem;
     box-sizing: border-box;
@@ -380,41 +381,41 @@ input:checked+.slider:before {
     color: #333;
 }
 
-/* Focus styles */
+/* Estilos de enfoque */
 .rol-modalContent-form .rol-input:focus,
 .rol-modalContent-form .rol-textarea:focus,
 .rol-modalContent-form .rol-select:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    border-color: #b660a3;
+    box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
     outline: none;
 }
 
-/* Textarea specific */
+/* Textarea específico */
 .rol-modalContent-form .rol-textarea {
     min-height: 120px;
     resize: vertical;
 }
 
-/* Placeholder styles */
+/* Estilos de placeholder */
 .rol-modalContent-form .rol-input::placeholder,
 .rol-modalContent-form .rol-textarea::placeholder {
     color: #7f8c8d;
     opacity: 1;
 }
 
-/* Select specific */
+/* Select específico */
 .rol-modalContent-form .rol-select {
     cursor: pointer;
 }
 
-/* Estilos específicos para el contenido del modal de Confirmación */
+/* Contenido del modal de Confirmación */
 .rol-modalContent-confirm {
     max-width: 400px;
     margin: auto;
     text-align: center;
 }
 
-/* Title within confirm modal */
+/* Título en confirmación */
 .rol-modalContent-confirm h3 {
     text-align: center;
     color: #e74c3c;
@@ -422,47 +423,47 @@ input:checked+.slider:before {
     margin-bottom: 15px;
 }
 
-/* Paragraph within confirm modal */
+/* Párrafo en confirmación */
 .rol-modalContent-confirm p {
     margin-bottom: 20px;
     line-height: 1.6;
-    color: #34495e;
+    color: #333;
 }
 
-/* Strong text within confirm modal */
+/* Texto fuerte en confirmación */
 .rol-modalContent-confirm strong {
-    color: #2c3e50;
+    color: #6d0b58;
 }
 
-/* Estilos específicos para el contenido del modal de Validación */
+/* Contenido del modal de Validación */
 .rol-modalContent-validation {
     max-width: 400px;
     margin: auto;
     text-align: center;
 }
 
-/* Title within validation modal */
+/* Título en validación */
 .rol-modalContent-validation h3 {
     text-align: center;
-    color: #f39c12;
+    color: #e68bd2;
     margin-top: 0;
     margin-bottom: 15px;
 }
 
-/* Paragraph within validation modal */
+/* Párrafo en validación */
 .rol-modalContent-validation p {
     margin-bottom: 20px;
     line-height: 1.6;
-    color: #34495e;
+    color: #333;
 }
 
-/* Estilo para el botón "Seleccionar Módulos" */
+/* Botón "Seleccionar Módulos" */
 .rol-modalContent-form .rol-botonSeleccionarPermisos {
     display: block;
     margin: 20px auto;
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: #4caf50;
+    background-color: #b660a3;
     color: white;
     border: none;
     border-radius: 5px;
@@ -470,25 +471,26 @@ input:checked+.slider:before {
     transition: background-color 0.3s ease;
 }
 
-/* Efecto hover en el botón "Seleccionar Módulos" */
+/* Hover en botón "Seleccionar Módulos" */
 .rol-modalContent-form .rol-botonSeleccionarPermisos:hover {
-    background-color: #45a049;
+    background-color: #6d0b58;
 }
 
-/* Section Seleccionar Modulos container */
+/* Sección Seleccionar Modulos */
 .rol-modalContent-form .rol-seccionSeleccionarModulos {
     margin-top: 20px;
-    padding: 25px;
-    border: 1px solid #ecf0f1;
+    padding: 20px;
+    border: 1px solid #c287b5;
     border-radius: 10px;
-    background-color: #fdfefe;
+    background-color: white;
     box-sizing: border-box;
 }
 
-/* Modulos grid container */
+/* Contenedor de módulos grid */
 .rol-modalContent-form .rol-modulos-grid {
     display: grid;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: repeat(4, auto);
+    /* Muestra 4 filas por columna */
     grid-auto-flow: column;
     gap: 15px;
     margin-top: 10px;
@@ -497,65 +499,65 @@ input:checked+.slider:before {
     overflow-x: auto;
 }
 
-/* Individual modulo item in grid */
+/* Item individual de módulo */
 .rol-modalContent-form .rol-modulos-grid .rol-moduloItem {
     min-width: 180px;
 }
 
-/* Modulo item base style */
+/* Estilo base item módulo */
 .rol-modalContent-form .rol-moduloItem {
     display: flex;
     align-items: center;
-    background-color: #f9f9f9;
+    background-color: #f8eaf5;
     padding: 10px 15px;
     border-radius: 5px;
-    border: 1px solid #eee;
+    border: 1px solid #c287b5;
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Modulo item hover style */
+/* Hover en item módulo */
 .rol-modalContent-form .rol-moduloItem:hover {
-    background-color: #e9e9e9;
-    border-color: #ccc;
+    background-color: #f3d9ec;
+    border-color: #d66abf;
 }
 
-/* Modulo checkbox */
+/* Checkbox de módulo */
 .rol-modalContent-form .rol-moduloItem input[type="checkbox"] {
     margin-right: 10px;
 }
 
-/* Modulo label */
+/* Label de módulo */
 .rol-modalContent-form .rol-moduloItem label {
     cursor: pointer;
     flex-grow: 1;
     color: #333;
 }
 
-/* Modulo checked label style */
+/* Estilo de label módulo seleccionado */
 .rol-modalContent-form .rol-moduloItem input[type="checkbox"]:checked+label {
     font-weight: bold;
-    color: #007bff;
+    color: #6d0b58;
 }
 
-/* Section Modulos Seleccionados container */
+/* Sección Módulos Seleccionados */
 .rol-modalContent-form .rol-seccionModulosSeleccionados {
     margin-top: 20px;
-    padding: 25px;
-    border: 1px solid #ecf0f1;
+    padding: 20px;
+    border: 1px solid #c287b5;
     border-radius: 10px;
-    background-color: #fdfefe;
+    background-color: white;
     box-sizing: border-box;
 }
 
-/* Message when no selected modules */
+/* Mensaje sin módulos seleccionados */
 .rol-modalContent-form .rol-seccionModulosSeleccionados p {
     color: #7f8c8d;
     font-style: italic;
     text-align: center;
 }
 
-/* List of selected modules */
+/* Lista de módulos seleccionados */
 .rol-modalContent-form .rol-listaModulosSeleccionados {
     columns: 2;
     gap: 20px;
@@ -564,15 +566,15 @@ input:checked+.slider:before {
     margin: 0;
 }
 
-/* Individual selected module list item */
+/* Item de lista de módulos seleccionados */
 .rol-modalContent-form .rol-listaModulosSeleccionados li {
     padding: 6px 0;
-    font-size: 15px;
-    color: #34495e;
+    font-size: 0.9rem;
+    color: #333;
     break-inside: avoid-column;
 }
 
-/* Contenedor de botones de acción en formularios/modales */
+/* Contenedor de botones de acción de formulario */
 .rol-form-actions {
     display: flex;
     justify-content: center;
@@ -583,7 +585,7 @@ input:checked+.slider:before {
     width: 100%;
 }
 
-/* Estilos base para botones de formulario/modal */
+/* Botones de formulario */
 .rol-form-buttonGuardar,
 .rol-form-buttonCancelar,
 .rol-modalButton-cerrar {
@@ -597,16 +599,17 @@ input:checked+.slider:before {
     text-align: center;
 }
 
-/* Colores específicos para botones de formulario/modal */
+/* Botón Guardar */
 .rol-form-actions .rol-form-buttonGuardar {
-    background-color: #2ecc71;
+    background-color: #b660a3;
     color: white;
 }
 
 .rol-form-actions .rol-form-buttonGuardar:hover {
-    background-color: #27ae60;
+    background-color: #6d0b58;
 }
 
+/* Botón Cancelar */
 .rol-form-actions .rol-form-buttonCancelar {
     background-color: #95a5a6;
     color: white;
@@ -616,7 +619,7 @@ input:checked+.slider:before {
     background-color: #7f8c8d;
 }
 
-/* Delete confirmation button color */
+/* Botón Eliminar en confirmación */
 .rol-modalContent-confirm .rol-form-actions .rol-form-buttonGuardar {
     background-color: #e74c3c;
 }
@@ -625,12 +628,12 @@ input:checked+.slider:before {
     background-color: #c0392b;
 }
 
-/* Close button style (for details and validation modals) */
+/* Botón Cerrar modal */
 .rol-modalButton-cerrar {
     display: block;
     width: 100%;
-    padding: 10px;
-    background-color: #3498db;
+    padding: 10px 20px;
+    background-color: #b660a3;
     color: white;
     border: none;
     border-radius: 5px;
@@ -642,11 +645,11 @@ input:checked+.slider:before {
 }
 
 .rol-modalButton-cerrar:hover {
-    background-color: #2980b9;
+    background-color: #6d0b58;
 }
 
+/* Responsive Styles */
 @media (max-width: 768px) {
-
     .rol-content {
         padding: 15px;
         margin-left: 0;
