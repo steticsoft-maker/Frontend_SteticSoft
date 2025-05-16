@@ -140,9 +140,7 @@ const Horarios = () => {
             Agregar Horario
           </button>
         </div>
-
-        <div className="tablaHorariosCitas">
-          <table>
+          <table className="tablaHorario">
             <thead>
               <tr>
                 <th>Encargado</th>
@@ -189,7 +187,6 @@ const Horarios = () => {
               ))}
             </tbody>
           </table>
-        </div>
 
         {/* Modal */}
         {modal.open && (

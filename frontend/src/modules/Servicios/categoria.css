@@ -39,27 +39,20 @@ h2 {
 }
 
 .tablaCategoria {
-  background: white;
-  width: 97%;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.tablaCategoria table {
   border-collapse: collapse;
   width: 100%;
+  background: rgb(255, 241, 250);
 }
 
 .tablaCategoria th,
 .tablaCategoria td {
-  border: 1px solid #e978d0;
+  border: 1px solid #b660a3;
   padding: 8px;
   text-align: left;
 }
 
 .tablaCategoria th {
-  background-color: #e978d0;
+  background-color: #b660a3;
 }
 
 .switch input {
@@ -202,7 +195,7 @@ input:checked + .slider:before {
 }
 
 .botonVerDetallesCategoria {
-  background-color: #f153cf;
+  background-color: #ac3a93;
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
@@ -213,11 +206,11 @@ input:checked + .slider:before {
 }
 
 .botonVerDetallesCategoria:hover {
-  background-color: #ac3a93;
+  background-color: #fc8de4;
 }
 
 .botonEditarCategoria {
-  background-color: #f153cf;
+  background-color: #ac3a93;
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
@@ -228,7 +221,7 @@ input:checked + .slider:before {
 }
 
 .botonEditarCategoria:hover {
-  background-color: #ac3a93;
+  background-color: #fc8de4;
 }
 
 .botonEliminarCategoria {
@@ -243,7 +236,7 @@ input:checked + .slider:before {
 }
 
 .botonEliminarCategoria:hover {
-  background-color: #ac3a93;
+  background-color: #fc8de4;
   margin: 10px;
 }
 

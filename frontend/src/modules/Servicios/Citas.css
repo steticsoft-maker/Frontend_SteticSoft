@@ -112,9 +112,9 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start; /* Alineación hacia la izquierda */
-    width: 600px; /* Ampliado para mayor espacio */
+    width: 600px; 
     border-radius: 12px;
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    background: white;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     padding: 25px;
 }
@@ -203,3 +203,33 @@
     text-align: left;
   }
   
+  .modalServicio {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-Servicio-confirm {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.modal-Servicio-confirm h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.modal-Servicio-confirm p {
+    margin-bottom: 15px;
+    color: #333;
+}

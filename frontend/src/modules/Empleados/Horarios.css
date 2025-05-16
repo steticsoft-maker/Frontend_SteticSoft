@@ -81,7 +81,7 @@ h2 {
 }
 
 .botonAgregar {
-  background-color: #fc8de4;
+  background-color: #ac3a93;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -92,7 +92,7 @@ h2 {
 }
 
 .botonAgregar:hover {
-  background-color: #ac3a93;
+  background-color: #fc8de4;
 }
 .botonCerrar {
   background-color: #f153cf;
@@ -106,30 +106,23 @@ h2 {
 }
 
 .botonCerrarDetalle:hover {
-  background-color: #ac3a93;
+  background-color: #fc8de4;
 }
 
-.tablaHorarios {
-  background: white;
-  width: 97%;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-table {
+.tablaHorario {
   width: 100%;
   border-collapse: collapse;
+  background: rgb(255, 241, 250);
 }
 
-th, td {
+.tablaHorario th, td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #e978d0;
+  border-bottom: 1px solid #b660a3;
 }
 
-th {
-  background-color: #e978d0;
+.tablaHorario th {
+  background-color: #b660a3;
   color: white;
 }
 

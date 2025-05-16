@@ -93,9 +93,7 @@ const CategoriasServicios = () => {
                       Agregar Categoría
                   </button>
               </div>
-
-              <div className="tablaCategoria">
-                  <table>
+                  <table className="tablaCategoria">
                       <thead>
                           <tr>
                               <th>Nombre</th>
@@ -134,7 +132,6 @@ const CategoriasServicios = () => {
                           ))}
                       </tbody>
                   </table>
-              </div>
 
               {/* Modal */}
               {modal.open && (
