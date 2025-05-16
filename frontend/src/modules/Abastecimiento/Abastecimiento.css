@@ -1,7 +1,8 @@
 /* Contenedor general */
 .abastecimiento-container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    /* Use min-height to allow content to push the footer */
     background-color: transparent;
     font-family: 'Roboto', sans-serif;
 }
@@ -11,6 +12,8 @@
     text-align: left;
     color: black;
     /* Párrafos en negro */
+    margin-bottom: 10px;
+    /* Add space between details lines */
 }
 
 /* Color para texto fuerte (strong) en detalles */
@@ -20,6 +23,7 @@
     margin-right: 5px;
     /* Mantener el espacio */
 }
+
 /* Asterisco rojo */
 .required-asterisk {
     color: red;
@@ -30,12 +34,15 @@
 .main-content-area {
     flex: 1;
     padding: 20px;
-    margin-left: 380px;
+    margin-left: 230px;
+    /* Adjust if your NavbarAdmin width changes */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    height: 100%;
+    width: calc(100% - 380px);
+    /* Adjust width based on margin-left */
+    box-sizing: border-box;
 }
 
 /* Título */
@@ -143,6 +150,22 @@
     /* Tono intermedio similar al hover de filas */
 }
 
+/* Estilo para filas agotadas */
+.tabla-abastecimiento tbody tr.depleted-row {
+    background-color: #ffebee;
+    /* Light red background */
+    color: #c62828;
+    /* Dark red text */
+    opacity: 0.8;
+    /* Slightly faded */
+}
+
+.tabla-abastecimiento tbody tr.depleted-row td {
+    color: #c62828;
+    /* Ensure cell text is also dark red */
+}
+
+
 /* Iconos en la tabla */
 .icon-actions-abastecimiento {
     display: flex;
@@ -167,34 +190,59 @@
 
 /* Colores de botones de acción en la tabla (Ver) */
 .icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(1) {
+    /* Adjust nth-child based on button order */
     background-color: #fc8de4;
     /* Color de botón Detalle/PDF de Ventas.css */
 }
 
 .icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(1):hover {
+    /* Adjust nth-child based on button order */
     background-color: #d66abf;
     /* Color hover de botón Detalle/PDF de Ventas.css */
 }
 
 /* Colores de botones de acción en la tabla (Editar) */
-.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(2) {
+/* Adjusted nth-child to account for potential deplete button */
+.icon-actions-abastecimiento .table-icons-abastecimiento:not(.delete-button-abastecimiento):not(.deplete-button-abastecimiento):nth-of-type(2) {
     background-color: #fc8de4;
     /* Usar el mismo color que Ver */
 }
 
-.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(2):hover {
+.icon-actions-abastecimiento .table-icons-abastecimiento:not(.delete-button-abastecimiento):not(.deplete-button-abastecimiento):nth-of-type(2):hover {
     background-color: #d66abf;
     /* Usar el mismo color hover que Ver */
 }
 
-/* Botón eliminar */
-.delete-button-abastecimiento {
-    background-color: #b660a3;
+/* Botón agotar */
+.deplete-button-abastecimiento {
+    background-color: #ff9800;
+    /* Orange color for deplete */
 }
 
-.delete-button-abastecimiento:hover {
-    background-color: #c0392b;
+.deplete-button-abastecimiento:hover {
+    background-color: #f57c00;
+    /* Darker orange on hover */
 }
+
+/* Botón eliminar */
+/* Adjusted nth-child to account for potential deplete button */
+.icon-actions-abastecimiento .delete-button-abastecimiento {
+    background-color: #b660a3;
+    /* Original delete color, or change to red if preferred */
+}
+
+.icon-actions-abastecimiento .delete-button-abastecimiento:hover {
+    background-color: #c0392b;
+    /* Red */
+}
+
+/* Disabled button style */
+.table-icons-abastecimiento:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 
 /* Modal Overlay */
 .modal-abastecimiento-overlay {
@@ -278,6 +326,7 @@
 .modal-abastecimiento-confirm h3 {
     text-align: center;
     color: #e74c3c;
+    /* Red for deletion/depletion confirmation */
     margin-top: 0;
     margin-bottom: 15px;
 }
@@ -288,6 +337,14 @@
     line-height: 1.6;
     color: #333;
     /* Color de texto consistente */
+}
+
+/* Text for depleted status in details */
+.modal-abastecimiento-content .depleted-text {
+    color: #c62828;
+    /* Dark red */
+    font-weight: bold;
+    margin-top: 10px;
 }
 
 /* Texto fuerte en confirmación */
@@ -363,6 +420,11 @@
     /* Color de título de Ventas.css para hover */
 }
 
+.form-button-select-abastecimiento:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
 /* Contenedor de botones de acción de formulario */
 .form-actions-abastecimiento {
     display: flex;
@@ -399,6 +461,11 @@
     /* Color de título de Ventas.css para hover */
 }
 
+.form-button-guardar-abastecimiento:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
 /* Botón Cancelar */
 .form-button-cancelar-abastecimiento {
     background-color: #95a5a6;
@@ -412,13 +479,25 @@
 }
 
 /* Botón Eliminar en confirmación */
-.modal-abastecimiento-confirm .form-button-guardar-abastecimiento {
+.modal-abastecimiento-confirm .form-button-guardar-abastecimiento.delete-button-abastecimiento {
     background-color: #e74c3c;
 }
 
-.modal-abastecimiento-confirm .form-button-guardar-abastecimiento:hover {
+.modal-abastecimiento-confirm .form-button-guardar-abastecimiento.delete-button-abastecimiento:hover {
     background-color: #c0392b;
 }
+
+/* Botón Agotar en confirmación */
+.modal-abastecimiento-confirm .form-button-guardar-abastecimiento.deplete-button-abastecimiento {
+    background-color: #ff9800;
+    /* Orange */
+}
+
+.modal-abastecimiento-confirm .form-button-guardar-abastecimiento.deplete-button-abastecimiento:hover {
+    background-color: #f57c00;
+    /* Darker Orange */
+}
+
 
 /* Botón Cerrar modal */
 .modal-abastecimiento-button-cerrar {
@@ -509,11 +588,14 @@
     .main-content-area {
         margin-left: 0;
         padding: 15px;
+        width: 100%;
+        /* Full width on small screens */
     }
 
     /* Contenedor de contenido responsive */
     .abastecimiento-content-wrapper {
-        padding: 15px;
+        padding: 0;
+        /* Remove padding if main area has padding */
         max-width: 100%;
     }
 
@@ -540,17 +622,80 @@
         font-size: 0.9rem;
     }
 
+    /* Adjust column display for small screens if necessary
+       (Consider using CSS Grid or Flexbox for table layout on small screens
+       or hiding less important columns) */
+    .tabla-abastecimiento thead {
+        display: none;
+        /* Hide header on small screens */
+    }
+
+    .tabla-abastecimiento,
+    .tabla-abastecimiento tbody,
+    .tabla-abastecimiento tr,
+    .tabla-abastecimiento td {
+        display: block;
+        /* Make table elements block level */
+        width: 100%;
+    }
+
+    .tabla-abastecimiento tr {
+        margin-bottom: 15px;
+        border: 1px solid #e978d0;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .tabla-abastecimiento tr.depleted-row {
+        border-color: #c62828;
+    }
+
+
+    .tabla-abastecimiento td {
+        text-align: right;
+        padding-left: 50%;
+        /* Create space for the label */
+        position: relative;
+        border: none;
+        /* Remove individual cell borders */
+    }
+
+    .tabla-abastecimiento td::before {
+        content: attr(data-label);
+        /* Use data-label attribute for the label */
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #6d0b58;
+        /* Label color */
+        text-align: left;
+    }
+
+    /* Add data-label attributes to your JSX <td> elements */
+    /* Example: <td data-label="Nombre:">{producto.nombre}</td> */
+
+
     /* Iconos tabla responsive */
     .icon-actions-abastecimiento {
-        flex-wrap: wrap;
-        gap: 6px;
+        justify-content: flex-end;
+        /* Align icons to the right */
+        margin-top: 10px;
+        gap: 8px;
     }
+
 
     /* Botones tabla responsive */
     .table-icons-abastecimiento {
-        padding: 6px 10px;
+        padding: 8px 12px;
+        /* Slightly larger touch targets */
         font-size: 1em;
     }
+
 
     /* Contenido modal responsive */
     .modal-abastecimiento-content {
