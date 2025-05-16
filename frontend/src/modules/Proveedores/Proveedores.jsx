@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
-import "./proveedores.css"; // Asegúrate de tener este archivo y los estilos necesarios
+import "./proveedores.css";
 
 const Proveedores = () => {
     const [proveedores, setProveedores] = useState([

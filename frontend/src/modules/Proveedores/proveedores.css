@@ -1,5 +1,4 @@
 /* Contenedor general */
-
 .proveedores-container {
     display: flex;
     height: 100vh;
@@ -14,7 +13,6 @@
 
 
 /* Contenido principal */
-
 .proveedoresContent {
     flex: 1;
     padding: 30px;
@@ -26,51 +24,30 @@
     /* Para permitir scroll si el contenido es largo */
 }
 
-
-/* Barra de búsqueda (asumo que es .barraBusquedaBotonAgregarProveedor input) */
-
-
-/* .search-bar input { ... }  -- si es una clase separada */
-
-
-/* Estilos para los inputs y selects generales DENTRO DEL MODAL */
-
 .modal-content-Proveedores input[type="text"],
 .modal-content-Proveedores input[type="email"],
 .modal-content-Proveedores input[type="tel"],
 .modal-content-Proveedores select.tipo-documento-proveedor-select {
-    /* Selector para el select de Tipo de Proveedor (Natural/Jurídico) */
     width: 100%;
-    /* Ocupa el ancho de su celda en el grid */
     padding: 10px;
     font-size: 1rem;
     line-height: 1.5;
-    /* Ayuda a la altura vertical consistente */
     color: #495057;
-    /* Color de texto más estándar */
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
-    /* Antes tenías margin: 0; */
-    margin-bottom: 15px; /* Añadida/modificada para dar espacio abajo */
+    margin-bottom: 15px;
 }
-
-
-/* Labels dentro del modal */
 
 .modal-content-Proveedores label {
     display: block;
-    /* Para que ocupen su propia línea si es necesario */
     margin-bottom: 5px;
-    /* Espacio entre label y campo */
     margin-left: 0; /* Ajustado para que la etiqueta esté alineada con el input */
     margin-right: 0; /* Ajustado para que la etiqueta esté alineada con el input */
     margin-top: 10px; /* Espacio arriba si aplica */
     font-weight: 500;
-    /* Un poco más de peso para las labels */
     color: #34495e;
-    /* Color consistente con títulos */
 }
 
 
