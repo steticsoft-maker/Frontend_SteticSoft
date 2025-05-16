@@ -394,21 +394,6 @@ function Dashboard() {
             </div>
           </div>
           <div className="rowDashboard">
-            {" "}
-            {/* Fila de gráficos */}
-            <div className="chart">
-              {" "}
-              {/* Contenedor de gráfico Doughnut */}
-              <h2>Ejemplo Doughnut</h2>
-              <div className="chart-wrapper">
-                {" "}
-                {/* Contenedor del componente gráfico */}
-                <Doughnut
-                  data={doughnutDataExample}
-                  options={doughnutOptions}
-                />
-              </div>
-            </div>
             <div className="chart">
               {" "}
               {/* Contenedor de gráfico Combo */}
