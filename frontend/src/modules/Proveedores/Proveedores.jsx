@@ -261,9 +261,7 @@ const Proveedores = () => {
                                         </>
                                     ) : (
                                         <>
-                                            {/* Aquí se sigue mostrando "Razón Social" para la vista de detalles si es necesario,
-                                                o podrías cambiarlo también a "Nombre de la Empresa" si lo prefieres */}
-                                            <p><strong>Razón Social:</strong> {modal.proveedor.nombreEmpresa}</p>
+                                            <p><strong>Nombre de la Empresa:</strong> {modal.proveedor.nombreEmpresa}</p>
                                             <p><strong>NIT:</strong> {modal.proveedor.nit}</p>
                                         </>
                                     )}
