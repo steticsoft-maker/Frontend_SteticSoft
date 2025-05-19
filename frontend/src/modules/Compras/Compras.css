@@ -133,7 +133,7 @@ h2.title-h2 {
 /* Fondos de filas pares */
 /* Corregida la pseudoclase nth-child */
 .tablaCompras tbody tr:nth-child(even) {
-  background-color: #f8eaf5;
+  background-color: #f8eaf5; 
 }
 
 /* Fondo al pasar el mouse */
