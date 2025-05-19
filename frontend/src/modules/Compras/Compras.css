@@ -2,35 +2,55 @@
 .compras-container {
   display: flex;
   height: 100vh;
-  display: flex;
-    height: 100vh;
-    width: 1710px;
-    margin: 20px auto;
-    border-radius: 8px;
-    background: #f5f5f5;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* Nota: Hay un 'display: flex; height: 100vh;' duplicado aquí. */
+  /* display: flex; */
+  /* height: 100vh; */
+  width: 1710px; /* Considerar usar max-width o % para responsividad */
+  max-width: 1710px; /* Es mejor usar max-width */
+  margin: 20px auto;
+  border-radius: 8px;
+  background: #f5f5f5;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .comprasContenido {
   flex: 1;
   padding: 30px;
-  margin-left: 45px;
+  margin-left: 45px; /* Este margen desplaza todo el contenido */
+  /* Ajustar si el NavbarAdmin tiene ancho fijo */
   background-color: #f5f5f5;
   border-radius: 8px;
+  overflow-y: auto; /* Para permitir scroll si el contenido es largo */
 }
+
+/* Encabezado del componente (T\u00EDtulo) */
+/* --- INICIO: Centrado del T\u00EDtulo --- */
+h2.title-h2 {
+  font-size: 1.8rem; /* Un poco m\u00E1s grande */
+  color: #34495e;
+  margin-bottom: 25px;
+  font-weight: bold;
+  text-align: center; /* Centrado horizontal del texto */
+}
+/* --- FIN: Centrado del T\u00EDtulo --- */
 
 
 /* Barra de búsqueda y botón agregar */
 .container-busqueda-agregar {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Para separar b\u00FAsqueda y bot\u00F3n */
   align-items: center;
   gap: 10px;
   margin-bottom: 30px;
+  /* --- INICIO: Centrado y alineación con tabla --- */
+  max-width: 1200px; /* Igual al max-width de la tabla */
+  margin-left: auto;
+  margin-right: auto; /* Centrado horizontal */
+  /* --- FIN: Centrado y alineación con tabla --- */
 }
 
 .container-busqueda-agregar input {
-  width: 300px;
+  /* width: 300px; */ /* Eliminado para usar flex-grow */
   height: 40px;
   padding: 0 10px;
   border: 1px solid #ccc;
@@ -38,6 +58,9 @@
   font-size: 16px;
   color: #333;
   background-color: #fff;
+  /* --- INICIO: Ocupar espacio restante --- */
+  flex-grow: 1; /* Hace que el input crezca para llenar el espacio disponible */
+  /* --- FIN: Ocupar espacio restante --- */
 }
 
 .container-busqueda-agregar input:focus {
@@ -45,15 +68,21 @@
   border-color: #007bff;
 }
 
-/* Botones */
 .botonSuperiorAgregarCompra {
-  padding: 12px 24px;
+  padding: 12px 24px; 
   font-size: 1rem;
   background-color: #b660a3;
-  color: white;
-  border: none;
+  color: black;
+  width: 190px;
+  border: none; /* Asegurar que no tenga borde */
   cursor: pointer;
   transition: background-color 0.2s ease;
+  height: 40px; /* Misma altura fija que el input */
+  box-sizing: border-box; /* Incluir padding y borde (si tuviera) en la altura total */
+  display: flex; /* Usar flexbox para centrar el texto internamente */
+  align-items: center; /* Centrar verticalmente el texto dentro del botón */
+  justify-content: center; /* Centrar horizontalmente el texto dentro del botón */
+  line-height: 1; /* Ayuda a controlar el espacio vertical del texto */
 }
 
 .botonSuperiorAgregarCompra:hover {
@@ -66,25 +95,29 @@
 
 /* Tabla de compras */
 .tablaCompras {
-    width: 100%;
-    max-width: 1200px;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-    box-sizing: border-box;
-    border-radius: 8px;
-    overflow: hidden;
+  width: 100%;
+  max-width: 1200px;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  box-sizing: border-box;
+  border-radius: 8px;
+  overflow: hidden;
+  /* --- INICIO: Centrado de la Tabla --- */
+  margin-left: auto;
+  margin-right: auto; /* Centrado horizontal */
+  /* --- FIN: Centrado de la Tabla --- */
 }
 
 .tablaCompras th {
-    background-color: #e978d0;
-    color: black;
-    font-weight: bold;
-    text-align: center;
-    padding: 14px;
-    font-size: 1rem;
-    border: 1px solid #e978d0;
+  background-color: #e978d0;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  padding: 14px;
+  font-size: 1rem;
+  border: 1px solid #e978d0;
 }
 
 /* Celdas de tabla */
@@ -98,7 +131,8 @@
 }
 
 /* Fondos de filas pares */
-.tablaCompras tbody tr:nth-child() {
+/* Corregida la pseudoclase nth-child */
+.tablaCompras tbody tr:nth-child(even) {
   background-color: #f8eaf5;
 }
 
@@ -116,13 +150,22 @@
   text-align: center;
 }
 
-.estado-anulada {
+.estado.completado { /* Añadido para el estado completado */
+    color: #4caf50;
+}
+
+.estado.pendiente { /* Añadido para el estado pendiente */
+    color: #ff9800;
+}
+
+.estado.anulada { /* Ajustado para el estado anulada */
   font-size: 1rem;
   color: #e21a13;
   font-weight: bold;
 }
 
-/* Modal */
+
+/* Modal General */
 .modal-compras {
   position: fixed;
   top: 0;
@@ -133,38 +176,87 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1050; /* Asegurar que est\u00E9 por encima de otros elementos */
 }
 
+/* Contenido del Modal Principal */
 .modal-content-compras {
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Alineación hacia la izquierda */
   width: 600px; /* Ampliado para mayor espacio */
+  max-width: 95%; /* Para pantallas m\u00E1s peque\u00F1as */
   border-radius: 12px;
   background: linear-gradient(135deg, #ffffff, #f8f9fa);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
   padding: 25px;
+  max-height: 90vh; /* Para permitir scroll si el contenido es muy alto */
+  overflow-y: auto; /* Scroll para el contenido del modal */
 }
 
-.tablaDetallesCompras th {
-  margin: 10px 0;
-  font-size: 1rem;
-  background-color: #e978d0;
-  text-align: left; /* Asegura la alineación */
-}
-
-.modal-content-compras input {
+.modal-content-compras h2 { /* Ajustado de h3 a h2 */
+  /* Estilo para el t\u00EDtulo del modal */
+  color: #34495e;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  text-align: center;
   width: 100%;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: black;
 }
 
 .modal-content-compras p {
   margin: 5px 0;
+  width: 100%; /* Asegura que los p ocupen todo el ancho */
 }
+
+.modal-content-compras p strong { /* Estilo para los strong en los p */
+  color: #34495e; /* Puedes ajustar el color si quieres */
+}
+
+.tablaDetallesCompras { /* Estilo para la tabla dentro del modal de detalles */
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+}
+
+.tablaDetallesCompras th {
+  margin: 0; /* Eliminado margen */
+  font-size: 1rem;
+  background-color: #e978d0;
+  color: black; /* Asegura color negro */
+  font-weight: bold;
+  text-align: left; /* Asegura la alineación */
+  padding: 10px;
+  border: 1px solid #e978d0;
+}
+
+.tablaDetallesCompras td {
+    border: 1px solid #e978d0;
+    text-align: left;
+    padding: 10px;
+    vertical-align: middle;
+    font-size: 0.9rem;
+    color: black;
+}
+
+
+.modal-content-compras input[type="text"],
+.modal-content-compras input[type="email"],
+.modal-content-compras input[type="tel"],
+.modal-content-compras select { /* Aplicar a select tambi\u00E9n si hay en modal */
+  width: 100%;
+  margin-bottom: 15px; /* Ajustado para consistencia */
+  padding: 10px; /* Ajustado para consistencia */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  color: black;
+  box-sizing: border-box; /* Incluir padding y borde en el ancho */
+  font-size: 1rem; /* Consistencia con otros inputs */
+}
+
 
 .botonCerrarDetallesCompra {
   margin-top: 20px;
@@ -184,65 +276,49 @@
   background-color: #6d0b58;
 }
 
-.btn.close.pdf {
+/* Estilos para botones de Modales (unificados si es posible) */
+/* Agrupando estilos para los botones de anular y PDF cerrar */
+.modal-compras-buttons-anular,
+.modal-compras-buttons { /* Añadida clase modal-compras-buttons del JSX */
+  display: flex; /* Usar flexbox para los botones */
+  justify-content: center; /* Centrar los botones */
+  align-items: center;
+  gap: 15px; /* Espacio entre botones */
   margin-top: 20px;
-  background: #d9534f;
-  color: white;
-  padding: 8px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
+  width: 100%; /* Que el contenedor de botones ocupe el ancho completo */
 }
 
-.btn.close.pdf:hover {
-  background: #c9302c;
-}
-
-.modal-compras-buttons-anular{
-  margin-top: 20px;
-  color: white;
-  padding: 8px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-.botonConfirmarAnularCompra{
+.botonConfirmarAnularCompra {
   background-color: #b660a3;
+  color: white; /* Color de texto para el bot\u00F3n */
   padding: 11px 19px;
+  border: none; /* Asegurar que no tenga borde */
   border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.botonConfirmarAnularCompra:hover{
+.botonConfirmarAnularCompra:hover {
   background-color: #6d0b58;
 }
 
-.botonCerrarModalAnularCompra{
+.botonCerrarModalAnularCompra,
+.botonCerrarModalAnularCompra-PDF { /* Unificado el estilo del botón cerrar PDF */
   background-color: #fc8de4;
+  color: white; /* Color de texto para el bot\u00F3n */
   padding: 11px 19px;
+  border: none; /* Asegurar que no tenga borde */
   border-radius: 5px;
-  margin: 10px;
+  margin: 0; /* Eliminado margen que estaba empujando */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.botonCerrarModalAnularCompra:hover{
+.botonCerrarModalAnularCompra:hover,
+.botonCerrarModalAnularCompra-PDF:hover {
   background-color: #b660a3;
 }
 
-.botonCerrarModalAnularCompra-PDF{
-  display: flex;
-  justify-content: center;
-  background-color: #b660a3;
-  padding: 11px 19px;
-  border-radius: 5px;
-}
 
 /* Modal Detalle */
 .modal-compras-detalle {
@@ -253,42 +329,77 @@
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: flex-start; /* Alineación superior */
-  justify-content: center;
-  padding-top: 50px;
+  align-items: center; /* Centrado vertical */
+  justify-content: center; /* Centrado horizontal */
+  /* padding-top: 50px; */ /* Eliminado padding superior para centrar */
+  z-index: 1050; /* Asegurar z-index */
 }
 
 .modal-content-compras-detalle {
-  text-align: left;
+  /* text-align: left; */ /* Eliminado text-align en el contenedor */
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Asegura alineación izquierda */
+  /* align-items: flex-start; */ /* Eliminado para centrar contenido si es necesario */
   background: white;
   padding: 20px;
   width: 600px;
+  max-width: 95%; /* Añadido para responsividad */
   height: auto;
   border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Añadido sombra para consistencia */
+  max-height: 90vh; /* Para permitir scroll */
+  overflow-y: auto; /* Scroll si es necesario */
 }
 
-.modal-content-compras-detalle * {
-  text-align: left;
-  align-self: flex-start;
+.modal-content-compras-detalle h2 { /* Estilo para el t\u00EDtulo dentro del modal detalle */
+    color: #34495e;
+    margin-bottom: 15px;
+    font-size: 1.3rem; /* Un poco m\u00E1s peque\u00F1o que el t\u00EDtulo principal */
+    text-align: center; /* Centrar t\u00EDtulo */
+    width: 100%;
+}
+
+.modal-content-compras-detalle p { /* Estilo para p en modal detalle */
+    margin: 5px 0;
+    color: #333;
+    width: 100%; /* Asegura que ocupe el ancho */
+    text-align: left; /* Alineaci\u00F3n de texto a la izquierda */
+}
+
+.modal-content-compras-detalle p strong { /* Estilo para strong en p de modal detalle */
+    color: #34495e;
 }
 
 
 /* Producto */
 .producto-item {
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Centrado horizontal */
   align-items: center;
   gap: 10px;
+  margin-bottom: 10px; /* Espacio entre items */
 }
 
 .accionesTablaCompras{
   display: flex;
-  justify-content: space-around;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center; /* Centrado vertical */
+  gap: 10px;
 }
+
 /* Botones de acciones */
+.accionesTablaCompras button { /* Estilo base para botones de acción */
+    padding: 6px 9px; /* Ajustado padding para hacerlos un poco m\u00E1s grandes */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    /* font-size: 0.9rem; */ /* Mantenemos este o aumentamos ligeramente si quieres */
+    font-size: 1rem; /* Ligeramente m\u00E1s grande */
+    transition: background-color 0.2s ease;
+}
+
+
 .botonVerDetallesCompra {
   background-color: #fc8de4;
 }
@@ -313,6 +424,7 @@
   background-color: #6d0b58;
 }
 
+/* Nota: button-row parece ser para botones de modal que no se usan en este JSX espec\u00EDfico de Compras */
 .button-row {
   display: flex;
   justify-content: space-between;
@@ -329,3 +441,73 @@
   color: red;
 }
 
+/* Estilos para el switch del estado */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Ancho del switch */
+    height: 24px; /* Alto del switch */
+    vertical-align: middle; /* Alinea con el texto */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Color cuando está apagado (Pendiente) */
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 24px; /* Bordes redondeados */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px; /* Tamaño del "c\u00EDrculo" */
+    width: 16px; /* Tamaño del "c\u00EDrculo" */
+    left: 4px; /* Posición inicial a la izquierda */
+    bottom: 4px; /* Posición inicial abajo */
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%; /* Forma de c\u00EDrculo */
+}
+
+input:checked + .slider {
+    background-color: #4caf50; /* Color cuando está encendido (Completado) */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #4caf50;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(16px); /* Mover a la derecha */
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+}
+
+/* Estilos para los estados en la tabla */
+.tablaCompras .estado.completado {
+    font-weight: bold;
+    color: #4caf50;
+}
+
+.tablaCompras .estado.pendiente {
+    font-weight: bold;
+    color: #ff9800; /* Color naranja para pendiente */
+}
+
+.tablaCompras .estado.anulada {
+    font-weight: bold;
+    color: #dc3545; /* Color rojo para anulada */
+}

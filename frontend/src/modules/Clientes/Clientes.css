@@ -9,7 +9,7 @@
 .main-content-clientes {
     flex: 1; /* Permite que el contenido ocupe el espacio disponible */
     padding: 30px; /* Espaciado interno */
-    margin-left: 180px; /* Separación del margen izquierdo */
+    margin-left: 300px; /* Separación del margen izquierdo */
 }
 
 /* Barra de búsqueda */
@@ -30,7 +30,7 @@
     margin-bottom: 30px; /* Separación inferior */
     padding: 15px 30px; /* Espaciado interno */
     font-size: 1.2rem; /* Tamaño de fuente */
-    background-color: #3498db !important; /* Fondo verde */
+    background-color: #b660a3 !important; /* Fondo verde */
     color: white !important; /* Texto blanco */
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
@@ -38,7 +38,7 @@
 }
 
 .buttonAgregarcliente:hover {
-    background-color: #45a049; /* Fondo verde oscuro al pasar el mouse */
+    background-color: #6d0b58; /* Fondo verde oscuro al pasar el mouse */
 }
 
 /* Tabla de Clientes */
@@ -54,20 +54,21 @@
 }
 
 .tablaClientes th {
-    background-color: #34495e; /* Fondo azul oscuro */
-    color: white; /* Texto blanco */
+    background-color: #e978d0; /* Fondo azul oscuro */
+    color: rgb(0, 0, 0); /* Texto blanco */
     padding: 15px; /* Espaciado interno */
     text-align: center; /* Alineación centrada */
     font-weight: bold; /* Negrita */
     font-size: 1rem; /* Tamaño de fuente */
     width: 20%;
+    border: 1px solid #e978d0;
 }
 
 .tablaClientes td {
     text-align: center; /* Texto centrado */
     padding: 15px; /* Espaciado interno */
-    border: 1px solid #ddd; /* Borde gris claro */
-    color: #34495e; /* Texto azul oscuro */
+    border: 1px solid #e978d0; /* Borde gris claro */
+    color: #000000; /* Texto azul oscuro */
     font-size: 0.9rem; /* Tamaño de fuente ligeramente menor */
 }
 
@@ -110,7 +111,7 @@
 }
 
 input:checked+.slider {
-    background-color: #4caf50; /* Fondo verde cuando está activo */
+    background-color: #fc8de4; /* Fondo verde cuando está activo */
 }
 
 input:checked+.slider:before {
@@ -126,21 +127,21 @@ input:checked+.slider:before {
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
     color: white; /* Texto blanco */
-    background-color: #3498db; /* Fondo azul */
+    background-color: #fc8de4; /* Fondo azul */
     cursor: pointer; /* Cambia el cursor */
     transition: background-color 0.3s ease; /* Transición suave */
 }
 
 .iconsTablaclientes:hover {
-    background-color: #2980b9; /* Fondo azul oscuro al pasar el mouse */
+    background-color: #fa5bd7; /* Fondo azul oscuro al pasar el mouse */
 }
 
 .delete-button-elimnarCliente {
-    background-color: #e74c3c; /* Fondo rojo */
+    background-color: #f153cf; /* Fondo rojo */
 }
 
 .delete-button-elimnarCliente:hover {
-    background-color: #c0392b; /* Fondo rojo oscuro al pasar el mouse */
+    background-color: #f153cf; /* Fondo rojo oscuro al pasar el mouse */
 }
 
 /* Modal */
@@ -187,18 +188,18 @@ input:checked+.slider:before {
 }
 
 .botonguardarClienteModal{
-    background-color: #3498db;
+    background-color: #f153cf;
 }
 
 .botonguardarClienteModal:hover{
-    background-color: #206a9b;
+    background-color: #f153cf;
 }
 
 
 .botonModalCancelar-Cerrar {
     margin-top: 20px; /* Separación superior */
     padding: 10px 20px; /* Espaciado interno */
-    background-color: #e74c3c; /* Fondo rojo */
+    background-color: #f153cf; /* Fondo rojo */
     color: white; /* Texto blanco */
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
@@ -206,7 +207,7 @@ input:checked+.slider:before {
 }
 
 .botonModalCancelar-Cerrar:hover {
-    background-color: #c0392b; /* Fondo rojo oscuro al pasar el mouse */
+    background-color: #f153cf; /* Fondo rojo oscuro al pasar el mouse */
 }
 /* Contenedor para la barra de búsqueda y el botón */
 .containerAgregarbuscarClientes {
@@ -225,7 +226,7 @@ input:checked+.slider:before {
 }
 
 .buttonAgregarcliente {
-    background-color: #28a745;
+    background-color: #b660a3;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -236,7 +237,7 @@ input:checked+.slider:before {
 }
 
 .buttonAgregarcliente:hover {
-    background-color: #218838;
+    background-color: #b660a3;
 }
 
 
@@ -255,24 +256,24 @@ input:checked+.slider:before {
 
 /* Estilo del botón "Guardar" */
 .modal-content form .buttonAgregarcliente {
-    background-color: #28a745; /* Verde */
+    background-color: #b660a3; /* Verde */
     color: white; /* Texto blanco */
     transition: background-color 0.3s ease; /* Transición suave */
 }
 
 .modal-content form .buttonAgregarcliente:hover {
-    background-color: #218838; /* Verde más oscuro al pasar */
+    background-color: #bb52a4; /* Verde más oscuro al pasar */
 }
 
 /* Estilo del botón "Cancelar" */
 .modal-content form .botonModalCancelar-Cerrar {
-    background-color: #dc3545; /* Rojo */
+    background-color: #f153cf; /* Rojo */
     color: white; /* Texto blanco */
     transition: background-color 0.3s ease; /* Transición suave */
     margin-top: 19 px;
 }
 
 .modal-content form .botonModalCancelar-Cerrar:hover {
-    background-color: #b02a37; /* Rojo más oscuro al pasar */
+    background-color: #f53acc; /* Rojo más oscuro al pasar */
     margin-top: 19 px;
 }

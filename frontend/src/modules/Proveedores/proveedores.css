@@ -16,10 +16,10 @@
 .proveedoresContent {
     flex: 1;
     padding: 30px;
-    margin-left: 45px;
+    margin-left: 45px; /* Este margen desplaza todo el contenido */
     /* Ajustar si el NavbarAdmin tiene ancho fijo */
     background-color: #f5f5f5;
-    border-radius: 8个体;
+    border-radius: 8px;
     overflow-y: auto;
     /* Para permitir scroll si el contenido es largo */
 }
@@ -43,16 +43,17 @@
 .modal-content-Proveedores label {
     display: block;
     margin-bottom: 5px;
-    margin-left: 0; /* Ajustado para que la etiqueta esté alineada con el input */
-    margin-right: 0; /* Ajustado para que la etiqueta esté alineada con el input */
+    margin-left: 0; /* Ajustado para que la etiqueta est\u00E9 alineada con el input */
+    margin-right: 0; /* Ajustado para que la etiqueta est\u00E9 alineada con el input */
     margin-top: 10px; /* Espacio arriba si aplica */
     font-weight: 500;
     color: #34495e;
 }
 
 
-/* Botón principal (fuera del modal) */
+/* Bot\u00F3n principal (fuera del modal) */
 
+/* Nota: La clase .action-button no aparece en tu JSX, pero dejo el estilo */
 .action-button {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -83,6 +84,9 @@
     box-sizing: border-box;
     border-radius: 8px;
     overflow: hidden;
+    /* --- Centrado horizontal con margin: auto (funciona con max-width) --- */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .tablaProveedores th {
@@ -105,7 +109,8 @@
 }
 
 /* Fondos de filas pares */
-.tablaProveedores tbody tr:nth-child() {
+/* Corregida la pseudoclase nth-child */
+.tablaProveedores tbody tr:nth-child(even) {
     background-color: #f8eaf5;
 }
 
@@ -138,7 +143,7 @@
     align-items: center;
     justify-content: center;
     z-index: 1050;
-    /* Asegurar que esté por encima de otros elementos */
+    /* Asegurar que est\u00E9 por encima de otros elementos */
 }
 
 
@@ -151,7 +156,7 @@
     /* Para que los hijos (como el form) ocupen el ancho */
     width: 800px;
     max-width: 95%;
-    /* Para pantallas más pequeñas */
+    /* Para pantallas m\u00E1s peque\u00F1as */
     border-radius: 12px;
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
@@ -163,7 +168,7 @@
 }
 
 .modal-content-Proveedores h3 {
-    /* Estilo para el título del modal */
+    /* Estilo para el t\u00EDtulo del modal */
     color: #34495e;
     margin-bottom: 20px;
     font-size: 1.5rem;
@@ -172,7 +177,7 @@
 }
 
 .modal-content-Proveedores strong {
-    /* Para los "Details" del modal de visualización */
+    /* Para los \"Details\" del modal de visualizaci\u00F3n */
     color: #3289e0;
 }
 
@@ -201,7 +206,7 @@
 /* === INICIO: ESTILOS PARA CAMPO DE DOCUMENTO UNIFICADO === */
 
 
-/* Asegúrate de que estos estilos reemplacen los anteriores para estas clases */
+/* Aseg\u00FArate de que estos estilos reemplacen los anteriores para estas clases */
 
 .documento-container {
     display: flex;
@@ -213,14 +218,14 @@
     height: 46px;
     /* Altura consistente con otros inputs (ajusta si es necesario) */
     border: 1px solid #ccc;
-    /* Borde exterior del "campo único" */
+    /* Borde exterior del \"campo \u00FAnico\" */
     border-radius: 5px;
     /* Mismo radio de borde que otros inputs */
     margin: 0;
     /* Sin margen, el grid-gap del form se encarga del espaciado */
     box-sizing: border-box;
     /* position: relative; NO es necesario */
-    margin-bottom: 15px; /* Añadida/modificada para dar espacio abajo */
+    margin-bottom: 15px; /* A\u00F1adida/modificada para dar espacio abajo */
 }
 
 .documento-container .select-tipo-documento {
@@ -238,7 +243,7 @@
     border: none;
     /* Sin borde propio */
     border-right: 1px solid #ccc;
-    /* Línea divisoria */
+    /* L\u00EDnea divisoria */
     /* Aplicar border-radius solo a las esquinas izquierdas del select */
     border-top-left-radius: 4px;
     /* Ligeramente menor que el contenedor para encajar bien */
@@ -246,7 +251,7 @@
     width: auto;
     /* Ancho basado en contenido */
     min-width: 75px;
-    /* Ancho mínimo para "Tipo*" y "CC/CE" */
+    /* Ancho m\u00EDnimo para \"Tipo*\" y \"CC/CE\" */
     margin: 0;
     cursor: pointer;
     box-sizing: border-box;
@@ -272,8 +277,7 @@
     box-sizing: border-box;
     height: 100%;
     /* Ocupa la altura del .documento-container */
-    width: 100%;
-    /* Para que flex-grow funcione correctamente con otros elementos */
+    width: 100%; /* <-- Asegura que ocupe el 100% del espacio flexible asignado */
 }
 
 
@@ -321,10 +325,23 @@
     /* Color de texto por defecto para botones con fondo */
 }
 
+.botonCerrarModalVerDetallesProveedores {
+    margin-top: 20px;
+    background-color: #fc8de4;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
 .botonGuardarEditarProveedor,
 .botonEditarProveedor,
 .botonVerDetallesProveedor,
-.botonCerrarModalVerDetallesProveedores,
 .botonModalCancelarEliminarProveedor {
     background-color: #fc8de4;
 }
@@ -332,18 +349,16 @@
 .botonGuardarEditarProveedor:hover,
 .botonEditarProveedor:hover,
 .botonVerDetallesProveedor:hover,
-.botonSuperiorAgregarProveedor:hover,
 .botonCerrarModalVerDetallesProveedores:hover,
 .botonModalCancelarEliminarProveedor:hover {
     background-color: #b660a3;
-    /* Azul más oscuro */
 }
 
 .botonSuperiorAgregarProveedor,
 .botonCancelarEditarProveedor,
 .botonEliminarProveedor,
 .modal-content-Proveedores .btn.close.cerrar,
-.botonModalEliminarProveedor{
+.botonModalEliminarProveedor {
     /* Unificando rojos */
     background-color: #b660a3;
     /* Rojo principal (era #bd0e1f y #ca3241) */
@@ -355,7 +370,7 @@
 .modal-content-Proveedores .btn.close.cerrar:hover,
 .botonModalEliminarProveedor:hover {
     background-color: #6d0b58;
-    /* Rojo más oscuro */
+    /* Rojo m\u00E1s oscuro */
 }
 
 .modal-content-Proveedores input::placeholder {
@@ -378,7 +393,7 @@
 .iconosTablaProveedores button {
     /* Estilo base para botones de iconos */
     padding: 8px 10px;
-    /* Más pequeños */
+    /* M\u00E1s peque\u00F1os */
     border-radius: 5px;
     color: white;
     border: none;
@@ -390,12 +405,12 @@
 
 h2.title-h2-Proveedores {
     font-size: 1.8rem;
-    /* Un poco más grande */
+    /* Un poco m\u00E1s grande */
     color: #34495e;
     margin-bottom: 25px;
     font-weight: bold;
-    text-align: left;
-    /* O center si prefieres */
+    /* --- Centrado --- */
+    text-align: center;
 }
 
 .botonesGuardarCancelarAgregarEditarProveedor {
@@ -408,21 +423,28 @@ h2.title-h2-Proveedores {
     /* Espacio arriba de los botones */
     width: 100%;
     grid-column: 1 / -1;
-    /* Para que ocupe ambas columnas si está dentro del grid del form */
+    /* Para que ocupe ambas columnas si est\u00E1 dentro del grid del form */
 }
 
 .barraBusquedaBotonAgregarProveedor {
     display: flex;
     justify-content: space-between;
-    /* Para separar búsqueda y botón */
+    /* Para separar b\u00FAsqueda y bot\u00F3n */
     align-items: center;
     gap: 10px;
     margin-bottom: 30px;
+    /* --- Centrado horizontal (requiere width o max-width) --- */
+    /* max-width: 800px; */ /* Eliminado para que se alinee con la tabla */
+    max-width: 1200px; /* Ajustado para coincidir con la tabla */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .barraBusquedaBotonAgregarProveedor input {
-    width: 300px;
-    /* O flex-grow: 1; si quieres que ocupe más espacio */
+    /* width: 300px; */ /* Eliminado para que flex-grow funcione */
+    /* --- Para que ocupe el espacio restante --- */
+    flex-grow: 1;
+    /* --- FIN: Para que ocupe el espacio restante --- */
     height: 46px;
     /* Misma altura que otros inputs */
     padding: 0 10px;
@@ -436,7 +458,7 @@ h2.title-h2-Proveedores {
 }
 
 
-/* Estilos para el Modal de Mensajes de Validación/Error */
+/* Estilos para el Modal de Mensajes de Validaci\u00F3n/Error */
 
 .modal-Proveedores-overlay-message {
     /* Cambiado de modal-Proveedores-overlay */
@@ -446,7 +468,7 @@ h2.title-h2-Proveedores {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
-    /* Un poco más oscuro para diferenciar */
+    /* Un poco m\u00E1s oscuro para diferenciar */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -486,18 +508,18 @@ h2.title-h2-Proveedores {
 }
 
 
-/* Estilos para subtítulos dentro del modal, como "Datos de la Persona Encargada" */
+/* Estilos para subt\u00EDtulos dentro del modal, como \"Datos de la Persona Encargada\" */
 
 .modal-subtitle-proveedores {
     margin-top: 20px;
     margin-bottom: 10px;
     font-size: 1.1rem;
-    /* Un poco más pequeño que el título principal del modal */
+    /* Un poco m\u00E1s peque\u00F1o que el t\u00EDtulo principal del modal */
     font-weight: bold;
     color: #34495e;
     padding-bottom: 5px;
     border-bottom: 1px solid #e0e0e0;
-    /* Línea divisoria sutil */
+    /* L\u00EDnea divisoria sutil */
     grid-column: 1 / -1;
-    /* Para que ocupe ambas columnas si está en el grid */
+    /* Para que ocupe ambas columnas si est\u00E1 en el grid */
 }
