@@ -2,26 +2,17 @@
 .proveedores-container {
     display: flex;
     height: 100vh;
-    /* width: 1710px; /* Considerar usar max-width o % para responsividad */
     max-width: 1710px;
-    /* Usar max-width es generalmente mejor */
     margin: 20px auto;
     border-radius: 8px;
-    background: #f5f5f5;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-
-/* Contenido principal */
 .proveedoresContent {
     flex: 1;
     padding: 30px;
-    margin-left: 45px; /* Este margen desplaza todo el contenido */
-    /* Ajustar si el NavbarAdmin tiene ancho fijo */
-    background-color: #f5f5f5;
+    margin-left: 45px;
     border-radius: 8px;
     overflow-y: auto;
-    /* Para permitir scroll si el contenido es largo */
 }
 
 .modal-content-Proveedores input[type="text"],
@@ -50,10 +41,6 @@
     color: #34495e;
 }
 
-
-/* Bot\u00F3n principal (fuera del modal) */
-
-/* Nota: La clase .action-button no aparece en tu JSX, pero dejo el estilo */
 .action-button {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -71,9 +58,6 @@
     background-color: #45a049;
 }
 
-
-/* Tabla de Proveedores */
-
 .tablaProveedores {
     width: 100%;
     max-width: 1200px;
@@ -84,7 +68,6 @@
     box-sizing: border-box;
     border-radius: 8px;
     overflow: hidden;
-    /* --- Centrado horizontal con margin: auto (funciona con max-width) --- */
     margin-left: auto;
     margin-right: auto;
 }
@@ -143,11 +126,7 @@
     align-items: center;
     justify-content: center;
     z-index: 1050;
-    /* Asegurar que est\u00E9 por encima de otros elementos */
 }
-
-
-/* Contenido del Modal Principal */
 
 .modal-content-Proveedores {
     display: flex;
@@ -162,13 +141,10 @@
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     padding: 25px;
     max-height: 90vh;
-    /* Para permitir scroll si el contenido es muy alto */
     overflow-y: auto;
-    /* Scroll para el contenido del modal */
 }
 
 .modal-content-Proveedores h3 {
-    /* Estilo para el t\u00EDtulo del modal */
     color: #34495e;
     margin-bottom: 20px;
     font-size: 1.5rem;
@@ -177,36 +153,19 @@
 }
 
 .modal-content-Proveedores strong {
-    /* Para los \"Details\" del modal de visualizaci\u00F3n */
-    color: #3289e0;
+    color: #b660a3;
 }
-
-
-/* Formulario dentro del modal */
 
 .modal-content-Proveedores form {
-    /* Asumiendo que tienes una etiqueta <form> */
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* Dos columnas */
     gap: 20px 15px;
-    /* Espacio vertical y horizontal */
     width: 100%;
-    /* El form ocupa todo el ancho del modal-content */
 }
-
-
-/* Si un elemento del form debe ocupar ambas columnas */
 
 .form-full-width {
     grid-column: 1 / -1;
 }
-
-
-/* === INICIO: ESTILOS PARA CAMPO DE DOCUMENTO UNIFICADO === */
-
-
-/* Aseg\u00FArate de que estos estilos reemplacen los anteriores para estas clases */
 
 .documento-container {
     display: flex;
@@ -233,23 +192,15 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     background-color: #e9ecef;
-    /* Fondo para distinguir la parte del select */
     color: #495057;
     padding: 4px 10px;
-    /* Padding horizontal */
     font-size: 1rem;
     line-height: 1.5;
-    /* Para centrar verticalmente el texto si la altura es fija */
     border: none;
-    /* Sin borde propio */
     border-right: 1px solid #ccc;
-    /* L\u00EDnea divisoria */
-    /* Aplicar border-radius solo a las esquinas izquierdas del select */
     border-top-left-radius: 4px;
-    /* Ligeramente menor que el contenedor para encajar bien */
     border-bottom-left-radius: 4px;
     width: auto;
-    /* Ancho basado en contenido */
     min-width: 75px;
     /* Ancho m\u00EDnimo para \"Tipo*\" y \"CC/CE\" */
     margin: 0;
@@ -261,33 +212,23 @@
 
 .documento-container .input-documento {
     flex-grow: 1;
-    /* El input ocupa el espacio restante */
     padding: 10px;
-    /* Padding igual a otros inputs */
     font-size: 1rem;
     line-height: 1.5;
     color: #495057;
     background-color: white;
     border: none;
-    /* Sin borde propio */
-    /* Aplicar border-radius solo a las esquinas derechas del input */
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     margin: 0;
     box-sizing: border-box;
     height: 100%;
-    /* Ocupa la altura del .documento-container */
-    width: 100%; /* <-- Asegura que ocupe el 100% del espacio flexible asignado */
+    width: 100%; 
 }
 
-
-/* Estilo de foco para el campo unificado */
-
 .documento-container:focus-within {
-    border-color: #3498db;
-    /* Un color de foco de tus botones */
-    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-    /* Sombra de foco */
+    border-color: #e470cb;
+    box-shadow: 0 0 0 0.1rem rgb(245, 187, 242);
 }
 
 .documento-container .select-tipo-documento:focus,

@@ -5,7 +5,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./AgregarCompra.css";
 
-// Datos de productos organizados por categor\u00EDa
+// Datos de productos organizados por categoria
 const productosPorCategoria = [
     {
         categoria: "Cabello",
@@ -22,11 +22,11 @@ const productosPorCategoria = [
         productos: [
             { nombre: "Labial", precio: 15000 },
             { nombre: "Base de Maquillaje", precio: 30000 },
-            { nombre: "M\u00Eaacute;scara de Pesta\u00F1as", precio: 18000 },
+            { nombre: "Mascara de Pestanas", precio: 18000 },
         ]
     },
     {
-        categoria: "U\u00F1as",
+        categoria: "Unas",
         productos: [
             { nombre: "Esmalte Tradicional", precio: 8000 },
             { nombre: "Esmalte Semipermanente", precio: 25000 },
@@ -35,17 +35,17 @@ const productosPorCategoria = [
     }
 ];
 
-// Lista de proveedores falsos para la b\u00FAsqueda (se mantiene)
+// Lista de proveedores falsos para la busqueda (se mantiene)
 const proveedoresFalsos = [
-    "Proveedor Cosm\u00E9ticos ABC",
+    "Proveedor Cosmeticos ABC",
     "Distribuidora Belleza Total",
-    "Suministros Est\u00E9tica Pro",
-    "Insumos Peluquer\u00EDa Fantas\u00EDa",
-    "Cosm\u00E9tica Avanzada SAS",
+    "Suministros Estetica Pro",
+    "Insumos Peluqueria Fantasia",
+    "Cosmetica Avanzada SAS",
     "Belleza Profesional Ltda."
 ];
 
-const metodosPago = ["Efectivo", "Transferencia Bancaria", "Tarjeta de Cr\u00E9dito", "Nequi/Daviplata"];
+const metodosPago = ["Efectivo", "Transferencia Bancaria", "Tarjeta de Credito", "Nequi/Daviplata"];
 
 const Modal = ({ mensaje, onClose }) => (
   <div className="modal-overlay-AgregarCompra">
@@ -60,7 +60,7 @@ const AgregarCompra = () => {
   const navigate = useNavigate();
   // Cambiado proveedor para ser el nombre seleccionado
   const [proveedor, setProveedor] = useState("");
-  // Estado para el texto en la barra de b\u00FAsqueda de proveedor
+  // Estado para el texto en la barra de busqueda de proveedor
   const [supplierSearchTerm, setSupplierSearchTerm] = useState("");
   // Estado para las sugerencias de proveedor filtradas
   const [suggestedSuppliers, setSuggestedSuppliers] = useState([]);
@@ -69,10 +69,10 @@ const AgregarCompra = () => {
   // Eliminado estado de fechaEntrega
   // const [fechaEntrega, setFechaEntrega] = useState("");
 
-  // Nuevo estado para m\u00E9todo de pago
+  // Nuevo estado para metodo de pago
   const [metodoPago, setMetodoPago] = useState("");
 
-  // Ahora cada producto en la lista incluye la categor\u00EDa seleccionada para esa fila
+  // Ahora cada producto en la lista incluye la categoria seleccionada para esa fila
   const [productos, setProductos] = useState([]);
 
   const [subtotal, setSubtotal] = useState(0);
@@ -81,20 +81,20 @@ const AgregarCompra = () => {
   const [modalMensaje, setModalMensaje] = useState("");
 
   // Hook para actualizar totales cuando los productos cambian
-   useEffect(() => {
-       actualizarTotales(productos);
-   }, [productos]);
+    useEffect(() => {
+        actualizarTotales(productos);
+    }, [productos]);
 
 
   const handleAgregarProducto = () => {
-    // Inicializar nuevo producto con campo de categor\u00EDa vac\u00EDo
+    // Inicializar nuevo producto con campo de categoria vacio
     setProductos([...productos, { categoria: "", nombre: "", cantidad: 1, precio: 0, total: 0 }]);
   };
 
   const handleEliminarProducto = (index) => {
     const nuevosProductos = productos.filter((_, i) => i !== index);
     setProductos(nuevosProductos);
-     // La actualizaci\u00F3n de totales se maneja ahora en el useEffect
+      // La actualizacion de totales se maneja ahora en el useEffect
   };
 
   const handleCambioProducto = (index, campo, valor) => {
@@ -102,33 +102,33 @@ const AgregarCompra = () => {
 
     if (campo === "categoria") {
         nuevosProductos[index].categoria = valor;
-        // Restablecer nombre, precio y total del producto al cambiar la categor\u00EDa
+        // Restablecer nombre, precio y total del producto al cambiar la categoria
         nuevosProductos[index].nombre = "";
         nuevosProductos[index].precio = 0;
         nuevosProductos[index].total = 0;
     } else if (campo === "nombre") {
         nuevosProductos[index].nombre = valor;
-        // Buscar el precio correcto basado en la categor\u00EDa y el nombre seleccionado
+        // Buscar el precio correcto basado en la categoria y el nombre seleccionado
         const categoriaSeleccionada = productosPorCategoria.find(cat => cat.categoria === nuevosProductos[index].categoria);
         const productoSeleccionado = categoriaSeleccionada
             ? categoriaSeleccionada.productos.find(p => p.nombre === valor)
             : null;
         nuevosProductos[index].precio = productoSeleccionado ? productoSeleccionado.precio : 0;
-         // Recalcular el total de la l\u00EDnea
+          // Recalcular el total de la linea
         nuevosProductos[index].total = nuevosProductos[index].cantidad * nuevosProductos[index].precio;
     } else if (campo === "cantidad") {
         nuevosProductos[index].cantidad = Math.max(0, Number(valor));
-         // Recalcular el total de la l\u00EDnea
+          // Recalcular el total de la linea
         nuevosProductos[index].total = nuevosProductos[index].cantidad * nuevosProductos[index].precio;
     } else if (campo === "precio") {
         nuevosProductos[index].precio = Math.max(0, Number(valor));
-         // Recalcular el total de la l\u00EDnea
+          // Recalcular el total de la linea
         nuevosProductos[index].total = nuevosProductos[index].cantidad * nuevosProductos[index].precio;
     }
 
 
     setProductos(nuevosProductos);
-     // La actualizaci\u00F3n de totales se maneja ahora en el useEffect
+      // La actualizacion de totales se maneja ahora en el useEffect
   };
 
   const actualizarTotales = (productos) => {
@@ -149,7 +149,7 @@ const AgregarCompra = () => {
     setModalMensaje("");
   };
 
-  // Manejar cambio en la barra de b\u00FAsqueda de proveedor
+  // Manejar cambio en la barra de busqueda de proveedor
   const handleSupplierSearchChange = (e) => {
       const term = e.target.value;
       setSupplierSearchTerm(term);
@@ -159,16 +159,16 @@ const AgregarCompra = () => {
           );
           setSuggestedSuppliers(filteredSuppliers);
       } else {
-          setSuggestedSuppliers([]); // Limpiar sugerencias si el t\u00E9rmino es muy corto
+          setSuggestedSuppliers([]); // Limpiar sugerencias si el termino es muy corto
       }
-       // Limpiar el proveedor seleccionado si el t\u00E9rmino de b\u00FAsqueda cambia
-       // Esto evita que un proveedor quede seleccionado si el usuario edita despu\u00E9s de seleccionar
+        // Limpiar el proveedor seleccionado si el termino de busqueda cambia
+        // Esto evita que un proveedor quede seleccionado si el usuario edita despues de seleccionar
       setProveedor("");
   };
 
-  // Manejar la selecci\u00F3n de un proveedor de las sugerencias
+  // Manejar la seleccion de un proveedor de las sugerencias
   const handleSelectSupplier = (selectedSupplier) => {
-      setSupplierSearchTerm(selectedSupplier); // Poner el nombre completo en la barra de b\u00FAsqueda
+      setSupplierSearchTerm(selectedSupplier); // Poner el nombre completo en la barra de busqueda
       setProveedor(selectedSupplier); // Establecer el proveedor seleccionado
       setSuggestedSuppliers([]); // Limpiar sugerencias
   };
@@ -178,7 +178,7 @@ const AgregarCompra = () => {
     if (!proveedor || !proveedoresFalsos.includes(proveedor) || supplierSearchTerm !== proveedor) {
        mostrarModal("Debe seleccionar un proveedor valido de la lista de sugerencias.");
        return;
-     }
+      }
 
     if (!metodoPago) {
         mostrarModal("Debe seleccionar un metodo de pago.");
@@ -195,12 +195,12 @@ const AgregarCompra = () => {
         const productoFila = productos[i];
 
         if (productoFila.cantidad > 0 && (!productoFila.categoria || !productoFila.nombre)) {
-            mostrarModal(`Debe seleccionar categor\u00EDa y producto para la fila ${i + 1} con cantidad mayor a 0.`);
+            mostrarModal(`Debe seleccionar categoria y producto para la fila ${i + 1} con cantidad mayor a 0.`);
             return;
         }
         if (productoFila.nombre && productoFila.cantidad <= 0) {
-              mostrarModal(`La cantidad para el producto "${productoFila.nombre}" en la fila ${i + 1} debe ser mayor a 0.`);
-              return;
+             mostrarModal(`La cantidad para el producto "${productoFila.nombre}" en la fila ${i + 1} debe ser mayor a 0.`);
+             return;
         }
 
 
@@ -214,7 +214,7 @@ const AgregarCompra = () => {
             return;
         }
 
-         // Si hay cantidad > 0, asegurarse que el precio sea > 0 (opcional, pero buena pr\u00E1ctica)
+          // Si hay cantidad > 0, asegurarse que el precio sea > 0 (opcional, pero buena practica)
         if (productoFila.cantidad > 0 && productoFila.precio <= 0 && productoFila.nombre) {
             mostrarModal(`El precio debe ser mayor a 0 para el producto "${productoFila.nombre}" en la fila ${i + 1}.`);
             return;
@@ -231,25 +231,25 @@ const AgregarCompra = () => {
       metodoPago,
     };
 
-    // Nota: Guardar en localStorage es solo para demostraci\u00F3n.
-    // En una aplicaci\u00F3n real, enviar\u00EDas esto a un backend/API.
-    // Es posible que quieras a\u00F1adir un ID \u00FAnico a cada compra antes de guardarla.
+    // Nota: Guardar en localStorage es solo para demostracion.
+    // En una aplicacion real, enviarias esto a un backend/API.
+    // Es posible que quieras anadir un ID unico a cada compra antes de guardarla.
     const comprasGuardadas = JSON.parse(localStorage.getItem("compras")) || [];
     comprasGuardadas.push(compra);
     localStorage.setItem("compras", JSON.stringify(comprasGuardadas));
 
     mostrarModal("Compra guardada exitosamente.");
-     // Peque\u00F1o retraso antes de navegar para que el usuario vea el modal de \u00E9xito
+      // Pequeno retraso antes de navegar para que el usuario vea el modal de exito
     setTimeout(() => {
-         cerrarModal(); // Cerrar modal antes de navegar
-         navigate("/compras");
+          cerrarModal(); // Cerrar modal antes de navegar
+          navigate("/compras");
     }, 1500); // Espera 1.5 segundos
 
   };
 
   const handleCancelar = () => {
-       // Puedes a\u00F1adir una confirmaci\u00F3n antes de cancelar si lo deseas
-       navigate("/compras");
+        // Puedes anadir una confirmacion antes de cancelar si lo deseas
+        navigate("/compras");
   };
 
 
@@ -260,7 +260,7 @@ const AgregarCompra = () => {
         <div className="agregar-compra-content">
           <h2 className="agregar-compra-title">Agregar Compra</h2>
 
-          {/* Campo de b\u00FAsqueda de proveedor con sugerencias */}
+          {/* Campo de busqueda de proveedor con sugerencias */}
           <div className="form-group">
              <label htmlFor="proveedorSearch">Proveedor <span className="required-asterisk">*</span>:</label>
              <input
@@ -272,8 +272,8 @@ const AgregarCompra = () => {
                  placeholder="Buscar o seleccionar proveedor"
                  autoComplete="off"
              />
-             {/* Mostrar sugerencias solo si hay t\u00E9rmino de b\u00FAsqueda, sugerencias encontradas,
-                 y el t\u00E9rmino de b\u00FAsqueda no es exactamente igual a un proveedor seleccionado */}
+             {/* Mostrar sugerencias solo si hay termino de busqueda, sugerencias encontradas,
+                  y el termino de busqueda no es exactamente igual a un proveedor seleccionado */}
              {supplierSearchTerm && suggestedSuppliers.length > 0 && supplierSearchTerm !== proveedor && (
                  <ul className="proveedor-sugerencias-lista">
                      {suggestedSuppliers.map((prov, index) => (
@@ -283,11 +283,11 @@ const AgregarCompra = () => {
                      ))}
                  </ul>
              )}
-              {/* Mostrar mensaje si el t\u00E9rmino no coincide con ning\u00FAn proveedor y no es un proveedor seleccionado */}
+              {/* Mostrar mensaje si el termino no coincide con ningun proveedor y no es un proveedor seleccionado */}
              {supplierSearchTerm && suggestedSuppliers.length === 0 && !proveedoresFalsos.includes(supplierSearchTerm) && supplierSearchTerm.length > 1 && (
                  <div className="no-sugerencias">No se encontraron proveedores que coincidan.</div>
              )}
-               {/* Mostrar advertencia si hay un t\u00E9rmino pero no se ha seleccionado un proveedor v\u00E1lido a\u00FAn */}
+                {/* Mostrar advertencia si hay un termino pero no se ha seleccionado un proveedor valido aun */}
              {supplierSearchTerm && !proveedor && proveedoresFalsos.some(prov => prov.toLowerCase().includes(supplierSearchTerm.toLowerCase())) && (
                   <div className="mensaje-seleccion">Seleccione un proveedor de la lista.</div>
              )}
@@ -337,7 +337,7 @@ const AgregarCompra = () => {
                   <th>Cantidad</th>
                   <th>Precio</th>
                   <th>Total</th>
-                  <th>Acción</th>
+                  <th>Accion</th>
                 </tr>
               </thead>
               <tbody>
@@ -345,29 +345,29 @@ const AgregarCompra = () => {
                   <tr key={index}>
                     <td className="celda-categoria-producto"> {/* Nueva clase para estilo de la celda */}
                        <div className="selects-producto-group"> {/* Contenedor para los 2 selects */}
-                           {/* Selector de Categor\u00EDa */}
-                           <select
-                                className="seleccionar-categoria" // Nueva clase
-                                value={producto.categoria}
-                                onChange={(e) => handleCambioProducto(index, "categoria", e.target.value)}
+                            {/* Selector de Categoria */}
+                            <select
+                                 className="seleccionar-categoria" // Nueva clase
+                                 value={producto.categoria}
+                                 onChange={(e) => handleCambioProducto(index, "categoria", e.target.value)}
                             >
-                                <option value="">-- Categoria de Productos --</option>
-                                {productosPorCategoria.map((item, catIndex) => (
-                                    <option key={catIndex} value={item.categoria}>{item.categoria}</option>
-                                ))}
+                                 <option value="">-- Categoria de Productos --</option>
+                                 {productosPorCategoria.map((item, catIndex) => (
+                                     <option key={catIndex} value={item.categoria}>{item.categoria}</option>
+                                 ))}
                             </select>
 
-                            {/* Selector de Producto (depende de la categor\u00EDa seleccionada) */}
+                            {/* Selector de Producto (depende de la categoria seleccionada) */}
                             <select
-                                className="seleccionar-producto-fila" // Clase espec\u00EDfica para el select de producto en fila
-                                value={producto.nombre}
-                                onChange={(e) => handleCambioProducto(index, "nombre", e.target.value)}
-                                disabled={!producto.categoria} // Deshabilitado si no hay categor\u00EDa
+                                 className="seleccionar-producto-fila" // Clase especifica para el select de producto en fila
+                                 value={producto.nombre}
+                                 onChange={(e) => handleCambioProducto(index, "nombre", e.target.value)}
+                                 disabled={!producto.categoria} // Deshabilitado si no hay categoria
                             >
-                                <option value="">-- Producto --</option>
-                                {producto.categoria && productosPorCategoria.find(item => item.categoria === producto.categoria)?.productos.map((prod, prodIndex) => (
-                                    <option key={prodIndex} value={prod.nombre}>{prod.nombre}</option>
-                                ))}
+                                 <option value="">-- Producto --</option>
+                                 {producto.categoria && productosPorCategoria.find(item => item.categoria === producto.categoria)?.productos.map((prod, prodIndex) => (
+                                     <option key={prodIndex} value={prod.nombre}>{prod.nombre}</option>
+                                 ))}
                             </select>
                         </div>
                     </td>
@@ -386,7 +386,7 @@ const AgregarCompra = () => {
                         type="number"
                         min="0"
                         value={producto.precio}
-                         // Permitir edici\u00F3n manual del precio si es necesario, o deshabilitar si el precio viene del producto seleccionado
+                          // Permitir edicion manual del precio si es necesario, o deshabilitar si el precio viene del producto seleccionado
                         onChange={(e) => handleCambioProducto(index, "precio", e.target.value)}
                       />
                     </td>

@@ -79,7 +79,7 @@ const CategoriasServicios = () => {
       <div className="Categoria-container">
           <NavbarAdmin />
           <div className="Categoria-content">
-              <h2>Categorías de Servicios</h2>
+              <h1>Categorías de Servicios</h1>
               <div className="ContainerBotonAgregarCategoria">
                   <div className="BusquedaBotonCategoria">
                       <input
