@@ -143,7 +143,7 @@ const Servicios = () => {
     <div className="servicios-container">
       <NavbarAdmin />
       <div className="servicios-content">
-        <h2 className="tituloServicios">Gestión de Servicios</h2>
+        <h1 className="tituloServicios">Gestión de Servicios</h1>
         <div className="barraBusqueda-BotonSuperiorAgregarServicio">
           <div className="BarraBusquedaServicio">
             <input
