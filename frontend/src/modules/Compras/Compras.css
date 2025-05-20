@@ -2,55 +2,40 @@
 .compras-container {
   display: flex;
   height: 100vh;
-  /* Nota: Hay un 'display: flex; height: 100vh;' duplicado aquí. */
-  /* display: flex; */
-  /* height: 100vh; */
-  width: 1710px; /* Considerar usar max-width o % para responsividad */
-  max-width: 1710px; /* Es mejor usar max-width */
+  width: 1710px;
+  max-width: 1710px;
   margin: 20px auto;
   border-radius: 8px;
-  background: #f5f5f5;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .comprasContenido {
   flex: 1;
   padding: 30px;
-  margin-left: 45px; /* Este margen desplaza todo el contenido */
-  /* Ajustar si el NavbarAdmin tiene ancho fijo */
-  background-color: #f5f5f5;
+  margin-left: 45px; 
   border-radius: 8px;
-  overflow-y: auto; /* Para permitir scroll si el contenido es largo */
+  overflow-y: auto; 
 }
 
-/* Encabezado del componente (T\u00EDtulo) */
-/* --- INICIO: Centrado del T\u00EDtulo --- */
 h2.title-h2 {
-  font-size: 1.8rem; /* Un poco m\u00E1s grande */
+  font-size: 1.8rem;
   color: #34495e;
   margin-bottom: 25px;
   font-weight: bold;
-  text-align: center; /* Centrado horizontal del texto */
+  text-align: center;
 }
-/* --- FIN: Centrado del T\u00EDtulo --- */
 
-
-/* Barra de búsqueda y botón agregar */
 .container-busqueda-agregar {
   display: flex;
-  justify-content: space-between; /* Para separar b\u00FAsqueda y bot\u00F3n */
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
   margin-bottom: 30px;
-  /* --- INICIO: Centrado y alineación con tabla --- */
-  max-width: 1200px; /* Igual al max-width de la tabla */
+  max-width: 1200px;
   margin-left: auto;
-  margin-right: auto; /* Centrado horizontal */
-  /* --- FIN: Centrado y alineación con tabla --- */
+  margin-right: auto;
 }
 
 .container-busqueda-agregar input {
-  /* width: 300px; */ /* Eliminado para usar flex-grow */
   height: 40px;
   padding: 0 10px;
   border: 1px solid #ccc;
@@ -58,9 +43,7 @@ h2.title-h2 {
   font-size: 16px;
   color: #333;
   background-color: #fff;
-  /* --- INICIO: Ocupar espacio restante --- */
-  flex-grow: 1; /* Hace que el input crezca para llenar el espacio disponible */
-  /* --- FIN: Ocupar espacio restante --- */
+  flex-grow: 1;
 }
 
 .container-busqueda-agregar input:focus {
@@ -93,7 +76,6 @@ h2.title-h2 {
   background-color: #007bff;
 }
 
-/* Tabla de compras */
 .tablaCompras {
   width: 100%;
   max-width: 1200px;
@@ -104,7 +86,6 @@ h2.title-h2 {
   box-sizing: border-box;
   border-radius: 8px;
   overflow: hidden;
-  /* --- INICIO: Centrado de la Tabla --- */
   margin-left: auto;
   margin-right: auto; /* Centrado horizontal */
   /* --- FIN: Centrado de la Tabla --- */
@@ -120,28 +101,23 @@ h2.title-h2 {
   border: 1px solid #e978d0;
 }
 
-/* Celdas de tabla */
 .tablaCompras td {
   border: 1px solid #e978d0;
-  text-align: left;
+  text-align: center;
   padding: 14px;
   vertical-align: middle;
   font-size: 1rem;
   color: black;
 }
 
-/* Fondos de filas pares */
-/* Corregida la pseudoclase nth-child */
 .tablaCompras tbody tr:nth-child(even) {
-  background-color: #f8eaf5;
+  background-color: #f8eaf5; 
 }
 
-/* Fondo al pasar el mouse */
 .tablaCompras tbody tr:hover {
   background-color: #f3d9ec;
 }
 
-/* Estados */
 .estado {
   padding: 5px 10px;
   color: #ff1911;
@@ -387,15 +363,13 @@ h2.title-h2 {
   gap: 10px;
 }
 
-/* Botones de acciones */
 .accionesTablaCompras button { /* Estilo base para botones de acción */
     padding: 6px 9px; /* Ajustado padding para hacerlos un poco m\u00E1s grandes */
     border: none;
     border-radius: 4px;
     cursor: pointer;
     color: white;
-    /* font-size: 0.9rem; */ /* Mantenemos este o aumentamos ligeramente si quieres */
-    font-size: 1rem; /* Ligeramente m\u00E1s grande */
+    font-size: 1rem;
     transition: background-color 0.2s ease;
 }
 

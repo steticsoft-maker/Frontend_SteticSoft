@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import { FaEye, FaFilePdf, FaBan } from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -8,6 +9,7 @@ import "./Ventas.css";
 import "./ProcesoVentas.css";
 
 const Ventas = () => {
+  const navigate = useNavigate(); // Obtén la función navigate
   const initialVentas = [
     {
       id: 1,
@@ -142,7 +144,7 @@ const Ventas = () => {
               />
               <button
                 className="botonAgregarVenta"
-                onClick={() => setMostrarProcesoVentas(true)}
+                onClick={() => navigate("/procesoventas")} // Utiliza navigate aquí
               >
                 Agregar Venta
               </button>
@@ -181,24 +183,26 @@ const Ventas = () => {
                       </select>
                     </td>
                     <td>
-                      <button
-                        className="botonDetalleVenta"
-                        onClick={() => openModal(venta)}
-                      >
-                        <FaEye />
-                      </button>
-                      <button
-                        className="botonPdfVenta"
-                        onClick={() => handlePDF(venta)}
-                      >
-                        <FaFilePdf />
-                      </button>
-                      <button
-                        className="botonAnularVenta"
-                        onClick={() => handleAnularVenta(venta.id)}
-                      >
-                        <FaBan />
-                      </button>
+                      <div className="accionesTablaVentas">
+                        <button
+                          className="botonDetalleVenta"
+                          onClick={() => openModal(venta)}
+                        >
+                          <FaEye />
+                        </button>
+                        <button
+                          className="botonPdfVenta"
+                          onClick={() => handlePDF(venta)}
+                        >
+                          <FaFilePdf />
+                        </button>
+                        <button
+                          className="botonAnularVenta"
+                          onClick={() => handleAnularVenta(venta.id)}
+                        >
+                          <FaBan />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -14,7 +14,6 @@ const Proveedores = () => {
             nombre: "Constructora XYZ S.A.S", tipoDocumento: "Jurídico", nombreEmpresa: "Constructora XYZ S.A.S", nit: "900123456-7", telefono: "3109876543", email: "contacto@constructoraxyz.com", direccion: "Carrera Inventada # 45-67", estado: "Inactivo",
             personaEncargadaNombre: "Carlos Gerente", personaEncargadaTelefono: "3101112233", personaEncargadaEmail: "carlos.gerente@constructoraxyz.com"
         },
-        // ... más proveedores de ejemplo
     ]);
 
     const [search, setSearch] = useState("");
@@ -28,8 +27,8 @@ const Proveedores = () => {
         const displayName = p.tipoDocumento === "Natural" ? p.nombre : p.nombreEmpresa;
         const documentId = p.tipoDocumento === "Natural" ? p.numeroDocumento : p.nit;
 
-        return (displayName && displayName.toLowerCase().includes(search.toLowerCase())) ||
-               (documentId && documentId.toLowerCase().includes(search.toLowerCase()));
+        return(displayName && displayName.toLowerCase().includes(search.toLowerCase())) ||
+                (documentId && documentId.toLowerCase().includes(search.toLowerCase()));
     });
 
     const openModal = (type, proveedor = null) => {
@@ -44,7 +43,7 @@ const Proveedores = () => {
                 telefono: "",
                 email: "",
                 direccion: "",
-                estado: "Activo", // Estado por defecto para nuevos, no editable en el form
+                estado: "Activo",
                 nombreEmpresa: "",
                 nit: "",
                 personaEncargadaNombre: "",
