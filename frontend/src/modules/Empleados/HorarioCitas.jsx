@@ -127,7 +127,7 @@ const Horarios = () => {
     <div className="horarios-container">
       <NavbarAdmin />
       <div className="horariosCitasContent">
-        <h2>Horarios de Citas</h2>
+        <h1>Horarios de Citas</h1>
         <div className="accionesBarraBusqueda-botonAgregar">
             <input
               className="barraBusquedaHorarioCitas"
