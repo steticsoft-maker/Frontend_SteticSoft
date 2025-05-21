@@ -52,7 +52,7 @@
 
 .barraBusquedaVenta:focus {
     outline: none;
-    border-color: #007bff; /* Color del borde al enfocar el input del ejemplo */
+    border-color: #fa47f1e0; /* Color del borde al enfocar el input del ejemplo */
 }
 
 .botonAgregarVenta {
@@ -130,7 +130,7 @@
 .paginacionVenta button {
     padding: 10px 15px;
     font-size: 1rem;
-    background-color: #4caf50;
+    background-color: #b660a3;
     color: white;
     border: none;
     border-radius: 5px;
@@ -144,7 +144,7 @@
 }
 
 .paginacionVenta button:hover:enabled {
-    background-color: #45a049;
+    background-color: #d180bf;
 }
 
 /* Switch de estado */
@@ -187,11 +187,11 @@
 }
 
 input:checked + .slider {
-    background-color: #4caf50; /* Color cuando está encendido (Completado) */
+    background-color: #b660a3; /* Color cuando está encendido (Completado) */
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #4caf50;
+    box-shadow: 0 0 1px #b660a3;
 }
 
 input:checked + .slider:before {
@@ -240,63 +240,146 @@ input:checked + .slider:before {
     background-color: #6d0b58 !important; /* Manteniendo tu estilo importante */
 }
 
-/* Modal */
-.modal-venta {
+/* --- ESTILOS DE MODALES AGREGADOS/MODIFICADOS --- */
+
+/* Contenedor general para el modal (fondo oscuro) */
+.modal-ventas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999;
+    z-index: 1000; /* Asegura que el modal esté por encima de todo */
 }
 
-.modal-content-venta {
+/* Contenido del modal (el recuadro blanco/degradado) */
+.modal-content-ventas {
     background: linear-gradient(135deg, #ffffff, #f8f9fa); /* Fondo degradado del ejemplo */
-    padding: 25px; /* Padding del contenido del modal del ejemplo */
-    border-radius: 12px; /* Bordes redondeados del ejemplo */
-    width: 600px; /* Ancho similar al modal del ejemplo */
-    max-width: 95%; /* Para pantallas más pequeñas */
+    padding: 30px; /* Padding del contenido del modal del ejemplo */
+    border-radius: 8px; /* Bordes redondeados del ejemplo */
+    width: 90%; /* Ancho similar al modal del ejemplo */
+    max-width: 600px; /* Para pantallas más pequeñas */
     text-align: left; /* Alineación del texto a la izquierda como en el ejemplo */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Sombra del modal del ejemplo */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra del modal del ejemplo */
     max-height: 90vh; /* Altura máxima del modal del ejemplo */
     overflow-y: auto; /* Scroll si el contenido es largo */
+    position: relative; /* Necesario para posicionar el botón de cerrar si es un icono */
 }
 
-.modal-content-venta h2 {
-    color: #34495e; /* Color del título del modal del ejemplo */
+.modal-content-ventas h2 {
+    color: #6d0b58; /* Color del título del modal del ejemplo */
     margin-bottom: 20px; /* Margen inferior del título del modal */
     font-size: 1.5rem; /* Tamaño del título del modal del ejemplo */
     text-align: center; /* Centrar el título del modal */
     width: 100%;
 }
 
-.botonCerrarModalPdfVenta {
+.modal-content-ventas p {
+    margin-bottom: 10px;
+    text-align: left;
+    color: #000000;
+}
+
+.modal-content-ventas strong {
+    font-weight: bold;
+    color: #6d0b58;
+}
+
+
+/* Tabla de detalles dentro del modal de detalles */
+.tablaDetallesVentas { /* Usado en el componente JS */
+    width: 100%;
+    border-collapse: collapse;
     margin-top: 20px;
-    padding: 8px 15px; /* Padding similar al botón cerrar del ejemplo */
-    background-color: #b660a3; /* Color del botón cerrar del ejemplo */
+}
+
+.tablaDetallesVentas th {
+    background-color: #e978d0;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    padding: 14px;
+    font-size: 1rem;
+    border: 1px solid #e978d0;
+}
+
+.tablaDetallesVentas td {
+    border: 1px solid #e978d0;
+    text-align: left;
+    padding: 14px;
+    vertical-align: middle;
+    font-size: 1rem;
+    color: black;
+}
+
+.tablaDetallesVentas tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tablaDetallesVentas tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Botón de cerrar del modal de detalles */
+.botonCerrarDetallesVenta { /* Usado en el componente JS */
+    background-color: #b660a3;
     color: white;
     border: none;
+    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+    display: block; /* Para centrarlo con margin: auto */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.botonCerrarDetallesVenta:hover {
+    background-color: #6d0b58;
+}
+
+/* Estilos para el iframe del PDF dentro del modal */
+.modal-content-ventas iframe {
+    margin-top: 20px;
+    width: 100%; /* Asegura que el iframe ocupe el ancho disponible */
+    height: 500px; /* Altura fija para el iframe */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Contenedor de botones en los modales (si hay varios) */
+.modal-ventas-buttons { /* Usado en el componente JS para el modal del PDF */
+    display: flex;
+    justify-content: center; /* Centrar los botones */
+    gap: 15px; /* Espacio entre botones */
+    margin-top: 15px;
+}
+
+/* Botón de cerrar del modal de PDF */
+.botonCerrarModalPDF { /* Usado en el componente JS */
+    background-color: #b660a3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    text-align: center;
 }
 
-.botonCerrarModalPdfVenta:hover {
-    background-color: #6d0b58; /* Color de hover del botón cerrar del ejemplo */
+.botonCerrarModalPDF:hover {
+    background-color: #6d0b58;
 }
 
-/* Contenedor para barra de búsqueda y botón en la misma fila */
-.barraBusquedaBotonAgregarVenta {
-    /* Los estilos ya están definidos arriba */
-}
-
+/* --- CLASES DE ESTADO (ya las tienes, solo verifico) --- */
 /* Estilo base para el campo desplegable */
 .estado-select {
     padding: 5px;
@@ -327,79 +410,4 @@ input:checked + .slider:before {
 .estado-anulada {
     background-color: #f153cf !important;
     color: white;
-}
-
-.pdf-modal-venta {
-    max-width: 700px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-}
-
-.pdf-modal-venta h2 {
-    margin-bottom: 20px;
-    font-size: 18px;
-    color: #333;
-}
-
-/* Tabla de detalles dentro del modal */
-.ventas-detalle-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
-
-.ventas-detalle-table th {
-  background-color: #e978d0;
-  color: black;
-  font-weight: bold;
-  text-align: center;
-  padding: 14px;
-  font-size: 1rem;
-  border: 1px solid #e978d0;
-}
-
-.ventas-detalle-table td {
-  border: 1px solid #e978d0;
-  text-align: left;
-  padding: 14px;
-  vertical-align: middle;
-  font-size: 1rem;
-  color: black;
-}
-
-.ventas-detalle-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.ventas-detalle-table tr:hover {
-    background-color: #f1f1f1;
-}
-
-/* Botón cerrar */
-.btn.close.pdf {
-    background-color: #fc8de4; /* Color similar a otros botones */
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    display: block; /* Para que ocupe todo el ancho si es necesario */
-    margin: 20px auto 0; /* Centrar horizontalmente y añadir margen superior */
-    text-align: center;
-}
-
-.btn.close.pdf:hover {
-    background-color: #b660a3; /* Hover similar a otros botones */
-}
-
-.modal-actions-venta {
-    display: flex;
-    justify-content: center; /* Centrar los botones del modal */
-    gap: 15px; /* Espacio entre botones del modal */
-    margin-top: 15px;
 }

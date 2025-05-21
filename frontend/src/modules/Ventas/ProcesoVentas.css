@@ -1,21 +1,16 @@
-/* Estilo general del contenedor de la página para flexbox */
 .proceso-ventas-page {
-  display: flex; /* Habilita flexbox para el layout */
-  min-height: 100vh; /* Asegura que ocupe al menos la altura de la ventana */
-  background-color: #f0f2f5; /* Un color de fondo suave para la página */
+  display: flex;
+  min-height: 100vh;
 }
 
-/* Estilos para el contenido principal (excluyendo la barra de navegación) */
 .proceso-ventas-main-content {
-  flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
-  padding: 20px;
-  background: #ffffff; /* Fondo blanco para el contenido */
+  flex-grow: 1; 
+  padding: 50px;
+  background: #ffffff; 
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin: 20px; /* Margen alrededor del contenido para que no toque los bordes */
-  /* Ajusta el ancho máximo. Por ejemplo, si Navbar es 250px, puedes poner calc(100% - 270px) para un margen de 20px.
-     Si el Navbar es adaptable, esto podría no ser necesario o necesitar un enfoque diferente. */
-  max-width: calc(100% - 270px); /* Ejemplo: si Navbar es 250px + 20px de margen izquierdo */
+  margin: 20px;
+  max-width: calc(90% - 270px); 
 }
 
 /* Encabezado */
@@ -36,7 +31,7 @@
 
 .directa-button,
 .indirecta-button {
-  background: #0066cc;
+  background: #fc8de4;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -48,12 +43,12 @@
 
 .directa-button:hover,
 .indirecta-button:hover {
-  background: #004b99;
+  background: #b660a3;
 }
 
 .directa-button.activo,
 .indirecta-button.activo {
-  background: #004b99;
+  background: #6d0b58;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -114,7 +109,7 @@
 
 /* Botones para Agregar (Producto/Servicio) */
 .catalogo-button {
-  background-color: #28a745;
+  background-color: #fc8de4;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -126,7 +121,7 @@
 }
 
 .catalogo-button:hover {
-  background-color: #218838;
+  background-color: #b660a3;
 }
 
 /* Tabla de Productos/Servicios */
@@ -145,7 +140,7 @@
 }
 
 .tabla-items thead th {
-  background-color: #007bff;
+  background-color: #e978d0;
   color: white;
   font-size: 16px;
 }
@@ -159,7 +154,7 @@
 }
 
 .tabla-items td button {
-  background-color: #dc3545;
+  background-color: #cf01a3;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -169,7 +164,7 @@
 }
 
 .tabla-items td button:hover {
-  background-color: #b02a37;
+  background-color: #6d0b58;
 }
 
 /* Ventanas Emergentes */
@@ -217,7 +212,7 @@
 
 .catalogo-emergente ul li button,
 .clientes-emergente ul li button {
-  background-color: #28a745;
+  background-color: #fc8de4;
   color: white;
   border: none;
   border-radius: 4px;
@@ -227,11 +222,11 @@
 
 .catalogo-emergente ul li button:hover,
 .clientes-emergente ul li button:hover {
-  background-color: #218838;
+  background-color: #b660a3;
 }
 
 .cerrar-button {
-  background-color: #6c757d;
+  background-color: #cf01a3;
   color: white;
   border: none;
   border-radius: 4px;
@@ -244,7 +239,7 @@
 }
 
 .cerrar-button:hover {
-  background-color: #5a6268;
+  background-color: #6d0b58;
 }
 
 /* Resumen de la Venta */
@@ -260,7 +255,7 @@
   margin: 5px 0;
   font-size: 16px;
   font-weight: bold;
-  color: #333;
+  color: #333333;
 }
 
 /* Botones de acción (Guardar y Cancelar) */
@@ -272,7 +267,7 @@
 }
 
 .guardar-venta-button {
-  background-color: #007bff;
+  background-color: #fc8de4;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -283,11 +278,11 @@
 }
 
 .guardar-venta-button:hover {
-  background-color: #0056b3;
+  background-color: #b660a3;
 }
 
 .cancelar-venta-button {
-  background-color: #f44336;
+  background-color: #b660a3;
   color: white;
   border: none;
   padding: 10px 16px;
@@ -298,7 +293,7 @@
 }
 
 .cancelar-venta-button:hover {
-  background-color: #d32f2f;
+  background-color: #6d0b58;
 }
 
 /* Responsividad */
@@ -335,4 +330,55 @@
   .campo-cliente {
     flex: 1 1 100%; /* Ocupa todo el ancho en móviles */
   }
+}
+
+/* En ProcesoVentas.css */
+
+.catalogo-emergente {
+  /* ... otros estilos existentes ... */
+  padding: 20px; /* Un poco de padding para que el input no esté pegado */
+}
+
+.search-bar {
+  margin-bottom: 15px; /* Espacio debajo de la barra de búsqueda */
+}
+
+.search-bar input {
+  width: 90%; /* Ancho del input de búsqueda */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+}
+
+.catalogo-emergente ul {
+  max-height: 300px; /* Limita la altura de la lista de productos */
+  overflow-y: auto; /* Agrega scroll si hay muchos productos */
+  list-style: none; /* Quita los puntos de la lista */
+  padding: 0;
+}
+
+.catalogo-emergente li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.catalogo-emergente li:last-child {
+  border-bottom: none;
+}
+
+.catalogo-emergente button {
+  background-color: #b660a3; /* Color de botón "Agregar" */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.catalogo-emergente button:hover {
+  background-color: #6d0b58;
 }
