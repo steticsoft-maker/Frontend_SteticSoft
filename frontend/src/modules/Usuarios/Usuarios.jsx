@@ -24,7 +24,7 @@ const Usuarios = () => {
       email: "Pepe@gmail.com",
       telefono: "3209999999",
       direccion: "Calle 456",
-      rol: "Cliente",
+      rol: "Empleado",
       anulado: true,
     },
     {
@@ -33,6 +33,17 @@ const Usuarios = () => {
       tipoDocumento: "CC",
       documento: "1122334455",
       email: "maria@gmail.com",
+      telefono: "3101234567",
+      direccion: "Avenida Siempre Viva 742",
+      rol: "Cliente",
+      anulado: true,
+    },
+    {
+      id: 4,
+      nombre: "Andres",
+      tipoDocumento: "CC",
+      documento: "1122334455",
+      email: "Andres@gmail.com",
       telefono: "3101234567",
       direccion: "Avenida Siempre Viva 742",
       rol: "Empleado",
@@ -45,10 +56,10 @@ const Usuarios = () => {
     return savedUsuarios ? JSON.parse(savedUsuarios) : initialUsuarios;
   });
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(""); 
+  const [modalType, setModalType] = useState("");
   const [currentUsuario, setCurrentUsuario] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-  const [modalMensaje, setModalMensaje] = useState(""); 
+  const [modalMensaje, setModalMensaje] = useState("");
 
   const [confirmDelete, setConfirmDelete] = useState(null);
 
@@ -62,8 +73,8 @@ const Usuarios = () => {
       !usuario.tipoDocumento ||
       !usuario.documento ||
       !usuario.email ||
-      !usuario.telefono || 
-      !usuario.direccion || 
+      !usuario.telefono ||
+      !usuario.direccion ||
       !usuario.rol
     ) {
       setModalMensaje("Por favor, completa todos los campos obligatorios.");
@@ -122,7 +133,7 @@ const Usuarios = () => {
     if (
       (type === "edit" || type === "details") &&
       usuario?.rol === "Administrador" &&
-      type !== "details" 
+      type !== "details"
     ) {
       alert("No se puede modificar al usuario 'Administrador' desde aquí.");
       return;
@@ -137,7 +148,7 @@ const Usuarios = () => {
     setShowModal(false);
     setModalType("");
     setCurrentUsuario(null);
-    setModalMensaje(""); 
+    setModalMensaje("");
   };
 
   const openConfirmDeleteModal = (usuario) => {
@@ -436,8 +447,7 @@ const Usuarios = () => {
             <tr>
               <th>Tipo Doc.</th>
               <th># Documento</th>
-              <th>Nombre</th>{" "}
-              <th>Email</th>
+              <th>Nombre</th> <th>Email</th>
               <th>Teléfono</th>
               <th>Estado</th>
               <th>Acciones</th>
@@ -448,7 +458,7 @@ const Usuarios = () => {
               <tr key={usuario.id}>
                 <td>{usuario.tipoDocumento}</td>
                 <td>{usuario.documento}</td>
-                <td>{usuario.nombre}</td> 
+                <td>{usuario.nombre}</td>
                 <td>{usuario.email}</td>
                 <td>{usuario.telefono}</td>
                 <td>
@@ -524,7 +534,7 @@ const Usuarios = () => {
             </p>
             <div className="usuarios-form-actions">
               <button
-                className="usuarios-form-buttonGuardar" 
+                className="usuarios-form-buttonGuardar"
                 onClick={deleteUsuario}
               >
                 Eliminar
