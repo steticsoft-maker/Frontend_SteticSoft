@@ -1,42 +1,35 @@
-/* Contenedor general */
 .ventas-container {
-    display: flex; /* Mantenido, revisar si es necesario */
+    display: flex;
     height: 100vh;
-    /* Ajustado el ancho y añadido max-width para responsividad */
     width: 1710%;
     max-width: 1710px;
     margin: 20px auto;
     border-radius: 8px;
 }
 
-/* Contenido principal */
 .ventasContent {
     flex: 1;
     padding: 30px;
-    /* Ajustado el margen izquierdo para que sea similar al ejemplo */
     margin-left: 45px;
     border-radius: 8px;
-    overflow-y: auto; /* Para permitir scroll si el contenido es largo */
+    overflow-y: auto;
 }
 
-.TituloVentas {
-    color: #000000; /* Color del título del ejemplo */
-    font-size: 1.8rem; /* Tamaño del título del ejemplo */
-    margin-bottom: 25px; /* Margen inferior del título del ejemplo */
-    font-weight: bold; /* Negrita como en el ejemplo */
-    text-align: center; /* Centrado como en el ejemplo */
+.ventasContent h1 {
+    text-align: center;
+    color: #6d0b58;
+    margin-bottom: 20px;
 }
 
-/* Barra de búsqueda y botón agregar */
 .barraBotonContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
     margin-bottom: 30px;
-    max-width: 1200px; /* Ancho máximo similar al contenedor de la tabla */
+    max-width: 1200px;
     margin-left: auto;
-    margin-right: auto; /* Centrado horizontal */
+    margin-right: auto;
 }
 
 .barraBusquedaVenta {
@@ -229,7 +222,7 @@ input:checked + .slider:before {
 }
 
 .botonPdfVenta:hover {
-    background-color: #b660a3;
+    background-color: #b660a3; 
 }
 
 .botonAnularVenta {

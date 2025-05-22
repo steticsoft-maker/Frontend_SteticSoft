@@ -162,7 +162,7 @@ const Ventas = () => {
     <div className="ventas-container">
       <NavbarAdmin />
       <div className="ventasContent">
-        <h1 className="TituloVentas">Gestión de Ventas</h1>
+        <h1>Gestión de Ventas</h1>
           <>
             <div className="barraBotonContainer">
               <input
@@ -174,7 +174,7 @@ const Ventas = () => {
               />
               <button
                 className="botonAgregarVenta"
-                onClick={() => navigate("/procesoventas")} // Volvemos a usar navigate
+                onClick={() => navigate("/procesoventas")}
               >
                 Agregar Venta
               </button>
