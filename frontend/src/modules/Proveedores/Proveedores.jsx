@@ -97,12 +97,7 @@ const Proveedores = () => {
             mostrarModal("El email de la persona encargada es inválido.");
             return; // Detiene el proceso si falla
         }
-
-        // Puedes añadir validaciones básicas para formato de teléfono si es necesario.
-
-
         // *** FIN: Validaciones para Persona Encargada ***
-
 
         if (modal.type === "agregar") {
             const existe = proveedores.some(p =>
@@ -131,7 +126,6 @@ const Proveedores = () => {
                 (p.tipoDocumento === "Jurídico" && proveedorActual.tipoDocumento === "Jurídico" && p.nit === proveedorActual.nit)
             );
 
-
             if (existeEnOtros) {
                 mostrarModal("Los cambios generarían un proveedor duplicado con otro existente (mismo tipo y número de documento/NIT).");
                 return;
@@ -148,7 +142,7 @@ const Proveedores = () => {
 
                 if (isMatch) {
                      // Antes de retornar proveedorActual, aseguramos que las propiedades del proveedor original que no están en el form (como estado) se mantengan
-                     return { ...proveedorActual, estado: p.estado };
+                    return { ...proveedorActual, estado: p.estado };
                 }
                 return p;
             }));
@@ -201,9 +195,9 @@ const Proveedores = () => {
                     <table>
                         <thead>
                             <tr>
+                                <th>#</th> {/* Nueva columna para enumeración */}
                                 <th>Nombre empresa</th>
                                 <th>Tipo Doc.</th>
-                                {/* Eliminada la columna "Documento / NIT" */}
                                 <th>Teléfono</th>
                                 <th>Email</th>
                                 <th>Dirección</th>
@@ -212,13 +206,13 @@ const Proveedores = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredProveedores.map(proveedor => {
+                            {filteredProveedores.map((proveedor, index) => { // Agregado 'index'
                                 const idKey = proveedor.tipoDocumento === "Natural" ? `${proveedor.tipoDocumentoNatural}-${proveedor.numeroDocumento}` : proveedor.nit;
                                 return (
                                     <tr key={idKey}>
+                                        <td>{index + 1}</td> {/* Muestra el número de enumeración */}
                                         <td>{proveedor.tipoDocumento === "Natural" ? proveedor.nombre : proveedor.nombreEmpresa}</td>
                                         <td>{proveedor.tipoDocumento === "Natural" ? proveedor.tipoDocumentoNatural : "NIT"}</td>
-                                        {/* Eliminada la celda de datos "Documento / NIT" */}
                                         <td>{proveedor.telefono}</td>
                                         <td>{proveedor.email}</td>
                                         <td>{proveedor.direccion}</td>

@@ -127,6 +127,7 @@ const Compras = () => {
           <table>
             <thead>
               <tr>
+                <th>#</th> {/* Nueva columna para la enumeración */}
                 <th>Proveedor</th>
                 <th>Fecha</th>
                 <th>Total</th>
@@ -143,6 +144,7 @@ const Compras = () => {
                 )
                 .map((compra, index) => (
                   <tr key={index}>
+                    <td>{index + 1}</td> {/* Muestra el número de fila */}
                     <td>{compra.proveedor}</td>
                     <td>{compra.fecha}</td>
                     <td>{compra.total}</td>
