@@ -29,6 +29,8 @@ import CategoriaProducto from "../modules/Productos/CategoriaProducto";
 import Citas from "../modules/Servicios/Citas";
 import HorarioEmpleado from "../modules/Empleados/HorarioCitas";
 import ProcesoVentas from "../modules/Ventas/ProcesoVentas";
+import DetalleVenta from "../modules/Ventas/DetalleVenta";
+import PDFVenta from "../modules/Ventas/PDFVenta";
 
 function AppRouter() {
   return (
@@ -58,6 +60,8 @@ function AppRouter() {
         <Route path="/categoriaservicio" element={<PrivateRoute><CategoriaServicio /></PrivateRoute>} />
         <Route path="/citas" element={<PrivateRoute><Citas /></PrivateRoute>} />
         <Route path="/procesoventas" element={<PrivateRoute><ProcesoVentas /></PrivateRoute>} />
+        <Route path="/ventas/:id/detalle" element={<PrivateRoute><DetalleVenta /></PrivateRoute>} />
+        <Route path="/ventas/:id/pdf"  element={<PrivateRoute><PDFVenta /></PrivateRoute>} />
       </Routes>
     </Router>
   );

@@ -33,62 +33,61 @@
 }
 
 .barraBusquedaVenta {
-    height: 40px; /* Altura fija como el input del ejemplo */
+    height: 40px; 
     padding: 0 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px; /* Tamaño de fuente del input del ejemplo */
-    color: #333; /* Color de texto del input del ejemplo */
-    background-color: #fff; /* Fondo blanco del input del ejemplo */
-    flex-grow: 1; /* Ocupar el espacio restante */
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    flex-grow: 1;
 }
 
 .barraBusquedaVenta:focus {
     outline: none;
-    border-color: #fa47f1e0; /* Color del borde al enfocar el input del ejemplo */
+    border-color: #fa47f1e0;
 }
 
 .botonAgregarVenta {
-    padding: 22px 26px; /* Padding similar al botón del ejemplo */
-    font-size: 1rem; /* Tamaño de fuente similar al botón del ejemplo */
+    padding: 22px 26px;
+    font-size: 1rem;
     background-color: #b660a3;
-    color: black; /* Color de texto del botón del ejemplo */
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    height: 40px; /* Misma altura fija que el input */
-    box-sizing: border-box; /* Incluir padding y borde en la altura total */
+    height: 40px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
-    margin: 30px 20px; /* Ajustado el margen para alinearse con el ejemplo */
+    margin: 30px 20px;
 }
 
 .botonAgregarVenta:hover {
-    background-color: #6d0b58; /* Color de hover del botón del ejemplo */
+    background-color: #6d0b58;
 }
 
-/* Tabla de Ventas */
 .ventas-table {
     width: 100%;
-    max-width: 1200px; /* Ancho máximo del ejemplo */
+    max-width: 1200px;
     border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra de la tabla del ejemplo */
-    background-color: #ffffff; /* Fondo blanco de la tabla del ejemplo */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
     box-sizing: border-box;
     border-radius: 8px;
-    overflow: hidden; /* Ocultar bordes redondeados */
+    overflow: hidden;
     margin-left: auto;
-    margin-right: auto; /* Centrado horizontal de la tabla */
+    margin-right: auto;
 }
 
 .ventas-table th {
     background-color: #e978d0;
     color: black;
-    padding: 14px; /* Padding similar al ejemplo */
+    padding: 14px;
     text-align: center;
     font-weight: bold;
     font-size: 1rem;
@@ -96,23 +95,22 @@
 }
 
 .ventas-table td {
-    text-align: left; /* Alineación izquierda como en el ejemplo */
-    padding: 14px; /* Padding similar al ejemplo */
+    text-align: left;
+    padding: 14px;
     border: 1px solid #e978d0;
     color: black;
-    font-size: 1rem; /* Tamaño de fuente similar al ejemplo */
-    vertical-align: middle; /* Alineación vertical media como en el ejemplo */
+    font-size: 1rem;
+    vertical-align: middle;
 }
 
 .ventas-table tbody tr:nth-child(even) {
-    background-color: #f8eaf5; /* Color de fondo de filas pares del ejemplo */
+    background-color: #f8eaf5;
 }
 
 .ventas-table tbody tr:hover {
-    background-color: #f3d9ec; /* Color de fondo al pasar el ratón del ejemplo */
+    background-color: #f3d9ec;
 }
 
-/* Paginación */
 .paginacionVenta {
     display: flex;
     justify-content: center;
@@ -140,13 +138,12 @@
     background-color: #d180bf;
 }
 
-/* Switch de estado */
 .switch {
     position: relative;
     display: inline-block;
     width: 40px;
     height: 24px;
-    vertical-align: middle; /* Añadido para alinear verticalmente */
+    vertical-align: middle;
 }
 
 .switch input {
@@ -161,8 +158,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc; /* Color cuando está apagado (Pendiente) */
-    border-radius: 24px; /* Bordes redondeados como en el ejemplo */
+    background-color: #ccc;
+    border-radius: 24px;
     cursor: pointer;
     transition: .4s;
 }
@@ -170,17 +167,17 @@
 .slider:before {
     position: absolute;
     content: "";
-    height: 16px; /* Tamaño del círculo del ejemplo */
-    width: 16px; /* Tamaño del círculo del ejemplo */
-    left: 4px; /* Posición inicial a la izquierda */
-    bottom: 4px; /* Posición inicial abajo */
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
     background-color: white;
-    border-radius: 50%; /* Forma de círculo */
+    border-radius: 50%;
     transition: .4s;
 }
 
 input:checked + .slider {
-    background-color: #b660a3; /* Color cuando está encendido (Completado) */
+    background-color: #b660a3;
 }
 
 input:focus + .slider {
@@ -188,10 +185,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-    transform: translateX(16px); /* Mover a la derecha */
+    transform: translateX(16px);
 }
 
-/* Botones de acciones en la tabla */
 .accionesTablaVentas {
     display: flex;
     justify-content: center;
@@ -199,8 +195,8 @@ input:checked + .slider:before {
     gap: 10px;
 }
 
-.accionesTablaVentas button { /* Estilo base para botones de acción */
-    padding: 6px 9px; /* Ajustado padding */
+.accionesTablaVentas button {
+    padding: 6px 9px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -226,48 +222,44 @@ input:checked + .slider:before {
 }
 
 .botonAnularVenta {
-    background-color: #b660a3 !important; /* Manteniendo tu estilo importante */
+    background-color: #b660a3 !important;
 }
 
 .botonAnularVenta:hover {
-    background-color: #6d0b58 !important; /* Manteniendo tu estilo importante */
+    background-color: #6d0b58 !important;
 }
 
-/* --- ESTILOS DE MODALES AGREGADOS/MODIFICADOS --- */
-
-/* Contenedor general para el modal (fondo oscuro) */
 .modal-ventas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Asegura que el modal esté por encima de todo */
+    z-index: 1000;
 }
 
-/* Contenido del modal (el recuadro blanco/degradado) */
 .modal-content-ventas {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa); /* Fondo degradado del ejemplo */
-    padding: 30px; /* Padding del contenido del modal del ejemplo */
-    border-radius: 8px; /* Bordes redondeados del ejemplo */
-    width: 90%; /* Ancho similar al modal del ejemplo */
-    max-width: 600px; /* Para pantallas más pequeñas */
-    text-align: left; /* Alineación del texto a la izquierda como en el ejemplo */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra del modal del ejemplo */
-    max-height: 90vh; /* Altura máxima del modal del ejemplo */
-    overflow-y: auto; /* Scroll si el contenido es largo */
-    position: relative; /* Necesario para posicionar el botón de cerrar si es un icono */
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    text-align: left;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
 }
 
 .modal-content-ventas h2 {
-    color: #6d0b58; /* Color del título del modal del ejemplo */
-    margin-bottom: 20px; /* Margen inferior del título del modal */
-    font-size: 1.5rem; /* Tamaño del título del modal del ejemplo */
-    text-align: center; /* Centrar el título del modal */
+    color: #6d0b58;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-align: center;
     width: 100%;
 }
 
@@ -282,9 +274,7 @@ input:checked + .slider:before {
     color: #6d0b58;
 }
 
-
-/* Tabla de detalles dentro del modal de detalles */
-.tablaDetallesVentas { /* Usado en el componente JS */
+.tablaDetallesVentas {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
@@ -317,8 +307,7 @@ input:checked + .slider:before {
     background-color: #f1f1f1;
 }
 
-/* Botón de cerrar del modal de detalles */
-.botonCerrarDetallesVenta { /* Usado en el componente JS */
+.botonCerrarDetallesVenta {
     background-color: #b660a3;
     color: white;
     border: none;
@@ -327,7 +316,7 @@ input:checked + .slider:before {
     cursor: pointer;
     margin-top: 20px;
     font-size: 16px;
-    display: block; /* Para centrarlo con margin: auto */
+    display: block;
     margin-left: auto;
     margin-right: auto;
 }
@@ -336,25 +325,22 @@ input:checked + .slider:before {
     background-color: #6d0b58;
 }
 
-/* Estilos para el iframe del PDF dentro del modal */
 .modal-content-ventas iframe {
     margin-top: 20px;
-    width: 100%; /* Asegura que el iframe ocupe el ancho disponible */
-    height: 500px; /* Altura fija para el iframe */
+    width: 100%;
+    height: 500px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-/* Contenedor de botones en los modales (si hay varios) */
-.modal-ventas-buttons { /* Usado en el componente JS para el modal del PDF */
+.modal-ventas-buttons {
     display: flex;
-    justify-content: center; /* Centrar los botones */
-    gap: 15px; /* Espacio entre botones */
+    justify-content: center;
+    gap: 15px;
     margin-top: 15px;
 }
 
-/* Botón de cerrar del modal de PDF */
-.botonCerrarModalPDF { /* Usado en el componente JS */
+.botonCerrarModalPDF {
     background-color: #b660a3;
     color: white;
     border: none;
@@ -372,8 +358,6 @@ input:checked + .slider:before {
     background-color: #6d0b58;
 }
 
-/* --- CLASES DE ESTADO (ya las tienes, solo verifico) --- */
-/* Estilo base para el campo desplegable */
 .estado-select {
     padding: 5px;
     border: 1px solid #c287b5;
@@ -384,20 +368,19 @@ input:checked + .slider:before {
     transition: background-color 0.3s ease;
 }
 
-/* Colores dinámicos según estado */
 .estado-en-proceso {
     background-color: #e68bd2 !important;
-    color: black; /* Asegurar que el texto sea legible */
+    color: black;
 }
 
 .estado-activa {
     background-color: #b660a3 !important;
-    color: white; /* Asegurar que el texto sea legible */
+    color: white;
 }
 
 .estado-inactiva {
     background-color: #e7b0db !important;
-    color: black; /* Asegurar que el texto sea legible */
+    color: black;
 }
 
 .estado-anulada {

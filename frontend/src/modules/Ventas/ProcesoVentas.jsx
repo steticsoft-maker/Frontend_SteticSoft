@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./ProcesoVentas.css";
 
-const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
-  // Clientes de ejemplo
+const ProcesoVentas = () => {
+  
   const clientesFalsos = [
     { id: 1, nombre: "Juan Pérez", documento: "123456789", telefono: "3001234567", direccion: "Calle 1" },
     { id: 2, nombre: "María Gómez", documento: "987654321", telefono: "3019876543", direccion: "Carrera 2" },
@@ -13,7 +13,7 @@ const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
     { id: 5, nombre: "Carlos Ruiz", documento: "9988776655", telefono: "3049988776", direccion: "Carrera 20" },
   ];
 
-  // Productos de ejemplo
+  
   const catalogoProductos = [
     { id: 1, nombre: "Producto A", precio: 10000 },
     { id: 2, nombre: "Producto B", precio: 20000 },
@@ -25,7 +25,7 @@ const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
     { id: 8, nombre: "Disco Duro SSD 1TB", precio: 180000 },
   ];
 
-  // Servicios de ejemplo
+  
   const catalogoServicios = [
     { id: 1, nombre: "Servicio A", precio: 50000 },
     { id: 2, nombre: "Servicio B", precio: 75000 },
@@ -35,7 +35,7 @@ const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
     { id: 6, nombre: "Reparación de Hardware", precio: 120000 },
   ];
 
-  // Estados de componentes
+  
   const [modoCita, setModoCita] = useState("");
   const [mostrarClientes, setMostrarClientes] = useState(false);
   const [datosCliente, setDatosCliente] = useState({ nombre: "", documento: "", telefono: "", direccion: "" });
@@ -47,24 +47,24 @@ const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
   const [filtroServicio, setFiltroServicio] = useState("");
   const [filtroCliente, setFiltroCliente] = useState("");
 
-  // Seleccionar cliente
+  
   const seleccionarCliente = (cliente) => {
     setDatosCliente(cliente);
     setMostrarClientes(false);
   };
 
-  // Agregar un producto o servicio a la tabla
+  
   const agregarItemATabla = (item) => {
     const nuevoItem = { ...item, cantidad: 1 };
     setItemsTabla([...itemsTabla, nuevoItem]);
   };
 
-  // Eliminar un producto o servicio de la tabla
+ 
   const eliminarItemDeTabla = (index) => {
     setItemsTabla(itemsTabla.filter((_, i) => i !== index));
   };
 
-  // Actualizar la cantidad de un producto o servicio en la tabla
+  
   const actualizarCantidad = (index, nuevaCantidad) => {
     const nuevaTabla = itemsTabla.map((item, i) =>
       i === index ? { ...item, cantidad: nuevaCantidad } : item
@@ -72,7 +72,7 @@ const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
     setItemsTabla(nuevaTabla);
   };
 
-  // Cálculos para resumen
+  
   const subtotal = itemsTabla.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
   const iva = subtotal * 0.19;
   const total = subtotal + iva;
@@ -107,23 +107,23 @@ const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
       documento: datosCliente.documento,
       telefono: datosCliente.telefono,
       direccion: datosCliente.direccion,
-      items: itemsParaVenta, // Asegúrate de que este array esté formateado correctamente
+      items: itemsParaVenta,
       subtotal,
       iva,
       total,
       fecha: new Date().toISOString().slice(0, 10),
     };
 
-    // Navegamos a la ruta /ventas pasando la nuevaVenta en el estado de la navegación
+    
     navigate("/ventas", { state: { nuevaVenta: nuevaVenta } });
 
-    // Limpiamos los estados de ProcesoVentas después de enviar la data
+   
     setDatosCliente({ nombre: "", documento: "", telefono: "", direccion: "" });
     setItemsTabla([]);
     setModoCita("");
   };
 
-  // Lógica de Filtrado (sin cambios)
+  
   const productosFiltrados = catalogoProductos.filter(producto =>
     producto.nombre.toLowerCase().includes(filtroProducto.toLowerCase())
   );
@@ -364,7 +364,7 @@ const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
           </tbody>
         </table>
 
-        {/* Resumen de la venta */}
+       
         <div className="resumen-venta">
           <p>
             <strong>Subtotal:</strong> ${subtotal.toFixed(2)}
@@ -377,7 +377,7 @@ const ProcesoVentas = () => { // Eliminamos { guardarVenta } como prop
           </p>
         </div>
 
-        {/* Botones de acción */}
+        
         <div className="botones-accion">
           <button className="guardar-venta-button" onClick={guardarNuevaVenta}>
             Guardar Venta
