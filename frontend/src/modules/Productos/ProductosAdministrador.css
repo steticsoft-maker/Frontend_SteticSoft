@@ -14,27 +14,21 @@
 
 /* Barra de búsqueda */
 .inputBarraBusqueda {
-    margin-bottom: 20px;
-    padding: 12px;
-    width: 100%;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: white;
-    color: black;
+  flex-grow: 1; /* Permite que el input ocupe el espacio restante */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 /* Botón para agregar producto */
 .botonAgregarProductoAdministrador {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  padding: 10px 15px; 
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .botonAgregarProductoAdministrador:hover {
@@ -43,23 +37,22 @@
 
 /* Tabla de Productos */
 .tablaProductosAdministrador {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+
 }
 
 .tablaProductosAdministrador th {
-    background-color: #34495e;
-    color: white;
-    padding: 15px;
-    text-align: center;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
 .tablaProductosAdministrador td {
-    text-align: center;
-    padding: 15px;
-    border: 1px solid #ddd;
-    color: #34495e;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
 /* Switch para cambiar el estado */
@@ -264,4 +257,12 @@ img {
     max-width: 100px;
     border: 1px solid #ddd;
     border-radius: 5px;
+}
+
+.search-add-container {
+  display: flex;
+  justify-content: space-between; /* Para espaciar el input y el botón */
+  align-items: center; /* Para alinearlos verticalmente */
+  margin-bottom: 20px; /* Espacio debajo del contenedor */
+  gap: 15px; /* Espacio entre los elementos */
 }

@@ -105,7 +105,7 @@ const NavbarAdmin = () => {
               Productos
             </button>
             <button
-              onClick={() => navigate("/categoriaproducto")}
+              onClick={() => navigate("/categorias")}
               className="nested-link"
             >
               Categoría Productos

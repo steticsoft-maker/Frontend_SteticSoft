@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa"; // Importar íconos
 import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
-import "./ProductosAdministrador.css";
+import "./ProductosAdministrador.css"; // Asegúrate de que este archivo CSS exista y esté importado
 
 const Productos = () => {
   const initialProductos = [
@@ -76,7 +76,7 @@ const Productos = () => {
       <NavbarAdmin />
       <div className="productoAdministradorContent">
         <h1>Gestión de Productos</h1>
-        <div className="BarraBusquedaAgregarProductoAdministrador">
+        <div className="search-add-container"> {/* Nuevo contenedor para la barra de búsqueda y el botón */}
           <input
             type="text"
             placeholder="Buscar producto..."
@@ -91,6 +91,7 @@ const Productos = () => {
         <table className="tablaProductosAdministrador">
           <thead>
             <tr>
+              <th>#</th> {/* Nueva columna para el número */}
               <th>Nombre</th>
               <th>Categoría</th>
               <th>Precio</th>
@@ -100,8 +101,9 @@ const Productos = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredProductos.map((producto) => (
+            {filteredProductos.map((producto, index) => ( // Usamos index para enumerar
               <tr key={producto.id}>
+                <td>{index + 1}</td> {/* Muestra el número de fila */}
                 <td>{producto.nombre}</td>
                 <td>{producto.categoria}</td>
                 <td>{producto.precio}</td>
@@ -230,7 +232,6 @@ const Productos = () => {
                     required
                   />
                   <label>
-
                     <input
                       type="file"
                       accept="image/*"
@@ -266,4 +267,4 @@ const Productos = () => {
   );
 };
 
-export default Productos;
+export default Productos; 

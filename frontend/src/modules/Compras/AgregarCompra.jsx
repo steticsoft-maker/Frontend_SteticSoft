@@ -5,7 +5,6 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 import "./AgregarCompra.css";
 
-// Datos de productos organizados por categoria
 const productosPorCategoria = [
     {
         categoria: "Cabello",
@@ -35,7 +34,6 @@ const productosPorCategoria = [
     }
 ];
 
-// Lista de proveedores falsos para la busqueda (se mantiene)
 const proveedoresFalsos = [
     "Proveedor Cosmeticos ABC",
     "Distribuidora Belleza Total",
@@ -58,21 +56,14 @@ const Modal = ({ mensaje, onClose }) => (
 
 const AgregarCompra = () => {
   const navigate = useNavigate();
-  // Cambiado proveedor para ser el nombre seleccionado
   const [proveedor, setProveedor] = useState("");
-  // Estado para el texto en la barra de busqueda de proveedor
   const [supplierSearchTerm, setSupplierSearchTerm] = useState("");
-  // Estado para las sugerencias de proveedor filtradas
   const [suggestedSuppliers, setSuggestedSuppliers] = useState([]);
 
   const [fecha, setFecha] = useState(new Date().toISOString().split("T")[0]);
-  // Eliminado estado de fechaEntrega
-  // const [fechaEntrega, setFechaEntrega] = useState("");
 
-  // Nuevo estado para metodo de pago
   const [metodoPago, setMetodoPago] = useState("");
 
-  // Ahora cada producto en la lista incluye la categoria seleccionada para esa fila
   const [productos, setProductos] = useState([]);
 
   const [subtotal, setSubtotal] = useState(0);
@@ -80,21 +71,18 @@ const AgregarCompra = () => {
   const [total, setTotal] = useState(0);
   const [modalMensaje, setModalMensaje] = useState("");
 
-  // Hook para actualizar totales cuando los productos cambian
     useEffect(() => {
         actualizarTotales(productos);
     }, [productos]);
 
 
   const handleAgregarProducto = () => {
-    // Inicializar nuevo producto con campo de categoria vacio
     setProductos([...productos, { categoria: "", nombre: "", cantidad: 1, precio: 0, total: 0 }]);
   };
 
   const handleEliminarProducto = (index) => {
     const nuevosProductos = productos.filter((_, i) => i !== index);
     setProductos(nuevosProductos);
-      // La actualizacion de totales se maneja ahora en el useEffect
   };
 
   const handleCambioProducto = (index, campo, valor) => {
@@ -102,33 +90,27 @@ const AgregarCompra = () => {
 
     if (campo === "categoria") {
         nuevosProductos[index].categoria = valor;
-        // Restablecer nombre, precio y total del producto al cambiar la categoria
         nuevosProductos[index].nombre = "";
         nuevosProductos[index].precio = 0;
         nuevosProductos[index].total = 0;
     } else if (campo === "nombre") {
         nuevosProductos[index].nombre = valor;
-        // Buscar el precio correcto basado en la categoria y el nombre seleccionado
         const categoriaSeleccionada = productosPorCategoria.find(cat => cat.categoria === nuevosProductos[index].categoria);
         const productoSeleccionado = categoriaSeleccionada
             ? categoriaSeleccionada.productos.find(p => p.nombre === valor)
             : null;
         nuevosProductos[index].precio = productoSeleccionado ? productoSeleccionado.precio : 0;
-          // Recalcular el total de la linea
         nuevosProductos[index].total = nuevosProductos[index].cantidad * nuevosProductos[index].precio;
     } else if (campo === "cantidad") {
         nuevosProductos[index].cantidad = Math.max(0, Number(valor));
-          // Recalcular el total de la linea
         nuevosProductos[index].total = nuevosProductos[index].cantidad * nuevosProductos[index].precio;
     } else if (campo === "precio") {
         nuevosProductos[index].precio = Math.max(0, Number(valor));
-          // Recalcular el total de la linea
         nuevosProductos[index].total = nuevosProductos[index].cantidad * nuevosProductos[index].precio;
     }
 
 
     setProductos(nuevosProductos);
-      // La actualizacion de totales se maneja ahora en el useEffect
   };
 
   const actualizarTotales = (productos) => {
@@ -149,7 +131,6 @@ const AgregarCompra = () => {
     setModalMensaje("");
   };
 
-  // Manejar cambio en la barra de busqueda de proveedor
   const handleSupplierSearchChange = (e) => {
       const term = e.target.value;
       setSupplierSearchTerm(term);
@@ -161,23 +142,20 @@ const AgregarCompra = () => {
       } else {
           setSuggestedSuppliers([]); // Limpiar sugerencias si el termino es muy corto
       }
-        // Limpiar el proveedor seleccionado si el termino de busqueda cambia
-        // Esto evita que un proveedor quede seleccionado si el usuario edita despues de seleccionar
       setProveedor("");
   };
 
-  // Manejar la seleccion de un proveedor de las sugerencias
   const handleSelectSupplier = (selectedSupplier) => {
-      setSupplierSearchTerm(selectedSupplier); // Poner el nombre completo en la barra de busqueda
-      setProveedor(selectedSupplier); // Establecer el proveedor seleccionado
-      setSuggestedSuppliers([]); // Limpiar sugerencias
+      setSupplierSearchTerm(selectedSupplier);
+      setProveedor(selectedSupplier);
+      setSuggestedSuppliers([]);
   };
 
 
   const handleGuardarCompra = () => {
     if (!proveedor || !proveedoresFalsos.includes(proveedor) || supplierSearchTerm !== proveedor) {
-       mostrarModal("Debe seleccionar un proveedor valido de la lista de sugerencias.");
-       return;
+        mostrarModal("Debe seleccionar un proveedor valido de la lista de sugerencias.");
+        return;
       }
 
     if (!metodoPago) {
@@ -199,12 +177,10 @@ const AgregarCompra = () => {
             return;
         }
         if (productoFila.nombre && productoFila.cantidad <= 0) {
-             mostrarModal(`La cantidad para el producto "${productoFila.nombre}" en la fila ${i + 1} debe ser mayor a 0.`);
-             return;
+              mostrarModal(`La cantidad para el producto "${productoFila.nombre}" en la fila ${i + 1} debe ser mayor a 0.`);
+              return;
         }
 
-
-        // Validaciones generales para cantidad y precio
         if (productoFila.cantidad < 0) {
             mostrarModal(`La cantidad no puede ser negativa en la fila ${i + 1}.`);
             return;
@@ -214,7 +190,6 @@ const AgregarCompra = () => {
             return;
         }
 
-          // Si hay cantidad > 0, asegurarse que el precio sea > 0 (opcional, pero buena practica)
         if (productoFila.cantidad > 0 && productoFila.precio <= 0 && productoFila.nombre) {
             mostrarModal(`El precio debe ser mayor a 0 para el producto "${productoFila.nombre}" en la fila ${i + 1}.`);
             return;
@@ -231,15 +206,11 @@ const AgregarCompra = () => {
       metodoPago,
     };
 
-    // Nota: Guardar en localStorage es solo para demostracion.
-    // En una aplicacion real, enviarias esto a un backend/API.
-    // Es posible que quieras anadir un ID unico a cada compra antes de guardarla.
     const comprasGuardadas = JSON.parse(localStorage.getItem("compras")) || [];
     comprasGuardadas.push(compra);
     localStorage.setItem("compras", JSON.stringify(comprasGuardadas));
 
     mostrarModal("Compra guardada exitosamente.");
-      // Pequeno retraso antes de navegar para que el usuario vea el modal de exito
     setTimeout(() => {
           cerrarModal(); // Cerrar modal antes de navegar
           navigate("/compras");
@@ -248,7 +219,6 @@ const AgregarCompra = () => {
   };
 
   const handleCancelar = () => {
-        // Puedes anadir una confirmacion antes de cancelar si lo deseas
         navigate("/compras");
   };
 

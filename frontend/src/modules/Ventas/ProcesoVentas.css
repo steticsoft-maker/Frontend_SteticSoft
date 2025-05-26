@@ -1,32 +1,25 @@
-/* Estilo general del contenedor de la página para flexbox */
 .proceso-ventas-page {
-  display: flex; /* Habilita flexbox para el layout */
-  min-height: 100vh; /* Asegura que ocupe al menos la altura de la ventana */
-  background-color: #f0f2f5; /* Un color de fondo suave para la página */
+  display: flex;
+  min-height: 100vh;
 }
 
-/* Estilos para el contenido principal (excluyendo la barra de navegación) */
 .proceso-ventas-main-content {
-  flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
-  padding: 20px;
-  background: #ffffff; /* Fondo blanco para el contenido */
+  flex-grow: 1;
+  padding: 50px;
+  background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin: 20px; /* Margen alrededor del contenido para que no toque los bordes */
-  /* Ajusta el ancho máximo. Por ejemplo, si Navbar es 250px, puedes poner calc(100% - 270px) para un margen de 20px.
-     Si el Navbar es adaptable, esto podría no ser necesario o necesitar un enfoque diferente. */
-  max-width: calc(100% - 270px); /* Ejemplo: si Navbar es 250px + 20px de margen izquierdo */
+  margin: 20px;
+  max-width: calc(90% - 270px);
 }
 
-/* Encabezado */
-.proceso-ventas-main-content h1 { /* Cambiado de .main-content h1 */
+.proceso-ventas-main-content h1 {
   text-align: center;
-  color: #333333;
+  color: #6d0b58;
   font-size: 24px;
   margin-bottom: 20px;
 }
 
-/* Botones Directa e Indirecta */
 .acciones {
   display: flex;
   justify-content: center;
@@ -36,7 +29,7 @@
 
 .directa-button,
 .indirecta-button {
-  background: #0066cc;
+  background: #fc8de4;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -48,12 +41,12 @@
 
 .directa-button:hover,
 .indirecta-button:hover {
-  background: #004b99;
+  background: #b660a3;
 }
 
 .directa-button.activo,
 .indirecta-button.activo {
-  background: #004b99;
+  background: #6d0b58;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -62,20 +55,26 @@
   cursor: not-allowed;
 }
 
-/* Formulario de Información del Cliente */
 .datos-cliente {
   margin-top: 20px;
   padding: 20px;
   border: 1px solid #dddddd;
   border-radius: 8px;
   background-color: #ffffff;
-  transition: background-color 0.3s ease, opacity 0.3s ease; /* Añadida transición para opacidad */
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.datos-cliente h3 {
+  color: #6d0b58;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.5em;
 }
 
 .datos-cliente.bloqueado {
   background-color: #f5f5f5;
-  pointer-events: none; /* Bloquea interacción cuando no es "indirecta" */
-  opacity: 0.7; /* Para dar una indicación visual de que está bloqueado */
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 .formulario-cliente {
@@ -85,7 +84,7 @@
 }
 
 .campo-cliente {
-  flex: 1 1 45%; /* Permite que los campos se distribuyan en 2 columnas */
+  flex: 1 1 45%;
   display: flex;
   flex-direction: column;
 }
@@ -103,22 +102,20 @@
   border: 1px solid #cccccc;
   border-radius: 4px;
   width: 100%;
-  box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+  box-sizing: border-box;
 }
 
-/* Campos deshabilitados */
 .campo-cliente input:disabled {
   background-color: #e9e9e9;
   cursor: not-allowed;
 }
 
-/* Botones para Agregar (Producto/Servicio) */
 .catalogo-button {
-  background-color: #28a745;
+  background-color: #fc8de4;
   color: white;
   border: none;
   padding: 10px 15px;
-  margin: 10px 5px 10px 0; /* Ajustado el margen para separarlos si hay varios */
+  margin: 10px 5px 10px 0;
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
@@ -126,10 +123,9 @@
 }
 
 .catalogo-button:hover {
-  background-color: #218838;
+  background-color: #b660a3;
 }
 
-/* Tabla de Productos/Servicios */
 .tabla-items {
   width: 100%;
   border-collapse: collapse;
@@ -145,7 +141,7 @@
 }
 
 .tabla-items thead th {
-  background-color: #007bff;
+  background-color: #e978d0;
   color: white;
   font-size: 16px;
 }
@@ -159,7 +155,7 @@
 }
 
 .tabla-items td button {
-  background-color: #dc3545;
+  background-color: #cf01a3;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -169,7 +165,7 @@
 }
 
 .tabla-items td button:hover {
-  background-color: #b02a37;
+  background-color: #6d0b58;
 }
 
 /* Ventanas Emergentes */
@@ -205,7 +201,7 @@
 .clientes-emergente ul li {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Centra verticalmente los elementos */
+  align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #eeeeee;
 }
@@ -217,7 +213,7 @@
 
 .catalogo-emergente ul li button,
 .clientes-emergente ul li button {
-  background-color: #28a745;
+  background-color: #fc8de4;
   color: white;
   border: none;
   border-radius: 4px;
@@ -227,11 +223,11 @@
 
 .catalogo-emergente ul li button:hover,
 .clientes-emergente ul li button:hover {
-  background-color: #218838;
+  background-color: #b660a3;
 }
 
 .cerrar-button {
-  background-color: #6c757d;
+  background-color: #cf01a3;
   color: white;
   border: none;
   border-radius: 4px;
@@ -244,10 +240,9 @@
 }
 
 .cerrar-button:hover {
-  background-color: #5a6268;
+  background-color: #6d0b58;
 }
 
-/* Resumen de la Venta */
 .resumen-venta {
   margin-top: 20px;
   padding: 20px;
@@ -260,10 +255,9 @@
   margin: 5px 0;
   font-size: 16px;
   font-weight: bold;
-  color: #333;
+  color: #333333;
 }
 
-/* Botones de acción (Guardar y Cancelar) */
 .botones-accion {
   display: flex;
   gap: 20px;
@@ -272,7 +266,7 @@
 }
 
 .guardar-venta-button {
-  background-color: #007bff;
+  background-color: #fc8de4;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -283,11 +277,11 @@
 }
 
 .guardar-venta-button:hover {
-  background-color: #0056b3;
+  background-color: #b660a3;
 }
 
 .cancelar-venta-button {
-  background-color: #f44336;
+  background-color: #b660a3;
   color: white;
   border: none;
   padding: 10px 16px;
@@ -298,18 +292,18 @@
 }
 
 .cancelar-venta-button:hover {
-  background-color: #d32f2f;
+  background-color: #6d0b58;
 }
 
 /* Responsividad */
 @media (max-width: 768px) {
   .proceso-ventas-page {
-    flex-direction: column; /* Apila los elementos en pantallas pequeñas */
+    flex-direction: column;
   }
 
   .proceso-ventas-main-content {
-    margin: 10px; /* Ajusta el margen para pantallas pequeñas */
-    max-width: 100%; /* Ocupa todo el ancho disponible */
+    margin: 10px;
+    max-width: 100%;
   }
 
   .acciones {
@@ -319,7 +313,7 @@
 
   .catalogo-emergente,
   .clientes-emergente {
-    width: 95%; /* Mayor ancho para las modales en móviles */
+    width: 95%;
     padding: 15px;
   }
 
@@ -328,11 +322,59 @@
   }
 
   .formulario-cliente {
-    flex-direction: column; /* Apila los campos del formulario */
+    flex-direction: column;
     gap: 0.5rem;
   }
 
   .campo-cliente {
-    flex: 1 1 100%; /* Ocupa todo el ancho en móviles */
+    flex: 1 1 100%;
   }
+}
+
+.catalogo-emergente {
+  padding: 20px;
+}
+
+.search-bar {
+  margin-bottom: 15px;
+}
+
+.search-bar input {
+  width: 90%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.catalogo-emergente ul {
+  max-height: 300px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+}
+
+.catalogo-emergente li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.catalogo-emergente li:last-child {
+  border-bottom: none;
+}
+
+.catalogo-emergente button {
+  background-color: #b660a3;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.catalogo-emergente button:hover {
+  background-color: #6d0b58;
 }

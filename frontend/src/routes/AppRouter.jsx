@@ -29,6 +29,11 @@ import CategoriaProducto from "../modules/Productos/CategoriaProducto";
 import Citas from "../modules/Servicios/Citas";
 import HorarioEmpleado from "../modules/Empleados/HorarioCitas";
 import ProcesoVentas from "../modules/Ventas/ProcesoVentas";
+import DetalleVenta from "../modules/Ventas/DetalleVenta";
+import PDFVenta from "../modules/Ventas/PDFVenta";
+import VerCategoria from "../modules/Productos/VerCategoria";
+import EditarCategoria from "../modules/Productos/EditarCategoria";
+import CrearCategoria from "../modules/Productos/CrearCategoria";
 
 function AppRouter() {
   return (
@@ -53,11 +58,16 @@ function AppRouter() {
         <Route path="/proveedores" element={<PrivateRoute><Proveedores /></PrivateRoute>} />
         <Route path="/ventas" element={<PrivateRoute><Ventas /></PrivateRoute>} />
         <Route path="/productoadministrador" element={<PrivateRoute><ProductoAdministrador /></PrivateRoute>} />
-        <Route path="/categoriaproducto" element={<PrivateRoute><CategoriaProducto /></PrivateRoute>} />
+        <Route path="/categorias" element={<PrivateRoute><CategoriaProducto /></PrivateRoute>} />
         <Route path="/serviciosadministrador" element={<PrivateRoute><ServiciosAdministrador /></PrivateRoute>} />
         <Route path="/categoriaservicio" element={<PrivateRoute><CategoriaServicio /></PrivateRoute>} />
         <Route path="/citas" element={<PrivateRoute><Citas /></PrivateRoute>} />
         <Route path="/procesoventas" element={<PrivateRoute><ProcesoVentas /></PrivateRoute>} />
+        <Route path="/ventas/:id/detalle" element={<PrivateRoute><DetalleVenta /></PrivateRoute>} />
+        <Route path="/ventas/:id/pdf"  element={<PrivateRoute><PDFVenta /></PrivateRoute>} />
+        <Route path="/categorias/ver/:id" element={<PrivateRoute><VerCategoria /></PrivateRoute>} />
+        <Route path="/categorias/editar/:id" element={<PrivateRoute><EditarCategoria /></PrivateRoute>} />
+        <Route path="/categorias/crear" element={<PrivateRoute><CrearCategoria /></PrivateRoute>} />
       </Routes>
     </Router>
   );

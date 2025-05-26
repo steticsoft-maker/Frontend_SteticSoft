@@ -2,8 +2,8 @@
 .compras-container {
   display: flex;
   height: 100vh;
-  width: 1710px;
-  max-width: 1710px;
+  width: 1720px;
+  max-width: 1720px;
   margin: 20px auto;
   border-radius: 8px;
 }
@@ -11,7 +11,7 @@
 .comprasContenido {
   flex: 1;
   padding: 30px;
-  margin-left: 45px; 
+  margin-left: 45px;
   border-radius: 8px;
   overflow-y: auto; 
 }
@@ -57,9 +57,9 @@ h2.title-h2 {
   background-color: #b660a3;
   color: black;
   width: 190px;
-  border: none; /* Asegurar que no tenga borde */
+  border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
   height: 40px; /* Misma altura fija que el input */
   box-sizing: border-box; /* Incluir padding y borde (si tuviera) en la altura total */
   display: flex; /* Usar flexbox para centrar el texto internamente */
@@ -170,9 +170,8 @@ h2.title-h2 {
   overflow-y: auto; /* Scroll para el contenido del modal */
 }
 
-.modal-content-compras h2 { /* Ajustado de h3 a h2 */
-  /* Estilo para el t\u00EDtulo del modal */
-  color: #34495e;
+.modal-content-compras h2 {
+  color: black;
   margin-bottom: 20px;
   font-size: 1.5rem;
   text-align: center;
@@ -181,11 +180,12 @@ h2.title-h2 {
 
 .modal-content-compras p {
   margin: 5px 0;
-  width: 100%; /* Asegura que los p ocupen todo el ancho */
+  width: 100%;
+  color: black;
 }
 
 .modal-content-compras p strong { /* Estilo para los strong en los p */
-  color: #34495e; /* Puedes ajustar el color si quieres */
+  color: #d857bc; /* Puedes ajustar el color si quieres */
 }
 
 .tablaDetallesCompras { /* Estilo para la tabla dentro del modal de detalles */
@@ -238,7 +238,7 @@ h2.title-h2 {
   margin-top: 20px;
   background-color: #b660a3;
   color: white;
-  padding: 8px 15px;
+  padding: 8px 20px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
