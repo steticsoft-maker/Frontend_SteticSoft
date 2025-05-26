@@ -1,399 +1,364 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import "moment/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave, faTrash, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./Citas.css";
+import Select from "react-select";
+import { useLocation, useNavigate } from "react-router-dom";
+import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
 
-moment.locale("es");
 const localizer = momentLocalizer(moment);
 
-const obtenerEmpleadosDesdeRoles = () => {
-    const rolesGuardados = JSON.parse(localStorage.getItem("roles"));
-    const empleados = rolesGuardados?.filter(
-        (r) => r.rol?.toLowerCase() === "empleado"
-    );
-    return empleados || [];
+const obtenerDiasDeSemanaEntre = (inicio, fin) => {
+  const dias = [];
+  let actual = moment(inicio);
+  while (actual.isBefore(fin)) {
+    if (actual.day() !== 0 && actual.day() !== 6) { // Excluir fines de semana
+      dias.push(moment(actual));
+    }
+    actual.add(1, "day");
+  }
+  return dias;
 };
 
-const obtenerClientes = () => {
-    const guardados = JSON.parse(localStorage.getItem("clientes"));
-    return guardados || [];
-};
-
-const obtenerServiciosDesdeStorage = () => {
-    const guardados = JSON.parse(localStorage.getItem("servicios"));
-    return guardados || [];
-};
-
-const obtenerHorariosDesdeStorage = () => {
-    const guardados = JSON.parse(localStorage.getItem("horarios"));
-    return guardados || [];
-};
-
-function Citas() {
-    const [eventos, setEventos] = useState(() => {
-        const guardados = localStorage.getItem("citas");
-        return guardados ? JSON.parse(guardados) : [];
+const generarHorariosDisponibles = (empleados, horariosEmpleados) => {
+  const eventosDisponibles = [];
+  const hoy = moment().startOf('day');
+  
+  empleados.forEach(empleado => {
+    const horariosEmpleado = horariosEmpleados.filter(h => h.empleadoId === empleado.id);
+    
+    if (!horariosEmpleado.length) return;
+    
+    const dias = obtenerDiasDeSemanaEntre(hoy, hoy.clone().add(2, 'weeks'));
+    
+    dias.forEach(dia => {
+      horariosEmpleado.forEach(horario => {
+        if (horario.dia.toLowerCase() === dia.format("dddd").toLowerCase()) {
+          const horaInicio = moment(`${dia.format("YYYY-MM-DD")}T${horario.horaInicio}`);
+          const horaFin = moment(`${dia.format("YYYY-MM-DD")}T${horario.horaFin}`);
+          
+          let horaActual = moment(horaInicio);
+          while (horaActual.isBefore(horaFin)) {
+            const inicio = moment(horaActual);
+            const fin = moment(horaActual).add(30, "minutes");
+            
+            eventosDisponibles.push({
+              id: `disponible-${empleado.id}-${inicio.format()}`,
+              title: `Disponible - ${empleado.nombre}`,
+              start: inicio.toDate(),
+              end: fin.toDate(),
+              tipo: "disponible",
+              empleadoId: empleado.id,
+              resource: empleado
+            });
+            
+            horaActual.add(30, "minutes");
+          }
+        }
+      });
     });
+  });
+  
+  return eventosDisponibles;
+};
 
-    const [empleados, setEmpleados] = useState([]);
-    const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
-    const [clientes, setClientes] = useState([]);
-    const [horariosEmpleados, setHorariosEmpleados] = useState([]);
-    const [mostrarModal, setMostrarModal] = useState(false);
-    const [citaSeleccionada, setCitaSeleccionada] = useState(null);
-    const [errorModal, setErrorModal] = useState(null); // Nuevo estado para el modal de error
+const Citas = () => {
+  const [eventos, setEventos] = useState([]);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [nuevaCita, setNuevaCita] = useState({ 
+    cliente: "", 
+    empleado: "", 
+    empleadoId: null,
+    servicio: [], 
+    start: null, 
+    end: null 
+  });
+  const [errorModal, setErrorModal] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-    const inicializarNuevaCita = () => ({
-        id: null,
-        start: new Date(),
-        end: new Date(),
-        cliente: "",
-        empleado: "",
-        servicio: "",
-        hora: moment(new Date()).format('HH:mm'),
+  const empleados = JSON.parse(localStorage.getItem("empleados")) || [];
+  const serviciosDisponibles = JSON.parse(localStorage.getItem("servicios")) || [];
+  const horariosEmpleados = JSON.parse(localStorage.getItem("horarios")) || [];
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Memoizar los eventos disponibles para evitar recálculos innecesarios
+  const eventosDisponibles = useMemo(() => (
+    generarHorariosDisponibles(empleados, horariosEmpleados)
+  ), [empleados, horariosEmpleados]);
+
+  // Cargar citas existentes
+  useEffect(() => {
+    setIsLoading(true);
+    try {
+      const citasGuardadas = JSON.parse(localStorage.getItem("citas")) || [];
+      const citasFormateadas = citasGuardadas.map((cita, i) => ({
+        ...cita,
+        id: i,
+        title: `${cita.cliente} - ${cita.servicio?.join(", ")} - ${cita.empleado}`,
+        start: new Date(cita.start),
+        end: new Date(cita.end),
+        tipo: "cita"
+      }));
+      setEventos([...citasFormateadas, ...eventosDisponibles]);
+    } catch (error) {
+      console.error("Error al cargar citas:", error);
+      setErrorModal("Error al cargar las citas existentes");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [eventosDisponibles]);
+
+  useEffect(() => {
+    if (location.state?.clientePreseleccionado) {
+      setNuevaCita(prev => ({ 
+        ...prev, 
+        cliente: location.state.clientePreseleccionado 
+      }));
+    }
+  }, [location.state]);
+
+  const abrirModal = useCallback(({ start, end, resource }) => {
+    const empleadoSeleccionado = empleados.find(e => e.id === resource?.empleadoId);
+    
+    setNuevaCita({ 
+      cliente: "", 
+      empleado: empleadoSeleccionado?.nombre || "",
+      empleadoId: empleadoSeleccionado?.id || null,
+      servicio: [], 
+      start, 
+      end 
     });
+    setMostrarModal(true);
+    setErrorModal("");
+  }, [empleados]);
 
-    const [nuevaCita, setNuevaCita] = useState(inicializarNuevaCita());
-    const [empleadosDisponiblesParaFecha, setEmpleadosDisponiblesParaFecha] = useState([]);
-    const [horaSeleccionada, setHoraSeleccionada] = useState(null); // Para la selección granular de hora
+  const manejarCambio = (e) => {
+    const { name, value } = e.target;
+    setNuevaCita(prev => ({ ...prev, [name]: value }));
+    
+    if (name === "empleado") {
+      const empleadoSeleccionado = empleados.find(e => e.nombre === value);
+      setNuevaCita(prev => ({ 
+        ...prev, 
+        empleadoId: empleadoSeleccionado?.id || null 
+      }));
+    }
+  };
 
-    useEffect(() => {
-        setEmpleados(obtenerEmpleadosDesdeRoles());
-        setServiciosDisponibles(obtenerServiciosDesdeStorage());
-        setClientes(obtenerClientes());
-        setHorariosEmpleados(obtenerHorariosDesdeStorage());
-    }, []);
+  const validarCita = (nuevaCita, citasExistentes) => {
+    if (!nuevaCita.cliente || !nuevaCita.empleado || !nuevaCita.servicio?.length || !nuevaCita.start) {
+      return "Por favor, completa todos los campos.";
+    }
+    
+    // Verificar solapamiento con otras citas
+    const solapamiento = citasExistentes.some(cita => {
+      return (
+        cita.tipo === "cita" &&
+        cita.empleadoId === nuevaCita.empleadoId &&
+        (
+          (new Date(nuevaCita.start) >= new Date(cita.start) && new Date(nuevaCita.start) < new Date(cita.end)) ||
+          (new Date(nuevaCita.end) > new Date(cita.start) && new Date(nuevaCita.end) <= new Date(cita.end)) ||
+          (new Date(nuevaCita.start) <= new Date(cita.start) && new Date(nuevaCita.end) >= new Date(cita.end))
+        )
+      );
+    });
+    
+    if (solapamiento) {
+      return "El empleado ya tiene una cita programada en este horario.";
+    }
+    
+    return null;
+  };
 
-    const actualizarEmpleadosDisponiblesParaDia = useCallback((fecha) => {
-        if (!fecha) {
-            setEmpleadosDisponiblesParaFecha(empleados);
-            return;
+  const guardarCita = () => {
+    setIsLoading(true);
+    try {
+      const citasExistentes = eventos.filter(e => e.tipo === "cita");
+      const errorValidacion = validarCita(nuevaCita, citasExistentes);
+      
+      if (errorValidacion) {
+        setErrorModal(errorValidacion);
+        return;
+      }
+      
+      const nueva = {
+        ...nuevaCita,
+        id: citasExistentes.length,
+        title: `${nuevaCita.cliente} - ${nuevaCita.servicio.join(", ")} - ${nuevaCita.empleado}`,
+        tipo: "cita"
+      };
+      
+      const nuevasCitas = [...citasExistentes, nueva];
+      localStorage.setItem("citas", JSON.stringify(nuevasCitas));
+      setEventos([...nuevasCitas, ...eventosDisponibles]);
+      setMostrarModal(false);
+    } catch (error) {
+      console.error("Error al guardar cita:", error);
+      setErrorModal("Error al guardar la cita");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const eventStyleGetter = (event) => {
+    if (event.tipo === "disponible") {
+      return {
+        style: {
+          backgroundColor: "#e3f2fd",
+          border: "1px dashed #2196f3",
+          cursor: "pointer",
+          opacity: 0.8
         }
-
-        const diaCita = moment(fecha).format('dddd').toLowerCase();
-        const empleadosFiltradosPorDia = empleados.filter(empleado => {
-            return horariosEmpleados.some(horario => {
-                return horario.empleadoId === empleado.id && horario.dia?.toLowerCase() === diaCita;
-            });
-        });
-        setEmpleadosDisponiblesParaFecha(empleadosFiltradosPorDia);
-    }, [empleados, horariosEmpleados]);
-
-    useEffect(() => {
-        actualizarEmpleadosDisponiblesParaDia(nuevaCita.start);
-        // También podrías restablecer la hora seleccionada al cambiar el día
-        setHoraSeleccionada(null);
-        setNuevaCita(prev => ({ ...prev, hora: moment(nuevaCita.start).format('HH:mm'), empleado: '' }));
-    }, [nuevaCita.start, actualizarEmpleadosDisponiblesParaDia]);
-
-    const obtenerHorasDisponiblesParaEmpleado = useCallback((empleadoId, fecha) => {
-        if (!empleadoId || !fecha) {
-            return [];
-        }
-        const diaCita = moment(fecha).format('dddd').toLowerCase();
-        const horariosEmpleado = horariosEmpleados.filter(h => h.empleadoId === empleadoId && h.dia?.toLowerCase() === diaCita);
-        const horasDisponibles = [];
-        horariosEmpleado.forEach(horario => {
-            const inicio = moment(horario.horaInicio, 'HH:mm');
-            const fin = moment(horario.horaFin, 'HH:mm');
-            let horaActual = moment(inicio);
-            while (horaActual.isBefore(fin)) {
-                horasDisponibles.push(horaActual.format('HH:mm'));
-                horaActual.add(30, 'minutes'); // Intervalo de 30 minutos (ajusta si es necesario)
-            }
-        });
-        return horasDisponibles;
-    }, [horariosEmpleados]);
-
-    const esDiaYHoraDisponible = useCallback((fecha, hora) => {
-        if (!fecha || !hora) {
-            return false;
-        }
-        const diaCita = moment(fecha).format('dddd').toLowerCase();
-        const horaCitaMoment = moment(hora, 'HH:mm');
-
-        return empleados.some(empleado => {
-            const horariosEmpleado = horariosEmpleados.filter(h => h.empleadoId === empleado.id);
-            return horariosEmpleado.some(horario => {
-                if (horario.dia && horario.dia.toLowerCase() === diaCita) {
-                    const horaInicio = moment(horario.horaInicio, 'HH:mm');
-                    const horaFin = moment(horario.horaFin, 'HH:mm');
-                    return horaCitaMoment.isSameOrAfter(horaInicio) && horaCitaMoment.isBefore(horaFin);
-                }
-                return false;
-            });
-        });
-    }, [empleados, horariosEmpleados]);
-
-    const manejarSeleccion = ({ start }) => {
-        const ahora = moment();
-        if (moment(start).isBefore(ahora, "day")) {
-            setErrorModal("No puedes agendar en días anteriores.");
-            return;
-        }
-        setNuevaCita({ ...inicializarNuevaCita(), start: new Date(start) });
-        actualizarEmpleadosDisponiblesParaDia(new Date(start));
-        setMostrarModal(true);
+      };
+    }
+    return {
+      style: {
+        backgroundColor: "#64b5f6",
+        color: "white",
+        border: "1px solid #1976d2"
+      }
     };
+  };
 
-    const manejarCambio = (e) => {
-        const { name, value } = e.target;
-        setNuevaCita((prev) => ({ ...prev, [name]: value }));
-        if (name === 'empleado') {
-            setHoraSeleccionada(null); // Resetear la hora al cambiar de empleado
-        }
-    };
-
-    const manejarCambioHora = (e) => {
-        setHoraSeleccionada(e.target.value);
-        setNuevaCita(prev => ({ ...prev, hora: e.target.value }));
-    };
-
-    const guardarCita = () => {
-        const { cliente, empleado, servicio, hora, start } = nuevaCita;
-        if (!cliente || !empleado || !servicio || !hora || !start) {
-            setErrorModal("Por favor, completa todos los campos.");
-            return;
-        }
-
-        const [horaInicio, minutosInicio] = hora.split(':');
-        const fechaInicio = new Date(start);
-        fechaInicio.setHours(parseInt(horaInicio, 10));
-        fechaInicio.setMinutes(parseInt(minutosInicio, 10));
-        const fechaFin = new Date(fechaInicio);
-        fechaFin.setMinutes(fechaFin.getMinutes() + 30); // Duración estimada
-
-        const citaActualizada = {
-            ...nuevaCita,
-            id: nuevaCita.id || Date.now(),
-            start: fechaInicio,
-            end: fechaFin,
-        };
-
-        const nuevasCitas = nuevaCita.id
-            ? eventos.map((e) => (e.id === nuevaCita.id ? citaActualizada : e))
-            : [...eventos, citaActualizada];
-
-        setEventos(nuevasCitas);
-        localStorage.setItem("citas", JSON.stringify(nuevasCitas));
-        cerrarModal();
-    };
-
-    const cerrarModal = () => {
-        setMostrarModal(false);
-        setCitaSeleccionada(null);
-        setNuevaCita(inicializarNuevaCita());
-        setErrorModal(null);
-    };
-
-    const manejarEventoClick = (evento) => {
-        setCitaSeleccionada(evento);
-        setNuevaCita({
-            ...evento,
-            hora: moment(evento.start).format('HH:mm'),
-            servicio: evento.servicio,
-        });
-        setMostrarModal(true);
-    };
-
-    const eliminarCita = () => {
-        const nuevasCitas = eventos.filter((e) => e.id !== nuevaCita.id);
-        setEventos(nuevasCitas);
-        localStorage.setItem("citas", JSON.stringify(nuevasCitas));
-        cerrarModal();
-    };
-
-    const eventPropGetter = useCallback(
-        (event, start, end, isSelected) => {
-            return {
-                className: 'rbc-event', // Mantén tu clase existente
-                style: {},
-            };
-        },
-        []
-    );
-
-    const slotPropGetter = useCallback(
-        (date) => {
-            const ahora = moment();
-            if (moment(date).isBefore(ahora, 'day')) {
-                return {
-                    className: 'rbc-slot-disabled',
-                    style: {
-                        backgroundColor: '#f2f2f2',
-                        cursor: 'not-allowed',
-                    },
-                };
-            }
-            const tieneEmpleadosDisponibles = empleados.some(empleado => {
-                const dia = moment(date).format('dddd').toLowerCase();
-                return horariosEmpleados.some(horario =>
-                    horario.empleadoId === empleado.id && horario.dia?.toLowerCase() === dia
-                );
-            });
-
-            if (tieneEmpleadosDisponibles) {
-                return {
-                    className: 'rbc-slot-available',
-                    style: {
-                        cursor: 'pointer',
-                    },
-                };
-            } else {
-                return {
-                    className: 'rbc-slot-unavailable',
-                    style: {
-                        backgroundColor: '#ffe0b2',
-                        cursor: 'not-allowed',
-                    },
-                };
-            }
-        },
-        [empleados, horariosEmpleados]
-    );
-
-    return (
-        <div className="citas-container">
-            <NavbarAdmin />
-            <div className="citasContent">
-                <h1>Calendario de Citas</h1>
-                <Calendar
-                    localizer={localizer}
-                    events={eventos}
-                    selectable
-                    onSelectSlot={({ start }) => {
-                        const ahora = moment();
-                        if (moment(start).isSameOrAfter(ahora, 'day')) {
-                            manejarSeleccion({ start });
-                        }
-                    }}
-                    onSelectEvent={manejarEventoClick}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: 500 }}
-                    messages={{
-                        next: "Siguiente",
-                        previous: "Anterior",
-                        today: "Hoy",
-                        month: "Mes",
-                        week: "Semana",
-                        day: "Día",
-                        agenda: "Agenda",
-                        date: "Fecha",
-                        time: "Hora",
-                        event: "Evento",
-                        showMore: (total) => `+ Ver más (${total})`,
-                    }}
-                    eventPropGetter={eventPropGetter}
-                    slotPropGetter={slotPropGetter}
-                />
-
-                {mostrarModal && (
-                    <div className="modal-citas">
-                        <div className="modal-content-citas">
-                            <h3>{citaSeleccionada ? "Editar Cita" : "Nueva Cita"}</h3>
-
-                            <label>
-                                Cliente:
-                                <select
-                                    name="cliente"
-                                    value={nuevaCita.cliente}
-                                    onChange={manejarCambio}
-                                >
-                                    <option value="">Seleccione un cliente</option>
-                                    {clientes.map((c) => (
-                                        <option key={c.id} value={c.nombre}>
-                                            {c.nombre}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-
-                            <label>
-                                Servicio:
-                                <input
-                                    type="text"
-                                    name="servicio"
-                                    value={nuevaCita.servicio}
-                                    onChange={manejarCambio}
-                                    list="servicios-lista"
-                                    placeholder="Escribe o selecciona un servicio"
-                                />
-                                <datalist id="servicios-lista">
-                                    {serviciosDisponibles.map((s) => (
-                                        <option key={s.id} value={s.nombre} />
-                                    ))}
-                                </datalist>
-                            </label>
-
-                            <label>
-                                Empleado:
-                                <select
-                                    name="empleado"
-                                    value={nuevaCita.empleado}
-                                    onChange={manejarCambio}
-                                >
-                                    <option value="">Seleccione un empleado</option>
-                                    {empleadosDisponiblesParaFecha.map((e) => (
-                                        <option key={e.id} value={e.nombre}>
-                                            {e.nombre}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-
-                            {nuevaCita.empleado && (
-                                <label>
-                                    Hora:
-                                    <select
-                                        name="hora"
-                                        value={nuevaCita.hora}
-                                        onChange={manejarCambioHora}
-                                    >
-                                        <option value="">Seleccione una hora</option>
-                                        {obtenerHorasDisponiblesParaEmpleado(nuevaCita.empleado, nuevaCita.start).map(hora => (
-                                            <option key={hora} value={hora}>{hora}</option>
-                                        ))}
-                                    </select>
-                                </label>
-                            )}
-
-                            <div className="botonesModalCitas">
-                                <button onClick={guardarCita} className="botonGuardarCita">
-                                    <FontAwesomeIcon icon={faSave} /> Guardar
-                                </button>
-                                {citaSeleccionada && (
-                                    <button onClick={eliminarCita} className="botonEliminarcita">
-                                        <FontAwesomeIcon icon={faTrash} /> Eliminar
-                                    </button>
-                                )}
-                                <button onClick={cerrarModal} className="botonCancelarCita">
-                                    <FontAwesomeIcon icon={faTimes} /> Cancelar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {errorModal && (
-                    <div className="modalServicio">
-                        <div className="modal-Servicio-confirm">
-                            <h3>Error</h3>
-                            <p>{errorModal}</p>
-                            <div className="modalConfirmacionEliminar">
-                                <button className="botonEliminarServicios" onClick={() => setErrorModal(null)}>Cerrar</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+  return (
+    <div className="admin-layout">
+      <NavbarAdmin />
+      
+      <div className="main-content">
+        <div className="contenedor-citas">
+          {isLoading && (
+            <div className="cargando">
+              <div className="spinner"></div>
             </div>
+          )}
+          
+          <Calendar
+            localizer={localizer}
+            events={eventos}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: "calc(100vh - 100px)" }}
+            selectable
+            onSelectEvent={abrirModal}
+            onSelectSlot={abrirModal}
+            eventPropGetter={eventStyleGetter}
+            defaultView="week"
+            min={new Date(0, 0, 0, 8, 0, 0)} // 8:00 AM
+            max={new Date(0, 0, 0, 20, 0, 0)} // 8:00 PM
+            step={30} // Intervalos de 30 minutos
+            timeslots={2} // 2 divisiones por intervalo (15 minutos)
+            messages={{
+              today: "Hoy",
+              previous: "Anterior",
+              next: "Siguiente",
+              month: "Mes",
+              week: "Semana",
+              day: "Día",
+              agenda: "Agenda",
+              date: "Fecha",
+              time: "Hora",
+              event: "Evento",
+              noEventsInRange: "No hay eventos en este rango."
+            }}
+          />
+
+          {mostrarModal && (
+            <div className="modal-citas">
+              <div className="modal-content-citas">
+                <h3>Agregar Cita</h3>
+                <button 
+                  className="cerrar-modal" 
+                  onClick={() => setMostrarModal(false)}
+                >
+                  &times;
+                </button>
+                
+                <div className="form-group">
+                  <label>Cliente:</label>
+                  <input 
+                    type="text" 
+                    name="cliente" 
+                    value={nuevaCita.cliente} 
+                    onChange={manejarCambio}
+                    placeholder="Nombre del cliente"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Empleado:</label>
+                  <select 
+                    name="empleado" 
+                    value={nuevaCita.empleado} 
+                    onChange={manejarCambio}
+                    disabled={!!nuevaCita.empleadoId} // Deshabilitar si ya fue seleccionado por el horario
+                  >
+                    <option value="">Seleccione un empleado</option>
+                    {empleados.map((e) => (
+                      <option key={e.id} value={e.nombre}>{e.nombre}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label>Servicios:</label>
+                  <Select
+                    isMulti
+                    options={serviciosDisponibles.map((s) => ({ 
+                      value: s.nombre, 
+                      label: s.nombre,
+                      duration: s.duracion 
+                    }))}
+                    value={(nuevaCita.servicio || []).map(s => ({ value: s, label: s }))}
+                    onChange={(selectedOptions) => {
+                      const nombres = selectedOptions.map(opt => opt.value);
+                      setNuevaCita(prev => ({ ...prev, servicio: nombres }));
+                      
+                      // Ajustar duración basada en servicios seleccionados
+                      if (selectedOptions.length > 0 && nuevaCita.start) {
+                        const duracionTotal = selectedOptions.reduce((total, opt) => {
+                          const servicio = serviciosDisponibles.find(s => s.nombre === opt.value);
+                          return total + (servicio?.duracion || 30);
+                        }, 0);
+                        
+                        setNuevaCita(prev => ({
+                          ...prev,
+                          end: moment(prev.start).add(duracionTotal, 'minutes').toDate()
+                        }));
+                      }
+                    }}
+                    placeholder="Seleccione servicios..."
+                    closeMenuOnSelect={false}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Fecha y Hora:</label>
+                  <div className="horario-seleccionado">
+                    <strong>Inicio:</strong> {moment(nuevaCita.start).format('LLL')}
+                    <br />
+                    <strong>Fin:</strong> {moment(nuevaCita.end).format('LLL')}
+                  </div>
+                </div>
+                
+                {errorModal && <div className="error-message">{errorModal}</div>}
+                
+                <div className="botonesModalCitas">
+                  <button onClick={guardarCita} disabled={isLoading}>
+                    {isLoading ? "Guardando..." : "Guardar Cita"}
+                  </button>
+                  <button onClick={() => setMostrarModal(false)} disabled={isLoading}>
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-    );
-}
+      </div>
+    </div>
+  );
+};
 
 export default Citas;
