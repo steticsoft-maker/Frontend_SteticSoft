@@ -44,53 +44,87 @@ const Ventas = () => {
 
   const [ventas, setVentas] = useState(() => {
     const storedVentas = localStorage.getItem("ventas");
-    return storedVentas ? JSON.parse(storedVentas) : initialVentas;
+    try {
+      return storedVentas ? JSON.parse(storedVentas) : initialVentas;
+    } catch (e) {
+      console.error("Error parsing ventas from localStorage, using initialVentas:", e);
+      return initialVentas;
+    }
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(3);
+  const [itemsPerPage] = useState(5); // Mostrar 5 ventas por página
   const [busqueda, setBusqueda] = useState("");
 
+  const [showAnularModal, setShowAnularModal] = useState(false);
+  const [idToAnular, setIdToAnular] = useState(null);
+
   useEffect(() => {
-    localStorage.setItem("ventas", JSON.stringify(ventas));
+    try {
+      localStorage.setItem("ventas", JSON.stringify(ventas));
+    } catch (e) {
+      console.error("Error saving ventas to localStorage:", e);
+    }
   }, [ventas]);
 
   useEffect(() => {
     if (location.state && location.state.nuevaVenta) {
       const { nuevaVenta } = location.state;
-      const newId = ventas.length > 0 ? Math.max(...ventas.map((v) => v.id)) + 1 : 1;
-      const ventaConId = { ...nuevaVenta, id: newId, estado: nuevaVenta.estado || "Activa" };
 
-      setVentas((prevVentas) => [...prevVentas, ventaConId]);
-      alert("¡Venta guardada exitosamente!");
+      setVentas((prevVentas) => {
+        const maxId = prevVentas.length > 0 ? Math.max(...prevVentas.map((v) => v.id)) : 0;
+        const newId = maxId + 1;
+
+        const isDuplicate = prevVentas.some(
+          (v) =>
+            v.id === newId ||
+            (v.cliente === nuevaVenta.cliente &&
+              v.fecha === nuevaVenta.fecha &&
+              JSON.stringify(v.items) === JSON.stringify(nuevaVenta.items))
+        );
+
+        if (!isDuplicate) {
+          const ventaConId = { ...nuevaVenta, id: newId, estado: nuevaVenta.estado || "Activa" };
+          return [...prevVentas, ventaConId];
+        }
+        return prevVentas;
+      });
 
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state, navigate, ventas]);
+  }, [location.state, navigate]);
 
-  
   const handleShowDetails = (id) => {
     navigate(`/ventas/${id}/detalle`);
   };
 
   const handleEstadoChange = (id, nuevoEstado) => {
-    const updatedVentas = ventas.map((venta) =>
-      venta.id === id ? { ...venta, estado: nuevoEstado } : venta
+    setVentas((prevVentas) =>
+      prevVentas.map((venta) =>
+        venta.id === id ? { ...venta, estado: nuevoEstado } : venta
+      )
     );
-    setVentas(updatedVentas);
   };
 
-  
   const handlePDF = (id) => {
     navigate(`/ventas/${id}/pdf`);
   };
 
   const handleAnularVenta = (id) => {
-    const updatedVentas = ventas.map((venta) =>
-      venta.id === id ? { ...venta, estado: "Anulada" } : venta
-    );
-    setVentas(updatedVentas);
-    alert("La venta ha sido anulada exitosamente");
+    setIdToAnular(id);
+    setShowAnularModal(true);
+  };
+
+  const confirmAnularVenta = () => {
+    if (idToAnular !== null) {
+      setVentas((prevVentas) =>
+        prevVentas.map((venta) =>
+          venta.id === idToAnular ? { ...venta, estado: "Anulada" } : venta
+        )
+      );
+      setShowAnularModal(false);
+      setIdToAnular(null);
+    }
   };
 
   const filteredVentas = ventas.filter((venta) =>
@@ -167,14 +201,14 @@ const Ventas = () => {
                     <div className="accionesTablaVentas">
                       <button
                         className="botonDetalleVenta"
-                        onClick={() => handleShowDetails(venta.id)} 
+                        onClick={() => handleShowDetails(venta.id)}
                         title="Ver detalles"
                       >
                         <FaEye />
                       </button>
                       <button
                         className="botonPdfVenta"
-                        onClick={() => handlePDF(venta.id)} 
+                        onClick={() => handlePDF(venta.id)}
                         title="Generar PDF"
                       >
                         <FaFilePdf />
@@ -183,6 +217,7 @@ const Ventas = () => {
                         className="botonAnularVenta"
                         onClick={() => handleAnularVenta(venta.id)}
                         title="Anular venta"
+                        disabled={venta.estado === "Anulada"}
                       >
                         <FaBan />
                       </button>
@@ -206,6 +241,30 @@ const Ventas = () => {
           </div>
         </>
       </div>
+
+      {/* Modal de Confirmación de Anulación */}
+      {showAnularModal && (
+        <div className="modal-compras">
+          <div className="modal-content-compras">
+            <h2>Confirmar Anulación</h2>
+            <p>¿Está seguro de que desea **anular** esta venta? Esta acción no se puede deshacer.</p>
+            <div className="modal-compras-buttons-anular">
+              <button
+                className="botonConfirmarAnularCompra"
+                onClick={confirmAnularVenta}
+              >
+                Sí, anular
+              </button>
+              <button
+                className="botonCerrarModalAnularCompra"
+                onClick={() => setShowAnularModal(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

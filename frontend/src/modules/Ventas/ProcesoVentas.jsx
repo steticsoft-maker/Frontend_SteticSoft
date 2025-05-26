@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../components/NavbarAdmin/NavbarAdmin";
-import "./ProcesoVentas.css";
+import "./ProcesoVentas.css"; 
 
 const ProcesoVentas = () => {
-  
   const clientesFalsos = [
     { id: 1, nombre: "Juan Pérez", documento: "123456789", telefono: "3001234567", direccion: "Calle 1" },
     { id: 2, nombre: "María Gómez", documento: "987654321", telefono: "3019876543", direccion: "Carrera 2" },
@@ -13,7 +12,6 @@ const ProcesoVentas = () => {
     { id: 5, nombre: "Carlos Ruiz", documento: "9988776655", telefono: "3049988776", direccion: "Carrera 20" },
   ];
 
-  
   const catalogoProductos = [
     { id: 1, nombre: "Producto A", precio: 10000 },
     { id: 2, nombre: "Producto B", precio: 20000 },
@@ -25,7 +23,6 @@ const ProcesoVentas = () => {
     { id: 8, nombre: "Disco Duro SSD 1TB", precio: 180000 },
   ];
 
-  
   const catalogoServicios = [
     { id: 1, nombre: "Servicio A", precio: 50000 },
     { id: 2, nombre: "Servicio B", precio: 75000 },
@@ -35,7 +32,6 @@ const ProcesoVentas = () => {
     { id: 6, nombre: "Reparación de Hardware", precio: 120000 },
   ];
 
-  
   const [modoCita, setModoCita] = useState("");
   const [mostrarClientes, setMostrarClientes] = useState(false);
   const [datosCliente, setDatosCliente] = useState({ nombre: "", documento: "", telefono: "", direccion: "" });
@@ -48,23 +44,28 @@ const ProcesoVentas = () => {
   const [filtroCliente, setFiltroCliente] = useState("");
 
   
+  const [errorItemsTabla, setErrorItemsTabla] = useState("");
+  const [errorDatosCliente, setErrorDatosCliente] = useState("");
+
+  
+  const [showConfirmSaveModal, setShowConfirmSaveModal] = useState(false);
+
   const seleccionarCliente = (cliente) => {
     setDatosCliente(cliente);
     setMostrarClientes(false);
+    setErrorDatosCliente(""); 
   };
 
-  
   const agregarItemATabla = (item) => {
     const nuevoItem = { ...item, cantidad: 1 };
     setItemsTabla([...itemsTabla, nuevoItem]);
+    setErrorItemsTabla(""); 
   };
 
- 
   const eliminarItemDeTabla = (index) => {
     setItemsTabla(itemsTabla.filter((_, i) => i !== index));
   };
 
-  
   const actualizarCantidad = (index, nuevaCantidad) => {
     const nuevaTabla = itemsTabla.map((item, i) =>
       i === index ? { ...item, cantidad: nuevaCantidad } : item
@@ -72,34 +73,56 @@ const ProcesoVentas = () => {
     setItemsTabla(nuevaTabla);
   };
 
-  
   const subtotal = itemsTabla.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
   const iva = subtotal * 0.19;
   const total = subtotal + iva;
 
+  
   const guardarNuevaVenta = () => {
+    // Limpiar errores previos
+    setErrorItemsTabla("");
+    setErrorDatosCliente("");
+
+    let isValid = true;
+
     if (itemsTabla.length === 0) {
-      alert("Debes agregar al menos un producto o servicio antes de guardar la venta.");
-      return;
+      setErrorItemsTabla("Debes agregar al menos un producto o servicio.");
+      isValid = false;
     }
 
-    if (
-      (modoCita === "directa" && datosCliente.nombre === "") ||
-      (modoCita === "indirecta" &&
-        (datosCliente.nombre === "" ||
-          datosCliente.documento === "" ||
-          datosCliente.telefono === "" ||
-          datosCliente.direccion === ""))
+    if (modoCita === "directa" && datosCliente.nombre === "") {
+        setErrorDatosCliente("Por favor selecciona un cliente existente.");
+        isValid = false;
+    } else if (
+      modoCita === "indirecta" &&
+      (datosCliente.nombre.trim() === "" ||
+        datosCliente.documento.trim() === "" ||
+        datosCliente.telefono.trim() === "" ||
+        datosCliente.direccion.trim() === "")
     ) {
-      alert("Por favor selecciona o completa la información del cliente.");
-      return;
+      setErrorDatosCliente("Por favor completa todos los campos del cliente nuevo.");
+      isValid = false;
+    } else if (modoCita === "") { 
+        setErrorDatosCliente("Por favor selecciona si el cliente es existente o nuevo.");
+        isValid = false;
     }
 
+
+    if (!isValid) {
+      return; 
+    }
+
+    
+    setShowConfirmSaveModal(true);
+  };
+
+  
+  const confirmGuardarVenta = () => {
     const itemsParaVenta = itemsTabla.map(item => ({
-        nombre: item.nombre,
-        cantidad: item.cantidad,
-        precio: item.precio,
-        total: item.precio * item.cantidad
+      nombre: item.nombre,
+      cantidad: item.cantidad,
+      precio: item.precio,
+      total: item.precio * item.cantidad
     }));
 
     const nuevaVenta = {
@@ -117,13 +140,15 @@ const ProcesoVentas = () => {
     
     navigate("/ventas", { state: { nuevaVenta: nuevaVenta } });
 
-   
+    
+    setShowConfirmSaveModal(false);
     setDatosCliente({ nombre: "", documento: "", telefono: "", direccion: "" });
     setItemsTabla([]);
     setModoCita("");
+    setErrorItemsTabla(""); 
+    setErrorDatosCliente(""); 
   };
 
-  
   const productosFiltrados = catalogoProductos.filter(producto =>
     producto.nombre.toLowerCase().includes(filtroProducto.toLowerCase())
   );
@@ -147,17 +172,25 @@ const ProcesoVentas = () => {
               setModoCita("directa");
               setMostrarClientes(true);
               setFiltroCliente("");
+              setErrorDatosCliente("");
             }}
           >
             Cliente existente
           </button>
           <button
             className={`indirecta-button ${modoCita === "indirecta" ? "activo" : ""}`}
-            onClick={() => setModoCita("indirecta")}
+            onClick={() => {
+                setModoCita("indirecta");
+                setDatosCliente({ nombre: "", documento: "", telefono: "", direccion: "" }); 
+                setMostrarClientes(false);
+                setErrorDatosCliente("");
+            }}
           >
             Cliente nuevo
           </button>
         </div>
+        {errorDatosCliente && <p className="error-message">{errorDatosCliente}</p>}
+
 
         {mostrarClientes && (
           <div className="clientes-emergente">
@@ -200,7 +233,10 @@ const ProcesoVentas = () => {
                 type="text"
                 placeholder="Nombre *"
                 value={datosCliente.nombre}
-                onChange={(e) => setDatosCliente({ ...datosCliente, nombre: e.target.value })}
+                onChange={(e) => {
+                    setDatosCliente({ ...datosCliente, nombre: e.target.value });
+                    setErrorDatosCliente("");
+                }}
                 disabled={modoCita !== "indirecta"}
               />
             </div>
@@ -210,7 +246,10 @@ const ProcesoVentas = () => {
                 type="text"
                 placeholder="Documento *"
                 value={datosCliente.documento}
-                onChange={(e) => setDatosCliente({ ...datosCliente, documento: e.target.value })}
+                onChange={(e) => {
+                    setDatosCliente({ ...datosCliente, documento: e.target.value });
+                    setErrorDatosCliente("");
+                }}
                 disabled={modoCita !== "indirecta"}
               />
             </div>
@@ -220,7 +259,10 @@ const ProcesoVentas = () => {
                 type="text"
                 placeholder="Teléfono *"
                 value={datosCliente.telefono}
-                onChange={(e) => setDatosCliente({ ...datosCliente, telefono: e.target.value })}
+                onChange={(e) => {
+                    setDatosCliente({ ...datosCliente, telefono: e.target.value });
+                    setErrorDatosCliente(""); 
+                }}
                 disabled={modoCita !== "indirecta"}
               />
             </div>
@@ -230,7 +272,10 @@ const ProcesoVentas = () => {
                 type="text"
                 placeholder="Dirección *"
                 value={datosCliente.direccion}
-                onChange={(e) => setDatosCliente({ ...datosCliente, direccion: e.target.value })}
+                onChange={(e) => {
+                    setDatosCliente({ ...datosCliente, direccion: e.target.value });
+                    setErrorDatosCliente(""); 
+                }}
                 disabled={modoCita !== "indirecta"}
               />
             </div>
@@ -363,8 +408,9 @@ const ProcesoVentas = () => {
             ))}
           </tbody>
         </table>
+        {errorItemsTabla && <p className="error-message">{errorItemsTabla}</p>} {/* Mensaje de error para ítems */}
 
-       
+
         <div className="resumen-venta">
           <p>
             <strong>Subtotal:</strong> ${subtotal.toFixed(2)}
@@ -377,7 +423,6 @@ const ProcesoVentas = () => {
           </p>
         </div>
 
-        
         <div className="botones-accion">
           <button className="guardar-venta-button" onClick={guardarNuevaVenta}>
             Guardar Venta
@@ -387,6 +432,30 @@ const ProcesoVentas = () => {
           </button>
         </div>
       </div>
+
+      
+      {showConfirmSaveModal && (
+        <div className="modal-compras">
+          <div className="modal-content-compras">
+            <h2>Confirmar Guardar Venta</h2>
+            <p>¿Está seguro de que desea guardar esta venta?</p>
+            <div className="modal-compras-buttons-anular">
+              <button
+                className="botonConfirmarAnularCompra"
+                onClick={confirmGuardarVenta}
+              >
+                Sí, guardar
+              </button>
+              <button
+                className="botonCerrarModalAnularCompra"
+                onClick={() => setShowConfirmSaveModal(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

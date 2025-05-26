@@ -22,7 +22,7 @@
 
 /* Botón para agregar producto */
 .botonAgregarProductoAdministrador {
-  padding: 10px 15px;
+  padding: 10px 15px; 
   background-color: #007bff;
   color: white;
   border: none;
