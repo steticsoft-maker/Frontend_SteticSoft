@@ -1,132 +1,277 @@
 /* Estilos para el formulario */
 .modalHorariosCitas-form-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: grid; /* Usamos grid para una mayor flexibilidad de layout */
+    grid-template-columns: 1fr 1fr; /* Dos columnas para el layout principal */
+    gap: 20px;
+    padding: 20px; /* Asegura un buen padding alrededor del formulario */
+}
+
+/* Contenedor del encargado: ocupará ambas columnas */
+.form-encargado {
+    grid-column: 1 / 3; /* Ocupa las dos columnas del grid principal */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea el contenido a la izquierda */
+    width: 100%; /* Ocupa todo el ancho disponible */
+}
+
+.form-encargado label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+    text-align: left; /* Alinea el label a la izquierda */
+    width: 100%; /* Asegura que la etiqueta ocupe el ancho completo */
+}
+
+.form-encargado select {
+    width: 100%; /* Asegura que el select ocupe el ancho completo de su contenedor */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: black;
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+}
+
+/* Contenedor de las fechas: ocupará ambas columnas y las fechas estarán en línea */
+.form-fechas {
+    grid-column: 1 / 3; /* Ocupa las dos columnas del grid principal */
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    justify-content: space-between; /* Distribuye el espacio entre las fechas */
 }
 
 .form-fechaHorarioCitas {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1; /* Permite que cada fecha ocupe el mismo espacio */
 }
 
 .form-fechaHorarioCitas label {
-  font-weight: bold;
-  color: #555;
+    font-weight: bold;
+    color: #555;
 }
 
-.dia-containerDiasHorarios {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin: 10px 0;
+/* Contenedor principal de los días y horarios */
+.form-dias-horarios-container {
+    grid-column: 1 / 3; /* Ocupa ambas columnas del grid principal */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea el contenido a la izquierda */
+    width: 100%;
 }
 
-.containerAgregarHorarioCitas {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 15px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+.form-dias-horarios-container > label { /* Estilo específico para la etiqueta "Días y Horarios" */
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 10px; /* Espacio debajo de la etiqueta */
 }
 
-.dia-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+/* Grid para la disposición 3x3 de los campos de día/hora */
+.dias-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* ¡Aquí está el 3x3! */
+    gap: 15px; /* Espacio entre cada grupo de día/hora */
+    width: 100%; /* Ocupa todo el ancho de su contenedor */
+    max-height: 400px; /* Altura máxima para scroll si hay muchos días */
+    overflow-y: auto; /* Habilita el scroll vertical */
+    padding-right: 10px; /* Espacio para la barra de scroll */
+    box-sizing: border-box; /* Incluye padding en el cálculo del ancho */
 }
 
-/* Estilos base que se mantienen */
+.dia-fields {
+    display: flex;
+    flex-direction: column; /* Apila los elementos verticalmente dentro de cada celda del grid */
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    width: 100%; /* Asegura que cada campo ocupe el 100% de su celda de grid */
+    box-sizing: border-box; /* Crucial para que padding y borde no desborden */
+}
+
+/* Contenedor interno de los inputs de día/hora */
+.containerAgregarHorarioCitas-inputs {
+    display: flex;
+    gap: 5px; /* Espacio reducido para los elementos de tiempo */
+    align-items: center;
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan si no caben */
+    width: 100%; /* Ocupa el ancho completo de su contenedor */
+}
+
+.containerAgregarHorarioCitas-inputs > div {
+    flex: 1;
+    min-width: 70px; 
+}
+
+.containerAgregarHorarioCitas-inputs select,
+.containerAgregarHorarioCitas-inputs input[type="time"] {
+    width: 100%;
+    padding: 8px; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: black;
+    box-sizing: border-box; 
+    min-width: 0; 
+}
+
+/* Asegura que el texto no se minimice en los selects y inputs */
+.containerAgregarHorarioCitas-inputs select option,
+.containerAgregarHorarioCitas-inputs input[type="time"] {
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.containerAgregarHorarioCitas-inputs > span {
+    margin: 0 2px; 
+    white-space: nowrap;
+}
+
+
+/* Botón para remover día */
+.botonRemoverDia {
+    background-color: #f153cf; 
+    color: white;
+    padding: 6px 10px; 
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: auto;
+    font-size: 0.8em; 
+    transition: background-color 0.3s ease;
+    align-self: center; 
+}
+
+.botonRemoverDia:hover {
+    background-color: #d130b0;
+}
+
+/* Estilo del botón "Agregar otro día" */
+.botonAgregarDia {
+    width: auto;
+    max-width: fit-content; 
+    align-self: center; 
+    margin-top: 15px;
+    padding: 10px 20px; 
+    font-size: 16px;
+    display: flex; 
+    align-items: flex-end;
+    gap: 8px; 
+    background-color: #ac3a93;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.botonAgregarDia:hover {
+    background-color: #fc8de4; 
+}
+
+.botonesAgregarHorarioCitasGuardarCancelar {
+    grid-column: 1 / 3; 
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
 .horarios-container {
-  display: flex;
-  height: 100vh;
+    display: flex;
+    height: 100vh;
 }
 
 .horariosCitasContent {
-  flex: 1;
-  padding: 20px;
-  margin-left: 100px;
+    flex: 1;
+    padding: 20px;
+    margin-left: 100px;
 }
 
 .horariosCitasContent h1 {
-  text-align: center;
-  color: #6d0b58;
-  margin-top: 0;
-  margin-bottom: 20px;
+    text-align: center;
+    color: #6d0b58;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
 
-.barraBusquedaHorarioCitas{
-  padding: 8px 12px;
-  width: 250px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: white;
-  color: #000000;
+.barraBusquedaHorarioCitas {
+    padding: 8px 12px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    color: #000000;
 }
 
 .botonAgregarHorario {
-  background-color: #b660a3;
-  color: black;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    background-color: #b660a3;
+    color: black; 
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .botonAgregarHorario:hover {
-  background-color: #6d0b58;
+    background-color: #6d0b58;
+    color: white; /* Añadido color blanco al hover para visibilidad */
 }
 
 .botonAgregar {
-  background-color: #ac3a93;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 10px;
-  transition: background-color 0.3s ease;
+    background-color: #ac3a93;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s ease;
 }
 
 .botonAgregar:hover {
-  background-color: #fc8de4;
-}
-.botonCerrar {
-  background-color: #f153cf;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 10px;
-  transition: background-color 0.3s ease;
+    background-color: #fc8de4;
 }
 
-.botonCerrarDetalle:hover {
-  background-color: #fc8de4;
+.botonCerrar {
+    background-color: #f153cf;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.botonCerrar:hover { 
+    background-color: #fc8de4;
 }
 
 .tablaHorario {
-  border-collapse: collapse;
-  width: 100%;
-  background: rgb(252, 247, 250);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-collapse: collapse;
+    width: 100%;
+    background: rgb(252, 247, 250);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.tablaHorario th, td {
-  border: 1px solid #e978d0;
-  padding: 8px;
+.tablaHorario th,
+td {
+    border: 1px solid #e978d0;
+    padding: 8px;
 }
 
 .tablaHorario th {
-  background-color: #e978d0;
-  text-align: center;
-  color: #000000;
+    background-color: #e978d0;
+    text-align: center;
+    color: #000000;
 }
 
 /* Fondos de filas pares */
@@ -140,231 +285,207 @@
 }
 
 .dia-horario {
-  margin: 4px 0;
+    margin: 4px 0;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
 }
 
 .switch input {
-  display: none;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50; /* Color verde cuando está activo */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #4CAF50;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    transform: translateX(20px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 20px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+
+
 .modalHorariosCitas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; 
 }
 
 .modal-content-HorariosCitas {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Alineación hacia la izquierda */
-  width: 600px; /* Ampliado para mayor espacio */
-  border-radius: 12px;
-  background: linear-gradient(135deg, #ffffff, #f8f9fa);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-  padding: 25px;
+    display: flex;
+    flex-direction: column;
+    width: 80%; 
+    max-width: 900px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    padding: 25px;
+    box-sizing: border-box;
 }
 
 .modal-content-HorariosCitas h3 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    width: 100%; 
+    text-align: center; 
 }
 
 .modal-content-HorariosCitas input,
 .modal-content-HorariosCitas select {
-  width: 100%;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: black;
+    /* Estas reglas ya están especificadas más arriba para elementos dentro de contenedores específicos */
+    /* Se mantienen aquí como un fallback general, pero las más específicas tienen prioridad */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: black;
+    box-sizing: border-box;
 }
 
 .requiredAsteriscoHorarioCitas {
-  color: red;
-  font-weight: bold;
+    color: red;
+    font-weight: bold;
 }
 
 .errorHorariocitas {
-  color: red;
-  font-size: 0.8rem;
-  margin-top: 2px;
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 2px;
 }
 
-.botonesAgregarHorarioCitasGuardarCancelar {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
 
 .accionesBarraBusqueda-botonAgregar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .modalHorariosCitas-confirm {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  text-align: center;
-  max-width: 400px;
-  margin: 0 auto;
-  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .modalHorariosCitas-confirm h3 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
 }
 
 .modalHorariosCitas-confirm p {
-  margin-bottom: 1.5rem;
-  color: #555;
+    margin-bottom: 1.5rem;
+    color: #555;
 }
 
 .modalHorariosCitas-confirm-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.modalHorariosCitas-form-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+@media (max-width: 900px) {
+    .dias-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .modal-content-HorariosCitas {
+        width: 90%;
+    }
 }
 
-.form-encargado {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
+@media (max-width: 600px) { 
+    .modalHorariosCitas-form-grid,
+    .form-fechas {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
 
-.form-encargado label {
-  font-weight: bold;
-  color: #555;
-  margin-bottom: 5px;
-  width: 80%;
-  text-align: center;
-}
+    .form-encargado,
+    .form-fechas,
+    .form-dias-horarios-container,
+    .botonesAgregarHorarioCitasGuardarCancelar {
+        grid-column: 1 / 2; 
+    }
 
-.form-encargado select {
-  width: 80%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: black;
-}
+    .dias-grid {
+        grid-template-columns: 1fr; 
+    }
 
-.form-fechas {
-  display: flex;
-  gap: 20px;
-  width: 100%;
-}
-
-.form-fechaHorarioCitas {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 50%;
-}
-
-.form-fechaHorarioCitas label {
-  font-weight: bold;
-  color: #555;
-}
-
-.form-dias-horarios-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.dias-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-top: 0 200px;
-  width: 120%; 
-  justify-content: center; 
-}
-
-.dia-fields {
-  display: flex;
-  width: calc(33.33% - 10px);
-}
-
-.dia-fields.col-1 {
-  width: 80%; 
-}
-
-.dia-fields.col-2 {
-  width: calc(50% - 10px);
-}
-
-.dia-fields.col-multiple {
-  width: calc(33.33% - 10px);
-}
-
-.containerAgregarHorarioCitas {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 15px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  width: 100%;
-}
-
-.containerAgregarHorarioCitas-inputs {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.containerAgregarHorarioCitas-inputs > div {
-  flex: 1;
-}
-
-.containerAgregarHorarioCitas-inputs > span {
-  margin: 0 5px;
-}
-
-.botonRemoverDia {
-  margin-left: auto;
-}
-
-.botonAgregarDia {
-  margin-top: 15px;
-  width: 80%; 
-}
-
-.botonesAgregarHorarioCitasGuardarCancelar {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+    .form-fechaHorarioCitas,
+    .form-encargado select,
+    .form-encargado label,
+    .botonAgregarDia {
+        width: 100%; 
+        align-self: stretch;
+    }
 }
