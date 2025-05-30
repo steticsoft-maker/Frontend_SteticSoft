@@ -1,31 +1,31 @@
 // src/features/proveedores/pages/ListaProveedoresPage.jsx
-import React, { useState, useEffect } from 'react';
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
-import ProveedoresTable from '../components/ProveedoresTable';
-import ProveedorFormModal from '../components/ProveedorFormModal';
-import ProveedorDetalleModal from '../components/ProveedorDetalleModal';
-import ConfirmDeleteProveedorModal from '../components/ConfirmDeleteProveedorModal';
-import ValidationModal from '../../../shared/components/common/ValidationModal'; // Reutilizar
+import React, { useState, useEffect } from "react";
+import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
+import ProveedoresTable from "../components/ProveedoresTable";
+import ProveedorFormModal from "../components/ProveedorFormModal";
+import ProveedorDetalleModal from "../components/ProveedorDetalleModal";
+import ConfirmModal from "../../../shared/components/common/ConfirmModal"; // Se importa el modal genérico
+import ValidationModal from "../../../shared/components/common/ValidationModal"; // Reutilizar
 import {
   fetchProveedores,
   saveProveedor,
   deleteProveedorById,
   toggleProveedorEstado,
-} from '../services/proveedoresService';
-import '../css/Proveedores.css';
+} from "../services/proveedoresService";
+import "../css/Proveedores.css";
 
 function ListaProveedoresPage() {
   const [proveedores, setProveedores] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  
+
   const [currentProveedor, setCurrentProveedor] = useState(null);
-  const [formModalType, setFormModalType] = useState('agregar'); // 'agregar' o 'editar'
-  const [validationMessage, setValidationMessage] = useState('');
+  const [formModalType, setFormModalType] = useState("agregar"); // 'agregar' o 'editar'
+  const [validationMessage, setValidationMessage] = useState("");
 
   useEffect(() => {
     setProveedores(fetchProveedores());
@@ -33,11 +33,12 @@ function ListaProveedoresPage() {
 
   const handleOpenModal = (type, proveedor = null) => {
     setCurrentProveedor(proveedor);
-    if (type === 'ver') {
+    if (type === "ver") {
       setIsDetailsModalOpen(true);
-    } else if (type === 'delete') {
+    } else if (type === "delete") {
       setIsConfirmDeleteOpen(true);
-    } else { // 'agregar' o 'editar'
+    } else {
+      // 'agregar' o 'editar'
       setFormModalType(type);
       setIsFormModalOpen(true);
     }
@@ -49,12 +50,16 @@ function ListaProveedoresPage() {
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
     setCurrentProveedor(null);
-    setValidationMessage('');
+    setValidationMessage("");
   };
 
   const handleSave = (proveedorData) => {
     try {
-      const updatedProveedores = saveProveedor(proveedorData, proveedores, currentProveedor?.id);
+      const updatedProveedores = saveProveedor(
+        proveedorData,
+        proveedores,
+        currentProveedor?.id
+      );
       setProveedores(updatedProveedores);
       handleCloseModals();
     } catch (error) {
@@ -65,7 +70,10 @@ function ListaProveedoresPage() {
 
   const handleDelete = () => {
     if (currentProveedor) {
-      const updatedProveedores = deleteProveedorById(currentProveedor.id, proveedores);
+      const updatedProveedores = deleteProveedorById(
+        currentProveedor.id,
+        proveedores
+      );
       setProveedores(updatedProveedores);
       handleCloseModals();
     }
@@ -76,15 +84,22 @@ function ListaProveedoresPage() {
     setProveedores(updatedProveedores);
   };
 
-  const filteredProveedores = proveedores.filter(p => {
-    const displayName = p.tipoDocumento === "Natural" ? p.nombre : p.nombreEmpresa;
-    const documentId = p.tipoDocumento === "Natural" ? p.numeroDocumento : p.nit;
-    return (displayName && displayName.toLowerCase().includes(search.toLowerCase())) ||
-           (documentId && documentId.toLowerCase().includes(search.toLowerCase()));
+  const filteredProveedores = proveedores.filter((p) => {
+    const displayName =
+      p.tipoDocumento === "Natural" ? p.nombre : p.nombreEmpresa;
+    const documentId =
+      p.tipoDocumento === "Natural" ? p.numeroDocumento : p.nit;
+    return (
+      (displayName &&
+        displayName.toLowerCase().includes(search.toLowerCase())) ||
+      (documentId && documentId.toLowerCase().includes(search.toLowerCase()))
+    );
   });
 
   return (
-    <div className="proveedores-container"> {/* Clase principal del CSS */}
+    <div className="proveedores-container">
+      {" "}
+      {/* Clase principal del CSS */}
       <NavbarAdmin />
       <div className="proveedoresContent">
         <h2 className="title-h2-Proveedores">Gestión de Proveedores</h2>
@@ -95,19 +110,21 @@ function ListaProveedoresPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <button className="botonSuperiorAgregarProveedor" onClick={() => handleOpenModal('agregar')}>
+          <button
+            className="botonSuperiorAgregarProveedor"
+            onClick={() => handleOpenModal("agregar")}
+          >
             Agregar Proveedor
           </button>
         </div>
         <ProveedoresTable
           proveedores={filteredProveedores}
-          onView={(prov) => handleOpenModal('ver', prov)}
-          onEdit={(prov) => handleOpenModal('editar', prov)}
-          onDeleteConfirm={(prov) => handleOpenModal('delete', prov)}
+          onView={(prov) => handleOpenModal("ver", prov)}
+          onEdit={(prov) => handleOpenModal("editar", prov)}
+          onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}
           onToggleEstado={handleToggleEstado}
         />
       </div>
-
       <ProveedorFormModal
         isOpen={isFormModalOpen}
         onClose={handleCloseModals}
@@ -120,11 +137,20 @@ function ListaProveedoresPage() {
         onClose={handleCloseModals}
         proveedor={currentProveedor}
       />
-      <ConfirmDeleteProveedorModal
+      <ConfirmModal
         isOpen={isConfirmDeleteOpen}
         onClose={handleCloseModals}
         onConfirm={handleDelete}
-        proveedorName={currentProveedor ? (currentProveedor.tipoDocumento === 'Natural' ? currentProveedor.nombre : currentProveedor.nombreEmpresa) : ''}
+        title="Confirmar Eliminación"
+        message={`¿Estás seguro de que deseas eliminar al proveedor "${
+          currentProveedor
+            ? currentProveedor.tipoDocumento === "Natural"
+              ? currentProveedor.nombre
+              : currentProveedor.nombreEmpresa
+            : ""
+        }"?`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
       />
       <ValidationModal
         isOpen={isValidationModalOpen}

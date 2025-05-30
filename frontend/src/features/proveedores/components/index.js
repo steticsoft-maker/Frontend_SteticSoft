@@ -3,4 +3,3 @@ export { default as ProveedoresTable } from "./ProveedoresTable";
 export { default as ProveedorForm } from "./ProveedorForm";
 export { default as ProveedorFormModal } from "./ProveedorFormModal";
 export { default as ProveedorDetalleModal } from "./ProveedorDetalleModal";
-export { default as ConfirmDeleteProveedorModal } from "./ConfirmDeleteProveedorModal";

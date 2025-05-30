@@ -1,31 +1,31 @@
 // src/features/clientes/pages/ListaClientesPage.jsx
-import React, { useState, useEffect } from 'react';
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
-import ClientesTable from '../components/ClientesTable';
-import ClienteFormModal from '../components/ClienteFormModal';
-import ClienteDetalleModal from '../components/ClienteDetalleModal';
-import ConfirmDeleteClienteModal from '../components/ConfirmDeleteClienteModal';
-import ValidationModal from '../../../shared/components/common/ValidationModal'; // Asumiendo genérico
+import React, { useState, useEffect } from "react";
+import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
+import ClientesTable from "../components/ClientesTable";
+import ClienteFormModal from "../components/ClienteFormModal";
+import ClienteDetalleModal from "../components/ClienteDetalleModal";
+import ConfirmModal from "../../../shared/components/common/ConfirmModal"; // Se importa el modal genérico
+import ValidationModal from "../../../shared/components/common/ValidationModal"; // Ya estaba usando el genérico
 import {
   fetchClientes,
   saveCliente,
   deleteClienteById,
   toggleClienteEstado,
-} from '../services/clientesService';
-import '../css/Clientes.css';
+} from "../services/clientesService";
+import "../css/Clientes.css";
 
 function ListaClientesPage() {
   const [clientes, setClientes] = useState([]);
-  const [busqueda, setBusqueda] = useState('');
-  
+  const [busqueda, setBusqueda] = useState("");
+
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  
+
   const [currentCliente, setCurrentCliente] = useState(null);
-  const [formModalType, setFormModalType] = useState('create');
-  const [validationMessage, setValidationMessage] = useState('');
+  const [formModalType, setFormModalType] = useState("create");
+  const [validationMessage, setValidationMessage] = useState("");
 
   useEffect(() => {
     setClientes(fetchClientes());
@@ -33,11 +33,12 @@ function ListaClientesPage() {
 
   const handleOpenModal = (type, cliente = null) => {
     setCurrentCliente(cliente);
-    if (type === 'details') {
+    if (type === "details") {
       setIsDetailsModalOpen(true);
-    } else if (type === 'delete') {
+    } else if (type === "delete") {
       setIsConfirmDeleteOpen(true);
-    } else { // 'create' or 'edit'
+    } else {
+      // 'create' or 'edit'
       setFormModalType(type);
       setIsFormModalOpen(true);
     }
@@ -49,12 +50,16 @@ function ListaClientesPage() {
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
     setCurrentCliente(null);
-    setValidationMessage('');
+    setValidationMessage("");
   };
 
   const handleSave = (clienteData) => {
     try {
-      const updatedClientes = saveCliente(clienteData, clientes, currentCliente?.id);
+      const updatedClientes = saveCliente(
+        clienteData,
+        clientes,
+        currentCliente?.id
+      );
       setClientes(updatedClientes);
       handleCloseModals();
     } catch (error) {
@@ -76,16 +81,24 @@ function ListaClientesPage() {
     setClientes(updatedClientes);
   };
 
-  const filteredClientes = clientes.filter(c =>
-    `${c.nombre} ${c.apellido}`.toLowerCase().includes(busqueda.toLowerCase()) ||
-    c.numeroDocumento.toLowerCase().includes(busqueda.toLowerCase()) ||
-    c.email.toLowerCase().includes(busqueda.toLowerCase())
+  const filteredClientes = clientes.filter(
+    (c) =>
+      `${c.nombre} ${c.apellido}`
+        .toLowerCase()
+        .includes(busqueda.toLowerCase()) ||
+      (c.numeroDocumento &&
+        c.numeroDocumento.toLowerCase().includes(busqueda.toLowerCase())) || // Añadida verificación para numeroDocumento
+      (c.email && c.email.toLowerCase().includes(busqueda.toLowerCase())) // Añadida verificación para email
   );
 
   return (
-    <div className="clientes-page-container"> {/* Nueva clase para la página */}
+    <div className="clientes-page-container">
+      {" "}
+      {/* Nueva clase para la página */}
       <NavbarAdmin />
-      <div className="main-content-clientes"> {/* Mantener clase original para el área de contenido */}
+      <div className="main-content-clientes">
+        {" "}
+        {/* Mantener clase original para el área de contenido */}
         <h1>Gestión de Clientes</h1>
         <div className="containerAgregarbuscarClientes">
           <input
@@ -95,19 +108,21 @@ function ListaClientesPage() {
             onChange={(e) => setBusqueda(e.target.value)}
             className="barraBusquedaClientesInput"
           />
-          <button className="buttonAgregarcliente" onClick={() => handleOpenModal('create')}>
+          <button
+            className="buttonAgregarcliente"
+            onClick={() => handleOpenModal("create")}
+          >
             Agregar Cliente
           </button>
         </div>
         <ClientesTable
           clientes={filteredClientes}
-          onView={(cliente) => handleOpenModal('details', cliente)}
-          onEdit={(cliente) => handleOpenModal('edit', cliente)}
-          onDeleteConfirm={(cliente) => handleOpenModal('delete', cliente)}
+          onView={(cliente) => handleOpenModal("details", cliente)}
+          onEdit={(cliente) => handleOpenModal("edit", cliente)}
+          onDeleteConfirm={(cliente) => handleOpenModal("delete", cliente)}
           onToggleEstado={handleToggleEstado}
         />
       </div>
-
       <ClienteFormModal
         isOpen={isFormModalOpen}
         onClose={handleCloseModals}
@@ -120,16 +135,23 @@ function ListaClientesPage() {
         onClose={handleCloseModals}
         cliente={currentCliente}
       />
-      <ConfirmDeleteClienteModal
+      <ConfirmModal
         isOpen={isConfirmDeleteOpen}
         onClose={handleCloseModals}
         onConfirm={handleDelete}
-        clienteName={currentCliente ? `${currentCliente.nombre} ${currentCliente.apellido}` : ''}
+        title="Confirmar Eliminación de Cliente"
+        message={`¿Estás seguro de que deseas eliminar al cliente "${
+          currentCliente
+            ? `${currentCliente.nombre} ${currentCliente.apellido}`
+            : ""
+        }"?`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
       />
-       <ValidationModal // Usar el genérico si se movió a shared
+      <ValidationModal
         isOpen={isValidationModalOpen}
         onClose={handleCloseModals}
-        title="Error de Validación"
+        title="Aviso de Clientes" // Título ajustado para el contexto
         message={validationMessage}
       />
     </div>

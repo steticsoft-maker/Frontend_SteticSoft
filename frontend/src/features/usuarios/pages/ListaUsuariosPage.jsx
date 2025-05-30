@@ -4,8 +4,8 @@ import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import UsuariosTable from '../components/UsuariosTable';
 import UsuarioFormModal from '../components/UsuarioFormModal';
 import UsuarioDetalleModal from '../components/UsuarioDetalleModal';
-import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
-import ValidationModal from '../components/ValidationModal'; // Necesitas crear este
+import ConfirmModal from '../../../shared/components/common/ConfirmModal'; 
+import ValidationModal from '../../../shared/components/common/ValidationModal';
 import {
   fetchUsuarios,
   saveUsuario,
@@ -26,7 +26,6 @@ function ListaUsuariosPage() {
   const [currentUsuario, setCurrentUsuario] = useState(null);
   const [formModalType, setFormModalType] = useState('create'); // 'create' o 'edit'
   const [validationMessage, setValidationMessage] = useState('');
-
 
   useEffect(() => {
     setUsuarios(fetchUsuarios());
@@ -137,23 +136,28 @@ function ListaUsuariosPage() {
         onSubmit={handleSave}
         initialData={currentUsuario}
         modalType={formModalType}
-        allUsers={usuarios} // Pasar todos los usuarios para la lógica de getAvailableRoles
+        allUsers={usuarios} 
       />
       <UsuarioDetalleModal
         isOpen={isDetailsModalOpen}
         onClose={handleCloseModals}
         usuario={currentUsuario}
       />
-      <ConfirmDeleteModal
+      <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={handleCloseModals}
         onConfirm={handleDelete}
-        userName={currentUsuario?.nombre}
+        title="Confirmar Eliminación de Usuario"
+        message={`¿Estás seguro de que deseas eliminar al usuario "${currentUsuario?.nombre || ''}"?`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
         onClose={handleCloseModals}
+        title="Aviso de Usuarios" 
         message={validationMessage}
+        // buttonText="Entendido" // Es el valor por defecto, opcional
       />
     </div>
   );

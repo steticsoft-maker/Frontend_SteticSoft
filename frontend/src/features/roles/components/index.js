@@ -3,5 +3,4 @@ export { default as RolesTable } from "./RolesTable";
 export { default as RolForm } from "./RolForm";
 export { default as RolFormModal } from "./RolFormModal";
 export { default as PermisosSelector } from "./PermisosSelector";
-export { default as ConfirmDeleteRolModal } from "./ConfirmDeleteRolModal";
 export { default as RolDetailsModal } from "./RolDetailsModal";
