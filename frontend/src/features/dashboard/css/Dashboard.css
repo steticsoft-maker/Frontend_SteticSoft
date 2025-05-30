@@ -13,7 +13,7 @@
   /* Área principal de contenido del dashboard, al lado del NavbarAdmin */
   .dashboard-main-content { /* Renombrado desde .dashboard-main para evitar conflictos */
     flex: 1; /* Toma el espacio restante */
-    /* margin-left: 250px; /* Descomentar y ajustar si NavbarAdmin es fixed y tiene ancho fijo */
+    margin-left: 280px; /* Descomentar y ajustar si NavbarAdmin es fixed y tiene ancho fijo
     padding: 25px; /* Reducido un poco el padding */
     overflow-y: auto; /* Permite scroll si el contenido es muy largo */
     box-sizing: border-box;
