@@ -1,4 +1,4 @@
-/* src/shared/components/common/ConfirmModal.css (o tu CSS global de modales) */
+/* src/shared/components/common/ConfirmModal.css */
 /* Clases base para el overlay y contenido del modal (puedes tenerlas ya) */
 .shared-modal-overlay {
     position: fixed;
@@ -11,7 +11,6 @@
     align-items: center;
     justify-content: center;
     z-index: 1050;
-    /* Asegura que esté por encima de otros elementos */
     padding: 15px;
     box-sizing: border-box;
 }
@@ -23,7 +22,6 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 450px;
-    /* Ajusta según necesidad */
     text-align: center;
     box-sizing: border-box;
 }
@@ -45,7 +43,6 @@
 .shared-modal-actions {
     display: flex;
     justify-content: center;
-    /* O space-around, space-between */
     gap: 15px;
     margin-top: 10px;
 }
@@ -58,28 +55,26 @@
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
     font-weight: 500;
+    color: var(--color-text-light, #fff); /* Color de texto blanco por defecto para estos botones */
 }
 
 .shared-modal-button:active {
     transform: translateY(1px);
 }
 
-/* Botón de confirmación (generalmente más destacado o color de "acción") */
+/* Botón de confirmación genérico (NO para eliminar, sino para confirmaciones generales si se usa así) */
 .shared-modal-button-confirm {
-    background-color: var(--color-primary, #eb0985);
-    /* O un color de éxito/acción */
-    color: var(--color-text-light, #fff);
+    background-color: var(--color-primary, #eb0985); 
 }
 
 .shared-modal-button-confirm:hover {
-    background-color: #c90772;
-    /* Un tono más oscuro de --color-primary */
+    background-color: #c90772; /* Un tono más oscuro de --color-primary */
 }
 
-/* Botón de cancelación (generalmente secundario) */
+/* Botón de cancelación GENÉRICO */
 .shared-modal-button-cancel {
     background-color: var(--color-background-button-secondary, #ecf0f1);
-    color: var(--color-text-dark, #333);
+    color: var(--color-text-dark, #333); /* Texto oscuro para fondo claro */
     border: 1px solid var(--color-border-light, #ccc);
 }
 
@@ -87,12 +82,25 @@
     background-color: #dcdcdc;
 }
 
-/* Específico para ConfirmModal si necesitas diferenciarlo más */
+/* === ESTILOS ESPECÍFICOS PARA CUANDO SE USA PARA CONFIRMAR ELIMINACIÓN === */
+/* Estos estilos se aplicarán porque ConfirmModal.jsx añade la clase 'confirm-modal-content' */
+
 .confirm-modal-content .shared-modal-button-confirm {
-    background-color: var(--color-danger, #e74c3c);
-    /* Rojo para acciones peligrosas */
+    background-color: #b660a3; /* Color morado de tus botones "Eliminar" individuales */
+    color: white; /* Asegurar texto blanco */
 }
 
 .confirm-modal-content .shared-modal-button-confirm:hover {
-    background-color: #c0392b;
-    /* Rojo más oscuro */ }
+    background-color: #6d0b58; /* Hover más oscuro para el morado */
+}
+
+/* Estilo para el botón Cancelar DENTRO del modal de confirmación de eliminación */
+.confirm-modal-content .shared-modal-button-cancel {
+    background-color: #fc8de4; /* Color rosa de tus botones "Cancelar" en modales de eliminación individuales */
+    color: white; /* Asegurar texto blanco */
+    border: none; /* Quitar borde si no lo deseas para este estilo */
+}
+
+.confirm-modal-content .shared-modal-button-cancel:hover {
+    background-color: #b660a3; /* Hover morado (o el que prefieras, podría ser un rosa más oscuro) */
+}
