@@ -36,8 +36,6 @@ const menuItemsConfig = [
     subItems: [
       { label: 'Compras', path: '/compras' },
       { label: 'Proveedores', path: '/proveedores' },
-      { label: 'Insumos', path: '/insumos' },
-      { label: 'Categoría de Insumos', path: '/CategoriaInsumos' },
       { label: 'Abastecimiento', path: '/abastecimiento' },
     ],
   },
