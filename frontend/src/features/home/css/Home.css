@@ -1,0 +1,64 @@
+/* src/features/home/css/Home.css */
+/* El estilo para 'body' ya debería estar en src/index.css */
+
+.home-page-container {
+    /* Antes .home-container */
+    padding: 20px;
+    margin-top: 80px;
+    /* Ajustar según altura del Navbar + espacio */
+    /* Considerar max-width y margin: auto si quieres centrar el contenido principal */
+}
+
+.home-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.home-header h1 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    /* Usar variable */
+}
+
+.home-header p {
+    font-size: 1.2rem;
+    color: var(--color-text-dark);
+    /* Usar variable, o --color-text-muted */
+}
+
+.home-features-content {
+    /* Antes .home-content */
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.home-card {
+    /* Este estilo se puede quedar aquí si InfoCard.jsx no tiene su propio CSS */
+    background-color: #e9d5e2;
+    /* Considera var(--color-background-card-light) o similar */
+    border-radius: 10px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 30%;
+    min-width: 250px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.home-card h2 {
+    color: var(--color-primary);
+    /* Usar variable */
+    margin-bottom: 10px;
+}
+
+.home-card p {
+    color: var(--color-text-dark);
+    /* Usar variable */ }

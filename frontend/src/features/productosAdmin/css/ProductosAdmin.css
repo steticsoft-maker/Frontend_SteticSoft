@@ -1,0 +1,273 @@
+/* Contenedor general */
+.productos-container {
+    display: flex;
+    height: 100vh;
+    width: 1400px;
+}
+
+/* Contenido principal */
+.productoAdministradorContent {
+    flex: 1;
+    padding: 20px;
+    margin-left: 200px;
+}
+
+/* Barra de búsqueda */
+.inputBarraBusqueda {
+    flex-grow: 1;
+    /* Permite que el input ocupe el espacio restante */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Botón para agregar producto */
+.botonAgregarProductoAdministrador {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.botonAgregarProductoAdministrador:hover {
+    background-color: #45a049;
+}
+
+/* Tabla de Productos */
+.tablaProductosAdministrador {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+
+}
+
+.tablaProductosAdministrador th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.tablaProductosAdministrador td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Switch para cambiar el estado */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+input:checked+.slider {
+    background-color: #4caf50;
+}
+
+input:checked+.slider:before {
+    transform: translateX(16px);
+}
+
+/* Botones de acciones */
+.iconBotonProductoAdministrador {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #3498db;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.iconBotonProductoAdministrador:hover {
+    background-color: #2980b9;
+}
+
+.EliminarProductoAdministradorIcon {
+    background-color: #e74c3c;
+}
+
+.EliminarProductoAdministradorIcon:hover {
+    background-color: #992c20;
+}
+
+/* Paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+.pagination button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination button:hover:enabled {
+    background-color: #45a049;
+}
+
+/* Modal */
+.modalProductosAdministrador {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-content-ProductosAdministrador {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 800px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content-ProductosAdministrador .form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.modal-content-ProductosAdministrador input[type="text"],
+.modal-content-ProductosAdministrador input[type="number"],
+.modal-content-ProductosAdministrador input[type="file"],
+.modal-content-ProductosAdministrador textarea,
+.modal-content-ProductosAdministrador select {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cerrarModalVerDetallesProductoAdministrador {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100px;
+}
+
+.cerrarModalVerDetallesProductoAdministrador:hover {
+    background-color: #c0392b;
+}
+
+/* Menú desplegable de categorías */
+select[name="categoria"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #34495e;
+    cursor: pointer;
+}
+
+select[name="categoria"]:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Estilo para subir foto */
+input[type="file"] {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    background-color: #f1f1f1;
+}
+
+/* Vista previa de imagen */
+img {
+    margin-top: 10px;
+    max-width: 100px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.search-add-container {
+    display: flex;
+    justify-content: space-between;
+    /* Para espaciar el input y el botón */
+    align-items: center;
+    /* Para alinearlos verticalmente */
+    margin-bottom: 20px;
+    /* Espacio debajo del contenedor */
+    gap: 15px;
+    /* Espacio entre los elementos */
+}

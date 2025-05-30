@@ -1,0 +1,111 @@
+.servicios-page {
+    padding: 60px;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    /* Usa el 100% de la altura visible */
+    overflow-y: auto;
+    /* Agrega scroll vertical si es necesario */
+}
+
+.servicios-title {
+    font-size: 3rem;
+    margin-top: 180px;
+    margin-bottom: 40px;
+    color: #eb0985;
+}
+
+.servicios-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.servicios-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    text-align: center;
+    width: 280px;
+    transition: transform 0.3s ease;
+}
+
+.servicios-card:hover {
+    transform: scale(1.05);
+}
+
+.servicios-image {
+    width: 100px;
+    height: 300px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+
+.cart-icon {
+    position: fixed;
+    top: 100px;
+    right: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.cart-count {
+    background-color: #eb0985;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 8px;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
+.cart-modal {
+    position: fixed;
+    top: 20%;
+    right: 20px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.botonAgregarServicio {
+    background-color: #b660a3;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.botonAgregarServicio:hover {
+    background-color: #ac3a93;
+}

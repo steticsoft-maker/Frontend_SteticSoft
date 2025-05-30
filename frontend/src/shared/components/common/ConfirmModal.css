@@ -1,0 +1,98 @@
+/* src/shared/components/common/ConfirmModal.css (o tu CSS global de modales) */
+/* Clases base para el overlay y contenido del modal (puedes tenerlas ya) */
+.shared-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    /* Asegura que esté por encima de otros elementos */
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.shared-modal-content {
+    background-color: var(--color-background-light, #fff);
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 450px;
+    /* Ajusta según necesidad */
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.shared-modal-title {
+    font-size: 1.4rem;
+    color: var(--color-text-dark, #333);
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.shared-modal-message {
+    font-size: 1rem;
+    color: var(--color-text-medium, #555);
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.shared-modal-actions {
+    display: flex;
+    justify-content: center;
+    /* O space-around, space-between */
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.shared-modal-button {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-weight: 500;
+}
+
+.shared-modal-button:active {
+    transform: translateY(1px);
+}
+
+/* Botón de confirmación (generalmente más destacado o color de "acción") */
+.shared-modal-button-confirm {
+    background-color: var(--color-primary, #eb0985);
+    /* O un color de éxito/acción */
+    color: var(--color-text-light, #fff);
+}
+
+.shared-modal-button-confirm:hover {
+    background-color: #c90772;
+    /* Un tono más oscuro de --color-primary */
+}
+
+/* Botón de cancelación (generalmente secundario) */
+.shared-modal-button-cancel {
+    background-color: var(--color-background-button-secondary, #ecf0f1);
+    color: var(--color-text-dark, #333);
+    border: 1px solid var(--color-border-light, #ccc);
+}
+
+.shared-modal-button-cancel:hover {
+    background-color: #dcdcdc;
+}
+
+/* Específico para ConfirmModal si necesitas diferenciarlo más */
+.confirm-modal-content .shared-modal-button-confirm {
+    background-color: var(--color-danger, #e74c3c);
+    /* Rojo para acciones peligrosas */
+}
+
+.confirm-modal-content .shared-modal-button-confirm:hover {
+    background-color: #c0392b;
+    /* Rojo más oscuro */ }

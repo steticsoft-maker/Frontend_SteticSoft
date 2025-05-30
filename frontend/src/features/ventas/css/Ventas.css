@@ -1,0 +1,389 @@
+.ventas-container {
+    display: flex;
+    height: 100vh;
+    width: 1710%;
+    max-width: 1710px;
+    margin: 20px auto;
+    border-radius: 8px;
+}
+
+.ventasContent {
+    flex: 1;
+    padding: 30px;
+    margin-left: 45px;
+    border-radius: 8px;
+    overflow-y: auto;
+}
+
+.ventasContent h1 {
+    text-align: center;
+    color: #6d0b58;
+    margin-bottom: 20px;
+}
+
+.barraBotonContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.barraBusquedaVenta {
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    flex-grow: 1;
+}
+
+.barraBusquedaVenta:focus {
+    outline: none;
+    border-color: #fa47f1e0;
+}
+
+.botonAgregarVenta {
+    padding: 22px 26px;
+    font-size: 1rem;
+    background-color: #b660a3;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    height: 40px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin: 30px 20px;
+}
+
+.botonAgregarVenta:hover {
+    background-color: #6d0b58;
+}
+
+.ventas-table {
+    width: 100%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    box-sizing: border-box;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ventas-table th {
+    background-color: #e978d0;
+    color: black;
+    padding: 14px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    border: 1px solid #e978d0;
+}
+
+.ventas-table td {
+    text-align: left;
+    padding: 14px;
+    border: 1px solid #e978d0;
+    color: black;
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
+.ventas-table tbody tr:nth-child(even) {
+    background-color: #f8eaf5;
+}
+
+.ventas-table tbody tr:hover {
+    background-color: #f3d9ec;
+}
+
+.paginacionVenta {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+.paginacionVenta button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    background-color: #b660a3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.paginacionVenta button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.paginacionVenta button:hover:enabled {
+    background-color: #d180bf;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #b660a3;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #b660a3;
+}
+
+input:checked+.slider:before {
+    transform: translateX(16px);
+}
+
+.accionesTablaVentas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.accionesTablaVentas button {
+    padding: 6px 9px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.botonDetalleVenta {
+    background-color: #fc8de4;
+}
+
+.botonDetalleVenta:hover {
+    background-color: #b660a3;
+}
+
+.botonPdfVenta {
+    background-color: #fc8de4;
+}
+
+.botonPdfVenta:hover {
+    background-color: #b660a3;
+}
+
+.botonAnularVenta {
+    background-color: #b660a3 !important;
+}
+
+.botonAnularVenta:hover {
+    background-color: #6d0b58 !important;
+}
+
+.modal-ventas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content-ventas {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    text-align: left;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-content-ventas h2 {
+    color: #6d0b58;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-align: center;
+    width: 100%;
+}
+
+.modal-content-ventas p {
+    margin-bottom: 10px;
+    text-align: left;
+    color: #000000;
+}
+
+.modal-content-ventas strong {
+    font-weight: bold;
+    color: #6d0b58;
+}
+
+.tablaDetallesVentas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tablaDetallesVentas th {
+    background-color: #e978d0;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    padding: 14px;
+    font-size: 1rem;
+    border: 1px solid #e978d0;
+}
+
+.tablaDetallesVentas td {
+    border: 1px solid #e978d0;
+    text-align: left;
+    padding: 14px;
+    vertical-align: middle;
+    font-size: 1rem;
+    color: black;
+}
+
+.tablaDetallesVentas tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tablaDetallesVentas tr:hover {
+    background-color: #f1f1f1;
+}
+
+.botonCerrarDetallesVenta {
+    background-color: #b660a3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.botonCerrarDetallesVenta:hover {
+    background-color: #6d0b58;
+}
+
+.modal-content-ventas iframe {
+    margin-top: 20px;
+    width: 100%;
+    height: 500px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-ventas-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.botonCerrarModalPDF {
+    background-color: #b660a3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.botonCerrarModalPDF:hover {
+    background-color: #6d0b58;
+}
+
+.estado-select {
+    padding: 5px;
+    border: 1px solid #c287b5;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.estado-en-proceso {
+    background-color: #e68bd2 !important;
+    color: black;
+}
+
+.estado-activa {
+    background-color: #b660a3 !important;
+    color: white;
+}
+
+.estado-inactiva {
+    background-color: #e7b0db !important;
+    color: black;
+}
+
+.estado-anulada {
+    background-color: #f153cf !important;
+    color: white;
+}

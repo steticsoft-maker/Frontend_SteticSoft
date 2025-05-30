@@ -1,0 +1,229 @@
+.Categoria-container {
+    display: flex;
+    height: 100vh;
+    width: 1400px;
+  }
+  
+  .Categoria-content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 100px;
+  }
+  
+  .Categoria-content h1 {
+    text-align: center;
+    color: #6d0b58;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  
+  .BusquedaBotonCategoria input {
+    padding: 8px 12px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    color: #000000;
+  }
+  
+  .botonAgregarCategoria {
+    background-color: #b660a3;
+    color: black;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .botonAgregarCategoria:hover {
+    background-color: #6d0b58;
+  }
+  
+  .tablaCategoria {
+    border-collapse: collapse;
+    width: 100%;
+    background: rgb(252, 247, 250);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tablaCategoria th,
+  .tablaCategoria td {
+    border: 1px solid #e978d0;
+    padding: 8px;
+    text-align: center;
+    color: #000000;
+  }
+  
+  .tablaCategoria th {
+    background-color: #e978d0;
+  }
+  
+  /* Fondos de filas pares */
+  .tablaCategoria tbody tr:nth-child(even) {
+      background-color: #f8eaf5;
+  }
+  
+  /* Fondo al pasar el mouse */
+  .tablaCategoria tbody tr:hover {
+      background-color: #f3d9ec;
+  }
+  
+  .switch input {
+    display: none;
+  }
+  
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+  }
+  
+  .modal-Categoria {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content-Categoria {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alineación hacia la izquierda */
+    width: 600px; /* Ampliado para mayor espacio */
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    padding: 25px;
+  }
+  
+  .modal-content-Categoria h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .modal-content-Categoria input,
+  .modal-content-Categoria textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #e978d0;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .modal-content-Categoria label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .requiredCategoria {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: -5px;
+    margin-bottom: 8px;
+  }
+  
+  .ContainerBotonAgregarCategoria {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .campoAgregarCategoria{
+    background-color: white;
+    color: #000000;
+  }
+  
+  .modal-Categoria-confirm {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal-Categoria-confirm h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .modal-Categoria-confirm p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .modal-Categoria-confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .botonVerDetallesCategoria {
+    background-color: #ac3a93;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 10px;
+  }
+  
+  .botonVerDetallesCategoria:hover {
+    background-color: #fc8de4;
+  }
+  
+  .botonEditarCategoria {
+    background-color: #ac3a93;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 10px;
+  }
+  
+  .botonEditarCategoria:hover {
+    background-color: #fc8de4;
+  }
+  
+  .botonEliminarCategoria {
+    background-color: #f153cf;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 10px;
+  }
+  
+  .botonEliminarCategoria:hover {
+    background-color: #fc8de4;
+    margin: 10px;
+  }
+  
+  
+  .asteriscoCampoObligatorioCategoria{
+    width: 150px;
+  }
+  

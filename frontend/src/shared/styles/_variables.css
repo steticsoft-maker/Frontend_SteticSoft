@@ -1,0 +1,28 @@
+/* src/shared/styles/_variables.css */
+:root {
+    /* Paleta SteticSoft (Ejemplos - ajusta a tus colores reales) */
+    --color-primary: #eb0985;
+    /* Rosa principal de SteticSoft */
+    --color-secondary: #ff7f50;
+    /* Coral cálido de botones */
+    --color-admin-primary: #fc8de4;
+    /* Rosa de NavbarAdmin */
+    --color-admin-hover: #b660a3;
+    /* Hover de NavbarAdmin */
+    --color-text-dark: #333333;
+    --color-text-light: #ffffff;
+    --color-background-light: #ffffff;
+    --color-background-warm: #fff5e6;
+    /* Fondo cálido de Home */
+    --color-background-admin-sidebar: #fc8de4;
+    /* Degradado de NavbarAdmin */
+    --color-background-admin-content: #f5f5f5;
+
+    /* Fuentes */
+    --font-family-sans-serif: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --font-family-roboto: 'Roboto', sans-serif;
+    /* Si usas Roboto */
+
+    /* Tamaños base */
+    --font-size-base: 16px;
+    --line-height-base: 1.5; }
