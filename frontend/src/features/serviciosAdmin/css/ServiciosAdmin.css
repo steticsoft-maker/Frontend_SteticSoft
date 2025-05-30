@@ -1,0 +1,244 @@
+.servicios-container {
+    display: flex;
+    height: 100vh;
+    width: 1400px;
+}
+
+.servicios-content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 100px;
+}
+
+.tituloServicios {
+    margin-bottom: 15px;
+    color: #000000;
+}
+
+.BarraBusquedaServicio input {
+    padding: 8px 12px;
+    width: 250px;
+    border: 1px solid #c287b5;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #000000;
+}
+
+.botonAgregarServicio {
+    background-color: #b660a3;
+    color: black;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.botonAgregarServicio:hover {
+    background-color: #6d0b58;
+}
+
+.botonVerDetallesServicios {
+    background-color: #fc8de4;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.botonVerDetallesServicios:hover {
+    background-color: #d66abf;
+}
+
+.botonEditarServicios {
+    background-color: #fc8de4;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.botonEditarServicios:hover {
+    background-color: #d66abf;
+}
+
+.botonEliminarServicios {
+    background-color: #b660a3;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.botonEliminarServicios:hover {
+    background-color: #6d0b58;
+}
+
+.tablaServicio {
+    background: rgb(252, 247, 250);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.input {
+    background: white;
+    color: black;
+}
+
+.thServicios,
+td {
+    border: 1px solid #e978d0;
+    padding: 8px;
+    text-align: center;
+}
+
+.thServicios {
+    background-color: #e978d0;
+    color: black;
+}
+
+/* Fondos de filas pares */
+.tablaServicio tbody tr:nth-child(even) {
+    background-color: #f8eaf5;
+}
+
+/* Fondo al pasar el mouse */
+.tablaServicio tbody tr:hover {
+    background-color: #f3d9ec;
+}
+
+.switch input {
+    display: none;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+}
+
+.modalServicio {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content-Servicio {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Alineación hacia la izquierda */
+    width: 600px;
+    /* Ampliado para mayor espacio */
+    border-radius: 12px;
+    background: white;
+    padding: 25px;
+}
+
+.modal-content-Servicio h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.modal-content-Servicio input,
+.modal-content-Servicio textarea,
+.modal-content-Servicio select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #e978d0;
+    border-radius: 5px;
+    background-color: white;
+    margin-bottom: 10px;
+}
+
+.modal-content-Servicio label {
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.requiredServicio {
+    color: red;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: -5px;
+    margin-bottom: 8px;
+}
+
+.barraBusqueda-BotonSuperiorAgregarServicio {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.modal-Servicio-confirm p {
+    margin-bottom: 1.5rem;
+}
+
+.modalConfirmacionEliminar {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.asteriscoCamposServicio {
+    width: 150px;
+}
+
+.servicio-imagen {
+    border-radius: 4px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-Servicio-form-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.CamposAgregarServicio {
+    grid-column: span 2;
+}
+
+.tituloServicios {
+    text-align: center;
+    color: #6d0b58;
+    margin-top: 0;
+    margin-bottom: 20px; }

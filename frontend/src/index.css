@@ -1,38 +1,42 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+/* src/index.css */
+@import './shared/styles/_variables.css';
+
+html {
+  box-sizing: border-box;
+  font-size: var(--font-size-base);
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-roboto, var(--font-family-sans-serif));
+  /* Prioriza Roboto si está definido */
+  line-height: var(--line-height-base);
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
+  background-color: var(--color-background-light);
+  /* O --color-background-warm si es el default */
+  color: var(--color-text-dark);
+  min-height: 100vh;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Estilos base para enlaces y botones (puedes ajustarlos) */
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: var(--color-primary);
+  text-decoration: none;
 }
+
 a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  text-decoration: underline;
+  color: var(--color-secondary);
 }
 
 button {
@@ -42,27 +46,12 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: border-color 0.25s, background-color 0.25s;
+  /* background-color: var(--color-primary); */
+  /* Ejemplo */
+  /* color: var(--color-text-light); */
+  /* Ejemplo */
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+/* Definir estilos de botón más específicos en componentes comunes o features */

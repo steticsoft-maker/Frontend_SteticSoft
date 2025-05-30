@@ -1,0 +1,86 @@
+/* src/shared/components/layout/Navbar.css */
+/* Asegúrate de que _variables.css esté importado en src/index.css o un global.css */
+
+.navbar {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Considera var(--color-background-light-translucent) si lo defines */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1200px;
+    /* Añadido para mejor control en pantallas muy anchas */
+    padding: 10px 20px;
+    z-index: 1000;
+    /* Asegurar que esté por encima */
+    box-sizing: border-box;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    /* Variable CSS */
+    text-decoration: none;
+}
+
+.navbar-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    /* Reducido un poco el gap para más flexibilidad */
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-link {
+    color: var(--color-text-dark);
+    /* Variable CSS */
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-link:hover {
+    color: var(--color-secondary);
+    /* Variable CSS */
+}
+
+.navbar-user {
+    font-size: 1rem;
+    /* Ajustado para consistencia */
+    color: var(--color-text-dark);
+    /* Variable CSS */
+    margin-right: 10px;
+    /* Espacio antes del botón logout */
+}
+
+.logout-button {
+    background-color: var(--color-secondary);
+    /* Variable CSS */
+    color: var(--color-text-light);
+    /* Variable CSS */
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    /* Ligeramente más pequeño para diferenciarlo de links principales */
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #d2691e;
+    /* Considera var(--color-secondary-dark) o similar */ }

@@ -1,0 +1,16 @@
+/* src/shared/components/common/ValidationModal.css */
+/* Importa o usa las clases base de .shared-modal-overlay, .shared-modal-content, etc. */
+
+.validation-modal-content .shared-modal-title {
+    color: var(--color-info, #3498db);
+    /* Un color azul para información, o usa el de --color-primary */
+}
+
+.validation-modal-content .shared-modal-button-primary {
+    background-color: var(--color-primary, #eb0985);
+    color: var(--color-text-light, #fff);
+}
+
+.validation-modal-content .shared-modal-button-primary:hover {
+    background-color: #c90772;
+    /* Un tono más oscuro de --color-primary */ }

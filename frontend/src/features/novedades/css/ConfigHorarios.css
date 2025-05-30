@@ -1,0 +1,393 @@
+/* src/features/novedades/css/ConfigHorarios.css */
+/* Asegúrate de que _variables.css esté importado globalmente */
+
+.novedades-page-container { /* Antes .horarios-container */
+    display: flex;
+    height: 100vh; /* O min-height: 100vh; si el contenido puede crecer */
+    background-color: var(--color-background-admin-content, #f5f5f5);
+    font-family: var(--font-family-roboto, var(--font-family-sans-serif));
+  }
+  
+  .novedades-content { /* Antes .horariosCitasContent */
+    flex: 1;
+    padding: 25px;
+    margin-left: 250px; /* Ajustar según el ancho de NavbarAdmin si es fijo */
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+  
+  .novedades-content h1 {
+    text-align: center;
+    color: var(--color-primary-darker, #6d0b58);
+    margin-top: 0;
+    margin-bottom: 25px;
+  }
+  
+  .novedades-actions-bar { /* Antes .accionesBarraBusqueda-botonAgregar */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .novedades-search-bar { /* Antes .barraBusquedaHorarioCitas */
+    padding: 10px 14px;
+    width: 280px; /* O flex-grow: 1; si quieres que ocupe más espacio */
+    border: 1px solid var(--color-border-light, #ccc);
+    border-radius: 8px;
+    background-color: var(--color-background-light, #fff);
+    color: var(--color-text-dark, #000);
+    font-size: 0.95rem;
+  }
+  
+  .novedades-add-button { /* Antes .botonAgregarHorario */
+    background-color: var(--color-admin-hover, #b660a3);
+    color: var(--color-text-light, black);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .novedades-add-button:hover {
+    background-color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-text-light, white);
+  }
+  
+  /* Tabla de Horarios */
+  .novedades-table-horarios { /* Antes .tablaHorario */
+    border-collapse: collapse;
+    width: 100%;
+    background: var(--color-background-light, rgb(252, 247, 250));
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Para que el border-radius afecte a la tabla */
+  }
+  
+  .novedades-table-horarios th,
+  .novedades-table-horarios td {
+    border: 1px solid var(--color-admin-primary-border, #e978d0);
+    padding: 12px 10px; /* Ajustar padding */
+    text-align: center;
+  }
+  
+  .novedades-table-horarios th {
+    background-color: var(--color-admin-primary-lighter, #e978d0);
+    color: var(--color-text-dark, #000);
+    font-weight: bold;
+  }
+  
+  .novedades-table-horarios tbody tr:nth-child(even) {
+    background-color: var(--color-table-row-even, #f8eaf5);
+  }
+  
+  .novedades-table-horarios tbody tr:hover {
+    background-color: var(--color-table-row-hover, #f3d9ec);
+  }
+  
+  .novedades-dia-horario-item { /* Antes .dia-horario */
+    margin: 4px 0;
+    font-size: 0.9rem;
+  }
+  
+  .novedades-actions td button { /* Estilos para botones de acción en tabla */
+      margin: 0 5px;
+  }
+  
+  /* Modal para Novedades/Horarios */
+  .novedades-modal-overlay { /* Antes .modalHorariosCitas */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Ligeramente más oscuro para mejor contraste */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050; /* Asegurar que esté por encima */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .novedades-modal-content { /* Antes .modal-content-HorariosCitas */
+    display: flex;
+    flex-direction: column;
+    width: 90%; 
+    max-width: 800px; /* Ajustado para el formulario de horarios */
+    border-radius: 12px;
+    background: var(--color-background-light, #fff);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    padding: 25px 30px; /* Más padding */
+    box-sizing: border-box;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .novedades-modal-content h3 {
+    font-size: 1.6rem; /* Más grande */
+    font-weight: bold;
+    margin-bottom: 20px; /* Más espacio */
+    color: var(--color-primary-darker, #2c3e50);
+    width: 100%; 
+    text-align: center; 
+  }
+  
+  /* Estilos del Formulario de Horarios (dentro del modal) */
+  .novedades-form-grid { /* Antes .modalHorariosCitas-form-grid */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 25px; /* Más gap */
+    padding: 10px 0; /* Padding vertical */
+  }
+  
+  .novedades-form-group { /* Nueva clase genérica para cada grupo de label+input */
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+  }
+  .novedades-form-group label,
+  .form-encargado label,
+  .form-fechas label,
+  .form-dias-horarios-container > label {
+    font-weight: bold;
+    color: var(--color-text-medium, #555); /* Variable para texto de label */
+    margin-bottom: 3px;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  
+  .form-encargado {
+    grid-column: 1 / -1; /* Ocupa todas las columnas */
+  }
+  
+  .form-encargado select,
+  .form-fechaHorarioCitas input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border-light, #ccc);
+    border-radius: 6px;
+    background-color: var(--color-background-input, white);
+    color: var(--color-text-dark, black);
+    box-sizing: border-box;
+    font-size: 0.95rem;
+  }
+  
+  .form-fechas {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .form-fechaHorarioCitas {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+  }
+  
+  .form-dias-horarios-container {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .dias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Grid responsivo */
+    gap: 15px;
+    width: 100%;
+    max-height: 300px; /* Ajustar altura */
+    overflow-y: auto;
+    padding: 10px; /* Padding interno para el scroll */
+    border: 1px solid var(--color-border-light, #eee);
+    border-radius: 6px;
+    background-color: var(--color-background-section-light, #f9f9f9);
+  }
+  
+  .dia-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid var(--color-border-medium, #ddd); /* Borde más visible */
+    border-radius: 8px;
+    background-color: var(--color-background-light, #fff);
+  }
+  
+  .containerAgregarHorarioCitas-inputs {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+  .containerAgregarHorarioCitas-inputs > div {
+    flex: 1;
+    min-width: 90px; /* Ancho mínimo para inputs de tiempo/día */
+  }
+  
+  .containerAgregarHorarioCitas-inputs select,
+  .containerAgregarHorarioCitas-inputs input[type="time"] {
+    width: 100%;
+    padding: 8px; 
+    border: 1px solid var(--color-border-light, #ccc);
+    border-radius: 4px;
+    background-color: var(--color-background-input, white);
+    color: var(--color-text-dark, black);
+    box-sizing: border-box; 
+    font-size: 0.9rem;
+  }
+  
+  .containerAgregarHorarioCitas-inputs > span { /* Para el "a" entre horas */
+    margin: 0 3px; 
+    white-space: nowrap;
+    color: var(--color-text-medium);
+  }
+  
+  .botonRemoverDia { /* Mismo estilo que botones de acción pequeños */
+    background-color: var(--color-danger, #f153cf); 
+    color: var(--color-text-light, white);
+    padding: 6px 10px; 
+    border: none;
+    border-radius: 6px; /* Más redondeado */
+    cursor: pointer;
+    font-size: 0.8em; 
+    transition: background-color 0.3s ease;
+    align-self: center; 
+    margin-left: auto; /* Para alinearlo a la derecha dentro del flex */
+  }
+  
+  .botonRemoverDia:hover {
+    background-color: var(--color-danger-dark, #d130b0);
+  }
+  
+  .botonAgregarDia {
+    align-self: center; 
+    margin-top: 15px;
+    padding: 10px 20px; 
+    font-size: 0.95rem; /* Ajustado */
+    display: inline-flex; /* Para alinear ícono y texto */
+    align-items: center;
+    gap: 8px; 
+    background-color: var(--color-success, #ac3a93); /* Verde para agregar */
+    color: var(--color-text-light, white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .botonAgregarDia:hover {
+    background-color: var(--color-success-dark, #8a2d74); /* Verde más oscuro */
+  }
+  
+  .botonesAgregarHorarioCitasGuardarCancelar {
+    grid-column: 1 / -1; 
+    display: flex;
+    justify-content: flex-end; /* Alinea botones a la derecha */
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 15px; /* Espacio arriba de la línea */
+    border-top: 1px solid var(--color-border-light, #eee); /* Línea divisoria */
+  }
+  
+  /* Usar clases genéricas de botón si ya las tienes en shared/styles o global.css */
+  .botonesAgregarHorarioCitasGuardarCancelar .botonAgregar { /* Asumiendo que es para Guardar */
+    background-color: var(--color-admin-action-confirm, #ac3a93); /* O --color-success */
+  }
+  .botonesAgregarHorarioCitasGuardarCancelar .botonAgregar:hover {
+    background-color: var(--color-admin-action-confirm-hover, #fc8de4); /* O --color-success-dark */
+  }
+  
+  .botonesAgregarHorarioCitasGuardarCancelar .botonCerrar { /* Asumiendo que es para Cancelar */
+    background-color: var(--color-button-secondary-bg, #f153cf); /* O --color-secondary-action */
+    color: var(--color-button-secondary-text, white);
+  }
+  .botonesAgregarHorarioCitasGuardarCancelar .botonCerrar:hover { 
+    background-color: var(--color-button-secondary-bg-hover, #d1b1ca);
+  }
+  
+  /* Estilos para validación de errores */
+  .requiredAsteriscoHorarioCitas { /* Antes .requiredAsteriscoHorarioCitas */
+    color: var(--color-danger, red);
+  }
+  .errorHorariocitas { /* Antes .errorHorariocitas */
+    color: var(--color-danger, red);
+    font-size: 0.8rem;
+    margin-top: 3px;
+    display: block; /* Para que ocupe su propia línea */
+  }
+  
+  /* Estilos para modales de confirmación (si usas uno genérico de shared, estos serían para el contenido específico) */
+  .novedades-modal-confirm { /* Antes .modalHorariosCitas-confirm */
+      background: var(--color-background-light, white);
+      padding: 25px 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 450px; /* Ancho ajustado */
+      margin: 0 auto;
+      box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  .novedades-modal-confirm h3 {
+      font-size: 1.4rem;
+      color: var(--color-primary-darker);
+      margin-bottom: 15px;
+  }
+  .novedades-modal-confirm p {
+      margin-bottom: 20px;
+      color: var(--color-text-dark);
+  }
+  .novedades-modal-confirm-buttons { /* Antes .modalHorariosCitas-confirm-buttons */
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+  }
+  
+  
+  /* Media Queries (adaptadas de Horarios.css) */
+  @media (max-width: 900px) {
+      .dias-grid {
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ajuste para 2 columnas en tablets */
+      }
+      .novedades-modal-content {
+          width: 95%;
+          max-width: 700px; /* Permitir más ancho en tablet */
+      }
+  }
+  
+  @media (max-width: 600px) { 
+      .novedades-form-grid,
+      .form-fechas {
+          grid-template-columns: 1fr; /* Una columna en móviles */
+          flex-direction: column;
+      }
+      .dias-grid {
+          grid-template-columns: 1fr; /* Una columna para los días */
+      }
+      .novedades-modal-content {
+          padding: 20px;
+      }
+      .novedades-content h1 {
+          font-size: 1.5rem;
+      }
+      .containerAgregarHorarioCitas-inputs {
+          flex-direction: column; /* Apilar inputs de día/hora en móviles */
+          align-items: stretch;
+      }
+      .containerAgregarHorarioCitas-inputs > div {
+          min-width: 100%; /* Ocupar todo el ancho */
+      }
+      .botonRemoverDia {
+          align-self: flex-end; /* Alinear a la derecha */
+          margin-top: 5px;
+      }
+  }
