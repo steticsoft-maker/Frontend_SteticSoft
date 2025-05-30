@@ -25,12 +25,12 @@ const UsuariosTable = ({
       <tbody>
         {usuarios.map((usuario) => (
           <tr key={usuario.id}>
-            <td>{usuario.tipoDocumento}</td>
-            <td>{usuario.documento}</td>
-            <td>{usuario.nombre}</td>
-            <td>{usuario.email}</td>
-            <td>{usuario.telefono}</td>
-            <td>
+            <td data-label="Tipo Doc.:">{usuario.tipoDocumento}</td>
+            <td data-label="# Documento:">{usuario.documento}</td>
+            <td data-label="Nombre:">{usuario.nombre}</td>
+            <td data-label="Email:">{usuario.email}</td>
+            <td data-label="Teléfono:">{usuario.telefono}</td>
+            <td data-label="Estado (Anulado):">
               {usuario.rol !== "Administrador" ? (
                 <label className="switch">
                   <input
@@ -44,7 +44,7 @@ const UsuariosTable = ({
                 <span>Activo</span> // Admin siempre activo y no anulable
               )}
             </td>
-            <td>
+            <td data-label="Acciones:">
               <div className="usuarios-table-iconos">
                 <button
                   className="usuarios-table-button"

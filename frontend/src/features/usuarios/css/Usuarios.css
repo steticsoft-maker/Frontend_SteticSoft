@@ -1,3 +1,4 @@
+/* src/features/usuarios/css/Usuarios.css */
 /* Contenedor general */
 .usuarios-container {
     display: flex;
@@ -25,7 +26,7 @@
     flex-direction: column;
     align-items: center;
     /* Centra horizontalmente */
-    justify-content: unset;
+    justify-content: unset; 
     /* Alinea al inicio verticalmente */
 }
 
@@ -162,96 +163,61 @@
 }
 
 /* Colores específicos para botones de acción en la tabla */
-/* Mapeo a colores de Ventas: Ver/Editar -> Light Pink/Purple, Eliminar -> Red */
 .usuarios-table-button:nth-child(1) {
-    /* Ver Detalles */
     background-color: #fc8de4;
-    /* Color de botón Detalle/PDF de Ventas.css */
 }
-
 .usuarios-table-button:nth-child(1):hover {
     background-color: #d66abf;
-    /* Color hover de botón Detalle/PDF de Ventas.css */
 }
-
 .usuarios-table-button:nth-child(2) {
-    /* Editar */
     background-color: #fc8de4;
-    /* Usar el mismo color que Ver */
 }
-
 .usuarios-table-button:nth-child(2):hover {
     background-color: #d66abf;
-    /* Usar el mismo color hover que Ver */
 }
-
 .usuarios-table-button-delete {
-    /* Eliminar (se mantiene rojo) */
     background-color: #b660a3;
 }
-
 .usuarios-table-button-delete:hover {
     background-color: #c0392b;
 }
 
-/* Estilo para el switch (se mantiene verde/gris estándar) */
+/* Estilo para el switch */
 .switch {
     position: relative;
     display: inline-block;
     width: 40px;
     height: 24px;
 }
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
+.switch input { opacity: 0; width: 0; height: 0; }
 .slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     background-color: #ccc;
     transition: .4s;
     border-radius: 34px;
 }
-
 .slider:before {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
+    height: 18px; width: 18px;
+    left: 3px; bottom: 3px;
     background-color: white;
     transition: .4s;
     border-radius: 50%;
 }
+input:checked+.slider { background-color: #2ecc71; }
+input:checked+.slider:before { transform: translateX(16px); }
 
-input:checked+.slider {
-    background-color: #2ecc71;
-    /* Verde para activo */
-}
-
-input:checked+.slider:before {
-    transform: translateX(16px);
-}
-
-/* Estilos de los Modales */
-
-/* Capa de fondo oscuro para cualquier modal (se mantiene) */
-.usuarios-modalOverlay {
+/* Estilos de los Modales (sin cambios, ya estaban bien) */
+.usuarios-modalOverlay { /* ...tus estilos existentes... */ 
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Fondo oscuro de Ventas.css */
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -260,18 +226,12 @@ input:checked+.slider:before {
     padding: 20px;
     box-sizing: border-box;
 }
-
-/* Contenedor del contenido del modal (base) */
-.usuarios-modalContent {
+.usuarios-modalContent { /* ...tus estilos existentes... */ 
     background-color: white;
     padding: 20px;
-    /* Padding de modal de Ventas.css */
     border-radius: 10px;
-    /* Bordes redondeados de modal de Ventas.css */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Sombra de modal de Ventas.css */
     max-width: 500px;
-    /* Ancho de modal de Ventas.css */
     width: 100%;
     margin: auto;
     max-height: 90vh;
@@ -279,72 +239,18 @@ input:checked+.slider:before {
     position: relative;
     box-sizing: border-box;
 }
-
-/* Estilos específicos para el contenido del modal de Detalles */
-.usuarios-modalContent-details {
-    max-width: 500px;
-    /* Mismo ancho que el base */
-}
-
-.usuarios-modalContent-details h2 {
-    text-align: center;
-    color: #6d0b58;
-    /* Color de título de Ventas.css */
-    margin-top: 0;
-    margin-bottom: 20px;
-}
-
-.usuarios-modalContent-details p {
-    margin-bottom: 10px;
-    line-height: 1.6;
-    color: #333;
-    /* Color de texto de Ventas.css */
-}
-
-.usuarios-modalContent-details strong {
-    color: #6d0b58;
-    /* Color de título de Ventas.css */
-    margin-right: 5px;
-}
-
-/* Estilos específicos para el contenido del modal de Formulario (Crear/Editar) */
-.usuarios-modalContent-form {
-    max-width: 500px;
-    /* Mismo ancho que el base */
-}
-
-.usuarios-modalContent-form h2 {
-    text-align: center;
-    color: #6d0b58;
-    /* Color de título de Ventas.css */
-    margin-top: 0;
-    margin-bottom: 20px;
-}
-
-.usuarios-modalContent-form form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.usuarios-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.usuarios-form-label {
-    font-weight: 600;
-    color: #6d0b58;
-    /* Color de título de Ventas.css */
-    font-size: 1rem;
-}
-
-.usuarios-form-input,
-.usuarios-form-select {
+.usuarios-modalContent-details { max-width: 500px; }
+.usuarios-modalContent-details h2 { text-align: center; color: #6d0b58; margin-top: 0; margin-bottom: 20px; }
+.usuarios-modalContent-details p { margin-bottom: 10px; line-height: 1.6; color: #333; }
+.usuarios-modalContent-details strong { color: #6d0b58; margin-right: 5px; }
+.usuarios-modalContent-form { max-width: 500px; }
+.usuarios-modalContent-form h2 { text-align: center; color: #6d0b58; margin-top: 0; margin-bottom: 20px; }
+.usuarios-modalContent-form form { display: flex; flex-direction: column; gap: 15px; }
+.usuarios-form-group { display: flex; flex-direction: column; gap: 8px; }
+.usuarios-form-label { font-weight: 600; color: #6d0b58; font-size: 1rem; }
+.usuarios-form-input, .usuarios-form-select {
     padding: 10px 12px;
     border: 1px solid #c287b5;
-    /* Borde basado en Ventas.css estado-select */
     border-radius: 5px;
     font-size: 1rem;
     color: #333;
@@ -352,145 +258,40 @@ input:checked+.slider:before {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
 }
-
-.usuarios-form-input:focus,
-.usuarios-form-select:focus {
+.usuarios-form-input:focus, .usuarios-form-select:focus {
     border-color: #b660a3;
-    /* Color de botón Agregar Venta */
     box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
-    /* Sombra basada en el color */
     outline: none;
 }
-
-.usuarios-form-select {
-    cursor: pointer;
+.usuarios-form-select { cursor: pointer; }
+.usuarios-modalContent-confirm { max-width: 400px; margin: auto; text-align: center; }
+.usuarios-modalContent-confirm h3 { text-align: center; color: #e74c3c; margin-top: 0; margin-bottom: 15px; }
+.usuarios-modalContent-confirm p { margin-bottom: 20px; line-height: 1.6; color: #333; }
+.usuarios-modalContent-confirm strong { color: #6d0b58; }
+.usuarios-modalContent-validation { max-width: 400px; margin: auto; text-align: center; }
+.usuarios-modalContent-validation h3 { text-align: center; color: #e68bd2; margin-top: 0; margin-bottom: 15px; }
+.usuarios-modalContent-validation p { margin-bottom: 20px; line-height: 1.6; color: #333; }
+.usuarios-form-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }
+.usuarios-form-buttonGuardar, .usuarios-form-buttonCancelar, .usuarios-modalButton-cerrar {
+    padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
+    font-size: 1rem; transition: background-color 0.3s ease;
+    flex-grow: 1; text-align: center;
 }
+.usuarios-form-actions .usuarios-form-buttonGuardar { background-color: #b660a3; color: white; }
+.usuarios-form-actions .usuarios-form-buttonGuardar:hover { background-color: #6d0b58; }
+.usuarios-form-actions .usuarios-form-buttonCancelar { background-color: #95a5a6; color: white; }
+.usuarios-form-actions .usuarios-form-buttonCancelar:hover { background-color: #7f8c8d; }
+.usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar { background-color: #e74c3c; }
+.usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar:hover { background-color: #c0392b; }
+.usuarios-modalButton-cerrar { background-color: #b660a3; color: white; display: block; width: 100%; margin-top: 20px; }
+.usuarios-modalButton-cerrar:hover { background-color: #6d0b58; }
 
-/* Estilos específicos para el contenido del modal de Confirmación */
-.usuarios-modalContent-confirm {
-    max-width: 400px;
-    margin: auto;
-    text-align: center;
-}
 
-.usuarios-modalContent-confirm h3 {
-    text-align: center;
-    color: #e74c3c;
-    /* Se mantiene rojo para confirmación */
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
-.usuarios-modalContent-confirm p {
-    margin-bottom: 20px;
-    line-height: 1.6;
-    color: #333;
-    /* Color de texto de Ventas.css */
-}
-
-.usuarios-modalContent-confirm strong {
-    color: #6d0b58;
-    /* Color de título de Ventas.css */
-}
-
-/* Estilos específicos para el contenido del modal de Validación (mapeado a un tono rosado claro) */
-.usuarios-modalContent-validation {
-    max-width: 400px;
-    margin: auto;
-    text-align: center;
-}
-
-.usuarios-modalContent-validation h3 {
-    text-align: center;
-    color: #e68bd2;
-    /* Color de estado 'en proceso' de Ventas.css */
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
-.usuarios-modalContent-validation p {
-    margin-bottom: 20px;
-    line-height: 1.6;
-    color: #333;
-    /* Color de texto de Ventas.css */
-}
-
-/* Contenedor de botones de acción en formularios/modales */
-.usuarios-form-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
-
-/* Estilos base para botones de formulario/modal */
-.usuarios-form-buttonGuardar,
-.usuarios-form-buttonCancelar,
-.usuarios-modalButton-cerrar {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-    flex-grow: 1;
-    text-align: center;
-}
-
-/* Colores específicos para botones de formulario/modal */
-.usuarios-form-actions .usuarios-form-buttonGuardar {
-    background-color: #b660a3;
-    /* Color de botón Agregar Venta */
-    color: white;
-}
-
-.usuarios-form-actions .usuarios-form-buttonGuardar:hover {
-    background-color: #6d0b58;
-    /* Color de título de Ventas.css para hover */
-}
-
-.usuarios-form-actions .usuarios-form-buttonCancelar {
-    background-color: #95a5a6;
-    /* Se mantiene gris estándar */
-    color: white;
-}
-
-.usuarios-form-actions .usuarios-form-buttonCancelar:hover {
-    background-color: #7f8c8d;
-    /* Se mantiene gris oscuro estándar */
-}
-
-/* Delete confirmation button color (se mantiene rojo) */
-.usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar {
-    background-color: #e74c3c;
-}
-
-.usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar:hover {
-    background-color: #c0392b;
-}
-
-/* Close button style (para detalles y validación) */
-.usuarios-modalButton-cerrar {
-    background-color: #b660a3;
-    /* Color de botón Agregar Venta */
-    color: white;
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-}
-
-.usuarios-modalButton-cerrar:hover {
-    background-color: #6d0b58;
-    /* Color de título de Ventas.css para hover */
-}
-
-/* Responsive Styles (se mantienen) */
+/* Responsive Styles */
 @media (max-width: 768px) {
     .usuarios-content {
         padding: 15px;
-        margin-left: 0;
+        margin-left: 0; /* El NavbarAdmin podría ocultarse o volverse superior en móviles */
         max-width: 100%;
     }
 
@@ -500,93 +301,97 @@ input:checked+.slider:before {
     }
 
     .usuarios-barraBusqueda {
+        width: 100%; /* Hacer que la barra de búsqueda ocupe todo el ancho */
         max-width: 100%;
         margin-right: 0;
     }
 
     .usuarios-botonAgregar {
-        width: 100%;
+        width: 100%; /* Hacer que el botón de agregar ocupe todo el ancho */
     }
 
-    .usuarios-table th,
+    /* === NUEVOS ESTILOS PARA TABLA RESPONSIVA === */
+    .usuarios-table thead {
+        display: none; /* Ocultar encabezados de tabla originales */
+    }
+
+    .usuarios-table,
+    .usuarios-table tbody,
+    .usuarios-table tr,
     .usuarios-table td {
-        padding: 10px 8px;
-        font-size: 0.8rem;
-    }
-
-    .usuarios-table-iconos {
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .usuarios-table-button {
-        padding: 6px 10px;
-        font-size: 1em;
-    }
-
-    .usuarios-modalContent {
-        padding: 20px;
-        width: 95%;
-        max-width: 95%;
-        max-height: 95vh;
-        overflow-y: auto;
-    }
-
-    .usuarios-modalContent-details,
-    .usuarios-modalContent-confirm,
-    .usuarios-modalContent-validation {
-        max-width: 95%;
-        margin: auto;
-    }
-
-    .usuarios-modalContent-form {
-        max-width: 95%;
-        margin: auto;
-    }
-
-    .usuarios-modalContent-form .usuarios-label {
-        font-size: 0.9rem;
-    }
-
-    .usuarios-modalContent-form form {
-        gap: 10px;
-    }
-
-    .usuarios-modalContent-form .usuarios-form-group {
-        gap: 6px;
-    }
-
-    .usuarios-modalContent-form .usuarios-form-input,
-    .usuarios-modalContent-form .usuarios-select {
-        font-size: 0.9rem;
-        padding: 8px 10px;
-    }
-
-    .usuarios-modalContent-form .usuarios-textarea {
-        font-size: 0.9rem;
-        padding: 8px 10px;
-    }
-
-    .usuarios-form-actions {
-        flex-direction: column;
-        gap: 10px;
+        display: block; /* Convertir elementos de tabla en bloques */
         width: 100%;
-        max-width: 100%;
     }
 
+    .usuarios-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #e978d0; /* Borde para cada "tarjeta" de fila */
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .usuarios-table td {
+        text-align: right; /* Alinear contenido de la celda a la derecha */
+        padding-left: 50%; /* Crear espacio para la etiqueta del data-label */
+        position: relative;
+        border: none; /* Quitar bordes individuales de celda */
+        padding-top: 8px; 
+        padding-bottom: 8px;
+        font-size: 0.9rem; /* Ajustar tamaño de fuente si es necesario */
+    }
+
+    .usuarios-table td::before {
+        content: attr(data-label); /* Usar el contenido del atributo data-label */
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px); /* Ancho de la etiqueta */
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #6d0b58; /* Color de la etiqueta */
+        text-align: left;
+    }
+    /* Ajuste para la celda de acciones para que los iconos no se descuadren tanto */
+     .usuarios-table td[data-label="Acciones:"] {
+        text-align: center; /* Centrar los iconos de acción */
+        padding-left: 0; /* Quitar padding izquierdo si el contenido se centra */
+    }
+     .usuarios-table td[data-label="Acciones:"]::before {
+        content: ""; /* Opcional: quitar la etiqueta "Acciones:" si los iconos son obvios */
+                      /* o mantenerla: content: "Acciones:"; text-align: left; width: auto; position: static; font-weight: bold; etc. */
+    }
+    .usuarios-table-iconos {
+        justify-content: center; /* Centrar iconos si se quita el padding-left de la celda */
+        gap: 8px;
+    }
+    /* === FIN DE NUEVOS ESTILOS PARA TABLA RESPONSIVA === */
+
+    /* Ajustes responsivos para modales (ya existentes y correctos) */
+    .usuarios-modalContent {
+        padding: 20px; width: 95%; max-width: 95%; max-height: 95vh; overflow-y: auto;
+    }
+    .usuarios-modalContent-details, .usuarios-modalContent-confirm, .usuarios-modalContent-validation {
+        max-width: 95%; margin: auto;
+    }
+    .usuarios-modalContent-form { max-width: 95%; margin: auto; }
+    .usuarios-modalContent-form .usuarios-form-label { font-size: 0.9rem; } /* Corregido 'usuarios-label' a 'usuarios-form-label' */
+    .usuarios-modalContent-form form { gap: 10px; }
+    .usuarios-modalContent-form .usuarios-form-group { gap: 6px; }
+    .usuarios-modalContent-form .usuarios-form-input,
+    .usuarios-modalContent-form .usuarios-form-select { /* Corregido 'usuarios-select' a 'usuarios-form-select' */
+        font-size: 0.9rem; padding: 8px 10px;
+    }
+    /* .usuarios-modalContent-form .usuarios-textarea ya estaba bien, no se incluye aquí si no cambia */
+    .usuarios-form-actions {
+        flex-direction: column; gap: 10px; width: 100%; max-width: 100%;
+    }
     .usuarios-form-actions .usuarios-form-buttonGuardar,
     .usuarios-form-actions .usuarios-form-buttonCancelar {
-        width: 100%;
-        padding: 12px;
-        font-size: 1rem;
+        width: 100%; padding: 12px; font-size: 1rem;
     }
-
     .usuarios-modalButton-cerrar {
-        width: 100%;
-        padding: 12px;
-        font-size: 1rem;
+        width: 100%; padding: 12px; font-size: 1rem;
     }
 }

@@ -1,23 +1,29 @@
 .proceso-ventas-page {
     display: flex;
     min-height: 100vh;
+    /* background-color: #f4f7f6; */ /* Puedes definir un color de fondo de página si quieres */
 }
 
 .proceso-ventas-main-content {
     flex-grow: 1;
-    padding: 50px;
+    padding: 30px; /* Ajustado el padding */
     background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     margin: 20px;
-    max-width: calc(90% - 270px);
+    /* max-width: calc(90% - 270px); */ /* Considera eliminar o ajustar esta línea */
+    margin-left: 270px; /* AÑADIDO: 250px para NavbarAdmin + 20px de margen de página */
+                                 /* Ajusta este valor si el ancho del NavbarAdmin es diferente */
+    box-sizing: border-box; /* Importante para que el padding no aumente el tamaño total + margen */
 }
 
 .proceso-ventas-main-content h1 {
     text-align: center;
     color: #6d0b58;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 1.8em;
+    /* Ajustado */
+    margin-bottom: 25px;
+    /* Ajustado */
 }
 
 .acciones {
