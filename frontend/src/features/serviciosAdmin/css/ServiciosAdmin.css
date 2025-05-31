@@ -1,244 +1,420 @@
-.servicios-container {
+/* src/features/serviciosAdmin/css/ServiciosAdmin.css */
+
+/* Contenedor general de la página de Servicios Admin */
+.servicios-admin-page-container {
     display: flex;
-    height: 100vh;
-    width: 1400px;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--color-background-admin-content, #f5f5f5);
+    font-family: 'Roboto', sans-serif;
 }
 
+/* Contenido principal de la página de Servicios Admin */
 .servicios-content {
     flex: 1;
-    padding: 20px;
-    margin-left: 100px;
+    padding: 30px;
+    margin-left: 270px;   /* Ajustado para NavbarAdmin (ej: 250px + 20px) */
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
-.tituloServicios {
-    margin-bottom: 15px;
-    color: #000000;
-}
-
-.BarraBusquedaServicio input {
-    padding: 8px 12px;
-    width: 250px;
-    border: 1px solid #c287b5;
-    border-radius: 8px;
-    background-color: #fff;
-    color: #000000;
-}
-
-.botonAgregarServicio {
-    background-color: #b660a3;
-    color: black;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.botonAgregarServicio:hover {
-    background-color: #6d0b58;
-}
-
-.botonVerDetallesServicios {
-    background-color: #fc8de4;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.botonVerDetallesServicios:hover {
-    background-color: #d66abf;
-}
-
-.botonEditarServicios {
-    background-color: #fc8de4;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.botonEditarServicios:hover {
-    background-color: #d66abf;
-}
-
-.botonEliminarServicios {
-    background-color: #b660a3;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.botonEliminarServicios:hover {
-    background-color: #6d0b58;
-}
-
-.tablaServicio {
-    background: rgb(252, 247, 250);
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.input {
-    background: white;
-    color: black;
-}
-
-.thServicios,
-td {
-    border: 1px solid #e978d0;
-    padding: 8px;
+.tituloServicios { /* Título "Gestión de Servicios" en la página */
     text-align: center;
+    color: var(--color-primary-darker, #6d0b58); /* Consistencia con Usuarios.css */
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.8rem; /* Consistencia con Usuarios.css */
 }
 
-.thServicios {
-    background-color: #e978d0;
-    color: black;
-}
-
-/* Fondos de filas pares */
-.tablaServicio tbody tr:nth-child(even) {
-    background-color: #f8eaf5;
-}
-
-/* Fondo al pasar el mouse */
-.tablaServicio tbody tr:hover {
-    background-color: #f3d9ec;
-}
-
-.switch input {
-    display: none;
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 24px;
-}
-
-.modalServicio {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content-Servicio {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* Alineación hacia la izquierda */
-    width: 600px;
-    /* Ampliado para mayor espacio */
-    border-radius: 12px;
-    background: white;
-    padding: 25px;
-}
-
-.modal-content-Servicio h3 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-
-.modal-content-Servicio input,
-.modal-content-Servicio textarea,
-.modal-content-Servicio select {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #e978d0;
-    border-radius: 5px;
-    background-color: white;
-    margin-bottom: 10px;
-}
-
-.modal-content-Servicio label {
-    font-weight: bold;
-    color: #555;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.requiredServicio {
-    color: red;
-    font-weight: bold;
-}
-
-.error {
-    color: red;
-    font-size: 0.8rem;
-    margin-top: -5px;
-    margin-bottom: 8px;
-}
-
+/* Contenedor para la barra de búsqueda y el botón de agregar */
 .barraBusqueda-BotonSuperiorAgregarServicio {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 10px;
+    margin-bottom: 25px;
+    gap: 20px;
+    flex-wrap: wrap; 
+    width: 100%;
+    max-width: 1200px; /* Coincide con el ancho de la tabla */
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
 }
 
-.modal-Servicio-confirm p {
-    margin-bottom: 1.5rem;
+.BarraBusquedaServicio { 
+    flex-grow: 1; 
+    display: flex; 
 }
 
-.modalConfirmacionEliminar {
+.BarraBusquedaServicio input { 
+    padding: 10px 12px;
+    width: 100%; 
+    min-width: 250px; 
+    border: 1px solid var(--color-border-light, #c287b5); /* Consistencia */
+    border-radius: 5px;
+    background-color: var(--color-background-light, #fff);
+    color: var(--color-text-dark, #333);
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+.BarraBusquedaServicio input:focus {
+    border-color: var(--color-admin-hover, #b660a3); /* Consistencia */
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); /* Consistencia con Usuarios.css */
+    outline: none;
+}
+
+.botonAgregarServicio { 
+    background-color: var(--color-admin-hover, #b660a3); /* Consistencia con Usuarios.css */
+    color: var(--color-text-light, white); /* Consistencia */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500; /* Consistencia */
+    flex-shrink: 0; 
+    height: 41px; /* Para alinear con el input si tiene la misma altura */
+    box-sizing: border-box;
+}
+.botonAgregarServicio:hover {
+    background-color: var(--color-primary-darker, #6d0b58); /* Consistencia */
+}
+
+/* === ESTILOS DE TABLA === */
+.tablaServicio { /* Tu clase original era tablaServicios, pero en el JSX usas tablaServicio para la etiqueta table */
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Consistencia con Usuarios.css */
+    width: 100%;
+    max-width: 1200px; 
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse; 
+    border-spacing: 0;
+    overflow: hidden; 
+    font-size: 0.95rem;
+    margin-top: 20px; 
+}
+.tablaServicio th,
+.tablaServicio td {
+    padding: 12px 15px; /* Consistencia */
+    text-align: left; 
+    color: var(--color-text-dark, #333); /* Consistencia */
+    border: 1px solid var(--color-admin-primary-border, #e978d0); /* Consistencia */
+}
+.tablaServicio th:first-child,
+.tablaServicio td:first-child { padding-left: 20px; }
+.tablaServicio th:last-child,
+.tablaServicio td:last-child { padding-right: 20px; }
+
+.tablaServicio th { 
+    background-color: var(--color-admin-primary-lighter, #e978d0); /* Consistencia */
+    color: var(--color-text-dark, black); /* Consistencia */
+    font-weight: 600; /* Consistencia */
+    font-size: 1rem; 
+    text-align: center; 
+}
+.tablaServicio td { font-size: 0.9rem; vertical-align: middle; }
+
+/* Ajustar alineación de celdas específicas si es necesario */
+.tablaServicio td:nth-child(1), /* Nombre */
+.tablaServicio td:nth-child(3)  /* Categoría */ 
+{ text-align: left; }
+
+.tablaServicio td:nth-child(2), /* Precio */
+.tablaServicio td:nth-child(4), /* Imagen */
+.tablaServicio td:nth-child(5), /* Estado */
+.tablaServicio td:nth-child(6)  /* Acciones */
+{ text-align: center; }
+
+.tablaServicio tbody tr:nth-child(even) { background-color: var(--color-table-row-even, #f8eaf5); } /* Consistencia */
+.tablaServicio tbody tr:hover { background-color: var(--color-table-row-hover, #f3d9ec); } /* Consistencia */
+
+.servicio-imagen { 
+    width: 50px; height: 50px; object-fit: cover;
+    border-radius: 4px; vertical-align: middle; 
+}
+
+/* === ESTILOS DE SWITCH === */
+.switch { 
+    position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle; 
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { 
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+    background-color: #ccc; border-radius: 34px; cursor: pointer; transition: .4s; 
+}
+.slider:before { 
+    content: ""; position: absolute; height: 18px; width: 18px; 
+    left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .4s; 
+}
+input:checked + .slider { background-color: #2ecc71; } /* Verde para activo */
+input:checked + .slider:before { transform: translateX(16px); }
+
+/* === ESTILOS PARA BOTONES DE ACCIÓN EN TABLA (Consistentes con Usuarios.css) === */
+.servicios-admin-actions {
+    display: flex; justify-content: center; align-items: center; gap: 8px; /* Era 10px en Usuarios, 8px está bien */
+}
+.servicios-admin-actions button { /* Renombrado de .iconBotonServiciosAdministrador a algo más genérico */
+    padding: 8px 10px; /* Tamaño como en Usuarios */
+    font-size: 0.9rem; /* Como en Usuarios */
+    border: none; border-radius: 5px;
+    color: white; cursor: pointer; transition: background-color 0.3s ease;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+/* Botones Ver y Editar */
+.botonVerDetallesServicios, .botonEditarServicios { 
+    background-color: var(--color-admin-primary, #fc8de4); /* Usando color base de NavbarAdmin */
+}
+.botonVerDetallesServicios:hover, .botonEditarServicios:hover { 
+    background-color: var(--color-admin-hover, #d66abf); /* Usando color hover de NavbarAdmin */
+}
+/* Botón Eliminar */
+.botonEliminarServicios { 
+    background-color: var(--color-admin-hover, #b660a3); /* Color más oscuro para eliminar */
+}
+.botonEliminarServicios:hover { 
+    background-color: var(--color-danger, #c0392b); /* Rojo para hover de eliminar */
+}
+
+
+/* === ESTILOS DE MODAL (Consistentes con Usuarios.css) === */
+.modalServicio { /* Overlay */
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Más oscuro, como Usuarios.css */
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1050; padding: 20px; box-sizing: border-box;
+}
+.modal-content-Servicio { /* Contenido del modal base */
+    background-color: var(--color-background-light, #fff); 
+    padding: 25px 30px; 
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+    width: 100%; 
+    max-width: 550px; /* Default, similar a usuarios-modalContent-form */
+    max-height: 90vh; overflow-y: auto;
+    display: flex; flex-direction: column;
+    box-sizing: border-box; /* Añadido */
+}
+.modal-content-Servicio.formulario { 
+    max-width: 600px; /* O el que necesites */
+}
+.modal-content-Servicio.detalle { 
+    max-width: 500px; /* Igual a usuarios-modalContent-details */
+}
+
+.modal-content-Servicio h3 { /* Título del modal */
+    text-align: center; 
+    color: var(--color-primary-darker, #6d0b58); 
+    margin-top: 0; 
+    margin-bottom: 25px; /* Consistencia con Usuarios.css */
+    font-size: 1.6rem; 
+}
+
+/* === ESTILOS PARA EL FORMULARIO DEL MODAL (ServicioAdminForm) === */
+.modal-Servicio-form-grid { /* Clase del <form> en ServicioAdminFormModal */
+    display: flex; 
+    flex-direction: column; 
+    gap: 18px; /* Espacio entre grupos, como usuarios-form-group en Usuarios.css */
+}
+
+.CamposAgregarServicio { /* Contenedor de label + input, similar a .usuarios-form-group */
     display: flex;
-    justify-content: center;
-    gap: 1rem;
+    flex-direction: column; 
+    gap: 8px; /* Espacio entre label e input */
 }
 
-.asteriscoCamposServicio {
-    width: 150px;
+.CamposAgregarServicio label, /* Etiqueta, similar a .usuarios-form-label */
+label.asteriscoCamposServicio { 
+    font-weight: 600;
+    color: var(--color-primary-darker, #6d0b58); 
+    font-size: 0.95rem; /* Ajustado para consistencia */
+    text-align: left;
 }
 
-.servicio-imagen {
+/* Inputs, selects, textareas dentro de .CamposAgregarServicio */
+.CamposAgregarServicio .input, 
+.CamposAgregarServicio textarea,
+.CamposAgregarServicio select {
+    width: 100%;
+    padding: 10px 12px; 
+    border: 1px solid var(--color-border-light, #c287b5); 
+    border-radius: 5px; 
+    font-size: 1rem; 
+    box-sizing: border-box;
+    background-color: var(--color-background-input, #fff);
+    color: var(--color-text-dark, #333);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.CamposAgregarServicio .input:focus,
+.CamposAgregarServicio textarea:focus,
+.CamposAgregarServicio select:focus {
+    border-color: var(--color-admin-hover, #b660a3); 
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); /* Consistente con Usuarios.css */
+    outline: none;
+}
+
+.CamposAgregarServicio textarea {
+    min-height: 80px; 
+    resize: vertical;
+}
+
+.CamposAgregarServicio select {
+    cursor: pointer;
+}
+
+/* Vista previa de imagen en el formulario */
+.CamposAgregarServicio img { 
+    max-width: 120px; 
+    max-height: 120px;
+    margin-top: 10px;
+    border: 1px solid var(--color-border-light, #ddd);
     border-radius: 4px;
+    object-fit: cover;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+/* Mensajes de error del formulario */
+.CamposAgregarServicio .error { 
+    color: var(--color-danger, red); /* Usar variable */
+    font-size: 0.85rem; /* Consistente */
+    margin-top: 5px; /* Consistente */
+    display: block;
 }
 
-.modal-Servicio-form-grid {
-    display: grid;
+/* Asterisco requerido */
+.requiredServicio { /* Usado en ServicioAdminForm.jsx */
+    color: var(--color-danger, red);
+    margin-left: 2px;
+}
+
+/* === BOTONES DE ACCIÓN DEL FORMULARIO MODAL === */
+.servicios-admin-form-actions { /* Contenedor de botones Guardar/Cancelar */
+    display: flex;
+    justify-content: center; 
     gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border-light, #eee);
+    width: 100%; 
 }
 
-.CamposAgregarServicio {
-    grid-column: span 2;
-}
-
-.tituloServicios {
+.servicios-admin-button-guardar,
+.servicios-admin-button-cancelar {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-basis: 150px; 
+    flex-grow: 0;
     text-align: center;
-    color: #6d0b58;
-    margin-top: 0;
-    margin-bottom: 20px; }
+}
+
+.servicios-admin-button-guardar {
+    background-color: var(--color-admin-hover, #b660a3); 
+    color: white;
+}
+.servicios-admin-button-guardar:hover {
+    background-color: var(--color-primary-darker, #6d0b58); 
+}
+
+.servicios-admin-button-cancelar {
+    background-color: #95a5a6; 
+    color: white;
+}
+.servicios-admin-button-cancelar:hover {
+    background-color: #7f8c8d; 
+}
+
+/* === ESTILOS PARA "DETALLES DEL SERVICIO" MODAL === */
+.modal-content-Servicio.detalle .servicio-details-list { 
+    text-align: left; width: 100%; margin-top: 0; padding-top: 0; 
+}
+.modal-content-Servicio.detalle .servicio-details-list p { 
+    text-align: left; margin-top: 0; margin-bottom: 10px; 
+    line-height: 1.6; color: #333; font-size: 1rem; 
+}
+.modal-content-Servicio.detalle .servicio-details-list p:first-child { margin-top: 0; }
+.modal-content-Servicio.detalle .servicio-details-list p strong { 
+    color: var(--color-primary-darker, #6d0b58); margin-right: 8px; font-weight: 600;   
+    min-width: 100px; /* Ajusta para alineación de valores */
+    display: inline-block; 
+}
+.modal-content-Servicio.detalle .detalle-imagen-container { margin: 10px 0; }
+.modal-content-Servicio.detalle .detalle-imagen-container p strong { vertical-align: top; }
+.modal-content-Servicio.detalle img.servicio-imagen-detalle {
+    max-width: 150px; max-height: 150px; display: inline-block; 
+    vertical-align: top; border-radius: 4px;
+    border: 1px solid #eee; margin-left: 5px; object-fit: cover;
+}
+.servicios-modalButton-cerrar { /* Botón Cerrar en modal de detalles */
+    background-color: var(--color-admin-hover, #b660a3); 
+    color: white; 
+    display: block; width: auto; 
+    min-width: 120px; /* Ancho mínimo */
+    margin: 25px auto 0; 
+    padding: 10px 20px; 
+    border: none; border-radius: 5px; cursor: pointer; 
+    font-size: 1rem; font-weight: 500;
+    transition: background-color 0.3s ease; text-align: center;
+}
+.servicios-modalButton-cerrar:hover {
+    background-color: var(--color-primary-darker, #6d0b58); 
+}
+
+
+/* === ESTILOS RESPONSIVOS === */
+@media (max-width: 768px) {
+    .servicios-content { margin-left: 0; padding: 15px; } /* Ajustado padding */
+    .barraBusqueda-BotonSuperiorAgregarServicio { flex-direction: column; gap: 15px; } /* Ajustado gap */
+    .BarraBusquedaServicio input, .botonAgregarServicio { width: 100%; }
+    .botonAgregarServicio { height: auto; padding: 12px 20px; }
+
+    .tablaServicio thead { display: none; }
+    .tablaServicio, .tablaServicio tbody, .tablaServicio tr, .tablaServicio td {
+        display: block; width: 100%;
+    }
+    .tablaServicio tr {
+        margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0); border-radius: 8px;
+        padding: 10px; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .tablaServicio td {
+        text-align: right; padding-left: 50% !important; position: relative;
+        border: none; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem;
+    }
+    .tablaServicio td:last-child { border-bottom: none; }
+    .tablaServicio td::before {
+        content: attr(data-label); position: absolute; left: 10px;
+        width: calc(50% - 20px); padding-right: 10px; white-space: nowrap;
+        font-weight: bold; color: var(--color-primary-darker, #6d0b58); text-align: left;
+    }
+    .tablaServicio td[data-label="Acciones:"] { text-align: center; padding-left: 0 !important; }
+    .tablaServicio td[data-label="Acciones:"]::before { content: ""; }
+    .servicios-admin-actions { justify-content: center; padding-top: 8px; }
+
+    /* Modales en móvil */
+    .modal-content-Servicio, 
+    .modal-content-Servicio.formulario, 
+    .modal-content-Servicio.detalle {
+        max-width: 95%; padding: 20px;
+    }
+    /* Si .modal-Servicio-form-grid era realmente grid y necesitas que sea una columna en móvil */
+    /* .modal-Servicio-form-grid { grid-template-columns: 1fr; } */
+    /* Ya lo cambiamos a flex-direction column, así que esto no es necesario */
+
+
+    .servicios-modalButton-cerrar { 
+        width: 100%; max-width: none; padding: 12px;
+    }
+    .servicios-admin-form-actions { 
+        flex-direction: column;
+    }
+    .servicios-admin-button-guardar,
+    .servicios-admin-button-cancelar {
+        width: 100%;
+    }
+}
