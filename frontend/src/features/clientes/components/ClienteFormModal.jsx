@@ -31,7 +31,7 @@ const ClienteFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType })
 
   return (
     <div className="modal-clientes"> {/* Usar clases del CSS original por ahora */}
-      <div className="modal-content-clientes">
+      <div className="modal-content-clientes formulario"> {/* Añadir clase "formulario" aquí */}
         <h2>{modalType === 'create' ? 'Agregar Cliente' : 'Editar Cliente'}</h2>
         <form className="formularioModalClientes" onSubmit={handleSubmitForm}>
           {/* El div .formularioModalInputClientes estaba en el JSX original, 
@@ -41,11 +41,11 @@ const ClienteFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType })
             onFormChange={handleFormChange}
             isEditing={modalType === 'edit'}
           />
-          <div className="clientes-form-actions"> {/* Reusar estilo de Usuarios */}
-            <button type="submit" className="botonguardarClienteModal"> {/* Clase original */}
+          <div className="clientes-form-actions"> {/* CLASE CONSISTENTE */}
+            <button type="submit" className="botonguardarClienteModal"> {/* Clases originales están bien si se estilizan abajo */}
               {modalType === 'create' ? 'Guardar' : 'Guardar Cambios'}
             </button>
-            <button type="button" className="botonModalCancelar-Cerrar" onClick={onClose}> {/* Clase original */}
+            <button type="button" className="botonModalCancelar-Cerrar" onClick={onClose}> 
               Cancelar
             </button>
           </div>

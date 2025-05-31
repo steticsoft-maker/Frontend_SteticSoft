@@ -1,279 +1,340 @@
-/* Contenedor general */
-.clientes-container {
-    display: flex; /* Organiza el contenido en fila */
-    height: 100vh; /* Toma toda la altura de la pantalla */
-    width: 1400px; 
+/* src/features/clientes/css/Clientes.css */
+
+/* === ESTILOS GENERALES DE PÁGINA === */
+.clientes-page-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-background-admin-content, #f5f5f5);
 }
 
-/* Contenido principal */
 .main-content-clientes {
-    flex: 1; /* Permite que el contenido ocupe el espacio disponible */
-    padding: 30px; /* Espaciado interno */
-    margin-left: 300px; /* Separación del margen izquierdo */
+    flex: 1; 
+    padding: 30px; 
+    margin-left: 270px; /* ASUMIENDO NavbarAdmin de 250px + 20px de espacio */
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
-/* Barra de búsqueda */
-.barraBusquedaClientesInput {
-    margin-bottom: 20px; /* Separación inferior */
-    padding: 12px; /* Espaciado interno */
-    width: 100%; /* Ocupa todo el ancho */
-    font-size: 1rem; /* Tamaño de fuente */
-    border: 1px solid #ccc; /* Borde gris claro */
-    border-radius: 5px; /* Bordes redondeados */
-    background-color: white; /* Fondo blanco */
-    color: black; /* Texto negro */
-}
-
-/* Estilo del botón de acción */
-.buttonAgregarcliente {
-    margin-top: 30px; /* Separación superior */
-    margin-bottom: 30px; /* Separación inferior */
-    padding: 15px 30px; /* Espaciado interno */
-    font-size: 1.2rem; /* Tamaño de fuente */
-    background-color: #b660a3 !important; /* Fondo verde */
-    color: white !important; /* Texto blanco */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor al pasar */
-}
-
-.buttonAgregarcliente:hover {
-    background-color: #6d0b58; /* Fondo verde oscuro al pasar el mouse */
-}
-
-/* Tabla de Clientes */
-.tablaClientes {
-    background-color: #f5f5f5;
-    font-size: 18px;
-    width: auto;
-    height: auto;
-    padding: 20px;
-    margin-top: 20px;
-    border-collapse: collapse;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.tablaClientes th {
-    background-color: #e978d0; /* Fondo azul oscuro */
-    color: rgb(0, 0, 0); /* Texto blanco */
-    padding: 15px; /* Espaciado interno */
-    text-align: center; /* Alineación centrada */
-    font-weight: bold; /* Negrita */
-    font-size: 1rem; /* Tamaño de fuente */
-    width: 20%;
-    border: 1px solid #e978d0;
-}
-
-.tablaClientes td {
-    text-align: center; /* Texto centrado */
-    padding: 15px; /* Espaciado interno */
-    border: 1px solid #e978d0; /* Borde gris claro */
-    color: #000000; /* Texto azul oscuro */
-    font-size: 0.9rem; /* Tamaño de fuente ligeramente menor */
-}
-
-/* Switch para cambiar el estado */
-.switch {
-    position: relative; /* Posición relativa para manejar elementos internos */
-    display: inline-block; /* Se muestra en línea con otros elementos */
-    width: 40px; /* Ancho del switch */
-    height: 24px; /* Altura del switch */
-}
-
-.switch input {
-    opacity: 0; /* Esconde el checkbox original */
-    width: 0; /* Sin ancho */
-    height: 0; /* Sin altura */
-}
-
-.slider {
-    position: absolute; /* Posición absoluta dentro del contenedor */
-    top: 0; /* Alineado superior */
-    left: 0; /* Alineado izquierdo */
-    right: 0; /* Alineado derecho */
-    bottom: 0; /* Alineado inferior */
-    background-color: #ccc; /* Fondo gris claro */
-    border-radius: 34px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor */
-    transition: 0.4s; /* Animación de transición */
-}
-
-.slider:before {
-    content: ""; /* Elemento vacío para representar el "punto" del switch */
-    position: absolute; /* Posición absoluta dentro del slider */
-    height: 18px; /* Altura del "punto" */
-    width: 18px; /* Ancho del "punto" */
-    left: 3px; /* Separación izquierda */
-    bottom: 3px; /* Separación inferior */
-    background-color: white; /* Fondo blanco */
-    border-radius: 50%; /* Forma redonda */
-    transition: 0.4s; /* Animación de transición */
-}
-
-input:checked+.slider {
-    background-color: #fc8de4; /* Fondo verde cuando está activo */
-}
-
-input:checked+.slider:before {
-    transform: translateX(16px); /* Mueve el "punto" a la derecha */
-}
-
-/* Botones de acciones en la tabla */
-.iconsTablaclientes {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 20px; /* Espaciado interno */
-    font-size: 1rem; /* Tamaño de fuente */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    color: white; /* Texto blanco */
-    background-color: #fc8de4; /* Fondo azul */
-    cursor: pointer; /* Cambia el cursor */
-    transition: background-color 0.3s ease; /* Transición suave */
-}
-
-.iconsTablaclientes:hover {
-    background-color: #fa5bd7; /* Fondo azul oscuro al pasar el mouse */
-}
-
-.delete-button-elimnarCliente {
-    background-color: #f153cf; /* Fondo rojo */
-}
-
-.delete-button-elimnarCliente:hover {
-    background-color: #f153cf; /* Fondo rojo oscuro al pasar el mouse */
-}
-
-/* Modal */
-.modal-clientes {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-}
-
-.modal-content-clientes {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    width: 650px;
-    max-width: 95%;
+.main-content-clientes h1 {
     text-align: center;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    color: #6d0b58;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
 }
 
-/* Formulario del modal */
-.formularioModalClientes {
-    display: flex;
-    padding: 80x 16px;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
+.required-asterisk {
+    color: red;
+    margin-left: 2px;
 }
 
-.formularioModalInputClientes {
-    width: 96%; /* Ancho completo */
-    padding: 12px; /* Espaciado interno */
-    font-size: 1rem; /* Tamaño de fuente */
-    border: 1px solid #ccc; /* Borde gris claro */
-    border-radius: 5px; /* Bordes redondeados */
-    background-color: white; /* Fondo blanco */
-    color: black;
-}
-
-.botonguardarClienteModal{
-    background-color: #f153cf;
-}
-
-.botonguardarClienteModal:hover{
-    background-color: #f153cf;
-}
-
-
-.botonModalCancelar-Cerrar {
-    margin-top: 20px; /* Separación superior */
-    padding: 10px 20px; /* Espaciado interno */
-    background-color: #f153cf; /* Fondo rojo */
-    color: white; /* Texto blanco */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor */
-}
-
-.botonModalCancelar-Cerrar:hover {
-    background-color: #f153cf; /* Fondo rojo oscuro al pasar el mouse */
-}
-/* Contenedor para la barra de búsqueda y el botón */
+/* === BARRA DE ACCIONES SUPERIORES === */
 .containerAgregarbuscarClientes {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px; 
+    gap: 20px;
+    flex-wrap: wrap; 
+    width: 100%;
+    max-width: 1200px; 
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
 }
 
 .barraBusquedaClientesInput {
-    width: 70%;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ddd;
+    padding: 10px 12px; 
+    font-size: 1rem;
+    border: 1px solid #c287b5; 
     border-radius: 5px;
+    background-color: white;
+    color: #333;
+    flex-grow: 1; 
+    min-width: 250px; 
+    box-sizing: border-box;
+}
+.barraBusquedaClientesInput:focus {
+    border-color: #b660a3; 
+    box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
+    outline: none;
 }
 
 .buttonAgregarcliente {
-    background-color: #b660a3;
-    color: white;
+    padding: 10px 20px; 
+    font-size: 1rem; 
+    background-color: #b660a3; 
+    color: white; 
     border: none;
-    padding: 10px 15px;
     border-radius: 5px;
-    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    flex-shrink: 0; 
 }
-
 .buttonAgregarcliente:hover {
-    background-color: #b660a3;
+    background-color: #6d0b58;
 }
 
+/* === ESTILOS DE TABLA === */
+.tablaClientes {
+    width: 100%;
+    max-width: 1200px; 
+    margin: 25px auto; 
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden; 
+    font-size: 0.95rem; 
+}
+.tablaClientes th {
+    background-color: #e978d0; 
+    color: black; 
+    padding: 12px 15px; 
+    text-align: center; 
+    font-weight: 600; 
+    font-size: 1rem; 
+    border: 1px solid #e978d0; 
+}
+.tablaClientes td {
+    padding: 12px 15px; 
+    border: 1px solid #e978d0; 
+    color: #333; 
+    font-size: 0.9rem; 
+    text-align: left; 
+    vertical-align: middle;
+}
+.tablaClientes td:nth-child(1), .tablaClientes td:nth-child(2), 
+.tablaClientes td:nth-child(3), .tablaClientes td:nth-child(5) { text-align: left; }
+.tablaClientes td:nth-child(4), .tablaClientes td:nth-child(6), 
+.tablaClientes td:nth-child(7) { text-align: center; }
+.tablaClientes tbody tr:nth-child(even) { background-color: #f8eaf5; }
+.tablaClientes tbody tr:hover { background-color: #f3d9ec; }
+.clientes-table-actions { 
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+}
+.iconsTablaclientes { 
+    padding: 8px 10px; font-size: 0.9rem; border: none; border-radius: 5px;
+    color: white; background-color: #fc8de4; cursor: pointer;
+    transition: background-color 0.3s ease; display: inline-flex;
+    align-items: center; justify-content: center;
+}
+.iconsTablaclientes:hover { background-color: #d66abf; }
+.delete-button-elimnarCliente { background-color: #b660a3; }
+.delete-button-elimnarCliente:hover { background-color: #6d0b58; }
 
-/* Estilo uniforme para ambos botones */
-.modal-content form .buttonAgregarcliente,
-.modal-content form .botonModalCancelar-Cerrar {
-    width: 48%; /* Ambos botones ocupan el mismo ancho y están alineados */
-    padding: 10px 0; /* Altura uniforme */
-    font-size: 16px; /* Texto legible */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor al pasar */
-    text-align: center; /* Texto centrado */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Pequeña sombra para efecto */
+/* === ESTILOS DEL COMPONENTE SWITCH === */
+.switch {
+    position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; border-radius: 34px; cursor: pointer; transition: 0.4s; 
+}
+.slider:before {
+    content: ""; position: absolute; height: 18px; width: 18px;
+    left: 3px; bottom: 3px; background-color: white; 
+    border-radius: 50%; transition: 0.4s; 
+}
+input:checked+.slider { background-color: #2ecc71; }
+input:checked+.slider:before { transform: translateX(16px); }
+
+/* === ESTILOS BASE DE MODALES === */
+.modal-clientes { /* Overlay */
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); 
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000; padding: 20px; box-sizing: border-box; overflow-y: auto;
 }
 
-/* Estilo del botón "Guardar" */
-.modal-content form .buttonAgregarcliente {
-    background-color: #b660a3; /* Verde */
-    color: white; /* Texto blanco */
-    transition: background-color 0.3s ease; /* Transición suave */
+.modal-content-clientes { /* Contenedor de contenido del modal */
+    background: #fff; padding: 25px 30px; border-radius: 10px;
+    width: 100%;
+    max-width: 500px; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    max-height: 90vh; overflow-y: auto; box-sizing: border-box;
+}
+.modal-content-clientes.formulario { 
+    max-width: 650px;
 }
 
-.modal-content form .buttonAgregarcliente:hover {
-    background-color: #bb52a4; /* Verde más oscuro al pasar */
+.modal-content-clientes h2 {
+    text-align: center;
+    color: #6d0b58;
+    margin-top: 0;
+    /* margin-bottom: 10px; */ /* Línea original comentada o eliminada */
+    margin-bottom: 2px;  /* NUEVO VALOR: Reduce el espacio debajo del título */
+    padding-bottom: 0;
+    font-size: 1.6rem;
+    line-height: 1.3;
 }
 
-/* Estilo del botón "Cancelar" */
-.modal-content form .botonModalCancelar-Cerrar {
-    background-color: #f153cf; /* Rojo */
-    color: white; /* Texto blanco */
-    transition: background-color 0.3s ease; /* Transición suave */
-    margin-top: 19 px;
+/* === ESTILOS ESPECÍFICOS PARA LA LISTA DE DETALLES DEL CLIENTE === */
+.cliente-details-list {
+    text-align: left;   /* Alinea el bloque de detalles a la izquierda */ /* */
+    width: 100%;
+    margin-top: 0;      /* Sin margen superior para la lista de detalles */ /* */
+    padding-top: 0;     /* Sin padding superior para la lista de detalles */ /* */
 }
 
-.modal-content form .botonModalCancelar-Cerrar:hover {
-    background-color: #f53acc; /* Rojo más oscuro al pasar */
-    margin-top: 19 px;
+.cliente-details-list p {
+    text-align: left;   /* Texto dentro de cada párrafo alineado a la izquierda */ /* */
+    margin-top: 0;      /* Sin margen superior en los párrafos de detalle */ /* */
+    margin-bottom: 8px; /* Espacio entre cada línea de detalle (Nombre, Apellido, etc.) */ /* */
+    line-height: 1.5;   /* Altura de línea para los detalles */ /* */
+    color: #333;
+    font-size: 1rem;
 }
+
+.cliente-details-list p:first-child {
+    margin-top: 0; /* Asegura que el primer detalle no tenga margen superior extra */ /* */
+}
+
+/* Estilo para las etiquetas (Nombre:, Apellido:, etc.) dentro de los detalles */
+.cliente-details-list p strong { 
+    color: #6d0b58;     /* Color de la etiqueta */
+    margin-right: 8px;  /* Espacio entre la etiqueta y el valor */
+    font-weight: 600; 
+    min-width: 160px;   /* Ancho mínimo para que las etiquetas se alineen verticalmente */
+    display: inline-block; /* Necesario para que min-width tenga efecto */
+}
+
+/* Estilo para el botón "Cerrar" en el modal de detalles */
+.botonModalCancelar-Cerrar.detalle-modal-cerrar-btn { 
+    margin-top: 20px; /* Más espacio antes del botón de cerrar */
+    background-color: #b660a3; 
+    color: white; 
+    display: block; 
+    width: auto; 
+    min-width: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px 30px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+}
+.botonModalCancelar-Cerrar.detalle-modal-cerrar-btn:hover {
+    background-color: #6d0b58; 
+}
+
+/* === ESTILOS ESPECÍFICOS DEL MODAL DE FORMULARIO (CREAR/EDITAR) === */
+.modal-content-clientes form.formularioModalClientes { 
+    display: flex; flex-direction: column; gap: 20px; 
+}
+.clientes-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px 25px; 
+}
+.clientes-form-group {
+    display: flex; flex-direction: column; gap: 8px; 
+}
+.clientes-form-group.full-width-group { grid-column: 1 / -1; }
+.clientes-form-group label { 
+    font-weight: 600; color: #6d0b58; 
+    font-size: 0.9rem; text-align: left; 
+}
+.clientes-form-group input[type="text"],
+.clientes-form-group input[type="email"],
+.clientes-form-group input[type="password"],
+.clientes-form-group input[type="date"],
+.clientes-form-group select { 
+    padding: 10px 12px; border: 1px solid #c287b5; 
+    border-radius: 5px; font-size: 1rem;
+    color: #333; background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; width: 100%;
+}
+.clientes-form-group input:focus,
+.clientes-form-group select:focus {
+    border-color: #b660a3; 
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+    outline: none;
+}
+.clientes-form-actions { 
+    display: flex; justify-content: center; gap: 15px;
+    margin-top: 25px; padding-top: 20px; 
+    border-top: 1px solid #e0e0e0; 
+}
+.clientes-form-actions .botonguardarClienteModal,
+.clientes-form-actions .botonModalCancelar-Cerrar {
+    padding: 10px 20px; border: none; border-radius: 5px;
+    cursor: pointer; font-size: 1rem; font-weight: 500;
+    transition: background-color 0.3s ease;
+    flex-basis: 150px; flex-grow: 0; text-align: center;
+}
+.clientes-form-actions .botonguardarClienteModal {
+    background-color: #b660a3; color: white;
+}
+.clientes-form-actions .botonguardarClienteModal:hover {
+    background-color: #6d0b58;
+}
+.clientes-form-actions .botonModalCancelar-Cerrar {
+    background-color: #95a5a6; color: white;
+}
+.clientes-form-actions .botonModalCancelar-Cerrar:hover {
+    background-color: #7f8c8d;
+}
+
+/* === ESTILOS RESPONSIVOS === */
+@media (max-width: 768px) {
+    .main-content-clientes { 
+        padding: 20px; margin-left: 0; 
+    }
+    .containerAgregarbuscarClientes { 
+        flex-direction: column; gap: 15px; margin-bottom: 20px; 
+    }
+    .barraBusquedaClientesInput,
+    .buttonAgregarcliente {
+        width: 100%; margin-top: 0; margin-bottom: 0;
+    }
+    .buttonAgregarcliente { padding: 12px 20px; }
+
+    .tablaClientes thead { display: none; }
+    .tablaClientes, .tablaClientes tbody, .tablaClientes tr, .tablaClientes td {
+        display: block; width: 100%;
+    }
+    .tablaClientes tr {
+        margin-bottom: 15px; border: 1px solid #e978d0; 
+        border-radius: 8px; padding: 10px;
+        background-color: #ffffff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .tablaClientes td {
+        text-align: right; padding-left: 50%; 
+        position: relative; border: none; 
+        padding-top: 8px; padding-bottom: 8px; font-size: 0.9rem; 
+    }
+    .tablaClientes td::before {
+        content: attr(data-label); position: absolute;
+        left: 10px; width: calc(50% - 20px); 
+        padding-right: 10px; white-space: nowrap;
+        font-weight: bold; color: #6d0b58; text-align: left;
+    }
+    .tablaClientes td[data-label="Acciones:"] { text-align: center; padding-left: 0; }
+    .tablaClientes td[data-label="Acciones:"]::before { content: ""; }
+    .clientes-table-actions { justify-content: center; padding-top: 5px; }
+    .iconsTablaclientes { padding: 8px 12px; }
+
+    .modal-content-clientes,
+    .modal-content-clientes.formulario { 
+        padding: 20px; max-width: 95%; 
+    }
+    .clientes-form-grid { grid-template-columns: 1fr; gap: 15px; }
+    .clientes-form-group label { font-size: 0.9rem; }
+    .clientes-form-group input, .clientes-form-group select {
+        font-size: 0.95rem; padding: 10px;
+    }
+    .clientes-form-actions { flex-direction: column; gap: 12px; }
+    .clientes-form-actions .botonguardarClienteModal,
+    .clientes-form-actions .botonModalCancelar-Cerrar {
+        width: 100%; max-width: none; padding: 12px; 
+    }
+    .botonModalCancelar-Cerrar.detalle-modal-cerrar-btn {
+        width: 100%; padding: 12px;
+    }
+}
+

@@ -19,12 +19,12 @@ const ClientesTable = ({ clientes, onView, onEdit, onDeleteConfirm, onToggleEsta
       <tbody>
         {clientes.map((cliente) => (
           <tr key={cliente.id}>
-            <td>{cliente.nombre}</td>
-            <td>{cliente.apellido}</td>
-            <td>{cliente.email}</td>
-            <td>{cliente.telefono}</td>
-            <td>{cliente.direccion}</td>
-            <td>
+            <td data-label="Nombre:">{cliente.nombre}</td>
+            <td data-label="Apellido:">{cliente.apellido}</td>
+            <td data-label="Correo:">{cliente.email}</td>
+            <td data-label="Teléfono:">{cliente.telefono}</td>
+            <td data-label="Dirección:">{cliente.direccion}</td>
+            <td data-label="Estado:">
               <label className="switch">
                 <input
                   type="checkbox"
@@ -34,16 +34,18 @@ const ClientesTable = ({ clientes, onView, onEdit, onDeleteConfirm, onToggleEsta
                 <span className="slider"></span>
               </label>
             </td>
-            <td className="clientes-table-actions"> {/* Nueva clase para centrar/espaciar iconos */}
-              <button className="iconsTablaclientes" onClick={() => onView(cliente)} title="Ver">
-                <FaEye />
-              </button>
-              <button className="iconsTablaclientes" onClick={() => onEdit(cliente)} title="Editar">
-                <FaEdit />
-              </button>
-              <button className="iconsTablaclientes delete-button-elimnarCliente" onClick={() => onDeleteConfirm(cliente)} title="Eliminar">
-                <FaTrash />
-              </button>
+            <td data-label="Acciones:">
+              <div className="clientes-table-actions"> {/* Mantener o ajustar esta clase según necesidad */}
+                <button className="iconsTablaclientes" onClick={() => onView(cliente)} title="Ver">
+                  <FaEye />
+                </button>
+                <button className="iconsTablaclientes" onClick={() => onEdit(cliente)} title="Editar">
+                  <FaEdit />
+                </button>
+                <button className="iconsTablaclientes delete-button-elimnarCliente" onClick={() => onDeleteConfirm(cliente)} title="Eliminar">
+                  <FaTrash />
+                </button>
+              </div>
             </td>
           </tr>
         ))}
