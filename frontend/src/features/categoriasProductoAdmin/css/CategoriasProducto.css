@@ -1,448 +1,426 @@
-.categorias-container {
+/* src/features/categoriasProductoAdmin/css/CategoriasProducto.css */
+
+/* === ESTILOS GENERALES DE PÁGINA === */
+.categorias-producto-admin-page-container { /* Clase de tu ListaCategoriasProductoPage.jsx */
     display: flex;
     min-height: 100vh;
     width: 100%;
-    font-family: 'Roboto', sans-serif;
-
+    font-family: 'Roboto', sans-serif; /* O tu variable global --font-family-roboto */
+    background-color: var(--color-background-admin-content, #f5f5f5);
 }
 
-.CategoriaProductoContent {
-    flex-grow: 1;
-    padding: 20px;
-    box-sizing: border-box;
+.categorias-producto-admin-main-content { /* Clase de tu ListaCategoriasProductoPage.jsx */
+    flex: 1; 
+    padding: 30px; 
+    margin-left: 270px; /* ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */
     overflow-y: auto;
-    margin-left: 200px;
-}
-
-.centered-content-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 60px - 40px);
-    width: 100%;
-}
-
-.modal-content-categoria-detalles,
-.modal-content-categoria-form {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
     box-sizing: border-box;
 }
 
-.required-asterisk {
-    color: red;
-    margin-left: 2px;
-}
-
-.CategoriaProductoContent h1 {
-    text-align: center;
-    color: #6d0b58;
-    margin-bottom: 20px;
+.categorias-producto-admin-content-wrapper { /* Clase de tu ListaCategoriasProductoPage.jsx */
     width: 100%;
+    max-width: 1200px; /* Ancho máximo para el contenido principal */
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los hijos directos (título, barra de acciones, tabla) */
 }
 
-.BarraBusquedaBotonAgregarCategoriaProductos {
+.categorias-producto-admin-content-wrapper h1 { /* Título de la página */
+    text-align: center;
+    color: var(--color-primary-darker, #6d0b58);
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
+/* === BARRA DE ACCIONES SUPERIORES === */
+.categorias-producto-admin-actions-bar { /* Tu clase en ListaCategoriasProductoPage.jsx */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px; 
     gap: 20px;
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 1200px;
+    flex-wrap: wrap; 
+    width: 100%; 
     box-sizing: border-box;
 }
 
-.inputBarraBusquedaCategoriaProductos {
-    width: 70%;
-    padding: 12px;
-    font-size: 1rem;
-    border: 1px solid #c287b5;
-    border-radius: 5px;
-    background-color: white;
-    color: #333;
+.categorias-producto-admin-search-bar { /* Tu clase en ListaCategoriasProductoPage.jsx */
     flex-grow: 1;
-    min-width: 200px;
+    display: flex;
+}
+.categorias-producto-admin-search-bar input { /* Input dentro de la barra de búsqueda */
+    padding: 10px 12px; 
+    width: 100%; 
+    min-width: 250px;
+    font-size: 1rem;
+    border: 1px solid var(--color-border-light, #c287b5); 
+    border-radius: 5px;
+    background-color: var(--color-background-light, #fff);
+    color: var(--color-text-dark, #333);
     box-sizing: border-box;
 }
+.categorias-producto-admin-search-bar input:focus {
+    border-color: var(--color-admin-hover, #b660a3); 
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+    outline: none;
+}
 
-.botonAgregarCategoriaProducto {
-    padding: 12px 25px;
-    font-size: 1rem;
-    background-color: #b660a3;
-    color: white;
+.categorias-producto-admin-add-button { /* Tu clase en ListaCategoriasProductoPage.jsx */
+    padding: 10px 20px; 
+    font-size: 1rem; 
+    background-color: var(--color-admin-hover, #b660a3); 
+    color: var(--color-text-light, white); 
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: 500;
     transition: background-color 0.3s ease;
     flex-shrink: 0;
-}
-
-.botonAgregarCategoriaProducto:hover {
-    background-color: #6d0b58;
-}
-
-.tablaCategoriaProductos {
-    width: 100%;
-    max-width: 1200px;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    overflow: hidden;
+    height: 41px; 
     box-sizing: border-box;
 }
+.categorias-producto-admin-add-button:hover {
+    background-color: var(--color-primary-darker, #6d0b58);
+}
 
+/* === ESTILOS DE TABLA === */
+.tablaCategoriaProductos { /* Tu clase de tabla */
+    width: 100%; 
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden; 
+    font-size: 0.95rem;
+}
 .tablaCategoriaProductos th {
-    background-color: #e978d0;
-    color: black;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1rem;
-    border: 1px solid #e978d0;
+    background-color: var(--color-admin-primary-lighter, #e978d0); 
+    color: var(--color-text-dark, black); 
+    padding: 12px 15px; 
+    text-align: center; 
+    font-weight: 600; 
+    font-size: 1rem; 
+    border: 1px solid var(--color-admin-primary-border, #e978d0); 
 }
-
 .tablaCategoriaProductos td {
-    border: 1px solid #e978d0;
-    text-align: center;
-    padding: 15px;
+    padding: 12px 15px; 
+    border: 1px solid var(--color-admin-primary-border, #e978d0); 
+    color: var(--color-text-dark, #333); 
+    font-size: 0.9rem; 
+    text-align: left; 
     vertical-align: middle;
-    font-size: 1rem;
-    color: black;
+}
+/* Alineación específica de celdas (ajusta según las columnas de tu CategoriasProductoTable) */
+.tablaCategoriaProductos td:nth-child(1), /* Nombre */
+.tablaCategoriaProductos td:nth-child(2)  /* Descripción */
+{ text-align: left; }
+
+.tablaCategoriaProductos td:nth-child(3), /* Vida Útil */
+.tablaCategoriaProductos td:nth-child(4), /* Tipo de Uso */
+.tablaCategoriaProductos td:nth-child(5), /* Estado */
+.tablaCategoriaProductos td:nth-child(6)  /* Acciones */
+{ text-align: center; }
+
+.tablaCategoriaProductos tbody tr:nth-child(even) { background-color: var(--color-table-row-even, #f8eaf5); }
+.tablaCategoriaProductos tbody tr:hover { background-color: var(--color-table-row-hover, #f3d9ec); }
+
+/* === ESTILOS DEL COMPONENTE SWITCH === */
+.switch { position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 34px; cursor: pointer; transition: 0.4s; }
+.slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.4s; }
+input:checked+.slider { background-color: #2ecc71; } /* Verde para activo */
+input:checked+.slider:before { transform: translateX(16px); }
+.slider.round { border-radius: 34px; }
+.slider.round:before { border-radius: 50%; }
+
+/* === BOTONES DE ACCIÓN EN TABLA === */
+/* Asumiendo que el <td> de acciones tiene una clase como 'categorias-producto-table-actions' */
+/* o que los botones tienen la clase .table-action-button-categoria */
+td.categorias-producto-table-actions, /* Si la clase está en el TD */
+div.categorias-producto-table-actions   /* Si los botones están en un DIV dentro del TD */
+{
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 10px;
+}
+.table-action-button-categoria { /* Tu clase para los botones de acción de la tabla */
+    padding: 8px 10px; 
+    font-size: 0.9rem; 
+    border: none; 
+    border-radius: 5px;
+    color: white; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease;
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center;
+    margin: 0; /* Para que gap funcione bien */
+}
+/* Colores consistentes */
+.table-action-button-categoria:nth-child(1), /* Ver */
+.table-action-button-categoria:nth-child(2)  /* Editar */
+{ background-color: var(--color-admin-action-view, #fc8de4); }
+
+.table-action-button-categoria:nth-child(1):hover,
+.table-action-button-categoria:nth-child(2):hover
+{ background-color: var(--color-admin-action-view-hover, #d66abf); }
+
+.table-action-button-categoria:nth-child(3) { /* Eliminar */
+    background-color: var(--color-admin-action-delete, #b660a3);
+}
+.table-action-button-categoria:nth-child(3):hover {
+    background-color: var(--color-admin-action-delete-hover, #6d0b58); /* Era #c0392b, unificando */
 }
 
-.tablaCategoriaProductos th:nth-child(3),
-.tablaCategoriaProductos td:nth-child(3) {
-    text-align: left;
-}
 
-.tablaCategoriaProductos th:nth-child(4),
-.tablaCategoriaProductos td:nth-child(4) {
-    text-align: left;
-}
-
-.tablaCategoriaProductos tbody tr:nth-child(even) {
-    background-color: #f8eaf5;
-}
-
-.tablaCategoriaProductos tbody tr:hover {
-    background-color: #f3d9ec;
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 24px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    border-radius: 34px;
-    cursor: pointer;
-    transition: 0.4s;
-}
-
-.slider:before {
-    content: "";
-    position: absolute;
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.4s;
-}
-
-input:checked+.slider {
-    background-color: #2ecc71;
-}
-
-input:checked+.slider:before {
-    transform: translateX(16px);
+.tablaCategoriaProductos td:last-child {
+    /* Asumiendo que las acciones están en la última celda */
+    display: flex;
+    justify-content: center;
+    /* O 'flex-start' o 'space-around' según prefieras */
+    align-items: center;
+    gap: 8px;
+    /* Ajusta este valor para el espaciado deseado, ej. 10px */
 }
 
 .table-action-button-categoria {
     padding: 10px 15px;
-    margin: 0 5px;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    /* Ya lo tienes */
+    margin: 0;
+    /* Asegúrate de quitar márgenes individuales si gap va a controlarlo */
+    /* ... el resto de tus estilos para .table-action-button-categoria ... */
 }
 
-.table-action-button-categoria:nth-child(1) {
-    background-color: #fc8de4;
+/* === ESTILOS DE MODAL === */
+/* Tu clase para el Overlay del modal */
+.categorias-container-modal-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); 
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1050; padding: 20px; box-sizing: border-box; overflow-y: auto;
 }
 
-.table-action-button-categoria:nth-child(1):hover {
-    background-color: #d66abf;
+/* Tus clases para el contenido del modal */
+.modal-content-categoria-detalles,
+.modal-content-categoria-form {
+    background: var(--color-background-light, #fff); 
+    padding: 25px 30px; 
+    border-radius: 10px; /* Más redondeado */
+    width: 100%;
+    /* max-width se define abajo para cada tipo */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25); /* Sombra más definida */
+    max-height: 90vh; overflow-y: auto; box-sizing: border-box;
+    display: flex; 
+    flex-direction: column; 
 }
 
-.table-action-button-categoria:nth-child(2) {
-    background-color: #fc8de4;
+.modal-content-categoria-detalles {
+    max-width: 500px; /* Para el modal de detalles */
+}
+.modal-content-categoria-form {
+    max-width: 550px; /* Para el modal de formulario */
 }
 
-.table-action-button-categoria:nth-child(2):hover {
-    background-color: #d66abf;
-}
-
-.table-action-button-categoria:nth-child(3) {
-    background-color: #b660a3;
-}
-
-.table-action-button-categoria:nth-child(3):hover {
-    background-color: #c0392b;
-}
-
-.modal-title {
+.modal-title { /* Tu clase para el título <h2> dentro de los modales */
     text-align: center;
-    color: #6d0b58;
+    color: var(--color-primary-darker, #6d0b58);
     margin-top: 0;
-    margin-bottom: 20px;
-    width: 100%;
+    margin-bottom: 25px; 
+    font-size: 1.6rem;
 }
 
-.modal-content-CategoriaProductos form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
+/* === ESTILOS PARA MODAL DE DETALLES === */
+.modal-content-categoria-detalles .details-section { /* Tu clase .details-section */
+    text-align: left;
+}
+.modal-content-categoria-detalles .details-section p {
+    margin-bottom: 12px; 
+    line-height: 1.6;   
+    color: var(--color-text-dark, #333);
+    font-size: 1rem; 
+}
+.modal-content-categoria-detalles .details-section p strong { 
+    color: var(--color-primary-darker, #6d0b58);     
+    margin-right: 8px;  
+    font-weight: 600;   
+    min-width: 120px;   /* Ajusta para alinear los ":" */
+    display: inline-block; 
+}
+.close-button-categoria-detalles { /* Tu botón "Cerrar" en detalles */
+    background-color: var(--color-admin-hover, #b660a3); 
+    color: white; 
+    display: block; width: auto; min-width: 120px;
+    margin: 25px auto 0; 
+    padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; 
+    font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
+}
+.close-button-categoria-detalles:hover {
+    background-color: var(--color-primary-darker, #6d0b58); 
 }
 
-.form-group-categoria {
+/* === ESTILOS PARA MODAL DE FORMULARIO (Crear/Editar) === */
+.modal-content-categoria-form form { /* El <form> dentro del modal */
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
+    gap: 18px; 
+}
+.form-group-categoria { /* Tu clase para cada label + input/select/textarea */
+    display: flex;
+    flex-direction: column; 
     gap: 8px;
 }
-
-.form-label-categoria {
+.form-label-categoria { /* Tu clase para las etiquetas */
     font-weight: 600;
-    color: #6d0b58;
-    font-size: 1rem;
+    color: var(--color-primary-darker, #6d0b58);
+    font-size: 0.95rem;
+    text-align: left;
 }
-
 .form-input-categoria,
 .form-textarea-categoria,
-.form-select-categoria {
+.form-select-categoria { /* Tus clases para los campos */
     width: 100%;
     padding: 10px 12px;
-    font-size: 1rem;
-    border: 1px solid #c287b5;
+    border: 1px solid var(--color-border-light, #c287b5);
     border-radius: 5px;
-    color: #333;
-    background-color: #fff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1rem;
     box-sizing: border-box;
+    background-color: var(--color-background-input, #fff);
+    color: var(--color-text-dark, #333);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
-.form-textarea-categoria {
-    resize: vertical;
-}
-
-.form-select-categoria {
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2C114.7L157.4%2C25.1c-5.3-5.3-13.8-5.3-19.1%2C0l-129.6%2C129.6c-5.3%2C5.3-5.3%2C13.8%2C0%2C19.1l19.1%2C19.1c5.3%2C5.3%2C13.8%2C5.3%2C19.1%2C0L148.3%2C175l106.3%2C106.3c5.3%2C5.3%2C13.8%2C5.3%2C19.1%2C0l19.1-19.1C292.3%2C128.5%2C292.3%2C120%2C287%2C114.7z%22%2F%3E%3C%2Fsvg%3E');
-    background-repeat: no-repeat;
-    background-position: right 10px top 50%;
-    background-size: 12px auto;
-}
-
 .form-input-categoria:focus,
 .form-textarea-categoria:focus,
 .form-select-categoria:focus {
-    border-color: #b660a3;
-    box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
+    border-color: var(--color-admin-hover, #b660a3);
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
     outline: none;
 }
-
-.form-select-categoria option[value=""]:first-child {
-    color: #999;
+.form-textarea-categoria {
+    min-height: 80px;
+    resize: vertical;
+}
+.form-select-categoria {
+    cursor: pointer;
+    /* Tu background-image para la flecha del select se mantiene si está correcto */
+}
+.required-asterisk { /* Tu clase para el asterisco */
+    color: red;
+    margin-left: 2px;
+}
+/* Mensajes de error para el formulario (si usas una clase específica) */
+.error-categoria-producto { 
+    color: var(--color-danger, red);
+    font-size: 0.85rem;
+    margin-top: 5px; /* O según se vea mejor */
 }
 
-.form-actions-categoria {
+/* Botones de acción para el formulario modal */
+.form-actions-categoria { /* Tu clase para el contenedor de botones */
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border-light, #eee);
+    width: 100%;
 }
-
-.form-button-guardar-categoria {
-    background-color: #b660a3;
-    color: white;
+.form-button-guardar-categoria, 
+.form-button-cancelar-categoria { 
     padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 500;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
     transition: background-color 0.3s ease;
-    flex-grow: 1;
+    flex-grow: 0; /* Para que no crezcan demasiado, o ajustar flex-basis */
+    min-width: 140px; 
     text-align: center;
 }
-
+.form-button-guardar-categoria { /* Botón Guardar/Actualizar */
+    background-color: var(--color-admin-hover, #b660a3);
+    color: white;
+}
 .form-button-guardar-categoria:hover {
-    background-color: #6d0b58;
+    background-color: var(--color-primary-darker, #6d0b58);
 }
-
-.form-button-cancelar-categoria {
-    background-color: #95a5a6;
+.form-button-cancelar-categoria { /* Botón Cancelar */
+    background-color: #95a5a6; 
     color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-    flex-grow: 1;
-    text-align: center;
 }
-
 .form-button-cancelar-categoria:hover {
     background-color: #7f8c8d;
 }
 
-.details-content-categoria p {
-    margin-bottom: 10px;
-    line-height: 1.6;
-    color: #333;
-}
 
-.details-content-categoria strong {
-    color: #6d0b58;
-    margin-right: 5px;
-}
-
-.close-button-categoria-detalles {
-    background-color: #b660a3;
-    color: white;
-    display: block;
-    width: 100%;
-    max-width: 200px;
-    margin-top: 20px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.close-button-categoria-detalles:hover {
-    background-color: #6d0b58;
-}
-
-.productos-list {
-    margin-top: 15px;
-    padding-left: 20px;
-    list-style-type: disc;
-    color: #34495e;
-    font-size: 0.9rem;
-}
-
+/* === ESTILOS RESPONSIVOS === */
 @media (max-width: 768px) {
-    .CategoriaProductoContent {
-        padding: 15px;
-        margin-left: 0;
-        max-width: 100%;
-        align-items: stretch;
+    .categorias-producto-admin-main-content { /* Antes .CategoriaProductoContent */
+        margin-left: 0; padding: 15px; 
     }
+    .categorias-producto-admin-content-wrapper { padding: 0; }
 
-    .BarraBusquedaBotonAgregarCategoriaProductos {
-        flex-direction: column;
-        gap: 15px;
+    .categorias-producto-admin-actions-bar { /* Antes .BarraBusquedaBotonAgregarCategoriaProductos */
+        flex-direction: column; gap: 15px; 
     }
-
-    .inputBarraBusquedaCategoriaProductos {
-        max-width: 100%;
-        margin-right: 0;
-    }
-
-    .botonAgregarCategoriaProducto {
+    .categorias-producto-admin-search-bar input, /* Antes .inputBarraBusquedaCategoriaProductos */
+    .categorias-producto-admin-add-button { /* Antes .botonAgregarCategoriaProducto */
         width: 100%;
     }
+    .categorias-producto-admin-add-button { height: auto; padding: 12px 20px; }
 
-    .tablaCategoriaProductos th,
+    .tablaCategoriaProductos thead { display: none; }
+    .tablaCategoriaProductos, 
+    .tablaCategoriaProductos tbody, 
+    .tablaCategoriaProductos tr, 
     .tablaCategoriaProductos td {
-        padding: 10px 8px;
-        font-size: 0.8rem;
+        display: block; width: 100%;
     }
-
-    .table-action-button-categoria {
-        padding: 6px 10px;
-        font-size: 1em;
+    .tablaCategoriaProductos tr {
+        margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0); 
+        border-radius: 8px; padding: 10px;
+        background-color: #ffffff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
+    .tablaCategoriaProductos td {
+        text-align: right; padding-left: 50% !important; 
+        position: relative; border: none; 
+        border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; 
+    }
+    .tablaCategoriaProductos td:last-child { border-bottom: none; }
+    .tablaCategoriaProductos td::before {
+        content: attr(data-label); /* Asegúrate que tus <td> tengan data-label */
+        position: absolute; left: 10px; width: calc(50% - 20px); 
+        padding-right: 10px; white-space: nowrap;
+        font-weight: bold; color: var(--color-primary-darker, #6d0b58); text-align: left;
+    }
+    /* Específico para la celda de acciones en móvil */
+    .tablaCategoriaProductos td.categorias-producto-table-actions { /* Si usas esta clase en el TD */
+        text-align: center; padding-left: 0 !important; 
+    }
+    .tablaCategoriaProductos td.categorias-producto-table-actions::before { content: ""; }
+    /* Si los botones están en un div interno con clase 'categorias-producto-table-actions' */
+    div.categorias-producto-table-actions { justify-content: center; padding-top: 8px; }
 
+
+    /* Modales en móvil */
     .modal-content-categoria-detalles,
     .modal-content-categoria-form {
-        padding: 20px;
-        width: 95%;
-        max-width: 95%;
-        max-height: 95vh;
-        overflow-y: auto;
+        max-width: 95%; padding: 20px;
     }
-
-    .modal-content-CategoriaProductos form {
-        gap: 10px;
+    .close-button-categoria-detalles { 
+        width: 100%; max-width: none; padding: 12px; 
     }
-
-    .form-group-categoria {
-        gap: 6px;
-    }
-
-    .form-input-categoria,
-    .form-textarea-categoria,
-    .form-select-categoria {
-        font-size: 0.9rem;
-        padding: 8px 10px;
-    }
-
-    .form-actions-categoria {
+    
+    .form-actions-categoria { /* Botones del modal de formulario */
         flex-direction: column;
-        gap: 10px;
-        width: 100%;
-        max-width: 100%;
     }
-
-    .form-button-guardar-categoria,
-    .form-button-cancelar-categoria {
+    .form-button-guardar-categoria, .form-button-cancelar-categoria {
         width: 100%;
-        padding: 12px;
-        font-size: 1rem;
-    }
-
-    .close-button-categoria-detalles {
-        width: 100%;
-        max-width: 100%;
-        padding: 12px;
-        font-size: 1rem;
     }
 }
