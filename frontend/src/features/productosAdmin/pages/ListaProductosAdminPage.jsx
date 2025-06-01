@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ProductosAdminTable from '../components/ProductosAdminTable';
-import ProductoAdminFormModal from '../components/ProductoAdminFormModal';
+// Importar nuevos modales
+import ProductoAdminCrearModal from '../components/ProductoAdminCrearModal'; // NUEVO
+import ProductoAdminEditarModal from '../components/ProductoAdminEditarModal'; // NUEVO
 import ProductoAdminDetalleModal from '../components/ProductoAdminDetalleModal';
-import ConfirmModal from '../../../shared/components/common/ConfirmModal'; // Genérico
-import ValidationModal from '../../../shared/components/common/ValidationModal'; // Genérico
+import ConfirmModal from '../../../shared/components/common/ConfirmModal';
+import ValidationModal from '../../../shared/components/common/ValidationModal';
 import {
   fetchProductosAdmin,
   saveProductoAdmin,
@@ -18,14 +20,16 @@ function ListaProductosAdminPage() {
   const [productos, setProductos] = useState([]);
   const [busqueda, setBusqueda] = useState('');
 
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  // Estados separados para los modales
+  const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
+  const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
   const [currentProducto, setCurrentProducto] = useState(null);
-  const [formModalType, setFormModalType] = useState('create');
   const [validationMessage, setValidationMessage] = useState('');
+  // formModalType ya no se usa
 
   useEffect(() => {
     setProductos(fetchProductosAdmin());
@@ -37,26 +41,47 @@ function ListaProductosAdminPage() {
       setIsDetailsModalOpen(true);
     } else if (type === 'delete') {
       setIsConfirmDeleteOpen(true);
-    } else { // 'create' or 'edit'
-      setFormModalType(type);
-      setIsFormModalOpen(true);
+    } else if (type === 'create') {
+      setIsCrearModalOpen(true);
+    } else if (type === 'edit') {
+      if (producto) {
+        setIsEditarModalOpen(true);
+      } else {
+        console.error("Intento de abrir modal de edición sin datos de producto.");
+      }
     }
   };
 
-  const handleCloseModals = () => {
-    setIsFormModalOpen(false);
+  const handleCrearModalClose = () => {
+    setIsCrearModalOpen(false);
+  };
+
+  const handleEditarModalClose = () => {
+    setIsEditarModalOpen(false);
+    setCurrentProducto(null);
+  };
+
+  const closeOtherModals = () => {
     setIsDetailsModalOpen(false);
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
-    setCurrentProducto(null);
     setValidationMessage('');
+    if (!isCrearModalOpen && !isEditarModalOpen) {
+        setCurrentProducto(null);
+    }
   };
 
   const handleSave = (productoData) => {
     try {
-      const updatedProductos = saveProductoAdmin(productoData, productos);
+      const isEditing = !!productoData.id;
+      // saveProductoAdmin en tu servicio ya maneja la lógica de id para crear/editar
+      const updatedProductos = saveProductoAdmin(productoData, productos); 
       setProductos(updatedProductos);
-      handleCloseModals();
+      if (isEditing) {
+        handleEditarModalClose();
+      } else {
+        handleCrearModalClose();
+      }
     } catch (error) {
       setValidationMessage(error.message);
       setIsValidationModalOpen(true);
@@ -64,10 +89,10 @@ function ListaProductosAdminPage() {
   };
 
   const handleDelete = () => {
-    if (currentProducto) {
+    if (currentProducto && currentProducto.id) {
       const updatedProductos = deleteProductoAdminById(currentProducto.id, productos);
       setProductos(updatedProductos);
-      handleCloseModals();
+      closeOtherModals();
     }
   };
 
@@ -78,58 +103,73 @@ function ListaProductosAdminPage() {
 
   const filteredProductos = productos.filter(p =>
     p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-    p.categoria.toLowerCase().includes(busqueda.toLowerCase())
+    (p.categoria && p.categoria.toLowerCase().includes(busqueda.toLowerCase()))
   );
 
   return (
-    <div className="productos-admin-page-container"> {/* Nueva clase para la página */}
+    // Usar clase de página principal consistente
+    <div className="productos-admin-page-container"> 
       <NavbarAdmin />
-      <div className="productoAdministradorContent"> {/* Clase del CSS original */}
-        <h1>Gestión de Productos</h1>
-        <div className="search-add-container">
-          <input
-            type="text"
-            placeholder="Buscar producto (nombre, categoría)..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            className="inputBarraBusqueda" // Clase del CSS original
-          />
-          <button className="botonAgregarProductoAdministrador" onClick={() => handleOpenModal('create')}>
-            Agregar Producto
-          </button>
+      {/* Usar clase de contenido principal consistente */}
+      <div className="productos-admin-main-content"> 
+        {/* Wrapper interno para centrar si es necesario */}
+        <div className="productos-admin-content-wrapper">
+            <h1>Gestión de Productos</h1>
+            {/* Contenedor para búsqueda y botón agregar, usar clases consistentes */}
+            <div className="productos-admin-actions-bar"> 
+            <div className="productos-admin-search-bar">
+                <input
+                type="text"
+                placeholder="Buscar producto (nombre, categoría)..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                // className="inputBarraBusqueda" // Reemplazar con clase más específica si es necesario
+                />
+            </div>
+            <button 
+                className="productos-admin-add-button" // Clase específica y consistente
+                onClick={() => handleOpenModal('create')}
+            >
+                Agregar Producto
+            </button>
+            </div>
+            <ProductosAdminTable
+            productos={filteredProductos}
+            onView={(prod) => handleOpenModal('details', prod)}
+            onEdit={(prod) => handleOpenModal('edit', prod)}
+            onDeleteConfirm={(prod) => handleOpenModal('delete', prod)}
+            onToggleEstado={handleToggleEstado}
+            />
         </div>
-        <ProductosAdminTable
-          productos={filteredProductos}
-          onView={(prod) => handleOpenModal('details', prod)}
-          onEdit={(prod) => handleOpenModal('edit', prod)}
-          onDeleteConfirm={(prod) => handleOpenModal('delete', prod)}
-          onToggleEstado={handleToggleEstado}
-        />
       </div>
 
-      <ProductoAdminFormModal
-        isOpen={isFormModalOpen}
-        onClose={handleCloseModals}
+      <ProductoAdminCrearModal
+        isOpen={isCrearModalOpen}
+        onClose={handleCrearModalClose}
+        onSubmit={handleSave}
+      />
+      <ProductoAdminEditarModal
+        isOpen={isEditarModalOpen}
+        onClose={handleEditarModalClose}
         onSubmit={handleSave}
         initialData={currentProducto}
-        modalType={formModalType}
       />
       <ProductoAdminDetalleModal
         isOpen={isDetailsModalOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         producto={currentProducto}
       />
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         onConfirm={handleDelete}
         title="Confirmar Eliminación"
         message={`¿Está seguro de que desea eliminar el producto "${currentProducto?.nombre || ''}"?`}
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
-        onClose={handleCloseModals}
-        title="Aviso"
+        onClose={closeOtherModals}
+        title="Aviso de Productos" // Título específico
         message={validationMessage}
       />
     </div>

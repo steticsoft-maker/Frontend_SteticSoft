@@ -1,5 +1,6 @@
+// src/features/productosAdmin/components/index.js
 export { default as ProductosAdminTable } from "./ProductosAdminTable";
 export { default as ProductoAdminForm } from "./ProductoAdminForm";
-export { default as ProductoAdminFormModal } from "./ProductoAdminFormModal";
+export { default as ProductoAdminCrearModal } from "./ProductoAdminCrearModal"; // NUEVO
+export { default as ProductoAdminEditarModal } from "./ProductoAdminEditarModal"; // NUEVO
 export { default as ProductoAdminDetalleModal } from "./ProductoAdminDetalleModal";
-// Exporta ConfirmDeleteProductoModal si es específico, o usa el de shared
