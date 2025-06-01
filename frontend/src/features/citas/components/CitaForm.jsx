@@ -1,6 +1,6 @@
 // src/features/citas/components/CitaForm.jsx
 import React from 'react';
-import Select from 'react-select'; // Usas react-select para servicios
+import Select from 'react-select';
 import moment from 'moment';
 
 const CitaForm = ({
@@ -10,21 +10,23 @@ const CitaForm = ({
   onEmpleadoChange,
   empleadosDisponibles,
   serviciosDisponibles,
-  isSlotSelection // Indica si el empleado y horario ya vienen del slot seleccionado
+  isSlotSelection
 }) => {
-  const servicioOptions = serviciosDisponibles.map(s => ({
-    value: s.nombre, // Asumiendo que guardas el nombre del servicio
-    label: `<span class="math-inline">\{s\.nombre\} \(</span>${s.precio?.toFixed(2)})`,
-    duracion: s.duracion_estimada || 30 // Asumir duración si no está definida
+
+  const servicioOptions = (serviciosDisponibles || []).map(s => ({
+    value: s.nombre,
+    label: `${s.nombre} ($${(s.precio || 0).toLocaleString('es-CO')}, ${s.duracion_estimada || 30} min)`,
+    duracion: s.duracion_estimada || 30,
+    precio: s.precio || 0
   }));
 
-  const selectedServicioValues = (formData.servicio || []).map(sName =>
-    servicioOptions.find(opt => opt.value === sName)
-  ).filter(Boolean); // Filtrar nulos si algún servicio no se encuentra
+  const selectedServicioValues = (formData.servicio || []).map(nombreServicio =>
+    servicioOptions.find(opt => opt.value === nombreServicio)
+  ).filter(Boolean);
 
   return (
     <>
-      <div className="form-group"> {/* Clase del CSS original */}
+      <div className="form-group">
         <label htmlFor="cliente">Cliente: <span className="required-asterisk">*</span></label>
         <input
           type="text"
@@ -41,14 +43,14 @@ const CitaForm = ({
         <label htmlFor="empleado">Empleado: <span className="required-asterisk">*</span></label>
         <select
           id="empleado"
-          name="empleado" // El backend espera empleadoId, pero el form podría manejar el nombre
-          value={formData.empleado || ""} // El nombre del empleado
-          onChange={onEmpleadoChange} // Esta función debe actualizar empleado y empleadoId
-          disabled={isSlotSelection} // Si el slot ya define un empleado
+          name="empleado"
+          value={formData.empleado || ""}
+          onChange={onEmpleadoChange}
+          disabled={isSlotSelection}
           required
         >
           <option value="">Seleccione un empleado</option>
-          {empleadosDisponibles.map((e) => (
+          {(empleadosDisponibles || []).map((e) => (
             <option key={e.id} value={e.nombre}>{e.nombre}</option>
           ))}
         </select>
@@ -61,22 +63,21 @@ const CitaForm = ({
           isMulti
           options={servicioOptions}
           value={selectedServicioValues}
-          onChange={onServicioChange} // Esta función recibe las opciones seleccionadas
+          onChange={onServicioChange}
           placeholder="Seleccione servicios..."
           closeMenuOnSelect={false}
-          classNamePrefix="react-select-citas" // Para estilos personalizados
-          required
+          classNamePrefix="react-select-citas"
         />
       </div>
 
       <div className="form-group">
         <label>Fecha y Hora Seleccionada:</label>
-        <div className="horario-seleccionado"> {/* Clase del CSS original */}
+        <div className="horario-seleccionado">
           {formData.start ? (
             <>
               <strong>Inicio:</strong> {moment(formData.start).format('DD/MM/YYYY hh:mm A')}
               <br />
-              <strong>Fin:</strong> {formData.end ? moment(formData.end).format('DD/MM/YYYY hh:mm A') : 'Calculando...'}
+              <strong>Fin Calculado:</strong> {formData.end ? moment(formData.end).format('DD/MM/YYYY hh:mm A') : 'Calculando...'}
             </>
           ) : "Seleccione un horario en el calendario."}
         </div>

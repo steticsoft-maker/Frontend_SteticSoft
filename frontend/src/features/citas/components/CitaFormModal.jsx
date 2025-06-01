@@ -8,40 +8,74 @@ import {
 import moment from 'moment';
 
 const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePreseleccionado }) => {
-  const [formData, setFormData] = useState({
-    cliente: '', empleado: '', empleadoId: null, servicio: [], start: null, end: null
-  });
+  const [formData, setFormData] = useState({});
   const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
   const [empleadosDisponibles, setEmpleadosDisponibles] = useState([]);
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // Para el botón de guardar
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setIsLoading(false);
       setError('');
-      setServiciosDisponibles(fetchServiciosDisponiblesParaCitas());
-      setEmpleadosDisponibles(fetchEmpleadosDisponiblesParaCitas());
 
-      const empleadoPorDefecto = initialSlotData?.resource?.empleadoId
-        ? empleadosDisponibles.find(e => e.id === initialSlotData.resource.empleadoId)
-        : null;
+      const serviciosDisp = fetchServiciosDisponiblesParaCitas();
+      const empleadosDisp = fetchEmpleadosDisponiblesParaCitas();
+      setServiciosDisponibles(serviciosDisp);
+      setEmpleadosDisponibles(empleadosDisp);
+
+      let idInit = null;
+      let clienteInit = clientePreseleccionado || '';
+      let empleadoNombreInit = '';
+      let empleadoIdInit = null;
+      let serviciosCitaInit = [];
+      let estadoCitaInit = 'Programada';
+      let startTimeInit = initialSlotData?.start || null;
+      let endTimeInit = null;
+
+      if (initialSlotData?.tipo === 'cita') { // Editando
+        idInit = initialSlotData.id;
+        clienteInit = initialSlotData.cliente;
+        empleadoNombreInit = initialSlotData.empleado;
+        empleadoIdInit = initialSlotData.empleadoId;
+        serviciosCitaInit = initialSlotData.servicios?.map(s => s.nombre) || [];
+        estadoCitaInit = initialSlotData.estadoCita || 'Programada';
+        
+        if (initialSlotData.start && initialSlotData.servicios?.length > 0) {
+          const duracionTotalEdicion = initialSlotData.servicios.reduce((total, s) => total + (parseInt(s.duracion_estimada) || 30), 0);
+          endTimeInit = moment(initialSlotData.start).add(duracionTotalEdicion, 'minutes').toDate();
+        } else {
+          endTimeInit = initialSlotData.end;
+        }
+      } else if (initialSlotData?.resource?.empleadoId) { // Creando desde slot de empleado
+        const empEncontrado = empleadosDisp.find(e => e.id === initialSlotData.resource.empleadoId);
+        if (empEncontrado) {
+          empleadoNombreInit = empEncontrado.nombre;
+          empleadoIdInit = empEncontrado.id;
+        }
+        endTimeInit = startTimeInit ? moment(startTimeInit).add(30, 'minutes').toDate() : null;
+      } else if (startTimeInit) { // Creando desde slot genérico
+         endTimeInit = moment(startTimeInit).add(30, 'minutes').toDate();
+      }
 
       setFormData({
-        cliente: clientePreseleccionado || '',
-        empleado: empleadoPorDefecto?.nombre || '',
-        empleadoId: empleadoPorDefecto?.id || null,
-        servicio: [],
-        start: initialSlotData?.start || null,
-        end: initialSlotData?.end || null, // Inicialmente es el slot de 30min
+        id: idInit,
+        cliente: clienteInit,
+        empleado: empleadoNombreInit,
+        empleadoId: empleadoIdInit,
+        servicio: serviciosCitaInit,
+        start: startTimeInit,
+        end: endTimeInit,
+        estadoCita: estadoCitaInit,
       });
     }
-  }, [isOpen, initialSlotData, clientePreseleccionado, empleadosDisponibles]); // Añadir empleadosDisponibles como dependencia
+  }, [isOpen, initialSlotData, clientePreseleccionado]);
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-  }, []);
+    if (error && name === 'cliente') setError('');
+  }, [error]);
 
   const handleEmpleadoChange = useCallback((e) => {
     const empleadoNombre = e.target.value;
@@ -51,48 +85,47 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
       empleado: empleadoNombre,
       empleadoId: empleadoSeleccionado?.id || null
     }));
-  }, [empleadosDisponibles]);
+    if (error && formData.empleadoId) setError('');
+  }, [empleadosDisponibles, error, formData.empleadoId]);
 
   const handleServicioChange = useCallback((selectedOptions) => {
     const nombresServicios = selectedOptions ? selectedOptions.map(opt => opt.value) : [];
     let duracionTotal = 0;
     if (selectedOptions && formData.start) {
-      duracionTotal = selectedOptions.reduce((total, opt) => {
-        const servicio = serviciosDisponibles.find(s => s.nombre === opt.value);
-        // En tu Citas.jsx original, la duración era servicio.duracion
-        // Asegúrate que tus datos de servicio tengan `duracion_estimada` o ajusta el nombre aquí.
-        return total + (parseInt(servicio?.duracion_estimada) || 30); // Usar duracion_estimada
-      }, 0);
+      duracionTotal = selectedOptions.reduce((total, opt) => total + (parseInt(opt.duracion) || 30), 0);
     }
-
     setFormData(prev => ({
       ...prev,
       servicio: nombresServicios,
       end: prev.start ? moment(prev.start).add(duracionTotal, 'minutes').toDate() : null
     }));
-  }, [formData.start, serviciosDisponibles]);
-
+    if (error && nombresServicios.length > 0) setError('');
+  }, [formData.start, error]);
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+    if (!formData.cliente?.trim()) { setError("El nombre del cliente es obligatorio."); return; }
+    if (!formData.empleadoId) { setError("Debe seleccionar un empleado."); return; }
+    if (!formData.servicio || formData.servicio.length === 0) { setError("Debe seleccionar al menos un servicio."); return; }
+    if (!formData.start) { setError("No se ha definido una hora de inicio para la cita."); return; }
+
     setError('');
     setIsLoading(true);
     try {
-      await onSubmit(formData); // onSubmit ahora es una prop que llama a guardarCita en la página
-      // onClose(); // La página se encargará de cerrar el modal tras el éxito
+      await onSubmit({ ...formData });
     } catch (submissionError) {
       setError(submissionError.message || "Error al guardar la cita.");
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal-citas"> {/* Clase del CSS original */}
-      <div className="modal-content-citas"> {/* Clase del CSS original */}
-        <h3>Agendar Nueva Cita</h3>
+    <div className="modal-citas">
+      <div className="modal-content-citas">
+        <h3>{formData.id ? 'Editar Cita' : 'Agendar Nueva Cita'}</h3>
         <button className="cerrar-modal" onClick={onClose}>&times;</button>
         <form onSubmit={handleSubmitForm}>
           <CitaForm
@@ -102,12 +135,12 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
             onEmpleadoChange={handleEmpleadoChange}
             empleadosDisponibles={empleadosDisponibles}
             serviciosDisponibles={serviciosDisponibles}
-            isSlotSelection={!!initialSlotData?.resource?.empleadoId}
+            isSlotSelection={!!(initialSlotData && initialSlotData.resource?.empleadoId && !initialSlotData.tipo)}
           />
-          {error && <div className="error-message" style={{color: 'red', marginTop: '10px'}}>{error}</div>} {/* Estilo básico */}
-          <div className="botonesModalCitas"> {/* Clase del CSS original */}
+          {error && <div className="error-message">{error}</div>}
+          <div className="botonesModalCitas">
             <button type="submit" disabled={isLoading}>
-                {isLoading ? "Guardando..." : "Guardar Cita"}
+                {isLoading ? "Guardando..." : (formData.id ? "Actualizar Cita" : "Guardar Cita")}
             </button>
             <button type="button" onClick={onClose} disabled={isLoading}>Cancelar</button>
           </div>
@@ -116,5 +149,4 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
     </div>
   );
 };
-
 export default CitaFormModal;
