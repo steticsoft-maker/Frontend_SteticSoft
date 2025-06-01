@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import ClientesTable from "../components/ClientesTable";
-import ClienteFormModal from "../components/ClienteFormModal";
+import ClienteCrearModal from "../components/ClienteCrearModal"; // NUEVO
+import ClienteEditarModal from "../components/ClienteEditarModal"; // NUEVO
 import ClienteDetalleModal from "../components/ClienteDetalleModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal"; // Se importa el modal genérico
-import ValidationModal from "../../../shared/components/common/ValidationModal"; // Ya estaba usando el genérico
+import ConfirmModal from "../../../shared/components/common/ConfirmModal";
+import ValidationModal from "../../../shared/components/common/ValidationModal";
 import {
   fetchClientes,
   saveCliente,
@@ -18,13 +19,16 @@ function ListaClientesPage() {
   const [clientes, setClientes] = useState([]);
   const [busqueda, setBusqueda] = useState("");
 
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  // Estados separados para los modales de crear y editar
+  const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
+  const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
+  // Otros estados de modal
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
   const [currentCliente, setCurrentCliente] = useState(null);
-  const [formModalType, setFormModalType] = useState("create");
+  // formModalType ya no es necesario aquí, cada modal sabe su propósito
   const [validationMessage, setValidationMessage] = useState("");
 
   useEffect(() => {
@@ -32,47 +36,77 @@ function ListaClientesPage() {
   }, []);
 
   const handleOpenModal = (type, cliente = null) => {
-    setCurrentCliente(cliente);
+    // console.log(`[ListaClientesPage] handleOpenModal - Type: ${type}`, cliente);
+    setCurrentCliente(cliente); // Necesario para editar, ver, y eliminar
     if (type === "details") {
       setIsDetailsModalOpen(true);
     } else if (type === "delete") {
       setIsConfirmDeleteOpen(true);
-    } else {
-      // 'create' or 'edit'
-      setFormModalType(type);
-      setIsFormModalOpen(true);
+    } else if (type === "create") {
+      // Renombrado de 'agregar' para consistencia
+      setIsCrearModalOpen(true);
+    } else if (type === "edit") {
+      if (cliente) {
+        // Asegurarse que hay datos para editar
+        setIsEditarModalOpen(true);
+      } else {
+        console.error(
+          "Se intentó abrir modal de edición sin datos de cliente."
+        );
+      }
     }
   };
 
-  const handleCloseModals = () => {
-    setIsFormModalOpen(false);
+  // Cierre para el modal de CREAR
+  const handleCrearModalClose = () => {
+    setIsCrearModalOpen(false);
+    // No es necesario setCurrentCliente(null) aquí si solo se usa para editar/ver/eliminar
+  };
+
+  // Cierre para el modal de EDITAR
+  const handleEditarModalClose = () => {
+    setIsEditarModalOpen(false);
+    setCurrentCliente(null); // Limpiar cliente actual
+  };
+
+  // Cierre para otros modales
+  const closeOtherModals = () => {
     setIsDetailsModalOpen(false);
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
-    setCurrentCliente(null);
     setValidationMessage("");
+    if (!isCrearModalOpen && !isEditarModalOpen) {
+      // Solo si los modales de form no están abiertos
+      setCurrentCliente(null);
+    }
   };
 
   const handleSave = (clienteData) => {
     try {
+      const isEditing = !!clienteData.id; // Determinar si es edición basado en la presencia de ID
       const updatedClientes = saveCliente(
         clienteData,
         clientes,
-        currentCliente?.id
+        isEditing ? clienteData.id : null // Pasar el ID del cliente si se está editando
       );
       setClientes(updatedClientes);
-      handleCloseModals();
+      if (isEditing) {
+        handleEditarModalClose();
+      } else {
+        handleCrearModalClose();
+      }
     } catch (error) {
       setValidationMessage(error.message);
       setIsValidationModalOpen(true);
+      // No cerrar el modal de formulario automáticamente en caso de error
     }
   };
 
   const handleDelete = () => {
-    if (currentCliente) {
+    if (currentCliente && currentCliente.id) {
       const updatedClientes = deleteClienteById(currentCliente.id, clientes);
       setClientes(updatedClientes);
-      handleCloseModals();
+      closeOtherModals();
     }
   };
 
@@ -83,22 +117,18 @@ function ListaClientesPage() {
 
   const filteredClientes = clientes.filter(
     (c) =>
-      `${c.nombre} ${c.apellido}`
+      `${c.nombre || ""} ${c.apellido || ""}` // Asegurar que nombre y apellido existan
         .toLowerCase()
         .includes(busqueda.toLowerCase()) ||
       (c.numeroDocumento &&
-        c.numeroDocumento.toLowerCase().includes(busqueda.toLowerCase())) || // Añadida verificación para numeroDocumento
-      (c.email && c.email.toLowerCase().includes(busqueda.toLowerCase())) // Añadida verificación para email
+        c.numeroDocumento.toLowerCase().includes(busqueda.toLowerCase())) ||
+      (c.email && c.email.toLowerCase().includes(busqueda.toLowerCase()))
   );
 
   return (
     <div className="clientes-page-container">
-      {" "}
-      {/* Nueva clase para la página */}
       <NavbarAdmin />
       <div className="main-content-clientes">
-        {" "}
-        {/* Mantener clase original para el área de contenido */}
         <h1>Gestión de Clientes</h1>
         <div className="containerAgregarbuscarClientes">
           <input
@@ -110,7 +140,7 @@ function ListaClientesPage() {
           />
           <button
             className="buttonAgregarcliente"
-            onClick={() => handleOpenModal("create")}
+            onClick={() => handleOpenModal("create")} // Llamar con 'create'
           >
             Agregar Cliente
           </button>
@@ -123,21 +153,26 @@ function ListaClientesPage() {
           onToggleEstado={handleToggleEstado}
         />
       </div>
-      <ClienteFormModal
-        isOpen={isFormModalOpen}
-        onClose={handleCloseModals}
+
+      <ClienteCrearModal
+        isOpen={isCrearModalOpen}
+        onClose={handleCrearModalClose}
         onSubmit={handleSave}
-        initialData={currentCliente}
-        modalType={formModalType}
+      />
+      <ClienteEditarModal
+        isOpen={isEditarModalOpen}
+        onClose={handleEditarModalClose}
+        onSubmit={handleSave}
+        initialData={currentCliente} // Solo el modal de editar necesita initialData
       />
       <ClienteDetalleModal
         isOpen={isDetailsModalOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         cliente={currentCliente}
       />
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         onConfirm={handleDelete}
         title="Confirmar Eliminación de Cliente"
         message={`¿Estás seguro de que deseas eliminar al cliente "${
@@ -150,8 +185,8 @@ function ListaClientesPage() {
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
-        onClose={handleCloseModals}
-        title="Aviso de Clientes" // Título ajustado para el contexto
+        onClose={closeOtherModals}
+        title="Aviso de Clientes"
         message={validationMessage}
       />
     </div>
