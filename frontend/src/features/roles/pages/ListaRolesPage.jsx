@@ -2,9 +2,12 @@
 import React, { useState, useEffect } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import RolesTable from "../components/RolesTable";
-import RolFormModal from "../components/RolFormModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal"; // Se importa el modal genérico
+// Importaremos los nuevos modales separados
+import RolCrearModal from "../components/RolCrearModal"; // NUEVO
+import RolEditarModal from "../components/RolEditarModal"; // NUEVO
+import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import RolDetailsModal from "../components/RolDetailsModal";
+import ValidationModal from "../../../shared/components/common/ValidationModal"; // Asumiendo que quieres usarlo
 import {
   fetchRoles,
   saveRole,
@@ -17,15 +20,17 @@ function ListaRolesPage() {
   const [roles, setRoles] = useState([]);
   const [busqueda, setBusqueda] = useState("");
 
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  // Estados separados para los modales de crear y editar
+  const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
+  const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
+  // Otros estados de modal
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false); // Para el ValidationModal
 
   const [currentRole, setCurrentRole] = useState(null);
-  const [modalType, setModalType] = useState(""); // 'create', 'edit'
-  // Se recomienda añadir un estado para el mensaje de validación si usas ValidationModal
-  // const [validationMessage, setValidationMessage] = useState('');
-  // const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
+  const [validationMessage, setValidationMessage] = useState(""); // Para el ValidationModal
+  // modalType ya no es necesario aquí
 
   useEffect(() => {
     setRoles(fetchRoles());
@@ -37,11 +42,13 @@ function ListaRolesPage() {
       role.nombre === "Administrador" &&
       (type === "edit" || type === "delete")
     ) {
-      alert(
+      setValidationMessage(
+        // Usar ValidationModal en lugar de alert
         `El rol 'Administrador' no puede ser ${
           type === "edit" ? "editado" : "eliminado"
         }.`
       );
+      setIsValidationModalOpen(true);
       return;
     }
     setCurrentRole(role);
@@ -49,45 +56,62 @@ function ListaRolesPage() {
       setIsDetailsModalOpen(true);
     } else if (type === "delete") {
       setIsDeleteModalOpen(true);
-    } else {
-      // create or edit
-      setModalType(type);
-      setIsFormModalOpen(true);
+    } else if (type === "create") {
+      // Usar 'create' consistentemente
+      setIsCrearModalOpen(true);
+    } else if (type === "edit") {
+      if (role) {
+        setIsEditarModalOpen(true);
+      } else {
+        console.error("Intento de abrir modal de edición sin datos de rol.");
+      }
     }
   };
 
-  const handleCloseModals = () => {
-    setIsFormModalOpen(false);
+  const handleCrearModalClose = () => {
+    setIsCrearModalOpen(false);
+  };
+
+  const handleEditarModalClose = () => {
+    setIsEditarModalOpen(false);
+    setCurrentRole(null);
+  };
+
+  const closeOtherModals = () => {
     setIsDetailsModalOpen(false);
     setIsDeleteModalOpen(false);
-    setCurrentRole(null);
-    setModalType("");
-    // setValidationMessage('');
-    // setIsValidationModalOpen(false);
+    setIsValidationModalOpen(false);
+    setValidationMessage("");
+    if (!isCrearModalOpen && !isEditarModalOpen) {
+      setCurrentRole(null);
+    }
   };
 
   const handleSaveRol = (roleData) => {
     try {
-      const updatedRoles = saveRole(roleData, roles);
+      const isEditing = !!roleData.id;
+      const updatedRoles = saveRole(roleData, roles); // saveRole ya maneja si es creación o edición por el id
       setRoles(updatedRoles);
-      handleCloseModals();
+      if (isEditing) {
+        handleEditarModalClose();
+      } else {
+        handleCrearModalClose();
+      }
     } catch (error) {
-      alert(error.message); // Considera usar ValidationModal aquí también
-      // setValidationMessage(error.message);
-      // setIsValidationModalOpen(true);
+      setValidationMessage(error.message); // Usar ValidationModal
+      setIsValidationModalOpen(true);
     }
   };
 
   const handleDeleteRol = () => {
-    if (currentRole) {
+    if (currentRole && currentRole.id) {
       try {
         const updatedRoles = deleteRoleById(currentRole.id, roles);
         setRoles(updatedRoles);
-        handleCloseModals();
+        closeOtherModals();
       } catch (error) {
-        alert(error.message); // Considera usar ValidationModal
-        // setValidationMessage(error.message);
-        // setIsValidationModalOpen(true);
+        setValidationMessage(error.message); // Usar ValidationModal
+        setIsValidationModalOpen(true);
       }
     }
   };
@@ -96,15 +120,17 @@ function ListaRolesPage() {
     try {
       const roleToToggle = roles.find((r) => r.id === roleId);
       if (roleToToggle && roleToToggle.nombre === "Administrador") {
-        alert("El rol 'Administrador' no puede ser anulado/activado.");
+        setValidationMessage(
+          "El rol 'Administrador' no puede ser anulado/activado."
+        ); // Usar ValidationModal
+        setIsValidationModalOpen(true);
         return;
       }
       const updatedRoles = toggleRoleStatus(roleId, roles);
       setRoles(updatedRoles);
     } catch (error) {
-      alert(error.message); // Considera usar ValidationModal
-      // setValidationMessage(error.message);
-      // setIsValidationModalOpen(true);
+      setValidationMessage(error.message); // Usar ValidationModal
+      setIsValidationModalOpen(true);
     }
   };
 
@@ -116,8 +142,6 @@ function ListaRolesPage() {
 
   return (
     <div className="rol-container">
-      {" "}
-      {/* Usa la clase principal para el layout */}
       <NavbarAdmin />
       <div className="rol-content">
         <h1>Gestión de Roles</h1>
@@ -144,21 +168,27 @@ function ListaRolesPage() {
           onToggleAnular={handleToggleAnular}
         />
       </div>
-      <RolFormModal
-        isOpen={isFormModalOpen}
-        onClose={handleCloseModals}
+
+      {/* Modales separados */}
+      <RolCrearModal
+        isOpen={isCrearModalOpen}
+        onClose={handleCrearModalClose}
+        onSubmit={handleSaveRol}
+      />
+      <RolEditarModal
+        isOpen={isEditarModalOpen}
+        onClose={handleEditarModalClose}
         onSubmit={handleSaveRol}
         initialData={currentRole}
-        modalType={modalType}
       />
       <RolDetailsModal
         isOpen={isDetailsModalOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         role={currentRole}
       />
       <ConfirmModal
         isOpen={isDeleteModalOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         onConfirm={handleDeleteRol}
         title="Confirmar Eliminación de Rol"
         message={`¿Estás seguro de que deseas eliminar el rol "${
@@ -167,14 +197,12 @@ function ListaRolesPage() {
         confirmText="Eliminar"
         cancelText="Cancelar"
       />
-      {/* // Si decides usar ValidationModal consistentemente:
-        <ValidationModal
-          isOpen={isValidationModalOpen}
-          onClose={handleCloseModals}
-          title="Aviso de Roles"
-          message={validationMessage}
-        /> 
-      */}
+      <ValidationModal
+        isOpen={isValidationModalOpen}
+        onClose={closeOtherModals}
+        title="Aviso de Roles"
+        message={validationMessage}
+      />
     </div>
   );
 }

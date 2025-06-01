@@ -316,6 +316,27 @@ input:checked+.slider:before {
     margin-bottom: 20px;
 }
 
+/* Añadir a Rol.css si no existen o para ajustar */
+.rol-admin-message {
+    color: var(--color-danger, #e74c3c);
+    background-color: var(--color-background-warning-light, #fff3cd);
+    border: 1px solid var(--color-border-warning, #ffeeba);
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.rol-error-permisos {
+    color: var(--color-danger, red);
+    font-size: 0.85rem;
+    text-align: center;
+    /* O donde prefieras mostrarlo */
+    margin-top: -10px;
+    /* Ajusta según sea necesario */
+    margin-bottom: 10px; }
+
 /* Mensaje de admin */
 .rol-modalContent-form .rol-admin-message {
     text-align: center;
