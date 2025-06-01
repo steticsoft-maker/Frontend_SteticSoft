@@ -1,12 +1,25 @@
 // src/features/categoriasServicioAdmin/components/CategoriasServicioTable.jsx
-import React from 'react';
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import React from "react";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
-const CategoriasServicioTable = ({ categorias, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
+const CategoriasServicioTable = ({
+  categorias,
+  onView,
+  onEdit,
+  onDeleteConfirm,
+  onToggleEstado,
+}) => {
   return (
-    <table className="tablaCategoria"> {/* Usar clase del CSS original */}
+    // En tu CSS, .tablaCategoria se aplica directamente a la etiqueta <table>
+    // No hay un <div> contenedor con esa clase en el JSX que me pasaste.
+    // Si lo hubiera, el problema de whitespace sería DENTRO del <table>.
+    // Asumiendo que es directamente <table className="tablaCategoria">
+    <table className="tablaCategoria">
+      {/*SIN ESPACIOS/SALTOS ANTES DE THEAD*/}
       <thead>
+        {/*SIN ESPACIOS/SALTOS ANTES DE TR*/}
         <tr>
+          {/*SIN ESPACIOS/SALTOS ANTES DEL PRIMER TH*/}
           <th>Nombre</th>
           <th>Descripción</th>
           <th>Estado</th>
@@ -14,8 +27,10 @@ const CategoriasServicioTable = ({ categorias, onView, onEdit, onDeleteConfirm, 
         </tr>
       </thead>
       <tbody>
-        {categorias.map((cat, index) => ( // Usar index si no hay ID único garantizado en los datos iniciales
+        {/*SIN ESPACIOS/SALTOS ANTES DEL MAP*/}
+        {categorias.map((cat, index) => (
           <tr key={cat.id || index}>
+            {/*SIN ESPACIOS/SALTOS ANTES DEL PRIMER TD*/}
             <td>{cat.nombre}</td>
             <td>{cat.descripcion || "—"}</td>
             <td>
@@ -28,14 +43,26 @@ const CategoriasServicioTable = ({ categorias, onView, onEdit, onDeleteConfirm, 
                 <span className="slider round"></span>
               </label>
             </td>
-            <td className="categorias-servicio-actions"> {/* Clase para acciones */}
-              <button className="botonVerDetallesCategoria" onClick={() => onView(cat)} title="Ver Detalles">
+            <td className="categorias-servicio-actions">
+              <button
+                className="botonVerDetallesCategoria"
+                onClick={() => onView(cat)}
+                title="Ver Detalles"
+              >
                 <FaEye />
               </button>
-              <button className="botonEditarCategoria" onClick={() => onEdit(cat)} title="Editar Categoría">
+              <button
+                className="botonEditarCategoria"
+                onClick={() => onEdit(cat)}
+                title="Editar Categoría"
+              >
                 <FaEdit />
               </button>
-              <button className="botonEliminarCategoria" onClick={() => onDeleteConfirm(cat)} title="Eliminar Categoría">
+              <button
+                className="botonEliminarCategoria"
+                onClick={() => onDeleteConfirm(cat)}
+                title="Eliminar Categoría"
+              >
                 <FaTrash />
               </button>
             </td>
@@ -45,4 +72,5 @@ const CategoriasServicioTable = ({ categorias, onView, onEdit, onDeleteConfirm, 
     </table>
   );
 };
+
 export default CategoriasServicioTable;
