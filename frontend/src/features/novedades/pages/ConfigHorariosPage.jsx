@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import HorariosTable from "../components/HorariosTable";
-import HorarioFormModal from "../components/HorarioFormModal";
+import HorarioCrearModal from "../components/HorarioCrearModal";
+import HorarioEditarModal from "../components/HorarioEditarModal";
 import HorarioDetalleModal from "../components/HorarioDetalleModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
@@ -11,23 +12,26 @@ import {
   saveHorario,
   deleteHorarioById,
   toggleHorarioEstado,
-  getEmpleadosParaHorarios, // Para pasar a la tabla y otros componentes si es necesario
+  getEmpleadosParaHorarios,
 } from "../services/horariosService";
-import "../css/ConfigHorarios.css"; // Nuevo CSS
+import "../css/ConfigHorarios.css";
 
 function ConfigHorariosPage() {
   const [horarios, setHorarios] = useState([]);
-  const [empleados, setEmpleados] = useState([]); // Para pasar a la tabla
+  const [empleados, setEmpleados] = useState([]);
   const [search, setSearch] = useState("");
 
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  // Estados para los nuevos modales
+  const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
+  const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
+  // Los otros modales se mantienen
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
   const [currentHorario, setCurrentHorario] = useState(null);
-  const [formModalType, setFormModalType] = useState("agregar");
   const [validationMessage, setValidationMessage] = useState("");
+  // formModalType ya no es necesario
 
   useEffect(() => {
     setHorarios(fetchHorarios());
@@ -40,30 +44,57 @@ function ConfigHorariosPage() {
       setIsDetailsModalOpen(true);
     } else if (type === "delete") {
       setIsConfirmDeleteOpen(true);
-    } else {
-      // 'agregar' o 'editar'
-      setFormModalType(type);
-      setIsFormModalOpen(true);
+    } else if (type === "agregar") {
+      // Para abrir el modal de creación
+      setIsCrearModalOpen(true);
+    } else if (type === "editar") {
+      // Para abrir el modal de edición
+      if (horario) {
+        // Asegurarse de que hay datos para editar
+        setIsEditarModalOpen(true);
+      } else {
+        console.error(
+          "Intento de abrir modal de edición sin datos de horario."
+        );
+      }
     }
   };
 
-  const handleCloseModals = () => {
-    setIsFormModalOpen(false);
+  // Funciones de cierre específicas para cada modal de formulario
+  const handleCrearModalClose = () => {
+    setIsCrearModalOpen(false);
+    // No es necesario resetear currentHorario aquí, ya que solo se usa para edición/detalle/borrado
+  };
+
+  const handleEditarModalClose = () => {
+    setIsEditarModalOpen(false);
+    setCurrentHorario(null); // Limpiar horario actual después de editar o cancelar
+  };
+
+  // Cierre para los otros modales
+  const closeOtherModals = () => {
     setIsDetailsModalOpen(false);
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
-    setCurrentHorario(null);
     setValidationMessage("");
+    // Solo limpiar currentHorario si ninguno de los modales de formulario está abierto
+    if (!isCrearModalOpen && !isEditarModalOpen) {
+      setCurrentHorario(null);
+    }
   };
 
   const handleSave = (horarioData) => {
     try {
+      // La función saveHorario ya sabe si es creación o edición por la presencia de horarioData.id
       const updatedHorarios = saveHorario(horarioData, horarios);
       setHorarios(updatedHorarios);
-      handleCloseModals();
+      // Cerrar el modal correspondiente
+      if (isCrearModalOpen) handleCrearModalClose();
+      if (isEditarModalOpen) handleEditarModalClose();
     } catch (error) {
       setValidationMessage(error.message);
       setIsValidationModalOpen(true);
+      // No cerramos el modal de formulario aquí para que el usuario pueda corregir errores de validación.
     }
   };
 
@@ -71,7 +102,7 @@ function ConfigHorariosPage() {
     if (currentHorario) {
       const updatedHorarios = deleteHorarioById(currentHorario.id, horarios);
       setHorarios(updatedHorarios);
-      handleCloseModals();
+      closeOtherModals();
     }
   };
 
@@ -85,7 +116,6 @@ function ConfigHorariosPage() {
     }
   };
 
-  // Filtrar por nombre de empleado
   const filteredHorarios = horarios.filter((h) => {
     const empleado = empleados.find((e) => e.id === parseInt(h.empleadoId));
     return empleado
@@ -95,29 +125,21 @@ function ConfigHorariosPage() {
 
   return (
     <div className="novedades-page-container">
-      {" "}
-      {/* Clase principal para la página */}
       <NavbarAdmin />
       <div className="novedades-content">
-        {" "}
-        {/* Contenedor para el contenido principal */}
         <h1>Configuración de Horarios de Empleados (Novedades)</h1>
-        <div className="accionesBarraBusqueda-botonAgregar">
-          {" "}
-          {/* Clase del CSS original de Horarios.css */}
+        <div className="novedades-actions-bar">
           <input
-            className="barraBusquedaHorarioCitas" // Clase del CSS original
+            className="novedades-search-bar"
             type="text"
             placeholder="Buscar por encargado..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <button
-            className="botonAgregarHorario"
-            onClick={() => handleOpenModal("agregar")}
+            className="novedades-add-button"
+            onClick={() => handleOpenModal("agregar")} // Llama a 'agregar' para el modal de creación
           >
-            {" "}
-            {/* Clase del CSS original */}
             Agregar Horario
           </button>
         </div>
@@ -130,28 +152,35 @@ function ConfigHorariosPage() {
           onToggleEstado={handleToggleEstado}
         />
       </div>
-      <HorarioFormModal
-        isOpen={isFormModalOpen}
-        onClose={handleCloseModals}
+
+      {/* Renderizar los nuevos modales */}
+      <HorarioCrearModal
+        isOpen={isCrearModalOpen}
+        onClose={handleCrearModalClose}
         onSubmit={handleSave}
-        initialData={currentHorario}
-        modalType={formModalType}
       />
+      <HorarioEditarModal
+        isOpen={isEditarModalOpen}
+        onClose={handleEditarModalClose}
+        onSubmit={handleSave}
+        initialData={currentHorario} // Solo el modal de editar necesita initialData
+      />
+
       <HorarioDetalleModal
         isOpen={isDetailsModalOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         horario={currentHorario}
       />
-      <ConfirmModal // Usar el genérico de shared
+      <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         onConfirm={handleDelete}
         title="Confirmar Eliminación"
         message={`¿Está seguro de que desea eliminar este horario?`}
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
-        onClose={handleCloseModals}
+        onClose={closeOtherModals}
         title="Aviso de Novedades"
         message={validationMessage}
       />

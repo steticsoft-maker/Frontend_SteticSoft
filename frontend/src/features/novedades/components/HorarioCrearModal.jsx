@@ -1,29 +1,28 @@
-// src/features/novedades/components/HorarioFormModal.jsx
+// src/features/novedades/components/HorarioCrearModal.jsx
 import React, { useState, useEffect } from 'react';
 import HorarioForm from './HorarioForm';
-import { getEmpleadosParaHorarios } from '../services/horariosService'; // Asumiendo que los empleados se obtienen aquí
+import { getEmpleadosParaHorarios } from '../services/horariosService';
 
-const HorarioFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType }) => {
-  const [formData, setFormData] = useState({
-    empleadoId: '', fechaInicio: '', fechaFin: '', dias: [{ dia: '', horaInicio: '', horaFin: '' }], estado: true
+const HorarioCrearModal = ({ isOpen, onClose, onSubmit }) => {
+  const getInitialFormState = () => ({
+    empleadoId: '',
+    fechaInicio: '',
+    fechaFin: '',
+    dias: [{ dia: '', horaInicio: '', horaFin: '' }],
+    estado: true // Nuevos horarios activos por defecto
   });
+
+  const [formData, setFormData] = useState(getInitialFormState());
   const [empleadosDisponibles, setEmpleadosDisponibles] = useState([]);
   const [formErrors, setFormErrors] = useState({});
-  const isEditing = modalType === 'edit';
 
   useEffect(() => {
     if (isOpen) {
       setEmpleadosDisponibles(getEmpleadosParaHorarios());
-      if (initialData) {
-        setFormData({ ...initialData, dias: initialData.dias && initialData.dias.length > 0 ? initialData.dias : [{ dia: '', horaInicio: '', horaFin: '' }] });
-      } else { // Creación
-        setFormData({
-          empleadoId: '', fechaInicio: '', fechaFin: '', dias: [{ dia: '', horaInicio: '', horaFin: '' }], estado: true
-        });
-      }
+      setFormData(getInitialFormState()); // Resetear formulario al abrir
       setFormErrors({});
     }
-  }, [initialData, isOpen]);
+  }, [isOpen]);
 
   const handleFormChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -36,7 +35,10 @@ const HorarioFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType })
       newDias[index] = { ...newDias[index], [field]: value };
       return { ...prev, dias: newDias };
     });
-     if (formErrors[`dias[<span class="math-inline">\{index\}\]\.</span>{field}`]) setFormErrors(prev => ({ ...prev, [`dias[<span class="math-inline">\{index\}\]\.</span>{field}`]: null }));
+    // Limpiar error específico del campo día si existe
+    if (formErrors[`dias[${index}].${field}`]) {
+        setFormErrors(prev => ({ ...prev, [`dias[${index}].${field}`]: null }));
+    }
   };
 
   const handleAddDia = () => {
@@ -64,32 +66,30 @@ const HorarioFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType })
         errors.fechaFin = "La fecha de fin no puede ser anterior a la fecha de inicio.";
     }
     formData.dias.forEach((d, i) => {
-        if (!d.dia) errors[`dias[${i}].dia`] = "Día requerido.";
-        if (!d.horaInicio) errors[`dias[${i}].horaInicio`] = "Hora inicio requerida.";
-        if (!d.horaFin) errors[`dias[${i}].horaFin`] = "Hora fin requerida.";
+        if (!d.dia) errors[`dias[${i}].dia`] = `Día ${i + 1} es requerido.`;
+        if (!d.horaInicio) errors[`dias[${i}].horaInicio`] = `Hora inicio día ${i + 1} es requerida.`;
+        if (!d.horaFin) errors[`dias[${i}].horaFin`] = `Hora fin día ${i + 1} es requerida.`;
         if (d.horaInicio && d.horaFin && d.horaInicio >= d.horaFin) {
-            errors[`dias[${i}].horaFin`] = "Hora fin debe ser posterior a hora inicio.";
+            errors[`dias[${i}].horaFin`] = `Hora fin día ${i + 1} debe ser posterior a hora inicio.`;
         }
     });
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-
   const handleSubmitForm = (e) => {
     e.preventDefault();
     if (validateForm()) {
-        onSubmit(formData);
+        onSubmit(formData); // Enviar datos a ConfigHorariosPage
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    // Clases del CSS original: modalHorariosCitas, modal-content-HorariosCitas
     <div className="novedades-modal-overlay">
       <div className="novedades-modal-content">
-        <h3>{isEditing ? 'Editar Horario (Novedad)' : 'Agregar Horario (Novedad)'}</h3>
+        <h3>Agregar Horario (Novedad)</h3>
         <form onSubmit={handleSubmitForm}>
           <HorarioForm
             formData={formData}
@@ -99,13 +99,13 @@ const HorarioFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType })
             onRemoveDia={handleRemoveDia}
             empleadosDisponibles={empleadosDisponibles}
             formErrors={formErrors}
-            isEditing={isEditing}
+            isEditing={false} // Siempre false para creación
           />
-          <div className="botonesAgregarHorarioCitasGuardarCancelar"> {/* Clase del CSS original */}
-            <button className="botonAgregar" type="submit"> {/* Clase del CSS original */}
-              {isEditing ? 'Actualizar Horario' : 'Guardar Horario'}
+          <div className="botonesAgregarHorarioCitasGuardarCancelar">
+            <button className="botonAgregar" type="submit">
+              Guardar Horario
             </button>
-            <button className="botonCerrar" type="button" onClick={onClose}> {/* Clase del CSS original */}
+            <button className="botonCerrar" type="button" onClick={onClose}>
               Cancelar
             </button>
           </div>
@@ -115,4 +115,4 @@ const HorarioFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType })
   );
 };
 
-export default HorarioFormModal;
+export default HorarioCrearModal;

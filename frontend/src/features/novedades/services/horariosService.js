@@ -1,29 +1,100 @@
-// src/features/citas/services/horariosService.js
-const HORARIOS_STORAGE_KEY = "horarios_empleados_steticsoft"; // Usar la misma clave que en Citas.jsx original: "horarios"
+// src/features/novedades/services/horariosService.js
+const HORARIOS_STORAGE_KEY = "horarios_empleados_steticsoft";
+// Clave correcta para obtener los usuarios que pueden ser empleados
+const USUARIOS_STORAGE_KEY = "usuarios_steticsoft";
 
-// Asumimos que los empleados se obtienen de otra parte (ej. localStorage o un servicio de empleados)
-// const EMPLEADOS_DISPONIBLES = JSON.parse(localStorage.getItem("empleados")) || [];
-// No es necesario aquí si ConfigHorariosPage los obtiene por su cuenta para el select.
+// Ejemplo de empleados iniciales (SOLO COMO RESPALDO si localStorage está vacío la primera vez)
+// Lo ideal es que los usuarios/empleados ya existan desde el módulo de Usuarios.
+const INITIAL_EMPLEADOS_EJEMPLO_PARA_HORARIOS = [
+    { id: 1, nombre: "Ana Pérez", rol: "Empleado", estado: true }, // Asegúrate que los IDs coincidan con los usados en horarios
+    { id: 2, nombre: "Carlos López", rol: "Empleado", estado: true },
+    // ... más empleados de ejemplo si es necesario
+];
 
-const INITIAL_HORARIOS = []; // Empezar vacío o con ejemplos si es necesario
+const INITIAL_HORARIOS_EJEMPLO = [
+  {
+    id: 1,
+    empleadoId: 1, // ID de Ana Pérez
+    fechaInicio: "2025-06-01",
+    fechaFin: "2025-06-30",
+    dias: [
+      { dia: "Lunes", horaInicio: "09:00", horaFin: "17:00" },
+      { dia: "Martes", horaInicio: "09:00", horaFin: "17:00" },
+    ],
+    estado: true,
+  },
+  {
+    id: 2,
+    empleadoId: 2, // ID de Carlos López
+    fechaInicio: "2025-07-01",
+    fechaFin: "2025-07-31",
+    dias: [{ dia: "Miércoles", horaInicio: "10:00", horaFin: "18:00" }],
+    estado: false,
+  },
+];
 
 export const fetchHorarios = () => {
   const stored = localStorage.getItem(HORARIOS_STORAGE_KEY);
-  return stored ? JSON.parse(stored) : INITIAL_HORARIOS;
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.error("Error parsing horarios from localStorage", e);
+      localStorage.removeItem(HORARIOS_STORAGE_KEY);
+    }
+  }
+  persistHorarios(INITIAL_HORARIOS_EJEMPLO);
+  return INITIAL_HORARIOS_EJEMPLO;
 };
 
 const persistHorarios = (horarios) => {
   localStorage.setItem(HORARIOS_STORAGE_KEY, JSON.stringify(horarios));
 };
 
-// Obtener la lista de empleados para el select en el formulario de horarios
-// Esta función podría estar en un empleadosService.js más adelante
 export const getEmpleadosParaHorarios = () => {
-  return JSON.parse(localStorage.getItem("empleados")) || []; // Simulación
+  const storedUsuarios = localStorage.getItem(USUARIOS_STORAGE_KEY);
+  let empleados = [];
+  console.log("Stored usuarios (raw from localStorage):", storedUsuarios); // Log 1
+
+  if (storedUsuarios) {
+    try {
+      const usuarios = JSON.parse(storedUsuarios);
+      console.log("Parsed usuarios:", JSON.stringify(usuarios, null, 2)); // Log 2
+
+      empleados = usuarios.filter((usr) => {
+        const esRolValido =
+          usr.rol === "Empleado" || usr.rol === "Administrador";
+        const noEstaAnulado = !usr.anulado; // o usr.estado === true, según tu lógica de estado
+        // console.log(`Usuario: ${usr.nombre}, Rol: ${usr.rol}, Anulado: ${usr.anulado}, EsValido: ${esRolValido && noEstaAnulado}`); // Log 3 (opcional, puede ser mucho)
+        return esRolValido && noEstaAnulado;
+      });
+    } catch (e) {
+      console.error(
+        "Error parsing usuarios from localStorage in horariosService:",
+        e
+      );
+      return []; // Devolver vacío en caso de error de parseo
+    }
+  }
+
+  console.log(
+    "Empleados filtrados para horarios:",
+    JSON.stringify(empleados, null, 2)
+  ); // Log 4
+
+  // Fallback si no hay empleados (para desarrollo, considera quitarlo en producción)
+  if (empleados.length === 0) {
+    // console.warn("No se encontraron empleados activos en localStorage. Considera agregar datos de ejemplo si es necesario para desarrollo.");
+    // return INITIAL_EMPLEADOS_EJEMPLO_PARA_HORARIOS.filter(e => e.estado === true); // Esto era de la sugerencia anterior
+  }
+  return empleados;
 };
 
+// ... (el resto de las funciones: saveHorario, deleteHorarioById, toggleHorarioEstado)
+// Tu función saveHorario ya maneja la creación de IDs y el estado por defecto.
+// Las validaciones en saveHorario también son importantes.
+
 export const saveHorario = (horarioData, existingHorarios) => {
-  // Validaciones: Asegurar que los campos obligatorios están, que las horas son válidas, etc.
   if (
     !horarioData.empleadoId ||
     !horarioData.fechaInicio ||
@@ -32,6 +103,9 @@ export const saveHorario = (horarioData, existingHorarios) => {
     throw new Error(
       "Empleado, fecha de inicio y fecha de fin son obligatorios."
     );
+  }
+  if (new Date(horarioData.fechaFin) < new Date(horarioData.fechaInicio)) {
+    throw new Error("La fecha de fin no puede ser anterior a la fecha de inicio.");
   }
   if (!horarioData.dias || horarioData.dias.length === 0) {
     throw new Error("Debe definir al menos un día y horario.");
@@ -51,16 +125,14 @@ export const saveHorario = (horarioData, existingHorarios) => {
 
   let updatedHorarios;
   if (horarioData.id) {
-    // Editando (asumiendo que cada entrada de horario tiene un ID único)
     updatedHorarios = existingHorarios.map((h) =>
       h.id === horarioData.id ? { ...h, ...horarioData } : h
     );
   } else {
-    // Creando
     const newHorario = {
       ...horarioData,
-      id: Date.now(), // ID simple
-      estado: horarioData.estado !== undefined ? horarioData.estado : true, // Activo por defecto
+      id: Date.now(),
+      estado: horarioData.estado !== undefined ? horarioData.estado : true,
     };
     updatedHorarios = [...existingHorarios, newHorario];
   }
