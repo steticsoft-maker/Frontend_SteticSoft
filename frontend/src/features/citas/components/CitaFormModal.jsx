@@ -3,7 +3,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import CitaForm from './CitaForm';
 import {
   fetchServiciosDisponiblesParaCitas,
-  fetchEmpleadosDisponiblesParaCitas
+  fetchEmpleadosDisponiblesParaCitas,
+  fetchClientesParaCitas // Asumiendo que la creaste en citasService
 } from '../services/citasService';
 import moment from 'moment';
 
@@ -11,99 +12,130 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   const [formData, setFormData] = useState({});
   const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
   const [empleadosDisponibles, setEmpleadosDisponibles] = useState([]);
+  const [clientesOptions, setClientesOptions] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDependencies, setIsLoadingDependencies] = useState(false);
+
+  const resetFormState = () => {
+    setFormData({});
+    setError('');
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     if (isOpen) {
-      setIsLoading(false);
-      setError('');
+      setIsLoadingDependencies(true);
+      setError(''); // Limpiar errores previos al abrir
 
-      const serviciosDisp = fetchServiciosDisponiblesParaCitas();
-      const empleadosDisp = fetchEmpleadosDisponiblesParaCitas();
-      setServiciosDisponibles(serviciosDisp);
-      setEmpleadosDisponibles(empleadosDisp);
-
-      let idInit = null;
-      let clienteInit = clientePreseleccionado || '';
-      let empleadoNombreInit = '';
-      let empleadoIdInit = null;
-      let serviciosCitaInit = [];
-      let estadoCitaInit = 'Programada';
-      let startTimeInit = initialSlotData?.start || null;
-      let endTimeInit = null;
-
-      if (initialSlotData?.tipo === 'cita') { // Editando
-        idInit = initialSlotData.id;
-        clienteInit = initialSlotData.cliente;
-        empleadoNombreInit = initialSlotData.empleado;
-        empleadoIdInit = initialSlotData.empleadoId;
-        serviciosCitaInit = initialSlotData.servicios?.map(s => s.nombre) || [];
-        estadoCitaInit = initialSlotData.estadoCita || 'Programada';
+      // Cargar dependencias (servicios, empleados, clientes)
+      Promise.all([
+        fetchServiciosDisponiblesParaCitas(),
+        fetchEmpleadosDisponiblesParaCitas(),
+        fetchClientesParaCitas() // Opcional, si tienes una lista de clientes
+      ]).then(([servicios, empleados, clientes]) => {
+        setServiciosDisponibles(servicios);
+        setEmpleadosDisponibles(empleados);
+        setClientesOptions(clientes || []); // Manejar si clientes es undefined
         
-        if (initialSlotData.start && initialSlotData.servicios?.length > 0) {
-          const duracionTotalEdicion = initialSlotData.servicios.reduce((total, s) => total + (parseInt(s.duracion_estimada) || 30), 0);
-          endTimeInit = moment(initialSlotData.start).add(duracionTotalEdicion, 'minutes').toDate();
-        } else {
-          endTimeInit = initialSlotData.end;
-        }
-      } else if (initialSlotData?.resource?.empleadoId) { // Creando desde slot de empleado
-        const empEncontrado = empleadosDisp.find(e => e.id === initialSlotData.resource.empleadoId);
-        if (empEncontrado) {
-          empleadoNombreInit = empEncontrado.nombre;
-          empleadoIdInit = empEncontrado.id;
-        }
-        endTimeInit = startTimeInit ? moment(startTimeInit).add(30, 'minutes').toDate() : null;
-      } else if (startTimeInit) { // Creando desde slot genérico
-         endTimeInit = moment(startTimeInit).add(30, 'minutes').toDate();
-      }
+        // Inicializar formData después de cargar dependencias
+        let idInit = null;
+        let clienteInit = clientePreseleccionado || ''; // Si viene un cliente preseleccionado (ej: desde perfil de cliente)
+        let empleadoNombreInit = ''; // Nombre del empleado
+        let empleadoIdInit = null;   // ID del empleado
+        let serviciosCitaInit = []; // Array de nombres de servicio
+        let estadoCitaInit = 'Programada';
+        let startTimeInit = initialSlotData?.start || null;
+        let endTimeInit = null;
 
-      setFormData({
-        id: idInit,
-        cliente: clienteInit,
-        empleado: empleadoNombreInit,
-        empleadoId: empleadoIdInit,
-        servicio: serviciosCitaInit,
-        start: startTimeInit,
-        end: endTimeInit,
-        estadoCita: estadoCitaInit,
+        // Lógica para editar una cita existente (initialSlotData.tipo === 'cita')
+        if (initialSlotData && initialSlotData.tipo === 'cita') {
+          idInit = initialSlotData.id;
+          clienteInit = initialSlotData.cliente;
+          empleadoIdInit = initialSlotData.empleadoId;
+          const emp = empleados.find(e => e.id === empleadoIdInit);
+          empleadoNombreInit = emp ? emp.nombre : (initialSlotData.empleado || '');
+          // Asegurarse que serviciosCitaInit sea un array de nombres de servicio
+          serviciosCitaInit = initialSlotData.servicios?.map(s => s.nombre) || [];
+          estadoCitaInit = initialSlotData.estadoCita || 'Programada';
+          startTimeInit = initialSlotData.start; // Ya debería ser un objeto Date
+          endTimeInit = initialSlotData.end; // Ya debería ser un objeto Date
+
+        // Lógica para crear desde un slot de empleado en el calendario
+        } else if (initialSlotData && initialSlotData.resource?.empleadoId) {
+          const empEncontrado = empleados.find(e => e.id === initialSlotData.resource.empleadoId);
+          if (empEncontrado) {
+            empleadoNombreInit = empEncontrado.nombre;
+            empleadoIdInit = empEncontrado.id;
+          }
+          // Duración por defecto para un nuevo slot, se recalculará al seleccionar servicios
+          endTimeInit = startTimeInit ? moment(startTimeInit).add(30, 'minutes').toDate() : null;
+        
+        // Lógica para crear desde un slot genérico o selección de rango
+        } else if (startTimeInit) {
+          endTimeInit = moment(startTimeInit).add(30, 'minutes').toDate();
+        }
+
+        setFormData({
+          id: idInit,
+          cliente: clienteInit,
+          empleado: empleadoNombreInit, // Nombre del empleado (para UI, no se guarda directamente)
+          empleadoId: empleadoIdInit,   // ID del empleado (se guarda)
+          servicio: serviciosCitaInit,  // Array de nombres de servicios
+          start: startTimeInit,
+          end: endTimeInit,
+          estadoCita: estadoCitaInit,
+        });
+        setIsLoadingDependencies(false);
+      }).catch(err => {
+        console.error("Error cargando dependencias para el formulario de cita:", err);
+        setError("Error al cargar datos necesarios para el formulario. " + err.message);
+        setIsLoadingDependencies(false);
       });
+    } else {
+      resetFormState(); // Limpiar el estado cuando el modal se cierra
     }
   }, [isOpen, initialSlotData, clientePreseleccionado]);
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (error && name === 'cliente') setError('');
+    if (error && name === 'cliente') setError(''); // Limpiar error si se modifica el campo cliente
   }, [error]);
 
   const handleEmpleadoChange = useCallback((e) => {
-    const empleadoNombre = e.target.value;
-    const empleadoSeleccionado = empleadosDisponibles.find(emp => emp.nombre === empleadoNombre);
+    const selectedEmpleadoId = parseInt(e.target.value);
+    const empleadoSeleccionado = empleadosDisponibles.find(emp => emp.id === selectedEmpleadoId);
     setFormData(prev => ({
       ...prev,
-      empleado: empleadoNombre,
-      empleadoId: empleadoSeleccionado?.id || null
+      empleadoId: selectedEmpleadoId || null,
+      empleado: empleadoSeleccionado?.nombre || '' // Guardar nombre para UI, opcional
     }));
-    if (error && formData.empleadoId) setError('');
-  }, [empleadosDisponibles, error, formData.empleadoId]);
+    if (error && selectedEmpleadoId) setError(''); // Limpiar error si se selecciona un empleado
+  }, [empleadosDisponibles, error]);
 
   const handleServicioChange = useCallback((selectedOptions) => {
+    // selectedOptions es un array de objetos { value, label, duracion, id }
     const nombresServicios = selectedOptions ? selectedOptions.map(opt => opt.value) : [];
     let duracionTotal = 0;
     if (selectedOptions && formData.start) {
-      duracionTotal = selectedOptions.reduce((total, opt) => total + (parseInt(opt.duracion) || 30), 0);
+      duracionTotal = selectedOptions.reduce((total, opt) => {
+        // Asegurarse que opt.duracion exista y sea un número
+        const duracionServicio = parseInt(opt.duracion);
+        return total + (isNaN(duracionServicio) ? 30 : duracionServicio); // Sumar duración o fallback
+      }, 0);
     }
     setFormData(prev => ({
       ...prev,
-      servicio: nombresServicios,
+      servicio: nombresServicios, // Guardar array de nombres de servicio
       end: prev.start ? moment(prev.start).add(duracionTotal, 'minutes').toDate() : null
     }));
-    if (error && nombresServicios.length > 0) setError('');
+    if (error && nombresServicios.length > 0) setError(''); // Limpiar error si se seleccionan servicios
   }, [formData.start, error]);
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+    // Validaciones
     if (!formData.cliente?.trim()) { setError("El nombre del cliente es obligatorio."); return; }
     if (!formData.empleadoId) { setError("Debe seleccionar un empleado."); return; }
     if (!formData.servicio || formData.servicio.length === 0) { setError("Debe seleccionar al menos un servicio."); return; }
@@ -112,9 +144,11 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
     setError('');
     setIsLoading(true);
     try {
-      await onSubmit({ ...formData });
+      // El servicio onSubmit espera el objeto formData completo
+      await onSubmit({ ...formData }); 
+      // No se cierra el modal aquí, se maneja desde CalendarioCitasPage tras éxito
     } catch (submissionError) {
-      setError(submissionError.message || "Error al guardar la cita.");
+      setError(submissionError.message || "Error al guardar la cita. Intente de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -125,26 +159,33 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   return (
     <div className="modal-citas">
       <div className="modal-content-citas">
+        <button className="cerrar-modal" onClick={onClose} disabled={isLoading}>&times;</button>
         <h3>{formData.id ? 'Editar Cita' : 'Agendar Nueva Cita'}</h3>
-        <button className="cerrar-modal" onClick={onClose}>&times;</button>
-        <form onSubmit={handleSubmitForm}>
-          <CitaForm
-            formData={formData}
-            onInputChange={handleInputChange}
-            onServicioChange={handleServicioChange}
-            onEmpleadoChange={handleEmpleadoChange}
-            empleadosDisponibles={empleadosDisponibles}
-            serviciosDisponibles={serviciosDisponibles}
-            isSlotSelection={!!(initialSlotData && initialSlotData.resource?.empleadoId && !initialSlotData.tipo)}
-          />
-          {error && <div className="error-message">{error}</div>}
-          <div className="botonesModalCitas">
-            <button type="submit" disabled={isLoading}>
-                {isLoading ? "Guardando..." : (formData.id ? "Actualizar Cita" : "Guardar Cita")}
-            </button>
-            <button type="button" onClick={onClose} disabled={isLoading}>Cancelar</button>
-          </div>
-        </form>
+        
+        {isLoadingDependencies ? (
+          <div className="cargando-modal">Cargando datos del formulario...</div>
+        ) : (
+          <form onSubmit={handleSubmitForm}>
+            <CitaForm
+              formData={formData}
+              onInputChange={handleInputChange}
+              onServicioChange={handleServicioChange}
+              onEmpleadoChange={handleEmpleadoChange}
+              empleadosDisponibles={empleadosDisponibles}
+              serviciosDisponibles={serviciosDisponibles}
+              isSlotSelection={!!(initialSlotData && initialSlotData.resource?.empleadoId && !initialSlotData.tipo)}
+              clientesOptions={clientesOptions} // Pasar clientes si los tienes
+              // isLoadingClientes={false} // Manejar si es asíncrono
+            />
+            {error && <div className="error-message">{error}</div>}
+            <div className="botonesModalCitas">
+              <button type="submit" disabled={isLoading || isLoadingDependencies}>
+                  {isLoading ? "Guardando..." : (formData.id ? "Actualizar Cita" : "Guardar Cita")}
+              </button>
+              <button type="button" onClick={onClose} disabled={isLoading}>Cancelar</button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

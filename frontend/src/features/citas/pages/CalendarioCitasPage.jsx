@@ -1,65 +1,62 @@
 // src/features/citas/pages/CalendarioCitasPage.jsx
-import React, { useState, useEffect, useCallback } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/es';
-import { useLocation } from 'react-router-dom';
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
-import CitaFormModal from '../components/CitaFormModal';
-import CitaDetalleModal from '../components/CitaDetalleModal';
-import CitasTable from '../components/CitasTable'; // Importar la tabla
-import ConfirmModal from '../../../shared/components/common/ConfirmModal';
-import ValidationModal from '../../../shared/components/common/ValidationModal';
+import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate para redirección
+
+import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin'; // Ajusta la ruta si es necesario
+import { CitaFormModal, CitaDetalleModal, CitasTable } from '../components';
+import ConfirmModal from '../../../shared/components/common/ConfirmModal'; // Ajusta la ruta
+import ValidationModal from '../../../shared/components/common/ValidationModal'; // Ajusta la ruta
+
 import {
   fetchCitasAgendadas,
   generarEventosDisponibles,
   saveCita,
-  deleteCitaById,
+  deleteCitaById as serviceDeleteCitaById, // Renombrar para evitar conflicto de nombres
   cambiarEstadoCita
 } from '../services/citasService';
-import '../css/Citas.css';
+import '../css/Citas.css'; // Estilos de Big Calendar y Citas
+import 'react-big-calendar/lib/css/react-big-calendar.css'; // Estilos base de Big Calendar
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);
 
 function CalendarioCitasPage() {
   const [citasAgendadas, setCitasAgendadas] = useState([]);
-  const [todosLosEventos, setTodosLosEventos] = useState([]);
+  const [eventosDisponibles, setEventosDisponibles] = useState([]);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  const [selectedSlotOrEvent, setSelectedSlotOrEvent] = useState(null);
-  const [citaParaOperacion, setCitaParaOperacion] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  
+  const [selectedSlotOrEvent, setSelectedSlotOrEvent] = useState(null); // Para datos del slot/evento seleccionado
+  const [citaParaOperacion, setCitaParaOperacion] = useState(null); // Cita específica para editar/eliminar/cancelar
+  
+  const [isLoading, setIsLoading] = useState(false); // Para carga general de datos o acciones largas
   const [validationMessage, setValidationMessage] = useState('');
-  const location = useLocation();
-  const clientePreseleccionado = location.state?.clientePreseleccionado;
-  const [showCancelConfirmModal, setShowCancelConfirmModal] = useState(false);
-  const [citaParaCancelar, setCitaParaCancelar] = useState(null);
+  const [validationTitle, setValidationTitle] = useState('Aviso');
 
-  const cargarEventosYActualizarTabla = useCallback(() => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  // Cliente preseleccionado si se navega desde otra página (ej: perfil de cliente)
+  const clientePreseleccionado = location.state?.clientePreseleccionado || null;
+
+  const cargarDatosCompletos = useCallback(async () => {
     setIsLoading(true);
     try {
-      const agendadas = fetchCitasAgendadas();
-      const disponibles = generarEventosDisponibles();
+      const agendadas = await fetchCitasAgendadas(); // Asumir que puede ser asíncrono en el futuro
+      const disponibles = await generarEventosDisponibles(); // Idem
       
-      // Ordenar citas para la tabla (más recientes primero)
-      setCitasAgendadas(agendadas.sort((a, b) => new Date(b.start) - new Date(a.start)));
-      
-      const eventosCombinados = [
-        ...agendadas.map(c => ({
-            ...c, 
-            tipo: 'cita', 
-            title: c.title || `${c.cliente} - ${c.servicios?.map(s=>s.nombre).join(', ') || 'Servicios'}`
-        })),
-        ...disponibles
-      ];
-      setTodosLosEventos(eventosCombinados);
+      setCitasAgendadas(agendadas.sort((a, b) => moment(b.start).valueOf() - moment(a.start).valueOf()));
+      setEventosDisponibles(disponibles);
 
     } catch (error) {
-      console.error("Error al cargar eventos del calendario:", error);
-      setValidationMessage("Error al cargar datos del calendario: " + error.message);
+      console.error("Error al cargar datos para el calendario de citas:", error);
+      setValidationTitle("Error de Carga");
+      setValidationMessage("No se pudieron cargar los datos de citas: " + error.message);
       setIsValidationModalOpen(true);
     } finally {
       setIsLoading(false);
@@ -67,139 +64,217 @@ function CalendarioCitasPage() {
   }, []);
 
   useEffect(() => {
-    cargarEventosYActualizarTabla();
-  }, [cargarEventosYActualizarTabla]);
-
-  const handleSelectSlotOrEvent = useCallback((slotInfo) => {
-    setSelectedSlotOrEvent(slotInfo);
-    if (slotInfo.tipo === 'cita') { // Si se hace clic en una cita existente en el calendario
-      setCitaParaOperacion(slotInfo);
-      setIsDetailsModalOpen(true); // Abrir modal de detalles
-    } else { // Si se hace clic en un slot disponible o se selecciona un rango de tiempo
-      setCitaParaOperacion(null); // No hay cita para operar (es creación)
-      setIsFormModalOpen(true);   // Abrir modal para crear nueva cita
+    cargarDatosCompletos();
+    // Si hay un cliente preseleccionado y se quiere abrir el modal directamente
+    if (clientePreseleccionado) {
+        // Podrías querer abrir el modal de creación con este cliente
+        // handleSelectSlotOrEvent({}); // Simular selección de slot vacío
+        // setIsFormModalOpen(true); // y abrir modal
+        // Pero initialSlotData necesitaría el cliente preseleccionado
+        // Esto es más complejo, por ahora solo lo tenemos disponible
     }
-  }, []);
+  }, [cargarDatosCompletos, clientePreseleccionado]);
+
+  // Combina citas agendadas y slots disponibles para el calendario
+  const todosLosEventosDelCalendario = useMemo(() => {
+    const citasMapeadas = citasAgendadas.map(c => ({
+        ...c, 
+        tipo: 'cita', // Marcar como tipo 'cita'
+        title: c.title || `${c.cliente} - ${c.servicios?.map(s=>s.nombre).join(', ') || 'Servicios'}`
+    }));
+    return [...citasMapeadas, ...eventosDisponibles];
+  }, [citasAgendadas, eventosDisponibles]);
+
 
   const handleCloseModals = () => {
     setIsFormModalOpen(false);
     setIsDetailsModalOpen(false);
     setIsConfirmDeleteOpen(false);
+    setIsConfirmCancelOpen(false);
     setIsValidationModalOpen(false);
-    setShowCancelConfirmModal(false);
-    setSelectedSlotOrEvent(null);
-    setCitaParaOperacion(null);
-    setCitaParaCancelar(null);
+    setSelectedSlotOrEvent(null); // Limpiar selección
+    setCitaParaOperacion(null);   // Limpiar cita en operación
     setValidationMessage('');
-  };
-
-  const handleOpenEditModal = (cita) => { // Llamado desde CitaDetalleModal o CitasTable
-    setIsDetailsModalOpen(false); // Cerrar detalles si estaba abierto
-    setSelectedSlotOrEvent(cita); 
-    setCitaParaOperacion(cita);   
-    setIsFormModalOpen(true);   
-  };
-
-  const handleOpenDeleteConfirm = (cita) => { // Llamado desde CitaDetalleModal o CitasTable (si se añade botón)
-    setIsDetailsModalOpen(false); 
-    setCitaParaOperacion(cita);
-    setIsConfirmDeleteOpen(true);
-  };
-
-  const handleSaveCita = async (formDataFromModal) => {
-    setIsLoading(true);
-    try {
-      const citasActuales = fetchCitasAgendadas(); // Cargar las más recientes antes de guardar
-      const dataToSave = citaParaOperacion?.id 
-        ? { ...formDataFromModal, id: citaParaOperacion.id, estadoCita: citaParaOperacion.estadoCita } // Mantener estado si se edita
-        : formDataFromModal;
-      saveCita(dataToSave, citasActuales);
-      cargarEventosYActualizarTabla(); 
-      handleCloseModals();
-      setValidationMessage("Cita guardada exitosamente.");
-      setIsValidationModalOpen(true);
-    } catch (error) {
-      console.error("Error al guardar cita:", error);
-      setValidationMessage(error.message || "Error al procesar la cita.");
-      setIsValidationModalOpen(true);
-    } finally {
-      setIsLoading(false);
+    setValidationTitle('Aviso');
+    // Si se usó clientePreseleccionado, limpiarlo para que no afecte futuras aperturas de modal
+    if (location.state?.clientePreseleccionado) {
+        navigate(location.pathname, { replace: true, state: {} });
     }
   };
 
-  const handleDeleteCitaConfirmada = () => { // Para el modal de confirmación de borrado
+  const handleSelectSlotOrEvent = useCallback((slotOrEventInfo) => {
+    setSelectedSlotOrEvent(slotOrEventInfo); // Guardar toda la info del slot/evento
+
+    if (slotOrEventInfo.tipo === 'cita') { // Clic en una cita existente
+      setCitaParaOperacion(slotOrEventInfo);
+      setIsDetailsModalOpen(true);
+    } else { // Clic en un slot disponible o selección de rango de tiempo para nueva cita
+      // `slotOrEventInfo` aquí podría ser un slot de 'disponible' o un rango de selección
+      // Si es un slot 'disponible', ya tiene empleadoId en `resource`.
+      // Si es un rango, no tendrá empleadoId predefinido.
+      setCitaParaOperacion(null); // Es creación, no hay cita existente
+      setIsFormModalOpen(true);
+    }
+  }, []);
+
+  const handleOpenEditModal = (citaAEditar) => {
+    handleCloseModals(); // Cerrar otros modales primero
+    setSelectedSlotOrEvent(citaAEditar); // Para que CitaFormModal sepa que es edición y tenga datos
+    setCitaParaOperacion(citaAEditar);   // Guardar referencia a la cita que se está editando
+    setIsFormModalOpen(true);   
+  };
+
+  const handleOpenDeleteConfirm = (citaAEliminar) => {
+    handleCloseModals();
+    setCitaParaOperacion(citaAEliminar); // Guardar cita para la operación de borrado
+    setIsConfirmDeleteOpen(true);
+  };
+  
+  const handleOpenCancelConfirm = (citaACancelarId) => {
+    handleCloseModals();
+    const cita = citasAgendadas.find(c => c.id === citaACancelarId);
+    if (cita) {
+        setCitaParaOperacion(cita); // Guardar cita para la operación de cancelación
+        setIsConfirmCancelOpen(true);
+    } else {
+        setValidationTitle("Error");
+        setValidationMessage("No se encontró la cita para cancelar.");
+        setIsValidationModalOpen(true);
+    }
+  };
+
+
+  const handleSaveCitaSubmit = async (formDataFromModal) => {
+    // No es necesario setIsLoading aquí, CitaFormModal ya lo maneja internamente.
+    // El setIsLoading de esta página es para carga de datos iniciales.
+    try {
+      const citasActuales = fetchCitasAgendadas(); // Cargar las más recientes antes de guardar
+      const citaGuardada = saveCita(formDataFromModal, citasActuales); // saveCita ahora devuelve la cita
+      
+      cargarDatosCompletos(); // Recargar todos los eventos y citas
+      handleCloseModals();    // Cerrar modal de formulario
+      
+      setValidationTitle("Éxito");
+      setValidationMessage(formDataFromModal.id ? "Cita actualizada exitosamente." : "Cita guardada exitosamente.");
+      setIsValidationModalOpen(true);
+
+    } catch (error) {
+      console.error("Error al procesar guardado de cita:", error);
+      // No cerramos el modal de formulario en caso de error, para que el usuario pueda corregir.
+      // El error se mostrará dentro de CitaFormModal.
+      // Pero si el error viene de saveCita y no se maneja en CitaFormModal, lo mostramos aquí.
+      // Es mejor que CitaFormModal maneje sus propios errores de validación/submit.
+      // Si este catch se activa, es probable que sea un error que CitaFormModal no pudo mostrar.
+      setValidationTitle("Error al Guardar");
+      setValidationMessage(error.message || "Error desconocido al procesar la cita.");
+      setIsValidationModalOpen(true); // Usar el ValidationModal general de la página
+    }
+  };
+
+  const handleDeleteCitaConfirmada = async () => {
     if (citaParaOperacion) {
       try {
-        deleteCitaById(citaParaOperacion.id, fetchCitasAgendadas());
-        cargarEventosYActualizarTabla();
+        serviceDeleteCitaById(citaParaOperacion.id); // Usar el servicio renombrado
+        cargarDatosCompletos();
         handleCloseModals();
-        setValidationMessage("Cita eliminada exitosamente.");
+        setValidationTitle("Éxito");
+        setValidationMessage(`Cita para "${citaParaOperacion.cliente}" eliminada exitosamente.`);
         setIsValidationModalOpen(true);
       } catch(error) {
         console.error("Error al eliminar cita:", error);
-        setValidationMessage(error.message || "Error al eliminar la cita.");
+        handleCloseModals(); // Cerrar modal de confirmación
+        setValidationTitle("Error al Eliminar");
+        setValidationMessage(error.message || "No se pudo eliminar la cita.");
         setIsValidationModalOpen(true);
       }
     }
   };
   
-  const handleMarkAsCompletedFromTable = (citaId) => {
+  const handleMarkAsCompleted = async (citaId) => {
     try {
         cambiarEstadoCita(citaId, "Completada");
-        cargarEventosYActualizarTabla();
+        cargarDatosCompletos(); // Recargar para reflejar el cambio de estado
         setValidationMessage(`Cita #${citaId} marcada como Completada.`);
         setIsValidationModalOpen(true);
     } catch(error) {
+        setValidationTitle("Error");
         setValidationMessage(error.message);
         setIsValidationModalOpen(true);
     }
   };
 
-  const handleCancelFromTable = (citaId) => { // Abre el modal de confirmación para cancelar
-    const cita = citasAgendadas.find(c => c.id === citaId);
-    if (cita) {
-        setCitaParaCancelar(cita);
-        setShowCancelConfirmModal(true);
-    }
-  };
-
-  const confirmCancelarCita = () => { // Se ejecuta al confirmar la cancelación
-    if (citaParaCancelar) {
+  const handleConfirmCancelCita = async () => { // Al confirmar la cancelación
+    if (citaParaOperacion) {
         try {
-            cambiarEstadoCita(citaParaCancelar.id, "Cancelada", "Cancelada por Administrador"); // Puedes añadir un campo para el motivo
-            cargarEventosYActualizarTabla();
-            setValidationMessage(`Cita #${citaParaCancelar.id} ha sido Cancelada.`);
-            setIsValidationModalOpen(true);
+            // Aquí podrías añadir un input para el motivo de cancelación si quieres
+            const motivo = "Cancelada por Administrador"; 
+            cambiarEstadoCita(citaParaOperacion.id, "Cancelada", motivo);
+            cargarDatosCompletos();
+            setValidationMessage(`Cita #${citaParaOperacion.id} para "${citaParaOperacion.cliente}" ha sido Cancelada.`);
         } catch(error) {
+            setValidationTitle("Error al Cancelar");
             setValidationMessage(error.message);
+        } finally {
             setIsValidationModalOpen(true);
+            handleCloseModals(); // Cierra el modal de confirmación de cancelación
         }
     }
-    setShowCancelConfirmModal(false);
-    setCitaParaCancelar(null);
   };
 
-  const eventStyleGetter = (event, start, end, isSelected) => {
+  // Estilo para los eventos en el calendario
+  const eventStyleGetter = useCallback((event, start, end, isSelected) => {
     let style = {
-      borderRadius: '4px', opacity: 0.95, color: 'white',
-      border: '1px solid rgba(0,0,0,0.1)', display: 'block',
-      fontSize: '0.80em', padding: '3px 5px', boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
-      overflowWrap: 'break-word', whiteSpace: 'normal', 
+      borderRadius: '4px', 
+      opacity: 0.90, 
+      color: 'white',
+      border: '1px solid rgba(0,0,0,0.1)', 
+      display: 'block',
+      fontSize: '0.80em', 
+      padding: '3px 5px', 
+      boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+      overflowWrap: 'break-word', 
+      whiteSpace: 'normal', 
     };
+
     if (event.tipo === "disponible") {
-      style.backgroundColor = '#e9f5e9'; style.color = '#38761d';
-      style.border = '1px dashed #6aa84f'; style.cursor = 'pointer'; style.opacity = 0.75;
+      style.backgroundColor = 'var(--color-available-slot-bg, #d4edda)'; // Verde claro para disponibles
+      style.color = 'var(--color-available-slot-text, #155724)';
+      style.border = '1px dashed var(--color-available-slot-border, #c3e6cb)';
+      style.cursor = 'pointer';
+      style.opacity = 0.75;
       style.boxShadow = 'none';
-    } else {
+    } else { // Es una cita
       switch (event.estadoCita) {
         case "Completada": style.backgroundColor = 'var(--color-success, #28a745)'; break;
-        case "Cancelada": style.backgroundColor = 'var(--color-danger, #dc3545)'; style.textDecoration = 'line-through'; break;
-        case "En proceso": style.backgroundColor = 'var(--color-warning, #ffc107)'; style.color = 'var(--color-text-dark, #212529)'; break;
-        case "Programada": default: style.backgroundColor = 'var(--color-info, #0dcaf0)'; break;
+        case "Cancelada": 
+          style.backgroundColor = 'var(--color-danger-light, #f8d7da)'; 
+          style.color = 'var(--color-danger-dark, #721c24)';
+          style.textDecoration = 'line-through'; 
+          style.opacity = 0.6;
+          break;
+        case "En proceso": 
+          style.backgroundColor = 'var(--color-warning, #ffc107)'; 
+          style.color = 'var(--color-text-dark, #212529)'; 
+          break;
+        case "Programada": 
+        default: 
+          style.backgroundColor = 'var(--color-info, #17a2b8)'; // Azul para programadas
+          break;
       }
     }
-    if (isSelected) { style.border = '2px solid var(--color-primary-darker, #6d0b58)'; style.opacity = 1; }
+    if (isSelected) { 
+      style.border = '2px solid var(--color-primary-darker, #6d0b58)'; 
+      style.opacity = 1; 
+      style.boxShadow = '0 0 5px var(--color-primary-darker, #6d0b58)';
+    }
     return { style };
+  }, []);
+
+  const calendarMessages = {
+      today: "Hoy", previous: "Ant.", next: "Sig.", month: "Mes",
+      week: "Semana", day: "Día", agenda: "Agenda", date: "Fecha",
+      time: "Hora", event: "Evento", noEventsInRange: "No hay citas en este rango.",
+      showMore: total => `+${total} más`
   };
 
   return (
@@ -208,87 +283,94 @@ function CalendarioCitasPage() {
       <div className="main-content">
         <div className="citas-page-content-wrapper">
           <h1>Gestión de Citas</h1>
-          {isLoading && <div className="cargando"><div className="spinner"></div></div>}
+          {isLoading && <div className="cargando-pagina"><span>Cargando datos de citas...</span><div className="spinner"></div></div>}
+          
           <div className="calendario-container-citas">
             <Calendar
               localizer={localizer}
-              events={todosLosEventos}
+              events={todosLosEventosDelCalendario}
               startAccessor="start"
               endAccessor="end"
-              style={{ height: "75vh", width: "100%" }}
+              style={{ minHeight: "75vh", width: "100%" }} // minHeight para asegurar tamaño
               selectable
-              onSelectEvent={handleSelectSlotOrEvent}
-              onSelectSlot={handleSelectSlotOrEvent}
+              onSelectEvent={handleSelectSlotOrEvent} // Para clic en evento existente
+              onSelectSlot={handleSelectSlotOrEvent}  // Para clic en slot vacío o selección de rango
               eventPropGetter={eventStyleGetter}
-              defaultView="week"
-              views={['month', 'week', 'day', 'agenda']}
-              min={moment().set({ hour: 7, minute: 0 }).toDate()}
-              max={moment().set({ hour: 21, minute: 0 }).toDate()}
-              step={30}
-              timeslots={1}
-              messages={{
-                today: "Hoy", previous: "Ant.", next: "Sig.", month: "Mes",
-                week: "Semana", day: "Día", agenda: "Agenda", date: "Fecha",
-                time: "Hora", event: "Evento", noEventsInRange: "No hay citas en este rango."
-              }}
-              formats={{
+              defaultView={Views.WEEK} // Vista por defecto: semana
+              views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
+              // Horario visible en el calendario (vista semana y día)
+              min={moment().set({ hour: 7, minute: 0, second: 0 }).toDate()} 
+              max={moment().set({ hour: 21, minute: 0, second: 0 }).toDate()}
+              step={30} // Intervalos de 30 minutos en la rejilla de tiempo
+              timeslots={1} // 1 slot por cada 'step' (ej: 1 slot de 30 min)
+              messages={calendarMessages}
+              formats={{ // Formatos de fecha y hora
                   timeGutterFormat: (date, culture, localizer) => localizer.format(date, 'h A', culture), 
-                  eventTimeRangeFormat: ({ start, end }, culture, localizer) => localizer.format(start, 'h:mmA', culture) + '-' + localizer.format(end, 'h:mmA', culture),
-                  agendaTimeRangeFormat: ({ start, end }, culture, localizer) => localizer.format(start, 'h:mmA', culture) + ' - ' + localizer.format(end, 'h:mmA', culture),
-                  dayFormat: (date, culture, localizer) => localizer.format(date, 'ddd D', culture), 
-                  dateFormat: (date, culture, localizer) => localizer.format(date, 'D', culture),
+                  eventTimeRangeFormat: ({ start, end }, culture, localizer) => 
+                      localizer.format(start, 'h:mmA', culture) + ' - ' + localizer.format(end, 'h:mmA', culture),
+                  agendaTimeRangeFormat: ({ start, end }, culture, localizer) =>
+                      localizer.format(start, 'h:mmA', culture) + ' - ' + localizer.format(end, 'h:mmA', culture),
+                  dayFormat: (date, culture, localizer) => localizer.format(date, 'ddd D', culture), // ej: Mar 23
+                  dateFormat: (date, culture, localizer) => localizer.format(date, 'D', culture), // ej: 23
               }}
-              popup
-              showMultiDayTimes
+              popup // Para mostrar eventos que no caben en un slot
+              showMultiDayTimes // Para eventos que duran varios días (aunque no es común para citas)
+              culture='es'
             />
           </div>
+
           <CitasTable
             citas={citasAgendadas}
             onViewDetails={(cita) => {
-                setSelectedSlotOrEvent(cita); // Para que el modal de detalle sepa qué mostrar
+                setSelectedSlotOrEvent(cita); 
                 setCitaParaOperacion(cita);
                 setIsDetailsModalOpen(true);
             }}
-            onEdit={handleOpenEditModal} // Pasa la función de edición
-            onMarkAsCompleted={handleMarkAsCompletedFromTable}
-            onCancel={handleCancelFromTable}
+            onEdit={handleOpenEditModal}
+            onMarkAsCompleted={handleMarkAsCompleted}
+            onCancel={handleOpenCancelConfirm} // Para abrir confirmación de cancelar
+            onDelete={handleOpenDeleteConfirm} // Para abrir confirmación de eliminar
           />
         </div>
       </div>
+
+      {/* Modales */}
       <CitaFormModal
         isOpen={isFormModalOpen}
         onClose={handleCloseModals}
-        onSubmit={handleSaveCita}
-        initialSlotData={selectedSlotOrEvent}
+        onSubmit={handleSaveCitaSubmit}
+        initialSlotData={selectedSlotOrEvent} // Contiene datos si se seleccionó slot/evento
         clientePreseleccionado={clientePreseleccionado}
       />
       <CitaDetalleModal
         isOpen={isDetailsModalOpen}
         onClose={handleCloseModals}
-        cita={citaParaOperacion}
-        onEdit={handleOpenEditModal}
-        onDeleteConfirm={handleOpenDeleteConfirm}
+        cita={citaParaOperacion} // Cita que se está viendo/editando
+        onEdit={handleOpenEditModal} // Reutilizar la función para abrir el form modal en modo edición
+        onDeleteConfirm={handleOpenDeleteConfirm} // Para abrir el modal de confirmación de borrado
       />
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
         onClose={handleCloseModals}
         onConfirm={handleDeleteCitaConfirmada}
-        title="Eliminar Cita"
-        message={`¿Está seguro que desea eliminar la cita para "${citaParaOperacion?.cliente || ''}" con ${citaParaOperacion?.empleado || ''}?`}
+        title="Confirmar Eliminación"
+        message={`¿Está seguro que desea eliminar la cita para "${citaParaOperacion?.cliente || ''}" con ${citaParaOperacion?.empleado || ''} el ${citaParaOperacion?.start ? moment(citaParaOperacion.start).format("DD/MM/YY HH:mm") : ''}? Esta acción no se puede deshacer.`}
+        confirmText="Sí, Eliminar"
+        cancelText="No, Conservar"
       />
        <ConfirmModal
-        isOpen={showCancelConfirmModal}
-        onClose={() => { setShowCancelConfirmModal(false); setCitaParaCancelar(null); }}
-        onConfirm={confirmCancelarCita}
+        isOpen={isConfirmCancelOpen}
+        onClose={handleCloseModals}
+        onConfirm={handleConfirmCancelCita}
         title="Confirmar Cancelación de Cita"
-        message={`¿Está seguro de que desea cancelar la cita #${citaParaCancelar?.id || ''} para "${citaParaCancelar?.cliente || ''}"?`}
+        message={`¿Está seguro de que desea cancelar la cita #${citaParaOperacion?.id || ''} para "${citaParaOperacion?.cliente || ''}"?`}
         confirmText="Sí, Cancelar Cita"
-        cancelText="No, Mantener"
+        cancelText="No, Mantener Cita"
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
         onClose={handleCloseModals}
-        title="Aviso de Citas"
+        title={validationTitle}
         message={validationMessage}
       />
     </div>
