@@ -1,7 +1,7 @@
 // src/features/proveedores/components/ProveedorForm.jsx
 import React from 'react';
 
-const TIPOS_DOCUMENTO_NATURAL = ["CC", "CE", "Pasaporte"]; // Ejemplo
+const TIPOS_DOCUMENTO_NATURAL = ["CC", "CE"]; // Ejemplo
 
 const ProveedorForm = ({ formData, onFormChange, isEditing }) => {
   const handleChange = (e) => {

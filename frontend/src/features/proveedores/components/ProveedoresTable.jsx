@@ -5,10 +5,10 @@ import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
   return (
-    <div className="tablaProveedores">
-      <table>
-        <thead>
-          <tr>
+    <div className="tablaProveedores">{/* Contenedor de la tabla */}
+      <table>{/*SIN ESPACIOS/SALTOS ANTES DE THEAD*/}
+        <thead>{/*SIN ESPACIOS/SALTOS ANTES DE TR*/}
+          <tr>{/*SIN ESPACIOS/SALTOS ANTES DEL PRIMER TH*/}
             <th>#</th>
             <th>Nombre/Empresa</th>
             <th>Tipo Doc.</th>
@@ -19,26 +19,26 @@ const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onTogg
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody>{/*SIN ESPACIOS/SALTOS ANTES DEL MAP*/}
           {proveedores.map((proveedor, index) => (
-            <tr key={proveedor.id || index}> {/* Usar ID si existe, sino index como fallback */}
-              <td>{index + 1}</td>
-              <td>{proveedor.tipoDocumento === "Natural" ? proveedor.nombre : proveedor.nombreEmpresa}</td>
-              <td>{proveedor.tipoDocumento === "Natural" ? proveedor.tipoDocumentoNatural : "NIT"}</td>
-              <td>{proveedor.telefono}</td>
-              <td>{proveedor.email}</td>
-              <td>{proveedor.direccion}</td>
-              <td>
+            <tr key={proveedor.id || index}>{/*SIN ESPACIOS/SALTOS ANTES DEL PRIMER TD*/}
+              <td data-label="#">{index + 1}</td>
+              <td data-label="Nombre/Empresa:">{proveedor.tipoDocumento === "Natural" ? proveedor.nombre : proveedor.nombreEmpresa}</td>
+              <td data-label="Tipo Doc.:">{proveedor.tipoDocumento === "Natural" ? proveedor.tipoDocumentoNatural : "NIT"}</td>
+              <td data-label="Teléfono:">{proveedor.telefono}</td>
+              <td data-label="Email:">{proveedor.email}</td>
+              <td data-label="Dirección:">{proveedor.direccion}</td>
+              <td data-label="Estado:">
                 <label className="switch">
                   <input
                     type="checkbox"
                     checked={proveedor.estado === "Activo"}
-                    onChange={() => onToggleEstado(proveedor.id)} // Asumimos que el proveedor tiene un 'id' único
+                    onChange={() => onToggleEstado(proveedor.id)}
                   />
                   <span className="slider"></span>
                 </label>
               </td>
-              <td className="iconosTablaProveedores">
+              <td data-label="Acciones:" className="proveedores-table-actions">
                 <button className="botonVerDetallesProveedor" onClick={() => onView(proveedor)} title="Ver Detalles">
                   <FontAwesomeIcon icon={faEye} />
                 </button>
