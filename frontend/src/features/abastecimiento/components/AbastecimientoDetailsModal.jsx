@@ -7,7 +7,7 @@ const AbastecimientoDetailsModal = ({ isOpen, onClose, item }) => {
 
   return (
     <div className="modal-abastecimiento-overlay">
-      <div className="modal-abastecimiento-content">
+      <div className="modal-abastecimiento-content detalle-modal"> 
         <div className="abastecimiento-details-text">
           <h2>Detalles del Producto</h2>
           <p><strong>Nombre:</strong> {item.nombre}</p>

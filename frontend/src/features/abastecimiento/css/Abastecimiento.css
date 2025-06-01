@@ -276,17 +276,23 @@
 }
 
 /* === ESTILOS PARA MODAL DE DETALLES (AbastecimientoDetailsModal) === */
-.modal-abastecimiento-content.detalle-modal .abastecimiento-details-text p { 
-    text-align: left; margin-bottom: 12px; line-height: 1.6;   
-    color: var(--color-text-dark, #333); font-size: 1rem; 
+.modal-abastecimiento-content.detalle-modal .abastecimiento-details-text p {
+    text-align: left;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    color: var(--color-text-dark, #333);
+    font-size: 1rem;
 }
-.modal-abastecimiento-content.detalle-modal .abastecimiento-details-text p strong { 
-    color: var(--color-primary, #eb0985); /* ROSA para etiquetas */   
-    margin-right: 8px;  
-    font-weight: 600;   
-    min-width: 180px; 
-    display: inline-block; 
+
+.modal-abastecimiento-content.detalle-modal .abastecimiento-details-text p strong {
+    color: var(--color-admin-action-view-hover, #d66abf);
+    margin-right: 8px;
+    font-weight: 600;
+    min-width: 180px;
+    display: inline-block;
 }
+
+
 .modal-abastecimiento-content.detalle-modal .depleted-text { 
     color: var(--color-text-warning-dark, #e65100); 
     font-weight: bold;
