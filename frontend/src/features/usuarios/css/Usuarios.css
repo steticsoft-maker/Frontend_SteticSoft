@@ -84,6 +84,20 @@
     /* Color de título de Ventas.css para hover */
 }
 
+/* Añadir a Usuarios.css si no existe algo similar */
+.usuarios-admin-protected-message {
+    color: var(--color-danger, #e74c3c);
+    /* O un color de advertencia */
+    background-color: var(--color-background-warning-light, #fff3cd);
+    /* Fondo claro para advertencia */
+    border: 1px solid var(--color-border-warning, #ffeeba);
+    /* Borde de advertencia */
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 0.9rem; }
+
 /* Tabla de Usuarios */
 .usuarios-table {
     width: 100%;
