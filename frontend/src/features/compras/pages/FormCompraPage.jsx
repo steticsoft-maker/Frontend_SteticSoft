@@ -2,21 +2,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
-import CompraForm from '../components/CompraForm'; // Nuevo componente de formulario
+import CompraForm from '../components/CompraForm';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import {
   saveNuevaCompra,
-  fetchCompras, // Para validar duplicados o obtener IDs, aunque saveNuevaCompra ya lo hace
+  fetchCompras,
   getProductosPorCategoriaParaCompra,
   getProveedoresParaCompra,
   getMetodosPagoParaCompra
 } from '../services/comprasService';
-import '../css/FormCompra.css'; // Nuevo CSS (adaptado de AgregarCompra.css)
+import '../css/FormCompra.css';
 
 function FormCompraPage() {
   const navigate = useNavigate();
-  // Estados para los datos del formulario (proveedor, fecha, metodoPago, items, totales)
   const [proveedorSeleccionado, setProveedorSeleccionado] = useState('');
   const [fechaCompra, setFechaCompra] = useState(new Date().toISOString().split("T")[0]);
   const [metodoPagoSeleccionado, setMetodoPagoSeleccionado] = useState('');
@@ -29,7 +28,6 @@ function FormCompraPage() {
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [isConfirmSaveModalOpen, setIsConfirmSaveModalOpen] = useState(false);
 
-  // Datos para los selectores del formulario
   const productosDisponiblesPorCategoria = getProductosPorCategoriaParaCompra();
   const proveedoresDisponibles = getProveedoresParaCompra();
   const metodosPagoDisponibles = getMetodosPagoParaCompra();
@@ -43,7 +41,6 @@ function FormCompraPage() {
   }, [itemsCompra]);
 
   const handleGuardar = () => {
-    // Validaciones previas antes de mostrar el modal de confirmación
     if (!proveedorSeleccionado) {
       setValidationMessage("Debe seleccionar un proveedor.");
       setIsValidationModalOpen(true);
@@ -74,16 +71,17 @@ function FormCompraPage() {
       proveedor: proveedorSeleccionado,
       fecha: fechaCompra,
       metodoPago: metodoPagoSeleccionado,
-      items: itemsCompra.map(item => ({ // Asegurar formato correcto de items
-          categoria: item.categoria, // Guardar también la categoría si es relevante
+      items: itemsCompra.map(item => ({
+          categoria: item.categoria,
           nombre: item.nombre,
           cantidad: parseInt(item.cantidad, 10),
           precio: parseFloat(item.precio),
-          total: parseFloat(item.total)
+          total: parseFloat(item.total) 
       })),
       subtotal,
       iva,
       total,
+      estado: "Pendiente", // Estado inicial para nuevas compras
     };
 
     try {
@@ -92,14 +90,14 @@ function FormCompraPage() {
       setValidationMessage("Compra guardada exitosamente. Redirigiendo...");
       setIsValidationModalOpen(true);
       setTimeout(() => {
-        handleCloseModals();
+        handleCloseModals(); // Asegúrate que esta función también cierre el ValidationModal si es necesario
         navigate("/compras");
       }, 2000);
     } catch (error) {
       setValidationMessage(error.message);
       setIsValidationModalOpen(true);
     }
-    setIsConfirmSaveModalOpen(false);
+    setIsConfirmSaveModalOpen(false); // Cerrar modal de confirmación después de intentar guardar
   };
 
   const handleCloseModals = () => {
@@ -109,36 +107,38 @@ function FormCompraPage() {
   };
 
   return (
-    <div className="agregar-compra-page-container"> {/* Nueva clase para la página */}
+    // Contenedor principal de la página para el layout flex con NavbarAdmin
+    <div className="agregar-compra-page-container"> 
       <NavbarAdmin />
-      <div className="agregar-compra-content"> {/* Clase del CSS original */}
-        <h2 className="agregar-compra-title">Registrar Nueva Compra</h2>
-        <CompraForm
-          // Props para el estado del formulario
-          proveedor={proveedorSeleccionado}
-          setProveedor={setProveedorSeleccionado}
-          fecha={fechaCompra}
-          setFecha={setFechaCompra}
-          metodoPago={metodoPagoSeleccionado}
-          setMetodoPago={setMetodoPagoSeleccionado}
-          items={itemsCompra}
-          setItems={setItemsCompra}
-          // Props para los datos de los selectores
-          productosPorCategoria={productosDisponiblesPorCategoria}
-          proveedoresList={proveedoresDisponibles}
-          metodosPagoList={metodosPagoDisponibles}
-          // Props para totales (si se muestran en el form)
-          subtotal={subtotal}
-          iva={iva}
-          total={total}
-        />
-        <div className="agregar-compra-buttons"> {/* Clase del CSS original */}
-          <button className="btn-guardar-agregar-compra" onClick={handleGuardar}>
-            Guardar Compra
-          </button>
-          <button className="btnCancelarAgregarCompra" onClick={() => navigate("/compras")}>
-            Cancelar
-          </button>
+      {/* Contenedor del contenido principal con el margen para el NavbarAdmin */}
+      <div className="agregar-compra-content"> 
+        {/* Wrapper interno para centrar el formulario y su título */}
+        <div className="agregar-compra-form-wrapper">
+            <h2 className="agregar-compra-title">Registrar Nueva Compra</h2>
+            <CompraForm
+            proveedor={proveedorSeleccionado}
+            setProveedor={setProveedorSeleccionado}
+            fecha={fechaCompra}
+            setFecha={setFechaCompra}
+            metodoPago={metodoPagoSeleccionado}
+            setMetodoPago={setMetodoPagoSeleccionado}
+            items={itemsCompra}
+            setItems={setItemsCompra}
+            productosPorCategoria={productosDisponiblesPorCategoria}
+            proveedoresList={proveedoresDisponibles}
+            metodosPagoList={metodosPagoDisponibles}
+            subtotal={subtotal}
+            iva={iva}
+            total={total}
+            />
+            <div className="agregar-compra-buttons">
+            <button className="btn-guardar-agregar-compra" onClick={handleGuardar}>
+                Guardar Compra
+            </button>
+            <button className="btnCancelarAgregarCompra" onClick={() => navigate("/compras")}>
+                Cancelar
+            </button>
+            </div>
         </div>
       </div>
 

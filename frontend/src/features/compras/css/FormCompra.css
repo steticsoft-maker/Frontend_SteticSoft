@@ -1,367 +1,223 @@
-/* Contenedor General */
-.container {
+/* src/features/compras/css/FormCompra.css */
+
+.agregar-compra-page-container {
     display: flex;
-    width: 1790px; /* Asegurar que ocupe todo el ancho */
-    min-height: 100vh; /* Asegurar que ocupe al menos el alto de la pantalla */
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-background-admin-content, #f5f5f5);
 }
 
-/* Contenedor Principal (abarca Navbar y Contenido) */
-.agregar-compra-container {
-    display: flex;
-    width: 100%; /* Ajustar a 100% o un max-width */
-    max-width: 2000px; /* Mantener un ancho m\u00E1ximo del contenedor general */
-    margin: 20px auto; /* Centrar el contenedor general en la p\u00E1gina */
-    border-radius: 8px;
-    overflow: hidden; /* Ocultar desbordamientos */
-}
-
-/* Contenido Principal (a la derecha del Navbar) */
 .agregar-compra-content {
-    flex-grow: 1;
-    padding: 25px;
-    /* Eliminar margin-left si el NavbarAdmin ya gestiona su espacio */
-    /* margin-left: 45px; */
-    overflow-y: auto; /* Permitir scroll si el contenido es m\u00E1s largo que la pantalla */
+    flex: 1;
+    padding: 30px;
+    margin-left: 270px; /* CRUCIAL: ANCHO_NAVBAR_ADMIN + ESPACIO */
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex; /* Para centrar el form-wrapper */
+    justify-content: center; /* Para centrar el form-wrapper */
+    align-items: flex-start; /* Alinear wrapper arriba */
 }
 
+.agregar-compra-form-wrapper {
+    width: 100%;
+    max-width: 900px; /* Ancho del formulario */
+    background-color: var(--color-background-light, #fff);
+    padding: 30px 40px; /* Padding interno generoso */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
-/* T\u00EDtulo */
 .agregar-compra-title {
     text-align: center;
-    font-size: 2rem; /* Usar rem para escalabilidad */
-    font-weight: bold;
-    margin-bottom: 30px; /* M\u00E1s espacio debajo del t\u00EDtulo */
-    color: #34495e; /* Color m\u00E1s oscuro para contraste */
+    font-size: 1.8rem;
+    font-weight: 600; /* Menos bold que h1 */
+    margin-bottom: 30px;
+    color: var(--color-primary-darker, #6d0b58);
 }
 
-/* Formulario General (aplicado a los divs que contienen inputs/selects) */
 .form-group {
-    margin-bottom: 20px; /* Aumentado el espacio entre grupos */
-    max-width: 1000px; /* Limitar ancho y centrar */
-    margin-left: auto;
-    margin-right: auto;
-    position: relative; /* Para posicionar la lista de sugerencias */
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    font-weight: bold;
-    margin-bottom: 8px; /* M\u00E1s espacio debajo de la etiqueta */
-    color: #555; /* Color de etiqueta m\u00E1s suave */
+    font-weight: 600;
+    color: var(--color-primary-darker, #6d0b58);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
 }
 
-/* Estilos para inputs y selects generales (Proveedores, Fecha Compra, M\u00E9todo Pago) */
-/* Se aplicar\u00E1n a .buscar-proveedor-input, .LaFecha, .seleccionar-metodo-pago */
-.form-group input[type="text"],
+.buscar-proveedor-input, /* input para proveedor */
+.LaFecha, /* input para fecha */
+.seleccionar-metodo-pago, /* select para método pago */
+.form-group input[type="text"], /* Genérico si usas inputs de texto en .form-group */
 .form-group input[type="date"],
 .form-group select {
-    width: 100%; /* Ocupar todo el ancho del .form-group */
-    padding: 10px; /* Aumentado padding */
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    background-color: #fff; /* Fondo blanco para inputs */
-    color: #333;
+    width: 100%; 
+    padding: 10px 12px; 
+    border: 1px solid var(--color-border-light, #c287b5);
+    border-radius: 5px;
+    background-color: var(--color-background-input, #fff);
+    color: var(--color-text-dark, #333);
     font-size: 1rem;
-    box-sizing: border-box; /* Incluir padding y borde en el ancho/alto */
+    box-sizing: border-box; 
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.buscar-proveedor-input:focus,
+.LaFecha:focus,
+.seleccionar-metodo-pago:focus,
 .form-group input[type="text"]:focus,
 .form-group input[type="date"]:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #007bff; /* Color de foco */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    border-color: var(--color-admin-hover, #b660a3); 
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
 }
 
-/* Estilos para la LISTA DE SUGERENCIAS de proveedor */
-.proveedor-sugerencias-lista {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    position: absolute; /* Posicionar sobre el contenido */
-    top: 100%; /* Justo debajo del input */
-    left: 0;
-    right: 0;
-    z-index: 100; /* Asegurar que est\u00E9 por encima */
-    background-color: #fff;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    max-height: 150px; /* Limitar altura y a\u00F1adir scroll */
-    overflow-y: auto;
+.required-asterisk { /* Tu clase para asterisco */
+    color: red;
+    margin-left: 3px;
 }
 
-.proveedor-sugerencias-lista li {
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-    font-size: 1rem;
-    color: #333;
-}
-
-.proveedor-sugerencias-lista li:last-child {
-    border-bottom: none;
-}
-
-.proveedor-sugerencias-lista li:hover {
-    background-color: #f0f0f0;
-}
-
-/* Estilos para mensajes de sugerencia */
-.no-sugerencias, .mensaje-seleccion {
-    font-size: 0.9rem;
-    color: #777;
-    margin-top: 5px;
-    padding: 5px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-}
-
-.mensaje-seleccion {
-    color: #007bff; /* Color para mensaje de selecci\u00F3n */
-    border-color: #007bff;
-    background-color: #e7f3ff;
-}
-
-/* Botones */
+/* Botón "Agregar Producto a la Compra" */
 .btn-agregar-producto-compra {
-    background-color: #e470cb;
-    color: white;
+    background-color: var(--color-admin-action-view, #fc8de4); /* Rosa claro */
+    color: var(--color-text-dark, black); /* Texto oscuro para contraste */
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
-    margin: 10px auto;
-    display: block; /* Hacer que ocupe su propia l\u00EDnea para centrarlo f\u00E1cilmente */
+    border-radius: 5px;
+    margin: 20px auto; /* Centrar y dar espacio */
+    display: block; 
     cursor: pointer;
     font-size: 1rem;
+    font-weight: 500;
     transition: background-color 0.2s ease;
 }
-
 .btn-agregar-producto-compra:hover {
-    background-color: #b660a3;
+    background-color: var(--color-admin-action-view-hover, #d66abf);
 }
 
+/* Tabla de ítems en el formulario de compra */
+.agregar-compra-table {
+    overflow-x: auto; /* Para responsividad si la tabla es ancha */
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra más sutil */
+    border-radius: 8px;
+    overflow: hidden; /* Para que el radius funcione en la tabla */
+}
+.agregar-compra-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.agregar-compra-table th,
+.agregar-compra-table td {
+    border: 1px solid var(--color-border-light, #ddd); 
+    padding: 10px 12px; /* Padding consistente */
+    text-align: center;
+    font-size: 0.9rem; 
+    vertical-align: middle;
+}
+.agregar-compra-table th {
+    background-color: var(--color-admin-primary-lighter, #f1f1f1); /* Encabezado de tabla más sutil */
+    color: var(--color-text-dark, #333);
+    font-weight: 600;
+}
+.agregar-compra-table td input.input-text-readonly {
+    background-color: transparent;
+    border: none;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    cursor: default;
+}
+.agregar-compra-table td input.input-cantidad-precio {
+    width: 70px; /* Ancho para cantidad y precio */
+    padding: 6px 8px;
+    text-align: center;
+    border: 1px solid var(--color-border-light, #ccc);
+    border-radius: 4px;
+}
+.btn-icono-eliminar-producto-compra {
+    background-color: var(--color-admin-action-delete, #b660a3);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.btn-icono-eliminar-producto-compra:hover {
+    background-color: var(--color-admin-action-delete-hover, #6d0b58);
+}
+
+/* Totales de la compra */
+.agregar-compra-totales {
+    text-align: right;
+    font-size: 1rem; /* Un poco más pequeño para diferenciar */
+    margin-top: 20px;
+    padding: 15px 0;
+    border-top: 1px solid var(--color-border-light, #eee);
+}
+.agregar-compra-totales p {
+    margin: 6px 0; 
+    color: var(--color-text-dark, #333);
+}
+.agregar-compra-totales p strong {
+    color: var(--color-primary-darker, #000); /* Total en negro o color principal oscuro */
+    font-size: 1.1rem; /* Destacar el total final */
+}
+
+/* Botones principales del formulario (Guardar, Cancelar) */
 .agregar-compra-buttons {
     display: flex;
-    justify-content: center; /* Centra los botones *dentro* de este contenedor flex */
-    gap: 15px; /* Espacio entre botones */
+    justify-content: center;
+    gap: 15px;
     margin-top: 30px;
-    max-width: 1000px; /* Limitar ancho y centrar este contenedor */
-    margin-left: auto;
-    margin-right: auto;
 }
-
 .btn-guardar-agregar-compra,
 .btnCancelarAgregarCompra {
     padding: 10px 20px;
-    font-size: 1rem; /* Consistencia */
-    font-weight: normal; /* Quitar negrita si no la quieres */
-    transition: background-color 0.2s ease;
-}
-
-.btn-guardar-agregar-compra {
-    background-color: #fc8de4; /* Azul primario */
-    color: white;
-}
-
-.btn-guardar-agregar-compra:hover {
-    background-color: #b660a3;
-}
-
-.btnCancelarAgregarCompra {
-    background-color: #b660a3;
-    color: white;
-}
-
-.btnCancelarAgregarCompra:hover {
-    background-color: #6d0b58;
-}
-
-
-.btn-icono-eliminar-producto-compra {
-    background-color: #b660a3; /* Rojo de peligro */
-    color: white;
-    border: none;
-    padding: 8px 12px; /* Ajustado padding para que se vea bien */
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem; /* Tama\u00F1o del icono */
-    transition: background-color 0.2s ease;
-}
-
-.btn-icono-eliminar-producto-compra:hover {
-    background-color: #6d0b58;
-}
-
-/* Tabla */
-.agregar-compra-table {
-    overflow-x: auto;
-    margin-top: 20px;
-    width: 100%; /* Asegurar que ocupe todo el ancho disponible hasta el max-width */
-    max-width: 1000px; /* Limitar ancho y centrar */
-    margin-left: auto;
-    margin-right: auto;
-    border-collapse: collapse;
-    background: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.agregar-compra-table table {
-    width: 100%; /* La tabla dentro del contenedor ocupa el 100% de su ancho */
-    border-collapse: collapse;
-    background: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 8px; /* Bordes redondeados en la tabla */
-    overflow: hidden; /* Asegurar que los bordes redondeados se apliquen */
-}
-
-.agregar-compra-table th,
-.agregar-compra-table td {
-    border: 1px solid #dee2e6; /* Color de borde m\u00E1s suave */
-    padding: 12px; /* Aumentado padding */
-    text-align: center;
-    font-size: 0.95rem; /* Consistencia de fuente */
-}
-
-.agregar-compra-table th {
-    background-color: #e978d0; /* Fondo azul primario */
-    color: white;
-    font-weight: bold;
-    /* width: 20%; */ /* Quitar ancho fijo o ajustar seg\u00FAn contenido */
-}
-
-/* Estilos para la celda de Categor\u00EDa y Producto */
-.celda-categoria-producto {
-    text-align: left; /* Alinear contenido de la celda a la izquierda */
-}
-
-.selects-producto-group {
-    display: flex;
-    /* Originalmente en columna, si quieres uno al lado del otro cambia a row */
-    flex-direction: column; /* Poner los selects uno debajo del otro */
-    gap: 5px; /* Espacio reducido entre los selects */
-}
-
-/* Estilos espec\u00EDficos para los selects de Categor\u00EDa y Producto en la fila */
-.seleccionar-categoria,
-.seleccionar-producto-fila {
-    width: 100%; /* Ocupar todo el ancho del contenedor (.selects-producto-group) */
-    padding: 8px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #333;
-    font-size: 0.95rem;
-    box-sizing: border-box;
-}
-
-.seleccionar-producto-fila:disabled {
-    background-color: #e9ecef;
-    cursor: not-allowed;
-}
-
-
-/* Estilos para inputs de Cantidad y Precio en la tabla */
-.input-cantidad-precio {
-    width: 80px; /* Ancho fijo para inputs peque\u00F1os */
-    padding: 8px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #333;
-    font-size: 0.95rem;
-    box-sizing: border-box;
-    text-align: center; /* Centrar texto en inputs num\u00E9ricos */
-}
-
-
-/* Total */
-.agregar-compra-totales {
-    text-align: right;
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-top: 20px;
-    max-width: 1000px; /* Limitar ancho y centrar */
-    margin-left: auto;
-    margin-right: auto;
-    padding: 10px 0;
-    border-top: 1px solid #dee2e6;
-}
-
-.agregar-compra-totales p {
-    margin: 5px 0; /* Espacio entre l\u00EDneas de total */
-    color: #333;
-}
-
-.agregar-compra-totales p strong {
-    color: #000; /* Color m\u00E1s oscuro para el total */
-}
-
-
-/* Estilos para asteriscos requeridos */
-.required-asterisk {
-    color: red;
-    margin-left: 4px;
-    font-weight: normal;
-}
-
-/* Estilos para el n\u00FAmero de compra (aunque eliminado en JSX, mantenemos la clase si se reintroduce) */
-/*
-.numero-compra-cuadro { ... }
-.numero-compra { ... }
-*/
-
-
-/* Estilos para el Modal */
-.modal-overlay-AgregarCompra {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1050; /* Asegurar que est\u00E9 encima de todo */
-}
-
-.modal-container-AgregarCompra {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 400px; /* Ancho m\u00E1s t\u00EDpico para modales de mensaje */
-    max-width: 90%; /* Responsivo */
-    border-radius: 12px;
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-    padding: 30px; /* Aumentado padding */
-    text-align: center; /* Centrar texto en el modal */
-}
-
-.modal-container-AgregarCompra p {
-    font-size: 1.1rem; /* Fuente un poco m\u00E1s grande */
-    color: #333;
-    margin-bottom: 25px;
-    text-align: center; /* Asegurar que el texto est\u00E9 centrado */
-    width: 100%; /* Asegurar que el p ocupe el ancho */
-}
-
-.BotonCerrarModalValidaciones{
-    background-color: #f076d5;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
     font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    align-self: center;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s ease;
+    min-width: 150px; /* Ancho mínimo */
+}
+.btn-guardar-agregar-compra {
+    background-color: var(--color-admin-hover, #b660a3); /* Color Guardar */
+    color: white;
+}
+.btn-guardar-agregar-compra:hover {
+    background-color: var(--color-primary-darker, #6d0b58);
+}
+.btnCancelarAgregarCompra {
+    background-color: #95a5a6; /* Color Cancelar (gris) */
+    color: white;
+}
+.btnCancelarAgregarCompra:hover {
+    background-color: #7f8c8d;
 }
 
-.BotonCerrarModalValidaciones:hover {
-    background-color: #b660a3;
+/* Responsividad para FormCompraPage */
+@media (max-width: 768px) {
+    .agregar-compra-content { margin-left: 0; padding: 15px; }
+    .agregar-compra-form-wrapper { padding: 20px; margin-top: 10px; }
+    .agregar-compra-title { font-size: 1.5rem; margin-bottom: 20px; }
+    .form-group label { font-size: 0.9rem; }
+    .form-group input, .form-group select { font-size: 0.95rem; padding: 8px 10px; }
+    .btn-agregar-producto-compra { width: 100%; margin: 15px 0; }
+    .agregar-compra-table th, .agregar-compra-table td { padding: 8px; font-size: 0.85rem; }
+    .agregar-compra-table td input.input-cantidad-precio { width: 50px; padding: 4px; }
+    .agregar-compra-buttons { flex-direction: column; }
+    .btn-guardar-agregar-compra, .btnCancelarAgregarCompra { width: 100%; }
 }
+
+/* Estilos para ItemSelectionModal (si se usa el genérico, estos son recordatorios de las clases que usa) */
+/* .item-selection-modal-overlay, .item-selection-modal-content, etc. */
+/* Estos estilos deberían estar en src/shared/components/common/ItemSelectionModal.css */

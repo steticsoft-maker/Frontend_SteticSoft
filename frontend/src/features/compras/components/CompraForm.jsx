@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal'; // Genérico
+import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 
 const CompraForm = ({
   proveedor, setProveedor,
@@ -12,28 +12,35 @@ const CompraForm = ({
   productosPorCategoria, proveedoresList, metodosPagoList,
   subtotal, iva, total
 }) => {
-
+  // ... (lógica existente sin cambios) ...
   const [showProveedorSelectModal, setShowProveedorSelectModal] = useState(false);
   const [showProductoSelectModal, setShowProductoSelectModal] = useState(false);
-  const [currentProductoCategoria, setCurrentProductoCategoria] = useState('');
 
   const handleAgregarProductoRow = () => {
-      // Abre modal para seleccionar categoría y luego producto
-      // O un modal que liste todos los productos disponibles para compra
-      setShowProductoSelectModal(true); 
+    setShowProductoSelectModal(true); 
   };
 
   const handleSelectProductoParaAgregar = (productoSeleccionado) => {
-     // productoSeleccionado es el objeto {nombre, precio, categoria}
-     const productoExistente = items.find(item => item.nombre === productoSeleccionado.nombre && item.categoria === productoSeleccionado.categoria);
-     if (productoExistente) {
-        setItems(items.map(item => item.nombre === productoSeleccionado.nombre ? {...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.precio } : item));
-     } else {
-        setItems([...items, { ...productoSeleccionado, cantidad: 1, total: productoSeleccionado.precio }]);
-     }
-     setShowProductoSelectModal(false);
-  };
+    const productoExistente = items.find(item => item.id === productoSeleccionado.id); 
 
+    if (productoExistente) {
+      setItems(items.map(item => 
+        item.id === productoSeleccionado.id 
+        ? { ...item, cantidad: (item.cantidad || 0) + 1, total: ((item.cantidad || 0) + 1) * parseFloat(item.precio) } 
+        : item
+      ));
+    } else {
+      setItems([...items, { 
+        id: productoSeleccionado.id,
+        nombre: productoSeleccionado.nombre, 
+        categoria: productoSeleccionado.categoria,
+        precio: parseFloat(productoSeleccionado.precio),
+        cantidad: 1, 
+        total: parseFloat(productoSeleccionado.precio)
+      }]);
+    }
+    setShowProductoSelectModal(false);
+  };
 
   const handleEliminarProductoRow = (index) => {
     setItems(items.filter((_, i) => i !== index));
@@ -44,8 +51,12 @@ const CompraForm = ({
     const item = nuevosItems[index];
 
     if (campo === 'cantidad' || campo === 'precio') {
-        const numValor = parseFloat(valor) || 0;
-        item[campo] = Math.max(0, numValor); // No permitir negativos
+        let numValor = parseFloat(valor);
+        if (isNaN(numValor)) {
+            numValor = campo === 'cantidad' ? 1 : 0;
+        }
+        item[campo] = Math.max(0, numValor); 
+        if (campo === 'cantidad' && item[campo] === 0) item[campo] = 1;
     } else {
         item[campo] = valor;
     }
@@ -53,24 +64,33 @@ const CompraForm = ({
     setItems(nuevosItems);
   };
 
-  // Aplanar productos para el modal de selección
-  const todosLosProductosDisponibles = productosPorCategoria.reduce((acc, cat) => {
-    cat.productos.forEach(p => acc.push({ ...p, categoria: cat.categoria, label: `<span class="math-inline">\{p\.nombre\} \(</span>{cat.categoria}) - $${p.precio}`, value: p.nombre }));
+  const todosLosProductosParaModal = productosPorCategoria.reduce((acc, cat) => {
+    cat.productos.forEach(p => {
+      const productoIdUnico = p.id || `prod_${cat.categoria}_${p.nombre.replace(/\s+/g, '_')}`;
+      acc.push({ 
+        ...p, 
+        id: productoIdUnico,
+        value: productoIdUnico, 
+        label: `${p.nombre} (${cat.categoria}) - $${p.precio ? p.precio.toLocaleString('es-CO') : '0'}`,
+        categoria: cat.categoria
+      });
+    });
     return acc;
   }, []);
 
 
   return (
     <>
-      <div className="form-group"> {/* Clase del CSS original */}
+      {/* ... (resto del formulario: proveedor, fecha, método de pago) ... */}
+      <div className="form-group">
         <label htmlFor="proveedorSearch">Proveedor <span className="required-asterisk">*</span>:</label>
         <input
             type="text"
-            className="buscar-proveedor-input" // Clase del CSS original
-            value={proveedor}
-            onClick={() => setShowProveedorSelectModal(true)} // Abre modal al hacer clic
+            className="buscar-proveedor-input"
+            value={proveedor || ''}
+            onClick={() => setShowProveedorSelectModal(true)}
             placeholder="Seleccionar proveedor"
-            readOnly // Para forzar selección desde modal
+            readOnly
         />
       </div>
 
@@ -94,10 +114,9 @@ const CompraForm = ({
       </button>
 
       {items.length > 0 && (
-        <div className="agregar-compra-table"> {/* Clase del CSS original */}
-          <table>
-            <thead>
-              <tr>
+        <div className="agregar-compra-table">
+          <table><thead>{/* SIN ESPACIO */}
+              <tr>{/* SIN ESPACIO */}
                 <th>Categoría</th>
                 <th>Producto</th>
                 <th>Cantidad</th>
@@ -106,21 +125,21 @@ const CompraForm = ({
                 <th>Acción</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody>{/* SIN ESPACIO */}
               {items.map((item, index) => (
-                <tr key={index}>
+                // CORRECCIÓN AQUÍ: Sin espacio después de <tr...>
+                <tr key={item.id || index}>{/* SIN ESPACIO */}
                   <td>
-                    {/* Podrías hacer el select de categoría editable o mostrarlo como texto */}
-                    <input type="text" value={item.categoria} readOnly className="input-text-readonly" />
+                    <input type="text" value={item.categoria || ''} readOnly className="input-text-readonly" />
                   </td>
                   <td>
-                    <input type="text" value={item.nombre} readOnly className="input-text-readonly" />
+                    <input type="text" value={item.nombre || ''} readOnly className="input-text-readonly" />
                   </td>
                   <td>
                     <input
-                      className="input-cantidad-precio" /* Clase del CSS original */
+                      className="input-cantidad-precio"
                       type="number"
-                      value={item.cantidad}
+                      value={item.cantidad || 1}
                       onChange={(e) => handleCambioItem(index, "cantidad", e.target.value)}
                       min="1"
                     />
@@ -129,17 +148,17 @@ const CompraForm = ({
                     <input
                       className="input-cantidad-precio"
                       type="number"
-                      value={item.precio}
+                      value={item.precio || 0}
                       onChange={(e) => handleCambioItem(index, "precio", e.target.value)}
                       min="0"
                       step="0.01"
                     />
                   </td>
-                  <td>${item.total ? item.total.toFixed(2) : '0.00'}</td>
+                  <td>${item.total ? item.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</td>
                   <td>
                     <button
                       type="button"
-                      className="btn-icono-eliminar-producto-compra" /* Clase del CSS original */
+                      className="btn-icono-eliminar-producto-compra"
                       onClick={() => handleEliminarProductoRow(index)}
                       title="Eliminar producto"
                     >
@@ -153,27 +172,27 @@ const CompraForm = ({
         </div>
       )}
 
-      <div className="agregar-compra-totales"> {/* Clase del CSS original */}
-        <p>Subtotal: ${subtotal.toFixed(2)}</p>
-        <p>IVA (19%): ${iva.toFixed(2)}</p>
-        <p><strong>Total: ${total.toFixed(2)}</strong></p>
+      {/* ... (resto del formulario: totales y modales de selección) ... */}
+      <div className="agregar-compra-totales">
+        <p>Subtotal: ${subtotal.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        <p>IVA (19%): ${iva.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        <p><strong>Total: ${total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></p>
       </div>
 
-      {/* Modales de Selección */}
       <ItemSelectionModal
         isOpen={showProveedorSelectModal}
         onClose={() => setShowProveedorSelectModal(false)}
         title="Seleccionar Proveedor"
         items={proveedoresList.map(p => ({ label: p, value: p }))}
-        onSelectItem={(selected) => { setProveedor(selected); setShowProveedorSelectModal(false); }}
+        onSelectItem={(selectedItem) => { setProveedor(selectedItem.value); setShowProveedorSelectModal(false); }}
         searchPlaceholder="Buscar proveedor..."
       />
       <ItemSelectionModal
         isOpen={showProductoSelectModal}
         onClose={() => setShowProductoSelectModal(false)}
         title="Seleccionar Producto para Compra"
-        items={todosLosProductosDisponibles} // Ya tiene label y value
-        onSelectItem={handleSelectProductoParaAgregar} // Esta función espera el objeto completo
+        items={todosLosProductosParaModal} 
+        onSelectItem={handleSelectProductoParaAgregar}
         searchPlaceholder="Buscar producto..."
       />
     </>

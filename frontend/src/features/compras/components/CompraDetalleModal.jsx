@@ -5,8 +5,8 @@ const CompraDetalleModal = ({ isOpen, onClose, compra }) => {
   if (!isOpen || !compra) return null;
 
   return (
-    <div className="modal-compras"> {/* Clase del CSS original */}
-      <div className="modal-content-compras"> {/* Clase del CSS original */}
+    <div className="modal-compras">
+      <div className="modal-content-compras">
         <h2>Detalle de Compra #{compra.id}</h2>
         <p><strong>Proveedor:</strong> {compra.proveedor}</p>
         <p><strong>Fecha:</strong> {compra.fecha}</p>
@@ -16,11 +16,10 @@ const CompraDetalleModal = ({ isOpen, onClose, compra }) => {
         {compra.subtotal !== undefined && <p><strong>Subtotal:</strong> ${compra.subtotal.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}</p>}
         {compra.iva !== undefined && <p><strong>IVA (19%):</strong> ${compra.iva.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}</p>}
 
-
         <h4>Productos/Items:</h4>
-        <table className="tablaDetallesCompras"> {/* Clase del CSS original */}
-          <thead>
-            <tr>
+        {/* CORRECCIÓN AQUÍ: Sin espacio después de <table...> */}
+        <table className="tablaDetallesCompras"><thead>{/* SIN ESPACIO */}
+            <tr>{/* SIN ESPACIO */}
               <th>#</th>
               <th>Nombre</th>
               <th>Cantidad</th>
@@ -28,9 +27,9 @@ const CompraDetalleModal = ({ isOpen, onClose, compra }) => {
               <th>Total</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody>{/* SIN ESPACIO */}
             {(compra.productos || compra.items || []).map((producto, index) => (
-              <tr key={index}>
+              <tr key={index}>{/* SIN ESPACIO */}
                 <td>{index + 1}</td>
                 <td>{producto.nombre}</td>
                 <td>{producto.cantidad}</td>
@@ -40,7 +39,7 @@ const CompraDetalleModal = ({ isOpen, onClose, compra }) => {
             ))}
           </tbody>
         </table>
-        <button className="botonCerrarDetallesCompra" onClick={onClose}>Cerrar</button> {/* Clase del CSS original */}
+        <button className="botonCerrarDetallesCompra" onClick={onClose}>Cerrar</button>
       </div>
     </div>
   );

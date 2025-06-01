@@ -1,39 +1,42 @@
 // src/shared/components/common/ItemSelectionModal.jsx
 import React, { useState, useMemo } from "react";
-import "./ItemSelectionModal.css"; // Crea este archivo CSS
+import "./ItemSelectionModal.css";
 
 const ItemSelectionModal = ({
   isOpen,
   onClose,
   title,
-  items, // Array de objetos, se espera que cada objeto tenga al menos 'value' y 'label'
-  // Ejemplo: [{ value: 'id1', label: 'Nombre Item 1', otherData: '...' }]
-  // o un string si 'items' es un array de strings
-  onSelectItem, // Recibe el item completo seleccionado (o solo el 'value' si se prefiere)
+  items,
+  onSelectItem,
   searchPlaceholder = "Buscar...",
   emptyStateMessage = "No se encontraron coincidencias.",
-  multiSelect = false, // Nueva prop para selección múltiple (no implementada en este ejemplo básico)
-  renderItem, // Nueva prop para personalizar cómo se renderiza cada ítem en la lista
+  multiSelect = false,
+  renderItem,
 }) => {
+  // Hook 1: useState (siempre se llama)
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Hook 2: useMemo (siempre se llama, incluso si isOpen es false inicialmente)
+  const filteredItems = useMemo(() => {
+    if (!isOpen || !items) return []; // Devolver array vacío si no está abierto o no hay ítems
+                                    // para que el map posterior no falle.
+    return items.filter((item) => {
+      const label =
+        typeof item === "object"
+          ? String(item.label || item.nombre || item.value) // Asegurar que String() maneje null/undefined
+          : String(item);
+      return label.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+  }, [items, searchTerm, isOpen]); // Añadir isOpen a las dependencias de useMemo si su lógica depende de él.
+
+  // Retorno temprano DESPUÉS de todas las llamadas a Hooks
   if (!isOpen) {
     return null;
   }
 
-  const filteredItems = useMemo(() => {
-    if (!items) return [];
-    return items.filter((item) => {
-      const label =
-        typeof item === "object"
-          ? String(item.label || item.nombre || item.value)
-          : String(item);
-      return label.toLowerCase().includes(searchTerm.toLowerCase());
-    });
-  }, [items, searchTerm]);
-
+  // Lógica de renderizado que usa filteredItems
   const defaultRenderItem = (item, handleSelect) => {
-    const label =
+    const labelText = // Renombrada para evitar conflicto con 'label' de la función externa
       typeof item === "object" ? item.label || item.nombre || item.value : item;
     const key =
       typeof item === "object"
@@ -42,7 +45,7 @@ const ItemSelectionModal = ({
     return (
       <li key={key} className="selection-modal-item">
         <button type="button" onClick={() => handleSelect(item)}>
-          {label}
+          {String(labelText)} {/* Asegurar que sea string */}
         </button>
       </li>
     );
@@ -51,9 +54,8 @@ const ItemSelectionModal = ({
   const currentRenderItem = renderItem || defaultRenderItem;
 
   const handleSelect = (item) => {
-    onSelectItem(item); // Devuelve el objeto item completo
+    onSelectItem(item);
     if (!multiSelect) {
-      // Cierra el modal si no es selección múltiple
       onClose();
     }
   };
@@ -87,12 +89,6 @@ const ItemSelectionModal = ({
             <li className="selection-modal-empty-state">{emptyStateMessage}</li>
           )}
         </ul>
-        {/* Botón de cerrar podría ser opcional si ya hay 'X' en el header */}
-        {/* <div className="shared-modal-actions">
-          <button type="button" className="shared-modal-button shared-modal-button-cancel" onClick={onClose}>
-            Cerrar
-          </button>
-        </div> */}
       </div>
     </div>
   );

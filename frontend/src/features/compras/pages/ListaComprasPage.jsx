@@ -5,15 +5,15 @@ import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ComprasTable from '../components/ComprasTable';
 import CompraDetalleModal from '../components/CompraDetalleModal';
 import PdfViewModal from '../../../shared/components/common/pdfViewModal';
-import ConfirmModal from '../../../shared/components/common/ConfirmModal'; // Genérico
-import ValidationModal from '../../../shared/components/common/ValidationModal'; // Genérico
+import ConfirmModal from '../../../shared/components/common/ConfirmModal';
+import ValidationModal from '../../../shared/components/common/ValidationModal';
 import {
   fetchCompras,
   anularCompraById,
   cambiarEstadoCompra
 } from '../services/comprasService';
-import { generarPDFCompraUtil } from '../utils/pdfGeneratorCompras';
-import '../css/Compras.css'; // Asegurar la ruta correcta
+import { generarPDFCompraUtil } from '../utils/pdfGeneratorCompras'; // Nombre correcto de la función
+import '../css/Compras.css';
 
 function ListaComprasPage() {
   const navigate = useNavigate();
@@ -40,10 +40,10 @@ function ListaComprasPage() {
 
   const handleOpenPdf = (compra) => {
     try {
-        const blob = generarPDFCompra(compra);
+        const blob = generarPDFCompraUtil(compra); // CORRECCIÓN: Usar el nombre de función importado
         const url = URL.createObjectURL(blob);
         setPdfBlobUrl(url);
-        setSelectedCompra(compra); // Para el título del modal
+        setSelectedCompra(compra);
         setShowPdfModal(true);
     } catch(e) {
         setValidationMessage("Error al generar el PDF: " + e.message);
@@ -59,8 +59,10 @@ function ListaComprasPage() {
   const handleCloseModals = () => {
     setShowDetailsModal(false);
     setShowPdfModal(false);
-    if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
-    setPdfBlobUrl(null);
+    if (pdfBlobUrl) {
+        URL.revokeObjectURL(pdfBlobUrl);
+        setPdfBlobUrl(null);
+    }
     setShowAnularConfirmModal(false);
     setIsValidationModalOpen(false);
     setSelectedCompra(null);
@@ -81,38 +83,43 @@ function ListaComprasPage() {
   };
 
   const filteredCompras = compras.filter(compra =>
-    compra.proveedor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    compra.id.toString().includes(searchTerm) ||
-    compra.fecha.includes(searchTerm)
+    (compra.proveedor?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (compra.id?.toString() || '').includes(searchTerm) ||
+    (compra.fecha?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="compras-page-container"> {/* Nueva clase para la página */}
+    // Contenedor principal de la página para el layout flex con NavbarAdmin
+    <div className="compras-page-container"> 
       <NavbarAdmin />
-      <div className="comprasContenido"> {/* Clase del CSS original */}
-        <h2 className="title-h2">Gestión de Compras</h2>
-        <div className="container-busqueda-agregar"> {/* Clase del CSS original */}
-          <input
-            className="inputBarraBusqueda" /* Clase del CSS original */
-            type="text"
-            placeholder="Buscar compra (proveedor, ID, fecha)..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+      {/* Contenedor del contenido principal con el margen para el NavbarAdmin */}
+      <div className="comprasContenido"> 
+        {/* Wrapper interno para centrar el contenido si es necesario */}
+        <div className="compras-content-wrapper"> 
+          <h2 className="title-h2">Gestión de Compras</h2>
+          <div className="container-busqueda-agregar"> 
+            <input
+              className="inputBarraBusqueda" // Asegúrate que esta clase esté bien estilizada en Compras.css
+              type="text"
+              placeholder="Buscar compra (proveedor, ID, fecha)..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              className="botonSuperiorAgregarCompra" // Asegúrate que esta clase esté bien estilizada en Compras.css
+              onClick={() => navigate('/compras/agregar')}
+            >
+              Agregar Compra
+            </button>
+          </div>
+          <ComprasTable
+            compras={filteredCompras}
+            onShowDetails={handleOpenDetails}
+            onGenerarPDF={handleOpenPdf}
+            onAnular={handleOpenAnularConfirm}
+            onEstadoChange={handleEstadoChange}
           />
-          <button
-            className="botonSuperiorAgregarCompra" /* Clase del CSS original */
-            onClick={() => navigate('/compras/agregar')} // Ruta a la página de agregar compra
-          >
-            Agregar Compra
-          </button>
         </div>
-        <ComprasTable
-          compras={filteredCompras}
-          onShowDetails={handleOpenDetails}
-          onGenerarPDF={handleOpenPdf}
-          onAnular={handleOpenAnularConfirm}
-          onEstadoChange={handleEstadoChange}
-        />
       </div>
 
       <CompraDetalleModal
