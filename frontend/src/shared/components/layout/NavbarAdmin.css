@@ -1,155 +1,168 @@
 /* src/shared/components/layout/NavbarAdmin.css */
-/* Asegúrate de que _variables.css esté importado en src/index.css o un global.css */
 
+/* --- Estructura Principal del Sidebar --- */
 .dashboard-sidebar {
-    width: 250px; /* Ancho por defecto */
-    background-color: var(--color-admin-primary); /* Variable CSS */
-    color: var(--color-text-light); /* Variable CSS - asumiendo texto claro sobre fondo admin */
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 4px 0 5px rgba(0, 0, 0, 0.3);
-    position: fixed; /* Cambiado de relative a fixed para que se quede en su sitio al hacer scroll */
-    left: 0;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 100; /* Para asegurar que esté por encima de otro contenido si es necesario */
+  width: 250px;
+  height: 100vh;
+  background-color: var(--color-admin-primary);
+  color: var(--color-text-light);
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.15);
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+/* --- Sección de Información del Administrador --- */
+.admin-section {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-top: 10px;
+}
+
+.admin-icon {
+  color: var(--color-admin-icon, rgb(71, 6, 71));
+  font-size: 4rem;
+  margin-bottom: 5px;
+}
+
+.admin-label {
+  color: var(--color-text-light);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* --- Contenedor de Enlaces de Navegación --- */
+.dashboard-links {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* flex-grow: 1; Se quita o ajusta para controlar la posición del botón de logout */
+  /* Si quieres que los links ocupen la mayoría del espacio y el logout quede abajo pero no pegado al fondo: */
+  margin-bottom: 20px; /* Añade un margen inferior a la lista de links */
+}
+
+/* --- Estilo Base para Enlaces/Botones de Navegación --- */
+.dashboard-link,
+.nested-link {
+  background-color: transparent;
+  color: var(--color-text-light-secondary, #ffffff);
+  border: none;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.dashboard-link:hover,
+.nested-link:hover {
+  background-color: var(--color-admin-hover);
+  color: #ffffff; /* Texto blanco al hacer hover, también para nested-link */
+  transform: translateX(4px);
+}
+
+.dashboard-icon {
+  margin-right: 12px;
+  font-size: 1.2rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* --- Estilos para Submenús (Enlaces Anidados) --- */
+.nested-links {
+  margin-left: 20px;
+  padding-left: 10px;
+  border-left: 2px solid var(--color-admin-hover-light, rgba(255, 255, 255, 0.2));
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.nested-link {
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  color: #ffffff; /* << --- CAMBIO: Color de texto de nested-link a blanco --- */
+}
+
+/* .nested-link:hover ya hereda el color #ffffff del selector .dashboard-link:hover, .nested-link:hover */
+
+
+/* --- Sección de Cerrar Sesión --- */
+.dashboard-link.logout-button {
+  /* margin-top: auto; Quitado para que no se vaya al fondo absoluto */
+  margin-top: 20px; /* <--- NUEVO: Margen superior para separarlo de los links anteriores */
+  background-color: var(--color-danger-subtle, rgba(220, 53, 69, 0.2));
+  color: var(--color-danger, #dc3545);
+  border: 1px solid var(--color-danger-border, rgba(220, 53, 69, 0.4));
+}
+
+.dashboard-link.logout-button:hover {
+  background-color: var(--color-danger, #dc3545);
+  color: var(--color-text-light); /* Asegura que el texto sea blanco al hacer hover */
+  border-color: var(--color-danger, #dc3545);
+}
+
+
+/* --- Media Queries --- */
+@media (max-width: 1024px) {
+  .dashboard-sidebar {
+    width: 220px;
+    padding: 15px 10px;
+  }
+
+  .dashboard-link, .nested-link {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+
+  .admin-icon { font-size: 3.5rem; }
+  .admin-label { font-size: 1.1rem; }
+  .dashboard-icon { font-size: 1.1rem; }
+}
+
+@media (max-width: 768px) {
+  .dashboard-sidebar {
+    width: 60px;
+    padding: 15px 5px;
+  }
+
+  .admin-label,
+  .dashboard-link span,
+  .dashboard-link .dashboard-icon + span {
+    display: none;
   }
   
-  .admin-section {
-    text-align: center;
-    margin-bottom: 20px;
-    padding-top: 10px; /* Espacio superior */
+  .dashboard-link, .nested-link {
+    justify-content: center;
+    padding: 12px 0;
   }
-  
-  .admin-icon {
-    color: rgb(71, 6, 71); /* Mantener si es un color muy específico de la marca para el icono */
-    /* o definir --color-admin-icon: rgb(71, 6, 71); */
-    font-size: 4rem;
-  }
-  
-  .admin-label {
-    color: var(--color-text-dark); /* Variable CSS - o un color específico para el label admin */
-    font-size: 1.3rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 5px;
-  }
-  
-  .dashboard-links {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* Ligeramente reducido el gap */
-  }
-  
-  .dashboard-link, .nested-link { /* Estilos base para botones y enlaces */
-    background-color: transparent; /* Hacer transparente por defecto */
-    color: var(--color-text-dark); /* Texto oscuro por defecto sobre fondo claro de sidebar */
-    border: none;
-    padding: 12px 15px; /* Ajustado padding */
-    text-align: left;
-    font-size: 0.95rem; /* Ligeramente ajustado */
-    font-weight: 500;
-    cursor: pointer;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    border-radius: 5px;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-    margin-bottom: 5px; /* Espacio entre items */
-  }
-  
-  .dashboard-link:hover, .nested-link:hover {
-    background-color: var(--color-admin-hover); /* Variable CSS */
-    color: var(--color-text-light); /* Variable CSS */
-    transform: translateX(3px); /* Ligero movimiento al hacer hover */
-  }
-  
-  /* Para el botón de logout, que ya tiene clase .logout-button */
-  .dashboard-link.logout-button {
-      margin-top: auto; /* Empuja el botón de logout al final */
-      background-color: var(--color-secondary); /* Un color distintivo para logout */
-      color: var(--color-text-light);
-  }
-  .dashboard-link.logout-button:hover {
-      background-color: #d2691e; /* Color más oscuro para logout, o una variable */
-      color: var(--color-text-light);
-  }
-  
-  
   .dashboard-icon {
-    margin-right: 12px;
-    font-size: 1.3rem; /* Ligeramente ajustado */
-    min-width: 20px; /* Para alinear texto si algunos ítems no tienen ícono */
+    margin-right: 0;
+    font-size: 1.5rem;
   }
-  
-  .nested-links {
-    margin-left: 25px; /* Aumentada indentación */
-    padding-left: 15px;
-    border-left: 2px solid var(--color-admin-hover); /* Usar variable de color */
-    display: flex;
-    flex-direction: column;
-    gap: 5px; /* Espacio entre nested links */
-    margin-top: 5px;
-    margin-bottom: 10px;
+
+  .admin-icon { font-size: 2.5rem; }
+  .nested-links { display: none; }
+
+  .dashboard-link.logout-button .dashboard-icon {
+      margin-right: 0;
   }
-  
-  .nested-link {
-    padding: 10px 15px;
-    font-size: 0.9rem; /* Un poco más pequeño */
+  .dashboard-link.logout-button span {
+    display: none;
   }
-  
-  /* Ya no se necesita .logout-section si .logout-button se empuja al final con margin-top: auto */
-  /* .logout-section { ... } */
-  
-  
-  /* Media Queries (mantener y ajustar si es necesario) */
-  @media (max-width: 1024px) {
-    .dashboard-sidebar {
-      width: 220px;
-    }
-    .dashboard-link, .nested-link {
-      font-size: 0.85rem;
-      padding: 10px 12px;
-    }
-    .admin-icon {
-      font-size: 3.5rem;
-    }
-    .admin-label {
-      font-size: 1.1rem;
-    }
-    .dashboard-icon {
-      font-size: 1.2rem;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    /* En pantallas muy pequeñas, podrías querer que el sidebar se oculte
-       y se muestre con un botón tipo hamburguesa, pero eso es una refactorización mayor.
-       Por ahora, solo ajustamos el ancho. */
-    .dashboard-sidebar {
-      width: 200px; /* O incluso más pequeño si es necesario */
-       /* Si se superpone con el contenido, ajusta el margin-left del .main-content globalmente */
-    }
-     .dashboard-link, .nested-link {
-      font-size: 0.8rem;
-      padding: 8px 10px;
-    }
-     .dashboard-icon {
-      font-size: 1.1rem;
-    }
-    .admin-icon {
-      font-size: 3rem;
-     }
-    .admin-label {
-      font-size: 1rem;
-    }
-    .logout-button { /* Estilo específico para el botón de logout en pantallas pequeñas */
-      font-size: 0.8rem;
-      padding: 10px;
-    }
-  }
+}

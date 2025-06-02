@@ -17,15 +17,15 @@ function LoginPage() {
   const handleLoginSubmit = async (credentials) => {
     setErrorApi("");
     // setIsSubmitting(true); // Si usas un loader local
-    console.log("[LoginPage.jsx] Enviando credenciales para login:", credentials);
+    // console.log("[LoginPage.jsx] Enviando credenciales para login:", credentials);
 
     try {
       // loginContext ahora es una función async que interactúa con la API
       const response = await loginContext(credentials);
-      console.log("[LoginPage.jsx] Respuesta de loginContext:", response);
+      // console.log("[LoginPage.jsx] Respuesta de loginContext:", response);
 
       if (response.success) {
-        console.log("[LoginPage.jsx] Login exitoso, rol:", response.role);
+        // console.log("[LoginPage.jsx] Login exitoso, rol:", response.role);
         // La redirección basada en el rol (el nombre del rol viene en response.role)
         if (response.role === "Administrador") { // Asegúrate que "Administrador" coincide con el nombre del rol en tu BD
           navigate("/admin/dashboard"); // O la ruta de tu dashboard de admin
@@ -41,13 +41,13 @@ function LoginPage() {
         // Este 'else' podría no ser necesario si AuthContext siempre lanza un error en caso de fallo.
         // Pero por si acaso la promesa se resuelve sin 'success: true' pero sin lanzar error:
         const message = response.message || "Error de autenticación desconocido.";
-        console.error("[LoginPage.jsx] Login no exitoso (sin error lanzado):", message);
+        // console.error("[LoginPage.jsx] Login no exitoso (sin error lanzado):", message);
         setErrorApi(message);
       }
     } catch (err) {
       // err.message debería contener el mensaje de error propagado desde AuthContext/authService
       const errorMessage = err.message || "Ocurrió un error de conexión o autenticación. Inténtalo de nuevo.";
-      console.error("[LoginPage.jsx] Error capturado al intentar login:", err);
+      // console.error("[LoginPage.jsx] Error capturado al intentar login:", err);
       setErrorApi(errorMessage);
     } finally {
       // setIsSubmitting(false); // Si usas un loader local

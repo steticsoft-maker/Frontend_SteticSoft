@@ -17,12 +17,12 @@ function RegisterPage() {
     setErrorApi("");
     setSuccessMessage("");
     setIsSubmitting(true);
-    console.log("[RegisterPage.jsx] Enviando datos para registro:", userData);
+    // console.log("[RegisterPage.jsx] Enviando datos para registro:", userData);
 
     try {
       // Llamar a la función correcta del servicio
       const response = await registerAPI(userData); // <--- CAMBIO AQUÍ: de registerUser a registerAPI
-      console.log("[RegisterPage.jsx] Respuesta de registerAPI:", response);
+      // console.log("[RegisterPage.jsx] Respuesta de registerAPI:", response);
 
       if (response.success) {
         setSuccessMessage(response.message || "¡Registro exitoso! Ahora puedes iniciar sesión.");
@@ -36,7 +36,7 @@ function RegisterPage() {
     } catch (err) {
       // err.message debería contener el mensaje de error propagado desde authService
       const errorMessage = err.message || "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
-      console.error("[RegisterPage.jsx] Error capturado al intentar registrar:", err);
+      // console.error("[RegisterPage.jsx] Error capturado al intentar registrar:", err);
       setErrorApi(errorMessage);
     } finally {
       setIsSubmitting(false);

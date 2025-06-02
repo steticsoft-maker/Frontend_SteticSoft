@@ -1,113 +1,117 @@
 /* src/features/dashboard/css/Dashboard.css */
-/* El estilo global de body y html ya está en src/index.css */
 
-/* Contenedor de layout para la PÁGINA del dashboard (incluye NavbarAdmin y main content) */
-.dashboard-layout {
-    display: flex;
-    height: 100vh; /* Ocupa toda la altura de la ventana */
-    width: 100vw; /* Ocupa todo el ancho */
-    box-sizing: border-box;
-    background-color: var(--color-background-admin-content); /* Fondo general de la página admin */
-  }
-  
-  /* Área principal de contenido del dashboard, al lado del NavbarAdmin */
-  .dashboard-main-content { /* Renombrado desde .dashboard-main para evitar conflictos */
-    flex: 1; /* Toma el espacio restante */
-    margin-left: 280px; /* Descomentar y ajustar si NavbarAdmin es fixed y tiene ancho fijo
-    padding: 25px; /* Reducido un poco el padding */
-    overflow-y: auto; /* Permite scroll si el contenido es muy largo */
-    box-sizing: border-box;
-  }
-  
-  .dashboard-header {
-    font-size: 1.8rem; /* Ligeramente más pequeño */
-    margin-bottom: 25px;
-    color: var(--color-text-dark); /* Usar variable */
-    text-align: left; /* Alinear a la izquierda es más común para títulos de página */
-  }
-  
-  .charts-container {
-    display: flex;
-    flex-direction: column;
-    gap: 25px; /* Espacio entre filas de gráficos */
-  }
-  
-  .rowDashboard {
-    display: flex;
-    flex-wrap: wrap; /* Permitir que los gráficos se ajusten en pantallas más pequeñas */
-    justify-content: space-between; /* O space-around/flex-start según preferencia */
-    gap: 25px; /* Espacio entre gráficos en la misma fila */
-  }
-  
+/* Contenedor principal para el contenido específico de la página del dashboard. */
+.dashboard-main-content-page {
+  width: 100%;
+}
+
+/* Estilo para el encabezado principal de la página del dashboard. */
+.dashboard-header {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  color: var(--color-text-dark);
+  text-align: left;
+}
+
+/* Contenedor para todas las filas de gráficos. */
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* Espacio vertical entre las filas de gráficos. */
+}
+
+/* Estilo para una fila que contiene uno o más gráficos. */
+.rowDashboard {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los gráficos pasen a la siguiente línea si no caben. */
+  gap: 25px; /* Espacio horizontal y vertical entre gráficos dentro de una fila. */
+}
+
+/* Estilo para cada tarjeta individual que envuelve un gráfico (ChartCard). */
+.chart {
+  flex: 1 1 calc(50% - 13px); /* Intenta que dos tarjetas quepan por fila, restando la mitad del gap. */
+  min-width: 300px; /* Ancho mínimo para evitar que se compriman demasiado. */
+  background-color: var(--color-background-light);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column; /* Apila el título, botones y el gráfico verticalmente. */
+  text-align: center;
+}
+
+/* Estilo para el título H2 dentro de cada tarjeta de gráfico. */
+.chart h2 {
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--color-text-dark);
+}
+
+/* Contenedor del canvas del gráfico para controlar su tamaño y crecimiento. */
+.chart-wrapper {
+  width: 100%;
+  flex-grow: 1; /* Permite que el área del gráfico se expanda verticalmente. */
+  min-height: 280px; /* Altura mínima para el gráfico. */
+  position: relative;
+}
+
+/* Contenedor para los botones de selección de período de tiempo (Día, Semana, Mes). */
+.time-period-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+/* Estilo base para los botones de período de tiempo. */
+.time-period-buttons button {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border-light, #bdc3c7);
+  border-radius: 4px;
+  background-color: var(--color-background-button-secondary, #ecf0f1);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Estilo para el botón de período de tiempo que está activo/seleccionado. */
+.time-period-buttons button.active {
+  background-color: var(--color-admin-hover);
+  color: var(--color-text-light);
+  border-color: var(--color-admin-hover);
+  font-weight: bold;
+}
+
+/* Estilo para los botones de período de tiempo al pasar el mouse sobre ellos (si no están activos). */
+.time-period-buttons button:not(.active):hover {
+  background-color: #e0e0e0;
+  border-color: #c0c0c0;
+}
+
+/* --- Media Queries para Responsividad del Dashboard --- */
+
+/* Para tablets o pantallas medianas, los gráficos ocupan una columna. */
+@media (max-width: 992px) {
   .chart {
-    flex: 1 1 calc(50% - 12.5px); /* Base para 2 columnas, ajusta el calc si el gap cambia */
-    min-width: 300px; /* Ancho mínimo para que no se compriman demasiado */
-    /* max-height: 400px; */ /* Quitar max-height para permitir que el contenido defina la altura */
-    padding: 20px; /* Padding interno de la tarjeta del gráfico */
-    border-radius: 8px;
-    text-align: center;
-    background-color: var(--color-background-light); /* Fondo de la tarjeta */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Sombra más sutil */
-    display: flex; /* Para controlar mejor el contenido interno */
-    flex-direction: column; /* Apilar título, botones, wrapper */
+     flex: 1 1 100%; /* Cada tarjeta de gráfico ocupa todo el ancho disponible. */
   }
-  
-  .chart h2 {
-      font-size: 1.1rem;
-      margin-bottom: 15px;
-      color: var(--color-text-dark);
+}
+
+/* Ajustes adicionales para pantallas más pequeñas/móviles. */
+@media (max-width: 768px) {
+  .dashboard-header {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
   }
-  
-  .chart-wrapper {
-    width: 100%;
-    flex-grow: 1; /* Permite que el wrapper del gráfico crezca para llenar el espacio */
-    min-height: 280px; /* Altura mínima para el gráfico */
-  }
-  
-  .time-period-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 15px;
-    /* margin-top: -10px; */ /* Ajustar o quitar si no es necesario */
-  }
-  
+
   .time-period-buttons button {
-    padding: 6px 12px; /* Ligeramente más grandes */
-    border: 1px solid #bdc3c7; /* var(--color-border-light) */
-    border-radius: 4px;
-    background-color: #ecf0f1; /* var(--color-background-button-secondary) */
-    color: var(--color-text-dark);
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    padding: 5px 10px;
+    font-size: 0.8rem;
   }
-  
-  .time-period-buttons button.active {
-    background-color: var(--color-admin-hover); /* Usar variable de admin */
-    color: var(--color-text-light);
-    border-color: var(--color-admin-hover);
-    font-weight: bold;
+
+  .chart-wrapper {
+    min-height: 220px; /* Reduce la altura mínima de los gráficos. */
   }
-  
-  .time-period-buttons button:not(.active):hover {
-    background-color: #dcdcdc;
-    border-color: #b0b0b0;
-  }
-  
-  /* Media Query para cuando los gráficos deben ir en una sola columna */
-  @media (max-width: 768px) {
-    .rowDashboard {
-      flex-direction: column; /* Apila los gráficos verticalmente */
-    }
-    .chart {
-      flex-basis: 100%; /* Cada gráfico ocupa todo el ancho */
-    }
-    .dashboard-main-content {
-      /* margin-left: 0; Si el NavbarAdmin se oculta o cambia a modo hamburguesa */
-      padding: 15px;
-    }
-    .dashboard-header {
-      font-size: 1.5rem;
-    }
-  }
+}

@@ -1,22 +1,29 @@
 // src/shared/components/auth/PrivateRoute.jsx
-import React from "react";
-import { Navigate } from "react-router-dom";
-// Opcional: Podrías importar y usar useAuth si decides integrarlo con AuthContext más adelante
-// import { useAuth } from "../../hooks/useAuth";
+import React, { useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext'; // Ajusta la ruta si es diferente
 
-function PrivateRoute({ children }) {
-  // const { isAuthenticated, userRole } = useAuth(); // Ejemplo si usaras useAuth hook
-  const token = localStorage.getItem("authToken");
-  const userRole = localStorage.getItem("userRole");
+function PrivateRoute({ children, allowedRoles }) {
+  const { isAuthenticated, user, isLoading } = useContext(AuthContext);
+  const location = useLocation();
 
-  // Validar si es el administrador
-  if (token === "admin-token" && userRole === "admin") {
-    return children;
-  } else {
-    // Considera no usar alert para mejor UX en el futuro
-    alert("Acceso denegado. Debes iniciar sesión como administrador.");
-    return <Navigate to="/" />;
+  if (isLoading) {
+    return <div>Cargando autenticación...</div>;
   }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (allowedRoles && user?.rol && !allowedRoles.includes(user.rol.nombre)) {
+    console.warn(
+      `Acceso denegado para el rol: "${user.rol.nombre}" a la ruta: ${location.pathname}. Roles permitidos: ${allowedRoles.join(', ')}`
+    );
+    return <Navigate to="/" replace />; 
+  }
+
+  // Si está autenticado y su rol está permitido (o no se especificaron roles), renderizar children
+  return children;
 }
 
 export default PrivateRoute;

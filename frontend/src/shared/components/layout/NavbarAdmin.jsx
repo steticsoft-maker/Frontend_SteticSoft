@@ -12,38 +12,38 @@ import './NavbarAdmin.css';
 
 // (Opcional) Definir la estructura del menú como datos para mejor mantenibilidad
 const menuItemsConfig = [
-  { label: 'Dashboard', path: '/dashboard', icon: FaChartLine, exact: true },
+  { label: 'Dashboard', path: '/admin/dashboard', icon: FaChartLine }, // Actualizado
   {
     label: 'Configuración', icon: FaRandom, subMenuKey: 'configuracion',
     subItems: [
-      { label: 'Roles', path: '/Rol' },
-      { label: 'Usuarios', path: '/Usuarios' },
+      { label: 'Roles', path: '/admin/roles' },         // Actualizado
+      { label: 'Usuarios', path: '/admin/usuarios' },   // Actualizado
     ],
   },
   {
     label: 'Ventas', icon: FaClipboardList, subMenuKey: 'ventas',
     subItems: [
-      { label: 'Ventas', path: '/ventas' },
-      { label: 'Clientes', path: '/clientes' },
-      { label: 'Servicios', path: '/serviciosadministrador' },
-      { label: 'Categoría Servicios', path: '/categoriaservicio' },
-      { label: 'Productos', path: '/productoadministrador' },
-      { label: 'Categoría Productos', path: '/categorias' },
+      { label: 'Ventas', path: '/admin/ventas' },                         // Actualizado
+      { label: 'Clientes', path: '/admin/clientes' },                     // Actualizado
+      { label: 'Servicios', path: '/admin/servicios-admin' },            // Actualizado
+      { label: 'Categoría Servicios', path: '/admin/categorias-servicio' }, // Actualizado
+      { label: 'Productos', path: '/admin/productos-admin' },              // Actualizado
+      { label: 'Categoría Productos', path: '/admin/categorias-producto' },// Actualizado
     ],
   },
   {
     label: 'Compras', icon: FaShoppingCart, subMenuKey: 'compras',
     subItems: [
-      { label: 'Compras', path: '/compras' },
-      { label: 'Proveedores', path: '/proveedores' },
-      { label: 'Abastecimiento', path: '/abastecimiento' },
+      { label: 'Compras', path: '/admin/compras' },             // Actualizado
+      { label: 'Proveedores', path: '/admin/proveedores' },     // Actualizado
+      { label: 'Abastecimiento', path: '/admin/abastecimiento' },// Actualizado
     ],
   },
   {
     label: 'Citas', icon: FaCalendarCheck, subMenuKey: 'citas',
     subItems: [
-      { label: 'Horario de Citas (Novedades)', path: '/horarioempleado' },
-      { label: 'Citas', path: '/citas' },
+      { label: 'Horario de Citas (Novedades)', path: '/admin/horarios' }, // Actualizado
+      { label: 'Citas', path: '/admin/citas' },                         // Actualizado
     ],
   },
 ];

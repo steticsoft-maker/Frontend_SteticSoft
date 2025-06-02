@@ -8,10 +8,10 @@ import apiClient from "../../../shared/services/api"; // Ajusta la ruta si es ne
  */
 export const loginAPI = async (credentials) => {
   // credentials viene como { email: 'user@example.com', password: 'userpass' }
-  console.log(
-    "[authService.js] Credenciales recibidas del formulario:",
-    credentials
-  );
+  // console.log(
+  //   "[authService.js] Credenciales recibidas del formulario:",
+  //   credentials
+  // );
 
   // Transformar los nombres de los campos para que coincidan con el backend
   const datosParaAPI = {
@@ -19,20 +19,20 @@ export const loginAPI = async (credentials) => {
     contrasena: credentials.password, // Cambiar 'password' a 'contrasena'
   };
 
-  console.log(
-    "[authService.js] Intentando login con datos transformados para API:",
-    datosParaAPI
-  );
+  // console.log(
+  //   "[authService.js] Intentando login con datos transformados para API:",
+  //   datosParaAPI
+  // );
   try {
     // apiClient ya tiene la baseURL
     const response = await apiClient.post("/auth/login", datosParaAPI); // Enviar los datos transformados
-    console.log("[authService.js] Respuesta de la API (login):", response.data);
+    // console.log("[authService.js] Respuesta de la API (login):", response.data);
     return response.data;
   } catch (error) {
-    console.error(
-      "[authService.js] Error en la llamada API de login:",
-      error.response?.data || error.message
-    );
+    // console.error(
+    //   "[authService.js] Error en la llamada API de login:",
+    //   error.response?.data || error.message
+    // );
     throw (
       error.response?.data ||
       new Error(error.message || "Error desconocido en el servicio de login")
@@ -47,10 +47,10 @@ export const loginAPI = async (credentials) => {
  */
 export const registerAPI = async (userData) => {
   // userData viene con { name: '...', email: '...', password: '...' } según RegisterForm.jsx
-  console.log(
-    "[authService.js] Datos de registro recibidos del formulario:",
-    userData
-  );
+  // console.log(
+  //   "[authService.js] Datos de registro recibidos del formulario:",
+  //   userData
+  // );
 
   // Transformar los nombres de los campos para que coincidan con el backend si es necesario
   // Tu backend auth.controller.js para registrar espera:
@@ -73,25 +73,25 @@ export const registerAPI = async (userData) => {
   // ¡IMPORTANTE! Añade todos los campos que tu backend espera para el registro.
   // Si RegisterForm.jsx no los tiene, deberás añadirlos allí primero.
 
-  console.log(
-    "[authService.js] Intentando registrar con datos transformados para API:",
-    datosRegistroParaAPI
-  );
+  // console.log(
+  //   "[authService.js] Intentando registrar con datos transformados para API:",
+  //   datosRegistroParaAPI
+  // );
   try {
     const response = await apiClient.post(
       "/auth/registrar",
       datosRegistroParaAPI
     );
-    console.log(
-      "[authService.js] Respuesta de la API (registro):",
-      response.data
-    );
+    // console.log(
+    //   "[authService.js] Respuesta de la API (registro):",
+    //   response.data
+    // );
     return response.data;
   } catch (error) {
-    console.error(
-      "[authService.js] Error en la llamada API de registro:",
-      error.response?.data || error.message
-    );
+    // console.error(
+    //   "[authService.js] Error en la llamada API de registro:",
+    //   error.response?.data || error.message
+    // );
     throw (
       error.response?.data ||
       new Error(error.message || "Error desconocido en el servicio de registro")
@@ -106,25 +106,25 @@ export const registerAPI = async (userData) => {
  */
 export const solicitarRecuperacionAPI = async (emailSolicitud) => {
   // Renombrado el parámetro para evitar confusión con el campo 'correo'
-  console.log(
-    "[authService.js] Solicitando recuperación para email:",
-    emailSolicitud
-  );
+  // console.log(
+  //   "[authService.js] Solicitando recuperación para email:",
+  //   emailSolicitud
+  // );
   try {
     // El backend espera un objeto { correo: 'email@example.com' }
     const response = await apiClient.post("/auth/solicitar-recuperacion", {
       correo: emailSolicitud,
     });
-    console.log(
-      "[authService.js] Respuesta de API (solicitar-recuperacion):",
-      response.data
-    );
+    // console.log(
+    //   "[authService.js] Respuesta de API (solicitar-recuperacion):",
+    //   response.data
+    // );
     return response.data;
   } catch (error) {
-    console.error(
-      "[authService.js] Error en API (solicitar-recuperacion):",
-      error.response?.data || error.message
-    );
+    // console.error(
+    //   "[authService.js] Error en API (solicitar-recuperacion):",
+    //   error.response?.data || error.message
+    // );
     throw (
       error.response?.data ||
       new Error(
@@ -147,24 +147,24 @@ export const resetearContrasenaAPI = async (
   confirmarNuevaContrasena
 ) => {
   const datosParaAPI = { token, nuevaContrasena, confirmarNuevaContrasena };
-  console.log(
-    "[authService.js] Reseteando contraseña con token y nueva contraseña."
-  ); // No loguear contraseñas
+  // console.log(
+  //   "[authService.js] Reseteando contraseña con token y nueva contraseña."
+  // ); // No loguear contraseñas
   try {
     const response = await apiClient.post(
       "/auth/resetear-contrasena",
       datosParaAPI
     );
-    console.log(
-      "[authService.js] Respuesta de API (resetear-contrasena):",
-      response.data
-    );
+    // console.log(
+    //   "[authService.js] Respuesta de API (resetear-contrasena):",
+    //   response.data
+    // );
     return response.data;
   } catch (error) {
-    console.error(
-      "[authService.js] Error en API (resetear-contrasena):",
-      error.response?.data || error.message
-    );
+    // console.error(
+    //   "[authService.js] Error en API (resetear-contrasena):",
+    //   error.response?.data || error.message
+    // );
     throw (
       error.response?.data ||
       new Error(error.message || "Error desconocido al resetear contraseña")
@@ -173,16 +173,16 @@ export const resetearContrasenaAPI = async (
 };
 
 export const logoutAPI = async () => {
-  console.log("[authService.js] Procesando logout del cliente.");
+  // console.log("[authService.js] Procesando logout del cliente.");
   try {
     // Si tu backend tuviera un endpoint /auth/logout para invalidar algo (ej. refresh tokens), lo llamarías aquí.
     // await apiClient.post("/auth/logout");
     return { success: true, message: "Logout procesado por el cliente." };
   } catch (error) {
-    console.error(
-      "[authService.js] Error durante el logout API (si se implementara):",
-      error.response?.data || error.message
-    );
+    // console.error(
+    //   "[authService.js] Error durante el logout API (si se implementara):",
+    //   error.response?.data || error.message
+    // );
     throw error.response?.data || error; // No debería fallar si es solo cliente
   }
 };
