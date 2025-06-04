@@ -1,7 +1,7 @@
 // src/features/auth/components/LoginForm.jsx
 import React, { useState } from "react";
 import "../css/Auth.css";
-import "../css/RegisterStyles.css";
+import "../css/LoginStyles.css"; // Asegúrate que esta sea la importación correcta
 
 function LoginForm({ onSubmit, error }) {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -19,49 +19,61 @@ function LoginForm({ onSubmit, error }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!credentials.email || !credentials.password) {
-      // La validación de campos vacíos podría hacerse aquí o en el servicio/página
-      // Por simplicidad, la mantenemos aquí por ahora, pero idealmente el servicio maneja errores de lógica.
-      // O la página podría mostrar un error más específico.
-      alert("Por favor, completa todos los campos.");
+      alert("Por favor, completa tu correo electrónico y contraseña.");
       return;
     }
-    if (!isCheckboxChecked) {
-      alert("Debes marcar 'Recordar usuario' para continuar."); // O ajustar la lógica de esta validación
-      return;
-    }
-    onSubmit(credentials);
+    onSubmit(credentials, isCheckboxChecked);
   };
+
+  const RequiredAsterisk = () => <span style={{ color: "red" }}>*</span>;
 
   return (
     <form className="auth-form-content" onSubmit={handleSubmit}>
-      <input
-        type="email"
-        name="email" // Añadido name para el handleChange genérico
-        placeholder="Correo electrónico"
-        value={credentials.email}
-        onChange={handleChange}
-        className="auth-form-input"
-        required
-      />
-      <input
-        type="password"
-        name="password" // Añadido name
-        placeholder="Contraseña"
-        value={credentials.password}
-        onChange={handleChange}
-        className="auth-form-input"
-        required
-      />
+      {/* Campo Correo Electrónico */}
+      <div className="auth-form-group">
+        <label htmlFor="login-email">Correo electrónico <RequiredAsterisk /></label>
+        <input
+          type="email"
+          id="login-email"
+          name="email"
+          placeholder="ejemplo@correo.com"
+          value={credentials.email}
+          onChange={handleChange}
+          className="auth-form-input"
+          required
+          autoComplete="email" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+        />
+      </div>
+
+      {/* Campo Contraseña */}
+      <div className="auth-form-group">
+        <label htmlFor="login-password">Contraseña <RequiredAsterisk /></label>
+        <input
+          type="password"
+          id="login-password"
+          name="password"
+          placeholder="Tu contraseña"
+          value={credentials.password}
+          onChange={handleChange}
+          className="auth-form-input"
+          required
+          autoComplete="current-password" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+        />
+      </div>
+
+      {/* Checkbox Recordar Usuario */}
       <div className="auth-form-checkbox">
         <input
           type="checkbox"
-          id="remember-user" // Cambiado id para evitar duplicados si hay otro form en la vista
+          id="remember-user"
           checked={isCheckboxChecked}
           onChange={handleCheckboxChange}
         />
-        <label htmlFor="remember-user">Recordar usuario.</label>
+        <label htmlFor="remember-user">Recordar usuario</label>
       </div>
+
       {error && <p className="auth-form-error">{error}</p>}
+
       <button type="submit" className="auth-primary-button">
         Entrar
       </button>
