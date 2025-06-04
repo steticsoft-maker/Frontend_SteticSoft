@@ -1,0 +1,76 @@
+/* src/features/auth/css/RegisterStyles.css */
+
+/* Si RegisterForm necesita un ancho de caja diferente al Login */
+/* .auth-form-box {
+  max-width: 700px;
+} */
+/* Nota: El Auth.css que me pasaste ya tenía 700px. Si es común, se queda allí.
+   Si solo el registro lo necesita, muévelo aquí o usa una clase combinada.
+   Por ahora, asumo que 700px es el general.
+*/
+
+/* === Estilos para el Grid de dos columnas en RegisterForm === */
+.auth-form-grid {
+    display: grid;
+    /* Opción 1: Responsive (2 columnas si hay espacio, sino 1) */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* Opción 2: Siempre 2 columnas (se encogen si no hay espacio) */
+    /* grid-template-columns: 1fr 1fr; */
+    gap: 15px; /* Espacio entre los campos */
+  }
+  
+  .auth-form-group {
+    /* Contenedor para cada input/select dentro del grid */
+    display: flex;
+    flex-direction: column; /* Útil si añades labels encima de los inputs */
+  }
+  
+  /* Si un campo específico necesita ocupar todo el ancho del grid */
+  .auth-form-group-full-width {
+    grid-column: 1 / -1; /* Hace que el elemento ocupe todas las columnas disponibles */
+  }
+  
+  /* Ajuste para que los inputs dentro del grid tomen todo el ancho de su celda */
+  .auth-form-grid .auth-form-input { /* Se aplica a inputs *dentro* del grid */
+    width: 100%;
+    /* box-sizing: border-box; ya está en la definición general de .auth-form-input */
+  }
+  
+  /* === Estilos para la sección inferior y acciones secundarias del RegisterForm === */
+  .auth-form-bottom-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Espacio entre checkbox, mensajes, botón primario, y acciones secundarias */
+    /* El margin-top es manejado por el gap de .auth-form-content si este div es hijo directo */
+  }
+  
+  .auth-form-secondary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    /* El margin-top es manejado por el gap de .auth-form-bottom-section */
+  }
+
+    /* En RegisterStyles.css o Auth.css */
+    .auth-form-group label {
+      display: block;
+      /* Hace que el label ocupe su propia línea */
+      text-align: left;
+      /* Alinea el texto del label a la izquierda */
+      font-size: 0.9rem;
+      /* Tamaño de fuente para el label */
+      color: #333;
+      /* Color del texto del label */
+      margin-bottom: 5px;
+      /* Espacio entre el label y el input debajo */
+      font-weight: 500;
+      /* Un poco de énfasis */
+    }
+  
+  /* Ejemplo: Si el checkbox en el registro necesita un centrado particular */
+  .auth-form-bottom-section .auth-form-checkbox {
+    justify-content: center;
+    width: auto;
+  }

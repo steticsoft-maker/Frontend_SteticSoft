@@ -11,18 +11,18 @@ export const AuthProvider = ({ children }) => {
 
   // Verificar el estado de autenticación inicial desde localStorage
   useEffect(() => {
-    console.log("[AuthContext.jsx] Verificando estado de autenticación inicial...");
+    // console.log("[AuthContext.jsx] Verificando estado de autenticación inicial...");
     const token = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('authUser'); // Guardaremos el objeto usuario completo
 
     if (token && storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        console.log("[AuthContext.jsx] Usuario encontrado en localStorage:", parsedUser);
+        // console.log("[AuthContext.jsx] Usuario encontrado en localStorage:", parsedUser);
         setIsAuthenticated(true);
         setUser(parsedUser); // El objeto 'user' incluye el rol y otra info
       } catch (e) {
-        console.error("[AuthContext.jsx] Error al parsear usuario de localStorage:", e);
+        // console.error("[AuthContext.jsx] Error al parsear usuario de localStorage:", e);
         // Limpiar en caso de datos corruptos
         localStorage.removeItem('authToken');
         localStorage.removeItem('authUser');
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
       }
     } else {
-      console.log("[AuthContext.jsx] No se encontró token o usuario en localStorage.");
+      // console.log("[AuthContext.jsx] No se encontró token o usuario en localStorage.");
       setIsAuthenticated(false);
       setUser(null);
     }
@@ -38,11 +38,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = useCallback(async (credentials) => {
-    console.log("[AuthContext.jsx] Iniciando proceso de login con credenciales:", credentials);
+    // console.log("[AuthContext.jsx] Iniciando proceso de login con credenciales:", credentials);
     setIsLoading(true);
     try {
       const apiResponse = await loginAPI(credentials); // Llama al servicio que llama a la API
-      console.log("[AuthContext.jsx] Respuesta recibida de loginAPI:", apiResponse);
+      // console.log("[AuthContext.jsx] Respuesta recibida de loginAPI:", apiResponse);
 
       // Tu API devuelve: { success: true, data: { token, usuario }, message }
       // Donde usuario es: { idUsuario, nombre, apellido, correo, telefono, ..., rol: { idRol, nombre } }
@@ -54,14 +54,14 @@ export const AuthProvider = ({ children }) => {
 
         setIsAuthenticated(true);
         setUser(usuario); // El 'usuario' ya contiene el objeto 'rol'
-        console.log("[AuthContext.jsx] Login exitoso. Usuario y token guardados:", usuario);
+        // console.log("[AuthContext.jsx] Login exitoso. Usuario y token guardados:", usuario);
         setIsLoading(false);
         return { success: true, role: usuario.rol.nombre }; // Devuelve el nombre del rol para la redirección
       } else {
         // Si success es false o faltan datos cruciales en la respuesta
         setIsLoading(false);
         const errorMessage = apiResponse.message || "Respuesta inesperada de la API de login.";
-        console.error("[AuthContext.jsx] Fallo en login (API no exitosa o datos incompletos):", errorMessage);
+        // console.error("[AuthContext.jsx] Fallo en login (API no exitosa o datos incompletos):", errorMessage);
         throw new Error(errorMessage);
       }
     } catch (error) {
@@ -69,13 +69,13 @@ export const AuthProvider = ({ children }) => {
       // El error ya debería venir formateado desde authService.js (ej. error.message)
       // o ser el objeto de error de la API { success: false, message: "..." }
       const errorMessage = error.message || "Error durante el proceso de login.";
-      console.error("[AuthContext.jsx] Error capturado en la función login:", error);
+      // console.error("[AuthContext.jsx] Error capturado en la función login:", error);
       throw new Error(errorMessage); // Propagar el error para que LoginPage lo muestre
     }
   }, []); // No olvides añadir setIsLoading a las dependencias si lo usas dentro y quieres que se actualice correctamente
 
   const logout = useCallback(() => {
-    console.log("[AuthContext.jsx] Ejecutando logout.");
+    // console.log("[AuthContext.jsx] Ejecutando logout.");
     localStorage.removeItem('authToken');
     localStorage.removeItem('authUser'); // Remover el objeto usuario
     setIsAuthenticated(false);

@@ -1,6 +1,7 @@
 // src/features/auth/components/LoginForm.jsx
 import React, { useState } from "react";
-// Asumimos que Auth.css está importado en LoginPage.jsx o globalmente para la feature
+import "../css/Auth.css";
+import "../css/RegisterStyles.css";
 
 function LoginForm({ onSubmit, error }) {
   const [credentials, setCredentials] = useState({ email: "", password: "" });

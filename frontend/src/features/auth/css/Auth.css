@@ -1,60 +1,61 @@
 /* src/features/auth/css/Auth.css */
 /* Asegúrate de que _variables.css esté importado globalmente */
 
+/* === Estilos Generales de la Página de Autenticación === */
 .auth-page-container {
-    /* Renombrado de .form-container para la página */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    box-sizing: border-box;
     width: 100%;
+    min-height: 100vh;
+    padding: 20px;
     background-color: rgb(245, 245, 245);
     /* Considera var(--color-background-page) */
-    padding: 20px;
-    box-sizing: border-box;
 }
 
 .auth-form-box {
-    /* Renombrado de .form-box */
-    background-color: var(--color-background-light);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 500px;
+    max-width: 700px;
+    /* Ancho base para las cajas de formulario, RegisterStyles.css podría ajustarlo si necesita ser diferente */
+    padding: 40px;
+    margin: 0 auto;
+    border-radius: 15px;
     text-align: center;
+    background-color: var(--color-background-light);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 .auth-form-logo {
-    /* Renombrado de .form-logo */
+    display: block;
     width: 100px;
     height: 100px;
+    margin: 0 auto 20px;
+    border: 3px solid var(--color-secondary);
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 auto 20px;
-    display: block;
-    border: 3px solid var(--color-secondary);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .auth-form-title {
-    /* Renombrado de .form-title */
-    font-size: 2rem;
-    color: var(--color-text-dark);
     margin-bottom: 35px;
+    font-size: 2rem;
     font-weight: 600;
+    color: var(--color-text-dark);
 }
 
+/* === Estilos Base para el Contenido del Formulario === */
 .auth-form-content {
-    /* Renombrado de .form-content */
+    /* Layout base para el contenido de los formularios (ej. <form>) */
     display: flex;
     flex-direction: column;
     gap: 15px;
-    /* Aumentado el gap para mejor espaciado entre inputs */
+    /* Espacio entre elementos directos del form (ej. entre el grid y la sección inferior) */
 }
 
 .auth-form-input {
-    /* Renombrado de .form-input */
+    box-sizing: border-box;
+    width: 100%;
     padding: 12px 15px;
     border: 1px solid #ddd;
     /* Considera var(--color-border-light) */
@@ -63,55 +64,52 @@
     color: var(--color-text-dark);
     background-color: #f9f9f9;
     /* Considera var(--color-background-input) */
-    width: 100%;
-    box-sizing: border-box;
     transition: border-color 0.3s ease;
 }
 
 .auth-form-input:focus {
-    outline: none;
     border-color: var(--color-secondary);
     box-shadow: 0 0 0 2px rgba(255, 127, 80, 0.2);
     /* Considera var(--color-secondary-focus-shadow) */
+    outline: none;
 }
 
 .auth-form-checkbox {
-    /* Renombrado de .form-checkbox */
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    /* Alinea a la izquierda por defecto */
     gap: 8px;
-    margin: 10px 0;
 }
 
 .auth-form-checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    cursor: pointer;
     accent-color: var(--color-secondary);
+    cursor: pointer;
 }
 
 .auth-form-checkbox label {
     font-size: 0.95rem;
     color: #555;
     /* Considera var(--color-text-muted) */
-    cursor: pointer;
     text-align: left;
+    cursor: pointer;
 }
 
+/* === Estilos Base para Botones === */
 .auth-primary-button {
-    /* Renombrado de .primary-button */
-    background-color: var(--color-secondary);
-    color: var(--color-text-light);
-    border: none;
+    display: block;
+    width: 100%;
     padding: 12px;
+    border: none;
     border-radius: 10px;
     font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
     font-weight: 500;
-    margin-top: 10px;
+    color: var(--color-text-light);
+    background-color: var(--color-secondary);
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .auth-primary-button:hover {
@@ -120,40 +118,52 @@
     transform: translateY(-2px);
 }
 
+.auth-primary-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .auth-secondary-button {
-    /* Renombrado de .secondary-button */
-    background-color: transparent;
-    color: var(--color-secondary);
-    border: 1px solid var(--color-secondary);
     padding: 10px 20px;
+    border: 1px solid var(--color-secondary);
     border-radius: 10px;
     font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
     font-weight: 500;
+    color: var(--color-secondary);
+    background-color: transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .auth-secondary-button:hover {
-    background-color: var(--color-secondary);
     color: var(--color-text-light);
+    background-color: var(--color-secondary);
 }
 
+/* === Estilos Base para Contenedores de Acciones y Mensajes === */
 .auth-form-actions {
-    /* Renombrado de .form-actions */
-    margin-top: 25px;
+    /* Contenedor general para varios botones si fuera necesario */
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap;
+    margin-top: 25px;
 }
 
 .auth-form-error {
-    /* Renombrado de .form-error */
+    min-height: 1.2em;
+    font-size: 0.9rem;
     color: #e74c3c;
     /* Define var(--color-error) */
-    font-size: 0.9rem;
-    margin-top: 5px;
-    /* Ajustado para que no se solape con el input */
     text-align: left;
+    width: 100%;
+}
+
+.auth-form-success {
     min-height: 1.2em;
-    /* Para evitar saltos de layout cuando aparece/desaparece */ }
+    font-size: 0.9rem;
+    color: green;
+    /* Define var(--color-success) */
+    text-align: center;
+    width: 100%; }
