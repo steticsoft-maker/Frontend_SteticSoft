@@ -1,10 +1,11 @@
 // src/shared/components/auth/PrivateRoute.jsx
 import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext'; // Ajusta la ruta si es diferente
+import { AuthContext } from '../../contexts/AuthContext';
 
-function PrivateRoute({ children, allowedRoles }) {
-  const { isAuthenticated, user, isLoading } = useContext(AuthContext);
+// El componente ahora acepta 'allowedRoles' o 'requiredPermission'
+function PrivateRoute({ children, allowedRoles, requiredPermission }) {
+  const { isAuthenticated, user, permissions, isLoading } = useContext(AuthContext);
   const location = useLocation();
 
   if (isLoading) {
@@ -15,14 +16,24 @@ function PrivateRoute({ children, allowedRoles }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  // Verificación por Rol (se mantiene por si lo necesitas en algún lado)
   if (allowedRoles && user?.rol && !allowedRoles.includes(user.rol.nombre)) {
     console.warn(
-      `Acceso denegado para el rol: "${user.rol.nombre}" a la ruta: ${location.pathname}. Roles permitidos: ${allowedRoles.join(', ')}`
+      `Acceso DENEGADO por ROL a: ${location.pathname}. Rol del usuario: "${user.rol.nombre}". Roles permitidos: ${allowedRoles.join(', ')}`
     );
     return <Navigate to="/" replace />; 
   }
 
-  // Si está autenticado y su rol está permitido (o no se especificaron roles), renderizar children
+  // ¡NUEVA VERIFICACIÓN POR PERMISO!
+  if (requiredPermission && (!permissions || !permissions.includes(requiredPermission))) {
+    console.warn(
+        `Acceso DENEGADO por PERMISO a: ${location.pathname}. Permiso requerido: "${requiredPermission}". Permisos del usuario: [${permissions.join(', ')}]`
+    );
+    // Puedes redirigir a una página de "Acceso Denegado" o al dashboard principal.
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
+  // Si pasa todas las verificaciones, permite el acceso.
   return children;
 }
 
