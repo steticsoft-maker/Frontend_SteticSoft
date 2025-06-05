@@ -91,7 +91,7 @@
 
 /* Tabla de Categorías de Servicio */
 .tablaCategoria {
-  width: 100%; /* Ocupa el ancho del wrapper */
+  width: 100%; 
   border-collapse: collapse;
   margin-top: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -273,13 +273,9 @@ label.asteriscoCampoObligatorioCategoria {
   color: red;
   margin-left: 2px;
 }
-.asteriscoCampoObligatorioCategoria .requiredCategoria { /* Si el span está dentro del label */
-  /* Ya está cubierto */
-}
-
 
 /* Contenedor de botones de acción del formulario */
-.containerBotonesAgregarCategoria { /* Tu clase para botones Guardar/Cancelar del form */
+.containerBotonesAgregarCategoria {
   display: flex;
   justify-content: center; 
   gap: 15px;

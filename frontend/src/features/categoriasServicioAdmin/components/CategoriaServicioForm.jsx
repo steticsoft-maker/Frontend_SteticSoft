@@ -1,79 +1,97 @@
-// src/features/categoriasServicioAdmin/components/CategoriaServicioForm.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-const CategoriaServicioForm = ({
-  formData,
-  onFormChange,
-  isEditing,
-  formErrors,
+const CategoriaFormModal = ({
+  open,
+  onClose,
+  onSubmit,
+  initialData,
+  modoEdicion,
 }) => {
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    // El modal padre (CategoriaServicioFormModal) espera "Activo" o "Inactivo" para el campo 'estado'
-    // cuando se maneja a través de onFormChange.
-    onFormChange(
-      name,
-      type === "checkbox" ? (checked ? "Activo" : "Inactivo") : value
-    );
+  const [nombre, setNombre] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [activo, setActivo] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (initialData) {
+      setNombre(initialData.nombre || "");
+      setDescripcion(initialData.descripcion || "");
+      setActivo(initialData.activo ?? true);
+    } else {
+      setNombre("");
+      setDescripcion("");
+      setActivo(true);
+    }
+    setError("");
+  }, [initialData, open]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!nombre.trim()) {
+      setError("El nombre es obligatorio.");
+      return;
+    }
+    onSubmit({ nombre, descripcion, activo });
   };
 
+  if (!open) return null;
+
   return (
-    <>
-      <div className="camposAgregarCategoria">
-        <label
-          className="asteriscoCampoObligatorioCategoria"
-          htmlFor="nombre-catServicio-form"
-        >
-          Nombre <span className="requiredCategoria">*</span>
-        </label>
-        <input
-          id="nombre-catServicio-form" // ID único para el label
-          className="campoAgregarCategoria"
-          type="text"
-          name="nombre" // Debe coincidir con la clave en formData
-          value={formData.nombre || ""}
-          onChange={handleChange}
-          placeholder="Nombre de la categoría"
-          required
-        />
-        {formErrors?.nombre && (
-          <span className="error">{formErrors.nombre}</span>
-        )}
-      </div>
-
-      <div className="camposAgregarCategoria">
-        <label htmlFor="descripcion-catServicio-form">Descripción</label>
-        <textarea
-          id="descripcion-catServicio-form" // ID único
-          className="campoAgregarCategoria"
-          name="descripcion" // Debe coincidir con la clave en formData
-          value={formData.descripcion || ""}
-          onChange={handleChange}
-          placeholder="Descripción (opcional)"
-          rows="3"
-        />
-        {formErrors?.descripcion && (
-          <span className="error">{formErrors.descripcion}</span>
-        )}
-      </div>
-
-      {isEditing && ( // El switch solo se muestra en modo edición
-        <div className="camposAgregarCategoria">
-          <label>Estado:</label>{" "}
-          {/* No necesita htmlFor si el input está en su propio label.switch */}
-          <label className="switch">
+    <div className="modal-Categoria">
+      <div className="modal-content-Categoria formulario">
+        <h3>{modoEdicion ? "Editar Categoría" : "Agregar Categoría"}</h3>
+        <form className="modal-Categoria-form-grid" onSubmit={handleSubmit}>
+          <div className="camposAgregarCategoria">
+            <label>
+              Nombre <span className="requiredCategoria">*</span>
+            </label>
             <input
-              type="checkbox"
-              name="estado" // El 'name' debe coincidir con la clave en formData
-              checked={formData.estado === "Activo"} // Compara con "Activo"
-              onChange={handleChange} // Usa el handleChange general
+              className="campoAgregarCategoria"
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
             />
-            <span className="slider round"></span>
-          </label>
-        </div>
-      )}
-    </>
+          </div>
+          <div className="camposAgregarCategoria">
+            <label>Descripción</label>
+            <textarea
+              className="campoAgregarCategoria"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+            />
+          </div>
+          <div className="camposAgregarCategoria">
+            <label>Estado</label>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={activo}
+                onChange={() => setActivo((a) => !a)}
+              />
+              <span className="slider"></span>
+            </label>
+          </div>
+          {error && <div className="error">{error}</div>}
+          <div className="containerBotonesAgregarCategoria">
+            <button
+              type="submit"
+              className="botonGuardarEditarProveedor botonEditarCategoria"
+            >
+              {modoEdicion ? "Guardar Cambios" : "Agregar"}
+            </button>
+            <button
+              type="button"
+              className="botonCancelarEditarProveedor"
+              onClick={onClose}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 
-export default CategoriaServicioForm;
+export default CategoriaFormModal;

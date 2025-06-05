@@ -1,9 +1,10 @@
 // src/features/categoriasServicioAdmin/pages/ListaCategoriasServicioPage.jsx
+
 import React, { useState, useEffect } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import CategoriasServicioTable from "../components/CategoriasServicioTable";
-import CategoriaServicioCrearModal from "../components/CategoriaServicioCrearModal"; // NUEVO
-import CategoriaServicioEditarModal from "../components/CategoriaServicioEditarModal"; // NUEVO
+import CategoriaServicioCrearModal from "../components/CategoriaServicioCrearModal";
+import CategoriaServicioEditarModal from "../components/CategoriaServicioEditarModal";
 import CategoriaServicioDetalleModal from "../components/CategoriaServicioDetalleModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
@@ -19,118 +20,110 @@ function ListaCategoriasServicioPage() {
   const [categorias, setCategorias] = useState([]);
   const [search, setSearch] = useState("");
 
-  // Nuevos estados para los modales de crear y editar
+  // Estados para los modales
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
-  // Los otros estados de modal se mantienen
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
   const [currentCategoria, setCurrentCategoria] = useState(null);
-  // formModalType ya no es necesario si separamos los modales
   const [validationMessage, setValidationMessage] = useState("");
 
+  // Cargar categorías desde la API
+  const cargarCategorias = async () => {
+    try {
+      const data = await fetchCategoriasServicio();
+      setCategorias(data);
+    } catch (error) {
+      setValidationMessage("Error al cargar las categorías.");
+      setIsValidationModalOpen(true);
+    }
+  };
+
   useEffect(() => {
-    setCategorias(fetchCategoriasServicio());
+    cargarCategorias();
   }, []);
 
+  // Abrir modales
   const handleOpenModal = (type, categoria = null) => {
-    // console.log(`[LCSPage] handleOpenModal - Tipo: ${type}`, categoria);
     setCurrentCategoria(categoria);
     if (type === "ver") {
       setIsDetailsModalOpen(true);
     } else if (type === "delete") {
       setIsConfirmDeleteOpen(true);
     } else if (type === "agregar") {
-      setIsCrearModalOpen(true); // Abre el modal de CREAR
+      setIsCrearModalOpen(true);
     } else if (type === "editar") {
       if (categoria) {
-        // Asegurarse de que hay datos para editar
-        setIsEditarModalOpen(true); // Abre el modal de EDITAR
+        setIsEditarModalOpen(true);
       } else {
-        console.error(
-          "Se intentó abrir el modal de edición sin datos de categoría."
-        );
-      }
-    }
-  };
-
-  // Cierre específico para el modal de CREAR
-  const handleCrearModalClose = () => {
-    setIsCrearModalOpen(false);
-    // No es necesario resetear currentCategoria aquí si solo se usa para editar/ver/eliminar
-  };
-
-  // Cierre específico para el modal de EDITAR
-  const handleEditarModalClose = () => {
-    setIsEditarModalOpen(false);
-    setCurrentCategoria(null); // Limpiar la categoría actual después de editar o cancelar
-  };
-
-  const closeOtherModals = () => {
-    setIsDetailsModalOpen(false);
-    setIsConfirmDeleteOpen(false);
-    setIsValidationModalOpen(false);
-    setValidationMessage("");
-    // Solo limpiar currentCategoria si ninguno de los modales de formulario está abierto
-    if (!isCrearModalOpen && !isEditarModalOpen) {
-      setCurrentCategoria(null);
-    }
-  };
-
-  const handleSave = (categoriaData) => {
-    try {
-      // currentCategoria se usa para determinar si es edición o para pasar el ID original
-      const updatedCategorias = saveCategoriaServicio(
-        categoriaData,
-        categorias,
-        currentCategoria
-      );
-      setCategorias(updatedCategorias);
-      // Cerrar el modal correspondiente
-      if (isCrearModalOpen) handleCrearModalClose();
-      if (isEditarModalOpen) handleEditarModalClose();
-    } catch (error) {
-      setValidationMessage(error.message);
-      setIsValidationModalOpen(true);
-    }
-  };
-
-  const handleDelete = () => {
-    if (currentCategoria && currentCategoria.id) {
-      try {
-        const updatedCategorias = deleteCategoriaServicioById(
-          currentCategoria.id,
-          categorias
-        );
-        setCategorias(updatedCategorias);
-        closeOtherModals();
-      } catch (error) {
-        setValidationMessage(error.message);
+        setValidationMessage("No hay datos de categoría para editar.");
         setIsValidationModalOpen(true);
       }
     }
   };
 
-  const handleToggleEstado = (categoriaId) => {
+  // Cerrar modales
+  const handleCrearModalClose = () => setIsCrearModalOpen(false);
+  const handleEditarModalClose = () => setIsEditarModalOpen(false);
+  const closeOtherModals = () => {
+    setIsDetailsModalOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setIsValidationModalOpen(false);
+    setValidationMessage("");
+    if (!isCrearModalOpen && !isEditarModalOpen) {
+      setCurrentCategoria(null);
+    }
+  };
+
+  // Guardar (crear o editar)
+  const handleSave = async (categoriaData) => {
     try {
-      const updatedCategorias = toggleCategoriaServicioEstado(
-        categoriaId,
-        categorias
-      );
-      setCategorias(updatedCategorias);
+      if (isEditarModalOpen && currentCategoria) {
+        await saveCategoriaServicio(categoriaData, true, currentCategoria.id);
+      } else {
+        await saveCategoriaServicio(categoriaData, false);
+      }
+      await cargarCategorias();
+      if (isCrearModalOpen) handleCrearModalClose();
+      if (isEditarModalOpen) handleEditarModalClose();
     } catch (error) {
-      setValidationMessage(error.message);
+      setValidationMessage(error?.response?.data?.message || "Error al guardar la categoría.");
       setIsValidationModalOpen(true);
     }
   };
 
+  // Eliminar
+  const handleDelete = async () => {
+    if (currentCategoria && currentCategoria.id) {
+      try {
+        await deleteCategoriaServicioById(currentCategoria.id);
+        await cargarCategorias();
+        closeOtherModals();
+      } catch (error) {
+        setValidationMessage(error?.response?.data?.message || "Error al eliminar la categoría.");
+        setIsValidationModalOpen(true);
+      }
+    }
+  };
+
+  // Cambiar estado (activo/inactivo)
+ // En ListaCategoriasServicioPage.jsx
+  const handleToggleEstado = async (categoria) => {
+    try {
+      await toggleCategoriaServicioEstado(categoria.id, !categoria.activo);
+      await cargarCategorias();
+    } catch (error) {
+      setValidationMessage(error?.response?.data?.message || "Error al cambiar el estado.");
+      setIsValidationModalOpen(true);
+    }
+  };
+  // Filtrar categorías por búsqueda
   const filteredCategorias = categorias.filter(
     (c) =>
       c.nombre.toLowerCase().includes(search.toLowerCase()) ||
-      (c.descripcion &&
-        c.descripcion.toLowerCase().includes(search.toLowerCase()))
+      (c.descripcion && c.descripcion.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -160,12 +153,12 @@ function ListaCategoriasServicioPage() {
             onView={(cat) => handleOpenModal("ver", cat)}
             onEdit={(cat) => handleOpenModal("editar", cat)}
             onDeleteConfirm={(cat) => handleOpenModal("delete", cat)}
-            onToggleEstado={handleToggleEstado}
+            onToggleEstado={(cat) => handleToggleEstado(cat.id, cat.activo)}
           />
         </div>
       </div>
 
-      {/* Renderizar los modales separados */}
+      {/* Modales */}
       <CategoriaServicioCrearModal
         isOpen={isCrearModalOpen}
         onClose={handleCrearModalClose}
@@ -175,7 +168,7 @@ function ListaCategoriasServicioPage() {
         isOpen={isEditarModalOpen}
         onClose={handleEditarModalClose}
         onSubmit={handleSave}
-        initialData={currentCategoria} // Solo el modal de editar necesita initialData
+        initialData={currentCategoria}
       />
       <CategoriaServicioDetalleModal
         isOpen={isDetailsModalOpen}
