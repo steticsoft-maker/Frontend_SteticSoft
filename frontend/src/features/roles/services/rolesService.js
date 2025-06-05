@@ -1,78 +1,130 @@
 // src/features/roles/services/rolesService.js
 
-const MODULOS_PERMISOS = [
-    { id: 1, nombre: "Usuarios" }, { id: 2, nombre: "Ventas" },
-    { id: 3, nombre: "Productos" }, { id: 4, nombre: "Reportes" },
-    { id: 5, nombre: "Clientes" }, { id: 6, nombre: "Proveedores" },
-    { id: 7, nombre: "Inventario" }, { id: 8, nombre: "Configuración" },
-    { id: 9, nombre: "Dashboard" },
-  ];
-  
-  const INITIAL_ROLES = [
-    { id: 1, nombre: "Administrador", descripcion: "Acceso completo.", permisos: MODULOS_PERMISOS.map(m => m.nombre), anulado: false },
-    { id: 2, nombre: "Vendedor", descripcion: "Acceso a ventas, clientes, productos.", permisos: ["Ventas", "Clientes", "Productos"], anulado: false },
-    { id: 3, nombre: "Consulta", descripcion: "Solo visualización.", permisos: ["Reportes", "Inventario"], anulado: true },
-  ];
-  
-  const ROLES_STORAGE_KEY = 'roles_steticsoft'; // Nueva clave para evitar colisiones
-  
-  export const getModulosPermisos = () => {
-    return MODULOS_PERMISOS;
-  };
-  
-  export const fetchRoles = () => {
-    // En el futuro, esto será una llamada API
-    const storedRoles = localStorage.getItem(ROLES_STORAGE_KEY);
-    return storedRoles ? JSON.parse(storedRoles) : INITIAL_ROLES;
-  };
-  
-  export const saveRole = (roleToSave, existingRoles) => {
-    // Lógica de validación de nombre único y manejo de ID
-    if (!roleToSave.nombre.trim()) {
-      throw new Error("El nombre del rol es obligatorio.");
-    }
-  
-    let updatedRoles;
-    if (roleToSave.id) { // Editando
-      const nameExists = existingRoles.some(
-        r => r.nombre.toLowerCase() === roleToSave.nombre.toLowerCase() && r.id !== roleToSave.id
-      );
-      if (nameExists) {
-        throw new Error("Ya existe otro rol con este nombre.");
+import apiClient from "../../../shared/services/apiClient";
+
+/**
+ * Obtiene todos los permisos (módulos) desde la API.
+ */
+export const getPermisosAPI = async () => {
+  try {
+    const response = await apiClient.get("/permisos");
+    return response.data?.data || [];
+  } catch (error) {
+    console.error(
+      "Error al obtener permisos:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "No se pudieron obtener los permisos."
+    );
+  }
+};
+
+/**
+ * Obtiene la lista completa de roles desde la API.
+ */
+export const fetchRolesAPI = async () => {
+  try {
+    const response = await apiClient.get("/roles");
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error al obtener roles:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "No se pudieron obtener los roles."
+    );
+  }
+};
+
+/**
+ * Guarda (crea o actualiza) un rol y sus permisos.
+ * @param {object} roleData - Los datos del rol. Si incluye un 'id', se actualiza; si no, se crea.
+ */
+export const saveRoleAPI = async (roleData) => {
+  const { id, idPermisos, ...dataToSend } = roleData;
+  try {
+    let roleResponse;
+    if (id) {
+      // Actualizar un rol existente (PUT)
+      roleResponse = await apiClient.put(`/roles/${id}`, dataToSend);
+      if (idPermisos) {
+        await apiClient.post(`/roles/${id}/permisos`, { idPermisos });
       }
-      updatedRoles = existingRoles.map(r => (r.id === roleToSave.id ? roleToSave : r));
-    } else { // Creando
-      const nameExists = existingRoles.some(
-        r => r.nombre.toLowerCase() === roleToSave.nombre.toLowerCase()
-      );
-      if (nameExists) {
-        throw new Error("Ya existe un rol con este nombre.");
+    } else {
+      // Crear un nuevo rol (POST)
+      roleResponse = await apiClient.post("/roles", dataToSend);
+      const newRoleId = roleResponse.data?.data?.idRol;
+      if (newRoleId && idPermisos?.length > 0) {
+        await apiClient.post(`/roles/${newRoleId}/permisos`, { idPermisos });
       }
-      const newRole = { ...roleToSave, id: Date.now(), anulado: roleToSave.anulado || false };
-      updatedRoles = [...existingRoles, newRole];
     }
-    localStorage.setItem(ROLES_STORAGE_KEY, JSON.stringify(updatedRoles));
-    return updatedRoles;
-  };
-  
-  export const deleteRoleById = (roleId, existingRoles) => {
-    const roleToDelete = existingRoles.find(r => r.id === roleId);
-    if (roleToDelete && roleToDelete.nombre === "Administrador") {
-      throw new Error("El rol 'Administrador' no puede ser eliminado.");
-    }
-    const updatedRoles = existingRoles.filter(r => r.id !== roleId);
-    localStorage.setItem(ROLES_STORAGE_KEY, JSON.stringify(updatedRoles));
-    return updatedRoles;
-  };
-  
-  export const toggleRoleStatus = (roleId, existingRoles) => {
-      const roleToToggle = existingRoles.find(r => r.id === roleId);
-      if (roleToToggle && roleToToggle.nombre === "Administrador") {
-          throw new Error("El rol 'Administrador' no puede ser anulado/activado.");
-      }
-      const updatedRoles = existingRoles.map(r =>
-          r.id === roleId ? { ...r, anulado: !r.anulado } : r
-      );
-      localStorage.setItem(ROLES_STORAGE_KEY, JSON.stringify(updatedRoles));
-      return updatedRoles;
-  };
+    return roleResponse.data;
+  } catch (error) {
+    console.error(
+      "Error al guardar el rol:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "Error al guardar el rol."
+    );
+  }
+};
+
+/**
+ * Cambia el estado (activo/inactivo) de un rol.
+ */
+export const toggleRoleStatusAPI = async (roleId, newStatus) => {
+  try {
+    const response = await apiClient.patch(`/roles/${roleId}/estado`, {
+      estado: newStatus,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error al cambiar el estado del rol:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "No se pudo cambiar el estado."
+    );
+  }
+};
+
+/**
+ * Elimina un rol de forma física de la base de datos.
+ */
+export const deleteRoleAPI = async (roleId) => {
+  try {
+    const response = await apiClient.delete(`/roles/${roleId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error al eliminar el rol:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "No se pudo eliminar el rol."
+    );
+  }
+};
+
+/**
+ * Obtiene los detalles completos de un rol, incluyendo sus permisos.
+ */
+export const getRoleDetailsAPI = async (roleId) => {
+  try {
+    const response = await apiClient.get(`/roles/${roleId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error(
+      "Error al obtener detalles del rol:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message ||
+        "No se pudieron obtener los detalles del rol."
+    );
+  }
+};

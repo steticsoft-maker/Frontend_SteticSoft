@@ -1,68 +1,64 @@
 // src/features/roles/components/RolForm.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import PermisosSelector from './PermisosSelector';
 
 const RolForm = ({
   formData,
   onFormChange,
-  modulosPermisos,
-  modulosSeleccionadosIds,
+  permisosDisponibles, // Todavía recibimos la lista plana
+  permisosAgrupados, // PERO AHORA TAMBIÉN LOS AGRUPADOS
   onToggleModulo,
   isEditing,
   isRoleAdmin,
-  mostrarPermisos,
-  onToggleMostrarPermisos,
+  formErrors,
 }) => {
+  const [mostrarPermisos, setMostrarPermisos] = useState(isEditing || false);
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     onFormChange(name, type === 'checkbox' ? checked : value);
   };
+  
+  const handleToggleMostrarPermisos = () => {
+    if (!isRoleAdmin) {
+      setMostrarPermisos(prev => !prev);
+    }
+  };
+
+  const modulosSeleccionadosNombres = (formData.idPermisos || [])
+    .map(id => permisosDisponibles.find(p => p.idPermiso === id)?.nombre)
+    .filter(Boolean);
 
   return (
     <>
       <div className="rol-seccionInformacionRol">
         <h3>Información del Rol</h3>
         <div className="rol-formularioInformacionRol">
-          <div className="rol-campoContainer">
+          {/* ... campos de nombre y descripción sin cambios ... */}
+           <div className="rol-campoContainer">
             <label htmlFor="nombreRolInput" className="rol-label">
               Nombre del Rol: <span className="required-asterisk">*</span>
             </label>
             <input
-              id="nombreRolInput"
-              type="text"
-              name="nombre"
-              placeholder="Ingrese el nombre del rol"
-              value={formData.nombre}
-              onChange={handleInputChange}
-              className="rol-input"
-              disabled={isRoleAdmin}
-              required
+              id="nombreRolInput" type="text" name="nombre" value={formData.nombre}
+              onChange={handleInputChange} className="rol-input" disabled={isRoleAdmin} required
             />
+            {formErrors.nombre && <span className="error-message">{formErrors.nombre}</span>}
           </div>
           <div className="rol-campoContainer">
             <label htmlFor="descripcionRolInput" className="rol-label">
-              Descripción del Rol: {/* No es obligatorio según el código original, se puede añadir asterisco si se desea */}
+              Descripción del Rol:
             </label>
             <textarea
-              id="descripcionRolInput"
-              name="descripcion"
-              placeholder="Ingrese la descripción del rol"
-              value={formData.descripcion}
-              onChange={handleInputChange}
-              className="rol-textarea"
-              disabled={isRoleAdmin}
+              id="descripcionRolInput" name="descripcion" value={formData.descripcion}
+              onChange={handleInputChange} className="rol-textarea" disabled={isRoleAdmin}
             />
           </div>
           {isEditing && !isRoleAdmin && (
             <div className="rol-campoContainer">
-              <label className="rol-label">Anulado (Inactivo):</label>
+              <label className="rol-label">Estado (Activo):</label>
               <label className="switch">
-                <input
-                  type="checkbox"
-                  name="anulado"
-                  checked={formData.anulado}
-                  onChange={handleInputChange}
-                />
+                <input type="checkbox" name="estado" checked={formData.estado} onChange={handleInputChange} />
                 <span className="slider"></span>
               </label>
             </div>
@@ -71,34 +67,27 @@ const RolForm = ({
       </div>
 
       {!isRoleAdmin && (
-        <button
-          type="button"
-          className="rol-botonSeleccionarPermisos"
-          onClick={onToggleMostrarPermisos}
-        >
+        <button type="button" className="rol-botonSeleccionarPermisos" onClick={handleToggleMostrarPermisos}>
           {mostrarPermisos ? "Ocultar Módulos" : "Seleccionar Módulos"}
-          {isEditing ? "" : <span className="required-asterisk">*</span>} {/* Solo obligatorio en creación si no se muestran por defecto */}
         </button>
       )}
 
+      {/* AQUÍ EL CAMBIO PRINCIPAL: PASAMOS LOS PERMISOS AGRUPADOS */}
       <PermisosSelector
-        modulosPermisos={modulosPermisos}
-        modulosSeleccionadosIds={modulosSeleccionadosIds}
-        onToggleModulo={onToggleModulo}
+        permisosAgrupados={permisosAgrupados}
+        permisosSeleccionadosIds={formData.idPermisos || []}
+        onTogglePermiso={onToggleModulo}
         isRoleAdmin={isRoleAdmin}
         mostrar={mostrarPermisos || isRoleAdmin}
       />
 
-      { (mostrarPermisos || isRoleAdmin) &&
+       {(mostrarPermisos || isRoleAdmin) &&
         <div className="rol-seccionModulosSeleccionados">
-            <h3>Módulos Seleccionados ({modulosSeleccionadosIds.length})</h3>
-            {modulosSeleccionadosIds.length > 0 ? (
+            <h3>Módulos Seleccionados ({modulosSeleccionadosNombres.length})</h3>
+            {modulosSeleccionadosNombres.length > 0 ? (
             <ul className="rol-listaModulosSeleccionados">
-                {modulosSeleccionadosIds
-                .map(id => modulosPermisos.find(m => m.id === id)?.nombre)
-                .filter(nombre => nombre !== undefined)
-                .map((moduloNombre, index) => (
-                    <li key={index}>{moduloNombre}</li>
+                {modulosSeleccionadosNombres.map((nombre, index) => (
+                    <li key={index}>{nombre}</li>
                 ))}
             </ul>
             ) : (
