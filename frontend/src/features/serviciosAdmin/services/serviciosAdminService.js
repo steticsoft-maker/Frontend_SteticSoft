@@ -1,7 +1,8 @@
 // src/features/serviciosAdmin/services/serviciosAdminService.js
+import apiClient from '../../../shared/services/apiClient';
 import { fetchCategoriasServicio } from '../../categoriasServicioAdmin/services/categoriasServicioService'; // Para las categorías
 
-const SERVICIOS_STORAGE_KEY = 'servicios_admin_steticsoft_v2'; // Nueva clave para evitar conflictos con la vieja 'servicios'
+const SERVICIOS_STORAGE_KEY = 'servicios_admin_steticsoft_v2';
 
 // Datos iniciales de ejemplo si localStorage está vacío
 const INITIAL_SERVICIOS = [
@@ -10,6 +11,7 @@ const INITIAL_SERVICIOS = [
     { id: 3, nombre: "Masaje Relajante", precio: 80000, categoria: "Corporales", estado: "Inactivo", imagenURL: null, descripcion: "Masaje para aliviar el estrés." },
 ];
 
+// --------- FUNCIONES LOCALES (localStorage) ---------
 export const fetchServiciosAdmin = () => {
   const stored = localStorage.getItem(SERVICIOS_STORAGE_KEY);
   if (stored) {
@@ -17,10 +19,9 @@ export const fetchServiciosAdmin = () => {
       return JSON.parse(stored);
     } catch (e) {
       console.error("Error parsing serviciosAdmin from localStorage", e);
-      localStorage.removeItem(SERVICIOS_STORAGE_KEY); // Limpiar si está corrupto
+      localStorage.removeItem(SERVICIOS_STORAGE_KEY);
     }
   }
-  // Si no hay nada o estaba corrupto, guardar y devolver los iniciales
   persistServiciosAdmin(INITIAL_SERVICIOS);
   return INITIAL_SERVICIOS;
 };
@@ -29,14 +30,12 @@ const persistServiciosAdmin = (servicios) => {
   localStorage.setItem(SERVICIOS_STORAGE_KEY, JSON.stringify(servicios));
 };
 
-// Obtener categorías activas para el select del formulario de servicios
 export const getActiveCategoriasServicioForSelect = () => {
-  const todasCategorias = fetchCategoriasServicio(); // Usa el servicio de categorías de servicio
+  const todasCategorias = fetchCategoriasServicio();
   return todasCategorias.filter(cat => cat.estado === "Activo").map(cat => cat.nombre);
 };
 
 export const saveServicioAdmin = (servicioData, existingServicios) => {
-  // Validaciones
   if (!servicioData.nombre?.trim()) {
     throw new Error("El nombre del servicio es obligatorio.");
   }
@@ -44,15 +43,8 @@ export const saveServicioAdmin = (servicioData, existingServicios) => {
     throw new Error("El precio del servicio debe ser un número positivo.");
   }
   if (!servicioData.categoria) {
-      // throw new Error("Debe seleccionar una categoría para el servicio."); // Opcional si la categoría no es estrictamente requerida
+    // throw new Error("Debe seleccionar una categoría para el servicio.");
   }
-  // Aquí podrías añadir validación de unicidad de nombre si es necesario
-  // const nombreExists = existingServicios.some(
-  //   s => s.nombre.toLowerCase() === servicioData.nombre.toLowerCase() && s.id !== servicioData.id
-  // );
-  // if (nombreExists) {
-  //   throw new Error("Ya existe un servicio con este nombre.");
-  // }
 
   let updatedServicios;
   if (servicioData.id) { // Editando
@@ -61,10 +53,10 @@ export const saveServicioAdmin = (servicioData, existingServicios) => {
     );
   } else { // Creando
     const newServicio = {
-      id: Date.now(), // Simple ID generation
+      id: Date.now(),
       ...servicioData,
       precio: parseFloat(servicioData.precio),
-      estado: servicioData.estado || "Activo", // Default a Activo si es nuevo
+      estado: servicioData.estado || "Activo",
     };
     updatedServicios = [...existingServicios, newServicio];
   }
@@ -84,4 +76,96 @@ export const toggleServicioAdminEstado = (servicioId, existingServicios) => {
   );
   persistServiciosAdmin(updatedServicios);
   return updatedServicios;
+};
+
+// --------- FUNCIONES API (asíncronas) ---------
+
+/**
+ * Obtiene todos los servicios desde la API.
+ */
+export const fetchServiciosAdminAPI = async () => {
+  try {
+    const response = await apiClient.get('/servicios');
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error desconocido al obtener servicios")
+    );
+  }
+};
+
+/**
+ * Crea un nuevo servicio en la API.
+ */
+export const createServicioAdminAPI = async (servicioData) => {
+  try {
+    const response = await apiClient.post('/servicios', servicioData);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error desconocido al crear el servicio")
+    );
+  }
+};
+
+/**
+ * Actualiza un servicio existente en la API.
+ */
+export const updateServicioAdminAPI = async (id, servicioData) => {
+  try {
+    const response = await apiClient.put(`/servicios/${id}`, servicioData);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error desconocido al actualizar el servicio")
+    );
+  }
+};
+
+/**
+ * Elimina un servicio en la API.
+ */
+export const deleteServicioAdminAPI = async (id) => {
+  try {
+    const response = await apiClient.delete(`/servicios/${id}`);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error desconocido al eliminar el servicio")
+    );
+  }
+};
+
+/**
+ * Anula (desactiva) un servicio en la API.
+ */
+export const anularServicioAdminAPI = async (id) => {
+  try {
+    const response = await apiClient.patch(`/servicios/${id}/anular`);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error desconocido al anular el servicio")
+    );
+  }
+};
+
+/**
+ * Habilita (activa) un servicio en la API.
+ */
+export const habilitarServicioAdminAPI = async (id) => {
+  try {
+    const response = await apiClient.patch(`/servicios/${id}/habilitar`);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error desconocido al habilitar el servicio")
+    );
+  }
 };

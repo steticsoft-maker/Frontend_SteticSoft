@@ -1,72 +1,85 @@
-// src/features/categoriasServicioAdmin/components/CategoriaServicioEditarModal.jsx
-import React, { useState, useEffect } from 'react';
-import CategoriaServicioForm from './CategoriaServicioForm';
+import React, { useState, useEffect } from "react";
 
-const CategoriaServicioEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
-  const [formData, setFormData] = useState({
-    id: '', // Incluir id
-    nombre: '',
-    descripcion: '',
-    estado: 'Activo',
-  });
-  const [formErrors, setFormErrors] = useState({});
+const CategoriaServicioEditarModal = ({
+  open,
+  onClose,
+  onSubmit,
+  initialData,
+}) => {
+  const [nombre, setNombre] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [activo, setActivo] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (isOpen && initialData) {
-      setFormData({
-        id: initialData.id || '', // Asegurar que el ID se establece
-        nombre: initialData.nombre || '',
-        descripcion: initialData.descripcion || '',
-        estado: initialData.estado || 'Activo',
-      });
-      setFormErrors({});
-    } else if (isOpen && !initialData) {
-      // Este caso no debería ocurrir si la lógica del padre es correcta
-      console.error("Modal de edición abierto sin initialData!");
-      onClose(); // Cerrar si no hay datos para editar
+    if (initialData) {
+      setNombre(initialData.nombre || "");
+      setDescripcion(initialData.descripcion || "");
+      setActivo(initialData.activo ?? true);
     }
-  }, [isOpen, initialData]);
+    setError("");
+  }, [initialData, open]);
 
-  const handleFormChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre de la categoría es obligatorio.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmitForm = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-    onSubmit(formData); // Enviar datos al padre
+    if (!nombre.trim()) {
+      setError("El nombre es obligatorio.");
+      return;
+    }
+    onSubmit({ nombre, descripcion, activo });
   };
 
-  if (!isOpen || !initialData) return null; // No renderizar si no está abierto o no hay datos iniciales
+  if (!open) return null;
 
   return (
     <div className="modal-Categoria">
       <div className="modal-content-Categoria formulario">
-        <h3>Editar Categoría de Servicio</h3>
-        <form className="modal-Categoria-form-grid" onSubmit={handleSubmitForm}>
-          <CategoriaServicioForm
-            formData={formData}
-            onFormChange={handleFormChange}
-            isEditing={true} // Siempre es true para editar
-            formErrors={formErrors}
-          />
+        <h3>Editar Categoría</h3>
+        <form className="modal-Categoria-form-grid" onSubmit={handleSubmit}>
+          <div className="camposAgregarCategoria">
+            <label>
+              Nombre <span className="requiredCategoria">*</span>
+            </label>
+            <input
+              className="campoAgregarCategoria"
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            />
+          </div>
+          <div className="camposAgregarCategoria">
+            <label>Descripción</label>
+            <textarea
+              className="campoAgregarCategoria"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+            />
+          </div>
+          <div className="camposAgregarCategoria">
+            <label>Estado</label>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={activo}
+                onChange={() => setActivo((a) => !a)}
+              />
+              <span className="slider"></span>
+            </label>
+          </div>
+          {error && <div className="error">{error}</div>}
           <div className="containerBotonesAgregarCategoria">
-            <button className="botonEditarCategoria" type="submit">
-              Actualizar Categoría
+            <button
+              type="submit"
+              className="botonGuardarEditarProveedor botonEditarCategoria"
+            >
+              Guardar Cambios
             </button>
-            <button className="botonEliminarCategoria" type="button" onClick={onClose}>
+            <button
+              type="button"
+              className="botonCancelarEditarProveedor"
+              onClick={onClose}
+            >
               Cancelar
             </button>
           </div>
