@@ -1,0 +1,22 @@
+/* src/features/auth/css/LoginStyles.css */
+
+/* Estilos específicos para la página/formulario de Login */
+
+/* Ejemplo: Si la caja del formulario de login debe ser más estrecha */
+/* .login-page .auth-form-box {  // Usando una clase wrapper en la página de login
+  max-width: 450px;
+} */
+
+/* Ejemplo: Estilo para un enlace de 'Olvidé mi contraseña' específico del login */
+/* .login-forgot-password-link {
+  display: block;
+  text-align: right;
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: var(--color-primary); // O la variable que uses para enlaces
+} */
+
+/* Ejemplo: Si el .auth-form-content en el login necesita un gap diferente */
+/* .login-page .auth-form-content {
+  gap: 20px;
+} */

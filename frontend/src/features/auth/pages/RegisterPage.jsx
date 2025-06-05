@@ -6,6 +6,11 @@ import { AuthContext } from "../../../shared/contexts/AuthContext"; // Si necesi
 import { registerAPI } from "../services/authService"; // <--- CAMBIO AQUÍ: de registerUser a registerAPI
 import "../css/Auth.css";
 
+
+<img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />;
+
+
+
 function RegisterPage() {
   const navigate = useNavigate();
   // const { algunaFuncionDelContextoSiLaNecesitas } = useContext(AuthContext); // Descomenta si usas el contexto

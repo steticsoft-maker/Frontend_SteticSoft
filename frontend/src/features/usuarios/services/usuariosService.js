@@ -1,95 +1,108 @@
 // src/features/usuarios/services/usuariosService.js
+import apiClient from "../../../shared/services/api"; // Ajusta la ruta a tu apiClient
 
-const INITIAL_USUARIOS = [
-    { id: 1, nombre: "Administrador", tipoDocumento: "CC", documento: "123456789", email: "Admin@gmail.com", telefono: "3200000000", direccion: "Calle 123", rol: "Administrador", anulado: false }, // Admin no debería estar anulado por defecto
-    { id: 2, nombre: "Pepe", tipoDocumento: "CC", documento: "987654321", email: "Pepe@gmail.com", telefono: "3209999999", direccion: "Calle 456", rol: "Empleado", anulado: false },
-    { id: 3, nombre: "Maria", tipoDocumento: "CC", documento: "1122334455", email: "maria@gmail.com", telefono: "3101234567", direccion: "Avenida Siempre Viva 742", rol: "Cliente", anulado: false },
-    // ... más usuarios si es necesario
-  ];
-  const USUARIOS_STORAGE_KEY = 'usuarios_steticsoft';
-  
-  export const fetchUsuarios = () => {
-    const storedUsuarios = localStorage.getItem(USUARIOS_STORAGE_KEY);
-    return storedUsuarios ? JSON.parse(storedUsuarios) : INITIAL_USUARIOS;
-  };
-  
-  const persistUsuarios = (usuarios) => {
-    localStorage.setItem(USUARIOS_STORAGE_KEY, JSON.stringify(usuarios));
-  };
-  
-  export const getAvailableRoles = (allUsuarios, editingUserId = null) => {
-    // Obtiene los roles de la tabla Rol de la BD (simulado por ahora)
-    // En el futuro, esto vendría del rolesService.js
-    const rolesDesdeBD = ["Empleado", "Cliente"]; // Ejemplo, esto debería venir de rolesService.js
-    
-    const adminExists = allUsuarios.some(u => u.rol === "Administrador" && u.id !== editingUserId);
-    
-    let available = [...rolesDesdeBD];
-    if (!adminExists) {
-      available.push("Administrador");
-    }
-    return available;
-  };
-  
-  
-  export const saveUsuario = (usuarioData, existingUsuarios, currentEditingUser = null) => {
-    if (!usuarioData.nombre || !usuarioData.tipoDocumento || !usuarioData.documento || !usuarioData.email || !usuarioData.telefono || !usuarioData.direccion || !usuarioData.rol) {
-      throw new Error("Por favor, completa todos los campos obligatorios.");
-    }
-  
-    const isCreating = !currentEditingUser;
-    const userIdBeingEdited = currentEditingUser ? currentEditingUser.id : null;
-  
-    const documentoExists = existingUsuarios.some(
-      (u) => u.documento === usuarioData.documento && u.id !== userIdBeingEdited
+/**
+ * Obtiene la lista de todos los usuarios desde la API.
+ */
+export const getUsuariosAPI = async () => {
+  try {
+    const response = await apiClient.get("/usuarios");
+    return response.data;
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en getUsuariosAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al obtener la lista de usuarios.")
     );
-    if (documentoExists) {
-      throw new Error("Ya existe un usuario con este número de documento.");
-    }
-  
-    // Lógica para el rol Administrador
-    if (usuarioData.rol === "Administrador") {
-      const adminAlreadyExists = existingUsuarios.some(u => u.rol === "Administrador" && u.id !== userIdBeingEdited);
-      if (isCreating && adminAlreadyExists) {
-        throw new Error("No se puede crear otro usuario 'Administrador'.");
-      }
-      if (!isCreating && currentEditingUser.rol !== "Administrador" && adminAlreadyExists) {
-           throw new Error("No se puede asignar el rol 'Administrador', ya existe otro.");
-      }
-    }
-  
-  
-    let updatedUsuarios;
-    if (isCreating) {
-      const newUsuario = { ...usuarioData, id: Date.now(), anulado: false };
-      updatedUsuarios = [...existingUsuarios, newUsuario];
-    } else { // Editando
-      updatedUsuarios = existingUsuarios.map((u) =>
-        u.id === userIdBeingEdited ? { ...u, ...usuarioData } : u
-      );
-    }
-    persistUsuarios(updatedUsuarios);
-    return updatedUsuarios;
-  };
-  
-  export const deleteUsuarioById = (usuarioId, existingUsuarios) => {
-    const usuarioToDelete = existingUsuarios.find(u => u.id === usuarioId);
-    if (usuarioToDelete && usuarioToDelete.rol === "Administrador") {
-      throw new Error("El usuario 'Administrador' no puede ser eliminado.");
-    }
-    const updatedUsuarios = existingUsuarios.filter(u => u.id !== usuarioId);
-    persistUsuarios(updatedUsuarios);
-    return updatedUsuarios;
-  };
-  
-  export const toggleUsuarioStatus = (usuarioId, existingUsuarios) => {
-    const usuarioToToggle = existingUsuarios.find(u => u.id === usuarioId);
-    if (usuarioToToggle && usuarioToToggle.rol === "Administrador") {
-      throw new Error("El usuario 'Administrador' no puede ser anulado/activado.");
-    }
-    const updatedUsuarios = existingUsuarios.map(u =>
-      u.id === usuarioId ? { ...u, anulado: !u.anulado } : u
+  }
+};
+
+/**
+ * Obtiene los detalles de un usuario específico por su ID.
+ */
+export const getUsuarioByIdAPI = async (idUsuario) => {
+  try {
+    const response = await apiClient.get(`/usuarios/${idUsuario}`);
+    return response.data;
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en getUsuarioByIdAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al obtener los detalles del usuario.")
     );
-    persistUsuarios(updatedUsuarios);
-    return updatedUsuarios;
-  };
+  }
+};
+
+/**
+ * Crea un nuevo usuario en el sistema.
+ */
+export const createUsuarioAPI = async (nuevoUsuarioData) => {
+  // console.log("[usuariosService.js] Creando usuario con datos:", nuevoUsuarioData);
+  try {
+    const response = await apiClient.post("/usuarios", nuevoUsuarioData);
+    return response.data;
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en createUsuarioAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al crear el nuevo usuario.")
+    );
+  }
+};
+
+/**
+ * Actualiza un usuario existente en el sistema.
+ */
+export const updateUsuarioAPI = async (idUsuario, usuarioData) => {
+  // console.log(`[usuariosService.js] Actualizando usuario ${idUsuario} con datos:`, usuarioData);
+  try {
+    const response = await apiClient.put(`/usuarios/${idUsuario}`, usuarioData);
+    return response.data;
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en updateUsuarioAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al actualizar el usuario.")
+    );
+  }
+};
+
+/**
+ * Cambia el estado de un usuario (activo/inactivo) llamando al endpoint PATCH.
+ * @param {number|string} idUsuario - El ID del usuario a modificar.
+ * @param {boolean} nuevoEstado - El nuevo estado para el usuario (true para activo, false para inactivo).
+ * @returns {Promise<object>} La respuesta de la API.
+ */
+export const toggleUsuarioEstadoAPI = async (idUsuario, nuevoEstado) => {
+  // console.log(`[usuariosService.js] Cambiando estado del usuario ${idUsuario} a:`, nuevoEstado);
+  try {
+    // Se utiliza la ruta PATCH específica para cambiar el estado.
+    // El backend espera un objeto con la propiedad 'estado' en el cuerpo de la solicitud.
+    const response = await apiClient.patch(`/usuarios/${idUsuario}/estado`, {
+      estado: nuevoEstado,
+    });
+    return response.data;
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en toggleUsuarioEstadoAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al cambiar el estado del usuario.")
+    );
+  }
+};
+
+/**
+ * Obtiene la lista de roles disponibles desde la API.
+ */
+export const getRolesAPI = async () => {
+  try {
+    const response = await apiClient.get("/roles");
+    return response.data;
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en getRolesAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al obtener la lista de roles.")
+    );
+  }
+};
