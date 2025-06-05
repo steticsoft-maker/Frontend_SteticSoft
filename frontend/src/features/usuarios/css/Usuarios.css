@@ -1,411 +1,525 @@
 /* src/features/usuarios/css/Usuarios.css */
-/* Contenedor general */
+
+/* === ESTILOS GENERALES DE LA PÁGINA DE USUARIOS === */
 .usuarios-container {
     display: flex;
     height: 100vh;
     background-color: transparent;
     font-family: 'Roboto', sans-serif;
-}
-
-/* Estilo para el asterisco rojo (se mantiene) */
-.required-asterisk {
-    color: red;
-    margin-left: 2px;
-}
-
-/* Contenido principal (área de tabla y controles) */
-.usuarios-content {
+  }
+  
+  .usuarios-content {
     flex: 1;
-    padding: 30px;
-    margin-left: 280px;
-    /* Ajusta si tu sidebar tiene otro ancho */
-    overflow-y: auto;
-    box-sizing: border-box;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Centra horizontalmente */
-    justify-content: unset; 
-    /* Alinea al inicio verticalmente */
-}
-
-/* Título principal */
-.usuarios-content h1 {
-    text-align: center;
-    color: #6d0b58;
-    /* Color de título de Ventas.css */
+    justify-content: flex-start; 
+    height: 100%;
+    padding: 30px;
+    margin-left: 280px; /* Ajusta si tu NavbarAdmin tiene otro ancho */
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  
+  .usuarios-content h1 {
     margin-bottom: 20px;
-}
-
-/* Acciones (barra de búsqueda y botón agregar) */
-.usuarios-accionesTop {
+    color: #6d0b58;
+    text-align: center;
+    font-weight: 600;
+    font-size: 2rem;
+  }
+  
+  /* === SECCIÓN DE ACCIONES SUPERIORES === */
+  .usuarios-accionesTop {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    gap: 20px;
     flex-wrap: wrap;
+    gap: 20px;
     width: 100%;
     max-width: 1200px;
+    margin-bottom: 20px;
     box-sizing: border-box;
-}
-
-/* Barra de búsqueda */
-.usuarios-barraBusqueda {
+  }
+  
+  .usuarios-barraBusqueda {
+    flex-grow: 1;
+    min-width: 250px;
     padding: 10px 15px;
     border: 1px solid #c287b5;
-    /* Borde basado en Ventas.css estado-select */
     border-radius: 5px;
     font-size: 1rem;
-    flex-grow: 1;
-    min-width: 200px;
-    background-color: white;
     color: #333;
+    background-color: white;
     box-sizing: border-box;
-}
-
-/* Botón principal de Agregar Usuario */
-.usuarios-botonAgregar {
-    background-color: #b660a3;
-    /* Color de botón Agregar Venta */
-    color: white;
-    border: none;
+  }
+  
+  .usuarios-botonAgregar {
     padding: 10px 20px;
+    border: none;
     border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
     flex-shrink: 0;
-}
-
-.usuarios-botonAgregar:hover {
+    font-size: 1rem;
+    color: white;
+    background-color: #b660a3;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .usuarios-botonAgregar:hover {
     background-color: #6d0b58;
-    /* Color de título de Ventas.css para hover */
-}
-
-/* Añadir a Usuarios.css si no existe algo similar */
-.usuarios-admin-protected-message {
-    color: var(--color-danger, #e74c3c);
-    /* O un color de advertencia */
-    background-color: var(--color-background-warning-light, #fff3cd);
-    /* Fondo claro para advertencia */
-    border: 1px solid var(--color-border-warning, #ffeeba);
-    /* Borde de advertencia */
-    padding: 10px 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    text-align: center;
-    font-size: 0.9rem; }
-
-/* Tabla de Usuarios */
-.usuarios-table {
+  }
+  
+  /* === ESTILOS PARA LA TABLA DE USUARIOS === */
+  .usuarios-table {
     width: 100%;
     max-width: 1200px;
-    border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Sombra de Ventas.css */
-    background-color: #ffffff;
-    box-sizing: border-box;
+    border-collapse: collapse;
     border-radius: 8px;
-    /* Bordes redondeados de Ventas.css */
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-}
-
-/* Encabezados de tabla */
-.usuarios-table th {
+    box-sizing: border-box;
+  }
+  
+  .usuarios-table th {
+    padding: 15px;
+    border-bottom: 2px solid #d1a0c7;
+    color: black;
     background-color: #e978d0;
-    /* Color de encabezado de tabla de Ventas.css */
-    color: black;
-    /* Color de texto de encabezado de tabla de Ventas.css */
+    text-align: center; /* Centrado como en tu original */
     font-weight: bold;
-    /* Peso de fuente de encabezado de tabla de Ventas.css */
-    text-align: center;
-    padding: 15px;
     font-size: 1rem;
-    /* Tamaño de fuente de encabezado de tabla de Ventas.css */
-    border: 1px solid #e978d0;
-    /* Borde de celda de tabla de Ventas.css */
-}
-
-/* Celdas de tabla */
-.usuarios-table td {
-    border: 1px solid #e978d0;
-    /* Borde de celda de tabla de Ventas.css */
-    text-align: left;
+  }
+  
+  .usuarios-table td {
     padding: 15px;
-    vertical-align: middle;
-    font-size: 1rem;
+    border: 1px solid #f0d9eb; /* Borde más suave */
     color: black;
-    /* Color de texto de celda de tabla de Ventas.css */
-}
-
-/* Fondos de filas pares (ajustado a un tono similar) */
-.usuarios-table tbody tr:nth-child(even) {
-    background-color: #f8eaf5;
-    /* Tono claro similar al fondo de Ventas */
-}
-
-/* Fondo al pasar el mouse (ajustado a un tono similar) */
-.usuarios-table tbody tr:hover {
+    font-size: 1rem;
+    text-align: left;
+    vertical-align: middle;
+  }
+  
+  .usuarios-table tbody tr:nth-child(even) {
+    background-color: #fdf7fc; /* Más claro aún para diferenciación sutil */
+  }
+  
+  .usuarios-table tbody tr:hover {
     background-color: #f3d9ec;
-    /* Tono intermedio similar al hover de Ventas */
-}
-
-/* Contenedor de iconos en la tabla */
-.usuarios-table-iconos {
+  }
+  
+  .usuarios-table-iconos {
     display: flex;
-    gap: 10px;
     justify-content: center;
     align-items: center;
-}
-
-/* Estilos para botones de acción en la tabla */
-.usuarios-table-button {
-    padding: 10px 15px;
-    margin: 0;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
+    gap: 10px;
+  }
+  
+  .usuarios-table-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-}
-
-/* Colores específicos para botones de acción en la tabla */
-.usuarios-table-button:nth-child(1) {
-    background-color: #fc8de4;
-}
-.usuarios-table-button:nth-child(1):hover {
+    padding: 8px 12px;
+    margin: 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+  }
+  
+  /* Colores específicos para botones de acción en la tabla (mantenidos como en tu original) */
+  .usuarios-table-button:nth-child(1) { /* Ver o primer botón de acción */
+    background-color: #fc8de4; 
+  }
+  .usuarios-table-button:nth-child(1):hover {
     background-color: #d66abf;
-}
-.usuarios-table-button:nth-child(2) {
-    background-color: #fc8de4;
-}
-.usuarios-table-button:nth-child(2):hover {
+  }
+  .usuarios-table-button:nth-child(2) { /* Editar o segundo botón de acción */
+    background-color: #fc8de4; 
+  }
+  .usuarios-table-button:nth-child(2):hover {
     background-color: #d66abf;
-}
-.usuarios-table-button-delete {
-    background-color: #b660a3;
-}
-.usuarios-table-button-delete:hover {
+  }
+  .usuarios-table-button-delete { /* Botón específico para eliminar */
+    background-color: #b660a3; 
+  }
+  .usuarios-table-button-delete:hover {
     background-color: #c0392b;
-}
-
-/* Estilo para el switch */
-.switch {
+  }
+  
+  
+  /* === ESTILOS PARA MODALES === */
+  .usuarios-modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparente */
+    overflow-y: auto;
+  }
+  
+  .usuarios-modalContent {
+    position: relative;
+    width: 100%;
+    max-width: 500px; /* Ancho base, -form lo sobrescribirá */
+    margin: auto;
+    padding: 25px 30px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+  
+  .usuarios-modalContent h2,
+  .usuarios-modalContent h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #6d0b58;
+    text-align: center;
+    font-weight: 600;
+  }
+  .usuarios-modalContent h3 {
+    font-size: 1.25rem;
+  }
+  
+  /* Modal para Formularios (Crear/Editar) */
+  .usuarios-modalContent-form {
+    max-width: 750px; /* Más ancho para formularios de dos columnas */
+  }
+  
+  .usuarios-modalContent-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre el grid del formulario y los botones de acción */
+  }
+  
+  /* --- INICIO: Estilos para Grid de Formulario (NUEVO) --- */
+  .usuarios-form-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual ancho */
+    gap: 15px 20px; /* Espacio vertical y horizontal entre items del grid */
+  }
+  
+  .usuarios-form-grid-item {
+    display: flex;
+    flex-direction: column; /* Label encima del input/select */
+  }
+  
+  .usuarios-form-grid-item-full-width {
+    grid-column: span 2; /* Para items que deban ocupar ambas columnas */
+  }
+  /* --- FIN: Estilos para Grid de Formulario --- */
+  
+  /* Estilos para elementos de formulario dentro de modales (ya los tenías bien definidos) */
+  .usuarios-form-group { /* Esta clase puede ser usada como .usuarios-form-grid-item si prefieres */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espacio entre label e input si están en el mismo group */
+  }
+  
+  .usuarios-form-label {
+    margin-bottom: 5px; /* Espacio entre label y el input debajo */
+    color: #6d0b58;
+    text-align: left;
+    font-weight: 500; /* Un poco menos bold que el 600 original */
+    font-size: 0.9rem;
+  }
+  
+  .required-asterisk { /* Ya definido arriba, pero lo dejo para referencia de sección */
+    color: red;
+    margin-left: 2px;
+  }
+  
+  .usuarios-form-input,
+  .usuarios-form-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #c287b5;
+    border-radius: 5px;
+    font-size: 0.95rem; /* Unificado */
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .usuarios-form-input:focus,
+  .usuarios-form-select:focus {
+    border-color: #b660a3;
+    box-shadow: 0 0 0 3px rgba(182, 96, 163, 0.25);
+    outline: none;
+  }
+  
+  .usuarios-form-select {
+    cursor: pointer;
+    height: 40px; /* Aproximadamente la altura de un input con padding 10px */
+  }
+  
+  /* Mensaje de Administrador Protegido */
+  .usuarios-admin-protected-message {
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--color-border-warning, #ffeeba);
+    border-radius: 5px;
+    color: var(--color-danger, #721c24);
+    background-color: var(--color-background-warning-light, #f8d7da);
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  
+  /* Modal de Detalles, Confirmación, Validación (contenidos específicos) */
+  .usuarios-modalContent-details { max-width: 500px; }
+  .usuarios-modalContent-details p { margin-bottom: 12px; line-height: 1.6; color: #333; text-align: left;}
+  .usuarios-modalContent-details strong { color: #6d0b58; margin-right: 8px; }
+  
+  .usuarios-modalContent-confirm { max-width: 450px; text-align: center; }
+  .usuarios-modalContent-confirm h3 { color: #e74c3c; }
+  .usuarios-modalContent-confirm p { margin-bottom: 25px; }
+  
+  .usuarios-modalContent-validation { max-width: 450px; text-align: center; }
+  .usuarios-modalContent-validation h3 { color: #e68bd2; }
+  
+  
+  /* Acciones del Formulario Modal (Botones Guardar/Cancelar) */
+  .usuarios-form-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinea botones a la derecha */
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+  
+  .usuarios-form-buttonGuardar,
+  .usuarios-form-buttonCancelar,
+  .usuarios-modalButton-cerrar {
+    min-width: 120px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+  }
+  .usuarios-form-buttonGuardar:hover,
+  .usuarios-form-buttonCancelar:hover,
+  .usuarios-modalButton-cerrar:hover {
+    transform: translateY(-1px);
+  }
+  
+  .usuarios-form-buttonGuardar {
+    background-color: #b660a3;
+    color: white;
+  }
+  .usuarios-form-buttonGuardar:hover {
+    background-color: #8c4a7e; /* Más oscuro */
+  }
+  
+  .usuarios-form-buttonCancelar {
+    background-color: #95a5a6;
+    color: white;
+  }
+  .usuarios-form-buttonCancelar:hover {
+    background-color: #7f8c8d;
+  }
+  
+  .usuarios-modalButton-cerrar { /* Para modales de detalle o admin protegido */
+    background-color: #7f8c8d; /* Un color más neutro o el que prefieras */
+    color: white;
+  }
+  .usuarios-modalButton-cerrar:hover {
+    background-color: #6c7a7b;
+  }
+  
+  /* === ESTILOS DE AYUDA (Errores, Switch) === */
+  .input-error {
+    border-color: red !important;
+    background-color: #fff0f0;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    text-align: left;
+  }
+  
+  .switch {
     position: relative;
     display: inline-block;
-    width: 40px;
-    height: 24px;
-}
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider {
+    width: 44px; /* Ajustado para ser un poco más pequeño */
+    height: 22px;
+    align-self: flex-start; /* Para que no se estire en un contenedor flex */
+  }
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
     position: absolute;
     cursor: pointer;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: #ccc;
     transition: .4s;
-    border-radius: 34px;
-}
-.slider:before {
+    border-radius: 22px; /* height del slider */
+  }
+  .slider:before {
     position: absolute;
     content: "";
-    height: 18px; width: 18px;
-    left: 3px; bottom: 3px;
+    height: 16px; /* Más pequeño que el slider */
+    width: 16px;
+    left: 3px;   /* Espacio desde el borde */
+    bottom: 3px; /* Espacio desde el borde */
     background-color: white;
     transition: .4s;
     border-radius: 50%;
-}
-input:checked+.slider { background-color: #2ecc71; }
-input:checked+.slider:before { transform: translateX(16px); }
-
-/* Estilos de los Modales (sin cambios, ya estaban bien) */
-.usuarios-modalOverlay { /* ...tus estilos existentes... */ 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow-y: auto;
-    padding: 20px;
-    box-sizing: border-box;
-}
-.usuarios-modalContent { /* ...tus estilos existentes... */ 
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
-    width: 100%;
-    margin: auto;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    box-sizing: border-box;
-}
-.usuarios-modalContent-details { max-width: 500px; }
-.usuarios-modalContent-details h2 { text-align: center; color: #6d0b58; margin-top: 0; margin-bottom: 20px; }
-.usuarios-modalContent-details p { margin-bottom: 10px; line-height: 1.6; color: #333; }
-.usuarios-modalContent-details strong { color: #6d0b58; margin-right: 5px; }
-.usuarios-modalContent-form { max-width: 500px; }
-.usuarios-modalContent-form h2 { text-align: center; color: #6d0b58; margin-top: 0; margin-bottom: 20px; }
-.usuarios-modalContent-form form { display: flex; flex-direction: column; gap: 15px; }
-.usuarios-form-group { display: flex; flex-direction: column; gap: 8px; }
-.usuarios-form-label { font-weight: 600; color: #6d0b58; font-size: 1rem; }
-.usuarios-form-input, .usuarios-form-select {
-    padding: 10px 12px;
-    border: 1px solid #c287b5;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #333;
-    background-color: #fff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box;
-}
-.usuarios-form-input:focus, .usuarios-form-select:focus {
-    border-color: #b660a3;
-    box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
-    outline: none;
-}
-.usuarios-form-select { cursor: pointer; }
-.usuarios-modalContent-confirm { max-width: 400px; margin: auto; text-align: center; }
-.usuarios-modalContent-confirm h3 { text-align: center; color: #e74c3c; margin-top: 0; margin-bottom: 15px; }
-.usuarios-modalContent-confirm p { margin-bottom: 20px; line-height: 1.6; color: #333; }
-.usuarios-modalContent-confirm strong { color: #6d0b58; }
-.usuarios-modalContent-validation { max-width: 400px; margin: auto; text-align: center; }
-.usuarios-modalContent-validation h3 { text-align: center; color: #e68bd2; margin-top: 0; margin-bottom: 15px; }
-.usuarios-modalContent-validation p { margin-bottom: 20px; line-height: 1.6; color: #333; }
-.usuarios-form-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }
-.usuarios-form-buttonGuardar, .usuarios-form-buttonCancelar, .usuarios-modalButton-cerrar {
-    padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
-    font-size: 1rem; transition: background-color 0.3s ease;
-    flex-grow: 1; text-align: center;
-}
-.usuarios-form-actions .usuarios-form-buttonGuardar { background-color: #b660a3; color: white; }
-.usuarios-form-actions .usuarios-form-buttonGuardar:hover { background-color: #6d0b58; }
-.usuarios-form-actions .usuarios-form-buttonCancelar { background-color: #95a5a6; color: white; }
-.usuarios-form-actions .usuarios-form-buttonCancelar:hover { background-color: #7f8c8d; }
-.usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar { background-color: #e74c3c; }
-.usuarios-modalContent-confirm .usuarios-form-actions .usuarios-form-buttonGuardar:hover { background-color: #c0392b; }
-.usuarios-modalButton-cerrar { background-color: #b660a3; color: white; display: block; width: 100%; margin-top: 20px; }
-.usuarios-modalButton-cerrar:hover { background-color: #6d0b58; }
-
-
-/* Responsive Styles */
-@media (max-width: 768px) {
+  }
+  input:checked + .slider {
+    background-color: #4CAF50; /* O var(--color-success) o var(--color-secondary) */
+  }
+  input:focus + .slider { /* Efecto de foco */
+    box-shadow: 0 0 1px #4CAF50; /* O el color que uses para :checked */
+  }
+  input:checked + .slider:before {
+    transform: translateX(22px); /* width del slider - width del círculo - 2*left_del_círculo */
+                                  /* ej. 44 - 16 - (2*3) = 22 */
+  }
+  
+  
+  /* === ESTILOS RESPONSIVOS === */
+  @media (max-width: 1024px) { /* Breakpoint para tablets */
     .usuarios-content {
-        padding: 15px;
-        margin-left: 0; /* El NavbarAdmin podría ocultarse o volverse superior en móviles */
-        max-width: 100%;
+      margin-left: 0; /* Asumir que NavbarAdmin se oculta o es overlay */
+      padding: 20px;
     }
-
+    /* Si el formulario en modal es muy ancho para tablets, podrías pasarlo a 1 columna aquí también */
+    /* .usuarios-form-grid-container {
+      grid-template-columns: 1fr;
+    } */
+  }
+  
+  @media (max-width: 768px) { /* Breakpoint para móviles */
+    .usuarios-content {
+      padding: 15px;
+    }
+  
     .usuarios-accionesTop {
-        flex-direction: column;
-        gap: 15px;
+      flex-direction: column;
+      gap: 15px;
     }
-
-    .usuarios-barraBusqueda {
-        width: 100%; /* Hacer que la barra de búsqueda ocupe todo el ancho */
-        max-width: 100%;
-        margin-right: 0;
-    }
-
+    .usuarios-barraBusqueda,
     .usuarios-botonAgregar {
-        width: 100%; /* Hacer que el botón de agregar ocupe todo el ancho */
+      width: 100%;
     }
-
-    /* === NUEVOS ESTILOS PARA TABLA RESPONSIVA === */
-    .usuarios-table thead {
-        display: none; /* Ocultar encabezados de tabla originales */
+  
+    /* Tabla Responsiva (ya estaba bien definida) */
+    .usuarios-table thead { display: none; }
+    .usuarios-table, .usuarios-table tbody, .usuarios-table tr, .usuarios-table td {
+      display: block;
+      width: 100%;
     }
-
-    .usuarios-table,
-    .usuarios-table tbody,
-    .usuarios-table tr,
-    .usuarios-table td {
-        display: block; /* Convertir elementos de tabla en bloques */
-        width: 100%;
-    }
-
     .usuarios-table tr {
-        margin-bottom: 15px;
-        border: 1px solid #e978d0; /* Borde para cada "tarjeta" de fila */
-        border-radius: 8px;
-        padding: 10px;
-        background-color: #ffffff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin-bottom: 15px;
+      border: 1px solid #e978d0;
+      border-radius: 8px;
+      padding: 10px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-
     .usuarios-table td {
-        text-align: right; /* Alinear contenido de la celda a la derecha */
-        padding-left: 50%; /* Crear espacio para la etiqueta del data-label */
-        position: relative;
-        border: none; /* Quitar bordes individuales de celda */
-        padding-top: 8px; 
-        padding-bottom: 8px;
-        font-size: 0.9rem; /* Ajustar tamaño de fuente si es necesario */
+      text-align: right;
+      padding-left: 50%;
+      position: relative;
+      border: none;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      font-size: 0.9rem;
     }
-
     .usuarios-table td::before {
-        content: attr(data-label); /* Usar el contenido del atributo data-label */
-        position: absolute;
-        left: 10px;
-        width: calc(50% - 20px); /* Ancho de la etiqueta */
-        padding-right: 10px;
-        white-space: nowrap;
-        font-weight: bold;
-        color: #6d0b58; /* Color de la etiqueta */
-        text-align: left;
+      content: attr(data-label);
+      position: absolute;
+      left: 10px;
+      width: calc(50% - 20px);
+      padding-right: 10px;
+      white-space: nowrap;
+      font-weight: bold;
+      color: #6d0b58;
+      text-align: left;
     }
-    /* Ajuste para la celda de acciones para que los iconos no se descuadren tanto */
-     .usuarios-table td[data-label="Acciones:"] {
-        text-align: center; /* Centrar los iconos de acción */
-        padding-left: 0; /* Quitar padding izquierdo si el contenido se centra */
+    .usuarios-table td[data-label="Acciones:"] {
+      text-align: center;
+      padding-left: 0;
     }
-     .usuarios-table td[data-label="Acciones:"]::before {
-        content: ""; /* Opcional: quitar la etiqueta "Acciones:" si los iconos son obvios */
-                      /* o mantenerla: content: "Acciones:"; text-align: left; width: auto; position: static; font-weight: bold; etc. */
+    .usuarios-table td[data-label="Acciones:"]::before {
+      content: ""; 
     }
     .usuarios-table-iconos {
-        justify-content: center; /* Centrar iconos si se quita el padding-left de la celda */
-        gap: 8px;
+      justify-content: center;
     }
-    /* === FIN DE NUEVOS ESTILOS PARA TABLA RESPONSIVA === */
-
-    /* Ajustes responsivos para modales (ya existentes y correctos) */
-    .usuarios-modalContent {
-        padding: 20px; width: 95%; max-width: 95%; max-height: 95vh; overflow-y: auto;
+  
+    /* Modales Responsivos */
+    .usuarios-modalContent,
+    .usuarios-modalContent-form,
+    .usuarios-modalContent-details,
+    .usuarios-modalContent-confirm,
+    .usuarios-modalContent-validation {
+      width: 95%;
+      max-width: 95%;
+      max-height: 90vh;
+      padding: 20px 15px;
     }
-    .usuarios-modalContent-details, .usuarios-modalContent-confirm, .usuarios-modalContent-validation {
-        max-width: 95%; margin: auto;
+  
+    .usuarios-modalContent-form form {
+      gap: 15px;
     }
-    .usuarios-modalContent-form { max-width: 95%; margin: auto; }
-    .usuarios-modalContent-form .usuarios-form-label { font-size: 0.9rem; } /* Corregido 'usuarios-label' a 'usuarios-form-label' */
-    .usuarios-modalContent-form form { gap: 10px; }
-    .usuarios-modalContent-form .usuarios-form-group { gap: 6px; }
-    .usuarios-modalContent-form .usuarios-form-input,
-    .usuarios-modalContent-form .usuarios-form-select { /* Corregido 'usuarios-select' a 'usuarios-form-select' */
-        font-size: 0.9rem; padding: 8px 10px;
+    
+    /* Formulario de modal pasa a una columna en móviles */
+    .usuarios-form-grid-container {
+      grid-template-columns: 1fr; /* Una columna */
+      gap: 10px 0; /* Solo gap vertical */
     }
-    /* .usuarios-modalContent-form .usuarios-textarea ya estaba bien, no se incluye aquí si no cambia */
+    .usuarios-form-grid-item-full-width {
+      grid-column: span 1; /* Ya no es necesario span 2 */
+    }
+    .usuarios-form-group-estado { /* Para el switch de estado */
+      grid-column: span 1;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center; /* Alinear label y switch */
+    }
+    .usuarios-form-group-estado .usuarios-form-label {
+        margin-bottom: 0; /* No necesita margen inferior si está en línea */
+    }
+  
+    .usuarios-form-label { font-size: 0.85rem; }
+    .usuarios-form-input,
+    .usuarios-form-select {
+      font-size: 0.9rem;
+      padding: 8px 10px;
+    }
+  
     .usuarios-form-actions {
-        flex-direction: column; gap: 10px; width: 100%; max-width: 100%;
+      flex-direction: column;
+      gap: 10px;
     }
     .usuarios-form-actions .usuarios-form-buttonGuardar,
-    .usuarios-form-actions .usuarios-form-buttonCancelar {
-        width: 100%; padding: 12px; font-size: 1rem;
-    }
+    .usuarios-form-actions .usuarios-form-buttonCancelar,
     .usuarios-modalButton-cerrar {
-        width: 100%; padding: 12px; font-size: 1rem;
+      width: 100%;
     }
-}
+  }
