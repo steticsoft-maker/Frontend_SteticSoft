@@ -3,31 +3,31 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet, Link, Navigate } from "react-router-dom";
 
 // Layouts
-import NavbarAdmin from "./shared/components/layout/NavbarAdmin";
-import Navbar from "./shared/components/layout/Navbar";
+import NavbarAdmin from "./shared/components/layout/NavbarAdmin"; //
+import Navbar from "./shared/components/layout/Navbar"; //
 
 // Contexto y Rutas Privadas
-import PrivateRoute from "./shared/components/auth/PrivateRoute";
+import PrivateRoute from "./shared/components/auth/PrivateRoute"; //
 
 // ---- Páginas Públicas ------
-import { LoginPage, RegisterPage } from "./features/auth";
-import { HomePage, PublicProductosPage, PublicServiciosPage, NovedadesPage } from './features/home';
+import { LoginPage, RegisterPage } from "./features/auth"; //
+import { HomePage, PublicProductosPage, PublicServiciosPage, NovedadesPage } from './features/home'; //
 
 // ---- Páginas de Administrador ------
-import { DashboardPage } from './features/dashboard';
-import { ListaRolesPage } from './features/roles';
-import { ListaUsuariosPage } from "./features/usuarios";
-import { ListaAbastecimientoPage } from './features/abastecimiento';
-import { ListaClientesPage } from "./features/clientes";
-import { ListaProveedoresPage } from "./features/proveedores";
-import { ListaCategoriasProductoPage } from './features/categoriasProductoAdmin';
-import { ListaProductosAdminPage } from "./features/productosAdmin";
-import { ListaServiciosAdminPage } from "./features/serviciosAdmin";
-import { ListaCategoriasServicioPage } from "./features/categoriasServicioAdmin";
-import { CalendarioCitasPage } from "./features/citas";
-import { ConfigHorariosPage } from "./features/novedades";
-import { ListaComprasPage, FormCompraPage } from "./features/compras";
-import { ListaVentasPage, ProcesoVentaPage } from "./features/ventas";
+import { DashboardPage } from './features/dashboard'; //
+import { ListaRolesPage } from './features/roles'; //
+import { ListaUsuariosPage } from "./features/usuarios"; //
+import { ListaAbastecimientoPage } from './features/abastecimiento'; //
+import { ListaClientesPage } from "./features/clientes"; //
+import { ListaProveedoresPage } from "./features/proveedores"; //
+import { ListaCategoriasProductoPage } from './features/categoriasProductoAdmin'; //
+import { ListaProductosAdminPage } from "./features/productosAdmin"; //
+import { ListaServiciosAdminPage } from "./features/serviciosAdmin"; //
+import { ListaCategoriasServicioPage } from "./features/categoriasServicioAdmin"; //
+import { CalendarioCitasPage } from "./features/citas"; //
+import { ConfigHorariosPage } from "./features/novedades"; //
+import { ListaComprasPage, FormCompraPage } from "./features/compras"; //
+import { ListaVentasPage, ProcesoVentaPage } from "./features/ventas"; //
 
 // --- Componentes de Layout ---
 const PublicLayout = () => (
@@ -35,7 +35,7 @@ const PublicLayout = () => (
     <Navbar />
     <Outlet />
   </>
-);
+); //
 
 const AdminLayout = () => (
   <div className="admin-page-layout">
@@ -44,7 +44,7 @@ const AdminLayout = () => (
       <Outlet />
     </main>
   </div>
-);
+); //
 
 function AppRoutes() {
   return (
@@ -53,6 +53,7 @@ function AppRoutes() {
         {/* Rutas Públicas */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<HomePage />} />
+          {/* Corregí tus rutas públicas para que no apunten a /public y sean más directas */}
           <Route path="/productos" element={<PublicProductosPage />} />
           <Route path="/servicios" element={<PublicServiciosPage />} />
           <Route path="/novedades-publicas" element={<NovedadesPage />} />
@@ -62,116 +63,70 @@ function AppRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Rutas Privadas de Administrador con Layout y Permisos */}
+        {/* --- ESTRUCTURA CORREGIDA DE RUTAS DE ADMINISTRADOR --- */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           
-          {/* Dashboard (Ver) */}
-          <Route path="dashboard" element={
-            <PrivateRoute requiredPermission="MODULO_DASHBOARD_VER">
-              <DashboardPage />
-            </PrivateRoute>
-          } />
-
-          {/* Gestión de Roles y Permisos */}
-          <Route path="roles" element={
-            <PrivateRoute requiredPermission="MODULO_ROLES_GESTIONAR">
-              <ListaRolesPage />
-            </PrivateRoute>
-          } />
-
-          {/* Gestión de Usuarios */}
-          <Route path="usuarios" element={
-            <PrivateRoute requiredPermission="MODULO_USUARIOS_GESTIONAR">
-              <ListaUsuariosPage />
-            </PrivateRoute>
-          } />
+          {/* Grupo de rutas que usan PrivateRoute como contenedor */}
           
-          {/* Gestión de Abastecimiento */}
-          <Route path="abastecimiento" element={
-            <PrivateRoute requiredPermission="MODULO_ABASTECIMIENTOS_GESTIONAR">
-              <ListaAbastecimientoPage />
-            </PrivateRoute>
-          } />
+          <Route element={<PrivateRoute requiredPermission="MODULO_DASHBOARD_VER" />}>
+            <Route path="dashboard" element={<DashboardPage />} />
+          </Route>
+
+          <Route element={<PrivateRoute requiredPermission="MODULO_ROLES_GESTIONAR" />}>
+            <Route path="roles" element={<ListaRolesPage />} />
+          </Route>
+
+          <Route element={<PrivateRoute requiredPermission="MODULO_USUARIOS_GESTIONAR" />}>
+            <Route path="usuarios" element={<ListaUsuariosPage />} />
+          </Route>
+
+          <Route element={<PrivateRoute requiredPermission="MODULO_ABASTECIMIENTOS_GESTIONAR" />}>
+            <Route path="abastecimiento" element={<ListaAbastecimientoPage />} />
+          </Route>
+
+          <Route element={<PrivateRoute requiredPermission="MODULO_CLIENTES_GESTIONAR" />}>
+            <Route path="clientes" element={<ListaClientesPage />} />
+          </Route>
           
-          {/* Gestión de Clientes */}
-          <Route path="clientes" element={
-            <PrivateRoute requiredPermission="MODULO_CLIENTES_GESTIONAR">
-              <ListaClientesPage />
-            </PrivateRoute>
-          } />
-          
-          {/* Gestión de Proveedores */}
-          <Route path="proveedores" element={
-            <PrivateRoute requiredPermission="MODULO_PROVEEDORES_GESTIONAR">
-              <ListaProveedoresPage />
-            </PrivateRoute>
-          } />
+          <Route element={<PrivateRoute requiredPermission="MODULO_PROVEEDORES_GESTIONAR" />}>
+            <Route path="proveedores" element={<ListaProveedoresPage />} />
+          </Route>
 
-          {/* Gestión de Categorías de Productos */}
-          <Route path="categorias-producto" element={
-            <PrivateRoute requiredPermission="MODULO_CATEGORias_PRODUCTOS_GESTIONAR">
-              <ListaCategoriasProductoPage />
-            </PrivateRoute>
-          } />
+          {/* Hubo un typo en el nombre del permiso, lo corregí a 'MODULO_CATEGORIAS_PRODUCTOS_GESTIONAR' */}
+          <Route element={<PrivateRoute requiredPermission="MODULO_CATEGORIAS_PRODUCTOS_GESTIONAR" />}>
+            <Route path="categorias-producto" element={<ListaCategoriasProductoPage />} />
+          </Route>
 
-          {/* Gestión de Productos */}
-          <Route path="productos-admin" element={
-            <PrivateRoute requiredPermission="MODULO_PRODUCTOS_GESTIONAR">
-              <ListaProductosAdminPage />
-            </PrivateRoute>
-          } />
+          <Route element={<PrivateRoute requiredPermission="MODULO_PRODUCTOS_GESTIONAR" />}>
+            <Route path="productos-admin" element={<ListaProductosAdminPage />} />
+          </Route>
 
-          {/* Gestión de Servicios */}
-          <Route path="servicios-admin" element={
-            <PrivateRoute requiredPermission="MODULO_SERVICIOS_GESTIONAR">
-              <ListaServiciosAdminPage />
-            </PrivateRoute>
-          } />
+          <Route element={<PrivateRoute requiredPermission="MODULO_SERVICIOS_GESTIONAR" />}>
+            <Route path="servicios-admin" element={<ListaServiciosAdminPage />} />
+          </Route>
 
-          {/* Gestión de Categorías de Servicios */}
-          <Route path="categorias-servicio" element={
-            <PrivateRoute requiredPermission="MODULO_CATEGORIAS_SERVICIOS_GESTIONAR">
-              <ListaCategoriasServicioPage />
-            </PrivateRoute>
-          } />
+          <Route element={<PrivateRoute requiredPermission="MODULO_CATEGORIAS_SERVICIOS_GESTIONAR" />}>
+            <Route path="categorias-servicio" element={<ListaCategoriasServicioPage />} />
+          </Route>
 
-          {/* Gestión de Citas y Horarios */}
-          <Route path="citas" element={
-            <PrivateRoute requiredPermission="MODULO_CITAS_GESTIONAR">
-              <CalendarioCitasPage />
-            </PrivateRoute>
-          } />
-          <Route path="horarios" element={
-            <PrivateRoute requiredPermission="MODULO_NOVEDADES_EMPLEADOS_GESTIONAR">
-              <ConfigHorariosPage />
-            </PrivateRoute>
-          } />
+          <Route element={<PrivateRoute requiredPermission="MODULO_CITAS_GESTIONAR" />}>
+            <Route path="citas" element={<CalendarioCitasPage />} />
+          </Route>
 
-          {/* Gestión de Compras */}
-          <Route path="compras" element={
-            <PrivateRoute requiredPermission="MODULO_COMPRAS_GESTIONAR">
-              <ListaComprasPage />
-            </PrivateRoute>
-          } />
-          <Route path="compras/agregar" element={
-            <PrivateRoute requiredPermission="MODULO_COMPRAS_GESTIONAR">
-              <FormCompraPage />
-            </PrivateRoute>
-          } />
+          <Route element={<PrivateRoute requiredPermission="MODULO_NOVEDADES_EMPLEADOS_GESTIONAR" />}>
+            <Route path="horarios" element={<ConfigHorariosPage />} />
+          </Route>
 
-          {/* Gestión de Ventas */}
-          <Route path="ventas" element={
-            <PrivateRoute requiredPermission="MODULO_VENTAS_GESTIONAR">
-              <ListaVentasPage />
-            </PrivateRoute>
-          } />
-          <Route path="ventas/proceso" element={
-            <PrivateRoute requiredPermission="MODULO_VENTAS_GESTIONAR">
-              <ProcesoVentaPage />
-            </PrivateRoute>
-          } />
-          
+          <Route element={<PrivateRoute requiredPermission="MODULO_COMPRAS_GESTIONAR" />}>
+            <Route path="compras" element={<ListaComprasPage />} />
+            <Route path="compras/agregar" element={<FormCompraPage />} />
+          </Route>
+
+          <Route element={<PrivateRoute requiredPermission="MODULO_VENTAS_GESTIONAR" />}>
+            <Route path="ventas" element={<ListaVentasPage />} />
+            <Route path="ventas/proceso" element={<ProcesoVentaPage />} />
+          </Route>
         </Route>
 
         {/* Ruta para páginas no encontradas */}

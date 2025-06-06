@@ -1,9 +1,11 @@
 // src/shared/contexts/AuthContext.jsx
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { loginAPI, logoutAPI as serviceLogoutAPI } from '../../features/auth/services/authService';
 
-export const AuthContext = createContext(null);
+// 1. El contexto se crea pero NO se exporta.
+const AuthContext = createContext(null);
 
+// 2. Se exporta el proveedor (Provider) como antes.
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -11,10 +13,18 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Primero intenta cargar desde localStorage (si se marcó "Recordarme")
     let token = localStorage.getItem('authToken');
     let storedUser = localStorage.getItem('authUser');
     let storedPermissions = localStorage.getItem('authPermissions');
 
+    // Si no encontró nada, intenta desde sessionStorage (sesión sin "Recordarme")
+    if (!token) {
+      token = sessionStorage.getItem('authToken');
+      storedUser = sessionStorage.getItem('authUser');
+      storedPermissions = sessionStorage.getItem('authPermissions');
+    }
+    
     if (token && storedUser && storedPermissions) {
       try {
         const parsedUser = JSON.parse(storedUser);
@@ -23,7 +33,9 @@ export const AuthProvider = ({ children }) => {
         setUser(parsedUser);
         setPermissions(parsedPermissions);
       } catch (e) {
+        console.error("Error al parsear datos de sesión:", e);
         localStorage.clear();
+        sessionStorage.clear();
         setIsAuthenticated(false);
         setUser(null);
         setPermissions([]);
@@ -37,19 +49,18 @@ export const AuthProvider = ({ children }) => {
     try {
       const apiResponse = await loginAPI(credentials);
 
-      // El objeto 'usuario' de la API ahora debe incluir el array 'permisos'
       if (apiResponse.success && apiResponse.data?.token && apiResponse.data?.usuario) {
         const { token, usuario } = apiResponse.data;
+        // Escoge el almacenamiento correcto basado en 'rememberMe'
         const storage = rememberMe ? localStorage : sessionStorage;
 
         storage.setItem('authToken', token);
         storage.setItem('authUser', JSON.stringify(usuario));
-        // Esta línea es la más importante: ahora 'usuario.permisos' tendrá datos.
         storage.setItem('authPermissions', JSON.stringify(usuario.permisos || [])); 
 
         setIsAuthenticated(true);
         setUser(usuario);
-        setPermissions(usuario.permisos || []); // Establecer permisos en el estado
+        setPermissions(usuario.permisos || []);
         setIsLoading(false);
         return { success: true, role: usuario.rol.nombre };
       } else {
@@ -73,15 +84,16 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.clear();
       setIsAuthenticated(false);
       setUser(null);
-      setPermissions([]); // Limpiar permisos al cerrar sesión
+      setPermissions([]);
       setIsLoading(false);
     }
   }, []);
 
+  // El valor del contexto no cambia
   const contextValue = {
     isAuthenticated,
     user,
-    permissions, // Pasar los permisos al contexto
+    permissions,
     isLoading,
     login,
     logout,
@@ -92,4 +104,14 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+// 3. Se crea y exporta un HOOK PERSONALIZADO para usar el contexto.
+//    Esto encapsula la lógica y es la práctica recomendada.
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth debe ser usado dentro de un AuthProvider');
+  }
+  return context;
 };

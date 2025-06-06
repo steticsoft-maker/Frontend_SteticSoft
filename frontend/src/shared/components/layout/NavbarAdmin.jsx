@@ -1,13 +1,13 @@
-import React, { useState, useContext, useMemo } from 'react'; // Agregado useMemo
+import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   FaUserCircle, FaRandom, FaUsers, FaClipboardList,
   FaChartLine, FaSignOutAlt, FaCalendarCheck, FaShoppingCart,
 } from 'react-icons/fa';
 import './NavbarAdmin.css';
 
-// Estructura del menú con el permiso requerido para cada ruta.
+// La configuración del menú está perfecta, no necesita cambios.
 const menuItemsConfig = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: FaChartLine, requiredPermission: 'MODULO_DASHBOARD_VER' },
   {
@@ -48,49 +48,41 @@ const menuItemsConfig = [
 
 const NavbarAdmin = () => {
   const navigate = useNavigate();
-  // Obtenemos 'logout' y la lista de 'permissions' del usuario desde el contexto.
-  const { logout, permissions } = useContext(AuthContext);
+  // Corregido: Usamos nuestro hook personalizado useAuth(). ¡Más limpio y funciona!
+  const { logout, permissions } = useAuth();
 
   const [openSubMenus, setOpenSubMenus] = useState({});
 
-  // Función para verificar si el usuario tiene un permiso.
   const hasPermission = (permission) => {
-    // Si no se requiere permiso, se muestra. Si se requiere, se verifica.
     return !permission || (permissions && permissions.includes(permission));
   };
 
-  // Usamos useMemo para filtrar el menú solo cuando los permisos cambien.
-  // Esto mejora el rendimiento.
   const filteredMenu = useMemo(() => {
     return menuItemsConfig.map(item => {
-      // Si el item tiene sub-items, filtramos los sub-items primero.
       if (item.subItems) {
         const accessibleSubItems = item.subItems.filter(subItem => hasPermission(subItem.requiredPermission));
-        // Devolvemos el item principal solo si tiene sub-items accesibles.
         return { ...item, subItems: accessibleSubItems };
       }
-      // Si es un item principal sin sub-menú, lo devolvemos tal cual (se filtrará después).
       return item;
     }).filter(item => {
-      // Un item se muestra si:
-      // 1. No tiene sub-items Y el usuario tiene permiso para él.
-      // 2. Tiene sub-items Y la lista de sub-items accesibles no está vacía.
       if (item.subItems) {
         return item.subItems.length > 0;
       }
       return hasPermission(item.requiredPermission);
     });
-  }, [permissions]); // La dependencia es 'permissions'.
+  }, [permissions]);
 
   const toggleSubMenu = (key) => {
     setOpenSubMenus(prev => ({ [key]: !prev[key] }));
   };
 
-  const handleLogoutClick = () => {
-    logout();
+  const handleLogoutClick = async () => {
+    // Es buena práctica hacer la función de logout asíncrona por si en el futuro
+    // la llamada a la API de logout tarda un poco.
+    await logout();
     navigate('/login');
   };
-  
+
   return (
     <aside className="dashboard-sidebar">
       <div className="admin-section">
@@ -98,21 +90,17 @@ const NavbarAdmin = () => {
         <p className="admin-label">Admin</p>
       </div>
       <nav className="dashboard-links">
-        {/* Mapeamos sobre el menú ya filtrado */}
         {filteredMenu.map((item) => (
           <React.Fragment key={item.label}>
             {item.subItems ? (
-              // Botón para desplegar submenú
               <button onClick={() => toggleSubMenu(item.subMenuKey)} className="dashboard-link">
                 {item.icon && <item.icon className="dashboard-icon" />} {item.label}
               </button>
             ) : (
-              // Enlace directo
               <Link to={item.path} className="dashboard-link">
                 {item.icon && <item.icon className="dashboard-icon" />} {item.label}
               </Link>
             )}
-            {/* Si hay sub-items y el submenú está abierto, los mostramos */}
             {item.subItems && openSubMenus[item.subMenuKey] && (
               <div className="nested-links">
                 {item.subItems.map((subItem) => (

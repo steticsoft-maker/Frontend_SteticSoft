@@ -1,47 +1,39 @@
 // src/features/auth/pages/LoginPage.jsx
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../../../shared/contexts/AuthContext"; // Ajusta la ruta si es necesario
-import LoginForm from "../components/LoginForm"; // Ajusta la ruta si es necesario
-import "../css/Auth.css"; // Estilos comunes
-import "../css/LoginStyles.css"; // Estilos específicos del login
+// Corregido: Importamos el hook personalizado useAuth
+import { useAuth } from "../../../shared/contexts/AuthContext";
+import LoginForm from "../components/LoginForm";
+import "../css/Auth.css";
+import "../css/LoginStyles.css";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  // Corregido: Usamos el hook useAuth() para obtener la función de login
+  const { login } = useAuth();
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Para el estado de carga del botón
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLoginSubmit = async (credentials, rememberMe) => {
-    // <--- Acepta 'rememberMe'
     setError("");
     setIsLoading(true);
     try {
-      // Pasa 'credentials' y 'rememberMe' a la función login del contexto
       const loginResult = await login(credentials, rememberMe);
 
       if (loginResult.success) {
-        // Redirección basada en el rol devuelto por la función login del AuthContext
-        // (Asumiendo que loginResult.role contiene el nombre del rol)
+        // Redirección basada en el rol
         if (loginResult.role === "Administrador") {
           navigate("/admin/dashboard");
         } else if (loginResult.role === "Cliente") {
-          navigate("/"); // O la ruta del dashboard del cliente
+          navigate("/");
         } else if (loginResult.role === "Empleado") {
-          navigate("/empleado/dashboard"); // O la ruta del dashboard del empleado
+          navigate("/empleado/dashboard");
         } else {
-          navigate("/"); // Ruta por defecto si el rol no coincide o no se maneja específicamente
+          navigate("/"); // Ruta por defecto
         }
-      } else {
-        // Este else podría no ser necesario si el login del context siempre lanza error en caso de fallo
-        setError(
-          loginResult.message || "Error desconocido al intentar iniciar sesión."
-        );
       }
     } catch (err) {
-      setError(
-        err.message || "Error al iniciar sesión. Por favor, inténtalo de nuevo."
-      );
+      setError(err.message || "Error al iniciar sesión. Por favor, inténtalo de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -52,12 +44,9 @@ function LoginPage() {
       <div className="auth-form-box">
         <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
         <h2 className="auth-form-title">Iniciar Sesión</h2>
-        <LoginForm onSubmit={handleLoginSubmit} error={error} />
+        <LoginForm onSubmit={handleLoginSubmit} error={error} isLoading={isLoading} />
         <div className="auth-form-actions">
-          <Link
-            to="/auth/solicitar-recuperacion"
-            className="auth-secondary-button"
-          >
+          <Link to="/auth/solicitar-recuperacion" className="auth-secondary-button">
             ¿Olvidaste tu contraseña?
           </Link>
           <Link to="/register" className="auth-secondary-button">

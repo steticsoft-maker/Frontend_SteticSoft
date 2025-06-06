@@ -1,40 +1,36 @@
 // src/shared/components/auth/PrivateRoute.jsx
-import React, { useContext } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
+import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+// Corregido: Importamos nuestro hook personalizado
+import { useAuth } from '../../contexts/AuthContext';
 
-// El componente ahora acepta 'allowedRoles' o 'requiredPermission'
-function PrivateRoute({ children, allowedRoles, requiredPermission }) {
-  const { isAuthenticated, user, permissions, isLoading } = useContext(AuthContext);
-  const location = useLocation();
+// El componente ahora es más simple y se enfoca solo en los permisos.
+const PrivateRoute = ({ requiredPermission }) => {
+  // Corregido: Usamos el hook useAuth() para obtener la información.
+  const { isAuthenticated, permissions, isLoading } = useAuth();
 
+  // Mientras se verifica la sesión, mostramos un mensaje de carga.
   if (isLoading) {
-    return <div>Cargando autenticación...</div>;
+    return <div>Cargando...</div>;
   }
 
+  // Si el usuario NO está autenticado, lo redirigimos al login.
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
-  // Verificación por Rol (se mantiene por si lo necesitas en algún lado)
-  if (allowedRoles && user?.rol && !allowedRoles.includes(user.rol.nombre)) {
+  // Si la ruta requiere un permiso y el usuario NO lo tiene,
+  // lo redirigimos a una página segura (el dashboard es una buena opción).
+  if (requiredPermission && !permissions.includes(requiredPermission)) {
     console.warn(
-      `Acceso DENEGADO por ROL a: ${location.pathname}. Rol del usuario: "${user.rol.nombre}". Roles permitidos: ${allowedRoles.join(', ')}`
+      `Acceso DENEGADO por PERMISO. Permiso requerido: "${requiredPermission}"`
     );
-    return <Navigate to="/" replace />; 
-  }
-
-  // ¡NUEVA VERIFICACIÓN POR PERMISO!
-  if (requiredPermission && (!permissions || !permissions.includes(requiredPermission))) {
-    console.warn(
-        `Acceso DENEGADO por PERMISO a: ${location.pathname}. Permiso requerido: "${requiredPermission}". Permisos del usuario: [${permissions.join(', ')}]`
-    );
-    // Puedes redirigir a una página de "Acceso Denegado" o al dashboard principal.
     return <Navigate to="/admin/dashboard" replace />;
   }
 
-  // Si pasa todas las verificaciones, permite el acceso.
-  return children;
-}
+  // Si el usuario está autenticado y tiene los permisos necesarios,
+  // <Outlet /> renderiza el componente de la ruta hija que corresponde.
+  return <Outlet />;
+};
 
 export default PrivateRoute;

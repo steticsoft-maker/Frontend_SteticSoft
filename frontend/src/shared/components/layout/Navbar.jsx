@@ -1,19 +1,18 @@
 // src/shared/components/layout/Navbar.jsx
-import React, { useContext } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext"; // Asegúrate que la ruta sea correcta
-import "./Navbar.css"; // Se moverá junto con el JSX
+// Corregido: Importamos el hook personalizado useAuth
+import { useAuth } from "../../contexts/AuthContext";
+import "./Navbar.css";
 
 function Navbar() {
   const navigate = useNavigate();
-  // Asumimos que AuthContext provee:
-  // isAuthenticated (boolean)
-  // user (objeto { role: 'admin'/'client', name: 'NombreUsuario' } o null)
-  // logout (función para cerrar sesión)
-  const { isAuthenticated, user, logout } = useContext(AuthContext);
+  // Corregido: Usamos el hook useAuth() para obtener los datos del contexto
+  const { isAuthenticated, user, logout } = useAuth();
 
-  const handleLogoutClick = () => {
-    logout(); // Llama a la función logout del contexto
+  const handleLogoutClick = async () => {
+    // La función logout del contexto es asíncrona, usamos await
+    await logout();
     navigate("/"); // Redirige al home
   };
 
@@ -25,19 +24,18 @@ function Navbar() {
         </Link>
         <ul className="navbar-list">
           <li>
-            <Link to="/Productos" className="navbar-link">
+            <Link to="/public/productos" className="navbar-link">
               Productos
             </Link>
           </li>
           <li>
-            <Link to="/Servicios" className="navbar-link">
+            <Link to="/public/servicios" className="navbar-link">
               Servicios
             </Link>
           </li>
-          {/* Podrías añadir Novedades aquí si es un enlace principal */}
-          {/* <li><Link to="/Novedades" className="navbar-link">Novedades</Link></li> */}
 
           {!isAuthenticated ? (
+            // Fragmento para usuarios no autenticados
             <>
               <li>
                 <Link to="/register" className="navbar-link">
@@ -51,9 +49,10 @@ function Navbar() {
               </li>
             </>
           ) : (
+            // Fragmento para usuarios autenticados
             <>
               <li className="navbar-user">
-                👤 {user?.role === "admin" ? "Admin" : user?.name || "Usuario"}
+                👤 {user?.nombre || "Usuario"}
               </li>
               <li>
                 <button className="logout-button" onClick={handleLogoutClick}>
