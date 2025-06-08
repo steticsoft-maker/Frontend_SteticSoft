@@ -1,73 +1,75 @@
 // src/features/productosAdmin/services/productosAdminService.js
-import { fetchCategoriasProducto } from '../../categoriasProductoAdmin/services/categoriasProductoService'; // Para obtener categorías
+import apiClient from "../../../shared/services/apiClient";
+import { fetchCategoriasProducto as getCategoriasAPI } from '../../categoriasProductoAdmin/services/categoriasProductoService';
 
-const PRODUCTOS_STORAGE_KEY = 'productos_admin_steticsoft';
+// --- Funciones que se conectan a la API REAL ---
 
-const INITIAL_PRODUCTOS = [
-  { id: 1, nombre: "Producto A Ejemplo", categoria: "Categoría 1", precio: 10000, stock: 50, estado: true, foto: null, descripcion: "Descripción del Producto A" },
-  { id: 2, nombre: "Producto B Ejemplo", categoria: "Categoría 2", precio: 20000, stock: 30, estado: false, foto: null, descripcion: "Descripción del Producto B" },
-];
-
-export const fetchProductosAdmin = () => {
-  const stored = localStorage.getItem(PRODUCTOS_STORAGE_KEY);
-  // Si no hay productos, inicializar con los de ejemplo (o un array vacío)
-  if (!stored) {
-    persistProductosAdmin(INITIAL_PRODUCTOS);
-    return INITIAL_PRODUCTOS;
-  }
+const getProductos = async () => {
   try {
-    return JSON.parse(stored);
-  } catch (e) {
-    console.error("Error parsing productos from localStorage", e);
-    persistProductosAdmin(INITIAL_PRODUCTOS); // Reset a iniciales si hay error
-    return INITIAL_PRODUCTOS;
+    const response = await apiClient.get('/productos');
+    // Asumiendo que la data viene en response.data.data
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error("Error en getProductos:", error.response?.data || error.message);
+    throw error.response?.data || new Error("Error al obtener los productos.");
   }
 };
 
-const persistProductosAdmin = (productos) => {
-  localStorage.setItem(PRODUCTOS_STORAGE_KEY, JSON.stringify(productos));
-};
-
-// Función para obtener las categorías activas para el select del formulario
-export const getActiveCategoriasForSelect = () => {
-  const todasCategorias = fetchCategoriasProducto(); // Usa el servicio de categorías
-  return todasCategorias.filter(cat => cat.estado === true).map(cat => cat.nombre);
-};
-
-export const saveProductoAdmin = (productoData, existingProductos) => {
-  // Validaciones básicas
-  if (!productoData.nombre?.trim() || !productoData.categoria || isNaN(parseFloat(productoData.precio)) || parseFloat(productoData.precio) <= 0 || isNaN(parseInt(productoData.stock)) || parseInt(productoData.stock) < 0) {
-    throw new Error("Por favor, completa todos los campos obligatorios (Nombre, Categoría, Precio válido, Stock válido).");
+const createProducto = async (productoData) => {
+  try {
+    const response = await apiClient.post('/productos', productoData);
+    return response.data;
+  } catch (error) {
+    console.error("Error en createProducto:", error.response?.data || error.message);
+    throw error.response?.data || new Error("Error al crear el producto.");
   }
+};
 
-  let updatedProductos;
-  if (productoData.id) { // Editando
-    updatedProductos = existingProductos.map(p =>
-      p.id === productoData.id ? { ...p, ...productoData } : p
-    );
-  } else { // Creando
-    const newProducto = {
-      ...productoData,
-      id: Date.now(),
-      estado: productoData.estado !== undefined ? productoData.estado : true, // Default a true si es nuevo
-      // foto: se maneja en el componente de formulario y se pasa en productoData
-    };
-    updatedProductos = [...existingProductos, newProducto];
+const updateProducto = async (id, productoData) => {
+    try {
+        const response = await apiClient.put(`/productos/${id}`, productoData);
+        return response.data;
+    } catch (error) {
+        console.error("Error en updateProducto:", error.response?.data || error.message);
+        throw error.response?.data || new Error("Error al actualizar el producto.");
+    }
+};
+
+const toggleProductoEstado = async (id, estado) => {
+    try {
+        const response = await apiClient.patch(`/productos/${id}/estado`, { estado });
+        return response.data;
+    } catch (error) {
+        console.error("Error en toggleProductoEstado:", error.response?.data || error.message);
+        throw error.response?.data || new Error("Error al cambiar el estado del producto.");
+    }
+};
+
+const deleteProducto = async (id) => {
+    try {
+        const response = await apiClient.delete(`/productos/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error en deleteProducto:", error.response?.data || error.message);
+        throw error.response?.data || new Error("Error al eliminar el producto.");
+    }
+};
+
+// --- Exportamos un único objeto con todas las funciones ---
+export const productosAdminService = {
+  getProductos,
+  createProducto,
+  updateProducto,
+  toggleEstado: toggleProductoEstado,
+  deleteProducto,
+  // Reutilizamos la función del otro servicio para obtener las categorías
+  getActiveCategorias: async () => {
+      try {
+          const categorias = await getCategoriasAPI();
+          return categorias.filter(c => c.estado === true).map(c => c.nombre);
+      } catch (error) {
+          console.error("Error al obtener categorías activas:", error);
+          return [];
+      }
   }
-  persistProductosAdmin(updatedProductos);
-  return updatedProductos;
-};
-
-export const deleteProductoAdminById = (productoId, existingProductos) => {
-  const updatedProductos = existingProductos.filter(p => p.id !== productoId);
-  persistProductosAdmin(updatedProductos);
-  return updatedProductos;
-};
-
-export const toggleProductoAdminEstado = (productoId, existingProductos) => {
-  const updatedProductos = existingProductos.map(p =>
-    p.id === productoId ? { ...p, estado: !p.estado } : p
-  );
-  persistProductosAdmin(updatedProductos);
-  return updatedProductos;
 };

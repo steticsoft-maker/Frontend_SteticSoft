@@ -1,47 +1,158 @@
 // src/features/compras/components/CompraDetalleModal.jsx
 import React from 'react';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilePdf, faTimes } from "@fortawesome/free-solid-svg-icons";
+import '../css/Compras.css';
+import logoEmpresa from '/logo.png'; // Asegúrate que la ruta al logo sea correcta
 
-const CompraDetalleModal = ({ isOpen, onClose, compra }) => {
-  if (!isOpen || !compra) return null;
+const CompraDetalleModal = ({ compra, onClose }) => {
+  if (!compra) {
+    return null;
+  }
 
+  const {
+    idCompra,
+    fecha,
+    proveedor,
+    usuario,
+    total,
+    iva,
+    estado,
+    detalles
+  } = compra;
+
+  const subtotal = total - iva;
+
+  const handleGeneratePdf = () => {
+    const doc = new jsPDF();
+    doc.addImage(logoEmpresa, 'PNG', 10, 10, 30, 30);
+    doc.setFontSize(18);
+    doc.text(`Detalle de Compra N°: ${idCompra}`, 50, 25);
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${new Date(fecha).toLocaleDateString()}`, 10, 50);
+    doc.text(`Proveedor: ${proveedor?.nombre || 'No especificado'}`, 10, 57);
+    doc.text(`Usuario: ${usuario?.nombre || 'No especificado'}`, 10, 64);
+    doc.text(`Estado: ${estado ? 'Recibida' : 'Anulada'}`, 10, 71);
+    const tableColumn = ["Producto", "Cantidad", "Valor Unitario", "Subtotal"];
+    const tableRows = [];
+
+    // CAMBIO: Asegurarse que itera sobre la data correcta de la API
+    const productosDeLaCompra = compra.productosComprados || compra.detalles || [];
+    productosDeLaCompra.forEach(detalle => {
+      // Acceso a los datos de la tabla de unión (pivot table)
+      const pivot = detalle.CompraXProducto || detalle.detalleCompra || {};
+      const cantidad = pivot.cantidad || 0;
+      const valorUnitario = pivot.valorUnitario || 0;
+      const subtotalItem = cantidad * valorUnitario;
+      const row = [ detalle.nombre || 'N/A', cantidad, `$${Number(valorUnitario).toLocaleString('es-CO')}`, `$${subtotalItem.toLocaleString('es-CO')}`];
+      tableRows.push(row);
+    });
+    
+    doc.autoTable(tableColumn, tableRows, { startY: 80 });
+    const finalY = doc.lastAutoTable.finalY || 90;
+    doc.text(`Subtotal: $${Number(subtotal).toLocaleString('es-CO')}`, 190, finalY + 10, { align: 'right' });
+    doc.text(`IVA (19%): $${Number(iva).toLocaleString('es-CO')}`, 190, finalY + 17, { align: 'right' });
+    doc.setFontSize(14);
+    doc.text(`Total Compra: $${Number(total).toLocaleString('es-CO')}`, 190, finalY + 25, { align: 'right' });
+    doc.save(`compra_${idCompra}.pdf`);
+  };
+
+  // CAMBIO: Se usa la misma estructura y clases que el modal de roles para consistencia visual
   return (
-    <div className="modal-compras">
-      <div className="modal-content-compras">
-        <h2>Detalle de Compra #{compra.id}</h2>
-        <p><strong>Proveedor:</strong> {compra.proveedor}</p>
-        <p><strong>Fecha:</strong> {compra.fecha}</p>
-        <p><strong>Total:</strong> {typeof compra.total === 'number' ? `$${compra.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : compra.totalFormateado || compra.total}</p>
-        <p><strong>Estado:</strong> {compra.estado}</p>
-        {compra.metodoPago && <p><strong>Método Pago:</strong> {compra.metodoPago}</p>}
-        {compra.subtotal !== undefined && <p><strong>Subtotal:</strong> ${compra.subtotal.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}</p>}
-        {compra.iva !== undefined && <p><strong>IVA (19%):</strong> ${compra.iva.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}</p>}
+    <div className="modal-overlay">
+      <div className="modal-content rol-details-modal-content">
+        <div className="modal-header">
+          <h2>Detalle de la Compra</h2>
+          <button onClick={onClose} className="close-button">
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        </div>
+        <div className="modal-body">
+          <div className="rol-details-grid"> {/* Reutilizamos la clase del grid de roles */}
+            
+            {/* --- COLUMNA IZQUIERDA: INFORMACIÓN GENERAL --- */}
+            <div className="details-section">
+              <h3>Información General</h3>
+              <div className="info-item">
+                <span className="info-label">ID Compra:</span>
+                <span className="info-value">{idCompra}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Fecha:</span>
+                <span className="info-value">{new Date(fecha).toLocaleDateString()}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Proveedor:</span>
+                <span className="info-value">{proveedor?.nombre || 'N/A'}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Registrado por:</span>
+                <span className="info-value">{usuario?.nombre || 'N/A'}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Estado:</span>
+                <span className="info-value">
+                  <span className={`estado ${estado ? 'activo' : 'anulado'}`}>
+                    {estado ? 'Recibida' : 'Anulada'}
+                  </span>
+                </span>
+              </div>
+            </div>
 
-        <h4>Productos/Items:</h4>
-        {/* CORRECCIÓN AQUÍ: Sin espacio después de <table...> */}
-        <table className="tablaDetallesCompras"><thead>{/* SIN ESPACIO */}
-            <tr>{/* SIN ESPACIO */}
-              <th>#</th>
-              <th>Nombre</th>
-              <th>Cantidad</th>
-              <th>Precio Unitario</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>{/* SIN ESPACIO */}
-            {(compra.productos || compra.items || []).map((producto, index) => (
-              <tr key={index}>{/* SIN ESPACIO */}
-                <td>{index + 1}</td>
-                <td>{producto.nombre}</td>
-                <td>{producto.cantidad}</td>
-                <td>${producto.precio.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}</td>
-                <td>${(producto.precio * producto.cantidad).toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <button className="botonCerrarDetallesCompra" onClick={onClose}>Cerrar</button>
+            {/* --- COLUMNA DERECHA: PRODUCTOS Y TOTALES --- */}
+            <div className="permissions-section"> {/* Reutilizamos la clase de la segunda columna de roles */}
+              <h3>Productos y Totales</h3>
+              <table className="detalle-productos-simple">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th className="text-center">Cant.</th>
+                    <th className="text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(compra.productosComprados || compra.detalles || []).map((detalle, index) => {
+                    const pivot = detalle.CompraXProducto || detalle.detalleCompra || {};
+                    const cantidad = pivot.cantidad || 0;
+                    const valorUnitario = pivot.valorUnitario || 0;
+                    const subtotalItem = cantidad * valorUnitario;
+                    return (
+                      <tr key={detalle.idProducto || index}>
+                        <td>{detalle.nombre || 'N/A'}</td>
+                        <td className="text-center">{cantidad}</td>
+                        <td className="text-right">${subtotalItem.toLocaleString('es-CO')}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+              <div className="compra-totales-detalle">
+                  <div className="total-row">
+                      <span>Subtotal:</span>
+                      <span>${Number(subtotal).toLocaleString('es-CO')}</span>
+                  </div>
+                  <div className="total-row">
+                      <span>IVA (19%):</span>
+                      <span>${Number(iva).toLocaleString('es-CO')}</span>
+                  </div>
+                  <div className="total-row total-final">
+                      <strong>Total:</strong>
+                      <strong>${Number(total).toLocaleString('es-CO')}</strong>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button onClick={handleGeneratePdf} className="btn-pdf">
+            <FontAwesomeIcon icon={faFilePdf} /> Descargar PDF
+          </button>
+        </div>
       </div>
     </div>
   );
 };
+
 export default CompraDetalleModal;

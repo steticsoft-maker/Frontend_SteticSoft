@@ -1,149 +1,213 @@
-// src/features/compras/pages/ListaComprasPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ComprasTable from '../components/ComprasTable';
-import CompraDetalleModal from '../components/CompraDetalleModal';
-import PdfViewModal from '../../../shared/components/common/pdfViewModal';
+// CORRECCIÓN: Se importa sin llaves {} porque es un 'export default'
+import CompraDetalleModal from '../components/CompraDetalleModal'; 
+import PdfViewModal from '../../../shared/components/common/PdfViewModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
-import {
-  fetchCompras,
-  anularCompraById,
-  cambiarEstadoCompra
-} from '../services/comprasService';
-import { generarPDFCompraUtil } from '../utils/pdfGeneratorCompras'; // Nombre correcto de la función
+import { comprasService } from '../services/comprasService';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import logoEmpresa from '/logo.png';
 import '../css/Compras.css';
 
 function ListaComprasPage() {
   const navigate = useNavigate();
   const [compras, setCompras] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [busqueda, setBusqueda] = useState('');
 
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [showPdfModal, setShowPdfModal] = useState(false);
-  const [showAnularConfirmModal, setShowAnularConfirmModal] = useState(false);
+  // Estados para modales
+  const [isDetalleModalOpen, setIsDetalleModalOpen] = useState(false);
+  const [isAnularModalOpen, setIsAnularModalOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-
   const [selectedCompra, setSelectedCompra] = useState(null);
-  const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
   const [validationMessage, setValidationMessage] = useState('');
+  
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+  const [pdfDataUri, setPdfDataUri] = useState('');
 
-  useEffect(() => {
-    setCompras(fetchCompras());
+  const fetchCompras = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await comprasService.getCompras();
+      // Asumiendo que la API envuelve los datos en un objeto { success: true, data: [...] }
+      setCompras(response.data || []); 
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al obtener las compras.');
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const handleOpenDetails = (compra) => {
+  useEffect(() => {
+    fetchCompras();
+  }, [fetchCompras]);
+
+  const handleOpenDetalle = (compra) => {
     setSelectedCompra(compra);
-    setShowDetailsModal(true);
+    setIsDetalleModalOpen(true);
   };
 
-  const handleOpenPdf = (compra) => {
+  const handleOpenAnular = (compraId) => {
+    const compraParaAnular = compras.find(c => c.idCompra === compraId);
+    setSelectedCompra(compraParaAnular);
+    setIsAnularModalOpen(true);
+  };
+
+  const generateAndShowPdf = async (compraResumen) => {
+    if (!compraResumen) return;
+    
     try {
-        const blob = generarPDFCompraUtil(compra); // CORRECCIÓN: Usar el nombre de función importado
-        const url = URL.createObjectURL(blob);
-        setPdfBlobUrl(url);
-        setSelectedCompra(compra);
-        setShowPdfModal(true);
-    } catch(e) {
-        setValidationMessage("Error al generar el PDF: " + e.message);
-        setIsValidationModalOpen(true);
+      const compraCompletaResponse = await comprasService.getCompraById(compraResumen.idCompra);
+      const compra = compraCompletaResponse.data;
+
+      if (!compra) {
+        throw new Error("No se pudieron obtener los detalles completos para el PDF.");
+      }
+      
+      const doc = new jsPDF();
+      doc.addImage(logoEmpresa, 'PNG', 10, 10, 30, 30);
+      doc.setFontSize(18);
+      doc.text(`Detalle de Compra N°: ${compra.idCompra}`, 50, 25);
+      doc.setFontSize(12);
+      doc.text(`Fecha: ${new Date(compra.fecha).toLocaleDateString()}`, 10, 50);
+      doc.text(`Proveedor: ${compra.proveedor?.nombre || 'N/A'}`, 10, 57);
+      
+      const tableColumn = ["Producto", "Cantidad", "Valor Unitario", "Subtotal"];
+      const tableRows = (compra.productosComprados || []).map(producto => {
+          const detalle = producto.detalleCompra || {};
+          const cantidad = detalle.cantidad || 0;
+          const valorUnitario = detalle.valorUnitario || 0;
+          const subtotalItem = cantidad * valorUnitario;
+          return [ 
+              producto.nombre || 'N/A', 
+              cantidad, 
+              `$${Number(valorUnitario).toLocaleString('es-CO')}`, 
+              `$${subtotalItem.toLocaleString('es-CO')}`
+          ];
+      });
+      
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 70,
+      });
+      
+      const dataUri = doc.output('datauristring');
+      setPdfDataUri(dataUri);
+      setSelectedCompra(compra);
+      setIsPdfModalOpen(true);
+
+    } catch (err) {
+      console.error("Error al generar PDF:", err);
+      setValidationMessage(err.response?.data?.message || "No se pudo generar el PDF.");
+      setIsValidationModalOpen(true);
     }
   };
-
-  const handleOpenAnularConfirm = (compra) => {
-    setSelectedCompra(compra);
-    setShowAnularConfirmModal(true);
+  
+  const handleEstadoChange = (compraId, nuevoEstado) => {
+    // Aquí iría la lógica para llamar al servicio de API que actualiza el estado.
+    console.log(`Cambiando estado de compra ${compraId} a ${nuevoEstado}`);
+    // Ejemplo de actualización optimista en el UI:
+    setCompras(prevCompras =>
+      prevCompras.map(compra =>
+        compra.idCompra === compraId ? { ...compra, estadoProceso: nuevoEstado } : compra
+      )
+    );
   };
 
   const handleCloseModals = () => {
-    setShowDetailsModal(false);
-    setShowPdfModal(false);
-    if (pdfBlobUrl) {
-        URL.revokeObjectURL(pdfBlobUrl);
-        setPdfBlobUrl(null);
-    }
-    setShowAnularConfirmModal(false);
+    setIsDetalleModalOpen(false);
+    setIsAnularModalOpen(false);
     setIsValidationModalOpen(false);
+    setIsPdfModalOpen(false);
     setSelectedCompra(null);
     setValidationMessage('');
+    setPdfDataUri('');
   };
 
-  const handleConfirmAnular = () => {
-    if (selectedCompra) {
-      const updatedCompras = anularCompraById(selectedCompra.id, compras);
-      setCompras(updatedCompras);
+  const handleConfirmAnular = async () => {
+    if (!selectedCompra) return;
+    try {
+      await comprasService.anularCompra(selectedCompra.idCompra);
+      setValidationMessage('¡Compra anulada exitosamente!');
+      fetchCompras();
+    } catch (err) {
+      setValidationMessage(err.response?.data?.message || 'Error al anular la compra.');
+    } finally {
+      setIsValidationModalOpen(true);
       handleCloseModals();
     }
   };
 
-  const handleEstadoChange = (compraId, nuevoEstado) => {
-    const updatedCompras = cambiarEstadoCompra(compraId, nuevoEstado, compras);
-    setCompras(updatedCompras);
-  };
-
   const filteredCompras = compras.filter(compra =>
-    (compra.proveedor?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-    (compra.id?.toString() || '').includes(searchTerm) ||
-    (compra.fecha?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+    (compra.proveedor?.nombre?.toLowerCase() || '').includes(busqueda.toLowerCase()) ||
+    (compra.idCompra?.toString() || '').includes(busqueda)
   );
 
   return (
-    // Contenedor principal de la página para el layout flex con NavbarAdmin
-    <div className="compras-page-container"> 
+    <div className="lista-compras-container">
       <NavbarAdmin />
-      {/* Contenedor del contenido principal con el margen para el NavbarAdmin */}
-      <div className="comprasContenido"> 
-        {/* Wrapper interno para centrar el contenido si es necesario */}
-        <div className="compras-content-wrapper"> 
-          <h2 className="title-h2">Gestión de Compras</h2>
-          <div className="container-busqueda-agregar"> 
+      <div className="compras-content-wrapper">
+        <h1>Listado de Compras</h1>
+        <div className="proveedores-actions-bar">
+          <div className="proveedores-search-bar">
             <input
-              className="inputBarraBusqueda" // Asegúrate que esta clase esté bien estilizada en Compras.css
               type="text"
-              placeholder="Buscar compra (proveedor, ID, fecha)..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Buscar por ID, Proveedor..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
             />
-            <button
-              className="botonSuperiorAgregarCompra" // Asegúrate que esta clase esté bien estilizada en Compras.css
-              onClick={() => navigate('/compras/agregar')}
-            >
-              Agregar Compra
-            </button>
           </div>
+          <button
+            className="proveedores-add-button"
+            onClick={() => navigate('/admin/compras/agregar')}
+          >
+            Agregar Compra
+          </button>
+        </div>
+
+        {isLoading ? <p>Cargando compras...</p> : error ? <p className="error-message">{error}</p> : (
           <ComprasTable
             compras={filteredCompras}
-            onShowDetails={handleOpenDetails}
-            onGenerarPDF={handleOpenPdf}
-            onAnular={handleOpenAnularConfirm}
+            onDetalle={handleOpenDetalle}
+            onAnular={handleOpenAnular}
             onEstadoChange={handleEstadoChange}
+            onGenerarPDF={generateAndShowPdf}
           />
-        </div>
+        )}
       </div>
 
-      <CompraDetalleModal
-        isOpen={showDetailsModal}
-        onClose={handleCloseModals}
-        compra={selectedCompra}
-      />
-      <PdfViewModal
-        isOpen={showPdfModal}
-        onClose={handleCloseModals}
-        pdfUrl={pdfBlobUrl}
-        title={`Detalle Compra #${selectedCompra?.id || ''}`}
-      />
+      {isDetalleModalOpen && <CompraDetalleModal compra={selectedCompra} onClose={handleCloseModals} />}
+      
+      {isPdfModalOpen && (
+        <PdfViewModal
+            isOpen={isPdfModalOpen}
+            onClose={handleCloseModals}
+            pdfDataUri={pdfDataUri}
+            fileName={`compra_${selectedCompra?.idCompra || 'detalle'}.pdf`}
+        />
+      )}
+
       <ConfirmModal
-        isOpen={showAnularConfirmModal}
+        isOpen={isAnularModalOpen}
         onClose={handleCloseModals}
         onConfirm={handleConfirmAnular}
         title="Confirmar Anulación"
-        message={`¿Está seguro de que desea anular la compra al proveedor "${selectedCompra?.proveedor || ''}" con fecha ${selectedCompra?.fecha || ''}?`}
+        message={`¿Estás seguro de que deseas anular la compra N° ${selectedCompra?.idCompra}? Esta acción no se puede deshacer y el stock de los productos será revertido.`}
+        confirmText="Sí, Anular"
+        cancelText="No, Cancelar"
       />
+      
       <ValidationModal
         isOpen={isValidationModalOpen}
         onClose={handleCloseModals}
-        title="Aviso de Compras"
+        title="Aviso"
         message={validationMessage}
       />
     </div>

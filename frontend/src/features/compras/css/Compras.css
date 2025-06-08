@@ -1,290 +1,405 @@
 /* src/features/compras/css/Compras.css */
 
-/* === ESTILOS GENERALES DE PÁGINA (ListaComprasPage) === */
-.compras-page-container {
-  display: flex;
-  min-height: 100vh;
-  width: 100%;
-  font-family: 'Roboto', sans-serif;
-  background-color: var(--color-background-admin-content, #f5f5f5);
+/* === ESTILOS GENERALES DE PÁGINA === */
+.lista-compras-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-background-admin-content, #f5f5f5);
 }
 
-.comprasContenido { /* Tu clase existente */
-  flex: 1;
-  padding: 30px;
-  margin-left: 270px; /* CRUCIAL: ANCHO_NAVBAR_ADMIN + ESPACIO */
-  overflow-y: auto;
-  box-sizing: border-box;
+.compras-content-wrapper {
+    flex: 1;
+    padding: 30px;
+    margin-left: 270px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.compras-content-wrapper { /* Nuevo wrapper para centrar */
-  width: 100%;
-  max-width: 1200px; 
-  margin-left: auto;
-  margin-right: auto;
+.compras-content-wrapper h1 {
+    text-align: center;
+    color: var(--color-primary-darker, #6d0b58);
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
+/* === BARRA DE ACCIONES SUPERIOR === */
+.proveedores-actions-bar { 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; 
+    gap: 20px;
+    flex-wrap: wrap; 
+    width: 100%;
+    max-width: 1200px; 
+    box-sizing: border-box;
+}
+
+.proveedores-search-bar { 
+    flex-grow: 1;
+    display: flex;
+}
+
+.proveedores-search-bar input { 
+    padding: 10px 12px; 
+    width: 100%; 
+    min-width: 250px;
+    font-size: 1rem;
+    border: 1px solid var(--color-border-light, #c287b5); 
+    border-radius: 5px;
+    background-color: var(--color-background-light, #fff);
+    color: var(--color-text-dark, #333);
+    box-sizing: border-box;
+}
+
+.proveedores-search-bar input:focus {
+    border-color: var(--color-admin-hover, #b660a3); 
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+    outline: none;
+}
+
+.proveedores-add-button { 
+    padding: 10px 20px; 
+    font-size: 1rem; 
+    background-color: var(--color-admin-hover, #b660a3); 
+    color: var(--color-text-light, white); 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+    height: 41px; 
+    box-sizing: border-box;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+}
+.proveedores-add-button:hover {
+    background-color: var(--color-primary-darker, #6d0b58);
+}
+
+
+/* === ESTILOS DE TABLA === */
+.tabla-compras {
+    width: 100%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    margin-top: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.95rem;
+}
+
+.tabla-compras th {
+    background-color: var(--color-admin-primary-lighter, #e978d0);
+    color: var(--color-text-dark, black);
+    padding: 12px 15px;
+    border-bottom: 2px solid var(--color-admin-hover, #d66abf);
+    font-weight: 600;
+}
+
+.tabla-compras td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--color-border-light, #f0f0f0);
+    color: var(--color-text-dark, #333);
+    vertical-align: middle;
+}
+
+.tabla-compras tbody tr:nth-child(even) {
+    background-color: var(--color-table-row-even, #f8eaf5);
+}
+
+.tabla-compras tbody tr:hover {
+    background-color: var(--color-table-row-hover, #f3d9ec);
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.acciones-compras {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-accion {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9em;
+    color: white;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-accion:hover {
+    transform: translateY(-1px);
+}
+
+.btn-detalle {
+    background-color: var(--color-admin-action-view, #fc8de4);
+}
+.btn-detalle:hover {
+    background-color: var(--color-admin-action-view-hover, #d66abf);
+}
+
+.btn-anular {
+    background-color: var(--color-danger, #dc3545);
+}
+.btn-anular:hover {
+    background-color: #c82333;
+}
+
+.estado {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+.estado.activo {
+    background-color: #28a745;
+}
+
+.estado.anulado {
+    background-color: #6c757d;
+    text-decoration: line-through;
+}
+
+/* === ESTILOS PARA MODALES === */
+
+/* NUEVO: Overlay para centrar el modal en toda la pantalla */
+.modal-overlay {
+    position: fixed; /* Clave para sacarlo del flujo normal */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Ocupa todo el ancho de la ventana */
+    height: 100vh; /* Ocupa todo el alto de la ventana */
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Contenido del modal */
+.modal-content {
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 100%;
+}
+
+/* Reutilizamos clases de rol para consistencia */
+.rol-details-modal-content {
+  max-width: 800px;
+  width: 90%;
+}
+
+.rol-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr; 
+  gap: 2rem 3rem;
+  padding: 1rem 0;
+}
+
+.details-section, .permissions-section {
   display: flex;
   flex-direction: column;
-  align-items: center; 
 }
 
-.comprasContenido h2.title-h2 { /* Título de la página */
-  text-align: center;
+.details-section h3, .permissions-section h3 {
   color: var(--color-primary-darker, #6d0b58);
-  margin-top: 0;
-  margin-bottom: 25px;
-  font-size: 1.8rem;
+  border-bottom: 2px solid var(--color-admin-primary-lighter, #e978d0);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
 }
 
-/* Barra de acciones superior */
-.container-busqueda-agregar { /* Tu clase existente */
+.info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-  gap: 20px;
-  width: 100%; /* Ocupa ancho del wrapper */
-  box-sizing: border-box;
-}
-
-.container-busqueda-agregar .inputBarraBusqueda { /* Tu input */
-  padding: 10px 12px;
-  flex-grow: 1;
-  min-width: 250px;
-  font-size: 1rem;
-  border: 1px solid var(--color-border-light, #c287b5);
-  border-radius: 5px;
-  background-color: var(--color-background-light, #fff);
-  color: var(--color-text-dark, #333);
-  box-sizing: border-box;
-}
-.container-busqueda-agregar .inputBarraBusqueda:focus {
-  border-color: var(--color-admin-hover, #b660a3);
-  box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
-  outline: none;
-}
-
-.botonSuperiorAgregarCompra { /* Tu botón */
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: var(--color-admin-hover, #b660a3); /* Color consistente */
-  color: var(--color-text-light, white);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-  flex-shrink: 0;
-  height: 41px; 
-  box-sizing: border-box;
-  display: flex; /* Para centrar texto si es necesario */
-  align-items: center;
-  justify-content: center;
-}
-.botonSuperiorAgregarCompra:hover {
-  background-color: var(--color-primary-darker, #6d0b58);
-}
-
-/* === ESTILOS DE TABLA === */
-.tablaCompras table { /* Aplicar estilos a la <table> dentro de .tablaCompras */
-  width: 100%;
-  border-collapse: collapse;
-  /* margin-top: 20px; No es necesario si .tablaCompras ya tiene margen */
-}
-.tablaCompras { /* Tu div contenedor de la tabla */
-  width: 100%; /* Ocupa ancho del wrapper */
-  margin-top: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
-  border-radius: 8px;
-  overflow: hidden; /* Para que el radius funcione con la tabla interna */
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #f0f0f0;
   font-size: 0.95rem;
 }
-.tablaCompras th {
-  background-color: var(--color-admin-primary-lighter, #e978d0);
-  color: var(--color-text-dark, black);
-  padding: 12px 15px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 1rem;
-  border: 1px solid var(--color-admin-primary-border, #e978d0);
-}
-.tablaCompras td {
-  padding: 12px 15px;
-  border: 1px solid var(--color-admin-primary-border, #e978d0);
-  color: var(--color-text-dark, #333);
-  font-size: 0.9rem;
-  text-align: left; /* Default */
-  vertical-align: middle;
-}
-/* Alineaciones específicas de celdas */
-.tablaCompras td:nth-child(1), /* # */
-.tablaCompras td:nth-child(4), /* Total */
-.tablaCompras td:nth-child(5), /* Estado */
-.tablaCompras td:nth-child(6)  /* Acciones */
-{ text-align: center; }
 
-.tablaCompras tbody tr:nth-child(even) { background-color: var(--color-table-row-even, #f8eaf5); }
-.tablaCompras tbody tr:hover { background-color: var(--color-table-row-hover, #f3d9ec); }
+.info-label {
+  font-weight: 600;
+  color: #555;
+  margin-right: 10px;
+}
+
+.info-value {
+  color: #333;
+  text-align: right;
+}
+
+/* Tabla simple para productos en el detalle */
+.detalle-productos-simple {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.detalle-productos-simple th, .detalle-productos-simple td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: left;
+}
+
+.detalle-productos-simple th {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: #555;
+  background-color: #f9f9f9;
+}
+
+.detalle-productos-simple .text-center { text-align: center; }
+.detalle-productos-simple .text-right { text-align: right; }
+
+/* Sección de totales dentro del modal */
+.compra-totales-detalle {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 0.95rem;
+}
+
+.total-row.total-final {
+  font-size: 1.15rem;
+  color: var(--color-primary-darker, #6d0b58);
+  margin-top: 0.5rem;
+}
+
+.modal-footer {
+  text-align: right;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.btn-pdf {
+    background-color: #cb2c31;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-pdf:hover {
+    background-color: #a52327;
+}
+
+
+/* === ESTILOS RESPONSIVOS === */
+@media (max-width: 768px) {
+    .compras-content-wrapper { margin-left: 0; padding: 15px; }
+
+    .rol-details-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .tabla-compras thead { display: none; }
+    .tabla-compras, .tabla-compras tbody, .tabla-compras tr, .tabla-compras td {
+        display: block; width: 100%;
+    }
+    .tabla-compras tr {
+        margin-bottom: 15px;
+        border: 1px solid var(--color-border-light, #ddd);
+        border-radius: 8px;
+        padding: 10px;
+    }
+    .tabla-compras td {
+        text-align: right;
+        padding-left: 50% !important;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .tabla-compras td:last-child { border-bottom: none; }
+    .tabla-compras td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        font-weight: bold;
+        text-align: left;
+        color: var(--color-primary-darker, #6d0b58);
+    }
+    .acciones-compras {
+        justify-content: flex-end;
+    }
+}
+
+/* === ESTILOS ADICIONALES PARA ACCIONES DE TABLA === */
+
+/* Estilo para el botón de PDF en la tabla */
+.btn-pdf-tabla {
+    background-color: #5bc0de; /* Un color cian o azul claro para información */
+}
+.btn-pdf-tabla:hover {
+    background-color: #31b0d5;
+}
 
 /* Estilos para el select de estado en la tabla */
 .estado-select {
-  padding: 6px 8px; /* Ajustar padding */
-  border: 1px solid var(--color-border-light, #ccc);
-  border-radius: 5px;
-  font-size: 0.85rem; /* Un poco más pequeño */
-  background-color: var(--color-background-input, #fff); /* Fondo blanco */
-  cursor: pointer;
-}
-.estado-select.estado-pendiente { background-color: #fff3e0; color: #e65100; border-color: #ffcc80;}
-.estado-select.estado-completado { background-color: #e8f5e9; color: #1b5e20; border-color: #a5d6a7;}
-.tablaCompras td span.estado-anulada { /* Para el texto "Anulada" */
-  font-weight: bold;
-  color: var(--color-danger, #dc3545);
-  padding: 6px 8px;
-  display: inline-block;
-}
-
-
-/* Botones de acción en la tabla */
-.accionesTablaCompras {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px; /* Espacio entre botones */
-}
-.accionesTablaCompras button {
-  padding: 8px 10px;
-  font-size: 0.9rem;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin:0; /* Quitar márgenes individuales */
-}
-.botonVerDetallesCompra, .botonGenerarPDF {
-  background-color: var(--color-admin-action-view, #fc8de4);
-}
-.botonVerDetallesCompra:hover, .botonGenerarPDF:hover {
-  background-color: var(--color-admin-action-view-hover, #d66abf);
-}
-.botonAnularCompra {
-  background-color: var(--color-admin-action-delete, #b660a3);
-}
-.botonAnularCompra:hover {
-  background-color: var(--color-admin-action-delete-hover, #6d0b58);
-}
-.botonAnularCompra:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-  opacity: 0.7;
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 500;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    -webkit-appearance: none; /* Quitar apariencia por defecto en webkit */
+    -moz-appearance: none; /* Quitar apariencia por defecto en mozilla */
+    appearance: none; /* Quitar apariencia por defecto */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236d0b58%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 8px top 50%;
+    background-size: .65em auto;
+    padding-right: 25px; /* Espacio para la flecha */
 }
 
-/* === ESTILOS DE MODALES (Detalle, Confirmar, Validación) === */
-.modal-compras { /* Overlay */
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); 
-  display: flex; justify-content: center; align-items: center;
-  z-index: 1050; padding: 20px; box-sizing: border-box;
-}
-.modal-content-compras { /* Contenido del modal */
-  background: var(--color-background-light, #fff); 
-  padding: 25px 30px; 
-  border-radius: 10px;
-  width: 100%;
-  max-width: 600px; /* Ancho para modal de detalles de compra */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-  max-height: 90vh; overflow-y: auto; box-sizing: border-box;
-  text-align: left;
-}
-.modal-content-compras h2 {
-  text-align: center;
-  color: var(--color-primary-darker, #6d0b58);
-  margin-top: 0;
-  margin-bottom: 20px; 
-  font-size: 1.6rem;
-}
-.modal-content-compras p {
-  margin-bottom: 10px;
-  line-height: 1.6;
-  color: var(--color-text-dark, #333);
-}
-.modal-content-compras p strong {
-  color: var(--color-primary-darker, #6d0b58);
-  margin-right: 8px;
-  font-weight: 600;
-  min-width: 100px; /* Ajusta para alinear */
-  display: inline-block;
-}
-.tablaDetallesCompras { /* Tabla dentro del modal de detalle */
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-}
-.tablaDetallesCompras th {
-  background-color: var(--color-admin-primary-lighter, #f1f1f1); /* Un gris claro o el rosa claro */
-  color: var(--color-text-dark, #333);
-  border: 1px solid var(--color-border-light, #ddd);
-  padding: 8px 10px;
-  text-align: center;
-}
-.tablaDetallesCompras td {
-  border: 1px solid var(--color-border-light, #ddd);
-  padding: 8px 10px;
-  text-align: left;
-}
-.tablaDetallesCompras td:nth-child(1), /* # */
-.tablaDetallesCompras td:nth-child(3), /* Cantidad */
-.tablaDetallesCompras td:nth-child(4), /* Precio Unitario */
-.tablaDetallesCompras td:nth-child(5)  /* Total Item */
-{ text-align: center; }
-
-.botonCerrarDetallesCompra {
-  background-color: var(--color-admin-hover, #b660a3);
-  color: white;
-  display: block; width: auto; min-width: 120px;
-  margin: 20px auto 0;
-  padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
-  font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
-}
-.botonCerrarDetallesCompra:hover {
-  background-color: var(--color-primary-darker, #6d0b58);
+/* Colores para cada estado en el select */
+.estado-select.estado-pendiente {
+    background-color: #fff3cd; /* Amarillo claro */
+    color: #664d03;
+    border-color: #ffc107;
 }
 
-/* Responsividad para ListaComprasPage */
-@media (max-width: 768px) {
-  .comprasContenido { margin-left: 0; padding: 15px; }
-  .compras-content-wrapper { padding:0; }
-  .container-busqueda-agregar { flex-direction: column; gap: 15px; }
-  .container-busqueda-agregar .inputBarraBusqueda, 
-  .botonSuperiorAgregarCompra { width: 100%; }
-  .botonSuperiorAgregarCompra { height: auto; padding: 12px 20px; }
-
-  .tablaCompras thead { display: none; }
-  .tablaCompras, .tablaCompras tbody, .tablaCompras tr, .tablaCompras td {
-      display: block; width: 100%;
-  }
-  .tablaCompras tr {
-      margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0);
-      border-radius: 8px; padding: 10px; background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-  .tablaCompras td {
-      text-align: right; padding-left: 50% !important; position: relative;
-      border: none; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem;
-  }
-  .tablaCompras td:last-child { border-bottom: none; }
-  .tablaCompras td::before {
-      content: attr(data-label); /* Necesitarás añadir data-label a tus <td> */
-      position: absolute; left: 10px; width: calc(50% - 20px);
-      padding-right: 10px; white-space: nowrap; font-weight: bold;
-      color: var(--color-primary-darker, #6d0b58); text-align: left;
-  }
-  .tablaCompras td.accionesTablaCompras { text-align: center; padding-left: 0 !important; }
-  .tablaCompras td.accionesTablaCompras::before { content: ""; }
-  .accionesTablaCompras { justify-content: center; padding-top: 8px; }
-
-  .modal-content-compras { max-width: 95%; padding: 20px; }
+.estado-select.estado-completado {
+    background-color: #d1e7dd; /* Verde claro */
+    color: #0f5132;
+    border-color: #28a745;
 }

@@ -1,204 +1,171 @@
 // src/features/proveedores/pages/ListaProveedoresPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import ProveedoresTable from "../components/ProveedoresTable";
-import ProveedorCrearModal from "../components/ProveedorCrearModal"; // NUEVO
-import ProveedorEditarModal from "../components/ProveedorEditarModal"; // NUEVO
+import ProveedorCrearModal from "../components/ProveedorCrearModal";
+import ProveedorEditarModal from "../components/ProveedorEditarModal";
 import ProveedorDetalleModal from "../components/ProveedorDetalleModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
-import {
-  fetchProveedores,
-  saveProveedor,
-  deleteProveedorById,
-  toggleProveedorEstado,
-} from "../services/proveedoresService";
-import "../css/Proveedores.css"; // Este CSS se actualizará
+import { proveedoresService } from "../services/proveedoresService";
+import "../css/Proveedores.css";
 
 function ListaProveedoresPage() {
   const [proveedores, setProveedores] = useState([]);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Estados para modales separados
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-
   const [currentProveedor, setCurrentProveedor] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
-  // formModalType ya no es necesario
+  const [modalAction, setModalAction] = useState(null);
 
-  useEffect(() => {
-    setProveedores(fetchProveedores());
+  const cargarProveedores = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // La función del servicio devuelve la lista de proveedores directamente
+      const datosRecibidos = await proveedoresService.getProveedores();
+      // CORRECCIÓN CLAVE: Se usa la respuesta directa (datosRecibidos) en lugar de buscar una propiedad .data
+      setProveedores(datosRecibidos || []);
+    } catch (err) {
+      setError(err.message || "Error al cargar los proveedores.");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const handleOpenModal = (type, proveedor = null) => {
-    setCurrentProveedor(proveedor);
-    if (type === "ver") {
-      // Cambiado de "details" para consistencia con otros módulos
-      setIsDetailsModalOpen(true);
-    } else if (type === "delete") {
-      setIsConfirmDeleteOpen(true);
-    } else if (type === "create") {
-      // Usar 'create'
-      setIsCrearModalOpen(true);
-    } else if (type === "edit") {
-      // Usar 'edit'
-      if (proveedor) {
-        setIsEditarModalOpen(true);
-      } else {
-        console.error(
-          "Intento de abrir modal de edición sin datos de proveedor."
-        );
-      }
-    }
-  };
+  useEffect(() => {
+    cargarProveedores();
+  }, [cargarProveedores]);
 
-  const handleCrearModalClose = () => {
+  const closeModal = () => {
     setIsCrearModalOpen(false);
-  };
-
-  const handleEditarModalClose = () => {
     setIsEditarModalOpen(false);
-    setCurrentProveedor(null);
-  };
-
-  const closeOtherModals = () => {
     setIsDetailsModalOpen(false);
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
+    setCurrentProveedor(null);
     setValidationMessage("");
-    if (!isCrearModalOpen && !isEditarModalOpen) {
-      setCurrentProveedor(null);
-    }
+    setModalAction(null);
   };
 
-  const handleSave = (proveedorData) => {
+  const handleOpenModal = (type, proveedor = null) => {
+    setCurrentProveedor(proveedor);
+    if (type === "ver") setIsDetailsModalOpen(true);
+    else if (type === "delete") { setModalAction('delete'); setIsConfirmDeleteOpen(true); }
+    else if (type === "status") { setModalAction('status'); setIsConfirmDeleteOpen(true); }
+    else if (type === "create") setIsCrearModalOpen(true);
+    else if (type === "edit" && proveedor) setIsEditarModalOpen(true);
+  };
+
+  const handleSave = async (proveedorData) => {
     try {
-      const isEditing = !!proveedorData.id;
-      // El servicio saveProveedor ya maneja la lógica de ID para diferenciar crear/editar
-      const updatedProveedores = saveProveedor(
-        proveedorData,
-        proveedores,
-        proveedorData.id
-      );
-      setProveedores(updatedProveedores);
-      if (isEditing) {
-        handleEditarModalClose();
+      if (proveedorData.idProveedor) {
+        await proveedoresService.updateProveedor(proveedorData.idProveedor, proveedorData);
+        setValidationMessage("Proveedor actualizado exitosamente.");
       } else {
-        handleCrearModalClose();
+        await proveedoresService.createProveedor(proveedorData);
+        setValidationMessage("Proveedor creado exitosamente.");
       }
-    } catch (error) {
-      setValidationMessage(error.message);
+      closeModal();
+      await cargarProveedores();
+    } catch (err) {
+      setValidationMessage(err.response?.data?.message || "Error al guardar el proveedor.");
       setIsValidationModalOpen(true);
     }
   };
 
-  const handleDelete = () => {
-    if (currentProveedor && currentProveedor.id) {
-      const updatedProveedores = deleteProveedorById(
-        currentProveedor.id,
-        proveedores
-      );
-      setProveedores(updatedProveedores);
-      closeOtherModals();
+  const handleDelete = async () => {
+    if (currentProveedor?.idProveedor) {
+      try {
+        await proveedoresService.deleteProveedor(currentProveedor.idProveedor);
+        setValidationMessage("Proveedor eliminado exitosamente.");
+        await cargarProveedores();
+      } catch (err) {
+        setValidationMessage(err.response?.data?.message || "Error al eliminar. Es posible que esté asociado a una compra.");
+      } finally {
+        closeModal();
+        setIsValidationModalOpen(true);
+      }
     }
   };
 
-  const handleToggleEstado = (proveedorId) => {
-    const updatedProveedores = toggleProveedorEstado(proveedorId, proveedores);
-    setProveedores(updatedProveedores);
+  const handleToggleEstado = async () => {
+    if (currentProveedor) {
+      try {
+        await proveedoresService.toggleEstado(currentProveedor.idProveedor, !currentProveedor.estado);
+        setValidationMessage("Estado del proveedor cambiado exitosamente.");
+        await cargarProveedores();
+      } catch (err) {
+        setValidationMessage(err.response?.data?.message || "Error al cambiar el estado.");
+      } finally {
+        closeModal();
+        setIsValidationModalOpen(true);
+      }
+    }
+  };
+  
+  const handleConfirmAction = () => {
+    if (modalAction === 'delete') handleDelete();
+    else if (modalAction === 'status') handleToggleEstado();
   };
 
   const filteredProveedores = proveedores.filter((p) => {
-    const displayName =
-      p.tipoDocumento === "Natural" ? p.nombre : p.nombreEmpresa;
-    const documentId =
-      p.tipoDocumento === "Natural" ? p.numeroDocumento : p.nit;
+    const term = search.toLowerCase();
     return (
-      (displayName &&
-        displayName.toLowerCase().includes(search.toLowerCase())) ||
-      (documentId && documentId.toLowerCase().includes(search.toLowerCase())) ||
-      (p.email && p.email.toLowerCase().includes(search.toLowerCase())) // Añadido búsqueda por email
+      p.nombre?.toLowerCase().includes(term) ||
+      p.nitEmpresa?.toLowerCase().includes(term) ||
+      p.correo?.toLowerCase().includes(term)
     );
   });
 
+  const getConfirmModalMessage = () => {
+      if (!currentProveedor) return '';
+      if (modalAction === 'delete') return `¿Estás seguro de que deseas eliminar al proveedor "${currentProveedor.nombre}"?`;
+      if (modalAction === 'status') return `¿Estás seguro de que deseas ${currentProveedor.estado ? 'desactivar' : 'activar'} al proveedor "${currentProveedor.nombre}"?`;
+      return '';
+  };
+
   return (
-    // Contenedor principal de la página
     <div className="proveedores-page-container">
       <NavbarAdmin />
-      {/* Contenido principal con margen para NavbarAdmin */}
       <div className="proveedores-main-content">
-        {/* Wrapper interno para centrar el contenido */}
         <div className="proveedores-content-wrapper">
-          <h1>Gestión de Proveedores</h1> {/* Título consistente */}
-          {/* Barra de acciones superior */}
+          <h1>Gestión de Proveedores</h1>
           <div className="proveedores-actions-bar">
             <div className="proveedores-search-bar">
-              <input
-                type="text"
-                placeholder="Buscar proveedor (nombre, documento, email)..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+              <input type="text" placeholder="Buscar por nombre, NIT o correo..." value={search} onChange={(e) => setSearch(e.target.value)} disabled={isLoading} />
             </div>
-            <button
-              className="proveedores-add-button" // Clase consistente para el botón "Agregar"
-              onClick={() => handleOpenModal("create")}
-            >
+            <button className="proveedores-add-button" onClick={() => handleOpenModal("create")} disabled={isLoading}>
               Agregar Proveedor
             </button>
           </div>
-          <ProveedoresTable
-            proveedores={filteredProveedores}
-            onView={(prov) => handleOpenModal("ver", prov)}
-            onEdit={(prov) => handleOpenModal("edit", prov)}
-            onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}
-            onToggleEstado={handleToggleEstado}
-          />
+          
+          {isLoading && <p>Cargando proveedores...</p>}
+          {error && <p className="error-message">{error}</p>}
+          {!isLoading && !error && (
+            <ProveedoresTable
+              proveedores={filteredProveedores}
+              onView={(prov) => handleOpenModal("ver", prov)}
+              onEdit={(prov) => handleOpenModal("edit", prov)}
+              onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}
+              onToggleEstado={(prov) => handleOpenModal("status", prov)}
+            />
+          )}
         </div>
       </div>
 
-      {/* Modales separados */}
-      <ProveedorCrearModal
-        isOpen={isCrearModalOpen}
-        onClose={handleCrearModalClose}
-        onSubmit={handleSave}
-      />
-      <ProveedorEditarModal
-        isOpen={isEditarModalOpen}
-        onClose={handleEditarModalClose}
-        onSubmit={handleSave}
-        initialData={currentProveedor}
-      />
-      <ProveedorDetalleModal
-        isOpen={isDetailsModalOpen}
-        onClose={closeOtherModals}
-        proveedor={currentProveedor}
-      />
-      <ConfirmModal
-        isOpen={isConfirmDeleteOpen}
-        onClose={closeOtherModals}
-        onConfirm={handleDelete}
-        title="Confirmar Eliminación de Proveedor" // Título específico
-        message={`¿Estás seguro de que deseas eliminar al proveedor "${
-          currentProveedor
-            ? currentProveedor.tipoDocumento === "Natural"
-              ? currentProveedor.nombre
-              : currentProveedor.nombreEmpresa
-            : ""
-        }"?`}
-        confirmText="Eliminar"
-        cancelText="Cancelar"
-      />
-      <ValidationModal
-        isOpen={isValidationModalOpen}
-        onClose={closeOtherModals}
-        title="Aviso de Proveedores" // Título específico
-        message={validationMessage}
-      />
+      <ProveedorCrearModal isOpen={isCrearModalOpen} onClose={closeModal} onSubmit={handleSave} />
+      <ProveedorEditarModal isOpen={isEditarModalOpen} onClose={closeModal} onSubmit={handleSave} initialData={currentProveedor} />
+      <ProveedorDetalleModal isOpen={isDetailsModalOpen} onClose={closeModal} proveedor={currentProveedor} />
+      <ConfirmModal isOpen={isConfirmDeleteOpen} onClose={closeModal} onConfirm={handleConfirmAction} title="Confirmar Acción" message={getConfirmModalMessage()} />
+      <ValidationModal isOpen={isValidationModalOpen} onClose={closeModal} title="Aviso de Proveedores" message={validationMessage} />
     </div>
   );
 }

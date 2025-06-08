@@ -1,26 +1,24 @@
 // src/features/productosAdmin/pages/ListaProductosAdminPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ProductosAdminTable from '../components/ProductosAdminTable';
-// Importar nuevos modales
-import ProductoAdminCrearModal from '../components/ProductoAdminCrearModal'; // NUEVO
-import ProductoAdminEditarModal from '../components/ProductoAdminEditarModal'; // NUEVO
+import ProductoAdminCrearModal from '../components/ProductoAdminCrearModal';
+import ProductoAdminEditarModal from '../components/ProductoAdminEditarModal';
 import ProductoAdminDetalleModal from '../components/ProductoAdminDetalleModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
-import {
-  fetchProductosAdmin,
-  saveProductoAdmin,
-  deleteProductoAdminById,
-  toggleProductoAdminEstado
-} from '../services/productosAdminService';
+
+// CAMBIO: Importamos el objeto del servicio, no las funciones sueltas
+import { productosAdminService } from '../services/productosAdminService';
 import '../css/ProductosAdmin.css';
 
 function ListaProductosAdminPage() {
   const [productos, setProductos] = useState([]);
   const [busqueda, setBusqueda] = useState('');
+  const [isLoading, setIsLoading] = useState(true); // NUEVO: Estado de carga
+  const [error, setError] = useState(null); // NUEVO: Estado de error
 
-  // Estados separados para los modales
+  // Estados para modales (sin cambios)
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -29,147 +27,157 @@ function ListaProductosAdminPage() {
 
   const [currentProducto, setCurrentProducto] = useState(null);
   const [validationMessage, setValidationMessage] = useState('');
-  // formModalType ya no se usa
 
-  useEffect(() => {
-    setProductos(fetchProductosAdmin());
+  // CAMBIO: Lógica para cargar datos desde la API
+  const cargarProductos = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await productosAdminService.getProductos();
+      // Asumiendo que la API devuelve { success: true, data: [...] }
+      setProductos(response.data || []);
+    } catch (err) {
+      setError(err.message || "Error al cargar los productos.");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const handleOpenModal = (type, producto = null) => {
-    setCurrentProducto(producto);
-    if (type === 'details') {
-      setIsDetailsModalOpen(true);
-    } else if (type === 'delete') {
-      setIsConfirmDeleteOpen(true);
-    } else if (type === 'create') {
-      setIsCrearModalOpen(true);
-    } else if (type === 'edit') {
-      if (producto) {
-        setIsEditarModalOpen(true);
-      } else {
-        console.error("Intento de abrir modal de edición sin datos de producto.");
-      }
-    }
-  };
+  useEffect(() => {
+    cargarProductos();
+  }, [cargarProductos]);
 
-  const handleCrearModalClose = () => {
+  const closeModal = () => {
     setIsCrearModalOpen(false);
-  };
-
-  const handleEditarModalClose = () => {
     setIsEditarModalOpen(false);
-    setCurrentProducto(null);
-  };
-
-  const closeOtherModals = () => {
     setIsDetailsModalOpen(false);
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
+    setCurrentProducto(null);
     setValidationMessage('');
-    if (!isCrearModalOpen && !isEditarModalOpen) {
-        setCurrentProducto(null);
-    }
   };
 
-  const handleSave = (productoData) => {
+  const handleOpenModal = (type, producto = null) => {
+    setCurrentProducto(producto);
+    if (type === 'details') setIsDetailsModalOpen(true);
+    else if (type === 'delete') setIsConfirmDeleteOpen(true);
+    else if (type === 'create') setIsCrearModalOpen(true);
+    else if (type === 'edit') setIsEditarModalOpen(true);
+  };
+  
+  // CAMBIO: Lógica de guardado asíncrona que llama a la API
+  const handleSave = async (productoData) => {
     try {
-      const isEditing = !!productoData.id;
-      // saveProductoAdmin en tu servicio ya maneja la lógica de id para crear/editar
-      const updatedProductos = saveProductoAdmin(productoData, productos); 
-      setProductos(updatedProductos);
-      if (isEditing) {
-        handleEditarModalClose();
-      } else {
-        handleCrearModalClose();
+      if (productoData.id) { // Editando
+        await productosAdminService.updateProducto(productoData.id, productoData);
+      } else { // Creando
+        await productosAdminService.createProducto(productoData);
       }
-    } catch (error) {
-      setValidationMessage(error.message);
+      await cargarProductos(); // Recargar la lista
+      closeModal();
+    } catch (err) {
+      setValidationMessage(err.message || "Error al guardar el producto.");
       setIsValidationModalOpen(true);
     }
   };
 
-  const handleDelete = () => {
-    if (currentProducto && currentProducto.id) {
-      const updatedProductos = deleteProductoAdminById(currentProducto.id, productos);
-      setProductos(updatedProductos);
-      closeOtherModals();
+  // CAMBIO: Lógica de borrado asíncrona
+  const handleDelete = async () => {
+    if (currentProducto?.id) {
+      try {
+        await productosAdminService.deleteProducto(currentProducto.id);
+        await cargarProductos();
+        closeModal();
+      } catch (err) {
+        setValidationMessage(err.message || "Error al eliminar el producto.");
+        setIsValidationModalOpen(true);
+        closeModal();
+      }
+    }
+  };
+  
+  // CAMBIO: Lógica de cambio de estado asíncrona
+  const handleToggleEstado = async (productoId) => {
+    const producto = productos.find(p => p.id === productoId);
+    if (producto) {
+        try {
+            await productosAdminService.toggleEstado(productoId, !producto.estado);
+            await cargarProductos();
+        } catch(err) {
+            setValidationMessage(err.message || "Error al cambiar el estado.");
+            setIsValidationModalOpen(true);
+        }
     }
   };
 
-  const handleToggleEstado = (productoId) => {
-    const updatedProductos = toggleProductoAdminEstado(productoId, productos);
-    setProductos(updatedProductos);
-  };
-
   const filteredProductos = productos.filter(p =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-    (p.categoria && p.categoria.toLowerCase().includes(busqueda.toLowerCase()))
+    (p.nombre?.toLowerCase() || '').includes(busqueda.toLowerCase()) ||
+    (p.categoria?.toLowerCase() || '').includes(busqueda.toLowerCase())
   );
 
   return (
-    // Usar clase de página principal consistente
-    <div className="productos-admin-page-container"> 
+    <div className="productos-admin-page-container">
       <NavbarAdmin />
-      {/* Usar clase de contenido principal consistente */}
-      <div className="productos-admin-main-content"> 
-        {/* Wrapper interno para centrar si es necesario */}
+      <div className="productos-admin-main-content">
         <div className="productos-admin-content-wrapper">
-            <h1>Gestión de Productos</h1>
-            {/* Contenedor para búsqueda y botón agregar, usar clases consistentes */}
-            <div className="productos-admin-actions-bar"> 
+          <h1>Gestión de Productos</h1>
+          <div className="productos-admin-actions-bar">
             <div className="productos-admin-search-bar">
-                <input
+              <input
                 type="text"
                 placeholder="Buscar producto (nombre, categoría)..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                // className="inputBarraBusqueda" // Reemplazar con clase más específica si es necesario
-                />
+              />
             </div>
-            <button 
-                className="productos-admin-add-button" // Clase específica y consistente
-                onClick={() => handleOpenModal('create')}
+            <button
+              className="productos-admin-add-button"
+              onClick={() => handleOpenModal('create')}
             >
-                Agregar Producto
+              Agregar Producto
             </button>
-            </div>
+          </div>
+          {isLoading && <p>Cargando productos...</p>}
+          {error && <p className="error-message">{error}</p>}
+          {!isLoading && !error && (
             <ProductosAdminTable
-            productos={filteredProductos}
-            onView={(prod) => handleOpenModal('details', prod)}
-            onEdit={(prod) => handleOpenModal('edit', prod)}
-            onDeleteConfirm={(prod) => handleOpenModal('delete', prod)}
-            onToggleEstado={handleToggleEstado}
+              productos={filteredProductos}
+              onView={(prod) => handleOpenModal('details', prod)}
+              onEdit={(prod) => handleOpenModal('edit', prod)}
+              onDeleteConfirm={(prod) => handleOpenModal('delete', prod)}
+              onToggleEstado={handleToggleEstado}
             />
+          )}
         </div>
       </div>
 
       <ProductoAdminCrearModal
         isOpen={isCrearModalOpen}
-        onClose={handleCrearModalClose}
+        onClose={closeModal}
         onSubmit={handleSave}
       />
       <ProductoAdminEditarModal
         isOpen={isEditarModalOpen}
-        onClose={handleEditarModalClose}
+        onClose={closeModal}
         onSubmit={handleSave}
         initialData={currentProducto}
       />
       <ProductoAdminDetalleModal
         isOpen={isDetailsModalOpen}
-        onClose={closeOtherModals}
+        onClose={closeModal}
         producto={currentProducto}
       />
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={closeOtherModals}
+        onClose={closeModal}
         onConfirm={handleDelete}
         title="Confirmar Eliminación"
         message={`¿Está seguro de que desea eliminar el producto "${currentProducto?.nombre || ''}"?`}
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
-        onClose={closeOtherModals}
-        title="Aviso de Productos" // Título específico
+        onClose={closeModal}
+        title="Aviso de Productos"
         message={validationMessage}
       />
     </div>

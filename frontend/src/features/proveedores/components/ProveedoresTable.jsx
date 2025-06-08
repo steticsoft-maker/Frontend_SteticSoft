@@ -1,17 +1,16 @@
 // src/features/proveedores/components/ProveedoresTable.jsx
 import React from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 
 const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
   return (
-    <div className="tablaProveedores">{/* Contenedor de la tabla */}
-      <table>{/*SIN ESPACIOS/SALTOS ANTES DE THEAD*/}
-        <thead>{/*SIN ESPACIOS/SALTOS ANTES DE TR*/}
-          <tr>{/*SIN ESPACIOS/SALTOS ANTES DEL PRIMER TH*/}
+    <div className="tablaProveedores">
+      <table>
+        <thead>
+          <tr>
             <th>#</th>
             <th>Nombre/Empresa</th>
-            <th>Tipo Doc.</th>
+            <th>Tipo / N° Doc.</th> {/* Columna unificada para claridad */}
             <th>Teléfono</th>
             <th>Email</th>
             <th>Dirección</th>
@@ -19,34 +18,49 @@ const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onTogg
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>{/*SIN ESPACIOS/SALTOS ANTES DEL MAP*/}
+        <tbody>
           {proveedores.map((proveedor, index) => (
-            <tr key={proveedor.id || index}>{/*SIN ESPACIOS/SALTOS ANTES DEL PRIMER TD*/}
+            <tr key={proveedor.idProveedor || index}>
               <td data-label="#">{index + 1}</td>
-              <td data-label="Nombre/Empresa:">{proveedor.tipoDocumento === "Natural" ? proveedor.nombre : proveedor.nombreEmpresa}</td>
-              <td data-label="Tipo Doc.:">{proveedor.tipoDocumento === "Natural" ? proveedor.tipoDocumentoNatural : "NIT"}</td>
+              
+              {/* CORRECCIÓN 1: Mostrar siempre el campo 'nombre', que contiene tanto el nombre de la persona como el de la empresa. */}
+              <td data-label="Nombre/Empresa:">{proveedor.nombre}</td>
+              
+              {/* CORRECCIÓN 2: Mostrar el tipo y número de documento correcto según el tipo de proveedor. */}
+              <td data-label="Tipo / N° Doc.:">
+                {proveedor.tipo === "Natural" 
+                  ? `${proveedor.tipoDocumento || 'N/A'}: ${proveedor.numeroDocumento || 'N/A'}`
+                  : `NIT: ${proveedor.nitEmpresa || 'N/A'}`
+                }
+              </td>
+
               <td data-label="Teléfono:">{proveedor.telefono}</td>
-              <td data-label="Email:">{proveedor.email}</td>
+              
+              {/* CORRECCIÓN 3: Usar 'proveedor.correo' en lugar de 'proveedor.email'. */}
+              <td data-label="Email:">{proveedor.correo}</td>
+              
               <td data-label="Dirección:">{proveedor.direccion}</td>
+              
               <td data-label="Estado:">
                 <label className="switch">
                   <input
                     type="checkbox"
-                    checked={proveedor.estado === "Activo"}
-                    onChange={() => onToggleEstado(proveedor.id)}
+                    checked={proveedor.estado === true}
+                    onChange={() => onToggleEstado(proveedor)}
                   />
                   <span className="slider"></span>
                 </label>
               </td>
+
               <td data-label="Acciones:" className="proveedores-table-actions">
                 <button className="botonVerDetallesProveedor" onClick={() => onView(proveedor)} title="Ver Detalles">
-                  <FontAwesomeIcon icon={faEye} />
+                  <FaEye />
                 </button>
                 <button className="botonEditarProveedor" onClick={() => onEdit(proveedor)} title="Editar">
-                  <FontAwesomeIcon icon={faEdit} />
+                  <FaEdit />
                 </button>
                 <button className="botonEliminarProveedor" onClick={() => onDeleteConfirm(proveedor)} title="Eliminar">
-                  <FontAwesomeIcon icon={faTrash} />
+                  <FaTrash />
                 </button>
               </td>
             </tr>

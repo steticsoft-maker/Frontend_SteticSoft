@@ -1,39 +1,58 @@
 // src/features/compras/components/CompraForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 
 const CompraForm = ({
-  proveedor, setProveedor,
+  // Se cambia el nombre de la prop 'proveedor' a 'proveedorSeleccionado' para más claridad
+  proveedorSeleccionado, 
+  setProveedor,
   fecha, setFecha,
-  metodoPago, setMetodoPago,
   items, setItems,
-  productosPorCategoria, proveedoresList, metodosPagoList,
+  productosList, 
+  proveedoresList,
   subtotal, iva, total
 }) => {
-  // ... (lógica existente sin cambios) ...
   const [showProveedorSelectModal, setShowProveedorSelectModal] = useState(false);
   const [showProductoSelectModal, setShowProductoSelectModal] = useState(false);
+
+  const todosLosProductosParaModal = useMemo(() => {
+    if (!productosList) return [];
+    return productosList.map(p => ({
+      ...p,
+      value: p.idProducto,
+      label: `${p.nombre} - $${p.precio ? Number(p.precio).toLocaleString('es-CO') : '0'}`
+    }));
+  }, [productosList]);
+
+  const todosLosProveedoresParaModal = useMemo(() => {
+    if (!proveedoresList) return [];
+    return proveedoresList.map(p => ({
+        ...p,
+        value: p.idProveedor,
+        label: p.nombre || 'Proveedor sin nombre'
+    }));
+  }, [proveedoresList]);
 
   const handleAgregarProductoRow = () => {
     setShowProductoSelectModal(true); 
   };
 
   const handleSelectProductoParaAgregar = (productoSeleccionado) => {
-    const productoExistente = items.find(item => item.id === productoSeleccionado.id); 
+    const itemExistente = items.find(item => item.id === productoSeleccionado.idProducto); 
 
-    if (productoExistente) {
+    if (itemExistente) {
       setItems(items.map(item => 
-        item.id === productoSeleccionado.id 
+        item.id === productoSeleccionado.idProducto
         ? { ...item, cantidad: (item.cantidad || 0) + 1, total: ((item.cantidad || 0) + 1) * parseFloat(item.precio) } 
         : item
       ));
     } else {
       setItems([...items, { 
-        id: productoSeleccionado.id,
+        id: productoSeleccionado.idProducto,
         nombre: productoSeleccionado.nombre, 
-        categoria: productoSeleccionado.categoria,
+        categoria: productoSeleccionado.categoriaProducto?.nombre || 'General',
         precio: parseFloat(productoSeleccionado.precio),
         cantidad: 1, 
         total: parseFloat(productoSeleccionado.precio)
@@ -50,44 +69,24 @@ const CompraForm = ({
     const nuevosItems = [...items];
     const item = nuevosItems[index];
 
-    if (campo === 'cantidad' || campo === 'precio') {
-        let numValor = parseFloat(valor);
-        if (isNaN(numValor)) {
-            numValor = campo === 'cantidad' ? 1 : 0;
-        }
-        item[campo] = Math.max(0, numValor); 
-        if (campo === 'cantidad' && item[campo] === 0) item[campo] = 1;
-    } else {
-        item[campo] = valor;
+    let numValor = parseFloat(valor);
+    if (isNaN(numValor) || numValor < 0) {
+        numValor = 0;
     }
+    item[campo] = numValor;
     item.total = (item.cantidad || 0) * (item.precio || 0);
     setItems(nuevosItems);
   };
 
-  const todosLosProductosParaModal = productosPorCategoria.reduce((acc, cat) => {
-    cat.productos.forEach(p => {
-      const productoIdUnico = p.id || `prod_${cat.categoria}_${p.nombre.replace(/\s+/g, '_')}`;
-      acc.push({ 
-        ...p, 
-        id: productoIdUnico,
-        value: productoIdUnico, 
-        label: `${p.nombre} (${cat.categoria}) - $${p.precio ? p.precio.toLocaleString('es-CO') : '0'}`,
-        categoria: cat.categoria
-      });
-    });
-    return acc;
-  }, []);
-
-
   return (
     <>
-      {/* ... (resto del formulario: proveedor, fecha, método de pago) ... */}
       <div className="form-group">
         <label htmlFor="proveedorSearch">Proveedor <span className="required-asterisk">*</span>:</label>
         <input
             type="text"
             className="buscar-proveedor-input"
-            value={proveedor || ''}
+            // Ahora lee el nombre del objeto proveedorSeleccionado
+            value={proveedorSeleccionado?.nombre || ''}
             onClick={() => setShowProveedorSelectModal(true)}
             placeholder="Seleccionar proveedor"
             readOnly
@@ -99,24 +98,15 @@ const CompraForm = ({
         <input type="date" id="fechaCompra" value={fecha} onChange={(e) => setFecha(e.target.value)} className="LaFecha" required />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="metodoPago">Método de Pago <span className="required-asterisk">*</span>:</label>
-        <select id="metodoPago" className="seleccionar-metodo-pago" value={metodoPago} onChange={(e) => setMetodoPago(e.target.value)} required>
-          <option value="">Seleccione un método</option>
-          {metodosPagoList.map((metodo, index) => (
-            <option key={index} value={metodo}>{metodo}</option>
-          ))}
-        </select>
-      </div>
-
       <button type="button" className="btn-agregar-producto-compra" onClick={handleAgregarProductoRow}>
         Agregar Producto a la Compra
       </button>
 
       {items.length > 0 && (
         <div className="agregar-compra-table">
-          <table><thead>{/* SIN ESPACIO */}
-              <tr>{/* SIN ESPACIO */}
+          <table>
+            <thead>
+              <tr>
                 <th>Categoría</th>
                 <th>Producto</th>
                 <th>Cantidad</th>
@@ -125,10 +115,9 @@ const CompraForm = ({
                 <th>Acción</th>
               </tr>
             </thead>
-            <tbody>{/* SIN ESPACIO */}
+            <tbody>
               {items.map((item, index) => (
-                // CORRECCIÓN AQUÍ: Sin espacio después de <tr...>
-                <tr key={item.id || index}>{/* SIN ESPACIO */}
+                <tr key={item.id || index}>
                   <td>
                     <input type="text" value={item.categoria || ''} readOnly className="input-text-readonly" />
                   </td>
@@ -154,7 +143,7 @@ const CompraForm = ({
                       step="0.01"
                     />
                   </td>
-                  <td>${item.total ? item.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</td>
+                  <td>${item.total ? item.total.toLocaleString('es-CO') : '0.00'}</td>
                   <td>
                     <button
                       type="button"
@@ -172,19 +161,19 @@ const CompraForm = ({
         </div>
       )}
 
-      {/* ... (resto del formulario: totales y modales de selección) ... */}
       <div className="agregar-compra-totales">
-        <p>Subtotal: ${subtotal.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-        <p>IVA (19%): ${iva.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-        <p><strong>Total: ${total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></p>
+        <p>Subtotal: ${subtotal.toLocaleString('es-CO')}</p>
+        <p>IVA (19%): ${iva.toLocaleString('es-CO')}</p>
+        <p><strong>Total: ${total.toLocaleString('es-CO')}</strong></p>
       </div>
 
       <ItemSelectionModal
         isOpen={showProveedorSelectModal}
         onClose={() => setShowProveedorSelectModal(false)}
         title="Seleccionar Proveedor"
-        items={proveedoresList.map(p => ({ label: p, value: p }))}
-        onSelectItem={(selectedItem) => { setProveedor(selectedItem.value); setShowProveedorSelectModal(false); }}
+        items={todosLosProveedoresParaModal}
+        // CORRECCIÓN CLAVE: Se pasa el objeto completo (selectedItem) en lugar de solo el nombre (selectedItem.label)
+        onSelectItem={(selectedItem) => { setProveedor(selectedItem); setShowProveedorSelectModal(false); }}
         searchPlaceholder="Buscar proveedor..."
       />
       <ItemSelectionModal
@@ -198,4 +187,5 @@ const CompraForm = ({
     </>
   );
 };
+
 export default CompraForm;
