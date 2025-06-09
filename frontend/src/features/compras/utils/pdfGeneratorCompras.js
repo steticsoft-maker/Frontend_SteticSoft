@@ -1,65 +1,83 @@
-// src/features/compras/utils/pdfGeneratorCompras.js
+// RUTA: src/features/compras/utils/pdfGeneratorCompras.js
+// DESCRIPCIÓN: Versión final corregida que accede a los datos de la compra a través de 'detalleCompra'.
+
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import logoEmpresa from '/logo.png'; // Asegúrate que la ruta a tu logo sea correcta
 
-export const generarPDFCompraUtil = (compraData) => {
-  const doc = new jsPDF();
-
-  doc.setFontSize(18);
-  doc.text("Detalle de Compra", 14, 22); // Ajustar Y para más espacio
-
-  doc.setFontSize(12);
-  let currentY = 35;
-  const lineHeight = 7;
-
-  doc.text(`ID Compra: ${compraData.id}`, 14, currentY);
-  currentY += lineHeight;
-  doc.text(`Proveedor: ${compraData.proveedor}`, 14, currentY);
-  currentY += lineHeight;
-  doc.text(`Fecha: ${compraData.fecha}`, 14, currentY);
-  currentY += lineHeight;
-  if(compraData.metodoPago) { // Si existe metodoPago
-    doc.text(`Método Pago: ${compraData.metodoPago}`, 14, currentY);
-    currentY += lineHeight;
+export const generarPDFCompraUtil = (compra) => {
+  if (!compra) {
+    console.error("Se intentó generar un PDF sin datos de la compra.");
+    return null;
   }
-  doc.text(`Estado: ${compraData.estado}`, 14, currentY);
-  currentY += lineHeight * 1.5; // Más espacio antes de los totales
 
-  // Sección de Totales
+  const doc = new jsPDF();
+  // Los totales generales de la compra ya vienen bien, así que los usamos directamente.
+  const subtotal = compra.total - compra.iva;
+
+  // --- Encabezado del Documento ---
+  doc.addImage(logoEmpresa, 'PNG', 15, 10, 30, 10);
+  doc.setFontSize(20);
+  doc.setFont(undefined, 'bold');
+  doc.text("Reporte de Compra", 105, 25, { align: 'center' });
+  doc.setFont(undefined, 'normal');
+
+  // --- Información de la Compra ---
   doc.setFontSize(10);
-  doc.text(`Subtotal: $${compraData.subtotal?.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0}) || '0'}`, 14, currentY);
-  currentY += lineHeight -2;
-  doc.text(`IVA (19%): $${compraData.iva?.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0}) || '0'}`, 14, currentY);
-  currentY += lineHeight -2;
-  doc.setFontSize(12);
-  doc.setFont(undefined, 'bold'); // Poner el total en negrita
-  doc.text(`Total Compra: $${compraData.total?.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0}) || '0'}`, 14, currentY);
-  doc.setFont(undefined, 'normal'); // Resetear a normal
-  currentY += lineHeight + 5; // Espacio antes de la tabla
+  doc.text(`ID Compra: ${compra.idCompra}`, 15, 40);
+  doc.text(`Fecha: ${new Date(compra.fecha).toLocaleDateString('es-CO')}`, 15, 47);
+  doc.text(`Proveedor: ${compra.proveedor?.nombre || 'N/A'}`, 105, 40);
+  doc.text(`Estado: ${compra.estado ? 'Activa' : 'Anulada'}`, 105, 47);
+  
+  // --- Tabla de Productos ---
+  const tableColumn = ["Producto", "Cantidad", "Valor Unitario", "Subtotal"];
+  const tableRows = (compra.productosComprados || []).map(p => {
+    
+    // ================== INICIO DE LA CORRECCIÓN CLAVE ==================
+    // Accedemos al objeto 'detalleCompra' que contiene la cantidad y el valor unitario.
+    // Este alias fue definido en el 'include' del servicio del backend.
+    const pivot = p.detalleCompra; 
+    
+    // Si 'pivot' no existe, usamos 0 como valor por defecto para evitar errores.
+    const cantidad = pivot?.cantidad || 0;
+    const valorUnitario = pivot?.valorUnitario || 0;
+    // =================== FIN DE LA CORRECCIÓN CLAVE ====================
 
-  const productos = (compraData.productos || compraData.items || []).map((prod, i) => [
-    i + 1,
-    prod.nombre,
-    prod.cantidad,
-    `$${prod.precio.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0})}`,
-    `$${(prod.precio * prod.cantidad).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0})}`,
-  ]);
+    const subtotalItem = cantidad * valorUnitario;
+    return [
+        p.nombre,
+        cantidad,
+        `$${Number(valorUnitario).toLocaleString('es-CO')}`,
+        `$${Number(subtotalItem).toLocaleString('es-CO')}`
+    ];
+  });
 
   autoTable(doc, {
-    head: [["#", "Producto", "Cantidad", "Precio Unitario", "Total Item"]],
-    body: productos.length > 0 ? productos : [["-", "No hay productos detallados", "-", "-", "-"]],
-    startY: currentY,
-    theme: 'grid', // Otras opciones: 'striped', 'plain'
-    headStyles: { fillColor: [233, 120, 208] }, // Color similar a tus encabezados de tabla
-    styles: { fontSize: 9, cellPadding: 2 },
+    head: [tableColumn],
+    body: tableRows,
+    startY: 60,
+    theme: 'grid',
+    headStyles: { fillColor: [182, 96, 163] }, // Tu color morado
+    styles: { halign: 'center' },
     columnStyles: {
-        0: { cellWidth: 10 }, // #
-        1: { cellWidth: 'auto' }, // Producto
-        2: { cellWidth: 20, halign: 'right' }, // Cantidad
-        3: { cellWidth: 35, halign: 'right' }, // Precio Unitario
-        4: { cellWidth: 35, halign: 'right' }, // Total Item
+        0: { halign: 'left' },
+        2: { halign: 'right' },
+        3: { halign: 'right' }
     }
   });
 
-  return doc.output("blob");
+  // --- Totales al Final de la Página ---
+  const finalY = doc.lastAutoTable.finalY || 100;
+  doc.setFontSize(12);
+  doc.text(`Subtotal:`, 150, finalY + 10, { align: 'right' });
+  doc.text(`$${Number(subtotal).toLocaleString('es-CO')}`, 195, finalY + 10, { align: 'right' });
+  
+  doc.text(`IVA (19%):`, 150, finalY + 17, { align: 'right' });
+  doc.text(`$${Number(compra.iva).toLocaleString('es-CO')}`, 195, finalY + 17, { align: 'right' });
+
+  doc.setFont(undefined, 'bold');
+  doc.text(`Total Compra:`, 150, finalY + 24, { align: 'right' });
+  doc.text(`$${Number(compra.total).toLocaleString('es-CO')}`, 195, finalY + 24, { align: 'right' });
+  
+  return doc.output('datauristring');
 };

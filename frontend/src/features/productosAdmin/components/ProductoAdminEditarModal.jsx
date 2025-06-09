@@ -89,7 +89,7 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
     if (!formData.precio || isNaN(parseFloat(formData.precio)) || parseFloat(formData.precio) <= 0) {
       errors.precio = "El precio debe ser un número positivo.";
     }
-     if (formData.stock === '' || isNaN(parseInt(formData.stock)) || parseInt(formData.stock) < 0) {
+    if (formData.stock === '' || isNaN(parseInt(formData.stock)) || parseInt(formData.stock) < 0) {
         errors.stock = "El stock debe ser un número igual o mayor a cero.";
     }
     setFormErrors(errors);

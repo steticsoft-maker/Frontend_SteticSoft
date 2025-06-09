@@ -1,16 +1,17 @@
+// RUTA: src/features/compras/pages/ListaComprasPage.jsx
+// DESCRIPCIÓN: Versión final con la recarga de datos (`fetchCompras`) después de anular.
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ComprasTable from '../components/ComprasTable';
-// CORRECCIÓN: Se importa sin llaves {} porque es un 'export default'
 import CompraDetalleModal from '../components/CompraDetalleModal'; 
 import PdfViewModal from '../../../shared/components/common/PdfViewModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
 import { comprasService } from '../services/comprasService';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import logoEmpresa from '/logo.png';
+// La utilidad del PDF que ya corregimos
+import { generarPDFCompraUtil } from '../utils/pdfGeneratorCompras.js';
 import '../css/Compras.css';
 
 function ListaComprasPage() {
@@ -35,8 +36,9 @@ function ListaComprasPage() {
     setError(null);
     try {
       const response = await comprasService.getCompras();
-      // Asumiendo que la API envuelve los datos en un objeto { success: true, data: [...] }
-      setCompras(response.data || []); 
+      // El backend devuelve { data: [...] } o a veces solo [...]
+      // Esta línea maneja ambos casos de forma segura.
+      setCompras(response.data || response || []); 
     } catch (err) {
       setError(err.response?.data?.message || 'Error al obtener las compras.');
     } finally {
@@ -64,61 +66,31 @@ function ListaComprasPage() {
     
     try {
       const compraCompletaResponse = await comprasService.getCompraById(compraResumen.idCompra);
-      const compra = compraCompletaResponse.data;
+      const compraCompleta = compraCompletaResponse.data;
 
-      if (!compra) {
+      if (!compraCompleta) {
         throw new Error("No se pudieron obtener los detalles completos para el PDF.");
       }
       
-      const doc = new jsPDF();
-      doc.addImage(logoEmpresa, 'PNG', 10, 10, 30, 30);
-      doc.setFontSize(18);
-      doc.text(`Detalle de Compra N°: ${compra.idCompra}`, 50, 25);
-      doc.setFontSize(12);
-      doc.text(`Fecha: ${new Date(compra.fecha).toLocaleDateString()}`, 10, 50);
-      doc.text(`Proveedor: ${compra.proveedor?.nombre || 'N/A'}`, 10, 57);
+      const dataUri = generarPDFCompraUtil(compraCompleta);
       
-      const tableColumn = ["Producto", "Cantidad", "Valor Unitario", "Subtotal"];
-      const tableRows = (compra.productosComprados || []).map(producto => {
-          const detalle = producto.detalleCompra || {};
-          const cantidad = detalle.cantidad || 0;
-          const valorUnitario = detalle.valorUnitario || 0;
-          const subtotalItem = cantidad * valorUnitario;
-          return [ 
-              producto.nombre || 'N/A', 
-              cantidad, 
-              `$${Number(valorUnitario).toLocaleString('es-CO')}`, 
-              `$${subtotalItem.toLocaleString('es-CO')}`
-          ];
-      });
-      
-      autoTable(doc, {
-        head: [tableColumn],
-        body: tableRows,
-        startY: 70,
-      });
-      
-      const dataUri = doc.output('datauristring');
-      setPdfDataUri(dataUri);
-      setSelectedCompra(compra);
-      setIsPdfModalOpen(true);
+      if (dataUri) {
+          setPdfDataUri(dataUri);
+          setSelectedCompra(compraCompleta);
+          setIsPdfModalOpen(true);
+      } else {
+          throw new Error("La utilidad de PDF no pudo generar el archivo.");
+      }
 
     } catch (err) {
       console.error("Error al generar PDF:", err);
-      setValidationMessage(err.response?.data?.message || "No se pudo generar el PDF.");
+      setValidationMessage(err.message || "No se pudo generar el PDF.");
       setIsValidationModalOpen(true);
     }
   };
   
   const handleEstadoChange = (compraId, nuevoEstado) => {
-    // Aquí iría la lógica para llamar al servicio de API que actualiza el estado.
-    console.log(`Cambiando estado de compra ${compraId} a ${nuevoEstado}`);
-    // Ejemplo de actualización optimista en el UI:
-    setCompras(prevCompras =>
-      prevCompras.map(compra =>
-        compra.idCompra === compraId ? { ...compra, estadoProceso: nuevoEstado } : compra
-      )
-    );
+    console.log("Funcionalidad de cambio de estado pendiente de implementar.");
   };
 
   const handleCloseModals = () => {
@@ -131,19 +103,28 @@ function ListaComprasPage() {
     setPdfDataUri('');
   };
 
+  // ===================== INICIO DE LA CORRECCIÓN CLAVE =====================
   const handleConfirmAnular = async () => {
     if (!selectedCompra) return;
     try {
+      // 1. Llama al servicio de anulación (esto ya funcionaba)
       await comprasService.anularCompra(selectedCompra.idCompra);
-      setValidationMessage('¡Compra anulada exitosamente!');
-      fetchCompras();
+      setValidationMessage('¡Compra anulada exitosamente! El stock ha sido revertido.');
+      
+      // 2. CORRECCIÓN: Volvemos a llamar a `fetchCompras` para recargar la lista
+      //    desde el backend con los datos actualizados.
+      await fetchCompras(); 
+
     } catch (err) {
+      // Captura cualquier error que el backend pueda devolver (ej: "la compra ya está anulada")
       setValidationMessage(err.response?.data?.message || 'Error al anular la compra.');
     } finally {
-      setIsValidationModalOpen(true);
-      handleCloseModals();
+      // Este bloque se ejecuta siempre, haya o no error.
+      setIsValidationModalOpen(true); // Muestra el mensaje de éxito o error
+      handleCloseModals(); // Cierra el modal de confirmación
     }
   };
+  // ====================== FIN DE LA CORRECCIÓN CLAVE =======================
 
   const filteredCompras = compras.filter(compra =>
     (compra.proveedor?.nombre?.toLowerCase() || '').includes(busqueda.toLowerCase()) ||
@@ -185,14 +166,12 @@ function ListaComprasPage() {
 
       {isDetalleModalOpen && <CompraDetalleModal compra={selectedCompra} onClose={handleCloseModals} />}
       
-      {isPdfModalOpen && (
-        <PdfViewModal
-            isOpen={isPdfModalOpen}
-            onClose={handleCloseModals}
-            pdfDataUri={pdfDataUri}
-            fileName={`compra_${selectedCompra?.idCompra || 'detalle'}.pdf`}
-        />
-      )}
+      <PdfViewModal
+        isOpen={isPdfModalOpen}
+        onClose={handleCloseModals}
+        pdfUrl={pdfDataUri}
+        title={`Detalle Compra #${selectedCompra?.idCompra || ''}`}
+      />
 
       <ConfirmModal
         isOpen={isAnularModalOpen}

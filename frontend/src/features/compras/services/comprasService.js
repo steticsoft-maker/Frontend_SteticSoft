@@ -1,3 +1,6 @@
+// RUTA: src/features/compras/services/comprasService.js
+// DESCRIPCIÓN: Archivo completo con la función 'anularCompra' para llamar a la API.
+
 import apiClient from '../../../shared/services/apiClient';
 
 const getCompras = async () => {
@@ -15,17 +18,22 @@ const createCompra = async (compraData) => {
   return response.data;
 };
 
-// NUEVO CÓDIGO EMPIEZA AQUÍ
+// --- INICIO CÓDIGO NUEVO ---
 const anularCompra = async (compraId) => {
-  // Usamos .patch como definimos en la ruta del backend
-  const response = await apiClient.patch(`/compras/${compraId}/anular`);
-  return response.data;
+  try {
+    // Usamos .patch como se define en la ruta del backend: /compras/:id/anular
+    const response = await apiClient.patch(`/compras/${compraId}/anular`);
+    return response.data;
+  } catch (error) {
+    // Relanzamos el error para que el componente que llama lo pueda manejar
+    throw error;
+  }
 };
-// NUEVO CÓDIGO TERMINA AQUÍ
+// --- FIN CÓDIGO NUEVO ---
 
 export const comprasService = {
   getCompras,
   getCompraById,
   createCompra,
-  anularCompra // CAMBIO: Exportamos la nueva función
+  anularCompra // --- AÑADIDO: Exportamos la nueva función
 };
