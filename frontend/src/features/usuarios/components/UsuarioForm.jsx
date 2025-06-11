@@ -36,7 +36,7 @@ const UsuarioForm = ({
           onChange={handleChange}
           required
           className={`usuarios-form-input ${errors.correo ? 'input-error' : ''}`}
-          disabled={isUserAdmin && isEditing}
+          disabled={isUserAdmin && isEditing} // El correo del admin no debería poder cambiarse desde aquí
         />
         {errors.correo && <span className="error-message">{errors.correo}</span>}
       </div>
@@ -50,7 +50,7 @@ const UsuarioForm = ({
           onChange={handleChange}
           required
           className={`usuarios-form-select ${errors.idRol ? 'input-error' : ''}`}
-          disabled={isUserAdmin && isEditing}
+          disabled={isUserAdmin && isEditing} // El rol del admin no debería poder cambiarse desde aquí
         >
           <option value="" disabled>Seleccionar rol</option>
           {availableRoles.map((rol) => (

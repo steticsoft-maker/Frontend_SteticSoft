@@ -1,3 +1,4 @@
+// src/features/usuarios/components/UsuariosTable.jsx
 import React from "react";
 import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
 
@@ -14,7 +15,7 @@ const UsuariosTable = ({
         <tr>
           <th>Nombres</th>
           <th>Apellidos</th>
-          <th>Correo Electrónico</th>
+          <th>Correo Electrónico</th> {/* Este es el correo de la cuenta de usuario */}
           <th>Rol</th>
           <th>Teléfono</th>
           <th>Estado</th>
@@ -23,6 +24,7 @@ const UsuariosTable = ({
       </thead>
       <tbody>
         {usuarios.map((usuario) => {
+          // 'perfil' contendrá los datos específicos del cliente o empleado
           const perfil = usuario.clienteInfo || usuario.empleadoInfo || {};
 
           const nombreRol = usuario.rol?.nombre || "No asignado";
@@ -32,10 +34,11 @@ const UsuariosTable = ({
             <tr key={usuario.idUsuario}>
               {/* Ahora usamos la variable 'perfil' para acceder a los datos */}
               <td data-label="Nombres:">{perfil.nombre || 'N/A'}</td>
-              <td data-label="Apellidos:">{perfil.apellido || 'N/A'}</td>
-              <td data-label="Correo:">{usuario.correo || 'N/A'}</td>
+              <td data-label="Apellidos:">{perfil.apellido || 'N/A'}</td> {/* Muestra el apellido */}
+              {/* Aquí se muestra el correo de la cuenta de usuario, que debería ser el mismo que el del perfil */}
+              <td data-label="Correo:">{usuario.correo || 'N/A'}</td> 
               <td data-label="Rol:">{nombreRol}</td>
-              <td data-label="Teléfono:">{perfil.telefono || 'N/A'}</td>
+              <td data-label="Teléfono:">{perfil.telefono || 'N/A'}</td> {/* Muestra el teléfono */}
               <td data-label="Estado:">
                 {nombreRol !== "Administrador" ? (
                   <label className="switch">

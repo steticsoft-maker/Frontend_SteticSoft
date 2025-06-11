@@ -20,21 +20,20 @@ const UsuarioEditarModal = ({
   useEffect(() => {
     if (isOpen && initialData) {
       // Extraer información del perfil (cliente o empleado) para mayor claridad.
+      // Ambos, Cliente y Empleado, ahora tienen 'nombre', 'apellido', 'correo', 'telefono'.
       const perfil = initialData.clienteInfo || initialData.empleadoInfo || {};
 
       setFormData({
         idUsuario: initialData.idUsuario,
         // Campos de Perfil
         nombre: perfil.nombre || "",
-        apellido: perfil.apellido || "",
-        telefono: perfil.telefono || perfil.celular || "", // Tomar celular si es empleado y no hay telefono
+        apellido: perfil.apellido || "", // Usar apellido
+        correo: perfil.correo || "", // Usar el correo del perfil
+        telefono: perfil.telefono || "", // Usar telefono, ya no existe 'celular' en Empleado
         tipoDocumento: perfil.tipoDocumento || "Cédula de Ciudadanía",
         numeroDocumento: perfil.numeroDocumento || "",
         fechaNacimiento: perfil.fechaNacimiento || "",
         // direccion: perfil.direccion || '', // Omitido si no se usa consistentemente
-
-        // Campos de Usuario
-        correo: initialData.correo || "",
         idRol: initialData.rol?.idRol || initialData.idRol || "", // Usar idRol del objeto rol si está presente
         estado: initialData.estado !== undefined ? initialData.estado : true, // Default a activo si no se define
 
@@ -46,6 +45,7 @@ const UsuarioEditarModal = ({
       const fetchRoles = async () => {
         try {
           const response = await getRolesAPI();
+          // Asegúrate que response.data sea el array de roles, o response directamente si la API lo devuelve así.
           setAvailableRoles(response.data || response || []);
         } catch (error) {
           setFormErrors((prev) => ({
@@ -77,14 +77,14 @@ const UsuarioEditarModal = ({
     const emailRegex = /\S+@\S+\.\S+/;
 
     if (!formData.nombre?.trim()) errors.nombre = "El nombre es obligatorio.";
-    if (!formData.apellido?.trim())
+    if (!formData.apellido?.trim()) // Validar apellido
       errors.apellido = "El apellido es obligatorio.";
-    if (!formData.correo?.trim()) {
+    if (!formData.correo?.trim()) { // Validar correo (del perfil y de la cuenta)
       errors.correo = "El correo es obligatorio.";
     } else if (!emailRegex.test(formData.correo)) {
       errors.correo = "El formato del correo no es válido.";
     }
-    if (!formData.telefono?.trim())
+    if (!formData.telefono?.trim()) // Validar teléfono
       errors.telefono = "El teléfono es obligatorio.";
     if (!formData.tipoDocumento)
       errors.tipoDocumento = "El tipo de documento es obligatorio.";
@@ -93,7 +93,6 @@ const UsuarioEditarModal = ({
     if (!formData.idRol) errors.idRol = "Debe seleccionar un rol.";
 
     // Validar fechaNacimiento si el rol es Cliente o Empleado
-    // (Asegúrate que availableRoles esté cargado y que formData.idRol sea un número para la comparación)
     const rolIdSeleccionado = parseInt(formData.idRol, 10);
     const rolSeleccionado = availableRoles.find(
       (r) => r.idRol === rolIdSeleccionado
