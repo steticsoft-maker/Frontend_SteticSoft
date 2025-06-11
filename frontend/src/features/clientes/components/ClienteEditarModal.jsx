@@ -37,7 +37,7 @@ const ClienteEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
     if (!formData.telefono.trim()) errors.telefono = "El teléfono es obligatorio.";
     if (!formData.tipoDocumento) errors.tipoDocumento = "El tipo de documento es obligatorio.";
     if (!formData.numeroDocumento.trim()) errors.numeroDocumento = "El número de documento es obligatorio.";
-    if (!formData.direccion.trim()) errors.direccion = "La dirección es obligatoria.";
+    // La dirección y ciudad han sido eliminadas de las validaciones
     if (!formData.fechaNacimiento) errors.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
     // La contraseña no se valida aquí ya que no se edita en este formulario
     setFormErrors(errors);

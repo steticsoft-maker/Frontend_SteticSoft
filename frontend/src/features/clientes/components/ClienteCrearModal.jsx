@@ -10,8 +10,8 @@ const ClienteCrearModal = ({ isOpen, onClose, onSubmit }) => {
     telefono: '',
     tipoDocumento: 'CC', // Valor por defecto para el select
     numeroDocumento: '',
-    direccion: '',
-    ciudad: '',
+    // direccion: '', // Eliminado
+    // ciudad: '',    // Eliminado
     fechaNacimiento: '',
     password: '', // Campo de contraseña para nuevos clientes
     estado: true, // Nuevos clientes activos por defecto
@@ -43,7 +43,7 @@ const ClienteCrearModal = ({ isOpen, onClose, onSubmit }) => {
     if (!formData.telefono.trim()) errors.telefono = "El teléfono es obligatorio.";
     if (!formData.tipoDocumento) errors.tipoDocumento = "El tipo de documento es obligatorio.";
     if (!formData.numeroDocumento.trim()) errors.numeroDocumento = "El número de documento es obligatorio.";
-    if (!formData.direccion.trim()) errors.direccion = "La dirección es obligatoria.";
+    // if (!formData.direccion.trim()) errors.direccion = "La dirección es obligatoria."; // Eliminado
     if (!formData.fechaNacimiento) errors.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
     if (!formData.password.trim()) errors.password = "La contraseña es obligatoria para nuevos clientes.";
     // Puedes añadir más validaciones (ej. formato de teléfono, documento, etc.)

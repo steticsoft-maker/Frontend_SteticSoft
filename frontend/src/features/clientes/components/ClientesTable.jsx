@@ -11,7 +11,7 @@ const ClientesTable = ({ clientes, onView, onEdit, onDeleteConfirm, onToggleEsta
           <th>Apellido</th>
           <th>Correo</th>
           <th>Teléfono</th>
-          <th>Dirección</th>
+          {/* Se eliminó la columna Dirección */}
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
@@ -23,7 +23,7 @@ const ClientesTable = ({ clientes, onView, onEdit, onDeleteConfirm, onToggleEsta
             <td data-label="Apellido:">{cliente.apellido}</td>
             <td data-label="Correo:">{cliente.email}</td>
             <td data-label="Teléfono:">{cliente.telefono}</td>
-            <td data-label="Dirección:">{cliente.direccion}</td>
+            {/* Se eliminó el campo Dirección */}
             <td data-label="Estado:">
               <label className="switch">
                 <input
@@ -35,7 +35,7 @@ const ClientesTable = ({ clientes, onView, onEdit, onDeleteConfirm, onToggleEsta
               </label>
             </td>
             <td data-label="Acciones:">
-              <div className="clientes-table-actions"> {/* Mantener o ajustar esta clase según necesidad */}
+              <div className="clientes-table-actions">
                 <button className="iconsTablaclientes" onClick={() => onView(cliente)} title="Ver">
                   <FaEye />
                 </button>
