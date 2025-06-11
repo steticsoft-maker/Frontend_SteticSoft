@@ -1,5 +1,5 @@
 // src/features/abastecimiento/pages/ListaAbastecimientoPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import AbastecimientoTable from "../components/AbastecimientoTable";
 import AbastecimientoCrearModal from "../components/AbastecimientoCrearModal";
@@ -8,17 +8,13 @@ import AbastecimientoDetailsModal from "../components/AbastecimientoDetailsModal
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import DepleteProductModal from "../components/DepleteProductModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
-import {
-  fetchAbastecimientoEntries,
-  addAbastecimientoEntry,
-  updateAbastecimientoEntry,
-  deleteAbastecimientoEntryById,
-  depleteEntry,
-} from "../services/abastecimientoService";
+import { abastecimientoService } from "../services/abastecimientoService";
 import "../css/Abastecimiento.css";
 
 function ListaAbastecimientoPage() {
   const [entries, setEntries] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [busqueda, setBusqueda] = useState("");
 
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
@@ -31,113 +27,109 @@ function ListaAbastecimientoPage() {
   const [currentEntry, setCurrentEntry] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
 
-  useEffect(() => {
-    setEntries(fetchAbastecimientoEntries());
+  const cargarDatos = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await abastecimientoService.getAbastecimientos();
+      setEntries(data);
+    } catch (err) {
+      setError(err.message || "No se pudieron cargar los datos de abastecimiento.");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  // Definición correcta de la función para abrir el modal de detalles
-  const handleOpenDetails = (entry) => {
-    setCurrentEntry(entry);
-    setIsDetailsModalOpen(true);
-  };
+  useEffect(() => {
+    cargarDatos();
+  }, [cargarDatos]);
 
-  const handleOpenModal = (type, entry = null) => {
-    setCurrentEntry(entry);
-    if (type === "details") {
-      // Llamará a la función específica de detalles
-      handleOpenDetails(entry);
-    } else if (type === "delete") {
-      setIsConfirmDeleteOpen(true);
-    } else if (type === "deplete") {
-      setIsDepleteModalOpen(true);
-    } else if (type === "create") {
-      setIsCrearModalOpen(true);
-    } else if (type === "edit") {
-      if (entry) {
-        setIsEditarModalOpen(true);
-      } else {
-        console.error(
-          "Intento de abrir modal de edición sin datos de entrada."
-        );
-      }
-    }
-  };
-
-  const handleCrearModalClose = () => {
+  const closeModal = () => {
     setIsCrearModalOpen(false);
-  };
-
-  const handleEditarModalClose = () => {
     setIsEditarModalOpen(false);
-    setCurrentEntry(null);
-  };
-
-  const closeOtherModals = () => {
     setIsDetailsModalOpen(false);
     setIsConfirmDeleteOpen(false);
     setIsDepleteModalOpen(false);
     setIsValidationModalOpen(false);
+    setCurrentEntry(null);
     setValidationMessage("");
-    if (!isCrearModalOpen && !isEditarModalOpen) {
-      setCurrentEntry(null);
-    }
   };
 
-  const handleSubmitForm = (formData, saveAndAddAnother = false) => {
-    try {
-      const isEditing = !!formData.id;
-      let updatedEntries;
-      if (isEditing) {
-        updatedEntries = updateAbastecimientoEntry(formData, entries);
-      } else {
-        updatedEntries = addAbastecimientoEntry(formData, entries);
-      }
-      setEntries(updatedEntries);
+  const handleOpenModal = (type, entry = null) => {
+    setCurrentEntry(entry);
+    if (type === "details") setIsDetailsModalOpen(true);
+    else if (type === "delete") setIsConfirmDeleteOpen(true);
+    else if (type === "deplete") setIsDepleteModalOpen(true);
+    else if (type === "create") setIsCrearModalOpen(true);
+    else if (type === "edit") setIsEditarModalOpen(true);
+  };
 
-      if (!saveAndAddAnother) {
-        if (isEditing) handleEditarModalClose();
-        else handleCrearModalClose();
+  const handleSubmitForm = async (formData, isCreating = false) => {
+    try {
+      if (isCreating) {
+        await abastecimientoService.createAbastecimiento(formData);
+        setValidationMessage("Registro de abastecimiento creado exitosamente.");
       } else {
-        // Si es "Guardar y Agregar Otro" (solo en creación), el modal de creación maneja el reseteo.
+        const { idAbastecimiento, ...dataToUpdate } = formData;
+        await abastecimientoService.updateAbastecimiento(idAbastecimiento, dataToUpdate);
+        setValidationMessage("Registro de abastecimiento actualizado exitosamente.");
       }
-    } catch (error) {
-      setValidationMessage(error.message);
+      await cargarDatos();
+      closeModal();
+      setIsValidationModalOpen(true);
+    } catch (err) {
+      setValidationMessage(err.message || "Error al guardar el registro.");
       setIsValidationModalOpen(true);
     }
   };
 
-  const handleDeleteConfirmed = () => {
-    if (currentEntry) {
-      const updatedEntries = deleteAbastecimientoEntryById(
-        currentEntry.id,
-        entries
-      );
-      setEntries(updatedEntries);
-      closeOtherModals();
-    }
-  };
-
-  const handleDepleteConfirmed = (reason) => {
-    if (currentEntry) {
+  const handleDeleteConfirmed = async () => {
+    if (currentEntry?.idAbastecimiento) {
       try {
-        const updatedEntries = depleteEntry(currentEntry.id, reason, entries);
-        setEntries(updatedEntries);
-        closeOtherModals();
-      } catch (error) {
-        setValidationMessage(error.message);
+        await abastecimientoService.deleteAbastecimiento(currentEntry.idAbastecimiento);
+        setValidationMessage("Registro eliminado exitosamente.");
+        await cargarDatos();
+      } catch (err) {
+        setValidationMessage(err.message || "Error al eliminar el registro.");
+      } finally {
+        closeModal();
         setIsValidationModalOpen(true);
       }
     }
   };
 
-  const filteredEntries = entries.filter(
-    (p) =>
-      (p.nombre && p.nombre.toLowerCase().includes(busqueda.toLowerCase())) ||
-      (p.empleado &&
-        p.empleado.toLowerCase().includes(busqueda.toLowerCase())) ||
-      (p.fechaIngreso && p.fechaIngreso.includes(busqueda)) ||
-      (p.category && p.category.toLowerCase().includes(busqueda.toLowerCase()))
-  );
+  const handleDepleteConfirmed = async (reason) => {
+    if (currentEntry?.idAbastecimiento) {
+      try {
+        const dataToUpdate = {
+          estaAgotado: true,
+          razonAgotamiento: reason,
+          fechaAgotamiento: new Date().toISOString().split("T")[0],
+        };
+        await abastecimientoService.updateAbastecimiento(currentEntry.idAbastecimiento, dataToUpdate);
+        setValidationMessage("Producto marcado como agotado.");
+        await cargarDatos();
+      } catch (err) {
+        setValidationMessage(err.message || "Error al marcar como agotado.");
+      } finally {
+        closeModal();
+        setIsValidationModalOpen(true);
+      }
+    }
+  };
+
+  const filteredEntries = useMemo(() =>
+    entries.filter((entry) => {
+      const busquedaLower = busqueda.toLowerCase();
+      const nombreProducto = entry.productoAbastecido?.nombre?.toLowerCase() || '';
+      const nombreEmpleado = entry.empleadoResponsable?.nombre?.toLowerCase() || '';
+      const fecha = entry.fechaIngreso || '';
+      return (
+        nombreProducto.includes(busquedaLower) ||
+        nombreEmpleado.includes(busquedaLower) ||
+        fecha.includes(busquedaLower)
+      );
+    }), [entries, busqueda]);
 
   return (
     <div className="abastecimiento-page-container">
@@ -149,62 +141,62 @@ function ListaAbastecimientoPage() {
             <div className="abastecimiento-search-bar">
               <input
                 type="text"
-                placeholder="Buscar producto, empleado, fecha o categoría..."
+                placeholder="Buscar por producto, empleado o fecha..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
+                disabled={isLoading}
               />
             </div>
-            <button
-              className="abastecimiento-add-button"
-              onClick={() => handleOpenModal("create")}
-            >
-              Agregar Producto
+            <button className="abastecimiento-add-button" onClick={() => handleOpenModal("create")} disabled={isLoading}>
+              Agregar Registro
             </button>
           </div>
-          <AbastecimientoTable
-            entries={filteredEntries}
-            onView={(entry) => handleOpenModal("details", entry)} // Correcto: llama a handleOpenModal
-            onEdit={(entry) => handleOpenModal("edit", entry)} // Correcto: llama a handleOpenModal
-            onDelete={(entry) => handleOpenModal("delete", entry)} // Correcto: llama a handleOpenModal
-            onDeplete={(entry) => handleOpenModal("deplete", entry)} // Correcto: llama a handleOpenModal
-          />
+          
+          {isLoading ? <p>Cargando datos...</p> : error ? <p className="error-message">{error}</p> : (
+            <AbastecimientoTable
+              entries={filteredEntries}
+              onView={(entry) => handleOpenModal("details", entry)}
+              onEdit={(entry) => handleOpenModal("edit", entry)}
+              onDelete={(entry) => handleOpenModal("delete", entry)}
+              onDeplete={(entry) => handleOpenModal("deplete", entry)}
+            />
+          )}
+
         </div>
       </div>
 
       <AbastecimientoCrearModal
         isOpen={isCrearModalOpen}
-        onClose={handleCrearModalClose}
-        onSubmit={handleSubmitForm}
+        onClose={closeModal}
+        onSubmit={(data) => handleSubmitForm(data, true)}
       />
       <AbastecimientoEditarModal
         isOpen={isEditarModalOpen}
-        onClose={handleEditarModalClose}
-        onSubmit={handleSubmitForm}
+        onClose={closeModal}
+        onSubmit={(data) => handleSubmitForm(data, false)}
         initialData={currentEntry}
       />
       <AbastecimientoDetailsModal
         isOpen={isDetailsModalOpen}
-        onClose={closeOtherModals} // Usa closeOtherModals para el modal de detalles
+        onClose={closeModal}
         item={currentEntry}
       />
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={closeOtherModals}
+        onClose={closeModal}
         onConfirm={handleDeleteConfirmed}
         title="Confirmar Eliminación"
-        message={`¿Estás seguro de que deseas eliminar la entrada de "${
-          currentEntry?.nombre || ""
-        }"?`}
+        message={`¿Estás seguro de que deseas eliminar la entrada de "${currentEntry?.productoAbastecido?.nombre || ""}"?`}
       />
       <DepleteProductModal
         isOpen={isDepleteModalOpen}
-        onClose={closeOtherModals}
+        onClose={closeModal}
         onConfirm={handleDepleteConfirmed}
-        productName={currentEntry?.nombre}
+        productName={currentEntry?.productoAbastecido?.nombre}
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
-        onClose={closeOtherModals}
+        onClose={closeModal}
         title="Aviso de Abastecimiento"
         message={validationMessage}
       />

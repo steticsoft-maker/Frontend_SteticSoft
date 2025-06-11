@@ -1,112 +1,150 @@
 // src/features/abastecimiento/services/abastecimientoService.js
+import apiClient from "../../../shared/services/apiClient";
 
-const ABASTECIMIENTO_STORAGE_KEY = 'abastecimiento_steticsoft';
-
-// Datos que antes estaban hardcodeados en el componente
-const NUEVAS_CATEGORIAS = ["Cejas", "Pestañas", "Cabello", "Uñas", "Facial", "Corporal"];
-const PRODUCTOS_DISPONIBLES = [
-  { nombre: "Sérum para Cejas", category: "Cejas", lifetimeDays: 365 },
-  { nombre: "Extensiones de Pestañas", category: "Pestañas", lifetimeDays: 730 },
-  { nombre: "Shampoo Profesional", category: "Cabello", lifetimeDays: 365 },
-  { nombre: "Tijeras de Corte", category: "Cabello", lifetimeDays: 1825 },
-  { nombre: "Esmalte Permanente", category: "Uñas", lifetimeDays: 730 },
-  { nombre: "Mascarilla Facial", category: "Facial", lifetimeDays: 365 },
-  { nombre: "Aceite de Masaje", category: "Corporal", lifetimeDays: 730 },
-  { nombre: "Secadora", category: "Cabello", lifetimeDays: 2555 },
-  { nombre: "Peine", category: "Cabello", lifetimeDays: 730 },
-];
-const EMPLEADOS_DISPONIBLES = ["Carlos López", "Ana Pérez", "Luis Torres", "Sofía Rodríguez"];
-
-const INITIAL_ENTRIES = [ // Renombrado de initialProductos para evitar confusión
-  { id: 1, nombre: "Shampoo Profesional", cantidad: 50, fechaIngreso: "2025-04-01", empleado: "Carlos López", category: "Cabello", isDepleted: false, depletionReason: "" },
-  { id: 2, nombre: "Tijeras de Corte", cantidad: 20, fechaIngreso: "2025-04-02", empleado: "Ana Pérez", category: "Cabello", isDepleted: false, depletionReason: "" },
-  { id: 3, nombre: "Sérum para Cejas", cantidad: 15, fechaIngreso: "2025-04-03", empleado: "Luis Torres", category: "Cejas", isDepleted: false, depletionReason: "" },
-];
-
-export const getCategorias = () => NUEVAS_CATEGORIAS;
-export const getProductosDisponibles = () => PRODUCTOS_DISPONIBLES;
-export const getEmpleados = () => EMPLEADOS_DISPONIBLES;
-
-export const fetchAbastecimientoEntries = () => {
-  const stored = localStorage.getItem(ABASTECIMIENTO_STORAGE_KEY);
-  return stored ? JSON.parse(stored) : INITIAL_ENTRIES;
-};
-
-const persistEntries = (entries) => {
-  localStorage.setItem(ABASTECIMIENTO_STORAGE_KEY, JSON.stringify(entries));
-};
-
-export const addAbastecimientoEntry = (newEntryData, existingEntries) => {
-  // Validación básica (más detallada podría estar en el formulario o aquí)
-  if (!newEntryData.nombre || !newEntryData.cantidad || !newEntryData.empleado || !newEntryData.category) {
-    throw new Error("Por favor, completa todos los campos obligatorios (Categoría, Producto, Cantidad, Empleado).");
-  }
-  const productDefinition = PRODUCTOS_DISPONIBLES.find(p => p.nombre === newEntryData.nombre);
-  if (!productDefinition) {
-    throw new Error("Producto no encontrado en la lista de productos disponibles.");
+/**
+ * Calcula los días de vida útil restantes para una entrada de abastecimiento.
+ * @param {object} abastecimientoEntry - El objeto de abastecimiento de la API.
+ * @returns {string} - Una cadena de texto que indica los días restantes, si está vencido o si no hay datos.
+ */
+export const calculateRemainingLifetime = (abastecimientoEntry) => {
+  // Primero, valida que los datos necesarios existan en el objeto.
+  if (!abastecimientoEntry?.productoAbastecido?.categoriaProducto?.vidaUtilDias || !abastecimientoEntry.fechaIngreso) {
+    return "N/A";
   }
 
-  const entryToAdd = {
-    ...newEntryData,
-    id: Date.now(),
-    fechaIngreso: new Date().toISOString().split("T")[0],
-    isDepleted: false,
-    depletionReason: "",
-  };
-  const updatedEntries = [...existingEntries, entryToAdd];
-  persistEntries(updatedEntries);
-  return updatedEntries;
-};
+  // Obtiene los días de vida útil y la fecha de ingreso.
+  const vidaUtilDias = parseInt(abastecimientoEntry.productoAbastecido.categoriaProducto.vidaUtilDias, 10);
+  const fechaIngreso = new Date(abastecimientoEntry.fechaIngreso);
+  
+  // Corrige el problema de la zona horaria para tratar la fecha como local.
+  fechaIngreso.setMinutes(fechaIngreso.getMinutes() + fechaIngreso.getTimezoneOffset());
 
-export const updateAbastecimientoEntry = (updatedEntryData, existingEntries) => {
-   if (!updatedEntryData.nombre || !updatedEntryData.cantidad || !updatedEntryData.empleado || !updatedEntryData.category) {
-    throw new Error("Por favor, completa todos los campos obligatorios.");
+  // Calcula la fecha de vencimiento.
+  const fechaVencimiento = new Date(fechaIngreso);
+  fechaVencimiento.setDate(fechaVencimiento.getDate() + vidaUtilDias);
+
+  // Obtiene la fecha de hoy, normalizada a la medianoche para una comparación precisa.
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  // Calcula la diferencia en días.
+  const diffTime = fechaVencimiento - hoy;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    return "Vencido";
   }
-  const productDefinition = PRODUCTOS_DISPONIBLES.find(p => p.nombre === updatedEntryData.nombre);
-  if (!productDefinition) {
-    throw new Error("Producto no encontrado en la lista de productos disponibles.");
+  return `${diffDays} días`;
+};
+
+
+// --- Métodos de la API ---
+
+
+
+// Obtiene todos los registros de abastecimiento desde la API.
+const getAbastecimientos = async () => {
+  try {
+    const response = await apiClient.get("/abastecimientos");
+    return response.data?.data || [];
+  } catch (error) {
+    throw error.response?.data || new Error("Error al obtener los registros de abastecimiento.");
   }
-
-  const updatedEntries = existingEntries.map(entry =>
-    entry.id === updatedEntryData.id ? { ...entry, ...updatedEntryData } : entry
-  );
-  persistEntries(updatedEntries);
-  return updatedEntries;
 };
 
-export const deleteAbastecimientoEntryById = (entryId, existingEntries) => {
-  const updatedEntries = existingEntries.filter(entry => entry.id !== entryId);
-  persistEntries(updatedEntries);
-  return updatedEntries;
-};
-
-export const depleteEntry = (entryId, reason, existingEntries) => {
-  if (!reason.trim()) {
-    throw new Error("El motivo de agotamiento es obligatorio.");
+// Crea un nuevo registro de abastecimiento.
+const createAbastecimiento = async (data) => {
+  try {
+    const response = await apiClient.post("/abastecimientos", data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || new Error("Error al crear el registro de abastecimiento.");
   }
-  const updatedEntries = existingEntries.map(entry =>
-    entry.id === entryId
-      ? { ...entry, isDepleted: true, depletionReason: reason, depletionDate: new Date().toISOString().split("T")[0] }
-      : entry
-  );
-  persistEntries(updatedEntries);
-  return updatedEntries;
 };
 
-export const calculateRemainingLifetime = (entry) => {
-  const productDefinition = PRODUCTOS_DISPONIBLES.find(p => p.nombre === entry.nombre);
-  if (!productDefinition || !entry.fechaIngreso) return "N/A";
+// Actualiza un registro de abastecimiento existente.
+const updateAbastecimiento = async (id, data) => {
+  try {
+    const response = await apiClient.put(`/abastecimientos/${id}`, data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || new Error("Error al actualizar el registro de abastecimiento.");
+  }
+};
 
-  const ingressDate = new Date(entry.fechaIngreso);
-  if (isNaN(ingressDate.getTime())) return "Fecha Inválida";
+// Cambia el estado (anula o habilita) de un registro.
+const toggleEstadoAbastecimiento = async (id, estado) => {
+  try {
+    const response = await apiClient.patch(`/abastecimientos/${id}/estado`, { estado });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || new Error("Error al cambiar el estado del registro.");
+  }
+};
 
-  const currentDate = new Date();
-  const lifetimeDays = productDefinition.lifetimeDays;
-  const expiryDate = new Date(ingressDate.getTime() + lifetimeDays * 24 * 60 * 60 * 1000);
-  const timeDiff = expiryDate.getTime() - currentDate.getTime();
-  const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+// Elimina físicamente un registro de abastecimiento.
+const deleteAbastecimiento = async (id) => {
+  try {
+    const response = await apiClient.delete(`/abastecimientos/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || new Error("Error al eliminar el registro de abastecimiento.");
+  }
+};
 
-  if (daysDiff < 0) return "Expirado";
-  if (daysDiff === 0) return "Expira hoy";
-  return `${daysDiff} días restantes`;
+// Obtiene la lista de productos que están activos.
+const getProductosActivos = async () => {
+  try {
+    const response = await apiClient.get('/productos?estado=true');
+    return response.data?.data || [];
+  } catch (error) {
+    throw new Error("Error al obtener los productos activos.");
+  }
+};
+
+// Obtiene solo las categorías de productos que son para 'Uso Interno'.
+const getCategoriasUsoInterno = async () => {
+  try {
+      // Asumimos que la API de categorías también soporta el filtro 'tipoUso'.
+      // Tendremos que añadir esa lógica al backend de 'categoriaProducto.service.js' si no existe.
+      const response = await apiClient.get('/categorias-producto?estado=true&tipoUso=Interno');
+      return response.data?.data || [];
+  } catch (error) {
+      throw new Error("Error al obtener las categorías de productos.");
+  }
+};
+
+// Obtiene productos activos filtrados por categoría y que sean de uso interno.
+const getProductosPorCategoria = async (categoriaId) => {
+  if (!categoriaId) return []; // No hacer la llamada si no hay categoría seleccionada.
+  try {
+      const response = await apiClient.get(`/productos?estado=true&categoriaId=${categoriaId}&tipoUso=Interno`);
+      return response.data?.data || [];
+  } catch (error) {
+      throw new Error("Error al obtener los productos de la categoría seleccionada.");
+  }
+};
+
+// Obtiene los usuarios con el rol de "Empleado" que están activos.
+const getEmpleadosActivos = async () => {
+  try {
+    const response = await apiClient.get('/usuarios?estado=true');
+    const allUsers = response.data?.data || [];
+    return allUsers.filter(u => u.rol?.nombre === 'Empleado');
+  } catch (error) {
+    throw new Error("Error al obtener los empleados activos.");
+  }
+};
+
+// Se exporta un objeto que contiene todos los métodos del servicio.
+export const abastecimientoService = {
+  getAbastecimientos,
+  createAbastecimiento,
+  updateAbastecimiento,
+  toggleEstadoAbastecimiento,
+  deleteAbastecimiento,
+  getProductosActivos,
+  getCategoriasUsoInterno, 
+  getProductosPorCategoria,
+  getEmpleadosActivos,
 };
