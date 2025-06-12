@@ -6,15 +6,13 @@ const ClienteCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const getInitialFormState = () => ({
     nombre: '',
     apellido: '',
-    email: '',
+    correo: '', // Cambiado de 'email' a 'correo' para coincidir con el backend
     telefono: '',
-    tipoDocumento: 'CC', // Valor por defecto para el select
+    tipoDocumento: 'Cédula de Ciudadanía', // Ajustado a un valor exacto de tu backend. Asegúrate de que ClienteForm también lo use.
     numeroDocumento: '',
-    // direccion: '', // Eliminado
-    // ciudad: '',    // Eliminado
     fechaNacimiento: '',
-    password: '', // Campo de contraseña para nuevos clientes
-    estado: true, // Nuevos clientes activos por defecto
+    contrasena: '', // Cambiado de 'password' a 'contrasena' para coincidir con el backend
+    estado: true, // Nuevos clientes activos por defecto (para el perfil de cliente)
   });
 
   const [formData, setFormData] = useState(getInitialFormState());
@@ -39,13 +37,14 @@ const ClienteCrearModal = ({ isOpen, onClose, onSubmit }) => {
     const errors = {};
     if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio.";
     if (!formData.apellido.trim()) errors.apellido = "El apellido es obligatorio.";
-    if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "El email no es válido.";
+    // Usar formData.correo en lugar de formData.email
+    if (!formData.correo.trim() || !/\S+@\S+\.\S+/.test(formData.correo)) errors.correo = "El correo electrónico no es válido.";
     if (!formData.telefono.trim()) errors.telefono = "El teléfono es obligatorio.";
     if (!formData.tipoDocumento) errors.tipoDocumento = "El tipo de documento es obligatorio.";
     if (!formData.numeroDocumento.trim()) errors.numeroDocumento = "El número de documento es obligatorio.";
-    // if (!formData.direccion.trim()) errors.direccion = "La dirección es obligatoria."; // Eliminado
     if (!formData.fechaNacimiento) errors.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
-    if (!formData.password.trim()) errors.password = "La contraseña es obligatoria para nuevos clientes.";
+    // Usar formData.contrasena en lugar de formData.password
+    if (!formData.contrasena.trim()) errors.contrasena = "La contraseña es obligatoria para nuevos clientes.";
     // Puedes añadir más validaciones (ej. formato de teléfono, documento, etc.)
     setFormErrors(errors);
     return Object.keys(errors).length === 0;

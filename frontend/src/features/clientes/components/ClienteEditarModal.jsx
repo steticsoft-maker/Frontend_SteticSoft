@@ -8,11 +8,14 @@ const ClienteEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
 
   useEffect(() => {
     if (isOpen && initialData) {
-      // Al editar, no incluimos la contraseña para que no se muestre
-      // Se manejaría por separado si se quiere permitir cambio de contraseña
-      const { password, ...dataToEdit } = initialData;
+      // Al editar, no incluimos la contraseña (contrasena) para que no se muestre ni se envíe directamente
+      // Se manejaría por separado si se quiere permitir cambio de contraseña.
+      // initialData ya debería venir con 'correo' y el estado booleano.
+      const { contrasena, ...dataToEdit } = initialData; // Desestructuración para excluir 'contrasena'
+
       setFormData({
         ...dataToEdit,
+        correo: initialData.correo,
         estado: initialData.estado !== undefined ? initialData.estado : true, // Asegurar que estado se cargue
       });
       setFormErrors({});
@@ -31,15 +34,14 @@ const ClienteEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio.";
-    if (!formData.apellido.trim()) errors.apellido = "El apellido es obligatorio.";
-    if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) errors.email = "El email no es válido.";
-    if (!formData.telefono.trim()) errors.telefono = "El teléfono es obligatorio.";
+    if (!formData.nombre?.trim()) errors.nombre = "El nombre es obligatorio."; // Uso de optional chaining para seguridad
+    if (!formData.apellido?.trim()) errors.apellido = "El apellido es obligatorio.";
+    // Usar formData.correo en lugar de formData.email
+    if (!formData.correo?.trim() || !/\S+@\S+\.\S+/.test(formData.correo)) errors.correo = "El correo electrónico no es válido.";
+    if (!formData.telefono?.trim()) errors.telefono = "El teléfono es obligatorio.";
     if (!formData.tipoDocumento) errors.tipoDocumento = "El tipo de documento es obligatorio.";
-    if (!formData.numeroDocumento.trim()) errors.numeroDocumento = "El número de documento es obligatorio.";
-    // La dirección y ciudad han sido eliminadas de las validaciones
+    if (!formData.numeroDocumento?.trim()) errors.numeroDocumento = "El número de documento es obligatorio.";
     if (!formData.fechaNacimiento) errors.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
-    // La contraseña no se valida aquí ya que no se edita en este formulario
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };

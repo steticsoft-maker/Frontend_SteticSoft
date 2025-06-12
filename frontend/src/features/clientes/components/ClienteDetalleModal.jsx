@@ -11,11 +11,10 @@ const ClienteDetalleModal = ({ isOpen, onClose, cliente }) => {
         <div className="cliente-details-list">
           <p><strong>Nombre:</strong> {cliente.nombre}</p>
           <p><strong>Apellido:</strong> {cliente.apellido}</p>
-          <p><strong>Correo:</strong> {cliente.email}</p>
+          <p><strong>Correo:</strong> {cliente.correo}</p> {/* Cambiado de 'cliente.email' a 'cliente.correo' */}
           <p><strong>Teléfono:</strong> {cliente.telefono}</p>
           <p><strong>Tipo de Documento:</strong> {cliente.tipoDocumento}</p>
           <p><strong>Número de Documento:</strong> {cliente.numeroDocumento}</p>
-          {/* Dirección y Ciudad eliminados */}
           <p><strong>Fecha de Nacimiento:</strong> {cliente.fechaNacimiento}</p>
           <p><strong>Estado:</strong> {cliente.estado ? "Activo" : "Inactivo"}</p>
         </div>

@@ -1,68 +1,154 @@
 // src/features/clientes/services/clientesService.js
+import apiClient from "../../../shared/services/apiClient"; // Asegúrate de que apiClient maneje headers de autenticación y errores HTTP.
 
-const INITIAL_CLIENTES = [
-    { id: 1, nombre: "Juan", apellido: "Pérez", email: "juan.perez@gmail.com", telefono: "3211234567", direccion: "Calle Principal 123", tipoDocumento: "Cédula", numeroDocumento: "123456789", ciudad: "Bogotá", fechaNacimiento: "1990-01-01", password: "12345", estado: true },
-    { id: 2, nombre: "María", apellido: "Gómez", email: "maria.gomez@gmail.com", telefono: "3129876543", direccion: "Carrera Secundaria 456", tipoDocumento: "Pasaporte", numeroDocumento: "987654321", ciudad: "Medellín", fechaNacimiento: "1985-05-20", password: "54321", estado: true },
-  ];
-  const CLIENTES_STORAGE_KEY = 'clientes_steticsoft';
-  
-  export const fetchClientes = () => {
-    const storedClientes = localStorage.getItem(CLIENTES_STORAGE_KEY);
-    return storedClientes ? JSON.parse(storedClientes) : INITIAL_CLIENTES;
-  };
-  
-  const persistClientes = (clientes) => {
-    localStorage.setItem(CLIENTES_STORAGE_KEY, JSON.stringify(clientes));
-  };
-  
-  export const saveCliente = (clienteData, existingClientes, currentEditingClienteId = null) => {
-    // Validaciones básicas
-    if (!clienteData.nombre || !clienteData.apellido || !clienteData.email || !clienteData.telefono || !clienteData.tipoDocumento || !clienteData.numeroDocumento || !clienteData.fechaNacimiento /*|| !clienteData.password (la contraseña puede ser opcional en edición o manejarse diferente)*/) {
-      throw new Error("Por favor, completa todos los campos obligatorios marcados con *.");
+/**
+ * Obtiene todos los clientes del backend.
+ * @returns {Promise<Array>} Una promesa que resuelve con un array de objetos cliente.
+ */
+export const fetchClientes = async () => {
+  try {
+    const response = await apiClient.get("/clientes");
+    // El backend devuelve { success: true, data: clientes }.
+    // Asegúrate de retornar directamente el array de clientes.
+    if (response.data && Array.isArray(response.data.data)) {
+      return response.data.data;
     }
-    if (!/\S+@\S+\.\S+/.test(clienteData.email)) {
-      throw new Error("El formato del correo electrónico no es válido.");
+    // Si la respuesta no es el formato esperado, puedes loggear o devolver un array vacío
+    console.warn("Formato de respuesta inesperado para fetchClientes:", response.data);
+    return [];
+  } catch (error) {
+    console.error("Error al obtener clientes:", error);
+    throw error;
+  }
+};
+
+/**
+ * Obtiene un cliente específico por su ID del backend.
+ * Útil para pre-rellenar formularios de edición.
+ * @param {number} clienteId - El ID del cliente a obtener.
+ * @returns {Promise<object>} Una promesa que resuelve con el objeto cliente.
+ */
+export const getClienteById = async (clienteId) => {
+  try {
+    const response = await apiClient.get(`/clientes/${clienteId}`);
+    // El backend devuelve { success: true, data: cliente }.
+    if (response.data && typeof response.data.data === 'object') {
+      return response.data.data;
     }
-  
-    const isCreating = !currentEditingClienteId;
-  
-    const numeroDocumentoExists = existingClientes.some(
-      (c) => c.numeroDocumento === clienteData.numeroDocumento && c.id !== currentEditingClienteId
-    );
-    if (numeroDocumentoExists) {
-      throw new Error("Ya existe un cliente con este número de documento.");
-    }
-    const emailExists = existingClientes.some(
-      (c) => c.email === clienteData.email && c.id !== currentEditingClienteId
-    );
-    if (emailExists) {
-      throw new Error("Ya existe un cliente con este correo electrónico.");
-    }
-  
-  
-    let updatedClientes;
+    console.warn("Formato de respuesta inesperado para getClienteById:", response.data);
+    return null; // O un objeto vacío si es lo que tu UI espera
+  } catch (error) {
+    console.error(`Error al obtener cliente con ID ${clienteId}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Guarda un cliente (crea uno nuevo o actualiza uno existente) a través de la API del backend.
+ *
+ * @param {object} clienteData - Los datos del cliente a guardar.
+ * @param {boolean} isCreating - `true` si se está creando un nuevo cliente, `false` si se está actualizando.
+ * @param {number|null} [currentEditingClienteId=null] - El ID del cliente que se está editando (solo relevante si `isCreating` es `false`).
+ * @returns {Promise<object>} Una promesa que resuelve con el objeto cliente guardado/actualizado.
+ */
+export const saveCliente = async (clienteData, isCreating, currentEditingClienteId = null) => {
+  try {
     if (isCreating) {
-      const newCliente = { ...clienteData, id: Date.now(), estado: true }; // Nuevos clientes activos por defecto
-      updatedClientes = [...existingClientes, newCliente];
-    } else { // Editando
-      updatedClientes = existingClientes.map((c) =>
-        c.id === currentEditingClienteId ? { ...c, ...clienteData } : c // Mantener estado original al editar si no se cambia explícitamente
-      );
+      const dataToSend = {
+        nombre: clienteData.nombre,
+        apellido: clienteData.apellido,
+        correo: clienteData.correo, // Ahora usamos clienteData.correo directamente del ClienteForm
+        telefono: clienteData.telefono,
+        tipoDocumento: clienteData.tipoDocumento,
+        numeroDocumento: clienteData.numeroDocumento,
+        fechaNacimiento: clienteData.fechaNacimiento,
+        contrasena: clienteData.contrasena, // Ahora usamos clienteData.contrasena directamente del ClienteForm
+      };
+      const response = await apiClient.post("/clientes", dataToSend);
+      return response.data.data; // Asumiendo que devuelve { success: true, data: nuevoCliente }
+    } else { // Editando un cliente existente
+      const dataToSend = { ...clienteData };
+
+      // Eliminar el campo 'contrasena' si existe al actualizar
+      // (No se actualiza la contraseña con esta ruta general de edición de datos del cliente)
+      if (dataToSend.contrasena) {
+        delete dataToSend.contrasena;
+      }
+      // Eliminar el campo 'password' por si acaso (del pasado)
+      if (dataToSend.password) {
+        delete dataToSend.password;
+      }
+
+      // El frontend ya envía 'correo' por defecto desde ClienteForm,
+      // así que no se necesita mapear 'email' a 'correo' aquí.
+      // if (dataToSend.hasOwnProperty('email')) {
+      //     dataToSend.correo = dataToSend.email;
+      //     delete dataToSend.email;
+      // }
+
+      // Mapear 'estado' del frontend a 'estadoCliente' y 'estadoUsuario' para el backend
+      // ¡ESTO ES CLAVE PARA EL 400!
+      if (dataToSend.hasOwnProperty('estado')) {
+        dataToSend.estadoCliente = dataToSend.estado;
+        dataToSend.estadoUsuario = dataToSend.estado; // Asumiendo que el estado del usuario se sincroniza con el del cliente
+        delete dataToSend.estado; // Eliminar el campo 'estado' original del frontend
+      }
+
+      // Si tu backend espera el idCliente en el cuerpo al editar, descomenta la siguiente línea:
+      // dataToSend.idCliente = currentEditingClienteId;
+
+      const response = await apiClient.put(`/clientes/${currentEditingClienteId}`, dataToSend);
+      return response.data.data; // Asumiendo que devuelve { success: true, data: clienteActualizado }
     }
-    persistClientes(updatedClientes);
-    return updatedClientes;
-  };
-  
-  export const deleteClienteById = (clienteId, existingClientes) => {
-    const updatedClientes = existingClientes.filter(c => c.id !== clienteId);
-    persistClientes(updatedClientes);
-    return updatedClientes;
-  };
-  
-  export const toggleClienteEstado = (clienteId, existingClientes) => {
-    const updatedClientes = existingClientes.map(c =>
-      c.id === clienteId ? { ...c, estado: !c.estado } : c
-    );
-    persistClientes(updatedClientes);
-    return updatedClientes;
-  };
+  } catch (error) {
+    console.error("Error al guardar cliente:", error);
+    // Verificar si el error tiene una respuesta con datos (por ejemplo, mensajes de validación del backend)
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message); // Lanza el mensaje de error específico del backend
+    }
+    throw error; // Re-lanzar el error genérico si no hay mensaje específico
+  }
+};
+
+/**
+ * Elimina un cliente por su ID a través de la API del backend.
+ * @param {number} clienteId - El ID del cliente a eliminar.
+ * @returns {Promise<boolean>} Una promesa que resuelve a `true` si la eliminación fue exitosa.
+*/
+export const deleteClienteById = async (clienteId) => {
+  try {
+    const response = await apiClient.delete(`/clientes/${clienteId}`);
+    return response.status === 204 || response.status === 200; // A veces el backend devuelve 200 con un mensaje
+  } catch (error) {
+    console.error(`Error al eliminar cliente con ID ${clienteId}:`, error);
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
+};
+
+/**
+ * Cambia el estado (activo/inactivo) de un cliente a través de la API del backend.
+ * @param {number} clienteId - El ID del cliente cuyo estado se va a cambiar.
+ * @param {boolean} nuevoEstado - El nuevo estado (`true` para activo, `false` para inactivo).
+ * @returns {Promise<object>} Una promesa que resuelve con el objeto cliente actualizado.
+ */
+export const toggleClienteEstado = async (clienteId, nuevoEstado) => {
+  try {
+    // ¡CORRECCIÓN CLAVE AQUÍ!
+    // Tu backend espera un campo 'estado' en la ruta PATCH /:idCliente/estado
+    // No 'estadoCliente' y 'estadoUsuario' en esta ruta específica.
+    const dataToSend = {
+        estado: nuevoEstado // Enviar el campo 'estado' con el booleano
+    };
+    const response = await apiClient.patch(`/clientes/${clienteId}/estado`, dataToSend);
+    return response.data.data; // Asumiendo que devuelve { success: true, data: clienteActualizado }
+  } catch (error) {
+    console.error(`Error al cambiar el estado del cliente ID ${clienteId}:`, error);
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
+};

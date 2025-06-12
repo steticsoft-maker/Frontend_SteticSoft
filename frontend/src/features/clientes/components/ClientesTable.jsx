@@ -11,25 +11,23 @@ const ClientesTable = ({ clientes, onView, onEdit, onDeleteConfirm, onToggleEsta
           <th>Apellido</th>
           <th>Correo</th>
           <th>Teléfono</th>
-          {/* Se eliminó la columna Dirección */}
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         {clientes.map((cliente) => (
-          <tr key={cliente.id}>
+          <tr key={cliente.idCliente}>
             <td data-label="Nombre:">{cliente.nombre}</td>
             <td data-label="Apellido:">{cliente.apellido}</td>
-            <td data-label="Correo:">{cliente.email}</td>
+            <td data-label="Correo:">{cliente.correo}</td>
             <td data-label="Teléfono:">{cliente.telefono}</td>
-            {/* Se eliminó el campo Dirección */}
             <td data-label="Estado:">
               <label className="switch">
                 <input
                   type="checkbox"
                   checked={cliente.estado}
-                  onChange={() => onToggleEstado(cliente.id)}
+                  onChange={() => onToggleEstado(cliente.idCliente)}
                 />
                 <span className="slider"></span>
               </label>
