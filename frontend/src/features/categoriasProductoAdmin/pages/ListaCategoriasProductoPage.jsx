@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import CategoriasProductoTable from "../components/CategoriasProductoTable";
-// Importar nuevos modales separados
-import CategoriaProductoCrearModal from "../components/CategoriaProductoCrearModal"; // NUEVO
-import CategoriaProductoEditarModal from "../components/CategoriaProductoEditarModal"; // NUEVO
+import CategoriaProductoCrearModal from "../components/CategoriaProductoCrearModal";
+import CategoriaProductoEditarModal from "../components/CategoriaProductoEditarModal";
 import CategoriaProductoDetalleModal from "../components/CategoriaProductoDetalleModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
@@ -14,11 +13,14 @@ import {
   deleteCategoriaProductoById,
   toggleCategoriaProductoEstado,
 } from "../services/categoriasProductoService";
-import "../css/CategoriasProducto.css"; // Este CSS se actualizará significativamente
+import "../css/CategoriasProducto.css";
 
 function ListaCategoriasProductoPage() {
+  // Inicializamos categorias como un array vacío para evitar errores de .filter
   const [categorias, setCategorias] = useState([]);
   const [busqueda, setBusqueda] = useState("");
+  const [loading, setLoading] = useState(true); // Nuevo estado de carga
+  const [error, setError] = useState(null); // Nuevo estado para errores de API
 
   // Estados para modales
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
@@ -29,14 +31,28 @@ function ListaCategoriasProductoPage() {
 
   const [currentCategoria, setCurrentCategoria] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
-  // formModalType y modalType ya no se necesitan aquí con modales separados
 
+  // CAMBIO CLAVE: Cargar datos de la API de forma asíncrona
   useEffect(() => {
-    setCategorias(fetchCategoriasProducto());
-  }, []);
+    const loadCategorias = async () => {
+      try {
+        setLoading(true); // Inicia carga
+        const data = await fetchCategoriasProducto(); // Llama a la API
+        setCategorias(data);
+      } catch (err) {
+        console.error("Error al cargar las categorías:", err);
+        setError("No se pudieron cargar las categorías. Inténtalo de nuevo."); // Mensaje amigable
+        setValidationMessage("No se pudieron cargar las categorías. Por favor, intente recargar la página.");
+        setIsValidationModalOpen(true);
+      } finally {
+        setLoading(false); // Finaliza carga
+      }
+    };
+
+    loadCategorias();
+  }, []); // El array vacío asegura que se ejecuta solo una vez al montar
 
   const handleOpenModal = (type, categoria = null) => {
-    // console.log(`[LCProdPage] handleOpenModal - Tipo: ${type}`, categoria);
     setCurrentCategoria(categoria);
     if (type === "details") {
       setIsDetailsModalOpen(true);
@@ -57,11 +73,18 @@ function ListaCategoriasProductoPage() {
 
   const handleCrearModalClose = () => {
     setIsCrearModalOpen(false);
+    // Vuelve a cargar las categorías para reflejar los cambios
+    // Podríamos optimizar esto para solo añadir la nueva categoría a la lista,
+    // pero una recarga completa es más segura para garantizar la consistencia.
+    // También, podríamos pasar la nueva categoría desde el servicio y añadirla.
+    loadCategorias(); 
   };
 
   const handleEditarModalClose = () => {
     setIsEditarModalOpen(false);
     setCurrentCategoria(null);
+    // Vuelve a cargar las categorías para reflejar los cambios
+    loadCategorias(); 
   };
 
   const closeOtherModals = () => {
@@ -69,79 +92,129 @@ function ListaCategoriasProductoPage() {
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
     setValidationMessage("");
+    // Solo resetea currentCategoria si ningún modal de edición/creación está abierto
     if (!isCrearModalOpen && !isEditarModalOpen) {
       setCurrentCategoria(null);
     }
+    // Después de cerrar el modal de confirmación/validación, volvemos a cargar las categorías para asegurar la consistencia.
+    loadCategorias();
   };
 
-  const handleSave = (categoriaData) => {
+  const loadCategorias = async () => { // Función para recargar categorías
     try {
-      const isEditing = !!categoriaData.id;
-      // El servicio saveCategoriaProducto ya maneja la lógica de ID
-      const updatedCategorias = saveCategoriaProducto(
-        categoriaData,
-        categorias
-      );
-      setCategorias(updatedCategorias);
+      setLoading(true);
+      const data = await fetchCategoriasProducto();
+      setCategorias(data);
+    } catch (err) {
+      console.error("Error al recargar las categorías:", err);
+      setError("No se pudieron recargar las categorías.");
+      setValidationMessage("Hubo un problema al recargar las categorías.");
+      setIsValidationModalOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // CAMBIO: La función handleSave ahora es asíncrona
+  const handleSave = async (categoriaData) => {
+    try {
+      // CAMBIO: Usar idCategoriaProducto para determinar si es edición
+      const isEditing = !!categoriaData.idCategoriaProducto; 
+      await saveCategoriaProducto(categoriaData); // Llama al servicio API
+      
+      // Si la operación fue exitosa, cerramos el modal y recargamos las categorías.
       if (isEditing) {
         handleEditarModalClose();
       } else {
         handleCrearModalClose();
       }
+      setValidationMessage(`Categoría ${isEditing ? "actualizada" : "creada"} exitosamente.`);
+      setIsValidationModalOpen(true);
+
     } catch (error) {
-      setValidationMessage(error.message);
+      console.error("Error al guardar categoría:", error);
+      // Muestra el mensaje de error del backend si existe, o un mensaje genérico.
+      const errorMessage = error.response?.data?.message || "Error al guardar la categoría. Por favor, revise los datos.";
+      setValidationMessage(errorMessage);
       setIsValidationModalOpen(true);
     }
   };
 
-  const handleDelete = () => {
-    if (currentCategoria && currentCategoria.id) {
+  // CAMBIO: La función handleDelete ahora es asíncrona
+  const handleDelete = async () => {
+    if (currentCategoria && currentCategoria.idCategoriaProducto) { // CAMBIO: Usar idCategoriaProducto
       try {
-        const updatedCategorias = deleteCategoriaProductoById(
-          currentCategoria.id,
-          categorias
-        );
-        setCategorias(updatedCategorias);
+        await deleteCategoriaProductoById(currentCategoria.idCategoriaProducto); // Llama al servicio API
         closeOtherModals();
+        setValidationMessage("Categoría eliminada exitosamente.");
+        setIsValidationModalOpen(true);
       } catch (error) {
-        setValidationMessage(error.message);
+        console.error("Error al eliminar categoría:", error);
+        const errorMessage = error.response?.data?.message || "Error al eliminar la categoría.";
+        setValidationMessage(errorMessage);
         setIsValidationModalOpen(true);
       }
     }
   };
 
-  const handleToggleEstado = (categoriaId) => {
+  // CAMBIO: La función handleToggleEstado ahora es asíncrona
+  const handleToggleEstado = async (idCategoriaProducto) => { // CAMBIO: Recibe idCategoriaProducto
     try {
-      const updatedCategorias = toggleCategoriaProductoEstado(
-        categoriaId,
-        categorias
-      );
-      setCategorias(updatedCategorias);
+      // Obtenemos la categoría actual para saber su estado anterior
+      const categoriaToToggle = categorias.find(cat => cat.idCategoriaProducto === idCategoriaProducto);
+      if (!categoriaToToggle) {
+        throw new Error("Categoría no encontrada para cambiar estado.");
+      }
+      // Llamamos al servicio para cambiar el estado.
+      // El servicio maneja si es anular o habilitar, pasándole el ID y el nuevo estado.
+      await toggleCategoriaProductoEstado(idCategoriaProducto, !categoriaToToggle.estado);
+      
+      // Si todo va bien, recargamos la lista para ver el cambio reflejado.
+      setValidationMessage("Estado de la categoría actualizado exitosamente.");
+      setIsValidationModalOpen(true);
+      loadCategorias();
+
     } catch (error) {
-      setValidationMessage(error.message);
+      console.error("Error al cambiar estado de categoría:", error);
+      const errorMessage = error.response?.data?.message || "Error al cambiar el estado de la categoría.";
+      setValidationMessage(errorMessage);
       setIsValidationModalOpen(true);
     }
   };
 
+  // Filtrado de categorías (asumiendo que los datos ya están en el estado 'categorias')
   const filteredCategorias = categorias.filter(
     (cat) =>
-      cat.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      (cat.descripcion &&
-        cat.descripcion.toLowerCase().includes(busqueda.toLowerCase())) ||
-      (cat.tipoUso &&
-        cat.tipoUso.toLowerCase().includes(busqueda.toLowerCase()))
+      (cat.nombre && cat.nombre.toLowerCase().includes(busqueda.toLowerCase())) ||
+      (cat.descripcion && cat.descripcion.toLowerCase().includes(busqueda.toLowerCase())) ||
+      (cat.tipoUso && cat.tipoUso.toLowerCase().includes(busqueda.toLowerCase()))
   );
 
+  // Renderizado condicional para carga y errores
+  if (loading) {
+    return (
+      <div className="categorias-producto-admin-page-container">
+        <NavbarAdmin />
+        <div className="categorias-producto-admin-main-content">
+          <div className="categorias-producto-admin-content-wrapper">
+            <h1>Gestión Categorías de Productos</h1>
+            <p>Cargando categorías...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Comentario: El manejo de 'error' podría redirigir o mostrar un mensaje permanente
+  // si el error es grave y no se soluciona recargando.
+  // Por ahora, el ValidationModal ya muestra el mensaje.
+
   return (
-    // Clase principal para la página, para aplicar estilos de layout
     <div className="categorias-producto-admin-page-container">
       <NavbarAdmin />
-      {/* Contenedor del contenido principal */}
       <div className="categorias-producto-admin-main-content">
-        {/* Wrapper interno para centrar el título, barra de acciones y tabla */}
         <div className="categorias-producto-admin-content-wrapper">
           <h1>Gestión Categorías de Productos</h1>
-          {/* Barra de acciones superior con búsqueda y botón agregar */}
           <div className="categorias-producto-admin-actions-bar">
             <div className="categorias-producto-admin-search-bar">
               <input
@@ -168,7 +241,6 @@ function ListaCategoriasProductoPage() {
         </div>
       </div>
 
-      {/* Modales separados */}
       <CategoriaProductoCrearModal
         isOpen={isCrearModalOpen}
         onClose={handleCrearModalClose}
@@ -180,7 +252,7 @@ function ListaCategoriasProductoPage() {
         onSubmit={handleSave}
         initialData={currentCategoria}
       />
-      <CategoriaProductoDetalleModal // Este modal ya existe
+      <CategoriaProductoDetalleModal
         isOpen={isDetailsModalOpen}
         onClose={closeOtherModals}
         categoria={currentCategoria}
@@ -197,7 +269,7 @@ function ListaCategoriasProductoPage() {
       <ValidationModal
         isOpen={isValidationModalOpen}
         onClose={closeOtherModals}
-        title="Aviso de Categorías de Producto" // Título específico
+        title="Aviso de Categorías de Producto"
         message={validationMessage}
       />
     </div>

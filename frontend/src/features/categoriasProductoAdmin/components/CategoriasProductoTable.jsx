@@ -20,23 +20,25 @@ const CategoriasProductoTable = ({ categorias, onView, onEdit, onDeleteConfirm, 
       </thead>
       <tbody>
         {categorias.map((categoria) => (
-          <tr key={categoria.id}>
+          // CAMBIO: Usar categoria.idCategoriaProducto como key
+          <tr key={categoria.idCategoriaProducto}>
             <td>{categoria.nombre}</td>
             <td>{categoria.descripcion}</td>
-            <td>{categoria.vidaUtil} días</td>
+            {/* CAMBIO: Usar categoria.vidaUtilDias */}
+            <td>{categoria.vidaUtilDias} días</td>
             <td>{categoria.tipoUso}</td>
             <td>
               <label className="switch">
                 <input
                   type="checkbox"
                   checked={categoria.estado}
-                  onChange={() => onToggleEstado(categoria.id)}
+                  // CAMBIO: Pasar categoria.idCategoriaProducto a onToggleEstado
+                  onChange={() => onToggleEstado(categoria.idCategoriaProducto)}
                 />
-                <span className="slider round"></span> {/* Asumiendo que quieres el slider redondo */}
+                <span className="slider round"></span>
               </label>
             </td>
             <td>
-              {/* Usar onView para el modal de detalles, y navigate para editar */}
               <button className="table-action-button-categoria" onClick={() => onView(categoria)} title="Ver Detalles">
                 <FaEye />
               </button>

@@ -20,14 +20,19 @@ const CategoriaProductoForm = ({ formData, onFormChange, isEditing }) => {
         <label htmlFor="descripcion" className="form-label-categoria">Descripción: <span className="required-asterisk">*</span></label>
         <textarea
           id="descripcion" name="descripcion" placeholder="Descripción de la categoría"
-          value={formData.descripcion || ''} onChange={handleChange} className="form-textarea-categoria" required
-        ></textarea>
+          value={formData.descripcion || ''} onChange={handleChange} className="form-textarea-categoria" 
+          // CAMBIO: Quitar 'required' si la descripción es opcional en el backend
+          // Si el backend la hace opcional, el frontend debería ser consistente o manejar la validación de otra manera.
+          // Por defecto, la dejaré sin 'required' para reflejar la opcionalidad del backend.
+          // Si necesitas que sea obligatoria para el usuario, debes ajustarlo en tu modelo de BD también.
+        ></textarea> 
       </div>
       <div className="form-group-categoria">
-        <label htmlFor="vidaUtil" className="form-label-categoria">Vida Útil (días): <span className="required-asterisk">*</span></label>
+        {/* CAMBIO: Consistentemente 'vidaUtilDias' con el backend */}
+        <label htmlFor="vidaUtilDias" className="form-label-categoria">Vida Útil (días): <span className="required-asterisk">*</span></label>
         <input
-          type="number" id="vidaUtil" name="vidaUtil" placeholder="Ej: 365"
-          value={formData.vidaUtil || ''} onChange={handleChange} className="form-input-categoria" required min="1"
+          type="number" id="vidaUtilDias" name="vidaUtilDias" placeholder="Ej: 365" // CAMBIO: name y id
+          value={formData.vidaUtilDias || ''} onChange={handleChange} className="form-input-categoria" required min="1"
         />
       </div>
       <div className="form-group-categoria">
@@ -37,8 +42,8 @@ const CategoriaProductoForm = ({ formData, onFormChange, isEditing }) => {
           className="form-select-categoria" required
         >
           <option value="" disabled>Seleccione el tipo de uso</option>
-          <option value="Interno">Interno (Uso)</option> {/* Ajustado para coincidir con script BD */}
-          <option value="Externo">Externo (Venta)</option> {/* Ajustado */}
+          <option value="Interno">Interno (Uso)</option>
+          <option value="Externo">Externo (Venta)</option>
         </select>
       </div>
       {isEditing && ( // Solo mostrar el toggle de estado al editar

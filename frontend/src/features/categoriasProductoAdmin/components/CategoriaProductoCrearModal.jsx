@@ -6,14 +6,17 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const getInitialFormState = () => ({
     nombre: '',
     descripcion: '',
-    vidaUtil: '', // Días
-    tipoUso: '',  // 'Interno' o 'Externo'
-    estado: true, // Nuevas categorías activas por defecto
-    productos: [], // Si manejas productos asociados, inicialízalo vacío
+    vidaUtilDias: '', // CAMBIO: Consistentemente 'vidaUtilDias' con el backend
+    tipoUso: '',     // 'Interno' o 'Externo'
+    estado: true,    // Nuevas categorías activas por defecto
+    // 'productos' no es un campo que el backend espere en la creación.
+    // Aunque se inicialice aquí, será ignorado por el servicio de backend al crear.
+    // Si no tiene un propósito en el frontend para la creación, podría removerse.
+    productos: [],
   });
 
   const [formData, setFormData] = useState(getInitialFormState());
-  const [formErrors, setFormErrors] = useState({}); // Para validaciones futuras
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     if (isOpen) {
@@ -32,9 +35,15 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const validateForm = () => {
     const errors = {};
     if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio.";
-    if (!formData.descripcion.trim()) errors.descripcion = "La descripción es obligatoria.";
-    if (!formData.vidaUtil || isNaN(parseInt(formData.vidaUtil)) || parseInt(formData.vidaUtil) <= 0) {
-      errors.vidaUtil = "La vida útil debe ser un número positivo de días.";
+    // La descripción es opcional en el modelo de backend, pero obligatoria aquí.
+    // Decide si quieres que sea obligatoria en el frontend o no.
+    // Si la quitas, el backend ya la maneja como opcional.
+    if (!formData.descripcion.trim()) errors.descripcion = "La descripción es obligatoria."; 
+    
+    // CAMBIO: Usar formData.vidaUtilDias
+    const vidaUtilDias = parseInt(formData.vidaUtilDias, 10); 
+    if (isNaN(vidaUtilDias) || vidaUtilDias <= 0) {
+      errors.vidaUtilDias = "La vida útil debe ser un número positivo de días."; // CAMBIO: Usar vidaUtilDias
     }
     if (!formData.tipoUso) errors.tipoUso = "Debe seleccionar un tipo de uso.";
     
@@ -51,7 +60,6 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    // Usar las clases de CategoriasProducto.css para el overlay y contenido del modal
     <div className="categorias-container-modal-overlay"> 
       <div className="modal-content-categoria-form">
         <h2 className="modal-title">Agregar Nueva Categoría de Producto</h2>
@@ -62,13 +70,13 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
             isEditing={false} // Siempre false para el modal de creación
             formErrors={formErrors}
           />
-          {/* Mostrar errores de validación del formulario si existen */}
           {formErrors.nombre && <p className="error-categoria-producto">{formErrors.nombre}</p>}
           {formErrors.descripcion && <p className="error-categoria-producto">{formErrors.descripcion}</p>}
-          {formErrors.vidaUtil && <p className="error-categoria-producto">{formErrors.vidaUtil}</p>}
+          {/* CAMBIO: Mostrar errores de vidaUtilDias */}
+          {formErrors.vidaUtilDias && <p className="error-categoria-producto">{formErrors.vidaUtilDias}</p>} 
           {formErrors.tipoUso && <p className="error-categoria-producto">{formErrors.tipoUso}</p>}
 
-          <div className="form-actions-categoria"> {/* Clase de CategoriasProducto.css */}
+          <div className="form-actions-categoria">
             <button type="submit" className="form-button-guardar-categoria">
               Guardar Categoría
             </button>

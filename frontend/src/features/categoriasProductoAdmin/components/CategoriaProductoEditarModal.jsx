@@ -9,13 +9,15 @@ const CategoriaProductoEditarModal = ({ isOpen, onClose, onSubmit, initialData }
   useEffect(() => {
     if (isOpen && initialData) {
       setFormData({
-        id: initialData.id, // Mantener el ID
+        // CAMBIO: Consistentemente 'idCategoriaProducto' con el backend
+        idCategoriaProducto: initialData.idCategoriaProducto, 
         nombre: initialData.nombre || '',
         descripcion: initialData.descripcion || '',
-        vidaUtil: initialData.vidaUtil || '',
+        // CAMBIO: Consistentemente 'vidaUtilDias' con el backend
+        vidaUtilDias: initialData.vidaUtilDias || '', 
         tipoUso: initialData.tipoUso || '',
-        estado: initialData.estado !== undefined ? initialData.estado : true, // Cargar estado
-        productos: initialData.productos || [], // Mantener productos asociados
+        estado: initialData.estado !== undefined ? initialData.estado : true,
+        productos: initialData.productos || [],
       });
       setFormErrors({});
     } else if (isOpen && !initialData) {
@@ -34,9 +36,13 @@ const CategoriaProductoEditarModal = ({ isOpen, onClose, onSubmit, initialData }
   const validateForm = () => {
     const errors = {};
     if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio.";
-    if (!formData.descripcion.trim()) errors.descripcion = "La descripción es obligatoria.";
-     if (!formData.vidaUtil || isNaN(parseInt(formData.vidaUtil)) || parseInt(formData.vidaUtil) <= 0) {
-      errors.vidaUtil = "La vida útil debe ser un número positivo de días.";
+    // La descripción es opcional en el backend, pero obligatoria aquí. Considera ajustar.
+    if (!formData.descripcion.trim()) errors.descripcion = "La descripción es obligatoria."; 
+    
+    // CAMBIO: Usar formData.vidaUtilDias y el mensaje de error
+    const vidaUtilDias = parseInt(formData.vidaUtilDias, 10); 
+    if (isNaN(vidaUtilDias) || vidaUtilDias <= 0) {
+      errors.vidaUtilDias = "La vida útil debe ser un número positivo de días."; 
     }
     if (!formData.tipoUso) errors.tipoUso = "Debe seleccionar un tipo de uso.";
     
@@ -63,10 +69,10 @@ const CategoriaProductoEditarModal = ({ isOpen, onClose, onSubmit, initialData }
             isEditing={true} // Siempre true para edición
             formErrors={formErrors}
           />
-          {/* Mostrar errores de validación del formulario si existen */}
           {formErrors.nombre && <p className="error-categoria-producto">{formErrors.nombre}</p>}
           {formErrors.descripcion && <p className="error-categoria-producto">{formErrors.descripcion}</p>}
-          {formErrors.vidaUtil && <p className="error-categoria-producto">{formErrors.vidaUtil}</p>}
+          {/* CAMBIO: Mostrar errores de vidaUtilDias */}
+          {formErrors.vidaUtilDias && <p className="error-categoria-producto">{formErrors.vidaUtilDias}</p>} 
           {formErrors.tipoUso && <p className="error-categoria-producto">{formErrors.tipoUso}</p>}
 
           <div className="form-actions-categoria">
