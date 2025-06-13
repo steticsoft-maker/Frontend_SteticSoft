@@ -1,171 +1,112 @@
 // src/features/serviciosAdmin/services/serviciosAdminService.js
 import apiClient from '../../../shared/services/apiClient';
-import { getCategoriasServicio } from '../../categoriasServicioAdmin/services/categoriasServicioService'; // Para las categorías
 
-const SERVICIOS_STORAGE_KEY = 'servicios_admin_steticsoft_v2';
+// Se importa la función REAL del servicio de categorías para obtener los datos de la API.
+import { getCategoriasServicio } from '../../categoriasServicioAdmin/services/categoriasServicioService';
 
-// Datos iniciales de ejemplo si localStorage está vacío
-const INITIAL_SERVICIOS = [
-    { id: 1, nombre: "Corte de Dama", precio: 50000, categoria: "Peluquería", estado: "Activo", imagenURL: null, descripcion: "Corte moderno y personalizado." },
-    { id: 2, nombre: "Manicura Clásica", precio: 25000, categoria: "Uñas", estado: "Activo", imagenURL: null, descripcion: "Limpieza y esmaltado tradicional." },
-    { id: 3, nombre: "Masaje Relajante", precio: 80000, categoria: "Corporales", estado: "Inactivo", imagenURL: null, descripcion: "Masaje para aliviar el estrés." },
-];
-
-// --------- FUNCIONES LOCALES (localStorage) ---------
-export const fetchServiciosAdmin = () => {
-  const stored = localStorage.getItem(SERVICIOS_STORAGE_KEY);
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch (e) {
-      console.error("Error parsing serviciosAdmin from localStorage", e);
-      localStorage.removeItem(SERVICIOS_STORAGE_KEY);
-    }
-  }
-  persistServiciosAdmin(INITIAL_SERVICIOS);
-  return INITIAL_SERVICIOS;
-};
-
-const persistServiciosAdmin = (servicios) => {
-  localStorage.setItem(SERVICIOS_STORAGE_KEY, JSON.stringify(servicios));
-};
-
-export const getActiveCategoriasServicioForSelect = () => {
-  const todasCategorias = getCategoriasServicio();
-  return todasCategorias.filter(cat => cat.estado === "Activo").map(cat => cat.nombre);
-};
-
-export const saveServicioAdmin = (servicioData, existingServicios) => {
-  if (!servicioData.nombre?.trim()) {
-    throw new Error("El nombre del servicio es obligatorio.");
-  }
-  if (isNaN(parseFloat(servicioData.precio)) || parseFloat(servicioData.precio) <= 0) {
-    throw new Error("El precio del servicio debe ser un número positivo.");
-  }
-  if (!servicioData.categoria) {
-    // throw new Error("Debe seleccionar una categoría para el servicio.");
-  }
-
-  let updatedServicios;
-  if (servicioData.id) { // Editando
-    updatedServicios = existingServicios.map(s =>
-      s.id === servicioData.id ? { ...s, ...servicioData, precio: parseFloat(servicioData.precio) } : s
-    );
-  } else { // Creando
-    const newServicio = {
-      id: Date.now(),
-      ...servicioData,
-      precio: parseFloat(servicioData.precio),
-      estado: servicioData.estado || "Activo",
-    };
-    updatedServicios = [...existingServicios, newServicio];
-  }
-  persistServiciosAdmin(updatedServicios);
-  return updatedServicios;
-};
-
-export const deleteServicioAdminById = (servicioId, existingServicios) => {
-  const updatedServicios = existingServicios.filter(s => s.id !== servicioId);
-  persistServiciosAdmin(updatedServicios);
-  return updatedServicios;
-};
-
-export const toggleServicioAdminEstado = (servicioId, existingServicios) => {
-  const updatedServicios = existingServicios.map(s =>
-    s.id === servicioId ? { ...s, estado: s.estado === "Activo" ? "Inactivo" : "Activo" } : s
-  );
-  persistServiciosAdmin(updatedServicios);
-  return updatedServicios;
-};
-
-// --------- FUNCIONES API (asíncronas) ---------
+// --- FUNCIONES DE LA API PARA SERVICIOS ---
 
 /**
  * Obtiene todos los servicios desde la API.
+ * @param {object} [filtros] - Opcional. Objeto con filtros como { estado: true }.
+ * @returns {Promise<object>} La respuesta de la API.
  */
-export const fetchServiciosAdminAPI = async () => {
+export const getServicios = async (filtros = {}) => {
   try {
-    const response = await apiClient.get('/servicios');
-    return response.data;
+    const response = await apiClient.get('/servicios', { params: filtros });
+    return response.data; // La data de la API usualmente está en response.data
   } catch (error) {
-    throw (
-      error.response?.data ||
-      new Error(error.message || "Error desconocido al obtener servicios")
-    );
+    console.error("Error al obtener servicios:", error);
+    throw error.response?.data || new Error(error.message);
   }
 };
 
 /**
  * Crea un nuevo servicio en la API.
+ * @param {object} servicioData - Datos del nuevo servicio.
+ * @returns {Promise<object>} La respuesta de la API.
  */
-export const createServicioAdminAPI = async (servicioData) => {
+export const createServicio = async (servicioData) => {
   try {
     const response = await apiClient.post('/servicios', servicioData);
     return response.data;
   } catch (error) {
-    throw (
-      error.response?.data ||
-      new Error(error.message || "Error desconocido al crear el servicio")
-    );
+    console.error("Error al crear el servicio:", error);
+    throw error.response?.data || new Error(error.message);
   }
 };
 
 /**
  * Actualiza un servicio existente en la API.
+ * @param {number|string} id - ID del servicio a actualizar.
+ * @param {object} servicioData - Datos a actualizar.
+ * @returns {Promise<object>} La respuesta de la API.
  */
-export const updateServicioAdminAPI = async (id, servicioData) => {
+export const updateServicio = async (id, servicioData) => {
   try {
     const response = await apiClient.put(`/servicios/${id}`, servicioData);
     return response.data;
   } catch (error) {
-    throw (
-      error.response?.data ||
-      new Error(error.message || "Error desconocido al actualizar el servicio")
-    );
+    console.error(`Error al actualizar el servicio ${id}:`, error);
+    throw error.response?.data || new Error(error.message);
   }
 };
 
 /**
  * Elimina un servicio en la API.
+ * @param {number|string} id - ID del servicio a eliminar.
+ * @returns {Promise<object>} La respuesta de la API.
  */
-export const deleteServicioAdminAPI = async (id) => {
+export const deleteServicio = async (id) => {
   try {
-    const response = await apiClient.delete(`/servicios/${id}`);
-    return response.data;
+    // La petición DELETE puede no devolver contenido, pero sí una respuesta exitosa.
+    await apiClient.delete(`/servicios/${id}`);
   } catch (error) {
-    throw (
-      error.response?.data ||
-      new Error(error.message || "Error desconocido al eliminar el servicio")
-    );
+    console.error(`Error al eliminar el servicio ${id}:`, error);
+    throw error.response?.data || new Error(error.message);
   }
 };
 
 /**
- * Anula (desactiva) un servicio en la API.
+ * Cambia el estado de un servicio en la API.
+ * @param {number|string} id - ID del servicio.
+ * @param {boolean} nuevoEstado - El nuevo estado (true para activar, false para desactivar).
+ * @returns {Promise<object>} La respuesta de la API.
  */
-export const anularServicioAdminAPI = async (id) => {
-  try {
-    const response = await apiClient.patch(`/servicios/${id}/anular`);
-    return response.data;
-  } catch (error) {
-    throw (
-      error.response?.data ||
-      new Error(error.message || "Error desconocido al anular el servicio")
-    );
-  }
-};
+export const cambiarEstadoServicio = async (id, nuevoEstado) => {
+    try {
+      const response = await apiClient.patch(`/servicios/${id}/estado`, { estado: nuevoEstado });
+      return response.data;
+    } catch (error) {
+      console.error(`Error al cambiar estado del servicio ${id}:`, error);
+      throw error.response?.data || new Error(error.message);
+    }
+  };
+
+
+// --- FUNCIONES AUXILIARES (relacionadas con otros módulos) ---
 
 /**
- * Habilita (activa) un servicio en la API.
+ * Obtiene solo las categorías de servicio activas, ideal para un dropdown/select en el formulario.
+ * @returns {Promise<Array>} Un array de objetos de categoría con { id, nombre }.
  */
-export const habilitarServicioAdminAPI = async (id) => {
+export const getActiveCategoriasForSelect = async () => {
   try {
-    const response = await apiClient.patch(`/servicios/${id}/habilitar`);
-    return response.data;
+    const response = await getCategoriasServicio({ estado: true });
+    // La data real de la API está en response.data.data
+    const todasCategoriasActivas = response?.data?.data || []; 
+    
+    if (!todasCategoriasActivas || todasCategoriasActivas.length === 0) {
+      console.warn("No se encontraron categorías activas desde la API.");
+    }
+    
+    return todasCategoriasActivas.map(cat => ({
+      id: cat.idCategoriaServicio,
+      nombre: cat.nombre
+    }));
   } catch (error) {
-    throw (
-      error.response?.data ||
-      new Error(error.message || "Error desconocido al habilitar el servicio")
-    );
+    console.error("ERROR GRAVE al obtener categorías de servicio activas:", error);
+    // Devolvemos un array vacío para que el formulario no se rompa
+    return [];
   }
 };
