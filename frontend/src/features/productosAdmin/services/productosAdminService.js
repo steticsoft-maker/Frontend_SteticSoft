@@ -62,11 +62,13 @@ export const productosAdminService = {
   updateProducto,
   toggleEstado: toggleProductoEstado,
   deleteProducto,
-  // Reutilizamos la función del otro servicio para obtener las categorías
+  // CORRECCIÓN CLAVE: Devolver el objeto completo de la categoría, no solo el nombre.
   getActiveCategorias: async () => {
       try {
           const categorias = await getCategoriasAPI();
-          return categorias.filter(c => c.estado === true).map(c => c.nombre);
+          // Solo filtramos por estado, pero devolvemos el objeto completo de la categoría
+          // ¡Esto es lo que ProductoAdminForm espera!
+          return categorias.filter(c => c.estado === true); 
       } catch (error) {
           console.error("Error al obtener categorías activas:", error);
           return [];

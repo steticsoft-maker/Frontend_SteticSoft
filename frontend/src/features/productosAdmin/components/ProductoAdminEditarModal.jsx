@@ -1,7 +1,7 @@
 // src/features/productosAdmin/components/ProductoAdminEditarModal.jsx
 import React, { useState, useEffect } from 'react';
 import ProductoAdminForm from './ProductoAdminForm';
-// CAMBIO: Importamos el objeto del servicio, no la función suelta
+// CAMBIO: Importamos el objeto del servicio
 import { productosAdminService } from '../services/productosAdminService';
 
 const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
@@ -9,6 +9,7 @@ const MAX_FILE_SIZE_MB = MAX_FILE_SIZE_BYTES / (1024 * 1024);
 
 const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({});
+  // CAMBIO: categoriasDisponibles ahora guardará objetos { idCategoriaProducto, nombre }
   const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false); // NUEVO: Estado de carga
@@ -21,13 +22,17 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
       // CAMBIO: La carga de categorías ahora es asíncrona
       const fetchCategorias = async () => {
         try {
-          // Usamos la nueva función del servicio real
+          // Usamos la nueva función del servicio que debería devolver {id, nombre}
           const categorias = await productosAdminService.getActiveCategorias();
-          setCategoriasDisponibles(categorias);
+          // Aseguramos que la estructura sea {idCategoriaProducto, nombre}
+          setCategoriasDisponibles(categorias.map(cat => ({
+            idCategoriaProducto: cat.idCategoriaProducto, // Asegúrate de que tu servicio de categorías devuelva esto
+            nombre: cat.nombre
+          })));
         } catch (error) {
           console.error("Error al cargar categorías en el modal de edición:", error);
           setCategoriasDisponibles([]);
-          setFormErrors(prev => ({...prev, _general: "No se pudieron cargar las categorías."}));
+          setFormErrors(prev => ({ ...prev, _general: "No se pudieron cargar las categorías." }));
         } finally {
           setIsLoading(false); // Termina la carga
         }
@@ -35,19 +40,26 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
 
       fetchCategorias();
 
-      // La carga de datos iniciales del producto se mantiene igual
+      // CAMBIO: Carga de datos iniciales del producto
+      // Ajustamos los nombres de los campos de 'initialData' para que coincidan con 'formData'
       setFormData({
-        id: initialData.id,
+        // CAMBIO: Usar idProducto para el ID
+        idProducto: initialData.idProducto, 
         nombre: initialData.nombre || '',
-        categoria: initialData.categoria || '',
+        // CAMBIO: Usar idCategoriaProducto del initialData
+        idCategoriaProducto: initialData.categoria ? initialData.categoria.idCategoriaProducto : '', 
         precio: initialData.precio?.toString() || '',
-        stock: initialData.stock?.toString() || '',
+        // CAMBIO: Usar existencia en lugar de stock
+        existencia: initialData.existencia?.toString() || '', 
+        stockMinimo: initialData.stockMinimo?.toString() || '0', // Asegurarse de tener stockMinimo y Maximo
+        stockMaximo: initialData.stockMaximo?.toString() || '0',
         descripcion: initialData.descripcion || '',
-        fotoPreview: initialData.foto || null,
-        foto: null,
+        // CAMBIO: Usar imagen y imagenPreview
+        imagenPreview: initialData.imagen || null, // La imagen que ya viene del backend
+        imagen: null, // Para la nueva imagen a subir
         estado: initialData.estado !== undefined ? initialData.estado : true,
       });
-      
+
     } else if (isOpen && !initialData) {
       console.error("Modal de edición de producto abierto sin initialData. Cerrando.");
       onClose();
@@ -63,35 +75,49 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormErrors(prev => ({ ...prev, foto: '' }));
+    // CAMBIO: Error para 'imagen'
+    setFormErrors(prev => ({ ...prev, imagen: '' }));
 
     if (file) {
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        setFormErrors(prev => ({ ...prev, foto: `La imagen debe ser menor a ${MAX_FILE_SIZE_MB}MB.` }));
-        setFormData(prev => ({ ...prev, foto: null, fotoPreview: initialData?.foto || null }));
+        setFormErrors(prev => ({ ...prev, imagen: `La imagen debe ser menor a ${MAX_FILE_SIZE_MB}MB.` }));
+        // CAMBIO: Nombres de campo 'imagen' y 'imagenPreview'
+        setFormData(prev => ({ ...prev, imagen: null, imagenPreview: initialData?.imagen || null }));
         e.target.value = null;
         return;
       }
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, foto: file, fotoPreview: reader.result }));
+        setFormData(prev => ({ ...prev, imagen: file, imagenPreview: reader.result }));
       };
       reader.readAsDataURL(file);
     } else {
-      setFormData(prev => ({ ...prev, foto: null, fotoPreview: initialData?.foto || null }));
+      // CAMBIO: Nombres de campo 'imagen' y 'imagenPreview'
+      setFormData(prev => ({ ...prev, imagen: null, imagenPreview: initialData?.imagen || null }));
     }
   };
 
   const validateForm = () => {
     const errors = {};
     if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio.";
-    if (!formData.categoria) errors.categoria = "Debe seleccionar una categoría.";
+    // CAMBIO: Validar 'idCategoriaProducto'
+    if (!formData.idCategoriaProducto) errors.idCategoriaProducto = "Debe seleccionar una categoría.";
     if (!formData.precio || isNaN(parseFloat(formData.precio)) || parseFloat(formData.precio) <= 0) {
       errors.precio = "El precio debe ser un número positivo.";
     }
-    if (formData.stock === '' || isNaN(parseInt(formData.stock)) || parseInt(formData.stock) < 0) {
-        errors.stock = "El stock debe ser un número igual o mayor a cero.";
+    // CAMBIO: Validar 'existencia'
+    if (formData.existencia === '' || isNaN(parseInt(formData.existencia)) || parseInt(formData.existencia) < 0) {
+      errors.existencia = "La existencia debe ser un número igual o mayor a cero.";
     }
+    // Añadir validación para stockMinimo y stockMaximo si es necesario en el frontend
+    if (
+        formData.stockMinimo !== '' &&
+        formData.stockMaximo !== '' &&
+        parseInt(formData.stockMaximo) < parseInt(formData.stockMinimo)
+    ) {
+        errors.stockMaximo = "El stock máximo no puede ser menor que el stock mínimo.";
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -99,9 +125,26 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
   const handleSubmitForm = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    const dataToSubmit = { ...formData, foto: formData.fotoPreview };
-    delete dataToSubmit.fotoPreview;
-    onSubmit(dataToSubmit); // La página principal (ListaProductosAdminPage) manejará la llamada a la API
+
+    // CAMBIO: Preparar los datos para la API con los nombres correctos
+    const dataToSubmit = {
+      // CAMBIO: ID del producto para actualizar
+      idProducto: formData.idProducto, 
+      nombre: formData.nombre,
+      descripcion: formData.descripcion,
+      existencia: parseInt(formData.existencia), 
+      precio: parseFloat(formData.precio),
+      stockMinimo: parseInt(formData.stockMinimo),
+      stockMaximo: parseInt(formData.stockMaximo),
+      // CAMBIO: Enviar idCategoriaProducto al backend
+      categoriaProductoId: formData.idCategoriaProducto, 
+      // CAMBIO: Enviar imagenPreview (base64) como 'imagen'
+      imagen: formData.imagenPreview, 
+      estado: formData.estado,
+    };
+    // La función onSubmit en la página principal (ProductosAdminPage)
+    // se encargará de llamar a productosAdminService.updateProducto con estos datos.
+    onSubmit(dataToSubmit); 
   };
 
   if (!isOpen || !initialData) return null;
@@ -118,7 +161,8 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
               formData={formData}
               onFormChange={handleFormChange}
               onFileChange={handleFileChange}
-              categoriasDisponibles={categoriasDisponibles}
+              // CAMBIO: pasar la estructura de categorías correcta
+              categoriasDisponibles={categoriasDisponibles} 
               isEditing={true}
               formErrors={formErrors}
             />

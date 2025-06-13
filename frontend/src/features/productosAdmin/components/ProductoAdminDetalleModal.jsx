@@ -15,28 +15,31 @@ const ProductoAdminDetalleModal = ({ isOpen, onClose, producto }) => {
         {/* Contenedor para la lista de detalles para mejor control de estilos */}
         <div className="producto-admin-details-list"> 
           <p><strong>Nombre:</strong> {producto.nombre}</p>
-          <p><strong>Categoría:</strong> {producto.categoria}</p>
+          {/* CAMBIO CLAVE: Acceder a 'nombre' de 'producto.categoria' */}
+          <p><strong>Categoría:</strong> {producto.categoria ? producto.categoria.nombre : 'N/A'}</p> 
           <p><strong>Precio:</strong> ${producto.precio ? producto.precio.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0.00'}</p>
-          <p><strong>Stock:</strong> {producto.stock}</p>
+          {/* CAMBIO: Mostrar 'producto.existencia' en lugar de 'producto.stock' */}
+          <p><strong>Existencia (Stock):</strong> {producto.existencia}</p>
           <p><strong>Descripción:</strong> {producto.descripcion || 'N/A'}</p>
           <p><strong>Estado:</strong> {producto.estado ? "Activo" : "Inactivo"}</p>
           
-          {producto.foto && ( // Usar producto.foto (que sería la URL/base64)
-            <div className="detalle-imagen-container"> {/* Clase para estilizar el contenedor de la imagen si es necesario */}
+          {/* CAMBIO: Usar 'producto.imagen' en lugar de 'producto.foto' */}
+          {producto.imagen && ( 
+            <div className="detalle-imagen-container"> 
               <p> 
-                <strong>Foto:</strong>
+                <strong>Imagen:</strong>
               </p>
               <img 
-                src={producto.foto} 
+                src={producto.imagen} 
                 alt={producto.nombre} 
-                className="producto-admin-detalle-imagen" // Clase específica para la imagen en el detalle
+                className="producto-admin-detalle-imagen" 
               />
             </div>
           )}
         </div>
         
         <button 
-          className="productos-admin-modal-button-cerrar" // Clase consistente para botón cerrar
+          className="productos-admin-modal-button-cerrar" 
           onClick={onClose}
         >
           Cerrar

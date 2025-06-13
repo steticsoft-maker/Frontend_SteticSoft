@@ -4,7 +4,13 @@ import React from 'react';
 const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDisponibles, isEditing }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    onFormChange(name, type === 'checkbox' ? checked : value);
+    // CAMBIO: Convertir a número si es un campo de stock o precio, para evitar enviar strings vacíos al backend si el campo está vacío.
+    // Esto es especialmente útil para campos numéricos opcionales.
+    let parsedValue = value;
+    if (name === 'existencia' || name === 'precio' || name === 'stockMinimo' || name === 'stockMaximo') {
+      parsedValue = value === '' ? '' : Number(value);
+    }
+    onFormChange(name, type === 'checkbox' ? checked : parsedValue);
   };
 
   return (
@@ -17,11 +23,15 @@ const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDis
       </div>
 
       <div className="producto-admin-form-group">
-        <label htmlFor="categoria">Categoría: <span className="required-asterisk">*</span></label>
-        <select id="categoria" name="categoria" value={formData.categoria || ''} onChange={handleChange} required>
+        <label htmlFor="idCategoriaProducto">Categoría: <span className="required-asterisk">*</span></label>
+        {/* CAMBIO CLAVE: name y value apuntan a 'idCategoriaProducto' */}
+        <select id="idCategoriaProducto" name="idCategoriaProducto" value={formData.idCategoriaProducto || ''} onChange={handleChange} required>
           <option value="" disabled>Seleccionar categoría</option>
-          {categoriasDisponibles.map((cat, index) => (
-            <option key={index} value={cat}>{cat}</option>
+          {/* CAMBIO CLAVE: Mapear para usar idCategoriaProducto como value y nombre como texto */}
+          {categoriasDisponibles.map((cat) => (
+            <option key={cat.idCategoriaProducto} value={cat.idCategoriaProducto}>
+              {cat.nombre}
+            </option>
           ))}
         </select>
       </div>
@@ -32,8 +42,36 @@ const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDis
       </div>
 
       <div className="producto-admin-form-group">
-        <label htmlFor="stock">Stock: <span className="required-asterisk">*</span></label>
-        <input type="number" id="stock" name="stock" placeholder="Stock" value={formData.stock || ''} onChange={handleChange} required min="0" />
+        {/* CAMBIO: Renombrado de 'stock' a 'existencia' */}
+        <label htmlFor="existencia">Existencia: <span className="required-asterisk">*</span></label>
+        <input type="number" id="existencia" name="existencia" placeholder="Existencia actual" value={formData.existencia || ''} onChange={handleChange} required min="0" />
+      </div>
+
+      {/* NUEVOS CAMPOS: Stock Mínimo y Máximo */}
+      <div className="producto-admin-form-group">
+        <label htmlFor="stockMinimo">Stock Mínimo:</label>
+        <input
+          type="number"
+          id="stockMinimo"
+          name="stockMinimo"
+          placeholder="Stock mínimo"
+          value={formData.stockMinimo || ''}
+          onChange={handleChange}
+          min="0"
+        />
+      </div>
+
+      <div className="producto-admin-form-group">
+        <label htmlFor="stockMaximo">Stock Máximo:</label>
+        <input
+          type="number"
+          id="stockMaximo"
+          name="stockMaximo"
+          placeholder="Stock máximo"
+          value={formData.stockMaximo || ''}
+          onChange={handleChange}
+          min="0"
+        />
       </div>
 
       <div className="producto-admin-form-group">
@@ -42,10 +80,12 @@ const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDis
       </div>
 
       <div className="producto-admin-form-group">
-        <label htmlFor="foto">Foto del Producto:</label>
-        <input type="file" id="foto" name="foto" accept="image/*" onChange={onFileChange} />
-        {formData.fotoPreview && ( // formData.fotoPreview sería la URL de la imagen para previsualizar
-          <img src={formData.fotoPreview} alt="Vista previa" style={{ maxWidth: '100px', marginTop: '10px' }} />
+        {/* CAMBIO: Renombrado de 'foto' a 'imagen' */}
+        <label htmlFor="imagen">Imagen del Producto:</label>
+        <input type="file" id="imagen" name="imagen" accept="image/*" onChange={onFileChange} />
+        {/* CAMBIO: Usar 'imagenPreview' */}
+        {formData.imagenPreview && ( 
+          <img src={formData.imagenPreview} alt="Vista previa" style={{ maxWidth: '100px', marginTop: '10px' }} />
         )}
       </div>
 
