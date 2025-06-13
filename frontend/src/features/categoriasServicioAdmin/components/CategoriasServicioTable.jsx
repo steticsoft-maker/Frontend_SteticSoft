@@ -1,12 +1,18 @@
-import React from "react";
+// src/components/CategoriasTabla.jsx
+import React from 'react';
 
-const CategoriasServicioTable = ({
+const CategoriasTabla = ({
   categorias,
-  onView,
-  onEdit,
-  onDeleteConfirm,
-  onToggleEstado,
+  onEditar,
+  onEliminar,
+  onCambiarEstado,
+  onVerDetalles,
+  loadingId,
 }) => {
+  if (!categorias || categorias.length === 0) {
+    return <p>No hay categorías de servicio para mostrar.</p>;
+  }
+
   return (
     <table className="tablaCategoria">
       <thead>
@@ -19,57 +25,53 @@ const CategoriasServicioTable = ({
       </thead>
       <tbody>
         {categorias.map((cat) => (
-          <tr key={cat.id}>
+          <tr key={cat.idCategoriaServicio}>
             <td data-label="Nombre">{cat.nombre}</td>
-            <td data-label="Descripción">{cat.descripcion}</td>
-            <td data-label="Estado" style={{ textAlign: "center" }}>
-              <label className="switch">
+            <td data-label="Descripción">{cat.descripcion || '-'}</td>
+            <td data-label="Estado">
+              <label className="switch" title={cat.estado ? 'Desactivar' : 'Activar'}>
                 <input
                   type="checkbox"
-                  checked={cat.activo}
-                  onChange={() => onToggleEstado(cat)}
+                  checked={cat.estado}
+                  onChange={() => onCambiarEstado(cat)}
+                  disabled={loadingId === cat.idCategoriaServicio}
                 />
                 <span className="slider"></span>
               </label>
             </td>
-            <td
-              data-label="Acciones"
-              className="categorias-servicio-actions"
-            >
-              <button
-                className="botonVerDetallesCategoria"
-                onClick={() => onView(cat)}
-                title="Ver detalles"
-              >
-                Detalles
-              </button>
-              <button
-                className="botonEditarCategoria"
-                onClick={() => onEdit(cat)}
-                title="Editar"
-              >
-                Editar
-              </button>
-              <button
-                className="botonEliminarCategoria"
-                onClick={() => onDeleteConfirm(cat)}
-                title="Eliminar"
-              >
-                Eliminar
-              </button>
+            <td data-label="Acciones">
+              <div className="categorias-servicio-actions">
+                <button
+                  className="botonVerDetallesCategoria"
+                  onClick={() => onVerDetalles(cat)}
+                  disabled={loadingId === cat.idCategoriaServicio}
+                  title="Ver Detalles"
+                >
+                  Ver
+                </button>
+                <button
+                  className="botonEditarCategoria"
+                  onClick={() => onEditar(cat)}
+                  disabled={loadingId === cat.idCategoriaServicio}
+                  title="Editar"
+                >
+                  Editar
+                </button>
+                <button
+                  className="botonEliminarCategoria"
+                  onClick={() => onEliminar(cat)}
+                  disabled={loadingId === cat.idCategoriaServicio}
+                  title="Eliminar"
+                >
+                  Eliminar
+                </button>
+              </div>
             </td>
           </tr>
         ))}
-        {categorias.length === 0 && (
-          <tr>
-            <td colSpan={5} style={{ textAlign: "center" }}>
-              No hay categorías para mostrar.
-            </td>
-          </tr>
-        )}
       </tbody>
     </table>
   );
 };
 
-export default CategoriasServicioTable;
+export default CategoriasTabla;
