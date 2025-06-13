@@ -109,14 +109,10 @@ export const resetearContrasenaAPI = async (
  * @returns {Promise<object>} Un objeto indicando el éxito del logout del cliente.
  */
 export const logoutAPI = async () => {
-  try {
-    // Si el backend tuviera un endpoint de logout, la llamada iría aquí:
-    // await apiClient.post("/auth/logout");
-    
-    // Como no hay una llamada al backend definida, se retorna un éxito simulado.
-    return { success: true, message: "Logout procesado por el cliente." };
-  } catch (error) {
-    // Este bloque se ejecutaría si la llamada al backend fallara.
-    throw error.response?.data || error;
-  }
+  // Si el backend tuviera un endpoint de logout, la llamada iría aquí:
+  // await apiClient.post("/auth/logout");
+  
+  // Se mantiene como 'async' para asegurar que la función siempre retorne una promesa,
+  // manteniendo la consistencia con otras llamadas a la API.
+  return { success: true, message: "Logout procesado por el cliente." };
 };

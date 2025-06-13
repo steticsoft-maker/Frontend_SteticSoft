@@ -98,7 +98,7 @@ const getProductosActivos = async () => {
     const response = await apiClient.get('/productos?estado=true');
     return response.data?.data || [];
   } catch (error) {
-    throw new Error("Error al obtener los productos activos.");
+    throw error.response?.data || new Error("Error al obtener los productos activos.");
   }
 };
 
@@ -110,7 +110,7 @@ const getCategoriasUsoInterno = async () => {
       const response = await apiClient.get('/categorias-producto?estado=true&tipoUso=Interno');
       return response.data?.data || [];
   } catch (error) {
-      throw new Error("Error al obtener las categorías de productos.");
+      throw error.response?.data || new Error("Error al obtener las categorías de productos.");
   }
 };
 
@@ -121,7 +121,7 @@ const getProductosPorCategoria = async (categoriaId) => {
       const response = await apiClient.get(`/productos?estado=true&categoriaId=${categoriaId}&tipoUso=Interno`);
       return response.data?.data || [];
   } catch (error) {
-      throw new Error("Error al obtener los productos de la categoría seleccionada.");
+      throw error.response?.data || new Error("Error al obtener los productos de la categoría seleccionada.");
   }
 };
 
@@ -132,7 +132,7 @@ const getEmpleadosActivos = async () => {
     const allUsers = response.data?.data || [];
     return allUsers.filter(u => u.rol?.nombre === 'Empleado');
   } catch (error) {
-    throw new Error("Error al obtener los empleados activos.");
+    throw error.response?.data || new Error("Error al obtener los empleados activos.");
   }
 };
 
