@@ -1,6 +1,6 @@
 // src/features/serviciosAdmin/services/serviciosAdminService.js
 import apiClient from '../../../shared/services/apiClient';
-import { fetchCategoriasServicio } from '../../categoriasServicioAdmin/services/categoriasServicioService'; // Para las categorías
+import { getCategoriasServicio } from '../../categoriasServicioAdmin/services/categoriasServicioService'; // Para las categorías
 
 const SERVICIOS_STORAGE_KEY = 'servicios_admin_steticsoft_v2';
 
@@ -31,7 +31,7 @@ const persistServiciosAdmin = (servicios) => {
 };
 
 export const getActiveCategoriasServicioForSelect = () => {
-  const todasCategorias = fetchCategoriasServicio();
+  const todasCategorias = getCategoriasServicio();
   return todasCategorias.filter(cat => cat.estado === "Activo").map(cat => cat.nombre);
 };
 

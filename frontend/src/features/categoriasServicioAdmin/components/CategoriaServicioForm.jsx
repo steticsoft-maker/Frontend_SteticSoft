@@ -1,89 +1,116 @@
-import React, { useState, useEffect } from "react";
+// src/components/CategoriaServicioFormModal.jsx
+import React, { useState, useEffect } from 'react';
 
-const CategoriaFormModal = ({
-  open,
-  onClose,
-  onSubmit,
-  initialData,
-  modoEdicion,
-}) => {
-  const [nombre, setNombre] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [activo, setActivo] = useState(true);
-  const [error, setError] = useState("");
+const CategoriaServicioFormModal = ({ isOpen, onClose, onSubmit, isEditMode, initialData }) => {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    descripcion: '',
+    estado: true,
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (initialData) {
-      setNombre(initialData.nombre || "");
-      setDescripcion(initialData.descripcion || "");
-      setActivo(initialData.activo ?? true);
-    } else {
-      setNombre("");
-      setDescripcion("");
-      setActivo(true);
+    if (isOpen) {
+      if (isEditMode && initialData) {
+        setFormData({
+          nombre: initialData.nombre || '',
+          descripcion: initialData.descripcion || '',
+          estado: initialData.estado ?? true,
+        });
+      } else {
+        setFormData({
+          nombre: '',
+          descripcion: '',
+          estado: true, // Siempre se crea como 'true' (Activo)
+        });
+      }
+      setError('');
     }
-    setError("");
-  }, [initialData, open]);
+  }, [isOpen, isEditMode, initialData]);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!nombre.trim()) {
+    setError('');
+    if (!formData.nombre.trim()) {
       setError("El nombre es obligatorio.");
       return;
     }
-    onSubmit({ nombre, descripcion, activo });
+    setLoading(true);
+    try {
+      // Al enviar, el objeto 'formData' todavía contiene el 'estado' correcto.
+      await onSubmit(formData);
+      onClose();
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Error al guardar la categoría.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!open) return null;
+  if (!isOpen) return null;
 
   return (
     <div className="modal-Categoria">
       <div className="modal-content-Categoria formulario">
-        <h3>{modoEdicion ? "Editar Categoría" : "Agregar Categoría"}</h3>
+        <h3>{isEditMode ? 'Editar Categoría' : 'Agregar Nueva Categoría'}</h3>
+
         <form className="modal-Categoria-form-grid" onSubmit={handleSubmit}>
           <div className="camposAgregarCategoria">
-            <label>
+            <label htmlFor="nombre">
               Nombre <span className="requiredCategoria">*</span>
             </label>
             <input
+              id="nombre"
+              name="nombre"
               className="campoAgregarCategoria"
               type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
+              value={formData.nombre}
+              onChange={handleChange}
+              placeholder="Ingrese el nombre de la categoría"
               required
+              disabled={loading}
             />
           </div>
           <div className="camposAgregarCategoria">
-            <label>Descripción</label>
+            <label htmlFor="descripcion">Descripción</label>
             <textarea
+              id="descripcion"
+              name="descripcion"
               className="campoAgregarCategoria"
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
+              value={formData.descripcion}
+              onChange={handleChange}
+              placeholder="Ingrese una descripción (opcional)"
+              rows="3"
+              disabled={loading}
             />
           </div>
-          <div className="camposAgregarCategoria">
-            <label>Estado</label>
-            <label className="switch">
-              <input
-                type="checkbox"
-                checked={activo}
-                onChange={() => setActivo((a) => !a)}
-              />
-              <span className="slider"></span>
-            </label>
-          </div>
+          
+          {/* SE HA ELIMINADO EL CAMPO 'ESTADO' DE LA VISTA */}
+          
           {error && <div className="error">{error}</div>}
+
           <div className="containerBotonesAgregarCategoria">
             <button
               type="submit"
-              className="botonGuardarEditarProveedor botonEditarCategoria"
+              className="botonEditarCategoria"
+              disabled={loading}
             >
-              {modoEdicion ? "Guardar Cambios" : "Agregar"}
+              {loading ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Agregar')}
             </button>
             <button
               type="button"
               className="botonCancelarEditarProveedor"
               onClick={onClose}
+              disabled={loading}
             >
               Cancelar
             </button>
@@ -94,4 +121,4 @@ const CategoriaFormModal = ({
   );
 };
 
-export default CategoriaFormModal;
+export default CategoriaServicioFormModal;
