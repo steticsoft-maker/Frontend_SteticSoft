@@ -1,8 +1,7 @@
 // src/features/abastecimiento/components/AbastecimientoTable.jsx
-import React from 'react';
-import { FaEye, FaTrash, FaEdit } from 'react-icons/fa';
-// Importamos la función de cálculo también aquí.
-import { calculateRemainingLifetime } from '../services/abastecimientoService';
+import React from "react";
+import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
+import { calculateRemainingLifetime } from "../services/abastecimientoService";
 
 const AbastecimientoTable = ({ entries, onView, onEdit, onDelete, onDeplete }) => {
   return (
@@ -21,21 +20,39 @@ const AbastecimientoTable = ({ entries, onView, onEdit, onDelete, onDeplete }) =
       </thead>
       <tbody>
         {entries.map((entry) => (
-          <tr key={entry.idAbastecimiento} className={entry.estaAgotado ? "depleted-row" : ""}>
-            <td data-label="Producto:">{entry.productoAbastecido?.nombre || 'N/A'}</td>
-            <td data-label="Categoría:">{entry.productoAbastecido?.categoriaProducto?.nombre || 'N/A'}</td>
+          <tr
+            key={entry.idAbastecimiento}
+            className={entry.estaAgotado ? "depleted-row" : ""}
+          >
+            <td data-label="Producto:">{entry.producto?.nombre || "N/A"}</td>
+            <td data-label="Categoría:">
+              {entry.producto?.categoria?.nombre || "N/A"}
+            </td>
             <td data-label="Cantidad:">{entry.cantidad}</td>
-            <td data-label="Empleado:">{entry.empleadoResponsable?.nombre || 'No asignado'}</td>
-            <td data-label="Fecha Ingreso:">{new Date(entry.fechaIngreso).toLocaleDateString()}</td>
+            <td data-label="Empleado:">{entry.empleado?.nombre || "No asignado"}</td>
+            <td data-label="Fecha Ingreso:">
+              {new Date(entry.fechaIngreso).toLocaleDateString()}
+            </td>
             <td data-label="Vida Restante:">{calculateRemainingLifetime(entry)}</td>
             <td data-label="Estado:">
-              {entry.estaAgotado
-                ? `Agotado: ${entry.razonAgotamiento || "Sin especificar"}`
-                : "Disponible"}
+              {entry.estaAgotado ? (
+                <>
+                  Agotado
+                  <span className="depleted-reason-text">
+                    {entry.razonAgotamiento || "Sin especificar"}
+                  </span>
+                </>
+              ) : (
+                "Disponible"
+              )}
             </td>
             <td data-label="Acciones:">
               <div className="icon-actions-abastecimiento">
-                <button className="table-icons-abastecimiento view-button" onClick={() => onView(entry)} title="Ver Detalles">
+                <button
+                  className="table-icons-abastecimiento view-button"
+                  onClick={() => onView(entry)}
+                  title="Ver Detalles"
+                >
                   <FaEye />
                 </button>
                 <button

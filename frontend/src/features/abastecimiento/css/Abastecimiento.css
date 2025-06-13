@@ -7,7 +7,7 @@
     --color-text-on-warning: white; 
     --color-background-warning-light: #fff3e0;
     --color-text-warning-dark: #e65100;
-    --color-primary: #eb0985; // Rosa para etiquetas de detalle
+    --color-primary: #eb0985;
 }
 */
 
@@ -16,566 +16,400 @@
     display: flex;
     min-height: 100vh;
     width: 100%;
-    font-family: var(--font-family-roboto, 'Roboto', sans-serif);
+    font-family: var(--font-family-roboto, "Roboto", sans-serif);
     background-color: var(--color-background-admin-content, #f5f5f5);
-}
-
-.abastecimiento-main-content { 
-    flex: 1; 
-    padding: 30px; 
-    margin-left: 270px; /* ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */
+  }
+  
+  .abastecimiento-main-content {
+    flex: 1;
+    padding: 30px;
+    margin-left: 270px; /* ANCHO_NAVBAR_ADMIN + ESPACIO */
     overflow-y: auto;
     box-sizing: border-box;
-}
-
-.abastecimiento-content-wrapper { 
+  }
+  
+  .abastecimiento-content-wrapper {
     width: 100%;
-    max-width: 1200px; 
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
     display: flex;
     flex-direction: column;
-    align-items: center; 
-}
-
-.abastecimiento-content-wrapper h1 { 
+    align-items: center;
+  }
+  
+  .abastecimiento-content-wrapper h1 {
     text-align: center;
     color: var(--color-primary-darker, #6d0b58);
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 1.8rem;
-}
-
-/* === BARRA DE ACCIONES SUPERIORES === */
-.abastecimiento-actions-bar { 
+  }
+  
+  /* === BARRA DE ACCIONES SUPERIORES === */
+  .abastecimiento-actions-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px; 
+    margin-bottom: 25px;
     gap: 20px;
-    flex-wrap: wrap; 
-    width: 100%; 
+    flex-wrap: wrap;
+    width: 100%;
     box-sizing: border-box;
-}
-
-.abastecimiento-search-bar { 
+  }
+  
+  .abastecimiento-search-bar {
     flex-grow: 1;
     display: flex;
-}
-.abastecimiento-search-bar input { 
-    padding: 10px 12px; 
-    width: 100%; 
+  }
+  .abastecimiento-search-bar input {
+    padding: 10px 12px;
+    width: 100%;
     min-width: 250px;
     font-size: 1rem;
-    border: 1px solid var(--color-border-light, #c287b5); 
+    border: 1px solid var(--color-border-light, #c287b5);
     border-radius: 5px;
     background-color: var(--color-background-light, #fff);
     color: var(--color-text-dark, #333);
     box-sizing: border-box;
-}
-.abastecimiento-search-bar input:focus {
-    border-color: var(--color-admin-hover, #b660a3); 
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+  }
+  .abastecimiento-search-bar input:focus {
+    border-color: var(--color-admin-hover, #b660a3);
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
     outline: none;
-}
-
-.abastecimiento-add-button { 
-    padding: 10px 20px; 
-    font-size: 1rem; 
-    background-color: var(--color-admin-hover, #b660a3); 
-    color: var(--color-text-light, white); 
+  }
+  
+  .abastecimiento-add-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: var(--color-admin-hover, #b660a3);
+    color: var(--color-text-light, white);
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.3s ease;
     flex-shrink: 0;
-    height: 41px; 
+    height: 41px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.abastecimiento-add-button:hover {
+  }
+  .abastecimiento-add-button:hover {
     background-color: var(--color-primary-darker, #6d0b58);
-}
-
-/* === ESTILOS DE TABLA === */
-.tabla-abastecimiento {
-    width: 100%; 
+  }
+  
+  /* === ESTILOS DE TABLA === */
+  .tabla-abastecimiento {
+    width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: var(--color-background-light, #fff);
     border-radius: 8px;
-    overflow: hidden; 
+    overflow: hidden;
     font-size: 0.95rem;
-}
-.tabla-abastecimiento th {
-    background-color: var(--color-admin-primary-lighter, #e978d0); 
-    color: var(--color-text-dark, black); 
-    padding: 12px 15px; 
-    text-align: center; 
-    font-weight: 600; 
-    font-size: 1rem; 
-    border: 1px solid var(--color-admin-primary-border, #e978d0); 
-}
-.tabla-abastecimiento td {
-    padding: 12px 15px; 
-    border: 1px solid var(--color-admin-primary-border, #e978d0); 
-    color: var(--color-text-dark, #333); 
-    font-size: 0.9rem; 
-    text-align: left; 
+  }
+  .tabla-abastecimiento th {
+    background-color: var(--color-admin-primary-lighter, #e978d0);
+    color: var(--color-text-dark, black);
+    padding: 12px 15px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 1px solid var(--color-admin-primary-border, #e978d0);
+  }
+  .tabla-abastecimiento td {
+    padding: 12px 15px;
+    border: 1px solid var(--color-admin-primary-border, #e978d0);
+    color: var(--color-text-dark, #333);
+    font-size: 0.9rem;
+    text-align: left;
     vertical-align: middle;
-}
-.tabla-abastecimiento td:nth-child(3), /* Cantidad */
-.tabla-abastecimiento td:nth-child(5), /* Fecha Ingreso */
-.tabla-abastecimiento td:nth-child(6), /* Vida Restante */
-.tabla-abastecimiento td:nth-child(7), /* Estado */
-.tabla-abastecimiento td:nth-child(8)  /* Acciones */
-{ text-align: center; }
-
-.tabla-abastecimiento tbody tr:nth-child(even) { background-color: var(--color-table-row-even, #f8eaf5); }
-.tabla-abastecimiento tbody tr:hover { background-color: var(--color-table-row-hover, #f3d9ec); }
-
-.tabla-abastecimiento tbody tr.depleted-row {
-    background-color: var(--color-background-warning-light, #fff3e0); 
-    color: var(--color-text-warning-dark, #e65100); 
-}
-.tabla-abastecimiento tbody tr.depleted-row td {
-    color: var(--color-text-warning-dark, #e65100); 
-}
-.tabla-abastecimiento td .depleted-reason-text { 
+  }
+  .tabla-abastecimiento td:nth-child(3),
+  .tabla-abastecimiento td:nth-child(5),
+  .tabla-abastecimiento td:nth-child(6),
+  .tabla-abastecimiento td:nth-child(7),
+  .tabla-abastecimiento td:nth-child(8) {
+    text-align: center;
+  }
+  
+  .tabla-abastecimiento tbody tr:nth-child(even) {
+    background-color: var(--color-table-row-even, #f8eaf5);
+  }
+  .tabla-abastecimiento tbody tr:hover {
+    background-color: var(--color-table-row-hover, #f3d9ec);
+  }
+  
+  .tabla-abastecimiento tbody tr.depleted-row {
+    background-color: var(--color-background-warning-light, #fff3e0);
+    color: var(--color-text-warning-dark, #e65100);
+  }
+  .tabla-abastecimiento tbody tr.depleted-row td {
+    color: var(--color-text-warning-dark, #e65100);
+  }
+  .tabla-abastecimiento td .depleted-reason-text {
     font-size: 0.8em;
-    display: block; 
+    display: block;
     color: var(--color-text-warning-dark, #e65100);
     margin-top: 2px;
-}
-
-/* === BOTONES DE ACCIÓN EN TABLA === */
-.icon-actions-abastecimiento { 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    gap: 8px; 
-}
-.table-icons-abastecimiento { 
-    padding: 8px 10px; 
-    font-size: 0.9rem; 
-    border: none; 
+  }
+  
+  /* === BOTONES DE ACCIÓN EN TABLA === */
+  .icon-actions-abastecimiento {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  .table-icons-abastecimiento {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border: none;
     border-radius: 5px;
-    color: white; 
-    cursor: pointer; 
+    color: white;
+    cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
-    display: inline-flex; 
-    align-items: center; 
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
     margin: 0;
-}
-/* Estilo para botones Ver y Editar con clases específicas si las añades en el JSX */
-.table-icons-abastecimiento.view-button,
-.table-icons-abastecimiento.edit-button
-{ background-color: var(--color-admin-action-view, #fc8de4); }
-
-.table-icons-abastecimiento.view-button:hover,
-.table-icons-abastecimiento.edit-button:hover
-{ background-color: var(--color-admin-action-view-hover, #d66abf); }
-
-/* Si no usas .view-button y .edit-button, los :nth-child aplicarán */
-.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(1), 
-.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(2)  
-{ background-color: var(--color-admin-action-view, #fc8de4); }
-
-.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(1):hover,
-.icon-actions-abastecimiento .table-icons-abastecimiento:nth-child(2):hover
-{ background-color: var(--color-admin-action-view-hover, #d66abf); }
-
-
-.deplete-button-abastecimiento { /* Botón "Agotar" */
-    background-color: var(--color-warning, #ff9800); 
-    color: var(--color-text-on-warning, white); 
-}
-.deplete-button-abastecimiento:hover {
-    background-color: var(--color-warning-dark, #f57c00); 
-}
-.delete-button-abastecimiento { /* Botón "Eliminar" */
+  }
+  .table-icons-abastecimiento.view-button,
+  .table-icons-abastecimiento.edit-button {
+    background-color: var(--color-admin-action-view, #fc8de4);
+  }
+  
+  .table-icons-abastecimiento.view-button:hover,
+  .table-icons-abastecimiento.edit-button:hover {
+    background-color: var(--color-admin-action-view-hover, #d66abf);
+  }
+  
+  .deplete-button-abastecimiento {
+    background-color: var(--color-warning, #ff9800);
+    color: var(--color-text-on-warning, white);
+  }
+  .deplete-button-abastecimiento:hover {
+    background-color: var(--color-warning-dark, #f57c00);
+  }
+  .delete-button-abastecimiento {
     background-color: var(--color-admin-action-delete, #b660a3);
-}
-.delete-button-abastecimiento:hover {
+  }
+  .delete-button-abastecimiento:hover {
     background-color: var(--color-admin-action-delete-hover, #6d0b58);
-}
-.table-icons-abastecimiento:disabled {
+  }
+  .table-icons-abastecimiento:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
     opacity: 0.6;
-}
-
-/* === ESTILOS DE MODAL === */
-.modal-abastecimiento-overlay { 
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); 
-    display: flex; justify-content: center; align-items: center;
-    z-index: 1050; padding: 20px; box-sizing: border-box; overflow-y: auto;
-}
-
-.modal-abastecimiento-content { 
-    background: var(--color-background-light, #fff); 
-    padding: 25px 30px; 
-    border-radius: 10px;
-    width: 50%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-    max-height: 90vh; overflow-y: auto; box-sizing: border-box;
-    display: flex; 
-    flex-direction: column; 
-}
-.modal-abastecimiento-content.detalle-modal {
-    max-width: 500px; /* Ajustado para Detalles */
-    text-align: left;
-}
-.modal-abastecimiento-content.formulario-modal {
-    max-width: 550px; /* Ajustado para Formularios */
-}
-.modal-abastecimiento-content.confirm-modal { 
-    max-width: 400px; /* Ajustado para Confirmación */
-    text-align: center;
-}
-.modal-abastecimiento-selection-container { 
+  }
+  
+  /* === ESTILOS DE MODAL === */
+  .modal-abastecimiento-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  
+  .modal-abastecimiento-content {
     background: var(--color-background-light, #fff);
     padding: 25px 30px;
     border-radius: 10px;
+    width: 100%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px; /* Ajustado para Selección */
-    max-height: 85vh; 
-    box-sizing: border-box;
-}
-
-/* Títulos de Modal */
-.abastecimiento-modal-title, /* Clase genérica si la usas */
-.modal-abastecimiento-content > h2, 
-.modal-abastecimiento-content > div > h2, /* Para AbastecimientoDetailsModal si el h2 está en un div */
-.modal-abastecimiento-content > h3 { 
+  }
+  
+  .modal-abastecimiento-content.detalle-modal {
+      max-width: 500px;
+  }
+  
+  .modal-abastecimiento-content.formulario-modal {
+      max-width: 550px;
+  }
+  
+  .modal-abastecimiento-content.confirm-modal {
+    max-width: 400px;
     text-align: center;
-    color: var(--color-primary-darker, #6d0b58);
-    margin-top: 0;
-    margin-bottom: 25px; 
-    font-size: 1.6rem;
-}
-.modal-abastecimiento-selection-container > h2 { 
-    color: var(--color-primary-darker, #6d0b58);
-    margin-top: 0; margin-bottom: 20px; font-size: 1.4rem;
-}
-.modal-abastecimiento-content.confirm-modal.deplete-confirmation > h3 { 
-    color: var(--color-warning-dark, #f57c00); 
-}
-.modal-abastecimiento-content.confirm-modal.delete-confirmation > h3 { 
-    color: var(--color-danger, #e74c3c); 
-}
-
-/* === ESTILOS PARA MODAL DE DETALLES (AbastecimientoDetailsModal) === */
-.modal-abastecimiento-content.detalle-modal .abastecimiento-details-text p {
-    text-align: left;
-    margin-bottom: 12px;
-    line-height: 1.6;
-    color: var(--color-text-dark, #333);
-    font-size: 1rem;
-}
-
-.modal-abastecimiento-content.detalle-modal .abastecimiento-details-text p strong {
-    color: var(--color-admin-action-view-hover, #d66abf);
-    margin-right: 8px;
-    font-weight: 600;
-    min-width: 180px;
-    display: inline-block;
-}
-
-
-.modal-abastecimiento-content.detalle-modal .depleted-text { 
-    color: var(--color-text-warning-dark, #e65100); 
-    font-weight: bold;
-}
-.modal-abastecimiento-button-cerrar { /* Botón Cerrar en Detalles y Selección */
-    background-color: var(--color-admin-action-view, #fc8de4); /* ROSA CLARO */
-    color: var(--color-text-on-warning, white);
-    display: block; width: auto; min-width: 120px;
-    margin: 25px auto 0; 
-    padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; 
-    font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
-}
-.modal-abastecimiento-button-cerrar:hover {
-    background-color: var(--color-admin-action-view-hover, #d66abf); /* ROSA MEDIO */
-}
-
-/* === ESTILOS PARA MODAL DE FORMULARIO (Crear/Editar) === */
-.abastecimiento-form-grid { 
-    display: flex; flex-direction: column; gap: 18px; 
-}
-.form-group-abastecimiento { 
-    display: flex; flex-direction: column; gap: 8px;
-}
-.form-label-abastecimiento {
-    font-weight: 600; color: var(--color-primary-darker, #6d0b58);
-    font-size: 0.95rem; text-align: left;
-}
-.form-input-abastecimiento, 
-.form-button-select-abastecimiento { 
-    width: 100%; padding: 10px 12px;
-    border: 1px solid var(--color-border-light, #c287b5);
-    border-radius: 5px; font-size: 1rem; box-sizing: border-box;
-    background-color: var(--color-background-input, #fff);
-    color: var(--color-text-dark, #333);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    text-align: left; 
-}
-.form-input-abastecimiento:focus,
-.form-button-select-abastecimiento:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
-    outline: none;
-}
-.form-button-select-abastecimiento {
-    cursor: pointer;
-    background-color: var(--color-background-input-addon, #f0f0f0); 
-}
-.form-button-select-abastecimiento:hover:not(:disabled) {
-    border-color: var(--color-admin-hover, #b660a3);
-    background-color: var(--color-background-input-addon-hover, #e2e6ea);
-}
-.form-button-select-abastecimiento:disabled {
-    background-color: #e9ecef; opacity: 0.7; cursor: not-allowed;
-}
-.form-group-abastecimiento p { 
-    font-size: 0.9rem; color: var(--color-text-medium, #555);
-    text-align: left; margin-top: 2px; padding-left: 2px;
-}
-.required-asterisk { color: red; margin-left: 2px; }
-.error-abastecimiento { 
-    color: var(--color-danger, red); font-size: 0.85rem;
-    margin-top: 4px; display: block; text-align: left;
-}
-
-.form-actions-abastecimiento { 
-    display: flex; justify-content: center; gap: 15px;
-    margin-top: 25px; padding-top: 20px;
-    border-top: 1px solid var(--color-border-light, #eee); width: 100%;
-}
-.form-button-guardar-abastecimiento, 
-.form-button-cancelar-abastecimiento { 
-    padding: 10px 20px; font-size: 1rem; font-weight: 500;
-    border: none; border-radius: 5px; cursor: pointer;
-    transition: background-color 0.3s ease; min-width: 120px; 
-    text-align: center; color: white; /* TEXTO BLANCO para botones de formulario */
-}
-.form-button-guardar-abastecimiento { 
-    background-color: var(--color-admin-hover, #b660a3); 
-}
-.form-button-guardar-abastecimiento:hover {
-    background-color: var(--color-primary-darker, #6d0b58); 
-}
-.form-button-guardar-abastecimiento:disabled {
-    background-color: #cccccc; cursor: not-allowed;
-}
-.form-button-cancelar-abastecimiento { 
-    background-color: #95a5a6; 
-}
-.form-button-cancelar-abastecimiento:hover {
-    background-color: #7f8c8d;
-}
-
-/* === ESTILOS PARA ItemSelectionModal (usado en Abastecimiento) === */
-.modal-selection-input-abastecimiento { 
-    padding: 10px 12px; border: 1px solid var(--color-border-light, #c287b5);
-    border-radius: 5px; font-size: 1rem;
-    background-color: white; color: var(--color-text-dark, #333);
-    box-sizing: border-box; width: 100%; margin-bottom: 15px;
-}
-.modal-selection-input-abastecimiento:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
-    outline: none;
-}
-.modal-selection-list-abastecimiento { 
-    list-style: none; padding: 0; margin: 0 0 15px 0; 
-    width: 100%; max-height: 300px; overflow-y: auto;
-    border: 1px solid var(--color-border-light, #ddd); border-radius: 5px;
-}
-.modal-selection-list-abastecimiento li {
-    border-bottom: 1px solid var(--color-border-light, #eee);
-}
-.modal-selection-list-abastecimiento li:last-child { border-bottom: none; }
-.modal-selection-list-abastecimiento li button { 
-    background: none; border: none; padding: 12px 15px; 
-    width: 100%; text-align: left; cursor: pointer;
-    transition: background-color 0.2s ease; font-size: 0.95rem;
-    color: var(--color-text-dark, #333);
-}
-.modal-selection-list-abastecimiento li button:hover {
-    background-color: var(--color-table-row-hover, #f3d9ec); 
-    color: var(--color-primary, #eb0985);
-}
-
-/* === ESTILOS PARA DepleteProductModal === */
-.modal-abastecimiento-content.confirm-modal.deplete-confirmation .deplete-button-abastecimiento { 
-    background-color: var(--color-warning, #ff9800); 
-    color: var(--color-text-on-warning, white); 
-}
-.modal-abastecimiento-content.confirm-modal.deplete-confirmation .deplete-button-abastecimiento:hover {
-    background-color: var(--color-warning-dark, #f57c00); 
-}
-
-
-/* src/features/proveedores/css/Proveedores.css */
-
-/* ... (tus estilos generales de página, tabla, y formulario modal) ... */
-
-/* === ESTILOS ESPECÍFICOS PARA MODAL DE DETALLES DE PROVEEDOR === */
-.modal-content-Proveedores.detalle-modal {
-    max-width: 550px;
-    padding: 25px 30px;
-    text-align: left;
-}
-
-/* Título del modal de detalles */
-.modal-content-Proveedores.detalle-modal>h3 {
+  }
+  
+  .abastecimiento-modal-title,
+  .modal-abastecimiento-content h2,
+  .modal-abastecimiento-content h3 {
     text-align: center;
     color: var(--color-primary-darker, #6d0b58);
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 1.6rem;
-    font-weight: 600;
-}
-
-/* Contenedor de la lista de detalles */
-.proveedor-details-list {
-    /* Asegúrate que este div envuelva los <p> en el JSX */
-    margin-top: 10px;
-}
-
-.modal-content-Proveedores.detalle-modal .proveedor-details-list p {
+  }
+  
+  .modal-abastecimiento-content.confirm-modal.deplete-confirmation h3 {
+    color: var(--color-warning-dark, #f57c00);
+  }
+  .modal-abastecimiento-content.confirm-modal.delete-confirmation h3 {
+    color: var(--color-danger, #e74c3c);
+  }
+  
+  .abastecimiento-details-text p {
     text-align: left;
     margin-bottom: 12px;
     line-height: 1.6;
     color: var(--color-text-dark, #333);
     font-size: 1rem;
-}
-
-/* ESTILO PARA LAS ETIQUETAS <strong> DENTRO DEL MODAL DE DETALLES */
-.modal-content-Proveedores.detalle-modal .proveedor-details-list p strong {
+  }
+  
+  .abastecimiento-details-text p strong {
     color: var(--color-primary, #eb0985);
-    /* === ROSA PARA LAS ETIQUETAS === */
     margin-right: 8px;
     font-weight: 600;
-    min-width: 190px;
-    /* AJUSTA ESTE VALOR para alinear los dos puntos ":" consistentemente */
-    /* Podrías necesitar un valor diferente si las etiquetas son más largas/cortas */
+    min-width: 180px;
     display: inline-block;
-}
-
-/* Subtítulo "Datos de la Persona Encargada" */
-.modal-subtitle-proveedores {
-    margin-top: 25px;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--color-primary-darker, #6d0b58);
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--color-border-light, #e0e0e0);
-    text-align: left;
-}
-
-/* Botón "Cerrar" en el modal de detalles */
-.proveedores-detalle-modal-button-cerrar,
-/* Si usaste esta clase en el JSX */
-.botonCerrarModalVerDetallesProveedores
-
-/* O tu clase original */
-    {
+  }
+  
+  .depleted-text {
+    color: var(--color-text-warning-dark, #e65100);
+    font-weight: bold;
+  }
+  .modal-abastecimiento-button-cerrar {
     background-color: var(--color-admin-action-view, #fc8de4);
-    /* ROSA CLARO */
-    color: var(--color-text-light, white);
-    /* === TEXTO BLANCO === */
+    color: var(--color-text-on-warning, white);
     display: block;
     width: auto;
-    min-width: 140px;
-    /* Ancho mínimo del botón */
-    margin: 30px auto 10px;
-    padding: 10px 25px;
+    min-width: 120px;
+    margin: 25px auto 0;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 500;
     transition: background-color 0.3s ease;
-}
-
-.proveedores-detalle-modal-button-cerrar:hover,
-.botonCerrarModalVerDetallesProveedores:hover {
+  }
+  .modal-abastecimiento-button-cerrar:hover {
     background-color: var(--color-admin-action-view-hover, #d66abf);
-    /* Hover ROSA MEDIO */
-}
-
-/* === ESTILOS RESPONSIVOS === */
-@media (max-width: 768px) {
-    .abastecimiento-main-content { 
-        margin-left: 0; padding: 15px; 
-    }
-    .abastecimiento-content-wrapper { padding: 0; }
-    .abastecimiento-actions-bar { 
-        flex-direction: column; gap: 15px; 
-    }
-    .abastecimiento-search-bar input,
-    .abastecimiento-add-button {
-        width: 100%;
-    }
-    .abastecimiento-add-button { height: auto; padding: 12px 20px; }
-
-    .tabla-abastecimiento thead { display: none; }
-    .tabla-abastecimiento, .tabla-abastecimiento tbody, .tabla-abastecimiento tr, .tabla-abastecimiento td {
-        display: block; width: 100%;
-    }
-    .tabla-abastecimiento tr {
-        margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0); 
-        border-radius: 8px; padding: 10px;
-        background-color: #ffffff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-    .tabla-abastecimiento tr.depleted-row { border-color: var(--color-warning-dark, #f57c00); }
-    .tabla-abastecimiento td {
-        text-align: right; padding-left: 50% !important; 
-        position: relative; border: none; 
-        border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; 
-    }
-    .tabla-abastecimiento td:last-child { border-bottom: none; }
-    .tabla-abastecimiento td::before {
-        content: attr(data-label); 
-        position: absolute; left: 10px; width: calc(50% - 20px); 
-        padding-right: 10px; white-space: nowrap;
-        font-weight: bold; color: var(--color-primary-darker, #6d0b58); text-align: left;
-    }
-    .tabla-abastecimiento td .icon-actions-abastecimiento { /* Si la clase está en un div interno */
-        justify-content: flex-end; padding-top: 8px; 
-    }
-    .tabla-abastecimiento td.icon-actions-abastecimiento { /* Si la clase está en el TD */
-         text-align: right !important; padding-left: 0 !important; display: flex;
-    }
-    .tabla-abastecimiento td.icon-actions-abastecimiento::before { 
-        content: ""; display: none;
-    }
-    .table-icons-abastecimiento { padding: 6px 8px; font-size: 0.8rem; }
-
-    .modal-abastecimiento-content, 
-    .modal-abastecimiento-selection-container { 
-        max-width: 95%; padding: 20px;
-    }
-    .form-actions-abastecimiento { 
-        flex-direction: column;
-    }
-    .form-button-guardar-abastecimiento, .form-button-cancelar-abastecimiento {
-        width: 100%;
-    }
-    .modal-abastecimiento-button-cerrar { /* Botón cerrar en modal de detalles y selección */
-        width: 100%; padding: 12px; font-size: 1rem;
-    }
-}
+  }
+  
+  /* === FORMULARIO MODAL === */
+  .abastecimiento-form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .form-group-abastecimiento {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .form-label-abastecimiento {
+    font-weight: 600;
+    color: var(--color-primary-darker, #6d0b58);
+    font-size: 0.95rem;
+    text-align: left;
+  }
+  .form-input-abastecimiento,
+  .form-button-select-abastecimiento {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border-light, #c287b5);
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background-color: var(--color-background-input, #fff);
+    color: var(--color-text-dark, #333);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    text-align: left;
+  }
+  .form-input-abastecimiento:focus,
+  .form-button-select-abastecimiento:focus {
+    border-color: var(--color-admin-hover, #b660a3);
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    outline: none;
+  }
+  .form-button-select-abastecimiento {
+    cursor: pointer;
+    background-color: var(--color-background-input-addon, #f0f0f0);
+  }
+  .form-button-select-abastecimiento:hover:not(:disabled) {
+    border-color: var(--color-admin-hover, #b660a3);
+    background-color: var(--color-background-input-addon-hover, #e2e6ea);
+  }
+  .form-button-select-abastecimiento:disabled {
+    background-color: #e9ecef;
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .required-asterisk {
+    color: red;
+    margin-left: 2px;
+  }
+  .error-abastecimiento {
+    color: var(--color-danger, red);
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: block;
+    text-align: left;
+  }
+  
+  .form-actions-abastecimiento {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border-light, #eee);
+    width: 100%;
+  }
+  .form-button-guardar-abastecimiento,
+  .form-button-cancelar-abastecimiento {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    min-width: 120px;
+    text-align: center;
+    color: white;
+  }
+  .form-button-guardar-abastecimiento {
+    background-color: var(--color-admin-hover, #b660a3);
+  }
+  .form-button-guardar-abastecimiento:hover {
+    background-color: var(--color-primary-darker, #6d0b58);
+  }
+  .form-button-guardar-abastecimiento:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  .form-button-cancelar-abastecimiento {
+    background-color: #95a5a6;
+  }
+  .form-button-cancelar-abastecimiento:hover {
+    background-color: #7f8c8d;
+  }
+  
+  .deplete-button-abastecimiento {
+    background-color: var(--color-warning, #ff9800);
+    color: var(--color-text-on-warning, white);
+  }
+  .deplete-button-abastecimiento:hover {
+    background-color: var(--color-warning-dark, #f57c00);
+  }
