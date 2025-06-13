@@ -34,7 +34,9 @@ function ListaAbastecimientoPage() {
       const data = await abastecimientoService.getAbastecimientos();
       setEntries(data);
     } catch (err) {
-      setError(err.message || "No se pudieron cargar los datos de abastecimiento.");
+      setError(
+        err.message || "No se pudieron cargar los datos de abastecimiento."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -71,8 +73,13 @@ function ListaAbastecimientoPage() {
         setValidationMessage("Registro de abastecimiento creado exitosamente.");
       } else {
         const { idAbastecimiento, ...dataToUpdate } = formData;
-        await abastecimientoService.updateAbastecimiento(idAbastecimiento, dataToUpdate);
-        setValidationMessage("Registro de abastecimiento actualizado exitosamente.");
+        await abastecimientoService.updateAbastecimiento(
+          idAbastecimiento,
+          dataToUpdate
+        );
+        setValidationMessage(
+          "Registro de abastecimiento actualizado exitosamente."
+        );
       }
       await cargarDatos();
       closeModal();
@@ -86,7 +93,9 @@ function ListaAbastecimientoPage() {
   const handleDeleteConfirmed = async () => {
     if (currentEntry?.idAbastecimiento) {
       try {
-        await abastecimientoService.deleteAbastecimiento(currentEntry.idAbastecimiento);
+        await abastecimientoService.deleteAbastecimiento(
+          currentEntry.idAbastecimiento
+        );
         setValidationMessage("Registro eliminado exitosamente.");
         await cargarDatos();
       } catch (err) {
@@ -106,7 +115,10 @@ function ListaAbastecimientoPage() {
           razonAgotamiento: reason,
           fechaAgotamiento: new Date().toISOString().split("T")[0],
         };
-        await abastecimientoService.updateAbastecimiento(currentEntry.idAbastecimiento, dataToUpdate);
+        await abastecimientoService.updateAbastecimiento(
+          currentEntry.idAbastecimiento,
+          dataToUpdate
+        );
         setValidationMessage("Producto marcado como agotado.");
         await cargarDatos();
       } catch (err) {
@@ -118,18 +130,21 @@ function ListaAbastecimientoPage() {
     }
   };
 
-  const filteredEntries = useMemo(() =>
-    entries.filter((entry) => {
-      const busquedaLower = busqueda.toLowerCase();
-      const nombreProducto = entry.productoAbastecido?.nombre?.toLowerCase() || '';
-      const nombreEmpleado = entry.empleadoResponsable?.nombre?.toLowerCase() || '';
-      const fecha = entry.fechaIngreso || '';
-      return (
-        nombreProducto.includes(busquedaLower) ||
-        nombreEmpleado.includes(busquedaLower) ||
-        fecha.includes(busquedaLower)
-      );
-    }), [entries, busqueda]);
+  const filteredEntries = useMemo(
+    () =>
+      entries.filter((entry) => {
+        const busquedaLower = busqueda.toLowerCase();
+        const nombreProducto = entry.producto?.nombre?.toLowerCase() || "";
+        const nombreEmpleado = entry.empleado?.nombre?.toLowerCase() || "";
+        const fecha = entry.fechaIngreso || "";
+        return (
+          nombreProducto.includes(busquedaLower) ||
+          nombreEmpleado.includes(busquedaLower) ||
+          fecha.includes(busquedaLower)
+        );
+      }),
+    [entries, busqueda]
+  );
 
   return (
     <div className="abastecimiento-page-container">
@@ -147,12 +162,20 @@ function ListaAbastecimientoPage() {
                 disabled={isLoading}
               />
             </div>
-            <button className="abastecimiento-add-button" onClick={() => handleOpenModal("create")} disabled={isLoading}>
+            <button
+              className="abastecimiento-add-button"
+              onClick={() => handleOpenModal("create")}
+              disabled={isLoading}
+            >
               Agregar Registro
             </button>
           </div>
-          
-          {isLoading ? <p>Cargando datos...</p> : error ? <p className="error-message">{error}</p> : (
+
+          {isLoading ? (
+            <p>Cargando datos...</p>
+          ) : error ? (
+            <p className="error-message">{error}</p>
+          ) : (
             <AbastecimientoTable
               entries={filteredEntries}
               onView={(entry) => handleOpenModal("details", entry)}
@@ -161,7 +184,6 @@ function ListaAbastecimientoPage() {
               onDeplete={(entry) => handleOpenModal("deplete", entry)}
             />
           )}
-
         </div>
       </div>
 
@@ -186,13 +208,15 @@ function ListaAbastecimientoPage() {
         onClose={closeModal}
         onConfirm={handleDeleteConfirmed}
         title="Confirmar Eliminación"
-        message={`¿Estás seguro de que deseas eliminar la entrada de "${currentEntry?.productoAbastecido?.nombre || ""}"?`}
+        message={`¿Estás seguro de que deseas eliminar la entrada de "${
+          currentEntry?.producto?.nombre || ""
+        }"?`}
       />
       <DepleteProductModal
         isOpen={isDepleteModalOpen}
         onClose={closeModal}
         onConfirm={handleDepleteConfirmed}
-        productName={currentEntry?.productoAbastecido?.nombre}
+        productName={currentEntry?.producto?.nombre}
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
