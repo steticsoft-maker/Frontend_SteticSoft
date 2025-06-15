@@ -89,7 +89,7 @@ function ListaComprasPage() {
     }
   };
   
-  const handleEstadoChange = (compraId, nuevoEstado) => {
+  const handleEstadoChange = () => { // compraId, nuevoEstado removed
     console.log("Funcionalidad de cambio de estado pendiente de implementar.");
   };
 

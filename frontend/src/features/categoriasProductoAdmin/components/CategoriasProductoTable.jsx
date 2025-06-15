@@ -1,10 +1,8 @@
 // src/features/productosAdmin/components/CategoriasProductoTable.jsx
 import React from 'react';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // Para navegación
 
 const CategoriasProductoTable = ({ categorias, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
-  const navigate = useNavigate();
 
   return (
     <table className="tablaCategoriaProductos">

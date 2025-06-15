@@ -1,11 +1,11 @@
 // src/shared/contexts/AuthContext.jsx
-import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // useContext and createContext removed
+import { AuthContext } from './authHooks'; // Import AuthContext
 import { loginAPI, logoutAPI as serviceLogoutAPI } from '../../features/auth/services/authService';
 
-// 1. El contexto se crea pero NO se exporta.
-const AuthContext = createContext(null);
+// AuthContext is now imported from authHooks.js
 
-// 2. Se exporta el proveedor (Provider) como antes.
+// Se exporta el proveedor (Provider) como antes.
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -106,12 +106,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// 3. Se crea y exporta un HOOK PERSONALIZADO para usar el contexto.
-//    Esto encapsula la lógica y es la práctica recomendada.
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth debe ser usado dentro de un AuthProvider');
-  }
-  return context;
-};
+// useAuth hook has been moved to authHooks.js

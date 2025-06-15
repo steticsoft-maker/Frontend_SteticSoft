@@ -11,7 +11,8 @@ const ClienteEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
       // Al editar, no incluimos la contraseña (contrasena) para que no se muestre ni se envíe directamente
       // Se manejaría por separado si se quiere permitir cambio de contraseña.
       // initialData ya debería venir con 'correo' y el estado booleano.
-      const { contrasena, ...dataToEdit } = initialData; // Desestructuración para excluir 'contrasena'
+      const dataToEdit = { ...initialData };
+      delete dataToEdit.contrasena; // Aseguramos que la contraseña no esté en el form para editar
 
       setFormData({
         ...dataToEdit,

@@ -11,7 +11,7 @@ const CitaForm = ({
   empleadosDisponibles,
   serviciosDisponibles,
   isSlotSelection, // true si se seleccionó un slot de un empleado específico en el calendario
-  isLoadingClientes, // Para el campo cliente si se carga de forma asíncrona
+  // isLoadingClientes, // Para el campo cliente si se carga de forma asíncrona - REMOVED
   clientesOptions // Opciones para el selector de clientes
 }) => {
 

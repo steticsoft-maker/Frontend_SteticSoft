@@ -1,5 +1,5 @@
 // src/features/compras/pages/FormCompraPage.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react'; // useCallback removed
 import { useNavigate } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import CompraForm from '../components/CompraForm';

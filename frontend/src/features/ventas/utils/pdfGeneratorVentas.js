@@ -60,7 +60,7 @@ export const generarPDFVentaUtil = (ventaData) => {
       3: { cellWidth: 30, halign: 'right' }, // Vlr. Unit.
       4: { cellWidth: 30, halign: 'right' }, // Vlr. Total
     },
-    didDrawPage: function (data) {
+    didDrawPage: function () { // data parameter removed as it's unused
         // Footer de página (si es necesario)
         // doc.text('Página ' + doc.internal.getNumberOfPages(), data.settings.margin.left, doc.internal.pageSize.height - 10);
     }

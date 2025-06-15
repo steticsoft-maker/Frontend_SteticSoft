@@ -149,7 +149,7 @@ function CalendarioCitasPage() {
     // El setIsLoading de esta página es para carga de datos iniciales.
     try {
       const citasActuales = fetchCitasAgendadas(); // Cargar las más recientes antes de guardar
-      const citaGuardada = saveCita(formDataFromModal, citasActuales); // saveCita ahora devuelve la cita
+      saveCita(formDataFromModal, citasActuales); // saveCita ahora devuelve la cita
       
       cargarDatosCompletos(); // Recargar todos los eventos y citas
       handleCloseModals();    // Cerrar modal de formulario
