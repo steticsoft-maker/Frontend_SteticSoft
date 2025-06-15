@@ -1,0 +1,94 @@
+
+> frontend@0.0.0 lint
+> eslint . --fix
+
+
+/app/frontend/src/features/abastecimiento/components/AbastecimientoCrearModal.jsx
+  35:14  error  'err' is defined but never used                                                                 no-unused-vars
+  58:13  error  'productoNombre' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  58:29  error  'empleadoNombre' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/auth/components/RegisterForm.jsx
+  31:20  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+
+/app/frontend/src/features/categoriasProductoAdmin/components/CategoriasProductoTable.jsx
+  7:9  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/categoriasProductoAdmin/pages/ListaCategoriasProductoPage.jsx
+  23:10  error  'error' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/citas/components/CitaForm.jsx
+  14:3  error  'isLoadingClientes' is defined but never used  no-unused-vars
+
+/app/frontend/src/features/citas/pages/CalendarioCitasPage.jsx
+  152:13  error  'citaGuardada' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/citas/services/citasService.js
+    4:3   error  'fetchHorarios' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                        no-unused-vars
+    5:31  error  'fetchEmpleadosConHorarioConfigurado' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:10  error  'getClientesParaVenta' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                 no-unused-vars
+   87:7   error  'obtenerDiasDeSemanaEntre' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+   87:35  error  'inicio' is defined but never used                                                                          no-unused-vars
+   87:43  error  'fin' is defined but never used                                                                             no-unused-vars
+  181:32  error  'citaId' is defined but never used                                                                          no-unused-vars
+  185:56  error  'notas' is assigned a value but never used                                                                  no-unused-vars
+
+/app/frontend/src/features/clientes/components/ClienteEditarModal.jsx
+  14:15  error  'contrasena' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/clientes/services/clientesService.js
+  91:22  error  Do not access Object.prototype method 'hasOwnProperty' from target object  no-prototype-builtins
+
+/app/frontend/src/features/compras/components/CompraDetalleModal.jsx
+  23:5  error  'detalles' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/compras/components/ComprasTable.jsx
+  5:35  error  'faCheckCircle' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  5:50  error  'faClock' is defined but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+
+/app/frontend/src/features/compras/pages/FormCompraPage.jsx
+  2:38  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/compras/pages/ListaComprasPage.jsx
+  92:31  error  'compraId' is defined but never used     no-unused-vars
+  92:41  error  'nuevoEstado' is defined but never used  no-unused-vars
+
+/app/frontend/src/features/compras/services/comprasService.js
+  23:3  error  Unnecessary try/catch wrapper  no-useless-catch
+
+/app/frontend/src/features/home/pages/PublicProductosPage.jsx
+   2:46  error  'useContext' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  16:20  error  'setProducts' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/home/pages/PublicServiciosPage.jsx
+  2:38  error  'useContext' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/serviciosAdmin/components/ServicioAdminFormModal.jsx
+   3:86  error  'categorias' is defined but never used                                                        no-unused-vars
+  36:9   error  'handleChange' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/usuarios/components/UsuarioEditarModal.jsx
+  50:18  error  'error' is defined but never used  no-unused-vars
+
+/app/frontend/src/features/ventas/pages/ListaVentasPage.jsx
+  57:6  warning  React Hook useEffect has a missing dependency: 'location.pathname'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/frontend/src/features/ventas/pages/ProcesoVentaPage.jsx
+  190:13  error  'ventasActualizadas' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/frontend/src/features/ventas/utils/pdfGeneratorVentas.js
+  63:28  error  'data' is defined but never used  no-unused-vars
+
+/app/frontend/src/shared/components/layout/NavbarAdmin.jsx
+  73:6  warning  React Hook useMemo has a missing dependency: 'hasPermission'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/frontend/src/shared/contexts/AuthContext.jsx
+  111:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/app/frontend/src/shared/contexts/CartContext.jsx
+  4:14  warning  Fast refresh only works when a file only exports components. Move your React context(s) to a separate file  react-refresh/only-export-components
+
+/app/frontend/src/shared/services/apiClient.js
+  54:7  error  Unexpected 'debugger' statement  no-debugger
+
+✖ 38 problems (34 errors, 4 warnings)
