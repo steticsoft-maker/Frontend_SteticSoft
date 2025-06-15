@@ -2,7 +2,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 // Corregido: Importamos nuestro hook personalizado
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/authHooks'; // Path updated
 
 // El componente ahora es más simple y se enfoca solo en los permisos.
 const PrivateRoute = ({ requiredPermission }) => {

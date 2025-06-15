@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 // Corregido: Importamos el hook personalizado useAuth
-import { useAuth } from "../../../shared/contexts/AuthContext";
+import { useAuth } from "../../../shared/contexts/authHooks"; // Path updated
 import LoginForm from "../components/LoginForm";
 import "../css/Auth.css";
 import "../css/LoginStyles.css";
