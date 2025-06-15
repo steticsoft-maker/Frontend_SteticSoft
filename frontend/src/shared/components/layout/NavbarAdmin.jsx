@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react'; // useCallback imported
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/authHooks'; // Updated import path
 import {
   FaUserCircle, FaRandom, FaUsers, FaClipboardList,
   FaChartLine, FaSignOutAlt, FaCalendarCheck, FaShoppingCart,
