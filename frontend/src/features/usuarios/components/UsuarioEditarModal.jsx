@@ -47,7 +47,7 @@ const UsuarioEditarModal = ({
           const response = await getRolesAPI();
           // Asegúrate que response.data sea el array de roles, o response directamente si la API lo devuelve así.
           setAvailableRoles(response.data || response || []);
-        } catch (error) {
+        } catch { // error variable removed as it's unused
           setFormErrors((prev) => ({
             ...prev,
             _general: "No se pudieron cargar los roles.",

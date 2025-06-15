@@ -54,7 +54,7 @@ function ListaVentasPage() {
       // Limpiar el estado de la ubicación para no re-agregarla
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state, navigate]);
+  }, [location.state, navigate, location.pathname]); // location.pathname added
 
 
   useEffect(() => {

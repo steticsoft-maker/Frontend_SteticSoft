@@ -20,14 +20,10 @@ const createCompra = async (compraData) => {
 
 // --- INICIO CÓDIGO NUEVO ---
 const anularCompra = async (compraId) => {
-  try {
-    // Usamos .patch como se define en la ruta del backend: /compras/:id/anular
-    const response = await apiClient.patch(`/compras/${compraId}/anular`);
-    return response.data;
-  } catch (error) {
-    // Relanzamos el error para que el componente que llama lo pueda manejar
-    throw error;
-  }
+  // Usamos .patch como se define en la ruta del backend: /compras/:id/anular
+  const response = await apiClient.patch(`/compras/${compraId}/anular`);
+  return response.data;
+  // Useless try/catch removed. Errors will propagate naturally.
 };
 // --- FIN CÓDIGO NUEVO ---
 

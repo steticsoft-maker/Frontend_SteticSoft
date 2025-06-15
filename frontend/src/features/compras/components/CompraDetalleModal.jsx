@@ -19,8 +19,8 @@ const CompraDetalleModal = ({ compra, onClose }) => {
     usuario,
     total,
     iva,
-    estado,
-    detalles
+    estado
+    // detalles // Removed as it's unused (compra.detalles is used directly)
   } = compra;
 
   const subtotal = total - iva;

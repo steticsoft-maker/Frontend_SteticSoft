@@ -88,7 +88,7 @@ export const saveCliente = async (clienteData, isCreating, currentEditingCliente
 
       // Mapear 'estado' del frontend a 'estadoCliente' y 'estadoUsuario' para el backend
       // ¡ESTO ES CLAVE PARA EL 400!
-      if (dataToSend.hasOwnProperty('estado')) {
+      if (Object.prototype.hasOwnProperty.call(dataToSend, 'estado')) {
         dataToSend.estadoCliente = dataToSend.estado;
         dataToSend.estadoUsuario = dataToSend.estado; // Asumiendo que el estado del usuario se sincroniza con el del cliente
         delete dataToSend.estado; // Eliminar el campo 'estado' original del frontend

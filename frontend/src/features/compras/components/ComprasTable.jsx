@@ -2,7 +2,7 @@
 import React from 'react';
 // NUEVO: Importamos los íconos que vamos a usar
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faFilePdf, faBan, faCheckCircle, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faFilePdf, faBan } from "@fortawesome/free-solid-svg-icons"; // faCheckCircle, faClock removed
 
 // CAMBIO: La tabla ahora espera una función 'onEstadoChange'
 const ComprasTable = ({ compras, onDetalle, onAnular, onEstadoChange, onGenerarPDF }) => {

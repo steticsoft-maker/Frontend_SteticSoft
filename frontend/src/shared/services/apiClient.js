@@ -51,7 +51,7 @@ apiClient.interceptors.response.use(
 
       // LÍNEA CLAVE PARA DEPURAR:
       // Esto detendrá la ejecución del script si tienes las herramientas de desarrollador abiertas.
-      debugger;
+      // debugger; // Removed
 
       // La siguiente lógica de limpieza y redirección solo se ejecutará
       // después de que tú reanudes la ejecución manualmente en el navegador.

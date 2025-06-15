@@ -28,7 +28,7 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
     setFormError("");
 
     for (const key in formData) {
-      if (formData.hasOwnProperty(key) && formData[key] === "") {
+      if (Object.prototype.hasOwnProperty.call(formData, key) && formData[key] === "") {
         let fieldName = key;
         switch (key) {
           case "nombre": fieldName = "Nombre"; break;
