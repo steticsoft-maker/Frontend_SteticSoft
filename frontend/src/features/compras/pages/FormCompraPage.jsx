@@ -8,7 +8,7 @@ import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import { comprasService } from '../services/comprasService';
 import { proveedoresService } from '../../proveedores/services/proveedoresService';
 import { productosAdminService } from '../../productosAdmin/services/productosAdminService';
-import { useAuth } from '../../../shared/contexts/AuthContext';
+import { useAuth } from '../../../shared/contexts/authHooks'; // Path updated
 import '../css/FormCompra.css';
 
 function FormCompraPage() {

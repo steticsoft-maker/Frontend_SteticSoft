@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
-import { useAuth } from "../../../shared/contexts/AuthContext";
+import { useAuth } from "../../../shared/contexts/authHooks"; // Path updated
 import { registerAPI } from "../services/authService";
 import "../css/Auth.css";
 
