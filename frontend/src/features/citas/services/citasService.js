@@ -1,10 +1,6 @@
 // src/features/citas/services/citasService.js
 import moment from "moment";
-import {
-  fetchHorarios,
-  getEmpleadosParaHorarios as fetchEmpleadosConHorarioConfigurado,
-} from "../../novedades/services/horariosService"; // Asegúrate que la ruta sea correcta
-import { getClientesParaVenta } from "../../ventas/services/ventasService"; // Asegúrate que la ruta sea correcta
+// fetchHorarios, fetchEmpleadosConHorarioConfigurado (from horariosService) and getClientesParaVenta (from ventasService) removed as they are unused.
 
 // ✅ CORRECCIÓN 1: Se importa la función correcta y asíncrona 'getServicios'
 import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService"; 
@@ -84,9 +80,7 @@ export const fetchEmpleadosDisponiblesParaCitas = () => {
   // ... (código sin cambios)
 };
 
-const obtenerDiasDeSemanaEntre = (inicio, fin) => {
-    // ... (código sin cambios)
-};
+// obtenerDiasDeSemanaEntre removed as it's unused
   
 export const generarEventosDisponibles = () => {
     // ... (código sin cambios)
@@ -178,11 +172,11 @@ export const saveCita = async (citaData, existingCitasAgendadas) => {
 };
 
 
-export const deleteCitaById = (citaId) => {
+export const deleteCitaById = () => { // citaId removed
     // ... (código sin cambios)
 };
   
-export const cambiarEstadoCita = (citaId, nuevoEstado, notas = "") => {
+export const cambiarEstadoCita = () => { // citaId, nuevoEstado removed
     // ... (código sin cambios)
 };
 

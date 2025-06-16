@@ -1,5 +1,5 @@
 // src/features/home/pages/PublicServiciosPage.jsx
-import React, { useState, useEffect, useContext } from 'react'; // useContext
+import React, { useState, useEffect } from 'react'; // useContext removed
 import { FaShoppingCart } from 'react-icons/fa';
 import Navbar from '../../../shared/components/layout/Navbar';
 import ServiceCard from '../components/ServiceCard'; // Nuevo componente

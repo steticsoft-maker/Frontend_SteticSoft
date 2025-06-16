@@ -1,7 +1,8 @@
 // src/shared/contexts/CartContext.jsx
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // createContext removed
+import { CartContext } from './cartContextValue'; // Import CartContext
 
-export const CartContext = createContext(null);
+// CartContext is now imported from cartContextValue.js
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);

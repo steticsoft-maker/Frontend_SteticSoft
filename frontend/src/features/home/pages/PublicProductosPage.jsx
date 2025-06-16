@@ -1,5 +1,5 @@
 // src/features/home/pages/PublicProductosPage.jsx
-import React, { useState, useEffect, useRef, useContext } from 'react'; // useContext para Auth o Cart
+import React, { useState, useEffect, useRef } from 'react'; // useContext para Auth o Cart - removed
 import { FaShoppingCart } from 'react-icons/fa';
 import Navbar from '../../../shared/components/layout/Navbar';
 import ProductCard from '../components/ProductCard'; // Nuevo componente
@@ -13,7 +13,7 @@ const initialProducts = [
 ];
 
 function PublicProductosPage() {
-  const [products, setProducts] = useState(initialProducts); // Más adelante: useEffect para fetchProducts
+  const [products] = useState(initialProducts); // Más adelante: useEffect para fetchProducts - setProducts removed
   const [cart, setCart] = useState([]); // O usar CartContext
   const [showCart, setShowCart] = useState(false);
   const productosPageRef = useRef(null); // Renombrado para claridad

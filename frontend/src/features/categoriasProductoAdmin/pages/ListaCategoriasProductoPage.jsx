@@ -20,7 +20,7 @@ function ListaCategoriasProductoPage() {
   const [categorias, setCategorias] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [loading, setLoading] = useState(true); // Nuevo estado de carga
-  const [error, setError] = useState(null); // Nuevo estado para errores de API
+  const [, setError] = useState(null); // Nuevo estado para errores de API
 
   // Estados para modales
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);

@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react'; // useCallback imported
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/authHooks'; // Updated import path
 import {
   FaUserCircle, FaRandom, FaUsers, FaClipboardList,
   FaChartLine, FaSignOutAlt, FaCalendarCheck, FaShoppingCart,
@@ -53,9 +53,9 @@ const NavbarAdmin = () => {
 
   const [openSubMenus, setOpenSubMenus] = useState({});
 
-  const hasPermission = (permission) => {
+  const hasPermission = useCallback((permission) => { // Wrapped in useCallback
     return !permission || (permissions && permissions.includes(permission));
-  };
+  }, [permissions]); // permissions as dependency for useCallback
 
   const filteredMenu = useMemo(() => {
     return menuItemsConfig.map(item => {
@@ -70,7 +70,7 @@ const NavbarAdmin = () => {
       }
       return hasPermission(item.requiredPermission);
     });
-  }, [permissions]);
+  }, [hasPermission]); // Dependency array now only has hasPermission
 
   const toggleSubMenu = (key) => {
     setOpenSubMenus(prev => ({ [key]: !prev[key] }));

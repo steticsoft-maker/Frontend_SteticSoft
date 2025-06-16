@@ -187,7 +187,7 @@ function ProcesoVentaPage() {
 
     try {
       const ventasActuales = fetchVentas();
-      const ventasActualizadas = saveNuevaVenta(ventaData, ventasActuales);
+      saveNuevaVenta(ventaData, ventasActuales); // ventasActualizadas removed as it's unused
       // En lugar de pasar por estado, se actualiza localStorage y ListaVentasPage leerá de ahí
       // navigate('/ventas', { state: { nuevaVenta: ventaDataConId } }); // ventaDataConId vendría del servicio
 

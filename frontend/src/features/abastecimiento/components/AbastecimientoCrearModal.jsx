@@ -32,7 +32,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
       ]);
       setProductos(prods);
       setEmpleados(emps);
-    } catch (err) {
+    } catch {
       setFormErrors({
         _general: "No se pudieron cargar los datos para el formulario.",
       });
@@ -55,7 +55,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   };
 
   const handleSave = () => {
-    const { productoNombre, empleadoNombre, ...dataToSubmit } = formData;
+    const { ...dataToSubmit } = formData;
     onSubmit(dataToSubmit);
   };
 

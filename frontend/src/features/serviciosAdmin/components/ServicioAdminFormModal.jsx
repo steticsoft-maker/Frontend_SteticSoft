@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType, categorias }) => {
+const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, modalType }) => { // categorias removed
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -33,10 +33,7 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, modalT
     }
   }, [isOpen, modalType, initialData]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  // handleChange removed as it's unused
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);

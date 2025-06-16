@@ -1,5 +1,5 @@
 // src/features/compras/pages/FormCompraPage.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react'; // useCallback removed
 import { useNavigate } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import CompraForm from '../components/CompraForm';
@@ -8,7 +8,7 @@ import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import { comprasService } from '../services/comprasService';
 import { proveedoresService } from '../../proveedores/services/proveedoresService';
 import { productosAdminService } from '../../productosAdmin/services/productosAdminService';
-import { useAuth } from '../../../shared/contexts/AuthContext';
+import { useAuth } from '../../../shared/contexts/authHooks'; // Path updated
 import '../css/FormCompra.css';
 
 function FormCompraPage() {
