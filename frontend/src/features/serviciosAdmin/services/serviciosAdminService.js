@@ -1,20 +1,14 @@
 // src/features/serviciosAdmin/services/serviciosAdminService.js
 import apiClient from '../../../shared/services/apiClient';
-
-// Se importa la función REAL del servicio de categorías para obtener los datos de la API.
 import { getCategoriasServicio } from '../../categoriasServicioAdmin/services/categoriasServicioService';
 
 // --- FUNCIONES DE LA API PARA SERVICIOS ---
 
-/**
- * Obtiene todos los servicios desde la API.
- * @param {object} [filtros] - Opcional. Objeto con filtros como { estado: true }.
- * @returns {Promise<object>} La respuesta de la API.
- */
+// Esta función es correcta, no necesita cambios.
 export const getServicios = async (filtros = {}) => {
   try {
     const response = await apiClient.get('/servicios', { params: filtros });
-    return response.data; // La data de la API usualmente está en response.data
+    return response.data;
   } catch (error) {
     console.error("Error al obtener servicios:", error);
     throw error.response?.data || new Error(error.message);
@@ -22,13 +16,20 @@ export const getServicios = async (filtros = {}) => {
 };
 
 /**
- * Crea un nuevo servicio en la API.
- * @param {object} servicioData - Datos del nuevo servicio.
+ * Crea un nuevo servicio en la API usando FormData.
+ * @param {FormData} formData - El objeto FormData que contiene los datos del servicio y el archivo de imagen.
  * @returns {Promise<object>} La respuesta de la API.
  */
-export const createServicio = async (servicioData) => {
+export const createServicio = async (formData) => {
   try {
-    const response = await apiClient.post('/servicios', servicioData);
+    // --- CAMBIO CLAVE ---
+    // 1. El segundo argumento es el formData.
+    // 2. El tercer argumento es la configuración, donde especificamos el tipo de contenido.
+    const response = await apiClient.post('/servicios', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error al crear el servicio:", error);
@@ -37,14 +38,20 @@ export const createServicio = async (servicioData) => {
 };
 
 /**
- * Actualiza un servicio existente en la API.
+ * Actualiza un servicio existente en la API usando FormData.
  * @param {number|string} id - ID del servicio a actualizar.
- * @param {object} servicioData - Datos a actualizar.
+ * @param {FormData} formData - El objeto FormData con los datos a actualizar.
  * @returns {Promise<object>} La respuesta de la API.
  */
-export const updateServicio = async (id, servicioData) => {
+export const updateServicio = async (id, formData) => {
   try {
-    const response = await apiClient.put(`/servicios/${id}`, servicioData);
+    // --- CAMBIO CLAVE ---
+    // Misma lógica que en createServicio.
+    const response = await apiClient.put(`/servicios/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   } catch (error) {
     console.error(`Error al actualizar el servicio ${id}:`, error);
@@ -52,14 +59,9 @@ export const updateServicio = async (id, servicioData) => {
   }
 };
 
-/**
- * Elimina un servicio en la API.
- * @param {number|string} id - ID del servicio a eliminar.
- * @returns {Promise<object>} La respuesta de la API.
- */
+// Esta función es correcta, no necesita cambios.
 export const deleteServicio = async (id) => {
   try {
-    // La petición DELETE puede no devolver contenido, pero sí una respuesta exitosa.
     await apiClient.delete(`/servicios/${id}`);
   } catch (error) {
     console.error(`Error al eliminar el servicio ${id}:`, error);
@@ -67,33 +69,23 @@ export const deleteServicio = async (id) => {
   }
 };
 
-/**
- * Cambia el estado de un servicio en la API.
- * @param {number|string} id - ID del servicio.
- * @param {boolean} nuevoEstado - El nuevo estado (true para activar, false para desactivar).
- * @returns {Promise<object>} La respuesta de la API.
- */
+// Esta función es correcta, no necesita cambios.
 export const cambiarEstadoServicio = async (id, nuevoEstado) => {
-    try {
-      const response = await apiClient.patch(`/servicios/${id}/estado`, { estado: nuevoEstado });
-      return response.data;
-    } catch (error) {
-      console.error(`Error al cambiar estado del servicio ${id}:`, error);
-      throw error.response?.data || new Error(error.message);
-    }
-  };
+  try {
+    const response = await apiClient.patch(`/servicios/${id}/estado`, { estado: nuevoEstado });
+    return response.data;
+  } catch (error) {
+    console.error(`Error al cambiar estado del servicio ${id}:`, error);
+    throw error.response?.data || new Error(error.message);
+  }
+};
 
 
-// --- FUNCIONES AUXILIARES (relacionadas con otros módulos) ---
+// --- FUNCIONES AUXILIARES (Estas son correctas) ---
 
-/**
- * Obtiene solo las categorías de servicio activas, ideal para un dropdown/select en el formulario.
- * @returns {Promise<Array>} Un array de objetos de categoría con { id, nombre }.
- */
 export const getActiveCategoriasForSelect = async () => {
   try {
     const response = await getCategoriasServicio({ estado: true });
-    // La data real de la API está en response.data.data
     const todasCategoriasActivas = response?.data?.data || []; 
     
     if (!todasCategoriasActivas || todasCategoriasActivas.length === 0) {
@@ -106,7 +98,6 @@ export const getActiveCategoriasForSelect = async () => {
     }));
   } catch (error) {
     console.error("ERROR GRAVE al obtener categorías de servicio activas:", error);
-    // Devolvemos un array vacío para que el formulario no se rompa
     return [];
   }
 };
