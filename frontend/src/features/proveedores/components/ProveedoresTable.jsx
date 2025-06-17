@@ -8,14 +8,12 @@ const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onTogg
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Nombre/Empresa</th>
-            <th>Tipo / N° Doc.</th> {/* Columna unificada para claridad */}
-            <th>Teléfono</th>
-            <th>Email</th>
-            <th>Dirección</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+            {/* ==================== INICIO DE LA CORRECCIÓN ====================
+              Se juntan todas las etiquetas <th> en una sola línea para eliminar
+              cualquier espacio en blanco o salto de línea entre ellas.
+              Esto soluciona el error de hidratación de React.
+            ====================== FIN DE LA CORRECCIÓN ======================= */}
+            <th>#</th><th>Nombre/Empresa</th><th>Tipo / N° Doc.</th><th>Teléfono</th><th>Email</th><th>Dirección</th><th>Estado</th><th>Acciones</th>
           </tr>
         </thead>
         <tbody>

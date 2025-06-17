@@ -1,22 +1,20 @@
-// src/features/productosAdmin/components/ProductoAdminForm.jsx
 import React from 'react';
 
 const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDisponibles, isEditing }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    // CAMBIO: Convertir a número si es un campo de stock o precio, para evitar enviar strings vacíos al backend si el campo está vacío.
-    // Esto es especialmente útil para campos numéricos opcionales.
+    
     let parsedValue = value;
-    if (name === 'existencia' || name === 'precio' || name === 'stockMinimo' || name === 'stockMaximo') {
+    // Aseguramos que los campos numéricos se manejen como números o un string vacío si el usuario borra el campo
+    if (name === 'existencia' || name === 'precio' || name === 'stockMinimo' || name === 'stockMaximo' || name === 'idCategoriaProducto') {
       parsedValue = value === '' ? '' : Number(value);
     }
+    
     onFormChange(name, type === 'checkbox' ? checked : parsedValue);
   };
 
   return (
     <>
-      {/* El CSS original usa .modal-content-ProductosAdministrador directamente para los inputs */}
-      {/* Vamos a agruparlos con una clase para más control si es necesario */}
       <div className="producto-admin-form-group">
         <label htmlFor="nombre">Nombre: <span className="required-asterisk">*</span></label>
         <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" value={formData.nombre || ''} onChange={handleChange} required />
@@ -24,10 +22,8 @@ const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDis
 
       <div className="producto-admin-form-group">
         <label htmlFor="idCategoriaProducto">Categoría: <span className="required-asterisk">*</span></label>
-        {/* CAMBIO CLAVE: name y value apuntan a 'idCategoriaProducto' */}
         <select id="idCategoriaProducto" name="idCategoriaProducto" value={formData.idCategoriaProducto || ''} onChange={handleChange} required>
           <option value="" disabled>Seleccionar categoría</option>
-          {/* CAMBIO CLAVE: Mapear para usar idCategoriaProducto como value y nombre como texto */}
           {categoriasDisponibles.map((cat) => (
             <option key={cat.idCategoriaProducto} value={cat.idCategoriaProducto}>
               {cat.nombre}
@@ -42,12 +38,10 @@ const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDis
       </div>
 
       <div className="producto-admin-form-group">
-        {/* CAMBIO: Renombrado de 'stock' a 'existencia' */}
         <label htmlFor="existencia">Existencia: <span className="required-asterisk">*</span></label>
         <input type="number" id="existencia" name="existencia" placeholder="Existencia actual" value={formData.existencia || ''} onChange={handleChange} required min="0" />
       </div>
 
-      {/* NUEVOS CAMPOS: Stock Mínimo y Máximo */}
       <div className="producto-admin-form-group">
         <label htmlFor="stockMinimo">Stock Mínimo:</label>
         <input
@@ -80,10 +74,8 @@ const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDis
       </div>
 
       <div className="producto-admin-form-group">
-        {/* CAMBIO: Renombrado de 'foto' a 'imagen' */}
         <label htmlFor="imagen">Imagen del Producto:</label>
         <input type="file" id="imagen" name="imagen" accept="image/*" onChange={onFileChange} />
-        {/* CAMBIO: Usar 'imagenPreview' */}
         {formData.imagenPreview && ( 
           <img src={formData.imagenPreview} alt="Vista previa" style={{ maxWidth: '100px', marginTop: '10px' }} />
         )}

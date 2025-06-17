@@ -1,9 +1,8 @@
 // RUTA: src/features/compras/utils/pdfGeneratorCompras.js
-// DESCRIPCIÓN: Versión final corregida que accede a los datos de la compra a través de 'detalleCompra'.
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import logoEmpresa from '/logo.png'; // Asegúrate que la ruta a tu logo sea correcta
+import logoEmpresa from '/logo.png'; // La importación del logo se mantiene, aunque no lo arreglemos ahora.
 
 export const generarPDFCompraUtil = (compra) => {
   if (!compra) {
@@ -12,7 +11,6 @@ export const generarPDFCompraUtil = (compra) => {
   }
 
   const doc = new jsPDF();
-  // Los totales generales de la compra ya vienen bien, así que los usamos directamente.
   const subtotal = compra.total - compra.iva;
 
   // --- Encabezado del Documento ---
@@ -31,17 +29,15 @@ export const generarPDFCompraUtil = (compra) => {
   
   // --- Tabla de Productos ---
   const tableColumn = ["Producto", "Cantidad", "Valor Unitario", "Subtotal"];
-  const tableRows = (compra.productosComprados || []).map(p => {
+
+  // ✅ CORRECCIÓN 1: Usar `compra.productos` en lugar de `compra.productosComprados`.
+  const tableRows = (compra.productos || []).map(p => {
     
-    // ================== INICIO DE LA CORRECCIÓN CLAVE ==================
-    // Accedemos al objeto 'detalleCompra' que contiene la cantidad y el valor unitario.
-    // Este alias fue definido en el 'include' del servicio del backend.
+    // ✅ CORRECCIÓN 2: Usar `p.CompraXProducto` para acceder a los datos de la tabla intermedia.
     const pivot = p.detalleCompra; 
     
-    // Si 'pivot' no existe, usamos 0 como valor por defecto para evitar errores.
     const cantidad = pivot?.cantidad || 0;
     const valorUnitario = pivot?.valorUnitario || 0;
-    // =================== FIN DE LA CORRECCIÓN CLAVE ====================
 
     const subtotalItem = cantidad * valorUnitario;
     return [
@@ -54,10 +50,10 @@ export const generarPDFCompraUtil = (compra) => {
 
   autoTable(doc, {
     head: [tableColumn],
-    body: tableRows,
+    body: tableRows.length > 0 ? tableRows : [['-']], // Muestra un guion si no hay productos
     startY: 60,
     theme: 'grid',
-    headStyles: { fillColor: [182, 96, 163] }, // Tu color morado
+    headStyles: { fillColor: [182, 96, 163] },
     styles: { halign: 'center' },
     columnStyles: {
         0: { halign: 'left' },

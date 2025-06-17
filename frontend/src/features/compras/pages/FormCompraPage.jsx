@@ -37,7 +37,7 @@ function FormCompraPage() {
           productosAdminService.getProductos()
         ]);
         setProveedoresList(proveedoresData || []);
-        setProductosList(productosData || []);
+        setProductosList(productosData?.productos || []);
       } catch (error) {
         setValidationMessage('Error al cargar datos necesarios: ' + (error.message || 'Error desconocido'));
         setIsValidationModalOpen(true);
