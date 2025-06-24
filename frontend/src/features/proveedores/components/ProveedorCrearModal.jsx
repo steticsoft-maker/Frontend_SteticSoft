@@ -1,98 +1,119 @@
-// src/features/proveedores/components/ProveedorCrearModal.jsx
 import React, { useState, useEffect } from 'react';
 import ProveedorForm from './ProveedorForm';
+import { proveedoresService } from '../services/proveedoresService';
 
 const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const getInitialFormState = () => ({
-    tipo: "Natural", // Nombre de campo esperado por el backend
-    // Campos para tipo Natural
+    tipo: "Natural",
     nombre: "",
-    tipoDocumento: "CC", // Nombre de campo esperado por el backend
+    tipoDocumento: "CC",
     numeroDocumento: "",
-    // Campos para tipo Jurídico
-    nitEmpresa: "", // Nombre de campo esperado por el backend
-    // Campos comunes
+    nitEmpresa: "",
     telefono: "",
-    correo: "", // Nombre de campo esperado por el backend
+    correo: "",
     direccion: "",
-    // Campos de persona encargada
-    nombrePersonaEncargada: "", // Nombre de campo esperado por el backend
-    telefonoPersonaEncargada: "", // Nombre de campo esperado por el backend
-    emailPersonaEncargada: "", // Nombre de campo esperado por el backend
-    estado: true, // Nuevos proveedores activos por defecto
+    nombrePersonaEncargada: "",
+    telefonoPersonaEncargada: "",
+    emailPersonaEncargada: "",
+    estado: true,
   });
 
   const [formData, setFormData] = useState(getInitialFormState());
-  const [formErrors, setFormErrors] = useState({});
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (isOpen) {
       setFormData(getInitialFormState());
-      setFormErrors({});
+      setErrors({});
     }
   }, [isOpen]);
 
-  const handleFormChange = (name, value, resetData = null) => {
-    setFormData(prev => {
-      const newState = { ...prev, ...(resetData || {}), [name]: value };
-      // Limpiar campos no relevantes al cambiar de tipo
-      if (name === 'tipo') {
-        if (value === 'Natural') {
-          newState.nitEmpresa = '';
-        } else if (value === 'Jurídico') {
-          newState.nombre = '';
-          newState.tipoDocumento = '';
-          newState.numeroDocumento = '';
-        }
-      }
-      return newState;
-    });
-
-    if (formErrors[name]) {
-      setFormErrors(prev => ({ ...prev, [name]: '' }));
+  const handleFormChange = (name, value) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
     }
+  };
+
+  const validateField = async (name, value) => {
+    let formatError = null;
+    switch (name) {
+      case 'nombre':
+        formatError = !value.trim() ? "Este campo es obligatorio." : null;
+        break;
+      case 'numeroDocumento':
+        formatError = !/^\d{7,10}$/.test(value) ? "Debe tener entre 7 y 10 dígitos." : null;
+        break;
+      case 'nitEmpresa':
+        formatError = !/^\d{9}-\d$/.test(value) ? "Formato: 123456789-0." : null;
+        break;
+      case 'telefono':
+      case 'telefonoPersonaEncargada':
+        formatError = !/^\d{10}$/.test(value) ? "Debe tener 10 dígitos." : null;
+        break;
+      case 'correo':
+        formatError = !/\S+@\S+\.\S+/.test(value) ? "El formato del email no es válido." : null;
+        break;
+      case 'direccion':
+      case 'nombrePersonaEncargada':
+        formatError = !value.trim() ? "Este campo es obligatorio." : null;
+        break;
+      case 'emailPersonaEncargada':
+        formatError = value && !/\S+@\S+\.\S+/.test(value) ? "El email del encargado no es válido." : null;
+        break;
+      default:
+        break;
+    }
+    
+    if (formatError) {
+      return formatError;
+    }
+
+    const uniqueFields = ['correo', 'numeroDocumento', 'nitEmpresa'];
+    if (uniqueFields.includes(name)) {
+      try {
+        const uniquenessErrors = await proveedoresService.verificarDatosUnicos({ [name]: value });
+        if (uniquenessErrors[name]) {
+          return uniquenessErrors[name];
+        }
+      } catch (error) {
+        console.error(`API error during ${name} validation:`, error);
+        return "No se pudo conectar con el servidor para validar.";
+      }
+    }
+    return null;
   };
   
-  const validateForm = () => {
-    // La validación ahora se delega principalmente al backend,
-    // aquí podemos mantener validaciones simples del lado del cliente.
-    const errors = {};
-    if (formData.tipo === "Natural") {
-      if (!formData.nombre?.trim()) errors.nombre = "El nombre es obligatorio.";
-      if (!formData.numeroDocumento?.trim()) errors.numeroDocumento = "El número de documento es obligatorio.";
-    } else { 
-      if (!formData.nombre?.trim()) errors.nombre = "El nombre de la empresa es obligatorio.";
-      if (!formData.nitEmpresa?.trim()) errors.nitEmpresa = "El NIT es obligatorio.";
-    }
-    if (!formData.telefono?.trim()) errors.telefono = "El teléfono es obligatorio.";
-    if (!formData.correo?.trim() || !/\S+@\S+\.\S+/.test(formData.correo)) errors.correo = "El email principal no es válido.";
-    // ... más validaciones si lo deseas ...
-    
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+  const handleBlur = async (e) => {
+    const { name, value } = e.target;
+    if (!value.trim()) return; 
+    const errorMessage = await validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: errorMessage }));
   };
 
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  const validateFormOnSubmit = async () => {
+    const newErrors = {};
+    const fieldsToValidate = [
+        'nombre', 'telefono', 'correo', 'direccion', 
+        'nombrePersonaEncargada', 'telefonoPersonaEncargada',
+        ...(formData.tipo === 'Natural' ? ['numeroDocumento'] : ['nitEmpresa'])
+    ];
+    for (const field of fieldsToValidate) {
+        const errorMessage = await validateField(field, formData[field]);
+        if (errorMessage) {
+            newErrors[field] = errorMessage;
+        }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    // CORRECCIÓN: Ensamblamos el objeto de datos que la API espera
-    const dataToSubmit = {
-      nombre: formData.nombre,
-      tipo: formData.tipo,
-      telefono: formData.telefono,
-      correo: formData.correo,
-      direccion: formData.direccion,
-      tipoDocumento: formData.tipo === 'Natural' ? formData.tipoDocumento : null,
-      numeroDocumento: formData.tipo === 'Natural' ? formData.numeroDocumento : null,
-      nitEmpresa: formData.tipo === 'Jurídico' ? formData.nitEmpresa : null,
-      nombrePersonaEncargada: formData.nombrePersonaEncargada,
-      telefonoPersonaEncargada: formData.telefonoPersonaEncargada,
-      emailPersonaEncargada: formData.emailPersonaEncargada,
-      estado: formData.estado,
-    };
-    
-    onSubmit(dataToSubmit);
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+    const isValid = await validateFormOnSubmit();
+    if (isValid) {
+      onSubmit(formData);
+    }
   };
 
   if (!isOpen) return null;
@@ -101,21 +122,28 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
     <div className="modal-Proveedores">
       <div className="modal-content-Proveedores formulario-modal">
         <h2 className="proveedores-modal-title">Agregar Proveedor</h2>
-        <form className="proveedores-form-grid" onSubmit={handleSubmitForm}>
-          <ProveedorForm
-            formData={formData}
-            onFormChange={handleFormChange}
-            isEditing={false}
-            formErrors={formErrors}
-          />
-          <div className="proveedores-form-actions">
-            <button type="submit" className="proveedores-form-button-guardar">
-              Guardar Proveedor
-            </button>
-            <button type="button" className="proveedores-form-button-cancelar" onClick={onClose}>
-              Cancelar
-            </button>
-          </div>
+        {/*
+          CORRECCIÓN FINAL:
+          Usamos la clase 'proveedores-form-grid' que tienes en tu CSS,
+          la cual aplica 'display: grid' y crea las dos columnas.
+        */}
+        <form className="proveedores-form-grid" onSubmit={handleSubmitForm} noValidate>
+            <ProveedorForm
+              formData={formData}
+              onFormChange={handleFormChange}
+              onBlur={handleBlur}
+              isEditing={false}
+              errors={errors}
+            />
+            <div className="proveedores-form-actions">
+                {errors.api && <p className="error-proveedores" style={{width: '100%', textAlign: 'center'}}>{errors.api}</p>}
+                <button type="submit" className="proveedores-form-button-guardar">
+                    Guardar Proveedor
+                </button>
+                <button type="button" className="proveedores-form-button-cancelar" onClick={onClose}>
+                    Cancelar
+                </button>
+            </div>
         </form>
       </div>
     </div>

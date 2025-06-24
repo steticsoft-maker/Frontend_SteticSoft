@@ -1,4 +1,5 @@
 // src/features/proveedores/pages/ListaProveedoresPage.jsx
+
 import React, { useState, useEffect, useCallback } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import ProveedoresTable from "../components/ProveedoresTable";
@@ -25,25 +26,26 @@ function ListaProveedoresPage() {
   const [validationMessage, setValidationMessage] = useState("");
   const [modalAction, setModalAction] = useState(null);
 
+  // --- Lógica de Carga Restaurada ---
   const cargarProveedores = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      // La función del servicio devuelve la lista de proveedores directamente
       const datosRecibidos = await proveedoresService.getProveedores();
-      // CORRECCIÓN CLAVE: Se usa la respuesta directa (datosRecibidos) en lugar de buscar una propiedad .data
       setProveedores(datosRecibidos || []);
-    } catch (err) {
+    } catch (err) { // <--- LLAVE AÑADIDA
       setError(err.message || "Error al cargar los proveedores.");
-    } finally {
+    } finally { // <--- LLAVE AÑADIDA
       setIsLoading(false);
     }
   }, []);
 
+  // --- useEffect Restaurado ---
   useEffect(() => {
     cargarProveedores();
   }, [cargarProveedores]);
 
+  // Tu lógica de modales y acciones se mantiene intacta
   const closeModal = () => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
@@ -65,6 +67,12 @@ function ListaProveedoresPage() {
   };
 
   const handleSave = async (proveedorData) => {
+    const onSaveSuccess = async () => {
+      closeModal();
+      await cargarProveedores();
+      setIsValidationModalOpen(true);
+    };
+
     try {
       if (proveedorData.idProveedor) {
         await proveedoresService.updateProveedor(proveedorData.idProveedor, proveedorData);
@@ -73,8 +81,7 @@ function ListaProveedoresPage() {
         await proveedoresService.createProveedor(proveedorData);
         setValidationMessage("Proveedor creado exitosamente.");
       }
-      closeModal();
-      await cargarProveedores();
+      await onSaveSuccess();
     } catch (err) {
       setValidationMessage(err.response?.data?.message || "Error al guardar el proveedor.");
       setIsValidationModalOpen(true);
@@ -116,12 +123,26 @@ function ListaProveedoresPage() {
     else if (modalAction === 'status') handleToggleEstado();
   };
 
+  // --- LÓGICA DE FILTRADO LOCAL RESTAURADA Y MEJORADA ---
   const filteredProveedores = proveedores.filter((p) => {
     const term = search.toLowerCase();
+    if (!term) return true;
+
+    // Campos de la tabla donde se buscará
+    const nombre = p.nombre || '';
+    const tipoDocumento = p.tipo === 'Natural' 
+      ? `${p.tipoDocumento || ''} ${p.numeroDocumento || ''}` 
+      : p.nitEmpresa || '';
+    const telefono = p.telefono || '';
+    const correo = p.correo || '';
+    const direccion = p.direccion || '';
+
     return (
-      p.nombre?.toLowerCase().includes(term) ||
-      p.nitEmpresa?.toLowerCase().includes(term) ||
-      p.correo?.toLowerCase().includes(term)
+      nombre.toLowerCase().includes(term) ||
+      tipoDocumento.toLowerCase().includes(term) ||
+      telefono.toLowerCase().includes(term) ||
+      correo.toLowerCase().includes(term) ||
+      direccion.toLowerCase().includes(term)
     );
   });
 
@@ -140,7 +161,7 @@ function ListaProveedoresPage() {
           <h1>Gestión de Proveedores</h1>
           <div className="proveedores-actions-bar">
             <div className="proveedores-search-bar">
-              <input type="text" placeholder="Buscar por nombre, NIT o correo..." value={search} onChange={(e) => setSearch(e.target.value)} disabled={isLoading} />
+              <input type="text" placeholder="Buscar por cualquier campo..." value={search} onChange={(e) => setSearch(e.target.value)} disabled={isLoading} />
             </div>
             <button className="proveedores-add-button" onClick={() => handleOpenModal("create")} disabled={isLoading}>
               Agregar Proveedor
@@ -151,7 +172,7 @@ function ListaProveedoresPage() {
           {error && <p className="error-message">{error}</p>}
           {!isLoading && !error && (
             <ProveedoresTable
-              proveedores={filteredProveedores}
+              proveedores={filteredProveedores} 
               onView={(prov) => handleOpenModal("ver", prov)}
               onEdit={(prov) => handleOpenModal("edit", prov)}
               onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}

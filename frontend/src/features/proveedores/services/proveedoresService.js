@@ -1,11 +1,11 @@
-// src/features/proveedores/services/proveedoresService.js
 import apiClient from "../../../shared/services/apiClient";
 
-// CORRECCIÓN: Esta función ahora devolverá el array de datos directamente.
-const getProveedoresAPI = async () => {
+// --- FUNCIÓN CORREGIDA ---
+// Ahora acepta un objeto de 'params' para la búsqueda
+const getProveedoresAPI = async (params = {}) => {
   try {
-    const response = await apiClient.get('/proveedores');
-    // La API devuelve { success, data: [...] }, así que accedemos a 'data.data'
+    // apiClient (axios) enviará los params como una query string: /proveedores?busqueda=loquesea
+    const response = await apiClient.get('/proveedores', { params });
     return response.data?.data || response.data || []; 
   } catch (error) {
     console.error("Error en getProveedoresAPI:", error.response?.data || error.message);
@@ -53,12 +53,24 @@ const deleteProveedorAPI = async (id) => {
     }
 };
 
+const verificarDatosUnicosAPI = async (data) => {
+  try {
+    const response = await apiClient.post('/proveedores/verificar-unicidad', data);
+    return response.data;
+  } catch (error) {
+    console.error("Error en verificarDatosUnicosAPI:", error.response?.data || error.message);
+    return {};
+  }
+};
+
+
 export const proveedoresService = {
   getProveedores: getProveedoresAPI,
   createProveedor: createProveedorAPI,
   updateProveedor: updateProveedorAPI,
   toggleEstado: toggleProveedorEstadoAPI,
   deleteProveedor: deleteProveedorAPI,
+  verificarDatosUnicos: verificarDatosUnicosAPI,
 };
 
 export const getProveedoresParaCompra = getProveedoresAPI;

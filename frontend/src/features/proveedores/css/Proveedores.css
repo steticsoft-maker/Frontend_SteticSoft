@@ -198,7 +198,8 @@ input:checked+.slider:before { transform: translateX(16px); }
 }
 
 .modal-content-Proveedores > h2, 
-.modal-content-Proveedores > h3
+.modal-content-Proveedores > h3,
+.proveedores-modal-title /* Aseguramos que el título del modal también tenga este estilo */
 {
     text-align: center;
     color: var(--color-primary-darker, #6d0b58);
@@ -216,7 +217,7 @@ input:checked+.slider:before { transform: translateX(16px); }
     font-size: 1rem; 
 }
 .modal-content-Proveedores.detalle-modal p strong { 
-    color: var(--color-primary, #24101b); /* Color ROSA para etiquetas */   
+    color: var(--color-primary, #eb0985); /* Color ROSA para etiquetas */
     margin-right: 8px;  
     font-weight: 600;   
     min-width: 180px;   /* Ajusta este valor para alinear los ":" */
@@ -266,6 +267,8 @@ input:checked+.slider:before { transform: translateX(16px); }
     font-size: 0.95rem;
     text-align: left;
 }
+
+/* --- AJUSTE DE ALTURA PARA TODOS LOS CAMPOS --- */
 .proveedores-form-group input[type="text"],
 .proveedores-form-group input[type="email"],
 .proveedores-form-group input[type="tel"],
@@ -275,14 +278,14 @@ input:checked+.slider:before { transform: translateX(16px); }
     border: 1px solid var(--color-border-light, #c287b5);
     border-radius: 5px;
     font-size: 1rem;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Clave para que padding no afecte altura */
+    height: 42px; /* Altura unificada */
     background-color: var(--color-background-input, #fff);
     color: var(--color-text-dark, #333);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.proveedores-form-group input[type="text"]:focus,
-.proveedores-form-group input[type="email"]:focus,
-.proveedores-form-group input[type="tel"]:focus,
+
+.proveedores-form-group input:focus,
 .proveedores-form-group select:focus {
     border-color: var(--color-admin-hover, #b660a3);
     box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
@@ -292,34 +295,67 @@ input:checked+.slider:before { transform: translateX(16px); }
     color: red;
     margin-left: 2px;
 }
+
+/* --- AJUSTE DE ALTURA PARA CAMPO DE DOCUMENTO --- */
 .documento-container { 
     display: flex;
-    align-items: stretch; 
+    align-items: stretch; /* Se mantiene */
     width: 100%;
-    border: 1px solid var(--color-border-light, #c287b5);
-    border-radius: 5px;
-    overflow: hidden;
+    /* Quitamos borde y overflow para que cada hijo lo maneje */
 }
-.documento-container .select-tipo-documento { /* Clase para el select dentro de .documento-container */
-    border: none; 
-    border-right: 1px solid var(--color-border-light, #c287b5); 
-    border-radius: 0; 
+.documento-container .select-tipo-documento {
+    border: 1px solid var(--color-border-light, #c287b5);
+    border-right: none;
+    border-radius: 5px 0 0 5px;
     padding: 10px; 
     background-color: var(--color-background-input-addon, #e9ecef); 
-    color: var(--color-text-dark, #333); 
-    font-size: 1rem; /* Consistencia */
+    font-size: 1rem;
     cursor: pointer;
+    height: 42px; /* Altura unificada */
+    box-sizing: border-box;
 }
-.documento-container .input-documento { /* Clase para el input dentro de .documento-container */
-    border: none; 
-    border-radius: 0;
+.documento-container .input-documento {
+    border: 1px solid var(--color-border-light, #c287b5);
+    border-left: none;
+    border-radius: 0 5px 5px 0;
     flex-grow: 1; 
     padding: 10px 12px; 
-    font-size: 1rem; /* Consistencia */
+    font-size: 1rem;
+    height: 42px; /* Altura unificada */
+    box-sizing: border-box;
 }
-.documento-container:focus-within { 
+.documento-container .input-documento:focus {
+    /* El focus se aplica al input, no al contenedor */
+    outline: none;
     border-color: var(--color-admin-hover, #b660a3);
     box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+}
+
+/* --- AJUSTES PARA SEPARADOR VISUAL --- */
+.form-section-title-container {
+    grid-column: 2 / 3; /* Coloca este div en la segunda columna */
+    grid-row: 1 / 2;    /* Lo posiciona en la primera fila */
+    position: relative; /* Para poder posicionar el separador */
+    padding-left: 25px; /* Espacio para el separador */
+    align-self: end;    /* Lo baja para que se alinee con el primer campo de la derecha */
+    margin-bottom: 8px; /* Espacio igual al gap de .proveedores-form-group */
+}
+.form-section-title-container::before { /* Pseudoelemento para la línea vertical */
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -8px; /* Ajuste para alinear con el alto del campo de arriba */
+    bottom: 0;
+    width: 1px;
+    background-color: var(--color-border-light, #e0e0e0);
+}
+.form-section-title-container h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.1em;
+    color: var(--color-primary-darker, #6d0b58); /* Color del título */
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--color-border-light, #e0e0e0);
 }
 
 .proveedores-form-actions { 
@@ -357,11 +393,15 @@ input:checked+.slider:before { transform: translateX(16px); }
 .proveedores-form-button-cancelar:hover {
     background-color: #7f8c8d;
 }
-.proveedores-form-group .error-proveedores { 
+.error-proveedores { 
     color: var(--color-danger, red);
     font-size: 0.85rem;
     margin-top: 4px;
 }
+input.is-invalid, .input-documento.is-invalid {
+    border-color: #dc3545 !important;
+}
+
 
 /* === ESTILOS RESPONSIVOS === */
 @media (max-width: 768px) {
@@ -400,10 +440,10 @@ input:checked+.slider:before { transform: translateX(16px); }
         padding-right: 10px; white-space: nowrap;
         font-weight: bold; color: var(--color-primary-darker, #6d0b58); text-align: left;
     }
-    .tablaProveedores td.proveedores-table-actions { /* Corrección aquí */
+    .tablaProveedores td.proveedores-table-actions {
         display: flex;            
         flex-direction: row;      
-        justify-content: flex-end;/* O 'center' */                                 
+        justify-content: flex-end;
         align-items: center;      
         padding-left: 10px !important; 
         padding-right: 10px !important;
@@ -413,25 +453,28 @@ input:checked+.slider:before { transform: translateX(16px); }
         content: ""; 
         display: none;
     }
-    .proveedores-table-actions button { /* Ajuste opcional para tamaño de botones en móvil */
-        /* padding: 6px 8px; */
-        /* font-size: 0.8rem; */
-    }
 
-    .modal-content-Proveedores,
-    .modal-content-Proveedores.detalle-modal,
     .modal-content-Proveedores.formulario-modal {
         max-width: 95%; padding: 20px;
     }
     .proveedores-form-grid { 
         grid-template-columns: 1fr; 
     }
-    .modal-subtitle-proveedores { grid-column: 1 / -1; }
-    
-    .botonCerrarModalVerDetallesProveedores, /* También para la nueva clase si la usas */
-    .proveedores-detalle-modal-button-cerrar { 
-        width: 100%; max-width: none; padding: 12px; 
+    /* En móvil, el título de la sección ocupa todo el ancho */
+    .form-section-title-container {
+        grid-column: 1 / -1;
+        grid-row: auto; /* El grid lo posicionará automáticamente */
+        padding-left: 0;
+        margin-bottom: 0;
+        align-self: start;
     }
+    .form-section-title-container::before {
+        display: none; /* Oculta la línea vertical en móvil */
+    }
+    .form-section-title-container h4 {
+        text-align: center; /* Centrar el título en móvil */
+    }
+    
     .proveedores-form-actions { 
         flex-direction: column;
     }
@@ -439,3 +482,58 @@ input:checked+.slider:before { transform: translateX(16px); }
         width: 100%;
     }
 }
+
+/* ========================================================== */
+/* ========= INICIO DE CORRECCIÓN PARA LÍNEA VERTICAL ========= */
+/* ========================================================== */
+
+/* Eliminamos la regla anterior que no funcionaba bien */
+.form-section-title-container::before {
+    display: none; /* Desactivamos el pseudo-elemento anterior */
+}
+
+/* Título de la sección de la Persona Encargada */
+.form-section-title-container {
+    grid-column: 2 / 3; /* Lo mantiene en la segunda columna */
+    grid-row: 1 / 2;    /* Lo mantiene en la primera fila */
+    position: relative; /* Mantenemos por si se necesita en el futuro */
+    align-self: end;    /* Lo baja para que se alinee con el campo de al lado */
+    margin-bottom: 8px; /* Espacio consistente */
+    /* Ya NO necesita padding-left, el borde lo manejará */
+}
+.form-section-title-container h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.1em;
+    color: var(--color-primary-darker, #6d0b58); /* Color del título */
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--color-border-light, #e0e0e0);
+}
+
+/* --- NUEVA LÓGICA PARA LA LÍNEA VERTICAL --- */
+/* Le decimos al grid que todos los elementos en la segunda columna,
+   a partir de la segunda fila, tengan un borde izquierdo. */
+.proveedores-form-grid > .proveedores-form-group:nth-child(2n):not(:first-child) {
+    border-left: 1px solid var(--color-border-light, #e0e0e0);
+    padding-left: 25px; /* Añade un espacio para que el contenido no se pegue a la línea */
+}
+
+/* El título de la sección (que está en la primera fila) también necesita este padding */
+.form-section-title-container {
+    padding-left: 25px;
+}
+
+/* En móvil, eliminamos la línea y el padding para que vuelva a ser una sola columna */
+@media (max-width: 768px) {
+    .proveedores-form-grid > .proveedores-form-group:nth-child(2n):not(:first-child) {
+        border-left: none;
+        padding-left: 0;
+    }
+    .form-section-title-container {
+        padding-left: 0;
+    }
+}
+
+/* ======================================================== */
+/* ========= FIN DE CORRECCIÓN PARA LÍNEA VERTICAL ======== */
+/* ======================================================== */
