@@ -66,3 +66,8 @@
     padding: 2px 0;
     font-size: 0.8rem;
 }
+
+.rol-permission-table-icon {
+  color: #e74c3c; /* Un rojo estándar, similar al de botones de peligro */
+  /* También podría ser var(--color-danger) si está definido globalmente */
+}

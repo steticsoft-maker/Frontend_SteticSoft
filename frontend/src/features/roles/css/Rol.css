@@ -690,7 +690,7 @@ input:checked+.slider:before {
 @media (max-width: 768px) {
     .rol-content {
         padding: 15px;
-        margin-left: 0;
+        margin-left: 0; /* Ya está en 0, lo cual es correcto. */
         max-width: 100%;
     }
 

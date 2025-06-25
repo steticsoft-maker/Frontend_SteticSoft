@@ -28,7 +28,19 @@ const PermisosSelector = ({ permisosAgrupados, permisosSeleccionadosIds, onToggl
                       onChange={() => onTogglePermiso(permiso.idPermiso)}
                       disabled={isRoleAdmin}
                     />
-                    <label htmlFor={`permiso-${permiso.idPermiso}`}>{permiso.accion}</label>
+                    {(() => {
+                      // Extraer la acción del nombre del permiso. Ej: MODULO_USUARIOS_CREAR -> CREAR
+                      const parts = permiso.nombre.split('_');
+                      let accionName = permiso.nombre; // Por defecto, el nombre completo si no sigue el patrón
+                      if (parts.length > 2 && parts[0] === "MODULO") {
+                        accionName = parts.slice(2).join('_'); // Ej: CREAR, GESTIONAR_ALGO
+                      }
+                      // Capitalizar primera letra de cada palabra de la acción para mejor lectura
+                      const displayAccion = accionName.split('_')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                        .join(' ');
+                      return <label htmlFor={`permiso-${permiso.idPermiso}`}>{displayAccion}</label>;
+                    })()}
                   </div>
                 ))}
               </div>
