@@ -1,130 +1,46 @@
 // src/features/usuarios/components/UsuarioEditarModal.jsx
-import React, { useState, useEffect } from "react";
+import React from "react"; // Removidos useState, useEffect
 import UsuarioForm from "./UsuarioForm";
-import { getRolesAPI } from "../services/usuariosService";
+// getRolesAPI ya no se importa aquí, availableRoles viene del hook useUsuarios
 
 const UsuarioEditarModal = ({
   isOpen,
   onClose,
-  onSubmit,
-  initialData, // Espera un objeto usuario completo de la API, ej. con initialData.clienteInfo
+  onSubmit, // Esta será handleSaveUsuario del hook
+  initialData, // Sigue siendo necesario para determinar isUserAdminProtected
+  availableRoles, // Del hook
+  isLoading, // isSubmitting del hook
+  // Props del hook useUsuarios para el formulario
+  formData,
+  formErrors,
+  isFormValid,
+  isVerifyingEmail,
+  handleInputChange,
+  handleInputBlur
 }) => {
-  const [formData, setFormData] = useState({});
-  const [availableRoles, setAvailableRoles] = useState([]);
-  const [formErrors, setFormErrors] = useState({});
-  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
 
-  // Determinar si el usuario es el admin protegido basándose en el nombre del rol.
+  // El estado local de formData, formErrors, availableRoles, isLoadingRoles ya no es necesario.
+  // El useEffect para cargar roles y setear formData se maneja en useUsuarios (handleOpenModal).
+
+  // Determinar si el usuario es el admin protegido basándose en el initialData.
+  // initialData es currentUsuario del hook cuando se abre el modal de edición.
   const isUserAdminProtected = initialData?.rol?.nombre === "Administrador";
 
-  useEffect(() => {
-    if (isOpen && initialData) {
-      // Extraer información del perfil (cliente o empleado) para mayor claridad.
-      // Ambos, Cliente y Empleado, ahora tienen 'nombre', 'apellido', 'correo', 'telefono'.
-      const perfil = initialData.clienteInfo || initialData.empleadoInfo || {};
-
-      setFormData({
-        idUsuario: initialData.idUsuario,
-        // Campos de Perfil
-        nombre: perfil.nombre || "",
-        apellido: perfil.apellido || "", // Usar apellido
-        correo: perfil.correo || "", // Usar el correo del perfil
-        telefono: perfil.telefono || "", // Usar telefono, ya no existe 'celular' en Empleado
-        tipoDocumento: perfil.tipoDocumento || "Cédula de Ciudadanía",
-        numeroDocumento: perfil.numeroDocumento || "",
-        fechaNacimiento: perfil.fechaNacimiento || "",
-        // direccion: perfil.direccion || '', // Omitido si no se usa consistentemente
-        idRol: initialData.rol?.idRol || initialData.idRol || "", // Usar idRol del objeto rol si está presente
-        estado: initialData.estado !== undefined ? initialData.estado : true, // Default a activo si no se define
-
-        // La contraseña no se carga para edición. Se maneja en un flujo separado si se desea cambiar.
-      });
-      setFormErrors({});
-
-      setIsLoadingRoles(true);
-      const fetchRoles = async () => {
-        try {
-          const response = await getRolesAPI();
-          // Asegúrate que response.data sea el array de roles, o response directamente si la API lo devuelve así.
-          setAvailableRoles(response.data || response || []);
-        } catch { // error variable removed as it's unused
-          setFormErrors((prev) => ({
-            ...prev,
-            _general: "No se pudieron cargar los roles.",
-          }));
-          setAvailableRoles([]);
-        } finally {
-          setIsLoadingRoles(false);
-        }
-      };
-      fetchRoles();
-    } else if (isOpen && !initialData) {
-      // Este caso no debería ocurrir si ListaUsuariosPage envía initialData correctamente.
-      // console.warn("Modal de edición abierto sin initialData.");
-      onClose(); // Cerrar si no hay datos para editar.
-    }
-  }, [isOpen, initialData, onClose]);
-
-  const handleFormChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prevErr) => ({ ...prevErr, [name]: "" }));
-    }
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    const emailRegex = /\S+@\S+\.\S+/;
-
-    if (!formData.nombre?.trim()) errors.nombre = "El nombre es obligatorio.";
-    if (!formData.apellido?.trim()) // Validar apellido
-      errors.apellido = "El apellido es obligatorio.";
-    if (!formData.correo?.trim()) { // Validar correo (del perfil y de la cuenta)
-      errors.correo = "El correo es obligatorio.";
-    } else if (!emailRegex.test(formData.correo)) {
-      errors.correo = "El formato del correo no es válido.";
-    }
-    if (!formData.telefono?.trim()) // Validar teléfono
-      errors.telefono = "El teléfono es obligatorio.";
-    if (!formData.tipoDocumento)
-      errors.tipoDocumento = "El tipo de documento es obligatorio.";
-    if (!formData.numeroDocumento?.trim())
-      errors.numeroDocumento = "El número de documento es obligatorio.";
-    if (!formData.idRol) errors.idRol = "Debe seleccionar un rol.";
-
-    // Validar fechaNacimiento si el rol es Cliente o Empleado
-    const rolIdSeleccionado = parseInt(formData.idRol, 10);
-    const rolSeleccionado = availableRoles.find(
-      (r) => r.idRol === rolIdSeleccionado
-    );
-    if (
-      rolSeleccionado &&
-      (rolSeleccionado.nombre === "Cliente" ||
-        rolSeleccionado.nombre === "Empleado")
-    ) {
-      if (!formData.fechaNacimiento)
-        errors.fechaNacimiento =
-          "La fecha de nacimiento es obligatoria para este rol.";
-    }
-
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmitForm = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (isUserAdminProtected) {
-      onClose(); // No permitir edición del admin protegido desde aquí
+      onClose();
       return;
     }
-    if (!validateForm()) return;
-
-    // El formData ya tiene los nombres de campo alineados con UsuarioForm y la API.
-    // ListaUsuariosPage.handleSaveUsuario se encargará de llamar a updateUsuarioAPI.
-    onSubmit(formData);
+    // La validación ahora está centralizada en useUsuarios.
+    // El botón de submit se deshabilita si !isFormValid.
+    onSubmit();
   };
 
-  if (!isOpen || !initialData) return null;
+  if (!isOpen) return null;
+  // No necesitamos !initialData aquí porque handleOpenModal en useUsuarios
+  // ya se encarga de inicializar formData. Si initialData fuera null, formData estaría vacío
+  // y el formulario se mostraría vacío o con errores de campos requeridos.
 
   return (
     <div className="usuarios-modalOverlay">
@@ -135,40 +51,38 @@ const UsuarioEditarModal = ({
             El usuario 'Administrador' tiene campos y acciones restringidas.
           </p>
         )}
-        <form onSubmit={handleSubmitForm}>
-          {isLoadingRoles ? (
-            <p style={{ textAlign: "center", margin: "20px 0" }}>
-              Cargando información...
-            </p>
-          ) : (
-            <UsuarioForm
-              formData={formData}
-              onFormChange={handleFormChange}
-              availableRoles={availableRoles}
-              isEditing={true}
-              isUserAdmin={isUserAdminProtected}
-              formErrors={formErrors}
-            />
-          )}
-          {formErrors._general && (
+        <form onSubmit={handleSubmit}>
+          {/* Ya no se necesita isLoadingRoles */}
+          <UsuarioForm
+            formData={formData} // Del hook
+            onInputChange={handleInputChange} // Del hook
+            onInputBlur={handleInputBlur}     // Del hook
+            availableRoles={availableRoles} // Del hook
+            isEditing={true}
+            isUserAdmin={isUserAdminProtected} // Determinado a partir de initialData (currentUsuario)
+            formErrors={formErrors} // Del hook
+            isVerifyingEmail={isVerifyingEmail} // Del hook
+          />
+          {/* {formErrors._general && ( // Errores generales podrían manejarse con el ValidationModal general
             <p className="auth-form-error" style={{ textAlign: "center" }}>
               {formErrors._general}
             </p>
-          )}
+          )} */}
 
           {!isUserAdminProtected ? (
             <div className="usuarios-form-actions">
               <button
                 type="submit"
                 className="usuarios-form-buttonGuardar"
-                disabled={isLoadingRoles}
+                disabled={!isFormValid || isLoading || isVerifyingEmail}
               >
-                Actualizar Usuario
+                {isLoading ? 'Actualizando...' : 'Actualizar Usuario'}
               </button>
               <button
                 type="button"
                 className="usuarios-form-buttonCancelar"
                 onClick={onClose}
+                disabled={isLoading}
               >
                 Cancelar
               </button>

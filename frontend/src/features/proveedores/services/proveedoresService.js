@@ -43,14 +43,20 @@ const toggleProveedorEstadoAPI = async (id, estado) => {
     }
 };
 
+// src/features/proveedores/services/proveedoresService.js
+
+// ... (otras funciones del servicio)
+
 const deleteProveedorAPI = async (id) => {
-    try {
-        const response = await apiClient.delete(`/proveedores/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error en deleteProveedorAPI:", error.response?.data || error.message);
-        throw error.response?.data || new Error("Error al eliminar el proveedor.");
-    }
+  try {
+    const response = await apiClient.delete(`/proveedores/${id}`);
+    return response.data;
+  } catch (error) {
+    // LANZAR EL ERROR COMPLETO
+    // Esto permite que el componente que lo llama pueda leer "error.response.data.message" de forma segura.
+    console.error("Error en deleteProveedorAPI:", error.response?.data || error.message);
+    throw error;
+  }
 };
 
 const verificarDatosUnicosAPI = async (data) => {

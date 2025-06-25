@@ -5,12 +5,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ComprasTable from '../components/ComprasTable';
-import CompraDetalleModal from '../components/CompraDetalleModal'; 
+import CompraDetalleModal from '../components/CompraDetalleModal';
 import PdfViewModal from '../../../shared/components/common/PdfViewModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
 import { comprasService } from '../services/comprasService';
-// La utilidad del PDF que ya corregimos
 import { generarPDFCompraUtil } from '../utils/pdfGeneratorCompras.js';
 import '../css/Compras.css';
 
@@ -36,8 +35,6 @@ function ListaComprasPage() {
     setError(null);
     try {
       const response = await comprasService.getCompras();
-      // El backend devuelve { data: [...] } o a veces solo [...]
-      // Esta línea maneja ambos casos de forma segura.
       setCompras(response.data || response || []); 
     } catch (err) {
       setError(err.response?.data?.message || 'Error al obtener las compras.');
@@ -89,9 +86,7 @@ function ListaComprasPage() {
     }
   };
   
-  const handleEstadoChange = () => { // compraId, nuevoEstado removed
-    console.log("Funcionalidad de cambio de estado pendiente de implementar.");
-  };
+  // CAMBIO 1: Se elimina la función 'handleEstadoChange' que ya no se utiliza.
 
   const handleCloseModals = () => {
     setIsDetalleModalOpen(false);
@@ -103,28 +98,22 @@ function ListaComprasPage() {
     setPdfDataUri('');
   };
 
-  // ===================== INICIO DE LA CORRECCIÓN CLAVE =====================
   const handleConfirmAnular = async () => {
     if (!selectedCompra) return;
     try {
-      // 1. Llama al servicio de anulación (esto ya funcionaba)
       await comprasService.anularCompra(selectedCompra.idCompra);
       setValidationMessage('¡Compra anulada exitosamente! El stock ha sido revertido.');
       
-      // 2. CORRECCIÓN: Volvemos a llamar a `fetchCompras` para recargar la lista
-      //    desde el backend con los datos actualizados.
       await fetchCompras(); 
 
     } catch (err) {
-      // Captura cualquier error que el backend pueda devolver (ej: "la compra ya está anulada")
       setValidationMessage(err.response?.data?.message || 'Error al anular la compra.');
     } finally {
-      // Este bloque se ejecuta siempre, haya o no error.
-      setIsValidationModalOpen(true); // Muestra el mensaje de éxito o error
-      handleCloseModals(); // Cierra el modal de confirmación
+      setIsValidationModalOpen(true);
+      // CORRECCIÓN: el modal de confirmación ahora se cierra aquí para asegurar que el usuario vea el mensaje de validación.
+      setIsAnularModalOpen(false);
     }
   };
-  // ====================== FIN DE LA CORRECCIÓN CLAVE =======================
 
   const filteredCompras = compras.filter(compra =>
     (compra.proveedor?.nombre?.toLowerCase() || '').includes(busqueda.toLowerCase()) ||
@@ -154,11 +143,11 @@ function ListaComprasPage() {
         </div>
 
         {isLoading ? <p>Cargando compras...</p> : error ? <p className="error-message">{error}</p> : (
+          // CAMBIO 2: Se elimina la prop 'onEstadoChange' del componente ComprasTable.
           <ComprasTable
             compras={filteredCompras}
             onDetalle={handleOpenDetalle}
             onAnular={handleOpenAnular}
-            onEstadoChange={handleEstadoChange}
             onGenerarPDF={generateAndShowPdf}
           />
         )}
