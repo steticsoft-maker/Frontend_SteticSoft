@@ -18,6 +18,28 @@ export const getUsuariosAPI = async () => {
 };
 
 /**
+ * Verifica si un correo electrónico ya existe en el sistema.
+ * @param {string} correo - El correo electrónico a verificar.
+ * @returns {Promise<object>} La respuesta de la API, que podría incluir un booleano o un mensaje.
+ *                            Ej. { existe: true } o { existe: false }
+ * @throws {Error} Relanza el error si la llamada a la API falla.
+ */
+export const verificarCorreoAPI = async (correo) => {
+  try {
+    const response = await apiClient.get(`/usuarios/verificar-correo?correo=${encodeURIComponent(correo)}`);
+    return response.data; // Asume que la API devuelve algo como { existe: true/false }
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en verificarCorreoAPI:", error.response?.data || error.message);
+    // Es importante decidir cómo manejar errores aquí. ¿Un error de red debe interpretarse como "no existe" o fallar la validación?
+    // Por ahora, relanzamos para que el hook lo maneje.
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al verificar el correo.")
+    );
+  }
+};
+
+/**
  * Obtiene los detalles de un usuario específico por su ID.
  */
 export const getUsuarioByIdAPI = async (idUsuario) => {

@@ -426,6 +426,21 @@
     .usuarios-botonAgregar {
       width: 100%;
     }
+
+  .usuarios-filtro-estado {
+    /* Ajustes para que el filtro se vea bien en móviles también */
+    width: 100%;
+    display: flex;
+    justify-content: center; /* O flex-start / flex-end según preferencia */
+    align-items: center;
+    gap: 10px;
+  }
+  .usuarios-filtro-estado select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    min-width: 150px; /* Ancho mínimo para el select */
+  }
   
     /* Tabla Responsiva (ya estaba bien definida) */
     .usuarios-table thead { display: none; }

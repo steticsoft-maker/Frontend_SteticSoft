@@ -194,6 +194,164 @@
   .deplete-button-abastecimiento:hover {
     background-color: var(--color-warning-dark, #f57c00);
   }
+
+/* === ESTILOS RESPONSIVOS === */
+@media (max-width: 1024px) { /* Tablets y pantallas medianas */
+  .abastecimiento-main-content {
+    margin-left: 0; /* Asumir que NavbarAdmin se oculta o es overlay */
+    padding: 20px;
+  }
+}
+
+.abastecimiento-filtro-estado { /* Estilos para desktop y base para móvil */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.abastecimiento-filtro-estado select {
+  padding: 9px 10px; /* Ajustar padding para que coincida con altura de input y botón */
+  border: 1px solid var(--color-border-light, #c287b5);
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: var(--color-background-light, #fff);
+  color: var(--color-text-dark, #333);
+  min-width: 150px;
+  height: 41px; /* Para alinear con botón e input */
+  box-sizing: border-box;
+}
+.abastecimiento-filtro-estado select:focus {
+  border-color: var(--color-admin-hover, #b660a3);
+  box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+  outline: none;
+}
+
+
+@media (max-width: 768px) { /* Móviles */
+  .abastecimiento-main-content {
+    padding: 15px;
+  }
+
+  .abastecimiento-content-wrapper h1 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+
+  .abastecimiento-actions-bar {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .abastecimiento-search-bar,
+  .abastecimiento-search-bar input,
+  .abastecimiento-filtro-estado, /* Aplicar a la nueva sección de filtro */
+  .abastecimiento-filtro-estado select, /* El select también al 100% */
+  .abastecimiento-add-button {
+    width: 100%;
+  }
+   .abastecimiento-filtro-estado { /* Para mantener el label y select en la misma línea si se desea, o ajustar */
+    display: flex; /* Ya está arriba, pero reafirmo para móvil */
+    justify-content: space-between; /* O 'center' o 'flex-start' */
+  }
+  .abastecimiento-filtro-estado span {
+      white-space: nowrap; /* Evitar que "Estado: " se parta */
+  }
+
+
+  /* Transformar tabla a tarjetas */
+  .tabla-abastecimiento thead {
+    display: none;
+  }
+
+  .tabla-abastecimiento tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid var(--color-admin-primary-border, #e978d0);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    background-color: var(--color-background-light, #fff);
+  }
+
+  .tabla-abastecimiento tbody tr.depleted-row {
+    border-color: var(--color-warning-dark, #f57c00); /* Borde más notorio para agotados */
+  }
+
+  .tabla-abastecimiento td {
+    display: block;
+    text-align: right;
+    padding-left: 50%; /* Espacio para el label */
+    position: relative;
+    border-bottom: 1px dotted var(--color-border-light, #eee);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 0.85rem; /* Un poco más pequeño para móviles */
+  }
+
+  .tabla-abastecimiento td:last-child {
+    border-bottom: none;
+  }
+
+  .tabla-abastecimiento td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: calc(50% - 20px); /* Ajustar según padding */
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+    color: var(--color-primary-darker, #6d0b58);
+    font-size: 0.85rem;
+  }
+
+  .tabla-abastecimiento td[data-label="Acciones:"] {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .tabla-abastecimiento td[data-label="Acciones:"] .icon-actions-abastecimiento {
+    justify-content: flex-end; /* Alinear iconos a la derecha */
+    padding-right: 5px;
+  }
+
+  .table-icons-abastecimiento {
+    padding: 6px 8px; /* Iconos un poco más pequeños */
+    font-size: 0.8rem;
+  }
+  .deplete-button-abastecimiento { /* Asegurar que el texto no se corte tanto */
+    min-width: 60px;
+    font-size: 0.75rem;
+  }
+
+  /* Ajustes para modales si es necesario */
+  .modal-abastecimiento-content {
+    width: 95%;
+    max-width: 95%;
+    padding: 20px 15px;
+  }
+  .modal-abastecimiento-content.formulario-modal {
+    max-width: 95%; /* Formularios también ocupan más en móvil */
+  }
+  .abastecimiento-form-grid {
+    gap: 15px; /* Menos espacio en el grid del formulario */
+  }
+  .form-label-abastecimiento {
+    font-size: 0.9rem;
+  }
+  .form-input-abastecimiento,
+  .form-button-select-abastecimiento {
+    font-size: 0.95rem;
+    padding: 8px 10px;
+  }
+  .form-actions-abastecimiento {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .form-button-guardar-abastecimiento,
+  .form-button-cancelar-abastecimiento {
+    width: 100%;
+  }
+}
   .delete-button-abastecimiento {
     background-color: var(--color-admin-action-delete, #b660a3);
   }
