@@ -230,6 +230,7 @@
 @media (max-width: 768px) { /* Móviles */
   .abastecimiento-main-content {
     padding: 15px;
+    margin-left: 0; /* Asegurar que no haya margen cuando el sidebar está colapsado/superpuesto */
   }
 
   .abastecimiento-content-wrapper h1 {

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authHooks'; // Updated import path
 import {
   FaUserCircle, FaRandom, FaUsers, FaClipboardList,
-  FaChartLine, FaSignOutAlt, FaCalendarCheck, FaShoppingCart,
+  FaChartLine, FaSignOutAlt, FaCalendarCheck, FaShoppingCart, FaBars, FaTimes, // Añadir FaBars y FaTimes
 } from 'react-icons/fa';
 import './NavbarAdmin.css';
 
@@ -52,8 +52,9 @@ const NavbarAdmin = () => {
   const { logout, permissions } = useAuth();
 
   const [openSubMenus, setOpenSubMenus] = useState({});
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Estado para menú móvil
 
-  const hasPermission = useCallback((permission) => { // Wrapped in useCallback
+  const hasPermission = useCallback((permission) => {
     return !permission || (permissions && permissions.includes(permission));
   }, [permissions]); // permissions as dependency for useCallback
 
@@ -83,43 +84,66 @@ const NavbarAdmin = () => {
     navigate('/login');
   };
 
-  return (
-    <aside className="dashboard-sidebar">
-      <div className="admin-section">
-        <FaUserCircle className="admin-icon" />
-        <p className="admin-label">Admin</p>
-      </div>
-      <nav className="dashboard-links">
-        {filteredMenu.map((item) => (
-          <React.Fragment key={item.label}>
-            {item.subItems ? (
-              <button onClick={() => toggleSubMenu(item.subMenuKey)} className="dashboard-link">
-                {item.icon && <item.icon className="dashboard-icon" />} {item.label}
-              </button>
-            ) : (
-              <Link to={item.path} className="dashboard-link">
-                {item.icon && <item.icon className="dashboard-icon" />} {item.label}
-              </Link>
-            )}
-            {item.subItems && openSubMenus[item.subMenuKey] && (
-              <div className="nested-links">
-                {item.subItems.map((subItem) => (
-                  <Link to={subItem.path} key={subItem.label} className="nested-link">
-                    {subItem.icon && <subItem.icon className="dashboard-icon" />} {subItem.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </React.Fragment>
-        ))}
-      </nav>
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
-      <div className="logout-section">
-        <button onClick={handleLogoutClick} className="dashboard-link logout-button">
-          <FaSignOutAlt className="dashboard-icon" /> Cerrar Sesión
-        </button>
-      </div>
-    </aside>
+  // Close mobile menu when a link is clicked (optional, but good UX)
+  const handleLinkClick = () => {
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  return (
+    <>
+      <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
+        {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+      </button>
+      <aside className={`dashboard-sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
+        <div className="sidebar-header"> {/* Opcional: para el logo/nombre y botón de cerrar en móvil */}
+          <div className="admin-section">
+            <FaUserCircle className="admin-icon" />
+            <p className="admin-label">Admin</p>
+          </div>
+          {/* Podrías mover el botón de toggle aquí adentro para que sea parte del sidebar que se desliza */}
+        </div>
+        <nav className="dashboard-links">
+          {filteredMenu.map((item) => (
+            <React.Fragment key={item.label}>
+              {item.subItems ? (
+                <button onClick={() => toggleSubMenu(item.subMenuKey)} className="dashboard-link">
+                  {item.icon && <item.icon className="dashboard-icon" />}
+                  <span className="dashboard-link-label">{item.label}</span>
+                </button>
+              ) : (
+                <Link to={item.path} className="dashboard-link" onClick={handleLinkClick}>
+                  {item.icon && <item.icon className="dashboard-icon" />}
+                  <span className="dashboard-link-label">{item.label}</span>
+                </Link>
+              )}
+              {item.subItems && openSubMenus[item.subMenuKey] && (
+                <div className="nested-links">
+                  {item.subItems.map((subItem) => (
+                    <Link to={subItem.path} key={subItem.label} className="nested-link" onClick={handleLinkClick}>
+                      {subItem.icon && <subItem.icon className="dashboard-icon" />}
+                      <span className="dashboard-link-label">{subItem.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </nav>
+
+        <div className="logout-section">
+          <button onClick={handleLogoutClick} className="dashboard-link logout-button">
+            <FaSignOutAlt className="dashboard-icon" />
+            <span className="dashboard-link-label">Cerrar Sesión</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 };
 

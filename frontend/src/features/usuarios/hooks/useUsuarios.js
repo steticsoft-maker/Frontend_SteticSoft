@@ -39,6 +39,7 @@ const useUsuarios = () => {
   const [formErrors, setFormErrors] = useState({}); // Errores de validación del formulario
   const [isFormValid, setIsFormValid] = useState(false); // Estado general de validez del formulario
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false); // Para la validación de unicidad del correo
+  const [touchedFields, setTouchedFields] = useState({}); // Para controlar qué campos han sido "tocados" (onBlur)
 
   // --- Funciones de Validación (Requerimiento 4) ---
   const validateField = useCallback((name, value, currentFormData, formType = 'create') => {
@@ -194,6 +195,7 @@ const useUsuarios = () => {
     setFormErrors({});
     setIsFormValid(false);
     setIsVerifyingEmail(false);
+    setTouchedFields({}); // Resetear touchedFields al cerrar modal
   }, []);
 
   const handleOpenModal = useCallback((type, usuario = null) => {
@@ -206,22 +208,21 @@ const useUsuarios = () => {
 
     setFormErrors({});
     setIsVerifyingEmail(false);
-    setCurrentUsuario(usuario); // Guardar el usuario original para comparaciones (ej. correo en edición)
+    setCurrentUsuario(usuario);
 
+    let initialFormData = {};
     if (type === "create") {
       const defaultRole = availableRoles.find(r => r.nombre === 'Cliente') || (availableRoles.length > 0 ? availableRoles[0] : null);
-      const initialFormData = {
+      initialFormData = {
         estado: true,
         idRol: defaultRole ? defaultRole.idRol : '',
         nombre: '', apellido: '', tipoDocumento: 'Cédula de Ciudadanía', numeroDocumento: '',
         correo: '', telefono: '', fechaNacimiento: '', contrasena: '', confirmarContrasena: ''
       };
-      setFormData(initialFormData);
       setIsCrearModalOpen(true);
-      // La validez inicial la manejará el useEffect que observa formData y formErrors
     } else if (type === "edit" && usuario) {
       const perfil = usuario.clienteInfo || usuario.empleadoInfo || {};
-      const mappedFormData = {
+      initialFormData = {
         idUsuario: usuario.idUsuario,
         correo: usuario.correo || '',
         idRol: usuario.rol?.idRol || '',
@@ -233,13 +234,22 @@ const useUsuarios = () => {
         fechaNacimiento: perfil.fechaNacimiento ? perfil.fechaNacimiento.split('T')[0] : '',
         estado: typeof usuario.estado === 'boolean' ? usuario.estado : true,
       };
-      setFormData(mappedFormData);
       setIsEditarModalOpen(true);
     } else if (type === "details") {
       setIsDetailsModalOpen(true);
     } else if (type === "delete") {
       setIsDeleteModalOpen(true);
     }
+
+    setFormData(initialFormData);
+    // Inicializar touchedFields para todos los campos del formulario a false
+    const initialTouched = Object.keys(initialFormData).reduce((acc, key) => {
+      acc[key] = false;
+      return acc;
+    }, {});
+    setTouchedFields(initialTouched);
+    // La validez inicial la manejará el useEffect que observa formData y formErrors.
+    // Al abrir, formErrors está vacío y touchedFields todo en false, por lo que no se mostrarán errores.
   }, [availableRoles]);
 
   const handleInputChange = useCallback((e) => {
@@ -257,25 +267,24 @@ const useUsuarios = () => {
 
   const handleInputBlur = useCallback(async (e) => {
     const { name, value } = e.target;
+    setTouchedFields(prev => ({ ...prev, [name]: true })); // Marcar el campo como "tocado"
+
     const formType = formData.idUsuario ? 'edit' : 'create';
     const error = validateField(name, value, formData, formType);
 
-    // Actualizar el error de este campo específico
     setFormErrors(prevErrors => ({ ...prevErrors, [name]: error }));
 
     if (name === 'correo' && !error && value) {
       const originalEmail = formType === 'edit' && currentUsuario ? currentUsuario.correo : null;
-      if (value !== originalEmail) { // Solo verificar si el correo cambió o es un formulario de creación
+      if (value !== originalEmail) {
         setIsVerifyingEmail(true);
         try {
           const response = await verificarCorreoAPI(value);
           if (response.existe) {
             setFormErrors(prevErrors => ({ ...prevErrors, correo: 'Este correo ya está registrado.' }));
           } else {
-            // Si el error anterior era de unicidad y ahora no existe, limpiarlo.
-            // Si había un error de formato, validateField ya lo puso, no lo borramos.
             if (formErrors.correo === 'Este correo ya está registrado.') {
-                 setFormErrors(prevErrors => ({ ...prevErrors, correo: '' })); // Limpiar solo el error de unicidad
+                 setFormErrors(prevErrors => ({ ...prevErrors, correo: '' }));
             }
           }
         } catch (apiError) {
@@ -285,13 +294,10 @@ const useUsuarios = () => {
           setIsVerifyingEmail(false);
         }
       } else if (value === originalEmail && formErrors.correo === 'Este correo ya está registrado.'){
-        // Si el usuario vuelve a su correo original que antes daba error de "ya registrado" (imposible, pero por si acaso)
-        // o si el error de unicidad persistía y el correo no cambió, limpiar el error de unicidad.
-        // Esto es más para asegurar que si el correo es el original del usuario en edición, no muestre error de unicidad.
         setFormErrors(prevErrors => ({ ...prevErrors, correo: '' }));
       }
     }
-  }, [formData, validateField, currentUsuario, formErrors.correo]);
+  }, [formData, validateField, currentUsuario, formErrors.correo]); // No añadir setTouchedFields a las dependencias para evitar bucles si se usa en useEffect
 
 
   const handleSaveUsuario = useCallback(async () => {
@@ -308,11 +314,18 @@ const useUsuarios = () => {
         finalIsValid = false;
     }
     setFormErrors(combinedErrors);
-    setIsFormValid(finalIsValid); // Actualizar el estado de validez general del form
+    // setIsFormValid se actualiza a través del useEffect que observa formErrors y formData.
+    // No es necesario setearlo directamente aquí si el useEffect está bien configurado.
 
     if (!finalIsValid) {
       setValidationMessage("Por favor, corrija los errores en el formulario.");
       setIsValidationModalOpen(true);
+      // Marcar todos los campos como tocados para mostrar todos los errores
+      const allTouched = Object.keys(formData).reduce((acc, key) => {
+        acc[key] = true;
+        return acc;
+      }, {});
+      setTouchedFields(allTouched);
       return;
     }
 
@@ -480,6 +493,7 @@ const useUsuarios = () => {
     isVerifyingEmail,
     handleInputChange,
     handleInputBlur,
+    touchedFields, // Exponer para que el formulario pueda decidir si muestra errores
   };
 };
 
