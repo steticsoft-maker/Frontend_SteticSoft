@@ -75,4 +75,12 @@ router.delete(
   clienteController.eliminarClienteFisico
 );
 
+// Ruta para verificar datos únicos de cliente
+router.post(
+  "/verificar-datos",
+  // Considerar authMiddleware si es necesario
+  clienteValidators.verificarDatosClienteValidators,
+  clienteController.verificarDatosUnicosClienteController
+);
+
 module.exports = router;

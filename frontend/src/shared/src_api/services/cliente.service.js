@@ -126,27 +126,52 @@ const crearCliente = async (datosCompletos) => {
 /**
  * Obtener todos los clientes, incluyendo la información de su cuenta de Usuario.
  */
-const obtenerTodosLosClientes = async (opcionesDeFiltro = {}) => {
+const obtenerTodosLosClientes = async (opciones = {}) => {
   try {
+    const { busqueda, estado } = opciones;
+    const whereClause = {};
+
+    if (estado !== undefined) {
+      if (typeof estado === 'string') {
+        whereClause.estado = estado.toLowerCase() === 'true';
+      } else {
+        whereClause.estado = Boolean(estado);
+      }
+    }
+
+    if (busqueda) {
+      const searchPattern = { [Op.iLike]: `%${busqueda}%` };
+      whereClause[Op.or] = [
+        { nombre: searchPattern },
+        { apellido: searchPattern },
+        { correo: searchPattern },
+        { telefono: searchPattern },
+        { numero_documento: searchPattern }, // Usando snake_case como en la BD
+        // También se podría buscar en el correo del usuario asociado si fuera diferente
+        // y relevante, ej: { '$usuarioCuenta.correo$': searchPattern }
+      ];
+    }
+
     const clientes = await db.Cliente.findAll({
-      where: opcionesDeFiltro,
+      where: whereClause,
       include: [
         {
           model: db.Usuario,
-          as: "usuarioCuenta", // Alias definido en Cliente.model.js
-          attributes: ["idUsuario", "correo", "estado", "idRol"], // Incluir idRol del Usuario
-          include: [{ // Anidar para obtener el nombre del rol
+          as: "usuarioCuenta",
+          attributes: ["idUsuario", "correo", "estado", "idRol"],
+          include: [{
             model: db.Rol,
-            as: "rol", // Alias definido en Usuario.model.js
+            as: "rol",
             attributes: ["nombre"]
           }]
         },
       ],
       order: [["apellido", "ASC"], ["nombre", "ASC"]],
+      // subQuery: false // Considerar si es necesario para búsquedas en includes
     });
     return clientes;
   } catch (error) {
-    // console.error("Error al obtener todos los clientes en el servicio:", error.message); // Comentado
+    console.error("Error al obtener todos los clientes en el servicio:", error.message, error.stack);
     throw new CustomError(`Error al obtener clientes: ${error.message}`, 500);
   }
 };
@@ -343,4 +368,63 @@ module.exports = {
   habilitarCliente,
   eliminarClienteFisico,
   cambiarEstadoCliente,
+};
+
+/**
+ * Verifica si campos únicos (correo, numero_documento) ya existen para otro cliente.
+ * @param {object} campos - Objeto con los campos a verificar. Ej: { correo: 'test@test.com', numero_documento: '123' }
+ * @param {number|null} idExcluir - El ID del cliente a excluir de la búsqueda (para modo edición).
+ * @returns {Promise<object>} Un objeto donde cada clave es el campo y el valor es un mensaje de error si existe conflicto.
+ */
+const verificarDatosUnicosCliente = async (campos, idExcluir = null) => {
+  const errores = {};
+  const whereClauseBase = idExcluir ? { idCliente: { [Op.ne]: idExcluir } } : {};
+
+  if (campos.correo) {
+    const clienteConCorreo = await db.Cliente.findOne({
+      where: { ...whereClauseBase, correo: campos.correo },
+    });
+    if (clienteConCorreo) {
+      errores.correo = "El correo electrónico ya está registrado para otro cliente.";
+    }
+  }
+
+  if (campos.numero_documento) {
+    const clienteConDocumento = await db.Cliente.findOne({
+      where: { ...whereClauseBase, numero_documento: campos.numero_documento },
+    });
+    if (clienteConDocumento) {
+      errores.numero_documento = "El número de documento ya está registrado para otro cliente.";
+    }
+  }
+  // También se podría verificar el correo en la tabla Usuarios aquí si se desea una validación centralizada.
+  // Por ejemplo:
+  // if (campos.correo) {
+  //   const usuarioConCorreo = await db.Usuario.findOne({ where: { correo: campos.correo }});
+  //   // Si se está editando, asegurarse que no sea el propio usuario asociado a este cliente
+  //   let esCorreoDelPropioUsuario = false;
+  //   if (idExcluir && usuarioConCorreo) {
+  //      const clienteActual = await db.Cliente.findByPk(idExcluir);
+  //      if (clienteActual && clienteActual.idUsuario === usuarioConCorreo.idUsuario) {
+  //          esCorreoDelPropioUsuario = true;
+  //      }
+  //   }
+  //   if (usuarioConCorreo && !esCorreoDelPropioUsuario) {
+  //      errores.correo = errores.correo || "El correo electrónico ya está en uso por una cuenta de usuario.";
+  //   }
+  // }
+
+  return errores;
+};
+
+module.exports = {
+  crearCliente,
+  obtenerTodosLosClientes,
+  obtenerClientePorId,
+  actualizarCliente,
+  anularCliente,
+  habilitarCliente,
+  eliminarClienteFisico,
+  cambiarEstadoCliente,
+  verificarDatosUnicosCliente, // Exportar la nueva función
 };

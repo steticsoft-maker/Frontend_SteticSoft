@@ -75,4 +75,13 @@ router.delete(
   usuarioController.eliminarUsuarioFisico
 );
 
+// Ruta para verificar la unicidad del correo
+router.post(
+  "/verificar-correo",
+  // authMiddleware, // Podría ser necesario si solo usuarios logueados pueden verificar, o abierto si es para registro.
+                     // Por ahora, lo dejaré abierto para flexibilidad en formularios de creación.
+  usuarioValidators.verificarCorreoUnicoValidators,
+  usuarioController.verificarCorreoUnicoController
+);
+
 module.exports = router;

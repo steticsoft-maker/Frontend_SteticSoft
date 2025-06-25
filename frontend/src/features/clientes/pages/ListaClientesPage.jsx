@@ -16,10 +16,13 @@ import {
 import "../css/Clientes.css";
 
 function ListaClientesPage() {
-  const [clientes, setClientes] = useState([]); // Initialize as an empty array
-  const [busqueda, setBusqueda] = useState("");
+  const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
+  const [busquedaDebounced, setBusquedaDebounced] = useState("");
+  const [mostrarInactivos, setMostrarInactivos] = useState(false);
 
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
@@ -30,36 +33,40 @@ function ListaClientesPage() {
   const [currentCliente, setCurrentCliente] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
 
-  const loadClientes = async () => {
+  // Debounce para la búsqueda
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setBusquedaDebounced(terminoBusqueda);
+    }, 300);
+    return () => clearTimeout(timerId);
+  }, [terminoBusqueda]);
+
+  const loadClientes = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchClientes();
-      // Ensure data is an array before setting state
-      if (Array.isArray(data)) {
-        setClientes(data);
-      } else {
-        // If data is not an array, it might be an object like { data: [...] }
-        // Or it could be malformed. Let's try to access a 'data' property if it exists.
-        if (data && Array.isArray(data.data)) {
-            setClientes(data.data); // Assuming API response is like { data: [...] }
-        } else {
-            console.error("fetchClientes did not return an array or an object with a 'data' array:", data);
-            setClientes([]); // Fallback to an empty array to prevent errors
-            setError("Formato de datos de clientes inesperado.");
-        }
+      let params = { busqueda: busquedaDebounced };
+      if (!mostrarInactivos) {
+        params.estado = true; // Solo activos
       }
+      // Si mostrarInactivos es true, no se pasa 'estado', API devuelve todos.
+      const data = await fetchClientes(params);
+
+      // fetchClientes ya devuelve un array o lanza error.
+      setClientes(data);
+
     } catch (err) {
-      setError("Error al cargar los clientes. Inténtalo de nuevo más tarde.");
+      setError(err.message || "Error al cargar los clientes. Inténtalo de nuevo más tarde.");
       console.error("Error al cargar clientes:", err);
+      setClientes([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [busquedaDebounced, mostrarInactivos]);
 
   useEffect(() => {
     loadClientes();
-  }, []);
+  }, [loadClientes]);
 
   const handleOpenModal = (type, cliente = null) => {
     setCurrentCliente(cliente);
@@ -179,15 +186,7 @@ function ListaClientesPage() {
   };
 
   // Defensive check: Ensure `clientes` is an array before calling `.filter()`
-  const filteredClientes = Array.isArray(clientes) ? clientes.filter(
-    (c) =>
-      `${c.nombre || ""} ${c.apellido || ""}`
-        .toLowerCase()
-        .includes(busqueda.toLowerCase()) ||
-      (c.numeroDocumento &&
-        c.numeroDocumento.toLowerCase().includes(busqueda.toLowerCase())) ||
-      (c.correo && c.correo.toLowerCase().includes(busqueda.toLowerCase()))
-  ) : []; // Fallback to an empty array if `clientes` is not an array
+  // const filteredClientes = Array.isArray(clientes) ? clientes.filter(...) : []; // ELIMINADO - Filtrado ahora en backend
 
   return (
     <div className="clientes-page-container">
@@ -198,13 +197,28 @@ function ListaClientesPage() {
           <input
             type="text"
             placeholder="Buscar cliente (nombre, documento, correo)..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            value={terminoBusqueda}
+            onChange={(e) => setTerminoBusqueda(e.target.value)}
             className="barraBusquedaClientesInput"
+            disabled={loading}
           />
+          <div className="clientes-filtros"> {/* Contenedor para el switch */}
+            <label htmlFor="mostrarInactivosClientesSwitch" className="clientes-switch-label">Mostrar Inactivos:</label>
+            <label className="switch clientes-switch-control">
+              <input
+                id="mostrarInactivosClientesSwitch"
+                type="checkbox"
+                checked={mostrarInactivos}
+                onChange={(e) => setMostrarInactivos(e.target.checked)}
+                disabled={loading}
+              />
+              <span className="slider"></span>
+            </label>
+          </div>
           <button
             className="buttonAgregarcliente"
             onClick={() => handleOpenModal("create")}
+            disabled={loading}
           >
             Agregar Cliente
           </button>
@@ -215,7 +229,7 @@ function ListaClientesPage() {
 
         {!loading && !error && (
           <ClientesTable
-            clientes={filteredClientes}
+            clientes={clientes} // Usar 'clientes' directamente del estado
             onView={(cliente) => handleOpenModal("details", cliente)}
             onEdit={(cliente) => handleOpenModal("edit", cliente)}
             onDeleteConfirm={(cliente) => handleOpenModal("delete", cliente)}

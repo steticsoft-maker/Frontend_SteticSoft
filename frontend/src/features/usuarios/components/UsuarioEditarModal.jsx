@@ -1,18 +1,19 @@
 // src/features/usuarios/components/UsuarioEditarModal.jsx
 import React, { useState, useEffect } from "react";
 import UsuarioForm from "./UsuarioForm";
-import { getRolesAPI } from "../services/usuariosService";
+import { getRolesAPI, verificarCorreoUsuarioAPI } from "../services/usuariosService"; // Importar servicio
 
 const UsuarioEditarModal = ({
   isOpen,
   onClose,
   onSubmit,
-  initialData, // Espera un objeto usuario completo de la API, ej. con initialData.clienteInfo
+  initialData,
+  isLoading, // Nueva prop para el estado de carga del submit
 }) => {
   const [formData, setFormData] = useState({});
   const [availableRoles, setAvailableRoles] = useState([]);
   const [formErrors, setFormErrors] = useState({});
-  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
+  const [isLoadingRoles, setIsLoadingRoles] = useState(false); // Para la carga inicial de roles
 
   // Determinar si el usuario es el admin protegido basándose en el nombre del rol.
   const isUserAdminProtected = initialData?.rol?.nombre === "Administrador";
@@ -72,55 +73,103 @@ const UsuarioEditarModal = ({
     }
   };
 
-  const validateForm = () => {
-    const errors = {};
+  const handleFieldBlur = async (name, value) => {
+    if (name === 'correo' && initialData?.idUsuario) {
+      if (!value?.trim()) {
+        setFormErrors(prev => ({ ...prev, correo: "El correo es obligatorio." }));
+        return;
+      }
+      const emailRegex = /\S+@\S+\.\S+/;
+      if (!emailRegex.test(value)) {
+        setFormErrors(prev => ({ ...prev, correo: "El formato del correo no es válido." }));
+        return;
+      }
+      const originalEmail = initialData.clienteInfo?.correo || initialData.empleadoInfo?.correo || initialData.correo;
+      if (value === originalEmail) {
+         setFormErrors(prev => ({ ...prev, correo: "" }));
+        return;
+      }
+      try {
+        await verificarCorreoUsuarioAPI(value, initialData.idUsuario);
+        setFormErrors(prev => ({ ...prev, correo: "" }));
+      } catch (error) {
+        if (error && error.field === "correo") {
+          setFormErrors(prev => ({ ...prev, correo: error.message }));
+        } else {
+          setFormErrors(prev => ({ ...prev, correo: "Error al verificar correo." }));
+        }
+      }
+    }
+    // TODO: Añadir validación onBlur para numeroDocumento si es necesario,
+    // llamando a un endpoint de verificación para clientes/empleados.
+  };
+
+  const isFormCompletelyValid = () => {
+    const noActiveErrors = Object.values(formErrors).every(errorMsg => !errorMsg); // Verifica que no haya strings de error
+    if (!noActiveErrors) return false;
+
+    // Comprobación adicional de campos requeridos que no se validan en onBlur
+    const selectedRole = availableRoles.find(rol => rol.idRol === parseInt(formData.idRol));
+    const requiresProfile = selectedRole && (selectedRole.nombre === 'Cliente' || selectedRole.nombre === 'Empleado');
+
+    if (requiresProfile) {
+        if (!formData.nombre?.trim()) return false;
+        if (!formData.apellido?.trim()) return false;
+        if (!formData.tipoDocumento) return false;
+        if (!formData.numeroDocumento?.trim()) return false;
+        if (!formData.telefono?.trim()) return false;
+        if (!formData.fechaNacimiento) return false;
+    }
+    if (!formData.idRol) return false;
+    if (!formData.correo?.trim()) return false; // Correo es siempre requerido
+
+    return true;
+  };
+
+  const validateForm = () => { // Esta función ahora se enfoca en validaciones que no son onBlur o como una última verificación
+    const errors = {...formErrors}; // Mantener errores de onBlur
     const emailRegex = /\S+@\S+\.\S+/;
 
-    if (!formData.nombre?.trim()) errors.nombre = "El nombre es obligatorio.";
-    if (!formData.apellido?.trim()) // Validar apellido
-      errors.apellido = "El apellido es obligatorio.";
-    if (!formData.correo?.trim()) { // Validar correo (del perfil y de la cuenta)
-      errors.correo = "El correo es obligatorio.";
-    } else if (!emailRegex.test(formData.correo)) {
-      errors.correo = "El formato del correo no es válido.";
-    }
-    if (!formData.telefono?.trim()) // Validar teléfono
-      errors.telefono = "El teléfono es obligatorio.";
-    if (!formData.tipoDocumento)
-      errors.tipoDocumento = "El tipo de documento es obligatorio.";
-    if (!formData.numeroDocumento?.trim())
-      errors.numeroDocumento = "El número de documento es obligatorio.";
-    if (!formData.idRol) errors.idRol = "Debe seleccionar un rol.";
-
-    // Validar fechaNacimiento si el rol es Cliente o Empleado
+    // Validar campos de perfil solo si el rol los requiere y no hay error previo de onBlur
     const rolIdSeleccionado = parseInt(formData.idRol, 10);
-    const rolSeleccionado = availableRoles.find(
-      (r) => r.idRol === rolIdSeleccionado
-    );
-    if (
-      rolSeleccionado &&
-      (rolSeleccionado.nombre === "Cliente" ||
-        rolSeleccionado.nombre === "Empleado")
-    ) {
-      if (!formData.fechaNacimiento)
-        errors.fechaNacimiento =
-          "La fecha de nacimiento es obligatoria para este rol.";
+    const rolSeleccionado = availableRoles.find(r => r.idRol === rolIdSeleccionado);
+    const requierePerfil = rolSeleccionado && (rolSeleccionado.nombre === 'Cliente' || rolSeleccionado.nombre === 'Empleado');
+
+    if (requierePerfil) {
+        if (!formData.nombre?.trim() && !errors.nombre) errors.nombre = "El nombre es obligatorio.";
+        if (!formData.apellido?.trim() && !errors.apellido) errors.apellido = "El apellido es obligatorio.";
+        if (!formData.telefono?.trim() && !errors.telefono) errors.telefono = "El teléfono es obligatorio.";
+        if (!formData.tipoDocumento && !errors.tipoDocumento) errors.tipoDocumento = "El tipo de documento es obligatorio.";
+        if (!formData.numeroDocumento?.trim() && !errors.numeroDocumento) errors.numeroDocumento = "El número de documento es obligatorio.";
+        if (!formData.fechaNacimiento && !errors.fechaNacimiento) errors.fechaNacimiento = "La fecha de nacimiento es obligatoria para este rol.";
     }
+
+    if (!errors.correo) {
+      if (!formData.correo?.trim()) {
+        errors.correo = "El correo es obligatorio.";
+      } else if (!emailRegex.test(formData.correo)) {
+        errors.correo = "El formato del correo no es válido.";
+      }
+    }
+
+    if (!formData.idRol && !errors.idRol) errors.idRol = "Debe seleccionar un rol.";
 
     setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    // La validez general ahora la determina isFormCompletelyValid para el botón de submit
+    return Object.values(errors).every(errorMsg => !errorMsg);
   };
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
     if (isUserAdminProtected) {
-      onClose(); // No permitir edición del admin protegido desde aquí
+      onClose();
       return;
     }
-    if (!validateForm()) return;
+    // Re-validar todo antes de enviar, por si acaso.
+    // Y luego comprobar con isFormCompletelyValid que incluye las validaciones onBlur.
+    validateForm();
+    if (!isFormCompletelyValid()) return;
 
-    // El formData ya tiene los nombres de campo alineados con UsuarioForm y la API.
-    // ListaUsuariosPage.handleSaveUsuario se encargará de llamar a updateUsuarioAPI.
     onSubmit(formData);
   };
 
@@ -148,6 +197,7 @@ const UsuarioEditarModal = ({
               isEditing={true}
               isUserAdmin={isUserAdminProtected}
               formErrors={formErrors}
+              onFieldBlur={handleFieldBlur} // Pasar la función de onBlur
             />
           )}
           {formErrors._general && (
@@ -161,14 +211,15 @@ const UsuarioEditarModal = ({
               <button
                 type="submit"
                 className="usuarios-form-buttonGuardar"
-                disabled={isLoadingRoles}
+                disabled={isLoadingRoles || isLoading || !isFormCompletelyValid()} // Añadido isLoading
               >
-                Actualizar Usuario
+                {isLoading ? "Actualizando..." : "Actualizar Usuario"}
               </button>
               <button
                 type="button"
                 className="usuarios-form-buttonCancelar"
                 onClick={onClose}
+                disabled={isLoading} // También deshabilitar cancelar durante la carga
               >
                 Cancelar
               </button>
@@ -179,6 +230,7 @@ const UsuarioEditarModal = ({
                 type="button"
                 className="usuarios-modalButton-cerrar"
                 onClick={onClose}
+                // No necesita disabled={isLoading} si solo cierra y no hace submit
               >
                 Cerrar
               </button>

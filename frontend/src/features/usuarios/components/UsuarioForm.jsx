@@ -9,11 +9,19 @@ const UsuarioForm = ({
   availableRoles,
   isEditing,
   isUserAdmin,
-  formErrors
+  formErrors,
+  onFieldBlur // Nueva prop para manejar onBlur en campos específicos
 }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     onFormChange(name, type === 'checkbox' ? checked : value);
+  };
+
+  const handleBlurEvent = (e) => {
+    const { name, value } = e.target;
+    if (onFieldBlur) {
+      onFieldBlur(name, value);
+    }
   };
 
   const errors = formErrors || {};
@@ -34,6 +42,7 @@ const UsuarioForm = ({
           placeholder="ejemplo@correo.com"
           value={formData.correo || ""}
           onChange={handleChange}
+          onBlur={handleBlurEvent} // Añadido onBlur
           required
           className={`usuarios-form-input ${errors.correo ? 'input-error' : ''}`}
           disabled={isUserAdmin && isEditing} // El correo del admin no debería poder cambiarse desde aquí

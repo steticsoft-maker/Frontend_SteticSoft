@@ -76,6 +76,25 @@
     background-color: #6d0b58;
 }
 
+.clientes-filtros { /* Contenedor para el switch y su label */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* flex-grow: 1; No es necesario que crezca tanto si el botón de agregar está al final */
+  justify-content: flex-start;
+}
+
+.clientes-switch-label {
+  font-size: 0.9rem;
+  color: var(--color-text-dark, #333);
+  margin-right: 5px;
+}
+
+.clientes-switch-control .switch {
+  /* Estilos adicionales si el switch necesita ajustes específicos aquí */
+}
+
+
 /* === ESTILOS DE TABLA === */
 .tablaClientes {
     width: 100%;
@@ -286,13 +305,29 @@ input:checked+.slider:before { transform: translateX(16px); }
         padding: 20px; margin-left: 0; 
     }
     .containerAgregarbuscarClientes { 
-        flex-direction: column; gap: 15px; margin-bottom: 20px; 
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+        align-items: stretch; /* Para que los hijos tomen el ancho */
     }
     .barraBusquedaClientesInput,
-    .buttonAgregarcliente {
-        width: 100%; margin-top: 0; margin-bottom: 0;
+    .buttonAgregarcliente,
+    .clientes-filtros { /* Contenedor de filtros también toma el ancho */
+        width: 100%;
+        max-width: 100%;
+        min-width: 0; /* Reset min-width */
+        margin-top: 0; margin-bottom: 0;
     }
     .buttonAgregarcliente { padding: 12px 20px; }
+
+    .clientes-filtros {
+      justify-content: space-between; /* Label a la izq, switch a la der */
+      padding: 5px 0; /* Pequeño padding para el contenedor de filtros */
+    }
+
+    .clientes-switch-label {
+        margin-right: auto; /* Empuja el switch a la derecha si es necesario */
+    }
 
     .tablaClientes thead { display: none; }
     .tablaClientes, .tablaClientes tbody, .tablaClientes tr, .tablaClientes td {

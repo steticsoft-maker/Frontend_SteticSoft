@@ -18,11 +18,11 @@ const ClientesTable = ({ clientes, onView, onEdit, onDeleteConfirm, onToggleEsta
       <tbody>
         {clientes.map((cliente) => (
           <tr key={cliente.idCliente}>
-            <td data-label="Nombre:">{cliente.nombre}</td>
-            <td data-label="Apellido:">{cliente.apellido}</td>
-            <td data-label="Correo:">{cliente.correo}</td>
-            <td data-label="Teléfono:">{cliente.telefono}</td>
-            <td data-label="Estado:">
+            <td data-label="Nombre">{cliente.nombre}</td>
+            <td data-label="Apellido">{cliente.apellido}</td>
+            <td data-label="Correo">{cliente.correo}</td>
+            <td data-label="Teléfono">{cliente.telefono}</td>
+            <td data-label="Estado">
               <label className="switch">
                 <input
                   type="checkbox"
@@ -32,7 +32,7 @@ const ClientesTable = ({ clientes, onView, onEdit, onDeleteConfirm, onToggleEsta
                 <span className="slider"></span>
               </label>
             </td>
-            <td data-label="Acciones:">
+            <td data-label="Acciones">
               <div className="clientes-table-actions">
                 <button className="iconsTablaclientes" onClick={() => onView(cliente)} title="Ver">
                   <FaEye />

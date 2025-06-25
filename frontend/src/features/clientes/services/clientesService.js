@@ -3,11 +3,25 @@ import apiClient from "../../../shared/services/apiClient"; // Asegúrate de que
 
 /**
  * Obtiene todos los clientes del backend.
+ * @param {object} params - Objeto con parámetros de consulta.
+ * @param {string} params.busqueda - Término de búsqueda.
+ * @param {boolean} params.estado - Estado para filtrar.
  * @returns {Promise<Array>} Una promesa que resuelve con un array de objetos cliente.
  */
-export const fetchClientes = async () => {
+export const fetchClientes = async (params = {}) => {
   try {
-    const response = await apiClient.get("/clientes");
+    const queryParams = new URLSearchParams();
+    if (params.busqueda) {
+      queryParams.append('busqueda', params.busqueda);
+    }
+    if (params.estado !== undefined) {
+      queryParams.append('estado', params.estado);
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/clientes?${queryString}` : '/clientes';
+
+    const response = await apiClient.get(url);
     // El backend devuelve { success: true, data: clientes }.
     // Asegúrate de retornar directamente el array de clientes.
     if (response.data && Array.isArray(response.data.data)) {
@@ -19,6 +33,33 @@ export const fetchClientes = async () => {
   } catch (error) {
     console.error("Error al obtener clientes:", error);
     throw error;
+  }
+};
+
+/**
+ * Verifica datos únicos de un cliente en el backend.
+ * @param {object} dataToVerify - Objeto con los campos a verificar (ej. { correo, numero_documento }).
+ * @param {number|null} idClienteActual - El ID del cliente actual (si se está editando), o null.
+ * @returns {Promise<object>} Respuesta de la API.
+ */
+export const verificarDatosClienteAPI = async (dataToVerify, idClienteActual = null) => {
+  try {
+    const payload = { ...dataToVerify };
+    if (idClienteActual) {
+      payload.idClienteActual = idClienteActual;
+    }
+    // El backend espera 'numero_documento', no 'numeroDocumento' en el payload para este endpoint
+    if (payload.numeroDocumento && !payload.numero_documento) {
+        payload.numero_documento = payload.numeroDocumento;
+        delete payload.numeroDocumento;
+    }
+    const response = await apiClient.post("/clientes/verificar-datos", payload);
+    return response.data; // Espera { success: true, message: "..." } o error con { success: false, message: "...", errors: { campo: "mensaje" } }
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw new Error(error.message || "Error al verificar los datos del cliente.");
   }
 };
 

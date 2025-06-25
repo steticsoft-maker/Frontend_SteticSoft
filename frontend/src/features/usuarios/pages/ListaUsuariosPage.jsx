@@ -22,7 +22,11 @@ function ListaUsuariosPage() {
   const [isLoadingPage, setIsLoadingPage] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorPage, setErrorPage] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
+
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
+  const [busquedaDebounced, setBusquedaDebounced] = useState("");
+  const [mostrarInactivos, setMostrarInactivos] = useState(false);
+
   const [currentUsuario, setCurrentUsuario] = useState(null);
   
   // --- Estados para Modales ---
@@ -35,43 +39,55 @@ function ListaUsuariosPage() {
 
   // --- Estados para la Paginación ---
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(10);
+  const [usersPerPage] = useState(10); // Mantener paginación frontend por ahora
+
+  // Debounce para la búsqueda
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setBusquedaDebounced(terminoBusqueda);
+    }, 300);
+    return () => clearTimeout(timerId);
+  }, [terminoBusqueda]);
 
   const cargarDatos = useCallback(async () => {
+    setIsLoadingPage(true);
+    setErrorPage(null);
     try {
-      const [usuariosResponse, rolesResponse] = await Promise.all([ getUsuariosAPI(), getRolesAPI() ]);
+      let params = { busqueda: busquedaDebounced };
+      if (!mostrarInactivos) {
+        params.estado = true; // Solo activos
+      }
+      // Si mostrarInactivos es true, no se pasa 'estado', la API devuelve todos.
+
+      const [usuariosResponse, rolesResponse] = await Promise.all([
+        getUsuariosAPI(params),
+        getRolesAPI()
+      ]);
       const rolesFromAPI = rolesResponse.data || [];
       const filteredRoles = rolesFromAPI.filter(rol => rol.nombre !== 'Administrador');
-      setUsuarios(usuariosResponse.data || []);
+      setUsuarios(usuariosResponse.data || []); // API devuelve { data: [...] }
       setAvailableRoles(filteredRoles);
     } catch (err) {
       setErrorPage(err.message || "No se pudieron cargar los datos.");
+      setUsuarios([]);
+    } finally {
+      setIsLoadingPage(false);
     }
-  }, []);
+  }, [busquedaDebounced, mostrarInactivos]); // Dependencias de cargarDatos
 
   useEffect(() => {
-    setIsLoadingPage(true);
-    cargarDatos().finally(() => setIsLoadingPage(false));
-  }, [cargarDatos]);
+    cargarDatos();
+  }, [cargarDatos]); // useEffect principal
 
-  const filteredUsuarios = usuarios.filter((u) => {
-    const perfil = u.clienteInfo || u.empleadoInfo || {};
-    const busquedaLower = busqueda.toLowerCase();
-    return (
-      perfil.nombre?.toLowerCase().includes(busquedaLower) ||
-      perfil.apellido?.toLowerCase().includes(busquedaLower) ||
-      u.correo?.toLowerCase().includes(busquedaLower) ||
-      perfil.numeroDocumento?.includes(busqueda)
-    );
-  });
-
+  // La paginación ahora opera sobre los 'usuarios' que vienen de la API (ya filtrados por backend)
   useEffect(() => {
-    setCurrentPage(1);
-  }, [busqueda]);
+    setCurrentPage(1); // Resetear a la primera página con nueva búsqueda/filtro
+  }, [busquedaDebounced, mostrarInactivos]);
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsuarios.slice(indexOfFirstUser, indexOfLastUser);
+  // 'usuarios' ya está filtrado por el backend. La paginación es solo para la vista.
+  const currentUsers = usuarios.slice(indexOfFirstUser, indexOfLastUser);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -161,11 +177,24 @@ function ListaUsuariosPage() {
           <input
             type="text"
             placeholder="Buscar por nombre, correo o documento..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            value={terminoBusqueda}
+            onChange={(e) => setTerminoBusqueda(e.target.value)}
             className="usuarios-barraBusqueda"
             disabled={isLoadingPage}
           />
+          <div className="usuarios-filtros">
+            <label htmlFor="mostrarInactivosUsuariosSwitch" className="usuarios-switch-label">Mostrar Inactivos:</label>
+            <label className="switch usuarios-switch-control">
+              <input
+                id="mostrarInactivosUsuariosSwitch"
+                type="checkbox"
+                checked={mostrarInactivos}
+                onChange={(e) => setMostrarInactivos(e.target.checked)}
+                disabled={isLoadingPage}
+              />
+              <span className="slider"></span>
+            </label>
+          </div>
           <button
             className="usuarios-botonAgregar"
             onClick={() => handleOpenModal("create")}
@@ -181,7 +210,7 @@ function ListaUsuariosPage() {
         {!isLoadingPage && !errorPage && (
           <>
             <UsuariosTable
-              usuarios={currentUsers} 
+              usuarios={currentUsers} // currentUsers ya está paginado de 'usuarios' (que viene filtrado de API)
               onView={(usuario) => handleOpenModal("details", usuario)}
               onEdit={(usuario) => handleOpenModal("edit", usuario)}
               onDeleteConfirm={(usuario) => handleOpenModal("delete", usuario)}
@@ -210,7 +239,7 @@ function ListaUsuariosPage() {
                 onSubmit={handleSaveUsuario}
                 initialData={currentUsuario}
                 availableRoles={availableRoles}
-                isLoading={isSubmitting}
+                 isLoading={isSubmitting} // Pasar isSubmitting como isLoading
             />
             <UsuarioDetalleModal
                 isOpen={isDetailsModalOpen}

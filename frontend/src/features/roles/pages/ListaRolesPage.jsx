@@ -17,8 +17,6 @@ import {
 } from "../services/rolesService";
 import "../css/Rol.css";
 
-// Función auxiliar para procesar la lista de permisos y agruparla por módulo.
-// Toma un nombre como 'MODULO_ROLES_GESTIONAR' y lo divide en Módulo 'ROLES' y Acción 'GESTIONAR'.
 const groupPermissionsByModule = (permissions) => {
   if (!permissions) return {};
   return permissions.reduce((acc, permiso) => {
@@ -26,15 +24,8 @@ const groupPermissionsByModule = (permissions) => {
     if (parts.length > 2 && parts[0] === "MODULO") {
       const moduleName = parts[1];
       const action = parts.slice(2).join("_");
-
-      if (!acc[moduleName]) {
-        acc[moduleName] = [];
-      }
-
-      acc[moduleName].push({
-        ...permiso,
-        accion: action, // Guardamos la acción para mostrarla en el UI (ej. 'GESTIONAR')
-      });
+      if (!acc[moduleName]) acc[moduleName] = [];
+      acc[moduleName].push({ ...permiso, accion });
     }
     return acc;
   }, {});
@@ -43,7 +34,11 @@ const groupPermissionsByModule = (permissions) => {
 function ListaRolesPage() {
   const [roles, setRoles] = useState([]);
   const [permisos, setPermisos] = useState([]);
-  const [busqueda, setBusqueda] = useState("");
+
+  const [terminoBusqueda, setTerminoBusqueda] = useState(""); // Para el input
+  const [busquedaDebounced, setBusquedaDebounced] = useState(""); // Para la API
+  const [mostrarInactivos, setMostrarInactivos] = useState(false); // Switch state
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -56,36 +51,44 @@ function ListaRolesPage() {
   const [currentRole, setCurrentRole] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
 
-  // Usamos useMemo para que la agrupación de permisos solo se recalcule cuando la lista de permisos cambie.
-  // Esto mejora el rendimiento.
-  const permisosAgrupados = useMemo(
-    () => groupPermissionsByModule(permisos),
-    [permisos]
-  );
+  const permisosAgrupados = useMemo(() => groupPermissionsByModule(permisos), [permisos]);
+
+  // Debounce para la búsqueda
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setBusquedaDebounced(terminoBusqueda);
+    }, 300);
+    return () => clearTimeout(timerId);
+  }, [terminoBusqueda]);
 
   const cargarDatos = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Cargamos roles y permisos de forma paralela para mayor eficiencia.
+      let params = { busqueda: busquedaDebounced };
+      if (!mostrarInactivos) { // Si NO queremos mostrar inactivos, filtramos por estado ACTIVO
+        params.estado = true;
+      }
+      // Si mostrarInactivos es true, no se añade 'estado', backend devuelve todos.
+
       const [rolesResponse, permisosResponse] = await Promise.all([
-        fetchRolesAPI(),
-        getPermisosAPI(),
+        fetchRolesAPI(params),
+        getPermisosAPI(), // Los permisos se siguen cargando una vez
       ]);
-      setRoles(rolesResponse.data || []);
+      setRoles(rolesResponse.data || []); // Asumiendo que la API devuelve { data: [...] }
       setPermisos(permisosResponse || []);
     } catch (err) {
       setError(err.message || "Error al cargar los datos.");
       setRoles([]);
-      setPermisos([]);
+      // setPermisos([]); // Podríamos decidir no limpiar permisos si solo falla roles
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [busquedaDebounced, mostrarInactivos]); // Incluir dependencias que disparan la carga
 
   useEffect(() => {
     cargarDatos();
-  }, [cargarDatos]);
+  }, [cargarDatos]); // useEffect principal que reacciona a cambios en cargarDatos (y sus deps)
 
   const closeModal = () => {
     setIsCrearModalOpen(false);
@@ -98,63 +101,37 @@ function ListaRolesPage() {
   };
 
   const handleOpenModal = async (type, role = null) => {
-    // Protección para no editar o eliminar el rol de Administrador.
-    if (
-      role?.nombre === "Administrador" &&
-      (type === "edit" || type === "delete")
-    ) {
-      setValidationMessage(
-        `El rol 'Administrador' no puede ser ${
-          type === "edit" ? "editado" : "eliminado"
-        }.`
-      );
+    if (role?.nombre === "Administrador" && (type === "edit" || type === "delete")) {
+      setValidationMessage(`El rol 'Administrador' no puede ser ${type === "edit" ? "editado" : "eliminado"}.`);
       setIsValidationModalOpen(true);
       return;
     }
-
     setCurrentRole(role);
-
     if (type === "details" && role) {
       setIsLoading(true);
       try {
         const roleDetails = await getRoleDetailsAPI(role.idRol);
-        setCurrentRole(roleDetails);
+        setCurrentRole(roleDetails); // roleDetails ya tiene los permisos del backend
         setIsDetailsModalOpen(true);
       } catch (err) {
-        setValidationMessage(
-          err.message || "No se pudieron cargar los detalles del rol."
-        );
+        setValidationMessage(err.message || "No se pudieron cargar los detalles del rol.");
         setIsValidationModalOpen(true);
       } finally {
         setIsLoading(false);
       }
-    } else if (type === "edit") {
-      setIsEditarModalOpen(true);
-    } else if (type === "create") {
-      setIsCrearModalOpen(true);
-    } else if (type === "delete") {
-      setIsDeleteModalOpen(true);
-    }
+    } else if (type === "edit") setIsEditarModalOpen(true);
+    else if (type === "create") setIsCrearModalOpen(true);
+    else if (type === "delete") setIsDeleteModalOpen(true);
   };
 
   const handleSaveRol = async (roleData) => {
     try {
-      // 1. Llama a la función del servicio para guardar en la API
       await saveRoleAPI(roleData);
-
-      // 2. Muestra un mensaje de éxito
-      setValidationMessage(
-        roleData.id
-          ? "Rol actualizado exitosamente."
-          : "Rol creado exitosamente."
-      );
+      setValidationMessage(roleData.id ? "Rol actualizado exitosamente." : "Rol creado exitosamente.");
       setIsValidationModalOpen(true);
-
-      // 3. Cierra el modal y recarga la tabla para ver los cambios
       closeModal();
-      await cargarDatos();
+      cargarDatos(); // Recargar datos
     } catch (err) {
-      // 4. Si algo falla, muestra un mensaje de error
       setValidationMessage(err.message || "Error al guardar el rol.");
       setIsValidationModalOpen(true);
     }
@@ -167,7 +144,7 @@ function ListaRolesPage() {
       setValidationMessage("Rol eliminado exitosamente.");
       setIsValidationModalOpen(true);
       closeModal();
-      await cargarDatos(); // Recargar datos.
+      cargarDatos(); // Recargar datos
     } catch (err) {
       setValidationMessage(err.message || "Error al eliminar el rol.");
       setIsValidationModalOpen(true);
@@ -177,30 +154,20 @@ function ListaRolesPage() {
 
   const handleToggleEstado = async (role) => {
     if (role.nombre === "Administrador") {
-      setValidationMessage(
-        "El estado del rol 'Administrador' no se puede cambiar."
-      );
+      setValidationMessage("El estado del rol 'Administrador' no se puede cambiar.");
       setIsValidationModalOpen(true);
       return;
     }
     try {
       await toggleRoleStatusAPI(role.idRol, !role.estado);
-      await cargarDatos(); // Recargar para mostrar el nuevo estado.
+      cargarDatos(); // Recargar datos
     } catch (err) {
-      setValidationMessage(
-        err.message || "Error al cambiar el estado del rol."
-      );
+      setValidationMessage(err.message || "Error al cambiar el estado del rol.");
       setIsValidationModalOpen(true);
     }
   };
 
-  // Filtrar roles según la barra de búsqueda.
-  const filteredRoles = roles.filter(
-    (r) =>
-      (r.nombre && r.nombre.toLowerCase().includes(busqueda.toLowerCase())) ||
-      (r.descripcion &&
-        r.descripcion.toLowerCase().includes(busqueda.toLowerCase()))
-  );
+  // Ya no se necesita filteredRoles, la tabla usará 'roles' directamente.
 
   return (
     <div className="rol-container">
@@ -211,10 +178,22 @@ function ListaRolesPage() {
           <input
             type="text"
             placeholder="Buscar rol..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            value={terminoBusqueda}
+            onChange={(e) => setTerminoBusqueda(e.target.value)}
             className="rol-barraBusqueda"
           />
+          <div className="rol-filtros">
+            <label htmlFor="mostrarInactivosSwitch" className="rol-switch-label">Mostrar Inactivos:</label>
+            <label className="switch rol-switch-control">
+              <input
+                id="mostrarInactivosSwitch"
+                type="checkbox"
+                checked={mostrarInactivos}
+                onChange={(e) => setMostrarInactivos(e.target.checked)}
+              />
+              <span className="slider"></span>
+            </label>
+          </div>
           <button
             className="rol-botonAgregar"
             onClick={() => handleOpenModal("create")}
@@ -229,7 +208,7 @@ function ListaRolesPage() {
           <p className="error-message">{error}</p>
         ) : (
           <RolesTable
-            roles={filteredRoles}
+            roles={roles} // Usar roles directamente del estado
             onView={(role) => handleOpenModal("details", role)}
             onEdit={(role) => handleOpenModal("edit", role)}
             onDeleteConfirm={(role) => handleOpenModal("delete", role)}
@@ -249,23 +228,21 @@ function ListaRolesPage() {
         isOpen={isEditarModalOpen}
         onClose={closeModal}
         onSubmit={handleSaveRol}
-        roleId={currentRole?.idRol}
+        roleId={currentRole?.idRol} // Pasa roleId para cargar datos del rol en el modal
         permisosDisponibles={permisos}
         permisosAgrupados={permisosAgrupados}
       />
       <RolDetailsModal
         isOpen={isDetailsModalOpen}
         onClose={closeModal}
-        role={currentRole}
+        role={currentRole} // currentRole ya tiene los permisos del backend
       />
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={closeModal}
         onConfirm={handleDeleteRol}
         title="Confirmar Eliminación de Rol"
-        message={`¿Estás seguro de que deseas eliminar el rol "${
-          currentRole?.nombre || ""
-        }"? Esta acción no se puede deshacer.`}
+        message={`¿Estás seguro de que deseas eliminar el rol "${currentRole?.nombre || ""}"? Esta acción no se puede deshacer.`}
         confirmText="Eliminar"
         cancelText="Cancelar"
       />

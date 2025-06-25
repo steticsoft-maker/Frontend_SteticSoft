@@ -109,3 +109,24 @@ module.exports = {
   cambiarEstadoRolValidators,
 };
 
+const verificarNombreRolValidators = [
+  body("nombre")
+    .trim()
+    .notEmpty().withMessage("El nombre del rol es obligatorio.")
+    .isString().withMessage("El nombre del rol debe ser texto.")
+    .isLength({ min: 3, max: 100 }).withMessage("El nombre del rol debe tener entre 3 y 100 caracteres."),
+  body("idRolActual")
+    .optional({ checkFalsy: true })
+    .isInt({ gt: 0 }).withMessage("El ID de rol actual debe ser un entero positivo si se proporciona."),
+  handleValidationErrors,
+];
+
+module.exports = {
+  crearRolValidators,
+  actualizarRolValidators,
+  idRolValidator,
+  gestionarPermisosRolValidators,
+  gestionarUnPermisoRolValidators,
+  cambiarEstadoRolValidators,
+  verificarNombreRolValidators, // Exportar
+};

@@ -100,4 +100,12 @@ router.delete(
   rolController.quitarPermisosDeRol
 );
 
+// Ruta para verificar la unicidad del nombre del rol
+router.post(
+  "/verificar-nombre",
+  // authMiddleware, // Podría ser necesario
+  rolValidators.verificarNombreRolValidators,
+  rolController.verificarNombreUnicoRolController
+);
+
 module.exports = router;

@@ -21,12 +21,51 @@ export const getPermisosAPI = async () => {
 };
 
 /**
- * Obtiene la lista completa de roles desde la API.
+ * Verifica si un nombre de rol ya está en uso.
+ * @param {string} nombre - El nombre del rol a verificar.
+ * @param {number|null} idRolActual - El ID del rol actual (si se está editando), o null.
+ * @returns {Promise<object>} Respuesta de la API.
  */
-export const fetchRolesAPI = async () => {
+export const verificarNombreRolAPI = async (nombre, idRolActual = null) => {
   try {
-    const response = await apiClient.get("/roles");
+    const payload = { nombre };
+    if (idRolActual) {
+      payload.idRolActual = idRolActual;
+    }
+    const response = await apiClient.post("/roles/verificar-nombre", payload);
     return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw new Error(error.message || "Error al verificar el nombre del rol.");
+  }
+};
+
+/**
+ * Obtiene la lista completa de roles desde la API.
+ * @param {object} params - Objeto con parámetros de consulta.
+ * @param {string} params.busqueda - Término de búsqueda.
+ * @param {boolean} params.estado - Estado para filtrar (true para activos, false para inactivos).
+ */
+export const fetchRolesAPI = async (params = {}) => {
+  try {
+    // Construir los query params solo si los valores están definidos
+    const queryParams = new URLSearchParams();
+    if (params.busqueda) {
+      queryParams.append('busqueda', params.busqueda);
+    }
+    // Para el estado, queremos enviarlo incluso si es false.
+    // Si params.estado es undefined, no se envía. Si es true o false, se envía.
+    if (params.estado !== undefined) {
+      queryParams.append('estado', params.estado);
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/roles?${queryString}` : '/roles';
+
+    const response = await apiClient.get(url);
+    return response.data; // Asumiendo que la API devuelve { data: [...] } o similar
   } catch (error) {
     console.error(
       "Error al obtener roles:",

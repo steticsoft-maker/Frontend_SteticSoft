@@ -6,11 +6,17 @@ import React from 'react';
 const TIPOS_DOCUMENTO = ['Cédula de Ciudadanía', 'Cédula de Extranjería', 'Pasaporte', 'Tarjeta de Identidad'];
 // Si necesitas "NIT", asegúrate de añadirlo también en el backend validator.
 
-const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // Agregado formErrors como prop
+const ClienteForm = ({ formData, onFormChange, isEditing, formErrors, onFieldBlur }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    // Para checkboxes, `e.target.checked` es el valor booleano
     onFormChange(name, type === 'checkbox' ? checked : value);
+  };
+
+  const handleBlurEvent = (e) => {
+    const { name, value } = e.target;
+    if (onFieldBlur) {
+      onFieldBlur(name, value);
+    }
   };
 
   return (
@@ -28,7 +34,7 @@ const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // 
       <div className="clientes-form-group">
         {/* Cambiado de 'email' a 'correo' para coincidir con el backend */}
         <label htmlFor="correo">Correo: <span className="required-asterisk">*</span></label>
-        <input type="email" id="correo" name="correo" value={formData.correo || ''} onChange={handleChange} placeholder="Correo electrónico" required />
+        <input type="email" id="correo" name="correo" value={formData.correo || ''} onChange={handleChange} onBlur={handleBlurEvent} placeholder="Correo electrónico" required />
         {formErrors.correo && <p className="error-message">{formErrors.correo}</p>}
       </div>
       <div className="clientes-form-group">
@@ -46,7 +52,7 @@ const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // 
       </div>
       <div className="clientes-form-group">
         <label htmlFor="numeroDocumento">Número de Documento: <span className="required-asterisk">*</span></label>
-        <input type="text" id="numeroDocumento" name="numeroDocumento" value={formData.numeroDocumento || ''} onChange={handleChange} placeholder="Número de Documento" required />
+        <input type="text" id="numeroDocumento" name="numeroDocumento" value={formData.numeroDocumento || ''} onChange={handleChange} onBlur={handleBlurEvent} placeholder="Número de Documento" required />
         {formErrors.numeroDocumento && <p className="error-message">{formErrors.numeroDocumento}</p>}
       </div>
 

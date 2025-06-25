@@ -166,5 +166,42 @@ module.exports = {
   anularUsuario,
   habilitarUsuario,
   eliminarUsuarioFisico,
-  cambiarEstadoUsuario, // <-- Nueva función exportada
+  cambiarEstadoUsuario,
+};
+
+/**
+ * Verifica si un correo electrónico ya está en uso.
+ */
+const verificarCorreoUnicoController = async (req, res, next) => {
+  try {
+    const { correo, idUsuarioActual } = req.body; // idUsuarioActual es opcional
+    const correoExiste = await usuarioService.verificarCorreoUnico(correo, idUsuarioActual ? Number(idUsuarioActual) : null);
+    if (correoExiste) {
+      // Devuelve un 409 Conflict si el correo ya existe
+      return res.status(409).json({
+        success: false,
+        message: "El correo electrónico ya está registrado.",
+        field: "correo", // Para que el frontend sepa qué campo falló
+      });
+    }
+    // Devuelve un 200 OK si el correo está disponible
+    return res.status(200).json({
+      success: true,
+      message: "El correo electrónico está disponible.",
+    });
+  } catch (error) {
+    next(error); // Pasa cualquier error inesperado al manejador de errores global
+  }
+};
+
+module.exports = {
+  crearUsuario,
+  listarUsuarios,
+  obtenerUsuarioPorId,
+  actualizarUsuario,
+  anularUsuario,
+  habilitarUsuario,
+  eliminarUsuarioFisico,
+  cambiarEstadoUsuario,
+  verificarCorreoUnicoController, // Exportar el nuevo controlador
 };

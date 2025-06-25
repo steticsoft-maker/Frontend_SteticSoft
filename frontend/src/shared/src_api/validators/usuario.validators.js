@@ -206,3 +206,23 @@ module.exports = {
   idUsuarioValidator,
   cambiarEstadoUsuarioValidators,
 };
+
+const verificarCorreoUnicoValidators = [
+  body("correo")
+    .trim()
+    .notEmpty().withMessage("El correo es obligatorio.")
+    .isEmail().withMessage("Debe proporcionar un correo electrónico válido.")
+    .normalizeEmail(), // Normalize email before checking
+  body("idUsuarioActual")
+    .optional({ checkFalsy: true })
+    .isInt({ gt: 0 }).withMessage("El ID de usuario actual debe ser un entero positivo si se proporciona."),
+  handleValidationErrors, // Reutilizar el manejador de errores existente
+];
+
+module.exports = {
+  crearUsuarioValidators,
+  actualizarUsuarioValidators,
+  idUsuarioValidator,
+  cambiarEstadoUsuarioValidators,
+  verificarCorreoUnicoValidators, // Exportar el nuevo validador
+};

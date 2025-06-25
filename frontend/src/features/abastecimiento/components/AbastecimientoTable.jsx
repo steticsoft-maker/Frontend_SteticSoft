@@ -24,17 +24,17 @@ const AbastecimientoTable = ({ entries, onView, onEdit, onDelete, onDeplete }) =
             key={entry.idAbastecimiento}
             className={entry.estaAgotado ? "depleted-row" : ""}
           >
-            <td data-label="Producto:">{entry.producto?.nombre || "N/A"}</td>
-            <td data-label="Categoría:">
+            <td data-label="Producto">{entry.producto?.nombre || "N/A"}</td>
+            <td data-label="Categoría">
               {entry.producto?.categoria?.nombre || "N/A"}
             </td>
-            <td data-label="Cantidad:">{entry.cantidad}</td>
-            <td data-label="Empleado:">{entry.empleado?.nombre || "No asignado"}</td>
-            <td data-label="Fecha Ingreso:">
+            <td data-label="Cantidad">{entry.cantidad}</td>
+            <td data-label="Empleado">{entry.empleado?.nombre || "No asignado"}</td>
+            <td data-label="Fecha Ingreso">
               {new Date(entry.fechaIngreso).toLocaleDateString()}
             </td>
-            <td data-label="Vida Restante:">{calculateRemainingLifetime(entry)}</td>
-            <td data-label="Estado:">
+            <td data-label="Vida Restante">{calculateRemainingLifetime(entry)}</td>
+            <td data-label="Estado">
               {entry.estaAgotado ? (
                 <>
                   Agotado
@@ -46,7 +46,7 @@ const AbastecimientoTable = ({ entries, onView, onEdit, onDelete, onDeplete }) =
                 "Disponible"
               )}
             </td>
-            <td data-label="Acciones:">
+            <td data-label="Acciones">
               <div className="icon-actions-abastecimiento">
                 <button
                   className="table-icons-abastecimiento view-button"

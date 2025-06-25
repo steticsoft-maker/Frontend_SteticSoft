@@ -11,12 +11,20 @@ const RolForm = ({
   isEditing,
   isRoleAdmin,
   formErrors,
+  onFieldBlur, // Nueva prop
 }) => {
   const [mostrarPermisos, setMostrarPermisos] = useState(isEditing || false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     onFormChange(name, type === 'checkbox' ? checked : value);
+  };
+
+  const handleBlurEvent = (e) => {
+    const { name, value } = e.target;
+    if (onFieldBlur) {
+      onFieldBlur(name, value);
+    }
   };
   
   const handleToggleMostrarPermisos = () => {
@@ -41,7 +49,11 @@ const RolForm = ({
             </label>
             <input
               id="nombreRolInput" type="text" name="nombre" value={formData.nombre}
-              onChange={handleInputChange} className="rol-input" disabled={isRoleAdmin} required
+              onChange={handleInputChange}
+              onBlur={handleBlurEvent} // Añadido onBlur
+              className="rol-input"
+              disabled={isRoleAdmin}
+              required
             />
             {formErrors.nombre && <span className="error-message">{formErrors.nombre}</span>}
           </div>

@@ -155,3 +155,34 @@ module.exports = {
   idClienteValidator,
   cambiarEstadoClienteValidators,
 };
+
+const verificarDatosClienteValidators = [
+  body("correo")
+    .optional()
+    .trim()
+    .isEmail().withMessage("Debe proporcionar un correo electrónico válido si se envía.")
+    .normalizeEmail(),
+  body("numero_documento") // El campo en la BD es numero_documento
+    .optional()
+    .trim()
+    .isString().withMessage("El número de documento debe ser texto si se envía.")
+    .notEmpty().withMessage("El número de documento no puede ser vacío si se envía."),
+  body("idClienteActual")
+    .optional({ checkFalsy: true })
+    .isInt({ gt: 0 }).withMessage("El ID de cliente actual debe ser un entero positivo si se proporciona."),
+  (req, res, next) => { // Reutilizar el patrón de validación de express-validator
+    const errors = require("express-validator").validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
+module.exports = {
+  crearClienteValidators,
+  actualizarClienteValidators,
+  idClienteValidator,
+  cambiarEstadoClienteValidators,
+  verificarDatosClienteValidators, // Exportar
+};

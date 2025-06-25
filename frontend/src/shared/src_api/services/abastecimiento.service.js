@@ -79,30 +79,58 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
 // ... (El resto de las funciones: obtenerTodosLosAbastecimientos, obtenerAbastecimientoPorId, etc. se mantienen igual que en tu archivo original)
 // Aquí pego el resto del archivo para que lo tengas completo.
 
-const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
+const obtenerTodosLosAbastecimientos = async (opciones = {}) => {
   try {
+    const { busqueda, estado } = opciones;
+    const whereClause = {}; // Para la tabla Abastecimiento principal
+
+    if (estado !== undefined) {
+      if (typeof estado === 'string') {
+        whereClause.estado = estado.toLowerCase() === 'true';
+      } else {
+        whereClause.estado = Boolean(estado);
+      }
+    }
+
+    const includeClauses = [
+      {
+        model: db.Producto,
+        as: "producto",
+        attributes: ["idProducto", "nombre", "stockMinimo", "existencia"],
+        // Si quisiéramos filtrar por categoría de producto aquí, se añadiría un include anidado.
+      },
+      {
+        model: db.Empleado,
+        as: "empleado",
+        attributes: ["idEmpleado", "nombre"],
+        required: false, // Un abastecimiento puede no tener empleado asignado
+      },
+    ];
+
+    if (busqueda) {
+      const searchPattern = { [Op.iLike]: `%${busqueda}%` };
+      whereClause[Op.or] = [
+        { razon_agotamiento: searchPattern }, // Campo directo de Abastecimiento
+        // Búsqueda en campos de relaciones directas
+        { '$producto.nombre$': searchPattern },
+        { '$empleado.nombre$': searchPattern },
+        // Podríamos intentar buscar por fecha si la entrada de búsqueda es formateable a fecha,
+        // pero es más complejo. Ejemplo simple (puede no ser ideal para todos los formatos de fecha):
+        // db.where(db.fn('to_char', db.col('fecha_ingreso'), 'YYYY-MM-DD'), searchPattern)
+      ];
+    }
+
     return await db.Abastecimiento.findAll({
-      where: opcionesDeFiltro,
-      include: [
-        {
-          model: db.Producto,
-          as: "producto", 
-          attributes: ["idProducto", "nombre", "stockMinimo", "existencia"],
-        },
-        {
-          model: db.Empleado,
-          as: "empleado", 
-          attributes: ["idEmpleado", "nombre"],
-          required: false,
-        },
-      ],
+      where: whereClause,
+      include: includeClauses,
       order: [
         ["fechaIngreso", "DESC"],
         ["idAbastecimiento", "DESC"],
       ],
+      // subQuery: false // Considerar si es necesario
     });
   } catch (error) {
-    console.error("Error al obtener todos los abastecimientos:", error.message);
+    console.error("Error al obtener todos los abastecimientos:", error.message, error.stack);
     throw new CustomError(
       `Error al obtener abastecimientos: ${error.message}`,
       500

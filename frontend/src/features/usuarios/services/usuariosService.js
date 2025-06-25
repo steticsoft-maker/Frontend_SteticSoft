@@ -3,17 +3,55 @@ import apiClient from "../../../shared/services/api"; // Ajusta la ruta a tu api
 
 /**
  * Obtiene la lista de todos los usuarios desde la API.
+ * @param {object} params - Objeto con parámetros de consulta.
+ * @param {string} params.busqueda - Término de búsqueda.
+ * @param {boolean} params.estado - Estado para filtrar.
  */
-export const getUsuariosAPI = async () => {
+export const getUsuariosAPI = async (params = {}) => {
   try {
-    const response = await apiClient.get("/usuarios");
-    return response.data;
+    const queryParams = new URLSearchParams();
+    if (params.busqueda) {
+      queryParams.append('busqueda', params.busqueda);
+    }
+    if (params.estado !== undefined) {
+      queryParams.append('estado', params.estado);
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/usuarios?${queryString}` : '/usuarios';
+
+    const response = await apiClient.get(url);
+    return response.data; // Asumiendo que la API devuelve { data: [...] } o similar
   } catch (error) {
     // console.error("[usuariosService.js] Error en getUsuariosAPI:", error.response?.data || error.message);
     throw (
       error.response?.data ||
       new Error(error.message || "Error al obtener la lista de usuarios.")
     );
+  }
+};
+
+/**
+ * Verifica si un correo electrónico ya está en uso.
+ * @param {string} correo - El correo a verificar.
+ * @param {number|null} idUsuarioActual - El ID del usuario actual (si se está editando), o null.
+ * @returns {Promise<object>} Respuesta de la API.
+ */
+export const verificarCorreoUsuarioAPI = async (correo, idUsuarioActual = null) => {
+  try {
+    const payload = { correo };
+    if (idUsuarioActual) {
+      payload.idUsuarioActual = idUsuarioActual;
+    }
+    const response = await apiClient.post("/usuarios/verificar-correo", payload);
+    return response.data; // Espera { success: true, message: "..." } o error con { success: false, message: "...", field: "correo" }
+  } catch (error) {
+    // Si el backend devuelve 409, apiClient debería lanzarlo como un error.
+    // El error.response.data contendrá el mensaje y el campo.
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw new Error(error.message || "Error al verificar el correo.");
   }
 };
 

@@ -15,7 +15,10 @@ function ListaAbastecimientoPage() {
   const [entries, setEntries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
+
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
+  const [busquedaDebounced, setBusquedaDebounced] = useState("");
+  const [mostrarInactivos, setMostrarInactivos] = useState(false);
 
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
@@ -27,20 +30,33 @@ function ListaAbastecimientoPage() {
   const [currentEntry, setCurrentEntry] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
 
+  // Debounce para la búsqueda
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setBusquedaDebounced(terminoBusqueda);
+    }, 300);
+    return () => clearTimeout(timerId);
+  }, [terminoBusqueda]);
+
   const cargarDatos = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await abastecimientoService.getAbastecimientos();
+      let params = { busqueda: busquedaDebounced };
+      if (!mostrarInactivos) {
+        params.estado = true; // Solo activos
+      }
+      // Si mostrarInactivos es true, la API devuelve todos (activos e inactivos)
+
+      const data = await abastecimientoService.getAbastecimientos(params);
       setEntries(data);
     } catch (err) {
-      setError(
-        err.message || "No se pudieron cargar los datos de abastecimiento."
-      );
+      setError(err.message || "No se pudieron cargar los datos de abastecimiento.");
+      setEntries([]);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [busquedaDebounced, mostrarInactivos]);
 
   useEffect(() => {
     cargarDatos();
@@ -130,21 +146,7 @@ function ListaAbastecimientoPage() {
     }
   };
 
-  const filteredEntries = useMemo(
-    () =>
-      entries.filter((entry) => {
-        const busquedaLower = busqueda.toLowerCase();
-        const nombreProducto = entry.producto?.nombre?.toLowerCase() || "";
-        const nombreEmpleado = entry.empleado?.nombre?.toLowerCase() || "";
-        const fecha = entry.fechaIngreso || "";
-        return (
-          nombreProducto.includes(busquedaLower) ||
-          nombreEmpleado.includes(busquedaLower) ||
-          fecha.includes(busquedaLower)
-        );
-      }),
-    [entries, busqueda]
-  );
+  // const filteredEntries = useMemo(...); // ELIMINADO - Filtrado ahora en backend
 
   return (
     <div className="abastecimiento-page-container">
@@ -156,11 +158,24 @@ function ListaAbastecimientoPage() {
             <div className="abastecimiento-search-bar">
               <input
                 type="text"
-                placeholder="Buscar por producto, empleado o fecha..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar por producto, empleado, razón..."
+                value={terminoBusqueda}
+                onChange={(e) => setTerminoBusqueda(e.target.value)}
                 disabled={isLoading}
               />
+            </div>
+            <div className="abastecimiento-filtros">
+              <label htmlFor="mostrarInactivosAbastecimientoSwitch" className="abastecimiento-switch-label">Mostrar Inactivos:</label>
+              <label className="switch abastecimiento-switch-control">
+                <input
+                  id="mostrarInactivosAbastecimientoSwitch"
+                  type="checkbox"
+                  checked={mostrarInactivos}
+                  onChange={(e) => setMostrarInactivos(e.target.checked)}
+                  disabled={isLoading}
+                />
+                <span className="slider"></span>
+              </label>
             </div>
             <button
               className="abastecimiento-add-button"
@@ -177,7 +192,7 @@ function ListaAbastecimientoPage() {
             <p className="error-message">{error}</p>
           ) : (
             <AbastecimientoTable
-              entries={filteredEntries}
+              entries={entries} // Usar 'entries' directamente del estado
               onView={(entry) => handleOpenModal("details", entry)}
               onEdit={(entry) => handleOpenModal("edit", entry)}
               onDelete={(entry) => handleOpenModal("delete", entry)}

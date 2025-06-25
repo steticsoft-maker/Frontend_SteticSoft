@@ -41,17 +41,38 @@ const crearRol = async (datosRol) => {
 /**
  * Obtener todos los roles.
  */
-const obtenerTodosLosRoles = async (opcionesDeFiltro = {}) => {
+const obtenerTodosLosRoles = async (opciones = {}) => {
   try {
-    // CORRECCIÓN: Se añade 'include' para traer los permisos de cada rol.
+    const { busqueda, estado } = opciones;
+    const whereClause = {};
+
+    if (estado !== undefined) {
+      // Asegurarse que el estado sea un booleano si viene como string "true" o "false"
+      if (typeof estado === 'string') {
+        whereClause.estado = estado.toLowerCase() === 'true';
+      } else {
+        whereClause.estado = Boolean(estado);
+      }
+    }
+
+    if (busqueda) {
+      whereClause[Op.or] = [
+        { nombre: { [Op.iLike]: `%${busqueda}%` } },
+        { descripcion: { [Op.iLike]: `%${busqueda}%` } },
+        // Podríamos incluir búsqueda en permisos si fuera necesario, pero por ahora lo mantenemos simple.
+        // { '$permisos.nombre$': { [Op.iLike]: `%${busqueda}%` } } // Esto requeriría 'subQuery: false' y puede ser complejo.
+      ];
+    }
+
     return await db.Rol.findAll({
-      where: opcionesDeFiltro,
+      where: whereClause,
       include: [{
         model: db.Permisos,
         as: 'permisos',
-        attributes: ['nombre'], // Solo traemos el nombre para la tabla
+        attributes: ['idPermiso', 'nombre', 'descripcion'], // Traer más info de permisos por si se usa en el futuro
         through: { attributes: [] }
-      }]
+      }],
+      order: [["nombre", "ASC"]],
     });
   } catch (error) {
     console.error(
@@ -188,4 +209,31 @@ module.exports = {
   habilitarRol,
   eliminarRolFisico,
   cambiarEstadoRol,
+};
+
+/**
+ * Verifica si un nombre de rol ya existe.
+ * @param {string} nombre - El nombre del rol a verificar.
+ * @param {number|null} idExcluir - El ID del rol a excluir de la búsqueda (para modo edición).
+ * @returns {Promise<boolean>} True si el nombre ya existe, false en caso contrario.
+ */
+const verificarNombreUnicoRol = async (nombre, idExcluir = null) => {
+  const whereClause = { nombre };
+  if (idExcluir) {
+    whereClause.idRol = { [Op.ne]: idExcluir };
+  }
+  const rolExistente = await db.Rol.findOne({ where: whereClause });
+  return !!rolExistente;
+};
+
+module.exports = {
+  crearRol,
+  obtenerTodosLosRoles,
+  obtenerRolPorId,
+  actualizarRol,
+  anularRol,
+  habilitarRol,
+  eliminarRolFisico,
+  cambiarEstadoRol,
+  verificarNombreUnicoRol, // Exportar
 };

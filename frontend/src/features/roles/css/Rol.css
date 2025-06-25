@@ -39,7 +39,7 @@
     align-items: center;
     margin-bottom: 20px;
     gap: 20px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Asegura que los elementos se envuelvan */
     width: 100%;
     max-width: 1200px;
     box-sizing: border-box;
@@ -51,11 +51,29 @@
     border: 1px solid #c287b5;
     border-radius: 5px;
     font-size: 1rem;
-    flex-grow: 1;
-    min-width: 200px;
+    flex-grow: 1; /* Permite que la barra de búsqueda crezca */
+    min-width: 200px; /* Ancho mínimo para la barra */
     background-color: white;
     color: #333;
     box-sizing: border-box;
+}
+
+.rol-filtros {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-grow: 1; /* Permite que los filtros ocupen espacio también */
+  justify-content: flex-start; /* Alinea el switch a la izquierda dentro de su espacio */
+}
+
+.rol-switch-label {
+  font-size: 0.9rem;
+  color: var(--color-text-dark, #333);
+  margin-right: 5px; /* Espacio entre label y switch */
+}
+
+.rol-switch-control .slider { /* Para ajustar el switch si es necesario */
+    /* background-color: #ccc; */
 }
 
 /* Botón Agregar Rol */
@@ -680,15 +698,24 @@ input:checked+.slider:before {
     .rol-accionesTop {
         flex-direction: column;
         gap: 15px;
+        align-items: stretch; /* Para que los hijos tomen el ancho */
     }
 
-    .rol-barraBusqueda {
-        max-width: 100%;
-        margin-right: 0;
-    }
-
-    .rol-botonAgregar {
+    .rol-barraBusqueda,
+    .rol-botonAgregar,
+    .rol-filtros { /* El contenedor de filtros también toma el ancho */
         width: 100%;
+        max-width: 100%;
+        min-width: 0; /* Reset min-width para móvil */
+    }
+
+    .rol-filtros {
+      justify-content: space-between; /* Para que label y switch se separen en su propia fila */
+      padding: 5px 0;
+    }
+
+    .rol-switch-label {
+      margin-right: auto;
     }
 
     .rol-table th,
@@ -804,4 +831,77 @@ input:checked+.slider:before {
         padding: 12px;
         font-size: 1rem;
     }
+
+    /* --- Estilos de Tabla Responsiva para formato Tarjeta --- */
+    .rol-table thead {
+        display: none; /* Ocultar encabezados de tabla en móviles */
+    }
+
+    .rol-table,
+    .rol-table tbody,
+    .rol-table tr,
+    .rol-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    flex-wrap: wrap; /* Asegurar que los elementos se envuelvan si no caben */
+    }
+
+    .rol-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #e978d0; /* Borde alrededor de cada "tarjeta" */
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .rol-table tr:last-child {
+        margin-bottom: 0;
+    }
+
+    .rol-table td {
+        text-align: right; /* Alinea el contenido del td a la derecha */
+        padding-left: 50%; /* Deja espacio para el label */
+        position: relative;
+        border: none; /* Quitar bordes internos de celdas */
+        padding-top: 8px;
+        padding-bottom: 8px;
+        font-size: 0.9rem;
+        min-height: 30px; /* Para que las celdas vacías tengan algo de altura */
+    }
+
+    .rol-table td::before {
+        content: attr(data-label); /* Muestra el data-label */
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px); /* Ancho del label */
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #6d0b58; /* Color del label */
+        text-align: left; /* Alinea el texto del label a la izquierda */
+    }
+
+    .rol-table td[data-label="Acciones:"] {
+        text-align: center; /* Centrar los iconos de acción */
+        padding-left: 0; /* No necesita padding-left si está centrado */
+    }
+    .rol-table td[data-label="Acciones:"]::before {
+        content: ""; /* No mostrar label para acciones si se centra */
+    }
+     .rol-table td[data-label="Estado:"] {
+        text-align: right; /* Mantiene el switch a la derecha */
+    }
+    .rol-table td[data-label="Estado:"] .switch {
+        display: inline-block; /* Asegura que el switch se alinee bien */
+    }
+
+    .rol-table-iconos {
+        justify-content: flex-end; /* Alinea los iconos a la derecha en la tarjeta */
+    }
+    /* Si las acciones se centran con data-label="Acciones:" text-align: center; */
+    /* .rol-table td[data-label="Acciones:"] .rol-table-iconos {
+        justify-content: center;
+    } */
+
 }

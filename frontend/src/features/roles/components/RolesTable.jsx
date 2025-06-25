@@ -1,9 +1,84 @@
 // src/features/roles/components/RolesTable.jsx
 import React from 'react';
-import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import {
+  FaEdit, FaTrash, FaEye, FaKey, FaUsers, FaUserTie, FaTruck, FaBoxOpen,
+  FaCut, FaShoppingCart, FaCashRegister, FaCalendarAlt, FaDolly,
+  FaChartBar, FaUserLock, FaToggleOn, FaStar, FaTags, FaClock, FaUserCog, FaQuestionCircle
+} from 'react-icons/fa';
+import '../css/RolesTableTooltips.css'; // Importar CSS para tooltips
 
-// Ajustamos los nombres de las props para que coincidan con lo que pasamos desde ListaRolesPage.jsx
+// Mapeo de módulos a iconos
+const moduleIcons = {
+  DEFAULT: FaQuestionCircle,
+  ROLES: FaKey,
+  USUARIOS: FaUsers,
+  CLIENTES: FaUserTie,
+  PROVEEDORES: FaTruck,
+  PRODUCTOS: FaBoxOpen,
+  SERVICIOS: FaCut,
+  COMPRAS: FaShoppingCart,
+  VENTAS: FaCashRegister,
+  CITAS: FaCalendarAlt,
+  ABASTECIMIENTOS: FaDolly,
+  DASHBOARD: FaChartBar,
+  PERMISOS: FaUserLock,
+  ESTADOS: FaToggleOn,
+  ESPECIALIDADES: FaStar,
+  CATEGORIASPRODUCTOS: FaTags, // Nombre de módulo sin guion bajo para clave de objeto
+  CATEGORIASSERVICIOS: FaTags, // Nombre de módulo sin guion bajo
+  NOVEDADESEMPLEADOS: FaClock,
+  EMPLEADOS: FaUserCog,
+  // Añadir más según sea necesario
+};
+
+const getModuleFromPermission = (permissionName) => {
+  if (permissionName.startsWith("MODULO_")) {
+    const parts = permissionName.split("_");
+    if (parts.length > 1) {
+      // Une todas las partes del nombre del módulo si son compuestas, ej. CATEGORIAS_PRODUCTOS
+      return parts.slice(1, parts.length -1).join("").toUpperCase();
+    }
+  }
+  return null;
+};
+
+
 const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) => {
+
+  const renderPermisosIconos = (permisosRol) => {
+    if (!permisosRol || permisosRol.length === 0) {
+      return 'Ninguno';
+    }
+
+    const permisosAgrupadosPorModulo = permisosRol.reduce((acc, permiso) => {
+      const moduleKey = getModuleFromPermission(permiso.nombre);
+      if (moduleKey) {
+        if (!acc[moduleKey]) {
+          acc[moduleKey] = {
+            icon: moduleIcons[moduleKey] || moduleIcons.DEFAULT,
+            permisosCompletos: []
+          };
+        }
+        acc[moduleKey].permisosCompletos.push(permiso.nombre);
+      }
+      return acc;
+    }, {});
+
+    return (
+      <div className="permisos-icon-container">
+        {Object.entries(permisosAgrupadosPorModulo).map(([moduloNombre, data]) => {
+          const IconComponent = data.icon;
+          const tooltipText = data.permisosCompletos.join('\n');
+          return (
+            <span key={moduloNombre} className="permiso-icon-wrapper" title={tooltipText}>
+              <IconComponent />
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <table className="rol-table">
       <thead>
@@ -16,24 +91,14 @@ const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) 
         </tr>
       </thead>
       <tbody>
-        {/* Verificamos que 'roles' sea un array antes de mapear */}
         {Array.isArray(roles) && roles.map((rol) => (
-          // CORRECCIÓN 1: La key única debe ser 'rol.idRol' según tu base de datos.
           <tr key={rol.idRol}>
-            <td>{rol.nombre}</td>
-            <td>{rol.descripcion}</td>
-            <td>
-              {/* CORRECCIÓN 2: 'rol.permisos' es un array de objetos. Mapeamos para obtener el 'nombre'. */}
-              {(() => {
-                const permisos = rol.permisos || [];
-                const nombresPermisos = permisos.map(p => p.nombre);
-                if (nombresPermisos.length > 3) {
-                  return `${nombresPermisos.slice(0, 3).join(', ')}...`;
-                }
-                return nombresPermisos.join(', ') || 'Ninguno';
-              })()}
+            <td data-label="Nombre del Rol">{rol.nombre}</td>
+            <td data-label="Descripción">{rol.descripcion}</td>
+            <td data-label="Módulos Asignados">
+              {renderPermisosIconos(rol.permisos)}
             </td>
-            <td>
+            <td data-label="Estado">
               {rol.nombre !== "Administrador" ? (
                 <label className="switch">
                   <input
@@ -50,7 +115,7 @@ const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) 
                 <span>No Aplicable</span>
               )}
             </td>
-            <td>
+            <td data-label="Acciones:">
               <div className="rol-table-iconos">
                 <button className="rol-table-button" onClick={() => onView(rol)} title="Ver Detalles">
                   <FaEye />

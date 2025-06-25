@@ -157,5 +157,53 @@ module.exports = {
   anularCliente,
   habilitarCliente,
   eliminarClienteFisico,
-  cambiarEstadoCliente, // <-- Nueva función exportada
+  cambiarEstadoCliente,
+};
+
+/**
+ * Verifica si datos únicos de un cliente (correo, numero_documento) ya existen.
+ */
+const verificarDatosUnicosClienteController = async (req, res, next) => {
+  try {
+    const { correo, numero_documento, idClienteActual } = req.body;
+    const camposAVerificar = {};
+    if (correo) camposAVerificar.correo = correo;
+    if (numero_documento) camposAVerificar.numero_documento = numero_documento;
+
+    if (Object.keys(camposAVerificar).length === 0) {
+      return res.status(400).json({ message: "No se proporcionaron campos para verificar." });
+    }
+
+    const errores = await clienteService.verificarDatosUnicosCliente(
+      camposAVerificar,
+      idClienteActual ? Number(idClienteActual) : null
+    );
+
+    if (Object.keys(errores).length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: "Uno o más campos ya están registrados.",
+        errors: errores, // Devuelve un objeto con los campos en conflicto
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Los datos están disponibles.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  crearCliente,
+  listarClientes,
+  obtenerClientePorId,
+  actualizarCliente,
+  anularCliente,
+  habilitarCliente,
+  eliminarClienteFisico,
+  cambiarEstadoCliente,
+  verificarDatosUnicosClienteController, // Exportar
 };

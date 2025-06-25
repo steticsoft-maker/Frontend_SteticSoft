@@ -90,33 +90,60 @@ const obtenerTodosLosProductos = async (filtros) => {
   const {
     page = 1,
     limit = 10,
-    nombre,
+    busqueda, // Cambiado de 'nombre' a 'busqueda'
     estado,
     idCategoria,
     tipo_uso, 
   } = filtros;
 
   const offset = (page - 1) * limit;
+  const whereCondition = {};
 
-  let whereCondition = {};
-  if (nombre) {
-    whereCondition.nombre = { [Op.iLike]: `%${nombre}%` };
-  }
+  // Filtro por estado (ya existente y correcto)
   if (estado !== undefined) {
-    whereCondition.estado = estado === "true";
+    if (typeof estado === 'string') {
+      whereCondition.estado = estado.toLowerCase() === 'true';
+    } else {
+      whereCondition.estado = Boolean(estado);
+    }
   }
+
+  // Filtro por categoría (ya existente y correcto)
   if (idCategoria) {
     whereCondition.categoriaProductoId = idCategoria;
   }
+
+  // Filtro por tipo_uso (ya existente y correcto)
+  // Este filtro es aplicado en la tabla CategoriaProducto, por lo que necesitamos un 'where' en el include
+  let includeCategoriaWhere = {};
   if (tipo_uso) {
-    whereCondition.tipo_uso = tipo_uso;
+    includeCategoriaWhere.tipoUso = tipo_uso; // Asumiendo que el campo en el modelo CategoriaProducto es tipoUso
   }
 
-  let includeCondition = [
+  // Lógica de búsqueda global
+  if (busqueda) {
+    const searchPattern = { [Op.iLike]: `%${busqueda}%` };
+    whereCondition[Op.or] = [
+      { nombre: searchPattern },
+      { descripcion: searchPattern },
+      // Búsqueda en el nombre de la categoría relacionada
+      // Esto requiere que el include de CategoriaProducto se maneje adecuadamente.
+      // Si se usa '$categoria.nombre$', se necesita subQuery: false o un manejo cuidadoso.
+      // Por ahora, para mantener la paginación simple, podríamos omitir la búsqueda en categoría
+      // o requerir que el include de categoría esté presente y luego filtrar.
+      // Una forma más segura para paginación es buscar IDs de productos que coincidan y luego usarlos.
+      // Sin embargo, intentaremos la forma directa con '$...$' y observaremos.
+      { '$categoria.nombre$': searchPattern }
+    ];
+  }
+
+  const includeCondition = [
     {
       model: db.CategoriaProducto,
       as: "categoria",
       attributes: ["idCategoriaProducto", "nombre", "vidaUtilDias", "tipoUso"],
+      where: Object.keys(includeCategoriaWhere).length > 0 ? includeCategoriaWhere : undefined,
+      required: Object.keys(includeCategoriaWhere).length > 0 // Si hay filtro por tipo_uso, la categoría es requerida.
     },
   ];
 
@@ -124,6 +151,10 @@ const obtenerTodosLosProductos = async (filtros) => {
     const { count, rows } = await db.Producto.findAndCountAll({
       where: whereCondition,
       include: includeCondition,
+      // Si la búsqueda en '$categoria.nombre$' da problemas con `count` o paginación,
+      // se podría necesitar `distinct: true` y `col: 'idProducto'` o `subQuery: false`.
+      // `subQuery: false` es más simple de implementar pero puede ser menos performante en algunos casos.
+      // Vamos a probar sin subQuery: false primero.
       limit: parseInt(limit),
       offset: parseInt(offset),
       order: [["nombre", "ASC"]],

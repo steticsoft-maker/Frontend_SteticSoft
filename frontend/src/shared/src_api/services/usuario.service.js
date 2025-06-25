@@ -185,53 +185,75 @@ const crearUsuario = async (datosCompletosUsuario) => {
 /**
  * Get all users with their role and associated Client/Employee profile.
  */
-const obtenerTodosLosUsuarios = async (opcionesDeFiltro = {}) => {
+const obtenerTodosLosUsuarios = async (opciones = {}) => {
   try {
+    const { busqueda, estado } = opciones;
+    const whereClause = {}; // Para la tabla Usuario principal
+
+    if (estado !== undefined) {
+      if (typeof estado === 'string') {
+        whereClause.estado = estado.toLowerCase() === 'true';
+      } else {
+        whereClause.estado = Boolean(estado);
+      }
+    }
+
+    const includeClauses = [
+      {
+        model: db.Rol,
+        as: "rol",
+        attributes: ["idRol", "nombre"],
+      },
+      {
+        model: db.Cliente,
+        as: "clienteInfo",
+        attributes: [
+          "idCliente", "nombre", "apellido", "correo",
+          "telefono", "tipoDocumento", "numeroDocumento", "fechaNacimiento",
+        ],
+        required: false,
+      },
+      {
+        model: db.Empleado,
+        as: "empleadoInfo",
+        attributes: [
+          "idEmpleado", "nombre", "apellido", "correo",
+          "telefono", "tipoDocumento", "numeroDocumento", "fechaNacimiento",
+        ],
+        required: false,
+      },
+    ];
+
+    if (busqueda) {
+      const searchPattern = { [Op.iLike]: `%${busqueda}%` };
+      whereClause[Op.or] = [
+        { correo: searchPattern },
+        // Búsqueda en campos de relaciones directas
+        // Es importante que los alias (as: "rol", as: "clienteInfo", as: "empleadoInfo") sean correctos
+        // y que los nombres de campo también lo sean.
+        { '$rol.nombre$': searchPattern },
+        { '$clienteInfo.nombre$': searchPattern },
+        { '$clienteInfo.apellido$': searchPattern },
+        { '$clienteInfo.numero_documento$': searchPattern }, // Usando snake_case como en la BD
+        { '$clienteInfo.correo$': searchPattern },
+        { '$empleadoInfo.nombre$': searchPattern },
+        { '$empleadoInfo.apellido$': searchPattern },
+        { '$empleadoInfo.numero_documento$': searchPattern }, // Usando snake_case
+        { '$empleadoInfo.correo$': searchPattern },
+      ];
+    }
+
     const usuarios = await db.Usuario.findAll({
-      where: opcionesDeFiltro,
-      attributes: ["idUsuario", "correo", "estado", "idRol"],
-      include: [
-        {
-          model: db.Rol,
-          as: "rol",
-          attributes: ["idRol", "nombre"],
-        },
-        {
-          model: db.Cliente,
-          as: "clienteInfo",
-          attributes: [
-            "idCliente",
-            "nombre",
-            "apellido",
-            "correo", // Added
-            "telefono",
-            "tipoDocumento",
-            "numeroDocumento",
-            "fechaNacimiento",
-          ],
-          required: false,
-        },
-        {
-          model: db.Empleado, // Assuming it exists and is associated in Usuario.model.js with alias 'empleadoInfo'
-          as: "empleadoInfo",
-          attributes: [
-            "idEmpleado",
-            "nombre",
-            "apellido", // Added
-            "correo",   // Added
-            "telefono", // Replaces "celular"
-            "tipoDocumento",
-            "numeroDocumento",
-            "fechaNacimiento",
-          ],
-          required: false,
-        },
-      ],
+      where: whereClause,
+      include: includeClauses,
       order: [["idUsuario", "ASC"]],
+      // subQuery: false // Necesario si la búsqueda en includes causa problemas con limit/offset,
+                        // pero puede tener otras implicaciones. Probar sin él primero.
+                        // Si se usa, revisar paginación si se implementa en el futuro.
     });
     return usuarios;
   } catch (error) {
-    // console.error("Error al obtener todos los usuarios en el servicio:", error.message); // Commented
+    console.error("Error al obtener todos los usuarios en el servicio:", error.message, error.stack);
     throw new CustomError(`Error al get users: ${error.message}`, 500);
   }
 };
@@ -540,4 +562,31 @@ module.exports = {
   habilitarUsuario,
   eliminarUsuarioFisico,
   cambiarEstadoUsuario,
+};
+
+/**
+ * Verifica si un correo electrónico ya existe en la tabla Usuarios.
+ * @param {string} correo - El correo electrónico a verificar.
+ * @param {number|null} idExcluir - El ID del usuario a excluir de la búsqueda (para modo edición).
+ * @returns {Promise<boolean>} True si el correo ya existe, false en caso contrario.
+ */
+const verificarCorreoUnico = async (correo, idExcluir = null) => {
+  const whereClause = { correo };
+  if (idExcluir) {
+    whereClause.idUsuario = { [Op.ne]: idExcluir };
+  }
+  const usuarioExistente = await db.Usuario.findOne({ where: whereClause });
+  return !!usuarioExistente; // Devuelve true si existe, false si no
+};
+
+module.exports = {
+  crearUsuario,
+  obtenerTodosLosUsuarios,
+  obtenerUsuarioPorId,
+  actualizarUsuario,
+  anularUsuario,
+  habilitarUsuario,
+  eliminarUsuarioFisico,
+  cambiarEstadoUsuario,
+  verificarCorreoUnico, // Exportar la nueva función
 };

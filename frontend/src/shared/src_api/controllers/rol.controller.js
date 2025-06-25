@@ -224,5 +224,43 @@ module.exports = {
   asignarPermisosARol,
   quitarPermisosDeRol,
   listarPermisosDeRol,
-  cambiarEstadoRol, // <-- Nueva función exportada
+  cambiarEstadoRol,
+};
+
+/**
+ * Verifica si un nombre de Rol ya está en uso.
+ */
+const verificarNombreUnicoRolController = async (req, res, next) => {
+  try {
+    const { nombre, idRolActual } = req.body;
+    const nombreExiste = await rolService.verificarNombreUnicoRol(nombre, idRolActual ? Number(idRolActual) : null);
+    if (nombreExiste) {
+      return res.status(409).json({
+        success: false,
+        message: "El nombre del rol ya está en uso.",
+        field: "nombre",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "El nombre del rol está disponible.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  crearRol,
+  listarRoles,
+  obtenerRolPorId,
+  actualizarRol,
+  anularRol,
+  habilitarRol,
+  eliminarRolFisico,
+  asignarPermisosARol,
+  quitarPermisosDeRol,
+  listarPermisosDeRol,
+  cambiarEstadoRol,
+  verificarNombreUnicoRolController, // Exportar
 };

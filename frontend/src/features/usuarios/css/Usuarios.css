@@ -69,6 +69,24 @@
   .usuarios-botonAgregar:hover {
     background-color: #6d0b58;
   }
+
+  .usuarios-filtros {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* flex-grow: 1; Quitado para que no empuje tanto al botón de agregar si hay espacio */
+    justify-content: flex-start; /* Alinea el contenido a la izquierda */
+  }
+
+  .usuarios-switch-label {
+    font-size: 0.9rem;
+    color: var(--color-text-dark, #333);
+    margin-right: 5px;
+  }
+
+  .usuarios-switch-control .switch { /* Si necesitas anidar para especificidad */
+    /* Estilos específicos para el switch dentro de este contexto si es necesario */
+  }
   
   /* === ESTILOS PARA LA TABLA DE USUARIOS === */
   .usuarios-table {
@@ -421,10 +439,19 @@
     .usuarios-accionesTop {
       flex-direction: column;
       gap: 15px;
+      align-items: stretch; /* Para que los hijos tomen el ancho */
     }
     .usuarios-barraBusqueda,
-    .usuarios-botonAgregar {
+    .usuarios-botonAgregar,
+    .usuarios-filtros { /* Contenedor de filtros toma el ancho */
       width: 100%;
+      max-width: 100%;
+      min-width: 0; /* Reset min-width */
+    }
+
+    .usuarios-filtros {
+      justify-content: space-between; /* Label a la izq, switch a la der */
+      padding: 5px 0;
     }
   
     /* Tabla Responsiva (ya estaba bien definida) */

@@ -39,10 +39,21 @@ export const calculateRemainingLifetime = (abastecimientoEntry) => {
 };
 
 // Obtiene todos los registros de abastecimiento.
-const getAbastecimientos = async () => {
+const getAbastecimientos = async (params = {}) => {
   try {
-    const response = await apiClient.get("/abastecimientos");
-    return response.data?.data || [];
+    const queryParams = new URLSearchParams();
+    if (params.busqueda) {
+      queryParams.append('busqueda', params.busqueda);
+    }
+    if (params.estado !== undefined) {
+      queryParams.append('estado', params.estado);
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/abastecimientos?${queryString}` : '/abastecimientos';
+
+    const response = await apiClient.get(url);
+    return response.data?.data || []; // Asumiendo que la API devuelve { data: [...] }
   } catch (error) {
     throw error.response?.data ||
       new Error("Error al obtener los registros de abastecimiento.");

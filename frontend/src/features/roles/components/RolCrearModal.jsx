@@ -1,6 +1,7 @@
 // src/features/roles/components/RolCrearModal.jsx
 import React, { useState, useEffect } from 'react';
 import RolForm from './RolForm';
+import { verificarNombreRolAPI } from '../services/rolesService'; // Importar
 
 const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
 
@@ -28,31 +29,62 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
     }
   };
 
+  const handleFieldBlur = async (name, value) => {
+    if (name === 'nombre') {
+      if (!value?.trim()) {
+        setFormErrors(prev => ({ ...prev, nombre: "El nombre del rol es obligatorio." }));
+        return;
+      }
+      try {
+        await verificarNombreRolAPI(value, null); // null para idRolActual en creación
+        setFormErrors(prev => ({ ...prev, nombre: "" }));
+      } catch (error) {
+        if (error && error.field === "nombre") {
+          setFormErrors(prev => ({ ...prev, nombre: error.message }));
+        } else {
+          setFormErrors(prev => ({ ...prev, nombre: "Error al verificar nombre." }));
+        }
+      }
+    }
+  };
+
+  const isFormCompletelyValid = () => {
+    return Object.values(formErrors).every(errorMsg => !errorMsg) &&
+           (formData.idPermisos && formData.idPermisos.length > 0); // Asegurar que haya permisos
+  };
+
   const handleToggleModulo = (permisoId) => {
     setFormData(prev => {
         const idPermisosActuales = prev.idPermisos || [];
         const idPermisosNuevos = idPermisosActuales.includes(permisoId)
             ? idPermisosActuales.filter(id => id !== permisoId)
             : [...idPermisosActuales, permisoId];
+        // Limpiar error de permisos si se selecciona alguno
+        if (idPermisosNuevos.length > 0 && formErrors.permisos) {
+            setFormErrors(prevErr => ({ ...prevErr, permisos: '' }));
+        }
         return { ...prev, idPermisos: idPermisosNuevos };
     });
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
+  const validateForm = () => { // Solo para validaciones onSubmit que no son onBlur
+    const errors = { ...formErrors };
+    if (!formData.nombre.trim() && !errors.nombre) {
       errors.nombre = "El nombre del rol es obligatorio.";
     }
     if (!formData.idPermisos || formData.idPermisos.length === 0) {
       errors.permisos = "Debe seleccionar al menos un permiso.";
+    } else {
+      // Si hay permisos, pero había un error, lo limpiamos
+      if(errors.permisos) errors.permisos = "";
     }
     setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    return Object.values(errors).every(errorMsg => !errorMsg);
   };
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm() || !isFormCompletelyValid()) return;
     onSubmit(formData);
   };
 
@@ -66,16 +98,17 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
           <RolForm
             formData={formData}
             onFormChange={handleFormChange}
-            permisosDisponibles={permisosDisponibles} // Para el resumen de seleccionados
-            permisosAgrupados={permisosAgrupados}   // Para el selector de permisos
+            permisosDisponibles={permisosDisponibles}
+            permisosAgrupados={permisosAgrupados}
             onToggleModulo={handleToggleModulo}
             isEditing={false}
             isRoleAdmin={false}
             formErrors={formErrors}
+            onFieldBlur={handleFieldBlur} // Pasar la nueva prop
           />
           {formErrors.permisos && <p className="rol-error-permisos">{formErrors.permisos}</p>}
           <div className="rol-form-actions">
-            <button type="submit" className="rol-form-buttonGuardar">
+            <button type="submit" className="rol-form-buttonGuardar" disabled={!isFormCompletelyValid()}>
               Crear Rol
             </button>
             <button type="button" className="rol-form-buttonCancelar" onClick={onClose}>

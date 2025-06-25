@@ -64,6 +64,7 @@
   justify-content: center;
   gap: 8px;
   margin-bottom: 15px;
+  flex-wrap: wrap; /* Añadido para mejor manejo en pantallas pequeñas si hay muchos botones */
 }
 
 /* Estilo base para los botones de período de tiempo. */
