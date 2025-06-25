@@ -1,14 +1,16 @@
-// src/components/CategoriaServicioFormModal.jsx
 import React, { useState, useEffect } from 'react';
 
-const CategoriaServicioFormModal = ({ isOpen, onClose, onSubmit, isEditMode, initialData }) => {
-  const [formData, setFormData] = useState({
-    nombre: '',
-    descripcion: '',
-    estado: true,
-  });
-  const [error, setError] = useState('');
+const INITIAL_FORM_STATE = {
+  nombre: '',
+  descripcion: '',
+  estado: true
+};
+
+const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
+  const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -16,102 +18,135 @@ const CategoriaServicioFormModal = ({ isOpen, onClose, onSubmit, isEditMode, ini
         setFormData({
           nombre: initialData.nombre || '',
           descripcion: initialData.descripcion || '',
-          estado: initialData.estado ?? true,
+          estado: initialData.estado,
         });
       } else {
-        setFormData({
-          nombre: '',
-          descripcion: '',
-          estado: true, // Siempre se crea como 'true' (Activo)
-        });
+        setFormData(INITIAL_FORM_STATE);
       }
-      setError('');
+      setErrors({});
+      setApiError('');
     }
   }, [isOpen, isEditMode, initialData]);
 
+  // --- CAMBIO CLAVE 1: Lógica de validación dentro de handleChange ---
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
+    if (name === 'nombre') {
+      let error = '';
+      if (/\s/.test(value)) {
+        error = 'El nombre no puede contener espacios.';
+      }
+      else if (/[^a-zA-Z0-9]/.test(value)) {
+        error = 'Solo se permiten letras y números.';
+      }
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        nombre: error
+      }));
+    }
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
+  const validateForm = () => {
+    const newErrors = { ...errors };
+    const nombreTrimmed = formData.nombre;
+
+    if (!nombreTrimmed) {
+      newErrors.nombre = 'El nombre es obligatorio.';
+    } else if (nombreTrimmed.length < 3) {
+      newErrors.nombre = 'El nombre debe tener al menos 3 caracteres.';
+    }
+    if (formData.descripcion.trim().length > 255) {
+      newErrors.descripcion = 'La descripción no puede exceder los 255 caracteres.';
+    } else {
+      if ('descripcion' in newErrors) delete newErrors.descripcion;
+    }
+
+    setErrors(newErrors);
+    return Object.values(newErrors).every(error => !error);
+  };
+  
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    if (name === 'nombre' && !errors.nombre && formData.nombre.length > 0 && formData.nombre.length < 3) {
+         setErrors(prev => ({ ...prev, nombre: 'Debe tener al menos 3 caracteres.' }));
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    if (!formData.nombre.trim()) {
-      setError("El nombre es obligatorio.");
+    setApiError('');
+
+    if (!validateForm()) {
+      console.log("Validación final falló, envío detenido.");
       return;
     }
+
     setLoading(true);
     try {
-      // Al enviar, el objeto 'formData' todavía contiene el 'estado' correcto.
-      await onSubmit(formData);
+      const datosAEnviar = {
+        ...formData,
+      };
+      
+      await onSubmit(datosAEnviar);
       onClose();
     } catch (err) {
-      setError(err?.response?.data?.message || 'Error al guardar la categoría.');
+      const errorMessage = err.response?.data?.message || err.message || 'Ocurrió un error al guardar.';
+      setApiError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   if (!isOpen) return null;
+  const isFormInvalid = Object.values(errors).some(error => !!error) || !formData.nombre;
 
   return (
     <div className="modal-Categoria">
       <div className="modal-content-Categoria formulario">
-        <h3>{isEditMode ? 'Editar Categoría' : 'Agregar Nueva Categoría'}</h3>
-
-        <form className="modal-Categoria-form-grid" onSubmit={handleSubmit}>
+        <button type="button" className="modal-close-button" onClick={onClose} title="Cerrar">&times;</button>
+        <h3>{isEditMode ? 'Editar Categoría de Servicio' : 'Nueva Categoría'}</h3>
+        
+        <form onSubmit={handleSubmit} noValidate>
           <div className="camposAgregarCategoria">
-            <label htmlFor="nombre">
-              Nombre <span className="requiredCategoria">*</span>
-            </label>
+            <label htmlFor="nombre">Nombre <span className="requiredCategoria">*</span></label>
             <input
+              type="text"
               id="nombre"
               name="nombre"
-              className="campoAgregarCategoria"
-              type="text"
+              className={`campoAgregarCategoria ${errors.nombre ? 'input-error' : ''}`}
               value={formData.nombre}
               onChange={handleChange}
-              placeholder="Ingrese el nombre de la categoría"
-              required
+              onBlur={handleBlur}
               disabled={loading}
+              required
+              autoComplete="off"
+              placeholder="Ej: LimpiezaHogar"
             />
+            {errors.nombre && <div className="error">{errors.nombre}</div>}
           </div>
+
           <div className="camposAgregarCategoria">
             <label htmlFor="descripcion">Descripción</label>
             <textarea
               id="descripcion"
               name="descripcion"
-              className="campoAgregarCategoria"
+              className={`campoAgregarCategoria ${errors.descripcion ? 'input-error' : ''}`}
               value={formData.descripcion}
               onChange={handleChange}
-              placeholder="Ingrese una descripción (opcional)"
-              rows="3"
+              rows="4"
               disabled={loading}
-            />
+            ></textarea>
+            {errors.descripcion && <div className="error">{errors.descripcion}</div>}
           </div>
           
-          {/* SE HA ELIMINADO EL CAMPO 'ESTADO' DE LA VISTA */}
-          
-          {error && <div className="error">{error}</div>}
+          {apiError && <p className="error" style={{textAlign: 'center', width: '100%'}}>{apiError}</p>}
 
           <div className="containerBotonesAgregarCategoria">
-            <button
-              type="submit"
-              className="botonEditarCategoria"
-              disabled={loading}
-            >
-              {loading ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Agregar')}
+            <button type="submit" className="botonEditarCategoria" disabled={loading || isFormInvalid}>
+              {loading ? 'Guardando...' : 'Guardar'}
             </button>
-            <button
-              type="button"
-              className="botonCancelarEditarProveedor"
-              onClick={onClose}
-              disabled={loading}
-            >
+            <button type="button" className="botonEliminarCategoria" onClick={onClose} disabled={loading}>
               Cancelar
             </button>
           </div>
@@ -121,4 +156,4 @@ const CategoriaServicioFormModal = ({ isOpen, onClose, onSubmit, isEditMode, ini
   );
 };
 
-export default CategoriaServicioFormModal;
+export default CategoriaForm;

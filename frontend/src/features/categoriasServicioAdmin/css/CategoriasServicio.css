@@ -1,97 +1,111 @@
-/* src/features/categoriasServicioAdmin/css/CategoriasServicio.css */
-
+:root {
+--color-background-admin-content: #f5f5f5;
+--color-primary-darker: #6d0b58;
+--color-admin-hover: #b660a3;
+--color-border-light: #c287b5;
+--color-background-light: #fff;
+--color-text-dark: #333;
+--color-admin-primary-lighter: #e978d0;
+--color-admin-primary-border: #e978d0;
+--color-table-row-even: #f8eaf5;
+--color-table-row-hover: #f3d9ec;
+--color-admin-action-edit: #fc8de4;
+--color-admin-action-edit-hover: #d66abf;
+--color-admin-action-delete: #b660a3;
+--color-admin-action-delete-hover: #6d0b58;
+--color-danger: red;
+}
 /* Contenedor general de la página */
+
 .Categoria-container {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background-color: var(--color-background-admin-content, #f5f5f5);
+  background-color: var(--color-background-admin-content);
   font-family: 'Roboto', sans-serif;
 }
-
-/* Contenido principal (área de tabla y controles) */
 .Categoria-content {
   flex: 1;
   padding: 30px;
-  margin-left: 270px; /* Ajustado para NavbarAdmin (ancho 250px + 20px margen) */
+  margin-left: 270px; /* Para el menú lateral en escritorio */
   overflow-y: auto;
   box-sizing: border-box;
 }
 
-/* Wrapper interno para centrar el contenido principal */
 .categorias-servicio-content-wrapper {
-  width: 100%;
-  max-width: 1200px; /* Ancho máximo para el contenido */
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+ width: 100%;
+ max-width: 1200px;
+ margin-left: auto;
+ margin-right: auto;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+
 }
 
 .Categoria-content h1 {
-  text-align: center;
-  color: var(--color-primary-darker, #6d0b58);
-  margin-top: 0;
-  margin-bottom: 25px;
-  font-size: 1.8rem;
+ text-align: center;
+ color: var(--color-primary-darker);
+ margin-top: 0;
+ margin-bottom: 25px;
+ font-size: 1.8rem;
 }
 
-/* Barra de búsqueda y botón agregar */
 .ContainerBotonAgregarCategoria {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-  gap: 20px;
-  flex-wrap: wrap;
-  width: 100%; /* Ocupa el ancho del wrapper */
-  box-sizing: border-box;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 25px;
+ gap: 20px;
+ flex-wrap: wrap;
+ width: 100%;
+ box-sizing: border-box;
 }
 
 .BusquedaBotonCategoria {
-  flex-grow: 1;
-  display: flex;
+ flex-grow: 1;
+ display: flex;
 }
 
 .BusquedaBotonCategoria input {
-  padding: 10px 12px;
-  width: 100%;
-  min-width: 250px;
-  border: 1px solid var(--color-border-light, #c287b5);
-  border-radius: 5px;
-  background-color: var(--color-background-light, #fff);
-  color: var(--color-text-dark, #333);
-  font-size: 1rem;
-  box-sizing: border-box;
+ padding: 10px 12px;
+ width: 100%;
+ min-width: 250px;
+ border: 1px solid var(--color-border-light);
+ border-radius: 5px;
+ background-color: var(--color-background-light);
+ color: var(--color-text-dark);
+ font-size: 1rem;
+ box-sizing: border-box;
 }
+
 .BusquedaBotonCategoria input:focus {
-  border-color: var(--color-admin-hover, #b660a3);
-  box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
-  outline: none;
+ border-color: var(--color-admin-hover);
+ box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+ outline: none;
 }
 
 .botonAgregarCategoria {
-  background-color: var(--color-admin-hover, #b660a3);
-  color: var(--color-text-light, white);
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 1rem;
-  font-weight: 500;
-  flex-shrink: 0;
-  height: 41px;
-  box-sizing: border-box;
-}
-.botonAgregarCategoria:hover {
-  background-color: var(--color-primary-darker, #6d0b58);
+ background-color: var(--color-admin-hover);
+ color: white;
+ padding: 10px 20px;
+ border: none;
+ border-radius: 5px;
+ cursor: pointer;
+ transition: background-color 0.3s ease;
+ font-size: 1rem;
+ font-weight: 500;
+ flex-shrink: 0;
+ height: 41px;
+ box-sizing: border-box;
 }
 
-/* Tabla de Categorías de Servicio */
+.botonAgregarCategoria:hover {
+ background-color: var(--color-primary-darker);
+}
+
 .tablaCategoria {
-  width: 100%; 
+  width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -102,273 +116,316 @@
 }
 
 .tablaCategoria th {
-  background-color: var(--color-admin-primary-lighter, #e978d0);
-  color: var(--color-text-dark, black);
-  font-weight: 600;
-  text-align: center;
-  padding: 12px 15px;
-  font-size: 1rem;
-  border: 1px solid var(--color-admin-primary-border, #e978d0);
+ background-color: var(--color-admin-primary-lighter);
+ color: var(--color-text-dark);
+ font-weight: 600;
+ text-align: center;
+ padding: 12px 15px;
+ font-size: 1rem;
+ border: 1px solid var(--color-admin-primary-border);
 }
+
 .tablaCategoria td {
-  border: 1px solid var(--color-admin-primary-border, #e978d0);
-  text-align: left;
-  padding: 12px 15px;
-  vertical-align: middle;
-  font-size: 0.95rem;
-  color: var(--color-text-dark, #333);
+ border: 1px solid var(--color-admin-primary-border);
+ text-align: left;
+ padding: 12px 15px;
+ vertical-align: middle;
+ font-size: 0.95rem;
+ color: var(--color-text-dark);
 }
-.tablaCategoria td:nth-child(3), /* Estado */
-.tablaCategoria td:nth-child(4)  /* Acciones */
-{ text-align: center; }
+
+.tablaCategoria td:nth-child(1), .tablaCategoria td:nth-child(4), .tablaCategoria td:nth-child(5) {
+ text-align: center;
+}
 
 .tablaCategoria tbody tr:nth-child(even) {
-  background-color: var(--color-table-row-even, #f8eaf5);
-}
-.tablaCategoria tbody tr:hover {
-  background-color: var(--color-table-row-hover, #f3d9ec);
+ background-color: var(--color-table-row-even);
 }
 
-/* Switch de estado */
+.tablaCategoria tbody tr:hover {
+ background-color: var(--color-table-row-hover);
+}
+
 .switch { position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;}
+
 .switch input { opacity: 0; width: 0; height: 0; }
+
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+
 .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: #2ecc71; } /* Verde para activo */
+
+input:checked + .slider { background-color: #2ecc71; }
+
 input:checked + .slider:before { transform: translateX(16px); }
 
-
-/* Botones de acción en la tabla */
-.categorias-servicio-actions { /* Clase para el td de acciones */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
+.categorias-servicio-actions {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ gap: 8px;
+ flex-wrap: wrap;
 }
+
 .categorias-servicio-actions button {
-  padding: 8px 10px;
-  font-size: 0.9rem;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  display: inline-flex;
+ padding: 6px 10px;
+ font-size: 0.85rem;
+ border: none;
+ border-radius: 5px;
+ color: white;
+ cursor: pointer;
+ transition: background-color 0.3s ease;
+}
+
+.botonEditarCategoria, .botonVerDetallesCategoria { 
+  background-color: var(--color-admin-action-edit); 
+}
+
+.botonEditarCategoria, .botonVerDetallesCategoria:hover { 
+  background-color: var(--color-admin-action-edit-hover); 
+}
+
+.botonEliminarCategoria { 
+  background-color: var(--color-admin-action-delete); 
+}
+
+.botonEliminarCategoria:hover { 
+  background-color: var(--color-admin-action-delete-hover); 
+}
+
+.modal-Categoria {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
   align-items: center;
   justify-content: center;
-}
-.categorias-servicio-actions .botonVerDetallesCategoria { background-color: var(--color-admin-action-view, #fc8de4); }
-.categorias-servicio-actions .botonVerDetallesCategoria:hover { background-color: var(--color-admin-action-view-hover, #d66abf); }
-.categorias-servicio-actions .botonEditarCategoria { background-color: var(--color-admin-action-edit, #fc8de4); }
-.categorias-servicio-actions .botonEditarCategoria:hover { background-color: var(--color-admin-action-edit-hover, #d66abf); }
-.categorias-servicio-actions .botonEliminarCategoria { background-color: var(--color-admin-action-delete, #b660a3); }
-.categorias-servicio-actions .botonEliminarCategoria:hover { background-color: var(--color-admin-action-delete-hover, #6d0b58); }
-
-
-/* === ESTILOS PARA MODALES (Overlay y Contenido Base) === */
-.modal-Categoria { /* Overlay */
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); 
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1050; padding: 20px; box-sizing: border-box;
+  z-index: 1050;
+  padding: 15px; /* Añadimos un padding general para que el modal no toque los bordes en móvil */
+  box-sizing: border-box;
 }
 
-.modal-content-Categoria { /* Contenido del modal base */
-  background-color: var(--color-background-light, #fff);
+/* REFINADO: Unificamos los estilos del contenido del modal */
+.modal-content-Categoria {
+  background-color: var(--color-background-light);
   padding: 25px 30px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.25);
   width: 100%;
-  max-width: 500px; /* Default para detalles */
-  max-height: 90vh; overflow-y: auto;
+  max-width: 550px; /* El max-width se mantiene para ESCRITORIO */
+  max-height: 90vh; /* Buena práctica para evitar que el modal sea más alto que la pantalla */
+  overflow-y: auto;
   box-sizing: border-box;
-  text-align: left; 
+  text-align: left;
+  position: relative; /* Necesario para posicionar el botón de cierre */
 }
 
-.modal-content-Categoria.formulario { /* Para el modal de formulario */
-  max-width: 550px; /* Un poco más ancho para formularios */
+.modal-content-Categoria.formulario { 
+  max-width: 550px; 
 }
 
-.modal-content-Categoria h3 { /* Título del modal */
-  text-align: center;
-  color: var(--color-primary-darker, #6d0b58);
-  margin-top: 0;
-  margin-bottom: 25px;
-  font-size: 1.6rem;
+.modal-content-Categoria h3 {
+ text-align: center;
+ color: var(--color-primary-darker);
+ margin-top: 0;
+ margin-bottom: 25px;
+ font-size: 1.6rem;
+
 }
 
-/* === ESTILOS PARA MODAL DE DETALLES (CategoriaServicioDetalleModal) === */
-/* No se necesita .detalle si usamos .modal-content-Categoria para el detalle */
-.modal-content-Categoria p { 
-  margin-bottom: 12px; 
-  line-height: 1.6;
-  color: var(--color-text-dark, #333);
-  font-size: 1rem;
-}
-.modal-content-Categoria p strong { 
-  color: var(--color-primary-darker, #6d0b58);
-  margin-right: 8px;
-  font-weight: 600;
-  min-width: 100px; 
-  display: inline-block; 
-}
-.modal-content-Categoria .btn-danger { /* Botón "Cerrar" del modal de detalle */
-  background-color: var(--color-admin-hover, #b660a3); 
-  color: white;
-  display: block; width: auto; min-width: 120px;
-  margin: 25px auto 0; 
-  padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
-  font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
-}
-.modal-content-Categoria .btn-danger:hover {
-  background-color: var(--color-primary-darker, #6d0b58);
+.modal-body-content {
+ margin: 20px 0;
+ line-height: 1.6;
 }
 
-/* === ESTILOS PARA MODAL DE FORMULARIO (CategoriaServicioFormModal) === */
-.modal-Categoria-form-grid { /* Clase de tu <form> */
-  display: flex;
-  flex-direction: column; 
-  gap: 18px; 
+.modal-body-content p {
+ margin: 0 0 10px;
 }
 
-.camposAgregarCategoria { /* Tu grupo de label + input */
-  display: flex;
-  flex-direction: column; 
-  gap: 8px; 
+.modal-content-Categoria.detalle .detalle-item {
+ margin-bottom: 15px;
 }
 
-.camposAgregarCategoria label,
-label.asteriscoCampoObligatorioCategoria { 
-  font-weight: 600;
-  color: var(--color-primary-darker, #6d0b58);
-  font-size: 0.95rem; 
-  text-align: left; 
+.modal-content-Categoria.detalle .detalle-item strong {
+ display: block;
+ font-weight: 600;
+ color: var(--color-primary-darker);
+ font-size: 0.9rem;
+ margin-bottom: 4px;
 }
 
-.campoAgregarCategoria, /* Tu clase para inputs/textareas */
-.modal-content-Categoria.formulario textarea { /* Aplicar también a textareas si es necesario */
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--color-border-light, #c287b5);
-  border-radius: 5px;
-  font-size: 1rem;
-  box-sizing: border-box;
-  background-color: var(--color-background-input, #fff);
-  color: var(--color-text-dark, #333);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.campoAgregarCategoria:focus,
-.modal-content-Categoria.formulario textarea:focus {
-  border-color: var(--color-admin-hover, #b660a3);
-  box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
-  outline: none;
-}
-.modal-content-Categoria.formulario textarea.campoAgregarCategoria { /* Específico para textarea */
-  min-height: 80px;
-  resize: vertical;
+.modal-content-Categoria.detalle .detalle-item p {
+ margin: 0;
+ font-size: 1rem;
 }
 
-/* Asterisco requerido */
-.requiredCategoria { /* Tu clase para asterisco */
-  color: red;
-  margin-left: 2px;
+.estado-label {
+ padding: 3px 8px;
+ border-radius: 4px;
+ color: white;
+ font-size: 0.9rem;
+ font-weight: bold;
 }
 
-/* Contenedor de botones de acción del formulario */
-.containerBotonesAgregarCategoria {
-  display: flex;
-  justify-content: center; 
-  gap: 15px;
-  margin-top: 25px;
-  padding-top: 20px;
-  border-top: 1px solid var(--color-border-light, #eee);
-  width: 100%;
+.estado-label.activo { background-color: #28a745; }
+
+.estado-label.inactivo { background-color: #6c757d; }
+
+.modal-Categoria-form-grid { display: flex; flex-direction: column; gap: 18px; }
+
+.camposAgregarCategoria { display: flex; flex-direction: column; gap: 8px; }
+
+.camposAgregarCategoria label {
+ font-weight: 600; color: var(--color-primary-darker);
+ font-size: 0.95rem; text-align: left;
 }
 
-/* Estilos para los botones específicos del formulario de CategoriaServicio */
-.containerBotonesAgregarCategoria .botonGuardarEditarProveedor, /* Asumo que renombrarás esta clase */
-.containerBotonesAgregarCategoria .botonEditarCategoria { /* Tu botón Guardar */
-  background-color: var(--color-admin-hover, #b660a3);
-  color: white;
-  padding: 10px 20px; font-size: 1rem; font-weight: 500;
-  border: none; border-radius: 5px; cursor: pointer;
-  transition: background-color 0.3s ease; min-width: 120px; text-align: center;
-}
-.containerBotonesAgregarCategoria .botonGuardarEditarProveedor:hover,
-.containerBotonesAgregarCategoria .botonEditarCategoria:hover {
-  background-color: var(--color-primary-darker, #6d0b58);
+.campoAgregarCategoria {
+ width: 100%; padding: 10px 12px;
+ border: 1px solid var(--color-border-light);
+ border-radius: 5px; font-size: 1rem; box-sizing: border-box;
+ color: var(--color-text-dark);
+ transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.containerBotonesAgregarCategoria .botonCancelarEditarProveedor { /* Tu botón Cancelar */
-  background-color: #95a5a6; 
-  color: white;
-  padding: 10px 20px; font-size: 1rem; font-weight: 500;
-  border: none; border-radius: 5px; cursor: pointer;
-  transition: background-color 0.3s ease; min-width: 120px; text-align: center;
-}
-.containerBotonesAgregarCategoria .botonCancelarEditarProveedor:hover {
-  background-color: #7f8c8d;
+.campoAgregarCategoria:focus {
+ border-color: var(--color-admin-hover);
+ box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+ outline: none;
 }
 
-/* Error messages en formulario */
+textarea.campoAgregarCategoria { min-height: 80px; resize: vertical; }
+
+.requiredCategoria { color: var(--color-danger); margin-left: 2px; }
+
+.input-error { 
+  border-color: var(--color-danger) !important; 
+  background-color: #fff0f0; 
+}
+
 .error { 
-  color: var(--color-danger, red);
-  font-size: 0.85rem;
-  margin-top: 5px;
+  color: var(--color-danger); 
+  font-size: 0.85rem; margin-top: 5px; 
+}
+.containerBotonesAgregarCategoria {
+ display: flex; justify-content: center; gap: 15px;
+ margin-top: 25px; padding-top: 20px;
+ border-top: 1px solid #eee;
+ width: 100%;
 }
 
-
+.containerBotonesAgregarCategoria button {
+ padding: 10px 20px; font-size: 1rem; font-weight: 500;
+ border: none; border-radius: 5px; cursor: pointer;
+ transition: background-color 0.3s ease; text-align: center;
+  min-width: 120px;
+}
 /* === ESTILOS RESPONSIVOS === */
+
+@media (max-width: 992px) {
+  /* Ocultamos el menú lateral y el contenido ocupa todo el ancho */
+  .Categoria-content {
+    margin-left: 0;
+  }
+}
+
 @media (max-width: 768px) {
-.Categoria-content {
-  margin-left: 0; 
-  padding: 15px;
-}
-.categorias-servicio-content-wrapper {
-  padding: 0; /* El padding ya está en .Categoria-content */
-}
-.ContainerBotonAgregarCategoria { /* La barra de búsqueda y botón agregar */
-  flex-direction: column;
-  gap: 15px;
-}
-.BusquedaBotonCategoria input,
-.botonAgregarCategoria {
-  width: 100%;
-}
+  .Categoria-content {
+    padding: 15px; /* Reducimos el padding en pantallas pequeñas */
+  }
 
-.tablaCategoria thead { display: none; }
-.tablaCategoria, .tablaCategoria tbody, .tablaCategoria tr, .tablaCategoria td {
-    display: block; width: 100%;
-}
-.tablaCategoria tr {
-    margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0); border-radius: 8px;
-    padding: 10px; background-color: var(--color-background-light, #ffffff); box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.tablaCategoria td {
-    text-align: right; padding-left: 50% !important; 
-    position: relative; border: none; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem;
-}
-.tablaCategoria td:last-child { border-bottom: none; }
-.tablaCategoria td::before {
-    content: attr(data-label); position: absolute; left: 10px;
-    width: calc(50% - 20px); padding-right: 10px; white-space: nowrap;
-    font-weight: bold; color: var(--color-primary-darker, #6d0b58); text-align: left;
-}
-/* Específico para la celda de acciones en móvil */
-.tablaCategoria td.categorias-servicio-actions { text-align: center; padding-left: 0 !important; }
-.tablaCategoria td.categorias-servicio-actions::before { content: ""; } /* Ocultar data-label para acciones */
-.categorias-servicio-actions { justify-content: center; padding-top: 8px; }
+  .categorias-servicio-content-wrapper {
+    padding: 0;
+  }
 
-.modal-content-Categoria, 
-.modal-content-Categoria.formulario,
-.modal-content-Categoria.detalle {
-    max-width: 95%; padding: 20px;
-}
-.containerBotonesAgregarCategoria { /* Botones del form modal */
+  /* Apila el buscador y el botón de agregar */
+  .ContainerBotonAgregarCategoria {
     flex-direction: column;
-}
-.containerBotonesAgregarCategoria .botonEditarCategoria,
-.containerBotonesAgregarCategoria .botonCancelarEditarProveedor {
+    gap: 15px;
+  }
+
+  .BusquedaBotonCategoria input, .botonAgregarCategoria {
     width: 100%;
+  }
+
+  /* --- AJUSTES RESPONSIVOS PARA LA TABLA --- */
+
+  .tablaCategoria thead {
+    display: none; /* Correcto, ocultamos los encabezados */
+  }
+
+  .tablaCategoria, .tablaCategoria tbody, .tablaCategoria tr, .tablaCategoria td {
+    display: block;
+    width: 100%;
+  }
+
+  .tablaCategoria tr {
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-admin-primary-border);
+    border-radius: 8px;
+    padding: 0.5rem; /* Un padding interno para que el contenido no pegue al borde */
+  }
+
+  /* REFINADO: Usamos Flexbox para hacer las celdas más flexibles */
+  .tablaCategoria td {
+    display: flex; /* Convertimos la celda en un contenedor flex */
+    justify-content: space-between; /* El label a un lado, el valor al otro */
+    align-items: center;
+    text-align: right; /* El texto del valor se alinea a la derecha */
+    padding: 0.75rem 0.5rem !important; /* Ajustamos padding. Quitamos el padding-left de 50% */
+    position: relative;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .tablaCategoria td:last-child {
+    border-bottom: none;
+  }
+
+  .tablaCategoria td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: var(--color-primary-darker);
+    text-align: left;
+    margin-right: 1rem; /* Añadimos un margen para separar el label del valor */
+    /* Ya no necesitamos position:absolute, width, etc. Flexbox lo maneja */
+  }
+
+.tablaCategoria td.no-data-cell {
+  display: block;
+  justify-content: center; /* Lo centramos horizontalmente */
+  text-align: center;      /* Aseguramos que el texto esté centrado */
+  padding: 2rem 1rem !important;
 }
+
+/* También nos aseguramos que no se muestre un "label" fantasma para esta celda */
+.tablaCategoria td.no-data-cell::before {
+  display: none;
+}
+  
+  .modal-content-Categoria {
+    width: 95vw; 
+  }
+}
+
+/* Estilos para el botón 'X' */
+.modal-close-button {
+  position: absolute;
+  top: 15px; /* Distancia desde la parte superior */
+  right: 20px; /* Distancia desde la derecha */
+  background: none;
+  border: none;
+  font-size: 2rem; /* Tamaño del ícono '×' */
+  font-weight: 300;
+  line-height: 1; /* Asegura que no tenga altura extra */
+  color: #888; /* Un color gris sutil */
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.modal-close-button:hover {
+  color: #000; /* Se oscurece al pasar el ratón por encima */
 }

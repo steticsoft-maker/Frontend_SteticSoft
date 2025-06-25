@@ -1,7 +1,5 @@
 // Ubicación: src/features/categoriasServicioAdmin/pages/ListaCategoriasServicioPage.jsx
-import React, { useState, useEffect, useCallback } from 'react';
-
-// --- Componentes hijos ---
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import CategoriasTabla from '../components/CategoriasServicioTable';
 import CategoriaForm from '../components/CategoriaServicioForm.jsx';
 import CategoriaServicioDetalleModal from '../components/CategoriaServicioDetalleModal';
@@ -9,8 +7,6 @@ import ConfirmModal from '../components/confirmModal';
 
 // --- Estilos ---
 import '../css/CategoriasServicio.css';
-
-// --- Servicios de la API ---
 import {
   getCategoriasServicio,
   createCategoriaServicio,
@@ -22,21 +18,21 @@ import {
 const ListaCategoriasServicioPage = () => {
   // --- Estados del componente ---
   const [categorias, setCategorias] = useState([]);
-  const [filtroCategorias, setFiltroCategorias] = useState([]);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('todos');
+
   const [loading, setLoading] = useState(true);
   const [loadingId, setLoadingId] = useState(null);
   const [error, setError] = useState('');
 
-  // --- Estados para los modales ---
+  // --- Estados para los modales (sin cambios) ---
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // AÑADIDO: Estado para el modal de confirmación
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [categoriaActual, setCategoriaActual] = useState(null);
-  const [categoriaParaEliminar, setCategoriaParaEliminar] = useState(null); // AÑADIDO: Estado para guardar la categoría a eliminar
 
-  // --- Lógica de carga de datos ---
+  // --- Lógica de carga de datos (pequeño ajuste en el catch) ---
   const cargarCategorias = useCallback(async () => {
     setLoading(true);
     setError('');
@@ -44,11 +40,9 @@ const ListaCategoriasServicioPage = () => {
       const response = await getCategoriasServicio();
       const data = response?.data?.data || response?.data || [];
       setCategorias(data);
-      setFiltroCategorias(data);
     } catch (err) {
       setError(err?.response?.data?.message || 'Error al cargar categorías.');
       setCategorias([]);
-      setFiltroCategorias([]);
     } finally {
       setLoading(false);
     }
@@ -58,15 +52,25 @@ const ListaCategoriasServicioPage = () => {
     cargarCategorias();
   }, [cargarCategorias]);
 
-  // --- Lógica de búsqueda ---
-  useEffect(() => {
-    const resultados = categorias.filter(cat =>
-      cat.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase())
-    );
-    setFiltroCategorias(resultados);
-  }, [terminoBusqueda, categorias]);
+  const categoriasFiltradas = useMemo(() => {
+    let dataFiltrada = [...categorias];
 
-  // --- Manejadores de Acciones ---
+    if (filtroEstado !== 'todos') {
+      const esActivo = filtroEstado === 'activos';
+      dataFiltrada = dataFiltrada.filter(cat => cat.estado === esActivo);
+    }
+
+    if (terminoBusqueda.trim() !== '') {
+      const busquedaLower = terminoBusqueda.toLowerCase();
+      dataFiltrada = dataFiltrada.filter(cat =>
+        cat.nombre.toLowerCase().includes(busquedaLower) ||
+        (cat.descripcion && cat.descripcion.toLowerCase().includes(busquedaLower))
+      );
+    }
+    
+    return dataFiltrada;
+  }, [categorias, terminoBusqueda, filtroEstado]); 
+  // --- Manejadores de Acciones (sin cambios, pero he limpiado el de submit) ---
   const handleAbrirCrearModal = () => {
     setIsEditMode(false);
     setCategoriaActual(null);
@@ -85,49 +89,41 @@ const ListaCategoriasServicioPage = () => {
   };
 
   const handleFormSubmit = async (formData) => {
-    setError('');
     try {
-      if (isEditMode && categoriaActual) {
+      if (isEditMode) {
         await updateCategoriaServicio(categoriaActual.idCategoriaServicio, formData);
       } else {
         await createCategoriaServicio(formData);
       }
       setIsFormModalOpen(false);
       cargarCategorias();
-    } catch (apiError) {
-      console.error("Error en submit de formulario:", apiError);
-      throw apiError;
+    } catch (err) {
+      throw err;
     }
   };
 
-  // CAMBIADO: Esta función ahora solo abre el modal de confirmación
   const handleEliminarCategoria = (categoria) => {
-    setCategoriaParaEliminar(categoria); // Guarda la categoría que el usuario quiere eliminar
-    setIsConfirmModalOpen(true);         // Abre el modal de confirmación
+    setCategoriaActual(categoria);
+    setIsConfirmModalOpen(true);
   };
 
-  // AÑADIDO: Esta nueva función ejecuta la eliminación real después de la confirmación
   const handleConfirmarEliminacion = async () => {
-    if (!categoriaParaEliminar) return;
-
-    setLoadingId(categoriaParaEliminar.idCategoriaServicio);
-    setError('');
-    
+    if (!categoriaActual) return;
+    setLoadingId(categoriaActual.idCategoriaServicio);
     try {
-      await deleteCategoriaServicio(categoriaParaEliminar.idCategoriaServicio);
-      cargarCategorias(); // Recarga la lista si la eliminación fue exitosa
+      await deleteCategoriaServicio(categoriaActual.idCategoriaServicio);
+      cargarCategorias();
     } catch (err) {
       setError(err?.response?.data?.message || 'Error al eliminar la categoría.');
     } finally {
       setLoadingId(null);
-      setIsConfirmModalOpen(false); // Cierra el modal en cualquier caso
-      setCategoriaParaEliminar(null); // Limpia el estado
+      setIsConfirmModalOpen(false);
+      setCategoriaActual(null);
     }
   };
-
+  
   const handleCambiarEstadoCategoria = async (categoria) => {
     setLoadingId(categoria.idCategoriaServicio);
-    setError('');
     try {
       await cambiarEstadoCategoriaServicio(categoria.idCategoriaServicio, !categoria.estado);
       cargarCategorias();
@@ -138,7 +134,6 @@ const ListaCategoriasServicioPage = () => {
     }
   };
 
-  // --- Renderizado del Componente ---
   return (
     <div className="Categoria-content">
       <div className="categorias-servicio-content-wrapper">
@@ -148,11 +143,21 @@ const ListaCategoriasServicioPage = () => {
           <div className="BusquedaBotonCategoria">
             <input
               type="text"
-              placeholder="Buscar por nombre..."
+              placeholder="Buscar por nombre o descripción..."
               value={terminoBusqueda}
               onChange={(e) => setTerminoBusqueda(e.target.value)}
             />
           </div>
+          {}
+          <select
+            className="filtro-estado-select"
+            value={filtroEstado}
+            onChange={(e) => setFiltroEstado(e.target.value)}
+          >
+            <option value="todos">Todos los estados</option>
+            <option value="activos">Activos</option>
+            <option value="inactivos">Inactivos</option>
+          </select>
           <button className="botonAgregarCategoria" onClick={handleAbrirCrearModal}>
             Agregar Nueva Categoría
           </button>
@@ -164,9 +169,9 @@ const ListaCategoriasServicioPage = () => {
           <p>Cargando categorías...</p>
         ) : (
           <CategoriasTabla
-            categorias={filtroCategorias}
+            categorias={categoriasFiltradas}
             onEditar={handleAbrirEditarModal}
-            onEliminar={handleEliminarCategoria} // Se pasa la función que abre el modal
+            onEliminar={handleEliminarCategoria}
             onCambiarEstado={handleCambiarEstadoCategoria}
             onVerDetalles={handleVerDetalles}
             loadingId={loadingId}
@@ -174,7 +179,7 @@ const ListaCategoriasServicioPage = () => {
         )}
       </div>
 
-      {/* Renderizado de Modales */}
+      {}
       <CategoriaForm
         isOpen={isFormModalOpen}
         onClose={() => setIsFormModalOpen(false)}
@@ -182,25 +187,21 @@ const ListaCategoriasServicioPage = () => {
         initialData={categoriaActual}
         isEditMode={isEditMode}
       />
-
       <CategoriaServicioDetalleModal
         open={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
         categoria={categoriaActual}
       />
-
-      {/* AÑADIDO: Renderizado del modal de confirmación */}
       <ConfirmModal
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleConfirmarEliminacion}
         title="Confirmar Eliminación"
-        confirmText="Sí, Eliminar"
         isConfirming={loadingId !== null}
       >
         <p>
           ¿Estás seguro de que deseas eliminar la categoría
-          <strong> "{categoriaParaEliminar?.nombre}"</strong>?
+          <strong> "{categoriaActual?.nombre}"</strong>?
         </p>
         <p style={{color: 'red', fontSize: '0.9rem'}}>Esta acción no se puede deshacer.</p>
       </ConfirmModal>
