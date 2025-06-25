@@ -5,17 +5,15 @@ const RequiredAsterisk = () => <span style={{ color: "red", marginLeft: "2px" }}
 
 const UsuarioForm = ({
   formData,
-  onFormChange,
+  onInputChange, // Nuevo prop
+  onInputBlur,   // Nuevo prop
   availableRoles,
   isEditing,
   isUserAdmin,
-  formErrors
+  formErrors,
+  isVerifyingEmail // Nuevo prop
 }) => {
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    onFormChange(name, type === 'checkbox' ? checked : value);
-  };
-
+  // handleChange se reemplaza por onInputChange y onInputBlur pasados como props
   const errors = formErrors || {};
 
   // Determina si el rol seleccionado requiere campos de perfil
@@ -33,11 +31,13 @@ const UsuarioForm = ({
           name="correo"
           placeholder="ejemplo@correo.com"
           value={formData.correo || ""}
-          onChange={handleChange}
+          onChange={onInputChange}
+          onBlur={onInputBlur}
           required
           className={`usuarios-form-input ${errors.correo ? 'input-error' : ''}`}
-          disabled={isUserAdmin && isEditing} // El correo del admin no debería poder cambiarse desde aquí
+          disabled={(isUserAdmin && isEditing) || isVerifyingEmail}
         />
+        {isVerifyingEmail && <span className="verifying-email-message">Verificando correo...</span>}
         {errors.correo && <span className="error-message">{errors.correo}</span>}
       </div>
 
@@ -47,10 +47,11 @@ const UsuarioForm = ({
           id="idRol"
           name="idRol"
           value={formData.idRol || ""}
-          onChange={handleChange}
+          onChange={onInputChange}
+          onBlur={onInputBlur} // Puede ser útil si la selección de rol afecta otros campos o validaciones
           required
           className={`usuarios-form-select ${errors.idRol ? 'input-error' : ''}`}
-          disabled={isUserAdmin && isEditing} // El rol del admin no debería poder cambiarse desde aquí
+          disabled={isUserAdmin && isEditing}
         >
           <option value="" disabled>Seleccionar rol</option>
           {availableRoles.map((rol) => (
@@ -66,13 +67,13 @@ const UsuarioForm = ({
         <>
           <div className="usuarios-form-grid-item">
             <label htmlFor="contrasena" className="usuarios-form-label">Contraseña <RequiredAsterisk /></label>
-            <input type="password" id="contrasena" name="contrasena" placeholder="Mínimo 8 caracteres" value={formData.contrasena || ""} onChange={handleChange} required className={`usuarios-form-input ${errors.contrasena ? 'input-error' : ''}`} />
+            <input type="password" id="contrasena" name="contrasena" placeholder="Mínimo 8 caracteres" value={formData.contrasena || ""} onChange={onInputChange} onBlur={onInputBlur} required className={`usuarios-form-input ${errors.contrasena ? 'input-error' : ''}`} />
             {errors.contrasena && <span className="error-message">{errors.contrasena}</span>}
           </div>
 
           <div className="usuarios-form-grid-item">
             <label htmlFor="confirmarContrasena" className="usuarios-form-label">Confirmar Contraseña <RequiredAsterisk /></label>
-            <input type="password" id="confirmarContrasena" name="confirmarContrasena" placeholder="Repetir contraseña" value={formData.confirmarContrasena || ""} onChange={handleChange} required className={`usuarios-form-input ${errors.confirmarContrasena ? 'input-error' : ''}`} />
+            <input type="password" id="confirmarContrasena" name="confirmarContrasena" placeholder="Repetir contraseña" value={formData.confirmarContrasena || ""} onChange={onInputChange} onBlur={onInputBlur} required className={`usuarios-form-input ${errors.confirmarContrasena ? 'input-error' : ''}`} />
             {errors.confirmarContrasena && <span className="error-message">{errors.confirmarContrasena}</span>}
           </div>
         </>
@@ -88,19 +89,19 @@ const UsuarioForm = ({
 
           <div className="usuarios-form-grid-item">
             <label htmlFor="nombre" className="usuarios-form-label">Nombres <RequiredAsterisk /></label>
-            <input type="text" id="nombre" name="nombre" placeholder="Nombres del usuario" value={formData.nombre || ""} onChange={handleChange} required className={`usuarios-form-input ${errors.nombre ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
+            <input type="text" id="nombre" name="nombre" placeholder="Nombres del usuario" value={formData.nombre || ""} onChange={onInputChange} onBlur={onInputBlur} required className={`usuarios-form-input ${errors.nombre ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
             {errors.nombre && <span className="error-message">{errors.nombre}</span>}
           </div>
 
           <div className="usuarios-form-grid-item">
             <label htmlFor="apellido" className="usuarios-form-label">Apellidos <RequiredAsterisk /></label>
-            <input type="text" id="apellido" name="apellido" placeholder="Apellidos del usuario" value={formData.apellido || ""} onChange={handleChange} required className={`usuarios-form-input ${errors.apellido ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
+            <input type="text" id="apellido" name="apellido" placeholder="Apellidos del usuario" value={formData.apellido || ""} onChange={onInputChange} onBlur={onInputBlur} required className={`usuarios-form-input ${errors.apellido ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
             {errors.apellido && <span className="error-message">{errors.apellido}</span>}
           </div>
 
           <div className="usuarios-form-grid-item">
             <label htmlFor="tipoDocumento" className="usuarios-form-label">Tipo de Documento <RequiredAsterisk /></label>
-            <select id="tipoDocumento" name="tipoDocumento" value={formData.tipoDocumento || ""} onChange={handleChange} required className={`usuarios-form-select ${errors.tipoDocumento ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing}>
+            <select id="tipoDocumento" name="tipoDocumento" value={formData.tipoDocumento || ""} onChange={onInputChange} onBlur={onInputBlur} required className={`usuarios-form-select ${errors.tipoDocumento ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing}>
               <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
               <option value="Cédula de Extranjería">Cédula de Extranjería</option>
               <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
@@ -111,19 +112,19 @@ const UsuarioForm = ({
 
           <div className="usuarios-form-grid-item">
             <label htmlFor="numeroDocumento" className="usuarios-form-label">Número de Documento <RequiredAsterisk /></label>
-            <input type="text" id="numeroDocumento" name="numeroDocumento" placeholder="Número de documento" value={formData.numeroDocumento || ""} onChange={handleChange} required className={`usuarios-form-input ${errors.numeroDocumento ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
+            <input type="text" id="numeroDocumento" name="numeroDocumento" placeholder="Número de documento" value={formData.numeroDocumento || ""} onChange={onInputChange} onBlur={onInputBlur} required className={`usuarios-form-input ${errors.numeroDocumento ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
             {errors.numeroDocumento && <span className="error-message">{errors.numeroDocumento}</span>}
           </div>
           
            <div className="usuarios-form-grid-item">
             <label htmlFor="telefono" className="usuarios-form-label">Teléfono <RequiredAsterisk /></label>
-            <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" value={formData.telefono || ""} onChange={handleChange} required className={`usuarios-form-input ${errors.telefono ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
+            <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" value={formData.telefono || ""} onChange={onInputChange} onBlur={onInputBlur} required className={`usuarios-form-input ${errors.telefono ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
             {errors.telefono && <span className="error-message">{errors.telefono}</span>}
           </div>
 
           <div className="usuarios-form-grid-item">
             <label htmlFor="fechaNacimiento" className="usuarios-form-label">Fecha de Nacimiento <RequiredAsterisk /></label>
-            <input type="date" id="fechaNacimiento" name="fechaNacimiento" value={formData.fechaNacimiento || ""} onChange={handleChange} required className={`usuarios-form-input ${errors.fechaNacimiento ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
+            <input type="date" id="fechaNacimiento" name="fechaNacimiento" value={formData.fechaNacimiento || ""} onChange={onInputChange} onBlur={onInputBlur} required className={`usuarios-form-input ${errors.fechaNacimiento ? 'input-error' : ''}`} disabled={isUserAdmin && isEditing} />
             {errors.fechaNacimiento && <span className="error-message">{errors.fechaNacimiento}</span>}
           </div>
         </>
@@ -134,7 +135,7 @@ const UsuarioForm = ({
         <div className="usuarios-form-grid-item usuarios-form-group-estado">
           <label htmlFor="estado" className="usuarios-form-label">Estado (Activo):</label>
           <label className="switch">
-            <input type="checkbox" id="estado" name="estado" checked={formData.estado} onChange={handleChange} />
+            <input type="checkbox" id="estado" name="estado" checked={formData.estado || false} onChange={onInputChange} />
             <span className="slider"></span>
           </label>
         </div>

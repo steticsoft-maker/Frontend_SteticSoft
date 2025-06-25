@@ -1,0 +1,68 @@
+/* frontend/src/features/roles/css/RolesTableExtensions.css */
+.permisos-cell {
+  text-align: left; /* Alinea los íconos a la izquierda en la celda de la tabla desktop */
+  white-space: nowrap; /* Evita que los íconos se envuelvan prematuramente en la vista de tabla */
+}
+
+.permission-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px; /* Espacio horizontal entre íconos */
+  margin-bottom: 5px; /* Espacio vertical si se envuelven (para vista de tarjeta) */
+  padding: 2px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  vertical-align: middle; /* Asegura que los íconos se alineen bien con cualquier texto adyacente */
+}
+
+.permission-icon-wrapper:last-child {
+  margin-right: 0;
+}
+
+.permission-icon-wrapper:hover,
+.permission-icon-wrapper:focus { /* Añadir foco para accesibilidad */
+  background-color: #e9ecef; /* Un color de fondo suave de Bootstrap */
+  outline: none; /* Quitar el outline por defecto si se maneja el foco de otra forma */
+}
+
+/* Ajustes para la vista de tarjeta en móviles */
+/* Estos estilos se aplican DENTRO de la media query de Rol.css donde se transforma la tabla */
+/* No es necesario repetir la media query aquí si Rol.css ya la tiene y esta hoja se importa después o tiene mayor especificidad. */
+/* Sin embargo, para mantenerlo autocontenido, podemos añadirlo. */
+
+/* Se asume que en Rol.css, para .rol-table td en móviles, text-align es 'right' y padding-left es 50% */
+/* Por lo tanto, necesitamos un contenedor dentro de la celda para alinear los íconos a la izquierda o como se desee. */
+
+.rol-table td[data-label="Permisos por Módulo:"] {
+  /* El text-align: right y padding-left: 50% de la celda padre en Rol.css para móviles
+     hace que el contenido se empuje a la derecha.
+     Si queremos los íconos a la izquierda dentro de la "tarjeta",
+     necesitaríamos un div interno o ajustar el text-align aquí.
+     Por ahora, se mostrarán a la derecha del label.
+  */
+}
+
+.rol-table td[data-label="Permisos por Módulo:"] .permission-icon-wrapper {
+  /* En la vista de tarjeta, los íconos fluirán. El margin-bottom ya ayuda. */
+  /* Si se quiere que estén todos a la derecha de la tarjeta: */
+  /* float: right; /* o usar flexbox en un div contenedor */
+  /* margin-left: 8px; */
+  /* margin-right: 0; */
+}
+
+/* Para el tooltip dentro de la celda de permisos en vista de tarjeta */
+.rol-table td[data-label="Permisos por Módulo:"] .tooltip-wrapper {
+    /* Asegurar que el tooltip se posicione correctamente */
+}
+
+.rol-table td[data-label="Permisos por Módulo:"] .tooltip-content ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+.rol-table td[data-label="Permisos por Módulo:"] .tooltip-content li {
+    padding: 2px 0;
+    font-size: 0.8rem;
+}
