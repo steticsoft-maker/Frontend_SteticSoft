@@ -1,79 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react'; // Removidos useState, useEffect
 import UsuarioForm from './UsuarioForm';
 
-// 1. Aceptamos 'availableRoles' y 'isLoading' desde las props
-const UsuarioCrearModal = ({ isOpen, onClose, onSubmit, availableRoles, isLoading }) => {
-  const getInitialFormState = () => ({
-    nombre: '',
-    apellido: '',
-    correo: '',
-    contrasena: '',
-    confirmarContrasena: '',
-    telefono: '',
-    tipoDocumento: 'Cédula de Ciudadanía',
-    numeroDocumento: '',
-    idRol: '',
-    estado: true,
-    fechaNacimiento: '',
-  });
+const UsuarioCrearModal = ({
+  isOpen,
+  onClose,
+  // onSubmit de useUsuarios ya no necesita formData como argumento
+  // porque el hook ya gestiona formData internamente.
+  onSubmit, // Esta será handleSaveUsuario del hook
+  availableRoles,
+  isLoading, // Este es isSubmitting del hook
+  // Props del hook useUsuarios para el formulario
+  formData,
+  formErrors,
+  isFormValid,
+  isVerifyingEmail,
+  handleInputChange, // Para el onChange del UsuarioForm
+  handleInputBlur   // Para el onBlur del UsuarioForm
+}) => {
 
-  const [formData, setFormData] = useState(getInitialFormState());
-  const [formErrors, setFormErrors] = useState({});
+  // Ya no se necesita estado local para formData, formErrors, ni funciones de validación.
+  // El useEffect para resetear el form al abrir ya no es necesario aquí,
+  // el hook useUsuarios resetea formData y formErrors en handleOpenModal y closeModal.
 
-  // 2. Eliminamos el useEffect que llamaba a getRolesAPI. Ya no es necesario.
-  useEffect(() => {
-    // Reseteamos el formulario cada vez que el modal se abre.
-    if (isOpen) {
-      setFormData(getInitialFormState());
-      setFormErrors({});
-    }
-  }, [isOpen]);
-
-  const handleFormChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    const emailRegex = /\S+@\S+\.\S+/;
-
-    if (!formData.idRol) errors.idRol = "Debe seleccionar un rol.";
-    if (!formData.correo?.trim()) {
-      errors.correo = "El correo es obligatorio.";
-    } else if (!emailRegex.test(formData.correo)) {
-      errors.correo = "El formato del correo no es válido.";
-    }
-    if (!formData.contrasena) {
-      errors.contrasena = "La contraseña es obligatoria.";
-    } else if (formData.contrasena.length < 8) {
-      errors.contrasena = "La contraseña debe tener al menos 8 caracteres.";
-    }
-    if (formData.contrasena !== formData.confirmarContrasena) {
-      errors.confirmarContrasena = "Las contraseñas no coinciden.";
-    }
-    
-    // Validar campos de perfil si el rol lo requiere
-    const selectedRole = availableRoles.find(rol => rol.idRol === parseInt(formData.idRol));
-    if (selectedRole && (selectedRole.nombre === 'Cliente' || selectedRole.nombre === 'Empleado')) {
-        if (!formData.nombre?.trim()) errors.nombre = "El nombre es obligatorio.";
-        if (!formData.apellido?.trim()) errors.apellido = "El apellido es obligatorio.";
-        if (!formData.tipoDocumento) errors.tipoDocumento = "El tipo de documento es obligatorio.";
-        if (!formData.numeroDocumento?.trim()) errors.numeroDocumento = "El número de documento es obligatorio.";
-        if (!formData.telefono?.trim()) errors.telefono = "El teléfono es obligatorio.";
-        if (!formData.fechaNacimiento) errors.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
-    }
-    
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmitForm = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-    onSubmit(formData);
+    // La validación ahora está centralizada en useUsuarios y se verifica antes de llamar a onSubmit
+    // El botón de submit se deshabilita si !isFormValid
+    // Aquí simplemente llamamos a la función de guardado del hook.
+    onSubmit();
   };
 
   if (!isOpen) return null;
@@ -82,21 +36,35 @@ const UsuarioCrearModal = ({ isOpen, onClose, onSubmit, availableRoles, isLoadin
     <div className="usuarios-modalOverlay">
       <div className="usuarios-modalContent usuarios-modalContent-form">
         <h2>Crear Nuevo Usuario</h2>
-        <form onSubmit={handleSubmitForm}>
+        <form onSubmit={handleSubmit}>
           <UsuarioForm
             formData={formData}
-            onFormChange={handleFormChange}
-            availableRoles={availableRoles} // 3. Usamos la prop que viene de la página.
+            // onFormChange se reemplaza por handleInputChange y handleInputBlur
+            onInputChange={handleInputChange} // Nuevo prop esperado por UsuarioForm
+            onInputBlur={handleInputBlur}   // Nuevo prop esperado por UsuarioForm
+            availableRoles={availableRoles}
             isEditing={false}
-            isUserAdmin={false}
+            isUserAdmin={false} // En creación, nunca es el admin protegido
             formErrors={formErrors}
+            isVerifyingEmail={isVerifyingEmail} // Para mostrar feedback en el campo de correo
           />
-          {formErrors._general && <p className="auth-form-error" style={{textAlign: 'center'}}>{formErrors._general}</p>}
+          {/* El manejo de errores generales (_general) podría moverse al hook o mantenerse aquí si es específico del modal */}
+          {/* {formErrors._general && <p className="auth-form-error" style={{textAlign: 'center'}}>{formErrors._general}</p>} */}
+
           <div className="usuarios-form-actions">
-            <button type="submit" className="usuarios-form-buttonGuardar" disabled={isLoading}>
+            <button
+              type="submit"
+              className="usuarios-form-buttonGuardar"
+              disabled={!isFormValid || isLoading || isVerifyingEmail}
+            >
               {isLoading ? 'Creando...' : 'Crear Usuario'}
             </button>
-            <button type="button" className="usuarios-form-buttonCancelar" onClick={onClose} disabled={isLoading}>
+            <button
+              type="button"
+              className="usuarios-form-buttonCancelar"
+              onClick={onClose}
+              disabled={isLoading}
+            >
               Cancelar
             </button>
           </div>

@@ -45,6 +45,23 @@
     box-sizing: border-box;
 }
 
+.rol-filtro-estado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rol-filtro-estado select {
+    padding: 8px 10px;
+    border: 1px solid #c287b5;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    background-color: white;
+    color: #333;
+    min-width: 120px; /* Ancho mínimo */
+}
+
+
 /* Barra de búsqueda */
 .rol-barraBusqueda {
     padding: 10px 15px;
@@ -673,7 +690,7 @@ input:checked+.slider:before {
 @media (max-width: 768px) {
     .rol-content {
         padding: 15px;
-        margin-left: 0;
+        margin-left: 0; /* Ya está en 0, lo cual es correcto. */
         max-width: 100%;
     }
 
@@ -682,10 +699,16 @@ input:checked+.slider:before {
         gap: 15px;
     }
 
+    .rol-filtro-estado, /* Aplicar a la nueva sección de filtro */
     .rol-barraBusqueda {
         max-width: 100%;
+        width: 100%; /* Asegurar que ocupen todo el ancho */
         margin-right: 0;
     }
+    .rol-filtro-estado select{
+        width: 100%; /* El select dentro del div también ocupa todo el ancho */
+    }
+
 
     .rol-botonAgregar {
         width: 100%;
@@ -693,9 +716,69 @@ input:checked+.slider:before {
 
     .rol-table th,
     .rol-table td {
-        padding: 10px 8px;
+        padding: 10px 8px; /* Este padding se ajustará para el modo tarjeta */
         font-size: 0.8rem;
     }
+
+    /* --- Inicio: Estilos para transformar tabla a tarjetas en móviles --- */
+    .rol-table thead {
+        display: none; /* Ocultar encabezados de tabla en móviles */
+    }
+
+    .rol-table tr {
+        display: block;
+        margin-bottom: 15px; /* Espacio entre tarjetas */
+        border: 1px solid #e978d0; /* Borde para cada tarjeta */
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background-color: #fff; /* Fondo blanco para las tarjetas */
+    }
+
+    .rol-table td {
+        display: block;
+        text-align: right; /* Alinear el contenido de la celda a la derecha */
+        padding-left: 50%; /* Espacio para el label */
+        position: relative;
+        border-bottom: 1px dotted #f3d9ec; /* Separador visual entre campos */
+        padding-top: 12px; /* Ajuste de padding vertical */
+        padding-bottom: 12px; /* Ajuste de padding vertical */
+    }
+
+    .rol-table td:last-child {
+        border-bottom: none; /* Sin borde inferior para el último campo */
+    }
+
+    .rol-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px; /* Padding izquierdo del label */
+        width: calc(50% - 20px); /* Ancho del label, ajustado por padding */
+        padding-right: 10px; /* Espacio entre label y valor */
+        white-space: nowrap;
+        text-align: left; /* Alinear el texto del label a la izquierda */
+        font-weight: bold;
+        color: #6d0b58; /* Color del label */
+        font-size: 0.8rem; /* Ajustar tamaño de fuente del label si es necesario */
+    }
+
+    /* Ajustes para la celda de acciones */
+    .rol-table td[data-label="Acciones"] {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .rol-table td[data-label="Acciones"] .rol-table-iconos {
+        justify-content: flex-end; /* Alinear iconos a la derecha */
+        padding-right: 10px; /* Espacio a la derecha de los iconos */
+    }
+
+    /* Ajustar el switch para que se vea bien en el formato de tarjeta */
+    .rol-table td[data-label="Estado"] .switch {
+        /* El switch ya tiene position relative/absolute, se alinea con el text-align: right de la celda */
+        /* Podríamos añadir un margin si es necesario, ej. margin-top: -2px; para alinear mejor verticalmente */
+         margin-right: 10px; /* Para que no pegue tanto al borde */
+    }
+    /* --- Fin: Estilos para transformar tabla a tarjetas en móviles --- */
 
     .rol-table-iconos {
         flex-direction: row;
