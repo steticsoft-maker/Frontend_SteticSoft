@@ -88,16 +88,17 @@ function ListaProveedoresPage() {
     }
   };
 
-  const handleDelete = async () => {
+const handleDelete = async () => {
     if (currentProveedor?.idProveedor) {
+      setIsConfirmDeleteOpen(false);
       try {
         await proveedoresService.deleteProveedor(currentProveedor.idProveedor);
         setValidationMessage("Proveedor eliminado exitosamente.");
         await cargarProveedores();
       } catch (err) {
-        setValidationMessage(err.response?.data?.message || "Error al eliminar. Es posible que esté asociado a una compra.");
+        const errorMessage = err.response?.data?.message || "Ocurrió un error inesperado al intentar eliminar.";
+        setValidationMessage(errorMessage);
       } finally {
-        closeModal();
         setIsValidationModalOpen(true);
       }
     }
