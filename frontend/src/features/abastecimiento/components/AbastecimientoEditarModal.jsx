@@ -52,6 +52,9 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
   return (
     <div className="modal-abastecimiento-overlay">
       <div className="modal-abastecimiento-content formulario-modal">
+        <button type="button" className="modal-close-button-x" onClick={onClose}>
+          &times;
+        </button>
         <h2 className="abastecimiento-modal-title">
           Editar Cantidad de Abastecimiento
         </h2>

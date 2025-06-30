@@ -45,6 +45,9 @@ const UsuarioEditarModal = ({
   return (
     <div className="usuarios-modalOverlay">
       <div className="usuarios-modalContent usuarios-modalContent-form">
+        <button type="button" className="modal-close-button-x" onClick={onClose}>
+          &times;
+        </button>
         <h2>Editar Usuario</h2>
         {isUserAdminProtected && (
           <p className="usuarios-admin-protected-message">

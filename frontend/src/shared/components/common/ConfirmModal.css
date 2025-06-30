@@ -104,3 +104,25 @@
 .confirm-modal-content .shared-modal-button-cancel:hover {
     background-color: #b660a3; /* Hover morado (o el que prefieras, podría ser un rosa más oscuro) */
 }
+
+/* Estilo para el botón de cierre 'X' en la esquina del modal */
+.modal-close-button-x {
+  position: absolute;
+  top: 10px;        /* Ajustar según el padding del .shared-modal-content */
+  right: 15px;       /* Ajustar según el padding del .shared-modal-content */
+  background: transparent;
+  border: none;
+  font-size: 1.8rem; /* Tamaño de la 'X' */
+  font-weight: bold;
+  color: #888;     /* Color grisáceo discreto */
+  cursor: pointer;
+  padding: 0 5px;   /* Pequeño padding para facilitar el clic */
+  line-height: 1;   /* Para alinear bien la 'X' verticalmente */
+  text-shadow: 0 1px 0 #fff; /* Sombra de texto ligera para contraste si el fondo es oscuro */
+}
+
+.modal-close-button-x:hover,
+.modal-close-button-x:focus {
+  color: #333;     /* Color más oscuro al hacer hover/focus */
+  outline: none;    /* Quitar outline por defecto */
+}
