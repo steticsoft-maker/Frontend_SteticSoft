@@ -370,29 +370,40 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    width: 100vw; /* Actualizado */
+    height: 100vh; /* Actualizado */
+    background-color: rgba(0, 0, 0, 0.7); /* Actualizado */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow-y: auto;
+    align-items: center; /* Mantener/Asegurar */
+    justify-content: center; /* Mantener/Asegurar */
+    z-index: 9999; /* Actualizado */
+    /* padding, box-sizing, overflow-y eliminados según especificación */
   }
   
   .modal-abastecimiento-content {
-    background: var(--color-background-light, #fff);
-    padding: 25px 30px;
-    border-radius: 10px;
-    width: 100%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-    max-height: 90vh;
-    overflow-y: auto;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+    position: relative; /* Añadido */
+    background: var(--color-background-light, #fff); /* 'white' en especificación, mantenemos variable por ahora */
+    padding: 25px 30px; /* '30px' en especificación, mantenemos actual por ahora */
+    border-radius: 10px; /* '8px' en especificación, mantenemos actual por ahora */
+    width: 100%; /* Mantenido, aunque no en especificación explícita */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25); /* Mantenido, buena práctica */
+    max-height: 90vh; /* Mantenido, buena práctica */
+    overflow-y: auto; /* Mantenido, buena práctica */
+    box-sizing: border-box; /* Mantenido, buena práctica */
+    display: flex; /* Mantenido */
+    flex-direction: column; /* Mantenido */
+  }
+
+  /* Estilos para el botón de cierre X, usando la clase del JSX */
+  .modal-close-button-x {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10000; /* Asegura que esté sobre el contenido del modal */
   }
   
   .modal-abastecimiento-content.detalle-modal {
