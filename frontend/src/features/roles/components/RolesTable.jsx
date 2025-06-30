@@ -107,7 +107,7 @@ const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) 
                       </div>
                     );
                     return (
-                      <Tooltip key={moduloNombre} content={tooltipContent} position="top">
+                      <Tooltip key={moduloKey} content={tooltipContent} position="top">
                         <span className="permission-icon-wrapper" tabIndex={0}>
                           <IconComponent size="1.5em" className="rol-permission-table-icon" />
                         </span>
