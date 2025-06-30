@@ -1,6 +1,6 @@
 // src/features/abastecimiento/components/AbastecimientoDetailsModal.jsx
 import React from "react";
-import ReactDOM from 'react-dom'; // Importar ReactDOM
+// import ReactDOM from 'react-dom'; // ELIMINADO
 import { calculateRemainingLifetime } from "../services/abastecimientoService";
 
 const AbastecimientoDetailsModal = ({ isOpen, onClose, item }) => {
@@ -8,11 +8,8 @@ const AbastecimientoDetailsModal = ({ isOpen, onClose, item }) => {
     return null;
   }
 
-  if (!isOpen || !item) {
-    return null;
-  }
-
-  const modalContent = (
+  // INICIO DE MODIFICACIÓN: Se retorna el JSX directamente sin el portal.
+  return (
     <div className="modal-abastecimiento-overlay">
       <div className="modal-abastecimiento-content detalle-modal">
         <button type="button" className="modal-close-button-x" onClick={onClose}>
@@ -75,11 +72,7 @@ const AbastecimientoDetailsModal = ({ isOpen, onClose, item }) => {
       </div>
     </div>
   );
-
-  return ReactDOM.createPortal(
-    modalContent,
-    document.body
-  );
+  // FIN DE MODIFICACIÓN
 };
 
 export default AbastecimientoDetailsModal;

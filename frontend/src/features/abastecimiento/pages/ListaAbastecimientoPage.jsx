@@ -1,5 +1,5 @@
 // src/features/abastecimiento/pages/ListaAbastecimientoPage.jsx
-import React from "react"; // Removidos useState, useEffect, useCallback, useMemo
+import React from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import AbastecimientoTable from "../components/AbastecimientoTable";
 import AbastecimientoCrearModal from "../components/AbastecimientoCrearModal";
@@ -8,13 +8,12 @@ import AbastecimientoDetailsModal from "../components/AbastecimientoDetailsModal
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import DepleteProductModal from "../components/DepleteProductModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
-import useAbastecimiento from "../hooks/useAbastecimiento"; // Importar el custom hook
+import useAbastecimiento from "../hooks/useAbastecimiento";
 import "../css/Abastecimiento.css";
-// El import de abastecimientoService ya no es necesario aquí
 
 function ListaAbastecimientoPage() {
   const {
-    entries, // Ya filtradas si la lógica está en el hook
+    entries,
     isLoading,
     isSubmitting,
     error,
@@ -26,15 +25,10 @@ function ListaAbastecimientoPage() {
     isDepleteModalOpen,
     isValidationModalOpen,
     validationMessage,
-    inputValue, // Cambiado de searchTerm
-    setInputValue, // Cambiado de setSearchTerm
+    inputValue,
+    setInputValue,
     filterEstado,
     setFilterEstado,
-    // Paginación si se añade:
-    // currentPage,
-    // itemsPerPage,
-    // totalFilteredEntries,
-    // paginate,
     closeModal,
     handleOpenModal,
     handleSubmitForm,
@@ -42,9 +36,12 @@ function ListaAbastecimientoPage() {
     handleDepleteConfirmed,
   } = useAbastecimiento();
 
+  // INICIO DE MODIFICACIÓN: Estructura del JSX corregida.
   return (
     <div className="abastecimiento-page-container">
       <NavbarAdmin />
+      
+      {/* Contenedor principal del contenido de la página */}
       <div className="abastecimiento-main-content">
         <div className="abastecimiento-content-wrapper">
           <h1>Gestión de Abastecimiento ({entries.length})</h1>
@@ -52,7 +49,7 @@ function ListaAbastecimientoPage() {
             <div className="abastecimiento-search-bar">
               <input
                 type="text"
-                placeholder="Buscar por producto, categoría, empleado, fecha o cantidad..."
+                placeholder="Buscar por producto, categoría, empleado..."
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 disabled={isLoading}
@@ -81,17 +78,20 @@ function ListaAbastecimientoPage() {
             <p className="error-message" style={{ textAlign: 'center', marginTop: '20px' }}>{error}</p>
           ) : (
             <AbastecimientoTable
-              entries={entries} // entries ya está procesado (filtrado) por el hook
+              entries={entries}
               onView={(entry) => handleOpenModal("details", entry)}
               onEdit={(entry) => handleOpenModal("edit", entry)}
               onDelete={(entry) => handleOpenModal("delete", entry)}
               onDeplete={(entry) => handleOpenModal("deplete", entry)}
             />
           )}
-          {/* Paginación si se implementa */}
         </div>
       </div>
-
+      
+      {/* Los modales ahora son hermanos de .abastecimiento-main-content */}
+      {/* y ya no usan Portals, por lo que su posicionamiento será relativo 
+          al viewport gracias a la clase .modal-abastecimiento-overlay */}
+      
       <AbastecimientoCrearModal
         isOpen={isCrearModalOpen}
         onClose={closeModal}
@@ -109,7 +109,6 @@ function ListaAbastecimientoPage() {
         isOpen={isDetailsModalOpen}
         onClose={closeModal}
         item={currentEntry}
-        // isLoading={isSubmitting} // Podría usarse si la carga de detalles es asíncrona en handleOpenModal
       />
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
@@ -138,6 +137,7 @@ function ListaAbastecimientoPage() {
       />
     </div>
   );
+  // FIN DE MODIFICACIÓN
 }
 
 export default ListaAbastecimientoPage;

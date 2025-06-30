@@ -324,12 +324,61 @@
     font-size: 0.75rem;
   }
 
-  /* Ajustes para modales si es necesario */
-  .modal-abastecimiento-content {
-    width: 95%;
-    max-width: 95%;
-    padding: 20px 15px;
+    .modal-abastecimiento-content {
+      background: var(--color-background-light, #fff);
+      padding: 25px 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 600px;
+      /* Ancho máximo para el formulario */
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+  
+      /* --- CÓDIGO AÑADIDO (Paso 1) --- */
+      /* Convierte este div en el marco de referencia para el posicionamiento
+         de sus elementos hijos que usen "position: absolute". */
+      position: relative; }
+
+      .modal-close-button-x {
+    position: absolute;   /* Se posiciona relativo al primer padre con "position: relative". */
+  top: 15px;            /* 15px desde la parte superior del contenedor. */
+  right: 20px;          /* 20px desde la parte derecha del contenedor. */
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #aaa;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  z-index: 10;          /* Asegura que esté por encima de otros elementos del modal. */
   }
+
+  .modal-close-button-x:hover {
+  color: #333;
+  }
+
+  .modal-close-button-x {
+    position: absolute;   /* Se posiciona relativo al primer padre con "position: relative". */
+    top: 15px;            /* 15px desde la parte superior del contenedor. */
+    right: 20px;          /* 20px desde la parte derecha del contenedor. */
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    z-index: 10;          /* Asegura que esté por encima de otros elementos del modal. */
+  }
+  
+  .modal-close-button-x:hover {
+    color: #333;
+  }
+
   .modal-abastecimiento-content.formulario-modal {
     max-width: 95%; /* Formularios también ocupan más en móvil */
   }

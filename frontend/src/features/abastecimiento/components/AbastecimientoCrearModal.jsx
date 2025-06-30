@@ -1,6 +1,6 @@
 // src/features/abastecimiento/components/AbastecimientoCrearModal.jsx
 import React, { useState, useEffect, useCallback } from "react";
-import ReactDOM from 'react-dom'; // Importar ReactDOM
+// import ReactDOM from 'react-dom'; // ELIMINADO: Ya no se necesita el portal.
 import AbastecimientoForm from "./AbastecimientoForm";
 import ItemSelectionModal from "../../../shared/components/common/ItemSelectionModal";
 import { abastecimientoService } from "../services/abastecimientoService";
@@ -61,8 +61,9 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   };
 
   if (!isOpen) return null;
-
-  const modalContent = (
+  
+  // INICIO DE MODIFICACIÓN: Se retorna el JSX directamente sin el portal.
+  return (
     <>
       <div className="modal-abastecimiento-overlay">
         <div className="modal-abastecimiento-content formulario-modal">
@@ -87,8 +88,8 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
               onSelectEmployee={() => setShowEmployeeSelectModal(true)}
               isEditing={false}
               formErrors={formErrors}
-              categorias={[]} // No se usa en creación
-              onCategoryChange={() => {}} // No se usa en creación
+              categorias={[]} 
+              onCategoryChange={() => {}}
             />
             <div className="form-actions-abastecimiento">
               <button
@@ -111,17 +112,6 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
         </div>
       </div>
 
-      {/* ItemSelectionModal también es un modal. Si sufre el mismo problema, necesitará un Portal.
-          Por ahora, el requerimiento es solo para los modales principales de Abastecimiento.
-          Si ItemSelectionModal se renderiza *dentro* de AbastecimientoCrearModal ANTES del portal,
-          entonces el portal de AbastecimientoCrearModal también movería ItemSelectionModal.
-          Si ItemSelectionModal se renderiza como hermano (como está aquí), entonces necesitaría su propio portal
-          si el problema de stacking context le afecta. Vamos a asumir que ItemSelectionModal no tiene el problema
-          o se tratará por separado. Por ahora, lo dejamos fuera del portal principal para que siga funcionando
-          como un modal que puede aparecer sobre el modal de creación/edición si es necesario.
-          Sin embargo, para una correcta visualización si el modal principal está en un portal,
-          ItemSelectionModal también debería estar en un portal.
-      */}
       <ItemSelectionModal
         isOpen={showProductSelectModal}
         onClose={() => setShowProductSelectModal(false)}
@@ -160,11 +150,6 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
         searchPlaceholder="Buscar empleado..."
       />
     </>
-  );
-
-  return ReactDOM.createPortal(
-    modalContent,
-    document.body
   );
 };
 
