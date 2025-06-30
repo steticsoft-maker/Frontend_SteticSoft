@@ -35,6 +35,9 @@ const UsuarioCrearModal = ({
   return (
     <div className="usuarios-modalOverlay">
       <div className="usuarios-modalContent usuarios-modalContent-form">
+        <button type="button" className="modal-close-button-x" onClick={onClose}>
+          &times;
+        </button>
         <h2>Crear Nuevo Usuario</h2>
         <form onSubmit={handleSubmit}>
           <UsuarioForm

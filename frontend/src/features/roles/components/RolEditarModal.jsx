@@ -82,6 +82,9 @@ const RolEditarModal = ({ isOpen, onClose, onSubmit, roleId, permisosDisponibles
   return (
     <div className="rol-modalOverlay">
       <div className="rol-modalContent rol-modalContent-form">
+        <button type="button" className="modal-close-button-x" onClick={onClose}>
+          &times;
+        </button>
         <h2>Editar Rol</h2>
         {isLoading ? (
             <p>Cargando...</p>

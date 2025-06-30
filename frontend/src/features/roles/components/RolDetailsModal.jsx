@@ -19,6 +19,9 @@ const RolDetailsModal = ({ isOpen, onClose, role }) => {
   return (
     <div className="rol-modalOverlay">
       <div className="rol-modalContent rol-modalContent-details">
+        <button type="button" className="modal-close-button-x" onClick={onClose}>
+          &times;
+        </button>
         <h2>Detalles del Rol</h2>
         <p><strong>Nombre:</strong> {role.nombre || 'N/A'}</p>
         <p><strong>Descripción:</strong> {role.descripcion || 'Sin descripción'}</p>

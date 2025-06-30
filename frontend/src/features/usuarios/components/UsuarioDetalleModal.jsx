@@ -23,6 +23,9 @@ const UsuarioDetalleModal = ({ isOpen, onClose, usuario }) => {
   return (
     <div className="usuarios-modalOverlay">
       <div className="usuarios-modalContent usuarios-modalContent-details">
+        <button type="button" className="modal-close-button-x" onClick={onClose}>
+          &times;
+        </button>
         <h2>Detalles del Usuario</h2>
 
         {/* Datos del Perfil (Cliente o Empleado) */}
