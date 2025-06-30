@@ -1,5 +1,6 @@
 // src/features/abastecimiento/components/AbastecimientoEditarModal.jsx
 import React, { useState, useEffect } from "react";
+import ReactDOM from 'react-dom'; // Importar ReactDOM
 import AbastecimientoForm from "./AbastecimientoForm";
 
 const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
@@ -49,7 +50,7 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div className="modal-abastecimiento-overlay">
       <div className="modal-abastecimiento-content formulario-modal">
         <button type="button" className="modal-close-button-x" onClick={onClose}>
@@ -83,6 +84,11 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
         </form>
       </div>
     </div>
+  );
+
+  return ReactDOM.createPortal(
+    modalContent,
+    document.body
   );
 };
 
