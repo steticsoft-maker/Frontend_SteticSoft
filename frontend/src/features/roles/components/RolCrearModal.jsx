@@ -61,6 +61,9 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
   return (
     <div className="rol-modalOverlay">
       <div className="rol-modalContent rol-modalContent-form">
+        <button type="button" className="modal-close-button-x" onClick={onClose}>
+          &times;
+        </button>
         <h2>Crear Rol</h2>
         <form onSubmit={handleSubmitForm}>
           <RolForm

@@ -10,6 +10,9 @@ const AbastecimientoDetailsModal = ({ isOpen, onClose, item }) => {
   return (
     <div className="modal-abastecimiento-overlay">
       <div className="modal-abastecimiento-content detalle-modal">
+        <button type="button" className="modal-close-button-x" onClick={onClose}>
+          &times;
+        </button>
         <h2 className="abastecimiento-modal-title">
           Detalles del Registro de Abastecimiento
         </h2>
