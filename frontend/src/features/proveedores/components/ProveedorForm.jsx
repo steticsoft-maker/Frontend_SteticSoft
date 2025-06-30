@@ -3,7 +3,10 @@ import React from 'react';
 const ProveedorForm = ({ formData, onFormChange, onBlur, isEditing, errors = {} }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    onFormChange(name, type === 'checkbox' ? (checked ? 1 : 2) : value);
+    // --- CORRECCIÓN DEFINITIVA APLICADA AQUÍ ---
+    // Ahora, para el checkbox, enviamos un valor booleano (true/false).
+    // Esto previene la corrupción de datos que causaba la URL inválida.
+    onFormChange(name, type === 'checkbox' ? checked : value);
   };
 
   const handleTipoProveedorChange = (e) => {

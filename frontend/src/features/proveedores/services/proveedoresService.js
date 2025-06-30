@@ -1,10 +1,8 @@
+// src/features/proveedores/services/proveedoresService.js
 import apiClient from "../../../shared/services/apiClient";
 
-// --- FUNCIÓN CORREGIDA ---
-// Ahora acepta un objeto de 'params' para la búsqueda
 const getProveedoresAPI = async (params = {}) => {
   try {
-    // apiClient (axios) enviará los params como una query string: /proveedores?busqueda=loquesea
     const response = await apiClient.get('/proveedores', { params });
     return response.data?.data || response.data || []; 
   } catch (error) {
@@ -24,11 +22,28 @@ const createProveedorAPI = async (proveedorData) => {
 };
 
 const updateProveedorAPI = async (id, proveedorData) => {
+    // --- INICIO DE CORRECCIÓN BLINDADA ---
+    // No importa lo que llegue, lo forzamos a ser un número entero.
+    // Esto nos protege de cualquier mutación de estado que ocurra antes.
+    const cleanId = parseInt(id, 10);
+
+    // Verificamos si el resultado es un número válido. Si no, lanzamos un error claro.
+    if (isNaN(cleanId)) {
+        console.error("¡ID INVÁLIDO DETECTADO EN EL SERVICIO!", id);
+        throw new Error("El ID del proveedor es inválido y no se puede actualizar.");
+    }
+    
+    console.log(`[Servicio] ID Recibido: ${id}, ID Limpio: ${cleanId}`);
+    console.log(`[Servicio] URL Final a construir: /proveedores/${cleanId}`);
+    // --- FIN DE CORRECCIÓN BLINDADA ---
+
     try {
-        const response = await apiClient.put(`/proveedores/${id}`, proveedorData);
+        // Usamos el ID limpio y seguro para la llamada a la API.
+        const response = await apiClient.put(`/proveedores/${cleanId}`, proveedorData);
         return response.data;
     } catch (error) {
         console.error("Error en updateProveedorAPI:", error.response?.data || error.message);
+        // Lanzamos el error completo
         throw error.response?.data || new Error("Error al actualizar el proveedor.");
     }
 };
@@ -43,29 +58,27 @@ const toggleProveedorEstadoAPI = async (id, estado) => {
     }
 };
 
-// src/features/proveedores/services/proveedoresService.js
-
-// ... (otras funciones del servicio)
-
 const deleteProveedorAPI = async (id) => {
   try {
     const response = await apiClient.delete(`/proveedores/${id}`);
     return response.data;
   } catch (error) {
-    // LANZAR EL ERROR COMPLETO
-    // Esto permite que el componente que lo llama pueda leer "error.response.data.message" de forma segura.
     console.error("Error en deleteProveedorAPI:", error.response?.data || error.message);
     throw error;
   }
 };
 
-const verificarDatosUnicosAPI = async (data) => {
+const verificarDatosUnicosAPI = async (data, idExcluir = null) => {
   try {
-    const response = await apiClient.post('/proveedores/verificar-unicidad', data);
-    return response.data;
+    const url = idExcluir
+      ? `/proveedores/${idExcluir}/verificar-unicidad`
+      : '/proveedores/verificar-unicidad';
+    
+    const response = await apiClient.post(url, data);
+    return response.data?.errors || {};
   } catch (error) {
     console.error("Error en verificarDatosUnicosAPI:", error.response?.data || error.message);
-    return {};
+    return error.response?.data?.errors || { api: "No se pudo validar el campo." };
   }
 };
 
@@ -78,5 +91,3 @@ export const proveedoresService = {
   deleteProveedor: deleteProveedorAPI,
   verificarDatosUnicos: verificarDatosUnicosAPI,
 };
-
-export const getProveedoresParaCompra = getProveedoresAPI;

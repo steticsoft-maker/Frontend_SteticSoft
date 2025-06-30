@@ -338,9 +338,10 @@ const habilitarProveedor = async (idProveedor) => {
   }
 };
 
-/**
- * Eliminar un proveedor físicamente.
- */
+// src/shared/src_api/services/proveedor.service.js
+
+// src/shared/src_api/services/proveedor.service.js
+
 const eliminarProveedorFisico = async (idProveedor) => {
   try {
     const proveedor = await db.Proveedor.findByPk(idProveedor);
@@ -349,15 +350,32 @@ const eliminarProveedorFisico = async (idProveedor) => {
         "Proveedor no encontrado para eliminar físicamente."
       );
     }
+
+    const comprasAsociadas = await db.Compra.count({
+      where: { idProveedor: idProveedor },
+    });
+
+    if (comprasAsociadas > 0) {
+      // --- LÍNEA MODIFICADA ---
+      // Cambiamos el mensaje para que sea más específico según tu solicitud.
+      throw new ConflictError(
+        `El proveedor '${proveedor.nombre}' está asociado con compras y por ello no puede ser eliminado.`
+      );
+      // --- FIN DE LA MODIFICACIÓN ---
+    }
+
     const filasEliminadas = await db.Proveedor.destroy({
       where: { idProveedor },
     });
     return filasEliminadas;
   } catch (error) {
-    if (error instanceof NotFoundError) throw error;
+    if (error instanceof NotFoundError || error instanceof ConflictError) {
+      throw error;
+    }
     if (error.name === "SequelizeForeignKeyConstraintError") {
+      // Este error de respaldo también se puede ajustar si lo deseas.
       throw new ConflictError(
-        "No se puede eliminar el proveedor porque está siendo referenciado en Compras."
+        "No se puede eliminar el proveedor porque está asociado con compras."
       );
     }
     console.error(

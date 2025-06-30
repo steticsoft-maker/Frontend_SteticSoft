@@ -26,26 +26,23 @@ function ListaProveedoresPage() {
   const [validationMessage, setValidationMessage] = useState("");
   const [modalAction, setModalAction] = useState(null);
 
-  // --- Lógica de Carga Restaurada ---
   const cargarProveedores = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const datosRecibidos = await proveedoresService.getProveedores();
       setProveedores(datosRecibidos || []);
-    } catch (err) { // <--- LLAVE AÑADIDA
+    } catch (err) { 
       setError(err.message || "Error al cargar los proveedores.");
-    } finally { // <--- LLAVE AÑADIDA
+    } finally { 
       setIsLoading(false);
     }
   }, []);
 
-  // --- useEffect Restaurado ---
   useEffect(() => {
     cargarProveedores();
   }, [cargarProveedores]);
 
-  // Tu lógica de modales y acciones se mantiene intacta
   const closeModal = () => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
@@ -67,6 +64,32 @@ function ListaProveedoresPage() {
   };
 
   const handleSave = async (proveedorData) => {
+    // --- INICIO DE CORRECCIÓN BLINDADA ---
+    // 1. Extraer el ID y asegurarse de que es un número.
+    const idProveedorLimpio = parseInt(proveedorData.idProveedor, 10);
+
+    // 2. Crear un objeto de datos COMPLETAMENTE NUEVO y limpio para enviar.
+    // Esto rompe cualquier referencia extraña que pudiera estar causando la mutación.
+    const datosLimpiosParaEnviar = {
+      nombre: proveedorData.nombre,
+      tipo: proveedorData.tipo,
+      telefono: proveedorData.telefono,
+      correo: proveedorData.correo,
+      direccion: proveedorData.direccion,
+      tipoDocumento: proveedorData.tipoDocumento,
+      numeroDocumento: proveedorData.numeroDocumento,
+      nitEmpresa: proveedorData.nitEmpresa,
+      nombrePersonaEncargada: proveedorData.nombrePersonaEncargada,
+      telefonoPersonaEncargada: proveedorData.telefonoPersonaEncargada,
+      emailPersonaEncargada: proveedorData.emailPersonaEncargada,
+      estado: proveedorData.estado,
+    };
+
+    // Depuración final para confirmar que todo es correcto antes de enviar.
+    console.log("ID FINAL A ENVIAR:", idProveedorLimpio);
+    console.log("DATOS FINALES A ENVIAR:", datosLimpiosParaEnviar);
+    // --- FIN DE CORRECCIÓN BLINDADA ---
+
     const onSaveSuccess = async () => {
       closeModal();
       await cargarProveedores();
@@ -74,21 +97,25 @@ function ListaProveedoresPage() {
     };
 
     try {
-      if (proveedorData.idProveedor) {
-        await proveedoresService.updateProveedor(proveedorData.idProveedor, proveedorData);
+      if (idProveedorLimpio) {
+        // Se envían el ID limpio y los datos limpios.
+        await proveedoresService.updateProveedor(idProveedorLimpio, datosLimpiosParaEnviar);
         setValidationMessage("Proveedor actualizado exitosamente.");
       } else {
-        await proveedoresService.createProveedor(proveedorData);
+        await proveedoresService.createProveedor(datosLimpiosParaEnviar);
         setValidationMessage("Proveedor creado exitosamente.");
       }
       await onSaveSuccess();
     } catch (err) {
-      setValidationMessage(err.response?.data?.message || "Error al guardar el proveedor.");
+      const apiErrorMessage = err.response?.data?.message || "Ocurrió un error inesperado.";
+      const userFriendlyMessage = `Error al guardar: ${apiErrorMessage}. Por favor, revise los campos únicos como Correo, NIT o Documento.`;
+      
+      setValidationMessage(userFriendlyMessage);
       setIsValidationModalOpen(true);
     }
   };
 
-const handleDelete = async () => {
+  const handleDelete = async () => {
     if (currentProveedor?.idProveedor) {
       setIsConfirmDeleteOpen(false);
       try {
@@ -124,12 +151,10 @@ const handleDelete = async () => {
     else if (modalAction === 'status') handleToggleEstado();
   };
 
-  // --- LÓGICA DE FILTRADO LOCAL RESTAURADA Y MEJORADA ---
   const filteredProveedores = proveedores.filter((p) => {
     const term = search.toLowerCase();
     if (!term) return true;
 
-    // Campos de la tabla donde se buscará
     const nombre = p.nombre || '';
     const tipoDocumento = p.tipo === 'Natural' 
       ? `${p.tipoDocumento || ''} ${p.numeroDocumento || ''}` 

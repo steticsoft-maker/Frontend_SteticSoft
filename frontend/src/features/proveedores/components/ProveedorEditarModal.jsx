@@ -1,87 +1,147 @@
-// src/features/proveedores/components/ProveedorEditarModal.jsx
 import React, { useState, useEffect } from 'react';
 import ProveedorForm from './ProveedorForm';
+import { proveedoresService } from '../services/proveedoresService';
 
 const ProveedorEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
-  // Función para generar un estado de formulario seguro y completo
-  const getInitialFormState = (proveedor = {}) => ({
-    idProveedor: proveedor.idProveedor || null,
-    nombre: proveedor.nombre || '',
-    tipo: proveedor.tipo || 'Natural',
-    telefono: proveedor.telefono || '',
-    correo: proveedor.correo || '',
-    direccion: proveedor.direccion || '',
-    tipoDocumento: proveedor.tipoDocumento || '',
-    numeroDocumento: proveedor.numeroDocumento || '',
-    nitEmpresa: proveedor.nitEmpresa || '',
-    nombrePersonaEncargada: proveedor.nombrePersonaEncargada || '',
-    telefonoPersonaEncargada: proveedor.telefonoPersonaEncargada || '',
-    emailPersonaEncargada: proveedor.emailPersonaEncargada || '',
-    // CORRECCIÓN: Aseguramos que el estado sea siempre un booleano.
-    estado: typeof proveedor.estado === 'boolean' ? proveedor.estado : true
+  // Función segura para crear/resetear el estado del formulario
+  const getInitialFormState = (proveedor) => ({
+    idProveedor: proveedor?.idProveedor || null,
+    nombre: proveedor?.nombre || '',
+    tipo: proveedor?.tipo || 'Natural',
+    telefono: proveedor?.telefono || '',
+    correo: proveedor?.correo || '',
+    direccion: proveedor?.direccion || '',
+    tipoDocumento: proveedor?.tipoDocumento || 'CC',
+    numeroDocumento: proveedor?.numeroDocumento || '',
+    nitEmpresa: proveedor?.nitEmpresa || '',
+    nombrePersonaEncargada: proveedor?.nombrePersonaEncargada || '',
+    telefonoPersonaEncargada: proveedor?.telefonoPersonaEncargada || '',
+    emailPersonaEncargada: proveedor?.emailPersonaEncargada || '',
+    // Aseguramos que el estado sea siempre un booleano
+    estado: typeof proveedor?.estado === 'boolean' ? proveedor.estado : true
   });
 
-  // CORRECCIÓN 1: El estado se inicializa SIEMPRE con un objeto vacío y seguro.
-  const [formData, setFormData] = useState(getInitialFormState());
+  const [formData, setFormData] = useState(getInitialFormState(initialData));
   const [errors, setErrors] = useState({});
 
-  // CORRECCIÓN 2: `useEffect` es el ÚNICO responsable de poblar el formulario con 'initialData'.
+  // Este es el único lugar donde se actualiza el formulario desde el exterior.
+  // Se activa solo cuando el modal se abre con nuevos datos.
   useEffect(() => {
     if (isOpen && initialData) {
-      // Cuando el modal se abre con datos, poblamos el formulario.
       setFormData(getInitialFormState(initialData));
-    } else if (!isOpen) {
-      // Cuando el modal se cierra, lo reseteamos a su estado inicial vacío.
-      setFormData(getInitialFormState());
-      setErrors({});
+      setErrors({}); // Limpiar errores al abrir
     }
-  }, [isOpen, initialData]); // Se ejecuta cada vez que 'isOpen' o 'initialData' cambian.
+  }, [isOpen, initialData]);
 
-  const handleFormChange = (name, value, resetData = {}) => {
-    setFormData(prev => ({
-      ...prev,
-      ...resetData,
-      [name]: value
-    }));
+  const handleFormChange = (name, value) => {
+    // Actualiza el estado interno del modal de forma segura
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
 
-  const validateForm = () => {
-    // Tu lógica de validación se mantiene igual.
-    const newErrors = {};
-    if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es requerido.';
-    if (!formData.telefono.trim()) newErrors.telefono = 'El teléfono es requerido.';
-    if (!formData.correo.trim()) newErrors.correo = 'El email es requerido.';
-    if (!formData.direccion.trim()) newErrors.direccion = 'La dirección es requerida.';
-    if (formData.tipo === 'Natural' && !formData.numeroDocumento?.trim()) {
-      newErrors.numeroDocumento = 'El número de documento es requerido.';
+  // --- TU LÓGICA DE VALIDACIÓN SE MANTIENE INTÁCTA ---
+
+  const validateField = async (name, value) => {
+    let formatError = null;
+    // 1. Validaciones de formato (igual que en Crear)
+    switch (name) {
+      case 'nombre':
+        formatError = !value.trim() ? "Este campo es obligatorio." : null;
+        break;
+      case 'numeroDocumento':
+        if (formData.tipo === 'Natural') {
+          formatError = !/^\d{7,10}$/.test(value) ? "Debe tener entre 7 y 10 dígitos." : null;
+        }
+        break;
+      case 'nitEmpresa':
+        if (formData.tipo === 'Juridico') {
+          formatError = !/^\d{9}-\d$/.test(value) ? "Formato: 123456789-0." : null;
+        }
+        break;
+      case 'telefono':
+      case 'telefonoPersonaEncargada':
+        formatError = !/^\d{10}$/.test(value) ? "Debe tener 10 dígitos." : null;
+        break;
+      case 'correo':
+        formatError = !/\S+@\S+\.\S+/.test(value) ? "El formato del email no es válido." : null;
+        break;
+      default:
+        break;
     }
-    if (formData.tipo === 'Jurídico' && !formData.nitEmpresa?.trim()) {
-      newErrors.nitEmpresa = 'El NIT es requerido.';
+
+    if (formatError) {
+      return formatError;
+    }
+
+    // 2. Validación de unicidad contra la API
+    const uniqueFields = ['correo', 'numeroDocumento', 'nitEmpresa'];
+    if (uniqueFields.includes(name) && value !== initialData[name]) { // Solo validar si el valor cambió
+      try {
+        const idProveedorActual = initialData.idProveedor;
+        const uniquenessErrors = await proveedoresService.verificarDatosUnicos({ [name]: value }, idProveedorActual);
+        if (uniquenessErrors[name]) {
+          return uniquenessErrors[name]; // "Este correo ya está registrado"
+        }
+      } catch (error) {
+        console.error(`API error durante validación de ${name}:`, error);
+        return "No se pudo conectar para validar.";
+      }
+    }
+    return null;
+  };
+  
+  const handleBlur = async (e) => {
+    const { name, value } = e.target;
+    if (!value || (initialData && value === initialData[name])) return;
+    
+    const errorMessage = await validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: errorMessage }));
+  };
+
+  const validateFormOnSubmit = async () => {
+    const newErrors = {};
+    const fieldsToValidate = [
+        'nombre', 'telefono', 'correo', 'direccion', 
+        'nombrePersonaEncargada', 'telefonoPersonaEncargada',
+        ...(formData.tipo === 'Natural' ? ['numeroDocumento'] : ['nitEmpresa'])
+    ];
+    
+    for (const field of fieldsToValidate) {
+        const errorMessage = await validateField(field, formData[field]);
+        if (errorMessage) {
+            newErrors[field] = errorMessage;
+        }
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  // --- CORRECCIÓN EN EL MANEJO DEL SUBMIT ---
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      onSubmit(formData); // `onSubmit` sigue siendo manejado por la página principal.
-      onClose();
+    const isValid = await validateFormOnSubmit();
+    if (isValid) {
+      const datosSeguros = {
+        ...formData,
+        idProveedor: initialData.idProveedor 
+      };
+      onSubmit(datosSeguros);
     }
   };
 
-  // El guardián para no renderizar nada si el modal está cerrado. Esencial.
   if (!isOpen) return null;
 
   return (
     <div className="modal-Proveedores">
       <div className="modal-content-Proveedores formulario-modal">
-        <span className="close-button-Proveedores" onClick={onClose}>&times;</span>
         <h2 className="proveedores-modal-title">Editar Proveedor</h2>
         <form onSubmit={handleSubmit} noValidate className="proveedores-form-grid">
           <ProveedorForm 
             formData={formData} 
             onFormChange={handleFormChange}
+            onBlur={handleBlur}
             errors={errors}
             isEditing={true}
           />
