@@ -7,34 +7,42 @@ const RolEditarModal = ({ isOpen, onClose, onSubmit, roleId, permisosDisponibles
   const [formData, setFormData] = useState({ id: null, nombre: '', descripcion: '', idPermisos: [], estado: true });
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false); // Nuevo estado
 
   const isRoleAdminProtected = formData.nombre === "Administrador";
 
-  const cargarDetallesRol = useCallback(async () => {
-    if (!roleId) return;
-    setIsLoading(true);
-    setFormErrors({});
-    try {
-        const roleDetails = await getRoleDetailsAPI(roleId);
-        setFormData({
+  useEffect(() => {
+    // Solo cargar detalles si el modal está abierto, hay un roleId y los datos iniciales no se han cargado
+    if (isOpen && roleId && !initialDataLoaded) {
+      const cargarDetallesRol = async () => {
+        setIsLoading(true);
+        setFormErrors({});
+        console.log(`Cargando detalles para roleId: ${roleId}`); // Log para depuración
+        try {
+          const roleDetails = await getRoleDetailsAPI(roleId);
+          setFormData({
             id: roleDetails.idRol,
             nombre: roleDetails.nombre,
             descripcion: roleDetails.descripcion || '',
             estado: roleDetails.estado,
             idPermisos: roleDetails.permisos?.map(p => p.idPermiso) || []
-        });
-    } catch (err) {
-        setFormErrors({ _general: err.message || "Error al cargar los detalles del rol." });
-    } finally {
-        setIsLoading(false);
-    }
-  }, [roleId]);
-
-  useEffect(() => {
-    if (isOpen) {
+          });
+          setInitialDataLoaded(true); // Marcar que los datos iniciales se cargaron
+        } catch (err) {
+          console.error("Error al cargar detalles del rol:", err); // Log de error
+          setFormErrors({ _general: err.message || "Error al cargar los detalles del rol." });
+        } finally {
+          setIsLoading(false);
+        }
+      };
       cargarDetallesRol();
+    } else if (!isOpen) {
+      // Resetear estado cuando el modal se cierra para asegurar recarga la próxima vez
+      setInitialDataLoaded(false);
+      setFormData({ id: null, nombre: '', descripcion: '', idPermisos: [], estado: true }); // Resetear formData
+      setFormErrors({});
     }
-  }, [isOpen, cargarDetallesRol]);
+  }, [isOpen, roleId, initialDataLoaded]);
 
   const handleFormChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));

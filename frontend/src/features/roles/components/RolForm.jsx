@@ -18,6 +18,23 @@ const RolForm = ({
     const { name, value, type, checked } = e.target;
     onFormChange(name, type === 'checkbox' ? checked : value);
   };
+
+  // Nueva función para manejar la selección/deselección masiva de permisos
+  const handleToggleAllPermisos = (permisoIdsToToggle, select) => {
+    if (isRoleAdmin) return;
+
+    let nuevosIdPermisos;
+    const currentIdPermisos = formData.idPermisos || [];
+
+    if (select) {
+      // Añadir sin duplicados
+      nuevosIdPermisos = [...new Set([...currentIdPermisos, ...permisoIdsToToggle])];
+    } else {
+      // Remover
+      nuevosIdPermisos = currentIdPermisos.filter(id => !permisoIdsToToggle.includes(id));
+    }
+    onFormChange('idPermisos', nuevosIdPermisos);
+  };
   
   const handleToggleMostrarPermisos = () => {
     if (!isRoleAdmin) {
@@ -76,7 +93,8 @@ const RolForm = ({
       <PermisosSelector
         permisosAgrupados={permisosAgrupados}
         permisosSeleccionadosIds={formData.idPermisos || []}
-        onTogglePermiso={onToggleModulo}
+        onTogglePermiso={onToggleModulo} // Para checkboxes individuales
+        onToggleAllPermisos={handleToggleAllPermisos} // NUEVA PROP para el acordeón
         isRoleAdmin={isRoleAdmin}
         mostrar={mostrarPermisos || isRoleAdmin}
       />
