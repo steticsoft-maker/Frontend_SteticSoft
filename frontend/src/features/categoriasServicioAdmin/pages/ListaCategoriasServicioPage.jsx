@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import CategoriasTabla from '../components/CategoriasServicioTable';
 import CategoriaForm from '../components/CategoriaServicioForm.jsx';
 import CategoriaServicioDetalleModal from '../components/CategoriaServicioDetalleModal';
-import ConfirmModal from '../components/confirmModal'; 
+import ConfirmModal from '../../../shared//components/common/ConfirmModal'; 
 
 // --- Estilos ---
 import '../css/CategoriasServicio.css';

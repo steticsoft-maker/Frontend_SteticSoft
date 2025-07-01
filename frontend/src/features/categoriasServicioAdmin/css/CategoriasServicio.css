@@ -214,12 +214,12 @@ input:checked + .slider:before { transform: translateX(16px); }
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.25);
   width: 100%;
-  max-width: 550px; /* El max-width se mantiene para ESCRITORIO */
-  max-height: 90vh; /* Buena práctica para evitar que el modal sea más alto que la pantalla */
+  max-width: 550px;
+  max-height: 90vh;
   overflow-y: auto;
   box-sizing: border-box;
   text-align: left;
-  position: relative; /* Necesario para posicionar el botón de cierre */
+  position: relative;
 }
 
 .modal-content-Categoria.formulario { 
@@ -268,8 +268,6 @@ input:checked + .slider:before { transform: translateX(16px); }
  font-size: 0.9rem;
  font-weight: bold;
 }
-
-.estado-label.activo { background-color: #28a745; }
 
 .estado-label.inactivo { background-color: #6c757d; }
 
@@ -365,16 +363,16 @@ textarea.campoAgregarCategoria { min-height: 80px; resize: vertical; }
     margin-bottom: 1rem;
     border: 1px solid var(--color-admin-primary-border);
     border-radius: 8px;
-    padding: 0.5rem; /* Un padding interno para que el contenido no pegue al borde */
+    padding: 0.5rem;
   }
 
   /* REFINADO: Usamos Flexbox para hacer las celdas más flexibles */
   .tablaCategoria td {
-    display: flex; /* Convertimos la celda en un contenedor flex */
+    display: flex;
     justify-content: space-between; /* El label a un lado, el valor al otro */
     align-items: center;
     text-align: right; /* El texto del valor se alinea a la derecha */
-    padding: 0.75rem 0.5rem !important; /* Ajustamos padding. Quitamos el padding-left de 50% */
+    padding: 0.75rem 0.5rem !important;
     position: relative;
     border: none;
     border-bottom: 1px solid #f0f0f0;
@@ -389,8 +387,7 @@ textarea.campoAgregarCategoria { min-height: 80px; resize: vertical; }
     font-weight: bold;
     color: var(--color-primary-darker);
     text-align: left;
-    margin-right: 1rem; /* Añadimos un margen para separar el label del valor */
-    /* Ya no necesitamos position:absolute, width, etc. Flexbox lo maneja */
+    margin-right: 1rem;
   }
 
 .tablaCategoria td.no-data-cell {
