@@ -3,7 +3,8 @@ import React from 'react';
 import {
   FaEdit, FaTrash, FaEye, FaUsers, FaUserShield, FaBoxOpen, FaChartBar,
   FaUserFriends, FaCalendarAlt, FaConciergeBell, FaTags, FaShoppingCart,
-  FaTruckLoading, FaStore, FaListAlt, FaUserTie, FaNewspaper, FaHome, FaQuestionCircle
+  FaTruckLoading, FaStore, FaListAlt, FaUserTie, FaNewspaper, FaHome, FaQuestionCircle, FaArchive,
+  FaStar, FaShoppingBag, FaClipboardCheck, FaFolderOpen, FaWrench
 } from 'react-icons/fa';
 import Tooltip from '../../../shared/components/common/Tooltip'; // Importar el componente Tooltip
 import '../css/RolesTableExtensions.css'; // CSS adicional para los íconos de permisos
@@ -22,12 +23,21 @@ const moduloIconMap = {
   PROVEEDORES: { icon: FaTruckLoading, name: 'Proveedores' },
   COMPRAS: { icon: FaShoppingCart, name: 'Compras' },
   VENTAS: { icon: FaStore, name: 'Ventas' },
-  CATEGORIASPRODUCTOADMIN: { icon: FaListAlt, name: 'Cat. Productos' },
+  CATEGORIASPRODUCTOADMIN: { icon: FaArchive, name: 'Cat. Productos' },
   CATEGORIASSERVICIOADMIN: { icon: FaListAlt, name: 'Cat. Servicios' },
   EMPLEADOS: { icon: FaUserTie, name: 'Empleados' },
   NOVEDADES: { icon: FaNewspaper, name: 'Novedades' },
   HOME: { icon: FaHome, name: 'Home' },
-  // Añadir más módulos según sea necesario
+  // Nuevos módulos y correcciones basadas en la retroalimentación del usuario
+  ESPECIALIDADES: { icon: FaStar, name: 'Especialidades' },
+  PRODUCTOS: { icon: FaShoppingBag, name: 'Productos' }, // Diferente de PRODUCTOSADMIN
+  ESTADOS: { icon: FaClipboardCheck, name: 'Estados' },
+  PERMISOS: { icon: FaUserShield, name: 'Permisos (Roles)' }, // Mapea a Roles si la clave es PERMISOS
+  CATEGORIAS: { icon: FaFolderOpen, name: 'Categorías Genéricas' }, // Para una clave genérica CATEGORIAS
+  SERVICIOS: { icon: FaWrench, name: 'Servicios' }, // Diferente de SERVICIOSADMIN
+  ABAST: { icon: FaBoxOpen, name: 'Abastecimiento (Alt.)' }, // Alias para ABASTECIMIENTO si la clave es ABAST
+  ABAS: { icon: FaBoxOpen, name: 'Abastecimiento (Abv.)' }, // Otra posible abreviatura para Abastecimiento
+  // Mantener los existentes y añadir más módulos según sea necesario
 };
 
 const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) => {
