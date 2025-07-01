@@ -1,5 +1,6 @@
 // src/features/abastecimiento/components/AbastecimientoEditarModal.jsx
 import React, { useState, useEffect } from "react";
+// import ReactDOM from 'react-dom'; // ELIMINADO
 import AbastecimientoForm from "./AbastecimientoForm";
 
 const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
@@ -49,6 +50,7 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
 
   if (!isOpen) return null;
 
+  // INICIO DE MODIFICACIÓN: Se retorna el JSX directamente sin el portal.
   return (
     <div className="modal-abastecimiento-overlay">
       <div className="modal-abastecimiento-content formulario-modal">
@@ -84,6 +86,7 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
       </div>
     </div>
   );
+  // FIN DE MODIFICACIÓN
 };
 
 export default AbastecimientoEditarModal;

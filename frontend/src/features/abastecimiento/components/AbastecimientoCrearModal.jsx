@@ -1,5 +1,6 @@
 // src/features/abastecimiento/components/AbastecimientoCrearModal.jsx
 import React, { useState, useEffect, useCallback } from "react";
+// import ReactDOM from 'react-dom'; // ELIMINADO: Ya no se necesita el portal.
 import AbastecimientoForm from "./AbastecimientoForm";
 import ItemSelectionModal from "../../../shared/components/common/ItemSelectionModal";
 import { abastecimientoService } from "../services/abastecimientoService";
@@ -60,7 +61,8 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   };
 
   if (!isOpen) return null;
-
+  
+  // INICIO DE MODIFICACIÓN: Se retorna el JSX directamente sin el portal.
   return (
     <>
       <div className="modal-abastecimiento-overlay">
@@ -86,8 +88,8 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
               onSelectEmployee={() => setShowEmployeeSelectModal(true)}
               isEditing={false}
               formErrors={formErrors}
-              categorias={[]} // No se usa en creación
-              onCategoryChange={() => {}} // No se usa en creación
+              categorias={[]} 
+              onCategoryChange={() => {}}
             />
             <div className="form-actions-abastecimiento">
               <button

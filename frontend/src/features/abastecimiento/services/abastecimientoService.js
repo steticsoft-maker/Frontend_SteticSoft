@@ -108,10 +108,15 @@ const getProductosActivosUsoInterno = async () => {
     const response = await apiClient.get(
       "/productos?estado=true&tipoUso=Interno"
     );
-    return response.data?.data?.data || [];
+    // --- INICIO DE CORRECCIÓN ---
+    // La API ahora devuelve un objeto con paginación. Los productos están en `response.data.data.productos`.
+    // Antes estaba `response.data?.data?.data` lo cual es incorrecto.
+    return response.data?.data?.productos || [];
+    // --- FIN DE CORRECCIÓN ---
   } catch (error) {
     throw (
-      error.response?.data || new Error("Error al obtener los productos activos.")
+      error.response?.data ||
+      new Error("Error al obtener los productos activos.")
     );
   }
 };
