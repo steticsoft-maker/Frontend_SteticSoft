@@ -403,86 +403,6 @@ input.is-invalid, .input-documento.is-invalid {
 }
 
 
-/* === ESTILOS RESPONSIVOS === */
-@media (max-width: 768px) {
-    .proveedores-main-content { 
-        margin-left: 0; padding: 15px; 
-    }
-    .proveedores-content-wrapper { padding: 0; }
-    .proveedores-actions-bar { 
-        flex-direction: column; gap: 15px; 
-    }
-    .proveedores-search-bar input,
-    .proveedores-add-button {
-        width: 100%;
-    }
-    .proveedores-add-button { height: auto; padding: 12px 20px; }
-
-    .tablaProveedores thead { display: none; }
-    .tablaProveedores, .tablaProveedores tbody, .tablaProveedores tr, .tablaProveedores td {
-        display: block; width: 100%;
-    }
-    .tablaProveedores tr {
-        margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0); 
-        border-radius: 8px; padding: 10px;
-        background-color: #ffffff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-    .tablaProveedores td {
-        text-align: right; padding-left: 50% !important; 
-        position: relative; border: none; 
-        border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; 
-        padding-top: 8px; padding-bottom: 8px;
-    }
-    .tablaProveedores td:last-child { border-bottom: none; }
-    .tablaProveedores td::before {
-        content: attr(data-label); 
-        position: absolute; left: 10px; width: calc(50% - 20px); 
-        padding-right: 10px; white-space: nowrap;
-        font-weight: bold; color: var(--color-primary-darker, #6d0b58); text-align: left;
-    }
-    .tablaProveedores td.proveedores-table-actions {
-        display: flex;            
-        flex-direction: row;      
-        justify-content: flex-end;
-        align-items: center;      
-        padding-left: 10px !important; 
-        padding-right: 10px !important;
-        gap: 8px;                 
-    }
-    .tablaProveedores td.proveedores-table-actions::before {
-        content: ""; 
-        display: none;
-    }
-
-    .modal-content-Proveedores.formulario-modal {
-        max-width: 95%; padding: 20px;
-    }
-    .proveedores-form-grid { 
-        grid-template-columns: 1fr; 
-    }
-    /* En móvil, el título de la sección ocupa todo el ancho */
-    .form-section-title-container {
-        grid-column: 1 / -1;
-        grid-row: auto; /* El grid lo posicionará automáticamente */
-        padding-left: 0;
-        margin-bottom: 0;
-        align-self: start;
-    }
-    .form-section-title-container::before {
-        display: none; /* Oculta la línea vertical en móvil */
-    }
-    .form-section-title-container h4 {
-        text-align: center; /* Centrar el título en móvil */
-    }
-    
-    .proveedores-form-actions { 
-        flex-direction: column;
-    }
-    .proveedores-form-button-guardar, .proveedores-form-button-cancelar {
-        width: 100%;
-    }
-}
-
 /* ========================================================== */
 /* ========= INICIO DE CORRECCIÓN PARA LÍNEA VERTICAL ========= */
 /* ========================================================== */
@@ -537,3 +457,155 @@ input.is-invalid, .input-documento.is-invalid {
 /* ======================================================== */
 /* ========= FIN DE CORRECCIÓN PARA LÍNEA VERTICAL ======== */
 /* ======================================================== */
+
+
+/* ======================================================== */
+/* ============= INICIO DE ESTILOS RESPONSIVE ============= */
+/* ======================================================== */
+
+/* --- Para Tablets y pantallas medianas (hasta 992px) --- */
+@media (max-width: 992px) {
+    .proveedores-main-content {
+        margin-left: 0; /* Eliminar margen cuando la barra lateral se oculte */
+    }
+
+    .modal-content-Proveedores.formulario-modal {
+        max-width: 90vw; /* Hacer el modal un poco más ancho en tablets */
+    }
+}
+
+
+/* --- Para Móviles (hasta 768px) --- */
+@media (max-width: 768px) {
+    .proveedores-main-content {
+        padding: 15px; /* Reducir padding en móviles */
+    }
+
+    .proveedores-content-wrapper {
+        padding: 0;
+    }
+    
+    .proveedores-content-wrapper h1 {
+        font-size: 1.5rem; /* Título más pequeño */
+        margin-bottom: 20px;
+    }
+
+    .proveedores-actions-bar {
+        flex-direction: column; /* Apilar barra de búsqueda y botón */
+        gap: 15px;
+    }
+
+    .proveedores-search-bar input,
+    .proveedores-add-button {
+        width: 100%; /* Ocupar todo el ancho */
+    }
+
+    .proveedores-add-button {
+        height: auto;
+        padding: 12px 20px;
+    }
+    
+    /* === Transformación de la Tabla a Tarjetas === */
+    .tablaProveedores thead {
+        display: none; /* Ocultar encabezados de la tabla */
+    }
+
+    .tablaProveedores,
+    .tablaProveedores tbody,
+    .tablaProveedores tr,
+    .tablaProveedores td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .tablaProveedores tr {
+        margin-bottom: 15px;
+        border: 1px solid var(--color-admin-primary-border, #e978d0);
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #ffffff !important; /* Forzar fondo blanco para cada tarjeta */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .tablaProveedores tbody tr:hover {
+        background-color: #ffffff !important; /* Desactivar hover en modo tarjeta */
+    }
+
+    .tablaProveedores td {
+        text-align: right;
+        padding-left: 50% !important; /* Espacio para la etiqueta */
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 0.9rem;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .tablaProveedores td:last-child {
+        border-bottom: none;
+    }
+
+    .tablaProveedores td::before {
+        content: attr(data-label); /* Usar el atributo data-label como etiqueta */
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: var(--color-primary-darker, #6d0b58);
+        text-align: left;
+    }
+
+    .tablaProveedores .proveedores-table-actions {
+        padding: 10px 0 0 0 !important;
+        justify-content: center; /* Centrar botones en la tarjeta */
+    }
+
+    .tablaProveedores .proveedores-table-actions::before {
+        display: none; /* Ocultar la etiqueta para la fila de acciones */
+    }
+
+    /* === Ajustes para Modales en Móvil === */
+    .modal-content-Proveedores.formulario-modal {
+        max-width: 95vw; /* Modal casi al ancho completo */
+        padding: 20px;
+    }
+
+    .proveedores-form-grid {
+        grid-template-columns: 1fr; /* Una sola columna para el formulario */
+    }
+    
+    /* El título de la sección de datos del encargado */
+    .form-section-title-container {
+        grid-column: 1 / -1; /* Ocupar todo el ancho */
+        grid-row: auto; /* Dejar que el grid lo posicione */
+        padding-left: 0;
+        margin-bottom: 0;
+        align-self: start;
+    }
+    
+    .form-section-title-container h4 {
+        text-align: center; /* Centrar el título */
+    }
+
+    /* El separador vertical no tiene sentido en una sola columna */
+    .proveedores-form-grid > .proveedores-form-group:nth-child(2n):not(:first-child) {
+        border-left: none;
+        padding-left: 0;
+    }
+
+    .proveedores-form-actions {
+        flex-direction: column; /* Apilar botones de guardar/cancelar */
+    }
+
+    .proveedores-form-button-guardar,
+    .proveedores-form-button-cancelar {
+        width: 100%;
+    }
+}
