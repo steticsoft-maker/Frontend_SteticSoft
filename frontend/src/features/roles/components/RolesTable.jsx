@@ -36,6 +36,7 @@ const moduloIconMap = {
   CATEGORIAS: { icon: FaFolderOpen, name: 'Categorías Genéricas' }, // Para una clave genérica CATEGORIAS
   SERVICIOS: { icon: FaWrench, name: 'Servicios' }, // Diferente de SERVICIOSADMIN
   ABAST: { icon: FaBoxOpen, name: 'Abastecimiento (Alt.)' }, // Alias para ABASTECIMIENTO si la clave es ABAST
+  ABAS: { icon: FaBoxOpen, name: 'Abastecimiento (Abv.)' }, // Otra posible abreviatura para Abastecimiento
   // Mantener los existentes y añadir más módulos según sea necesario
 };
 
