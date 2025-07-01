@@ -3,7 +3,7 @@ import React from 'react';
 import {
   FaEdit, FaTrash, FaEye, FaUsers, FaUserShield, FaBoxOpen, FaChartBar,
   FaUserFriends, FaCalendarAlt, FaConciergeBell, FaTags, FaShoppingCart,
-  FaTruckLoading, FaStore, FaListAlt, FaUserTie, FaNewspaper, FaHome, FaQuestionCircle
+  FaTruckLoading, FaStore, FaListAlt, FaUserTie, FaNewspaper, FaHome, FaQuestionCircle, FaArchive
 } from 'react-icons/fa';
 import Tooltip from '../../../shared/components/common/Tooltip'; // Importar el componente Tooltip
 import '../css/RolesTableExtensions.css'; // CSS adicional para los íconos de permisos
@@ -22,7 +22,7 @@ const moduloIconMap = {
   PROVEEDORES: { icon: FaTruckLoading, name: 'Proveedores' },
   COMPRAS: { icon: FaShoppingCart, name: 'Compras' },
   VENTAS: { icon: FaStore, name: 'Ventas' },
-  CATEGORIASPRODUCTOADMIN: { icon: FaListAlt, name: 'Cat. Productos' },
+  CATEGORIASPRODUCTOADMIN: { icon: FaArchive, name: 'Cat. Productos' },
   CATEGORIASSERVICIOADMIN: { icon: FaListAlt, name: 'Cat. Servicios' },
   EMPLEADOS: { icon: FaUserTie, name: 'Empleados' },
   NOVEDADES: { icon: FaNewspaper, name: 'Novedades' },
