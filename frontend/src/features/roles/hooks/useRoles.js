@@ -52,14 +52,18 @@ const useRoles = () => {
   const [filterEstado, setFilterEstado] = useState("todos"); // 'todos', 'activos', 'inactivos'
 
   // Derivar permisos agrupados usando useMemo
-  const permisosAgrupados = useMemo(() => groupPermissionsByModule(permisos), [permisos]);
+  const permisosAgrupados = useMemo(
+    () => groupPermissionsByModule(permisos),
+    [permisos]
+  );
 
   const cargarDatos = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
+      // Pasamos searchTerm a fetchRolesAPI
       const [rolesResponse, permisosResponse] = await Promise.all([
-        fetchRolesAPI(),
+        fetchRolesAPI(searchTerm), // MODIFICADO: pasar searchTerm
         getPermisosAPI(),
       ]);
       setRoles(rolesResponse.data || []);
@@ -71,7 +75,7 @@ const useRoles = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [searchTerm]); // MODIFICADO: añadir searchTerm como dependencia
 
   useEffect(() => {
     cargarDatos();
@@ -89,8 +93,15 @@ const useRoles = () => {
   }, []);
 
   const handleOpenModal = useCallback(async (type, role = null) => {
-    if (role?.nombre === "Administrador" && (type === "edit" || type === "delete")) {
-      setValidationMessage(`El rol 'Administrador' no puede ser ${type === "edit" ? "editado" : "eliminado"}.`);
+    if (
+      role?.nombre === "Administrador" &&
+      (type === "edit" || type === "delete")
+    ) {
+      setValidationMessage(
+        `El rol 'Administrador' no puede ser ${
+          type === "edit" ? "editado" : "eliminado"
+        }.`
+      );
       setIsValidationModalOpen(true);
       return;
     }
@@ -104,7 +115,9 @@ const useRoles = () => {
         setCurrentRole(roleDetails); // Actualizar currentRole con todos los detalles (incluyendo permisos del rol)
         setIsDetailsModalOpen(true);
       } catch (err) {
-        setValidationMessage(err.message || "No se pudieron cargar los detalles del rol.");
+        setValidationMessage(
+          err.message || "No se pudieron cargar los detalles del rol."
+        );
         setIsValidationModalOpen(true);
         setCurrentRole(null); // Limpiar currentRole si falla la carga
       } finally {
@@ -127,27 +140,40 @@ const useRoles = () => {
     }
   }, []);
 
-  const handleSaveRol = useCallback(async (roleData) => {
-    setIsSubmitting(true);
-    try {
-      // El servicio saveRoleAPI debe manejar si es creación o edición basado en la presencia de roleData.idRol
-      const response = await saveRoleAPI(roleData);
-      setValidationMessage(response.message || (roleData.idRol ? "Rol actualizado exitosamente." : "Rol creado exitosamente."));
-      setIsValidationModalOpen(true);
-      closeModal();
-      await cargarDatos();
-    } catch (err) {
-      setValidationMessage(err.response?.data?.message || err.message || "Error al guardar el rol.");
-      setIsValidationModalOpen(true);
-      // No cerrar modal en error para que el usuario pueda corregir
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [cargarDatos, closeModal]);
+  const handleSaveRol = useCallback(
+    async (roleData) => {
+      setIsSubmitting(true);
+      try {
+        // El servicio saveRoleAPI debe manejar si es creación o edición basado en la presencia de roleData.idRol
+        const response = await saveRoleAPI(roleData);
+        setValidationMessage(
+          response.message ||
+            (roleData.idRol
+              ? "Rol actualizado exitosamente."
+              : "Rol creado exitosamente.")
+        );
+        setIsValidationModalOpen(true);
+        closeModal();
+        await cargarDatos();
+      } catch (err) {
+        setValidationMessage(
+          err.response?.data?.message ||
+            err.message ||
+            "Error al guardar el rol."
+        );
+        setIsValidationModalOpen(true);
+        // No cerrar modal en error para que el usuario pueda corregir
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [cargarDatos, closeModal]
+  );
 
   const handleDeleteRol = useCallback(async () => {
     if (!currentRole?.idRol) return;
-    if (currentRole.nombre === "Administrador") { // Doble chequeo
+    if (currentRole.nombre === "Administrador") {
+      // Doble chequeo
       setValidationMessage("El rol 'Administrador' no puede ser eliminado.");
       setIsValidationModalOpen(true);
       closeModal();
@@ -169,25 +195,32 @@ const useRoles = () => {
     }
   }, [currentRole, cargarDatos, closeModal]);
 
-  const handleToggleEstado = useCallback(async (roleToToggle) => {
-    if (roleToToggle.nombre === "Administrador") {
-      setValidationMessage("El estado del rol 'Administrador' no se puede cambiar.");
-      setIsValidationModalOpen(true);
-      return;
-    }
-    // setIsSubmitting(true); // Opcional, para feedback visual en la tabla si se desea
-    try {
-      await toggleRoleStatusAPI(roleToToggle.idRol, !roleToToggle.estado);
-      await cargarDatos(); // Recargar para mostrar el nuevo estado.
-      // setValidationMessage("Estado del rol actualizado."); // Opcional
-      // setIsValidationModalOpen(true);
-    } catch (err) {
-      setValidationMessage(err.message || "Error al cambiar el estado del rol.");
-      setIsValidationModalOpen(true);
-    } finally {
-      // setIsSubmitting(false);
-    }
-  }, [cargarDatos]);
+  const handleToggleEstado = useCallback(
+    async (roleToToggle) => {
+      if (roleToToggle.nombre === "Administrador") {
+        setValidationMessage(
+          "El estado del rol 'Administrador' no se puede cambiar."
+        );
+        setIsValidationModalOpen(true);
+        return;
+      }
+      // setIsSubmitting(true); // Opcional, para feedback visual en la tabla si se desea
+      try {
+        await toggleRoleStatusAPI(roleToToggle.idRol, !roleToToggle.estado);
+        await cargarDatos(); // Recargar para mostrar el nuevo estado.
+        // setValidationMessage("Estado del rol actualizado."); // Opcional
+        // setIsValidationModalOpen(true);
+      } catch (err) {
+        setValidationMessage(
+          err.message || "Error al cambiar el estado del rol."
+        );
+        setIsValidationModalOpen(true);
+      } finally {
+        // setIsSubmitting(false);
+      }
+    },
+    [cargarDatos]
+  );
 
   // Efecto para debounce de la búsqueda
   useEffect(() => {
@@ -206,18 +239,23 @@ const useRoles = () => {
 
     if (filterEstado !== "todos") {
       const isActive = filterEstado === "activos";
-      filtered = filtered.filter(r => r.estado === isActive);
+      filtered = filtered.filter((r) => r.estado === isActive);
     }
 
-    if (searchTerm) {
-      const lowerSearchTerm = searchTerm.toLowerCase();
-      filtered = filtered.filter(r =>
-        r.nombre?.toLowerCase().includes(lowerSearchTerm) ||
-        r.descripcion?.toLowerCase().includes(lowerSearchTerm)
-      );
-    }
+    // El filtrado por searchTerm (nombre, descripción, permisos) ahora se espera que lo haga el backend.
+    // Si searchTerm está vacío, el backend debería devolver todos los roles (o los filtrados por otros criterios si los hubiera).
+    // La lógica de filtrado por nombre/descripción que estaba aquí se elimina.
+    // if (searchTerm) {
+    //   const lowerSearchTerm = searchTerm.toLowerCase();
+    //   filtered = filtered.filter(r =>
+    //     r.nombre?.toLowerCase().includes(lowerSearchTerm) ||
+    //     r.descripcion?.toLowerCase().includes(lowerSearchTerm)
+    //     // Si el backend NO buscara por permisos, la lógica podría ir aquí,
+    //     // pero el objetivo es que el backend lo haga.
+    //   );
+    // }
     return filtered;
-  }, [roles, searchTerm, filterEstado]);
+  }, [roles, filterEstado]); // MODIFICADO: searchTerm ya no es una dependencia directa aquí porque 'roles' ya viene filtrado.
 
   // (No hay paginación en la versión original de ListaRolesPage, se podría añadir si es necesario)
 
@@ -235,8 +273,8 @@ const useRoles = () => {
     isDeleteModalOpen,
     isValidationModalOpen,
     validationMessage,
-    inputValue,      // Para el input de búsqueda
-    setInputValue,   // Para actualizar el valor del input inmediato
+    inputValue, // Para el input de búsqueda
+    setInputValue, // Para actualizar el valor del input inmediato
     filterEstado,
     setFilterEstado,
     closeModal,

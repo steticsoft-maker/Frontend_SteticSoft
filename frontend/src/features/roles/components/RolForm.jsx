@@ -1,6 +1,6 @@
 // src/features/roles/components/RolForm.jsx
-import React, { useState } from 'react';
-import PermisosSelector from './PermisosSelector';
+import React, { useState } from "react";
+import PermisosSelector from "./PermisosSelector";
 
 const RolForm = ({
   formData,
@@ -20,17 +20,17 @@ const RolForm = ({
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    onFormChange(name, type === 'checkbox' ? checked : value);
+    onFormChange(name, type === "checkbox" ? checked : value);
   };
-  
+
   const handleToggleMostrarPermisos = () => {
     if (!isRoleAdmin) {
-      setMostrarPermisos(prev => !prev);
+      setMostrarPermisos((prev) => !prev);
     }
   };
 
   const modulosSeleccionadosNombres = (formData.idPermisos || [])
-    .map(id => permisosDisponibles.find(p => p.idPermiso === id)?.nombre)
+    .map((id) => permisosDisponibles.find((p) => p.idPermiso === id)?.nombre)
     .filter(Boolean);
 
   return (
@@ -44,25 +44,42 @@ const RolForm = ({
               Nombre del Rol: <span className="required-asterisk">*</span>
             </label>
             <input
-              id="nombreRolInput" type="text" name="nombre" value={formData.nombre}
-              onChange={handleInputChange} className="rol-input" disabled={isRoleAdmin} required
+              id="nombreRolInput"
+              type="text"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleInputChange}
+              className="rol-input"
+              disabled={isRoleAdmin}
+              required
             />
-            {formErrors.nombre && <span className="error-message">{formErrors.nombre}</span>}
+            {formErrors.nombre && (
+              <span className="error-message">{formErrors.nombre}</span>
+            )}
           </div>
           <div className="rol-campoContainer">
             <label htmlFor="descripcionRolInput" className="rol-label">
               Descripción del Rol:
             </label>
             <textarea
-              id="descripcionRolInput" name="descripcion" value={formData.descripcion}
-              onChange={handleInputChange} className="rol-textarea" disabled={isRoleAdmin}
+              id="descripcionRolInput"
+              name="descripcion"
+              value={formData.descripcion}
+              onChange={handleInputChange}
+              className="rol-textarea"
+              disabled={isRoleAdmin}
             />
           </div>
           {isEditing && !isRoleAdmin && (
             <div className="rol-campoContainer">
               <label className="rol-label">Estado (Activo):</label>
               <label className="switch">
-                <input type="checkbox" name="estado" checked={formData.estado} onChange={handleInputChange} />
+                <input
+                  type="checkbox"
+                  name="estado"
+                  checked={formData.estado}
+                  onChange={handleInputChange}
+                />
                 <span className="slider"></span>
               </label>
             </div>
@@ -71,8 +88,14 @@ const RolForm = ({
       </div>
 
       {!isRoleAdmin && (
-        <button type="button" className="rol-botonSeleccionarPermisos" onClick={handleToggleMostrarPermisos}>
-          {mostrarPermisos ? "Ocultar Selección de Módulos" : "Mostrar Selección de Módulos"}
+        <button
+          type="button"
+          className="rol-botonSeleccionarPermisos"
+          onClick={handleToggleMostrarPermisos}
+        >
+          {mostrarPermisos
+            ? "Ocultar Selección de Módulos"
+            : "Mostrar Selección de Módulos"}
         </button>
       )}
 
@@ -81,27 +104,28 @@ const RolForm = ({
         permisosAgrupados={permisosAgrupados}
         permisosSeleccionadosIds={formData.idPermisos || []}
         onTogglePermiso={onToggleModulo}
-        onSelectAll={onSelectAll}       // Pasamos la nueva prop
+        onSelectAll={onSelectAll} // Pasamos la nueva prop
         onDeselectAll={onDeselectAll} // Pasamos la nueva prop
         isRoleAdmin={isRoleAdmin}
         mostrar={mostrarPermisos || isRoleAdmin}
+        isEditing={isEditing} // <--- Añadido para controlar el estado open de los acordeones
       />
       {/* --- FIN DE MODIFICACIÓN --- */}
 
-       {(mostrarPermisos || isRoleAdmin) &&
+      {(mostrarPermisos || isRoleAdmin) && (
         <div className="rol-seccionModulosSeleccionados">
-            <h3>Módulos Seleccionados ({modulosSeleccionadosNombres.length})</h3>
-            {modulosSeleccionadosNombres.length > 0 ? (
+          <h3>Módulos Seleccionados ({modulosSeleccionadosNombres.length})</h3>
+          {modulosSeleccionadosNombres.length > 0 ? (
             <ul className="rol-listaModulosSeleccionados">
-                {modulosSeleccionadosNombres.map((nombre, index) => (
-                    <li key={index}>{nombre}</li>
-                ))}
+              {modulosSeleccionadosNombres.map((nombre, index) => (
+                <li key={index}>{nombre}</li>
+              ))}
             </ul>
-            ) : (
+          ) : (
             <p>No hay módulos seleccionados</p>
-            )}
+          )}
         </div>
-      }
+      )}
     </>
   );
 };

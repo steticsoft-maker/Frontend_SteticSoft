@@ -42,7 +42,8 @@ function ListaRolesPage() {
     <div className="rol-container">
       <NavbarAdmin />
       <div className="rol-content">
-        <h1>Gestión de Roles ({roles.length})</h1> {/* Muestra el conteo de roles filtrados */}
+        <h1>Gestión de Roles ({roles.length})</h1>{" "}
+        {/* Muestra el conteo de roles filtrados */}
         <div className="rol-accionesTop">
           <input
             type="text"
@@ -54,7 +55,11 @@ function ListaRolesPage() {
           />
           <div className="rol-filtro-estado">
             <span>Estado: </span>
-            <select value={filterEstado} onChange={(e) => setFilterEstado(e.target.value)} disabled={isLoading}>
+            <select
+              value={filterEstado}
+              onChange={(e) => setFilterEstado(e.target.value)}
+              disabled={isLoading}
+            >
               <option value="todos">Todos</option>
               <option value="activos">Activos</option>
               <option value="inactivos">Inactivos</option>
@@ -68,11 +73,17 @@ function ListaRolesPage() {
             Crear Rol
           </button>
         </div>
-
         {isLoading ? (
-          <p style={{ textAlign: 'center', margin: '20px 0' }}>Cargando roles...</p>
+          <p style={{ textAlign: "center", margin: "20px 0" }}>
+            Cargando roles...
+          </p>
         ) : error ? (
-          <p className="error-message" style={{ textAlign: 'center', marginTop: '20px' }}>{error}</p>
+          <p
+            className="error-message"
+            style={{ textAlign: "center", marginTop: "20px" }}
+          >
+            {error}
+          </p>
         ) : (
           <RolesTable
             roles={roles} // roles ya está procesado (filtrado) por el hook
@@ -80,9 +91,12 @@ function ListaRolesPage() {
             onEdit={(role) => handleOpenModal("edit", role)}
             onDeleteConfirm={(role) => handleOpenModal("delete", role)}
             onToggleAnular={handleToggleEstado}
+            currentPage={1} // VALOR TENTATIVO - Reemplazar con estado/prop de paginación real
+            rowsPerPage={10} // VALOR TENTATIVO - Reemplazar con estado/prop de paginación real
           />
         )}
-        {/* Si se implementa paginación para roles, iría aquí */}
+        {/* Aquí irían los controles de paginación si se implementan */}
+        {/* Ejemplo: <Paginacion currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} /> */}
       </div>
 
       <RolCrearModal
@@ -98,7 +112,7 @@ function ListaRolesPage() {
         onClose={closeModal}
         onSubmit={handleSaveRol}
         roleData={currentRole} // Pasamos el rol actual que podría tener ya los permisos (si getRoleDetailsAPI los trae)
-                               // o solo id, nombre, desc. El modal puede necesitar cargar detalles o usar lo que se le pasa.
+        // o solo id, nombre, desc. El modal puede necesitar cargar detalles o usar lo que se le pasa.
         permisosDisponibles={permisos}
         permisosAgrupados={permisosAgrupados}
         isLoading={isSubmitting}

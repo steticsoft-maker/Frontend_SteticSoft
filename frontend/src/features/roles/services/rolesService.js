@@ -21,11 +21,17 @@ export const getPermisosAPI = async () => {
 };
 
 /**
- * Obtiene la lista completa de roles desde la API.
+ * Obtiene la lista completa de roles desde la API, opcionalmente filtrada por un término de búsqueda.
+ * @param {string} [searchTerm] - Término opcional para buscar roles.
  */
-export const fetchRolesAPI = async () => {
+export const fetchRolesAPI = async (searchTerm) => {
+  // Añadido searchTerm como parámetro
   try {
-    const response = await apiClient.get("/roles");
+    let url = "/roles";
+    if (searchTerm && searchTerm.trim() !== "") {
+      url += `?search=${encodeURIComponent(searchTerm.trim())}`; // Añadir query param si searchTerm existe
+    }
+    const response = await apiClient.get(url);
     return response.data;
   } catch (error) {
     console.error(
