@@ -11,12 +11,15 @@ const RolForm = ({
   // --- INICIO DE NUEVO CÓDIGO ---
   onSelectAll,
   onDeselectAll,
-  // --- FIN DE NUEVO CÓDIGO ---
   isEditing,
   isRoleAdmin,
   formErrors,
 }) => {
-  const [mostrarPermisos, setMostrarPermisos] = useState(isEditing || false);
+  // Estado para mostrar/ocultar la sección de permisos
+  // En modo edición, se muestra por defecto si no es admin.
+  // En modo creación, se oculta por defecto.
+  // Si es admin, siempre se muestra (y está deshabilitado).
+  const [mostrarPermisos, setMostrarPermisos] = useState(isRoleAdmin || (isEditing && !isRoleAdmin));
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -81,14 +84,23 @@ const RolForm = ({
         permisosAgrupados={permisosAgrupados}
         permisosSeleccionadosIds={formData.idPermisos || []}
         onTogglePermiso={onToggleModulo}
-        onSelectAll={onSelectAll}       // Pasamos la nueva prop
-        onDeselectAll={onDeselectAll} // Pasamos la nueva prop
+        onSelectAll={onSelectAll}
+        onDeselectAll={onDeselectAll}
         isRoleAdmin={isRoleAdmin}
-        mostrar={mostrarPermisos || isRoleAdmin}
+        mostrar={mostrarPermisos} // 'mostrarPermisos' ya considera isRoleAdmin en su estado inicial
+        // Calcular qué módulos tienen permisos seleccionados para pasarlo a PermisosSelector
+        modulosConPermisosActivos={
+          isEditing && !isRoleAdmin // Solo en edición y si no es admin
+            ? Object.entries(permisosAgrupados || {})
+                .filter(([nombreModulo, permisosDelModulo]) =>
+                  permisosDelModulo.some(p => (formData.idPermisos || []).includes(p.idPermiso))
+                )
+                .map(([nombreModulo]) => nombreModulo)
+            : [] // En creación, o si es admin (donde todos se fuerzan abiertos), pasar array vacío
+        }
       />
-      {/* --- FIN DE MODIFICACIÓN --- */}
 
-       {(mostrarPermisos || isRoleAdmin) &&
+       {(mostrarPermisos) && // 'mostrarPermisos' ya considera isRoleAdmin
         <div className="rol-seccionModulosSeleccionados">
             <h3>Módulos Seleccionados ({modulosSeleccionadosNombres.length})</h3>
             {modulosSeleccionadosNombres.length > 0 ? (

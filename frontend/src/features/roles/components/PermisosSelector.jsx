@@ -5,10 +5,13 @@ const PermisosSelector = ({
     permisosAgrupados, 
     permisosSeleccionadosIds, 
     onTogglePermiso, 
-    onSelectAll, // NUEVA PROP
-    onDeselectAll, // NUEVA PROP
+    onSelectAll,
+    onDeselectAll,
     isRoleAdmin, 
-    mostrar 
+    mostrar,
+    // Nueva prop para controlar qué módulos están abiertos por defecto (en edición)
+    // Será un Set o Array de nombres de módulos que tienen permisos seleccionados.
+    modulosConPermisosActivos
 }) => {
   if (!mostrar && !isRoleAdmin) {
     return null;
@@ -36,12 +39,20 @@ const PermisosSelector = ({
 
       <div className="rol-contenedorModulos">
         {modulos.length > 0 ? (
-          modulos.map((nombreModulo) => (
-            // --- INICIO DE MODIFICACIÓN: Usamos <details> para el acordeón ---
-            <details key={nombreModulo} className="rol-modulo-acordeon" open>
-              <summary className="rol-modulo-header-acordeon">
-                {nombreModulo}
-              </summary>
+          modulos.map((nombreModulo) => {
+            // Determinar si el acordeón debe estar abierto
+            // Por defecto cerrado, a menos que esté en modulosConPermisosActivos (para edición)
+            const estaAbiertoPorDefecto = modulosConPermisosActivos?.includes(nombreModulo) || false;
+
+            return (
+              <details
+                key={nombreModulo}
+                className="rol-modulo-acordeon"
+                open={isRoleAdmin ? true : estaAbiertoPorDefecto} // Si es Admin, siempre abierto. Sino, según la lógica.
+              >
+                <summary className="rol-modulo-header-acordeon">
+                  {nombreModulo}
+                </summary>
               <div className="rol-permisos-grid">
                 {(permisosAgrupados[nombreModulo] || []).map((permiso) => (
                   <div key={permiso.idPermiso} className="rol-moduloItem">

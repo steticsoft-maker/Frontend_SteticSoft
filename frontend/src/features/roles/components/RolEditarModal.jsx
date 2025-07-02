@@ -107,6 +107,17 @@ const RolEditarModal = ({ isOpen, onClose, onSubmit, roleId, permisosDisponibles
                 isEditing={true}
                 isRoleAdmin={isRoleAdminProtected}
                 formErrors={formErrors}
+                // --- INICIO DE MODIFICACIÓN: Pasar SelectAll/DeselectAll ---
+                onSelectAll={() => {
+                  if (isRoleAdminProtected) return;
+                  const allIds = permisosDisponibles.map(p => p.idPermiso);
+                  setFormData(prev => ({ ...prev, idPermisos: allIds }));
+                }}
+                onDeselectAll={() => {
+                  if (isRoleAdminProtected) return;
+                  setFormData(prev => ({ ...prev, idPermisos: [] }));
+                }}
+                // --- FIN DE MODIFICACIÓN ---
               />
               {formErrors.permisos && <p className="rol-error-permisos">{formErrors.permisos}</p>}
               {!isRoleAdminProtected ? (
