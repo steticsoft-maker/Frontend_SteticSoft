@@ -79,7 +79,6 @@ const PermisosSelector = ({
                 ))}
               </div>
             </details>
-            // --- FIN DE MODIFICACIÓN ---
           ))
         ) : (
           <p>No hay permisos disponibles para asignar.</p>
