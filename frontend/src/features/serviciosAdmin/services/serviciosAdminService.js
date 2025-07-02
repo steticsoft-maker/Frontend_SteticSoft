@@ -22,14 +22,7 @@ export const getServicios = async (filtros = {}) => {
  */
 export const createServicio = async (formData) => {
   try {
-    // --- CAMBIO CLAVE ---
-    // 1. El segundo argumento es el formData.
-    // 2. El tercer argumento es la configuración, donde especificamos el tipo de contenido.
-    const response = await apiClient.post('/servicios', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await apiClient.post('/servicios', formData); // Axios lo detecta automáticamente
     return response.data;
   } catch (error) {
     console.error("Error al crear el servicio:", error);
@@ -45,13 +38,7 @@ export const createServicio = async (formData) => {
  */
 export const updateServicio = async (id, formData) => {
   try {
-    // --- CAMBIO CLAVE ---
-    // Misma lógica que en createServicio.
-    const response = await apiClient.put(`/servicios/${id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await apiClient.put(`/servicios/${id}`, formData); // Axios lo detecta automáticamente
     return response.data;
   } catch (error) {
     console.error(`Error al actualizar el servicio ${id}:`, error);

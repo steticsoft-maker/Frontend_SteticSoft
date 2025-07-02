@@ -23,17 +23,17 @@ const ConfirmModal = ({
         <div className="shared-modal-actions">
           <button
             type="button"
-            className="shared-modal-button shared-modal-button-cancel"
-            onClick={onClose}
-          >
-            {cancelText}
-          </button>
-          <button
-            type="button"
             className="shared-modal-button shared-modal-button-confirm"
             onClick={onConfirm}
           >
             {confirmText}
+          </button>
+          <button
+            type="button"
+            className="shared-modal-button shared-modal-button-cancel"
+            onClick={onClose}
+          >
+            {cancelText}
           </button>
         </div>
       </div>
