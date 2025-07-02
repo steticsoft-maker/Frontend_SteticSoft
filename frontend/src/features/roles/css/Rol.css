@@ -983,3 +983,46 @@ input:checked+.slider:before {
         font-size: 1rem;
     }
 }
+
+/* --- INICIO REQUERIMIENTO 1: Layout de Columnas en Permisos --- */
+.rol-permisos-grid {
+    display: grid;
+    gap: 10px; /* Espacio entre los items de permisos */
+    padding: 15px; /* Añadido para consistencia con el diseño del acordeón */
+    border-top: 1px solid #e0e0e0; /* Añadido para consistencia */
+    background-color: white; /* Añadido para consistencia */
+    border-bottom-left-radius: 8px; /* Añadido para consistencia */
+    border-bottom-right-radius: 8px; /* Añadido para consistencia */
+
+    /* Móvil: 1 columna por defecto, se puede ajustar a 2 si el contenido es corto */
+    grid-template-columns: repeat(1, 1fr);
+}
+
+.rol-permisos-grid .rol-moduloItem {
+    /* Aseguramos que los items se comporten bien dentro del grid */
+    display: flex;
+    align-items: center;
+    /* Podrías añadir más estilos específicos para el item si es necesario */
+}
+
+/* Tablet: 2 columnas */
+@media (min-width: 600px) { /* Ajusta este breakpoint según tu diseño (e.g., 768px) */
+    .rol-permisos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Tablet ancha / Desktop pequeño: 3 columnas */
+@media (min-width: 900px) { /* Ajusta este breakpoint según tu diseño */
+    .rol-permisos-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Desktop: 4 columnas */
+@media (min-width: 1200px) { /* Ajusta este breakpoint según tu diseño */
+    .rol-permisos-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+/* --- FIN REQUERIMIENTO 1 --- */

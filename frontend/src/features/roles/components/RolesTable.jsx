@@ -40,7 +40,7 @@ const moduloIconMap = {
   // Mantener los existentes y añadir más módulos según sea necesario
 };
 
-const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) => {
+const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular, currentPage, itemsPerPage }) => {
 
   const getPermissionsForModule = (rolPermisos, moduloNombre) => {
     if (!rolPermisos) return [];
@@ -63,6 +63,7 @@ const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) 
     <table className="rol-table">
       <thead>
         <tr>
+          <th>#</th> {/* Nueva columna para numeración */}
           <th>Nombre del Rol</th>
           <th>Descripción</th>
           <th>Permisos por Módulo</th> {/* Cambiado de "Módulos Asignados" */}
@@ -71,7 +72,13 @@ const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) 
         </tr>
       </thead>
       <tbody>
-        {Array.isArray(roles) && roles.map((rol) => {
+        {Array.isArray(roles) && roles.map((rol, index) => {
+          // Calcular el número de fila
+          // Asumimos que currentPage es base 1 (ej. página 1, 2, 3...)
+          // y itemsPerPage es el número de items por página.
+          // Si currentPage no se pasa o es 0 o undefined, la numeración comenzará desde 1.
+          const rowNumber = (currentPage && itemsPerPage) ? (currentPage - 1) * itemsPerPage + index + 1 : index + 1;
+
           const modulosConPermisos = new Map();
           (rol.permisos || []).forEach(p => {
             const parts = p.nombre.split('_');
@@ -89,6 +96,7 @@ const RolesTable = ({ roles, onView, onEdit, onDeleteConfirm, onToggleAnular }) 
 
           return (
             <tr key={rol.idRol}>
+              <td data-label="#">{rowNumber}</td> {/* Celda para el número de fila */}
               <td data-label="Nombre del Rol">{rol.nombre}</td>
               <td data-label="Descripción">{rol.descripcion}</td>
               <td data-label="Permisos por Módulo:" className="permisos-cell">

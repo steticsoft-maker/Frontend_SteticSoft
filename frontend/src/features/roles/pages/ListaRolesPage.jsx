@@ -36,6 +36,9 @@ function ListaRolesPage() {
     handleSaveRol,
     handleDeleteRol,
     handleToggleEstado,
+    // Asumiendo que el hook provee estos valores para la paginación
+    currentPage,
+    itemsPerPage,
   } = useRoles();
 
   return (
@@ -46,7 +49,7 @@ function ListaRolesPage() {
         <div className="rol-accionesTop">
           <input
             type="text"
-            placeholder="Buscar rol por nombre o descripción..."
+            placeholder="Buscar por nombre, descripción o permiso..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="rol-barraBusqueda"
@@ -80,6 +83,8 @@ function ListaRolesPage() {
             onEdit={(role) => handleOpenModal("edit", role)}
             onDeleteConfirm={(role) => handleOpenModal("delete", role)}
             onToggleAnular={handleToggleEstado}
+            currentPage={currentPage} // Pasar currentPage
+            itemsPerPage={itemsPerPage} // Pasar itemsPerPage
           />
         )}
         {/* Si se implementa paginación para roles, iría aquí */}
