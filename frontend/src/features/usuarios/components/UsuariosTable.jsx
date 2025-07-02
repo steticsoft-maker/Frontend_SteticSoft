@@ -15,7 +15,7 @@ const UsuariosTable = ({
         <tr>
           <th>Nombres</th>
           <th>Apellidos</th>
-          <th>Correo Electrónico</th> {/* Este es el correo de la cuenta de usuario */}
+          <th>Correo Electrónico</th>
           <th>Rol</th>
           <th>Teléfono</th>
           <th>Estado</th>
