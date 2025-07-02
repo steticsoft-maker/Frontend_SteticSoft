@@ -5,9 +5,13 @@ import PermisosSelector from './PermisosSelector';
 const RolForm = ({
   formData,
   onFormChange,
-  permisosDisponibles, // Todavía recibimos la lista plana
-  permisosAgrupados, // PERO AHORA TAMBIÉN LOS AGRUPADOS
+  permisosDisponibles,
+  permisosAgrupados,
   onToggleModulo,
+  // --- INICIO DE NUEVO CÓDIGO ---
+  onSelectAll,
+  onDeselectAll,
+  // --- FIN DE NUEVO CÓDIGO ---
   isEditing,
   isRoleAdmin,
   formErrors,
@@ -32,10 +36,10 @@ const RolForm = ({
   return (
     <>
       <div className="rol-seccionInformacionRol">
+        {/* ... El resto de la sección de información del rol no cambia ... */}
         <h3>Información del Rol</h3>
         <div className="rol-formularioInformacionRol">
-          {/* ... campos de nombre y descripción sin cambios ... */}
-           <div className="rol-campoContainer">
+          <div className="rol-campoContainer">
             <label htmlFor="nombreRolInput" className="rol-label">
               Nombre del Rol: <span className="required-asterisk">*</span>
             </label>
@@ -68,18 +72,21 @@ const RolForm = ({
 
       {!isRoleAdmin && (
         <button type="button" className="rol-botonSeleccionarPermisos" onClick={handleToggleMostrarPermisos}>
-          {mostrarPermisos ? "Ocultar Módulos" : "Seleccionar Módulos"}
+          {mostrarPermisos ? "Ocultar Selección de Módulos" : "Mostrar Selección de Módulos"}
         </button>
       )}
 
-      {/* AQUÍ EL CAMBIO PRINCIPAL: PASAMOS LOS PERMISOS AGRUPADOS */}
+      {/* --- INICIO DE MODIFICACIÓN --- */}
       <PermisosSelector
         permisosAgrupados={permisosAgrupados}
         permisosSeleccionadosIds={formData.idPermisos || []}
         onTogglePermiso={onToggleModulo}
+        onSelectAll={onSelectAll}       // Pasamos la nueva prop
+        onDeselectAll={onDeselectAll} // Pasamos la nueva prop
         isRoleAdmin={isRoleAdmin}
         mostrar={mostrarPermisos || isRoleAdmin}
       />
+      {/* --- FIN DE MODIFICACIÓN --- */}
 
        {(mostrarPermisos || isRoleAdmin) &&
         <div className="rol-seccionModulosSeleccionados">

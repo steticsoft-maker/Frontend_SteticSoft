@@ -1,23 +1,47 @@
 // src/features/roles/components/PermisosSelector.jsx
 import React from 'react';
 
-const PermisosSelector = ({ permisosAgrupados, permisosSeleccionadosIds, onTogglePermiso, isRoleAdmin, mostrar }) => {
+const PermisosSelector = ({ 
+    permisosAgrupados, 
+    permisosSeleccionadosIds, 
+    onTogglePermiso, 
+    onSelectAll, // NUEVA PROP
+    onDeselectAll, // NUEVA PROP
+    isRoleAdmin, 
+    mostrar 
+}) => {
   if (!mostrar && !isRoleAdmin) {
     return null;
   }
 
-  // CORRECCIÓN: Añadimos '|| {}' como valor de respaldo.
-  // Si permisosAgrupados es null o undefined, usará un objeto vacío en su lugar, evitando el error.
   const modulos = Object.keys(permisosAgrupados || {});
 
   return (
     <div className="rol-seccionSeleccionarModulos">
-      <h3>Módulos Disponibles</h3>
+      <div className="rol-permisos-header">
+        <h3>Módulos Disponibles</h3>
+        {/* --- INICIO DE NUEVO CÓDIGO: BOTONES DE ACCIÓN --- */}
+        {!isRoleAdmin && (
+          <div className="rol-permisos-action-buttons">
+            <button type="button" className="rol-permisos-button" onClick={onSelectAll}>
+              Marcar Todos
+            </button>
+            <button type="button" className="rol-permisos-button" onClick={onDeselectAll}>
+              Desmarcar Todos
+            </button>
+          </div>
+        )}
+        {/* --- FIN DE NUEVO CÓDIGO --- */}
+      </div>
+
       <div className="rol-contenedorModulos">
         {modulos.length > 0 ? (
           modulos.map((nombreModulo) => (
-            <div key={nombreModulo} className="rol-moduloGrupo">
-              <h4>Módulo: {nombreModulo}</h4>
+            // --- INICIO DE MODIFICACIÓN: Usamos <details> para el acordeón ---
+            <details key={nombreModulo} className="rol-modulo-acordeon" open>
+              <summary className="rol-modulo-header-acordeon">
+                {nombreModulo}
+              </summary>
               <div className="rol-permisos-grid">
                 {(permisosAgrupados[nombreModulo] || []).map((permiso) => (
                   <div key={permiso.idPermiso} className="rol-moduloItem">
@@ -29,22 +53,22 @@ const PermisosSelector = ({ permisosAgrupados, permisosSeleccionadosIds, onToggl
                       disabled={isRoleAdmin}
                     />
                     {(() => {
-                      // Extraer la acción del nombre del permiso. Ej: MODULO_USUARIOS_CREAR -> CREAR
                       const parts = permiso.nombre.split('_');
-                      let accionName = permiso.nombre; // Por defecto, el nombre completo si no sigue el patrón
-                      if (parts.length > 2 && parts[0] === "MODULO") {
-                        accionName = parts.slice(2).join('_'); // Ej: CREAR, GESTIONAR_ALGO
-                      }
-                      // Capitalizar primera letra de cada palabra de la acción para mejor lectura
+                      let accionName = parts.length > 2 && parts[0] === "MODULO" 
+                        ? parts.slice(2).join('_') 
+                        : permiso.nombre;
+                      
                       const displayAccion = accionName.split('_')
                         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
                         .join(' ');
+                        
                       return <label htmlFor={`permiso-${permiso.idPermiso}`}>{displayAccion}</label>;
                     })()}
                   </div>
                 ))}
               </div>
-            </div>
+            </details>
+            // --- FIN DE MODIFICACIÓN ---
           ))
         ) : (
           <p>No hay permisos disponibles para asignar.</p>

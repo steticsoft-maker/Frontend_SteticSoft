@@ -7,7 +7,7 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
   const getInitialFormState = () => ({
     nombre: '',
     descripcion: '',
-    idPermisos: [], // Manejaremos los IDs de los permisos
+    idPermisos: [],
     estado: true,
   });
 
@@ -37,6 +37,25 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
         return { ...prev, idPermisos: idPermisosNuevos };
     });
   };
+
+  // --- INICIO DE NUEVO CÓDIGO ---
+  /**
+   * Selecciona todos los permisos disponibles.
+   * Obtiene todos los IDs de 'permisosDisponibles' y los establece en el estado.
+   */
+  const handleSelectAll = () => {
+    const allIds = permisosDisponibles.map(p => p.idPermiso);
+    setFormData(prev => ({ ...prev, idPermisos: allIds }));
+  };
+
+  /**
+   * Deselecciona todos los permisos.
+   * Simplemente establece el array 'idPermisos' a un array vacío.
+   */
+  const handleDeselectAll = () => {
+    setFormData(prev => ({ ...prev, idPermisos: [] }));
+  };
+  // --- FIN DE NUEVO CÓDIGO ---
 
   const validateForm = () => {
     const errors = {};
@@ -69,9 +88,13 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
           <RolForm
             formData={formData}
             onFormChange={handleFormChange}
-            permisosDisponibles={permisosDisponibles} // Para el resumen de seleccionados
-            permisosAgrupados={permisosAgrupados}   // Para el selector de permisos
+            permisosDisponibles={permisosDisponibles}
+            permisosAgrupados={permisosAgrupados}
             onToggleModulo={handleToggleModulo}
+            // --- INICIO DE MODIFICACIÓN ---
+            onSelectAll={handleSelectAll}
+            onDeselectAll={handleDeselectAll}
+            // --- FIN DE MODIFICACIÓN ---
             isEditing={false}
             isRoleAdmin={false}
             formErrors={formErrors}

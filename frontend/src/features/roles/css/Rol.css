@@ -460,6 +460,94 @@ input:checked+.slider:before {
     text-align: center;
 }
 
+/* Contenedor del encabezado para alinear título y botones */
+.rol-permisos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.rol-permisos-header h3 {
+    margin: 0;
+}
+
+/* Contenedor de los botones de acción globales */
+.rol-permisos-action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Estilo para los botones "Marcar Todos" y "Desmarcar Todos" */
+.rol-permisos-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border: 1px solid var(--color-admin-hover, #b660a3);
+    background-color: transparent;
+    color: var(--color-admin-hover, #b660a3);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+}
+
+.rol-permisos-button:hover {
+    background-color: var(--color-admin-hover, #b660a3);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Estilos para el nuevo acordeón de módulos */
+.rol-modulo-acordeon {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.rol-modulo-acordeon[open] {
+    background-color: #fdfcff;
+}
+
+.rol-modulo-header-acordeon {
+    padding: 12px 15px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-primary-darker, #6d0b58);
+    cursor: pointer;
+    list-style: none;
+    /* Oculta el marcador de flecha por defecto */
+    display: flex;
+    align-items: center;
+}
+
+/* Indicador de flecha personalizado para el acordeón */
+.rol-modulo-header-acordeon::-webkit-details-marker {
+    display: none;
+    /* Oculta la flecha en Chrome/Safari */
+}
+
+.rol-modulo-header-acordeon::before {
+    content: '▶';
+    font-size: 0.7em;
+    margin-right: 10px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.rol-modulo-acordeon[open]>.rol-modulo-header-acordeon::before {
+    transform: rotate(90deg);
+}
+
+.rol-modulo-acordeon .rol-permisos-grid {
+    padding: 15px;
+    border-top: 1px solid #e0e0e0;
+    background-color: white;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
 /* Título en confirmación */
 .rol-modalContent-confirm h3 {
     text-align: center;
