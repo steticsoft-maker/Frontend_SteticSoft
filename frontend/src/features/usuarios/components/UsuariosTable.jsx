@@ -8,11 +8,14 @@ const UsuariosTable = ({
   onEdit,
   onDeleteConfirm,
   onToggleAnular,
+  currentPage = 1, // Valor por defecto para currentPage
+  rowsPerPage = 10, // Valor por defecto para rowsPerPage, ajustar si es necesario
 }) => {
   return (
     <table className="usuarios-table">
       <thead>
         <tr>
+          <th>#</th> {/* Nueva columna para numeración */}
           <th>Nombres</th>
           <th>Apellidos</th>
           <th>Correo Electrónico</th>
@@ -23,7 +26,8 @@ const UsuariosTable = ({
         </tr>
       </thead>
       <tbody>
-        {usuarios.map((usuario) => {
+        {usuarios.map((usuario, index) => {
+          const numeroFila = (currentPage - 1) * rowsPerPage + index + 1;
           // 'perfil' contendrá los datos específicos del cliente o empleado
           const perfil = usuario.clienteInfo || usuario.empleadoInfo || {};
 
@@ -32,6 +36,7 @@ const UsuariosTable = ({
 
           return (
             <tr key={usuario.idUsuario}>
+              <td data-label="#">{numeroFila}</td> {/* Celda para el número de fila */}
               {/* Ahora usamos la variable 'perfil' para acceder a los datos */}
               <td data-label="Nombres:">{perfil.nombre || 'N/A'}</td>
               <td data-label="Apellidos:">{perfil.apellido || 'N/A'}</td> {/* Muestra el apellido */}

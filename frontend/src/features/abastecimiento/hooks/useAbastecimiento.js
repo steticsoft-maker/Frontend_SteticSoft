@@ -179,8 +179,28 @@ const useAbastecimiento = () => {
     return filtered;
   }, [entries, searchTerm, filterEstado]);
 
+  // --- Estados para Paginación ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Fijo en 10
+
+  // Calcular entries para la página actual
+  const currentEntriesForTable = useMemo(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return processedEntries.slice(indexOfFirstItem, indexOfLastItem);
+  }, [processedEntries, currentPage, itemsPerPage]);
+
+  // Función para cambiar de página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Resetear a la página 1 cuando los filtros o término de búsqueda cambian
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterEstado]);
+
   return {
-    entries: processedEntries,
+    entries: currentEntriesForTable, // Entries filtrados Y PAGINADOS para la tabla
+    totalEntriesFiltrados: processedEntries.length, // Total para el componente de paginación
     isLoading,
     isSubmitting,
     error,
@@ -201,6 +221,10 @@ const useAbastecimiento = () => {
     handleSubmitForm,
     handleDeleteConfirmed,
     handleDepleteConfirmed,
+    // Paginación
+    currentPage,
+    itemsPerPage,
+    paginate,
   };
 };
 

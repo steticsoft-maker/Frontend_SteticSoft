@@ -259,8 +259,29 @@ const useRoles = () => {
 
   // (No hay paginación en la versión original de ListaRolesPage, se podría añadir si es necesario)
 
+  // --- Estados para Paginación ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Fijo en 10
+
+  // Calcular roles para la página actual
+  const currentRolesForTable = useMemo(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return processedRoles.slice(indexOfFirstItem, indexOfLastItem);
+  }, [processedRoles, currentPage, itemsPerPage]);
+
+  // Función para cambiar de página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Resetear a la página 1 cuando los filtros o término de búsqueda cambian
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterEstado]);
+
+
   return {
-    roles: processedRoles, // Roles filtrados para la tabla
+    roles: currentRolesForTable, // Roles filtrados Y PAGINADOS para la tabla
+    totalRolesFiltrados: processedRoles.length, // Total para el componente de paginación
     permisos, // Todos los permisos para los modales de creación/edición
     permisosAgrupados, // Permisos agrupados por módulo para los modales
     isLoading,
@@ -282,6 +303,10 @@ const useRoles = () => {
     handleSaveRol,
     handleDeleteRol,
     handleToggleEstado,
+    // Paginación
+    currentPage,
+    itemsPerPage,
+    paginate,
   };
 };
 

@@ -3,11 +3,20 @@ import React from "react";
 import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
 import { calculateRemainingLifetime } from "../services/abastecimientoService";
 
-const AbastecimientoTable = ({ entries, onView, onEdit, onDelete, onDeplete }) => {
+const AbastecimientoTable = ({
+  entries,
+  onView,
+  onEdit,
+  onDelete,
+  onDeplete,
+  currentPage = 1, // Valor por defecto para currentPage
+  rowsPerPage = 10, // Valor por defecto para rowsPerPage, ajustar si es necesario
+}) => {
   return (
     <table className="tabla-abastecimiento">
       <thead>
         <tr>
+          <th>#</th> {/* Nueva columna para numeración */}
           <th>Producto</th>
           <th>Categoría</th>
           <th>Cantidad</th>
@@ -19,14 +28,17 @@ const AbastecimientoTable = ({ entries, onView, onEdit, onDelete, onDeplete }) =
         </tr>
       </thead>
       <tbody>
-        {entries.map((entry) => (
-          <tr
-            key={entry.idAbastecimiento}
-            className={entry.estaAgotado ? "depleted-row" : ""}
-          >
-            <td data-label="Producto:">{entry.producto?.nombre || "N/A"}</td>
-            <td data-label="Categoría:">
-              {entry.producto?.categoria?.nombre || "N/A"}
+        {entries.map((entry, index) => {
+          const numeroFila = (currentPage - 1) * rowsPerPage + index + 1;
+          return (
+            <tr
+              key={entry.idAbastecimiento}
+              className={entry.estaAgotado ? "depleted-row" : ""}
+            >
+              <td data-label="#">{numeroFila}</td> {/* Celda para el número de fila */}
+              <td data-label="Producto:">{entry.producto?.nombre || "N/A"}</td>
+              <td data-label="Categoría:">
+                {entry.producto?.categoria?.nombre || "N/A"}
             </td>
             <td data-label="Cantidad:">{entry.cantidad}</td>
             <td data-label="Empleado:">{entry.empleado?.nombre || "No asignado"}</td>
