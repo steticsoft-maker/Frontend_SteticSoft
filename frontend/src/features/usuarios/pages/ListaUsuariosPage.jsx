@@ -70,18 +70,18 @@ function ListaUsuariosPage() {
             disabled={isLoadingPage} // Deshabilitar si la página está cargando datos iniciales
           />
           <div className="usuarios-filtro-estado">
-            <span>Estado: </span>
-            <label className="switch">
-              <input
-                type="checkbox"
-                checked={filterEstado === "activos"}
-                onChange={(e) => setFilterEstado(e.target.checked ? "activos" : "inactivos")}
-                disabled={isLoadingPage}
-              />
-              <span className="slider"></span>
-            </label>
-            <span className="switch-label">{filterEstado === "activos" ? "Activos" : "Inactivos"}</span>
+            <span>Filtrar por estado: </span>
+            <select value={filterEstado} onChange={(e) => setFilterEstado(e.target.value)} disabled={isLoadingPage}>
+              <option value="todos">Todos</option>
+              <option value="activos">Activos</option>
+              <option value="inactivos">Inactivos</option>
+            </select>
           </div>
+          {/* <select value={filterEstado} onChange={(e) => setFilterEstado(e.target.value)}>
+            <option value="todos">Todos</option>
+            <option value="activos">Activos</option>
+            <option value="inactivos">Inactivos</option>
+          </select> */}
           <button
             className="usuarios-botonAgregar"
             onClick={() => handleOpenModal("create")}
