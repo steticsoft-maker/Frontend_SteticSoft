@@ -28,7 +28,7 @@ const useUsuarios = () => {
   // --- Estados para Búsqueda y Filtrado (Requerimiento 3) ---
   const [inputValue, setInputValue] = useState(""); // Para el input de búsqueda inmediato
   const [searchTerm, setSearchTerm] = useState(""); // Para el término de búsqueda "debounced"
-  const [filterEstado, setFilterEstado] = useState("todos"); // 'todos', 'activos', 'inactivos'
+  const [filterEstado, setFilterEstado] = useState("activos"); // 'activos', 'inactivos' (Default 'activos')
 
   // --- Estados para la Paginación ---
   const [currentPage, setCurrentPage] = useState(1);
