@@ -9,14 +9,14 @@ const AbastecimientoTable = ({
   onEdit,
   onDelete,
   onDeplete,
-  currentPage = 1, // Valor por defecto para currentPage
-  rowsPerPage = 10, // Valor por defecto para rowsPerPage, ajustar si es necesario
+  currentPage = 1,
+  rowsPerPage = 10,
 }) => {
   return (
     <table className="tabla-abastecimiento">
       <thead>
         <tr>
-          <th>#</th> {/* Nueva columna para numeración */}
+          <th>#</th>
           <th>Producto</th>
           <th>Categoría</th>
           <th>Cantidad</th>
@@ -35,66 +35,71 @@ const AbastecimientoTable = ({
               key={entry.idAbastecimiento}
               className={entry.estaAgotado ? "depleted-row" : ""}
             >
-              <td data-label="#">{numeroFila}</td> {/* Celda para el número de fila */}
+              <td data-label="#">{numeroFila}</td>
               <td data-label="Producto:">{entry.producto?.nombre || "N/A"}</td>
               <td data-label="Categoría:">
                 {entry.producto?.categoria?.nombre || "N/A"}
-            </td>
-            <td data-label="Cantidad:">{entry.cantidad}</td>
-            <td data-label="Empleado:">{entry.empleado?.nombre || "No asignado"}</td>
-            <td data-label="Fecha Ingreso:">
-              {new Date(entry.fechaIngreso).toLocaleDateString()}
-            </td>
-            <td data-label="Vida Restante:">{calculateRemainingLifetime(entry)}</td>
-            <td data-label="Estado:">
-              {entry.estaAgotado ? (
-                <>
-                  Agotado
-                  <span className="depleted-reason-text">
-                    {entry.razonAgotamiento || "Sin especificar"}
-                  </span>
-                </>
-              ) : (
-                "Disponible"
-              )}
-            </td>
-            <td data-label="Acciones:">
-              <div className="icon-actions-abastecimiento">
-                <button
-                  className="table-icons-abastecimiento view-button"
-                  onClick={() => onView(entry)}
-                  title="Ver Detalles"
-                >
-                  <FaEye />
-                </button>
-                <button
-                  className="table-icons-abastecimiento edit-button"
-                  onClick={() => onEdit(entry)}
-                  title="Editar Cantidad"
-                  disabled={entry.estaAgotado}
-                >
-                  <FaEdit />
-                </button>
-                {!entry.estaAgotado && (
-                  <button
-                    className="table-icons-abastecimiento deplete-button-abastecimiento"
-                    onClick={() => onDeplete(entry)}
-                    title="Marcar como Agotado"
-                  >
-                    Agotar
-                  </button>
+              </td>
+              <td data-label="Cantidad:">{entry.cantidad}</td>
+              <td data-label="Empleado:">
+                {entry.empleado?.nombre || "No asignado"}
+              </td>
+              <td data-label="Fecha Ingreso:">
+                {new Date(entry.fechaIngreso).toLocaleDateString()}
+              </td>
+              <td data-label="Vida Restante:">
+                {calculateRemainingLifetime(entry)}
+              </td>
+              <td data-label="Estado:">
+                {entry.estaAgotado ? (
+                  <>
+                    Agotado
+                    <span className="depleted-reason-text">
+                      {entry.razonAgotamiento || "Sin especificar"}
+                    </span>
+                  </>
+                ) : (
+                  "Disponible"
                 )}
-                <button
-                  className="table-icons-abastecimiento delete-button-abastecimiento"
-                  onClick={() => onDelete(entry)}
-                  title="Eliminar Registro"
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            </td>
-          </tr>
-        ))}
+              </td>
+              <td data-label="Acciones:">
+                <div className="icon-actions-abastecimiento">
+                  <button
+                    className="table-icons-abastecimiento view-button"
+                    onClick={() => onView(entry)}
+                    title="Ver Detalles"
+                  >
+                    <FaEye />
+                  </button>
+                  <button
+                    className="table-icons-abastecimiento edit-button"
+                    onClick={() => onEdit(entry)}
+                    title="Editar Cantidad"
+                    disabled={entry.estaAgotado}
+                  >
+                    <FaEdit />
+                  </button>
+                  {!entry.estaAgotado && (
+                    <button
+                      className="table-icons-abastecimiento deplete-button-abastecimiento"
+                      onClick={() => onDeplete(entry)}
+                      title="Marcar como Agotado"
+                    >
+                      Agotar
+                    </button>
+                  )}
+                  <button
+                    className="table-icons-abastecimiento delete-button-abastecimiento"
+                    onClick={() => onDelete(entry)}
+                    title="Eliminar Registro"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ); // <-- Faltaba el paréntesis de cierre del return
+        })}
       </tbody>
     </table>
   );
