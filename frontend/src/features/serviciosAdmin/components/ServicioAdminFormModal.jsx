@@ -1,53 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import '../css/ServiciosAdmin.css';
 import { toast } from 'react-toastify';
+import '../css/ServiciosAdmin.css';
 
 const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode, categorias }) => {
   
   const [formData, setFormData] = useState({});
   const [imagenFile, setImagenFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
-  // CAMBIO: Se usa un objeto para los errores de cada campo
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // --- Lógica de Validación en Tiempo Real ---
+  // La lógica de validación por campo permanece igual
   const validateField = (name, value) => {
     let error = "";
     switch (name) {
       case 'nombre':
-        if (!value.trim()) {
-          error = "El nombre es obligatorio.";
-        } else if (!/^[a-zA-Z0-9\sñÑáéíóúÁÉÍÓÚüÜ]+$/.test(value)) {
-          error = "El nombre solo puede contener letras, números y espacios.";
-        }
+        if (!value.trim()) error = "El nombre es obligatorio.";
+        else if (!/^[a-zA-Z0-9\sñÑáéíóúÁÉÍÓÚüÜ]+$/.test(value)) error = "El nombre solo puede contener letras, números y espacios.";
         break;
       case 'precio':
-        if (!String(value).trim()) {
-          error = "El precio es obligatorio.";
-        } else if (isNaN(value) || Number(value) < 0) {
-          error = "El precio debe ser un número no negativo.";
-        }
+        if (!String(value).trim()) error = "El precio es obligatorio.";
+        else if (isNaN(value) || Number(value) < 0) error = "El precio debe ser un número no negativo.";
         break;
-      case 'idCategoriaServicio':
-        if (!value) {
-          error = "Debe seleccionar una categoría.";
-        }
+      case 'categoriaServicioId':
+        if (!value) error = "Debe seleccionar una categoría.";
         break;
       default:
         break;
     }
-    // Actualiza el estado de errores para el campo específico
     setFormErrors(prev => ({ ...prev, [name]: error }));
     return error;
   };
 
+  // La inicialización del formulario permanece igual
   useEffect(() => {
     if (isOpen) {
+      setFormErrors({});
       setIsSubmitting(false);
       setImagenFile(null);
-      setFormErrors({}); // Limpia los errores al abrir el modal
-
+      
       const getInitialImageUrl = () => {
         if (isEditMode && initialData?.imagen) {
           const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
@@ -61,7 +52,7 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
         descripcion: isEditMode ? initialData.descripcion || '' : '',
         precio: isEditMode ? initialData.precio || '' : '',
         duracionEstimada: isEditMode ? initialData.duracionEstimadaMin || '' : '',
-        idCategoriaServicio: isEditMode ? initialData.idCategoriaServicio || '' : '',
+        categoriaServicioId: isEditMode ? initialData.categoriaServicioId || '' : '',
       });
       setPreviewUrl(getInitialImageUrl());
     }
@@ -70,7 +61,6 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Valida el campo cada vez que cambia
     validateField(name, value);
   };
 
@@ -82,37 +72,54 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     }
   };
 
+  // --- CAMBIO CLAVE: Lógica de envío de datos más robusta ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Valida todos los campos antes de enviar
+    // 1. Validar todos los campos antes de continuar
     const validationErrors = {};
+    let firstErrorField = null;
     Object.keys(formData).forEach(key => {
       const error = validateField(key, formData[key]);
       if (error) {
         validationErrors[key] = error;
+        if (!firstErrorField) firstErrorField = key;
       }
     });
 
     if (Object.keys(validationErrors).length > 0) {
       setFormErrors(validationErrors);
-      toast.error("Por favor, corrige los errores en el formulario.");
+      toast.error("Por favor, corrige los errores del formulario.");
       return;
     }
     
     setIsSubmitting(true);
+    
+    // 2. Construir el FormData de forma precisa
     const submissionData = new FormData();
-    Object.keys(formData).forEach(key => {
-      submissionData.append(key, formData[key]);
-    });
+    
+    // Añadir campos obligatorios
+    submissionData.append('nombre', formData.nombre);
+    submissionData.append('precio', formData.precio);
+    submissionData.append('categoriaServicioId', formData.categoriaServicioId);
+    
+    // Añadir campos opcionales SOLO SI tienen un valor
+    if (formData.descripcion) {
+      submissionData.append('descripcion', formData.descripcion);
+    }
+    if (formData.duracionEstimada) {
+      submissionData.append('duracionEstimada', formData.duracionEstimada);
+    }
     if (imagenFile) {
       submissionData.append('imagen', imagenFile);
     }
 
+    // 3. Enviar los datos
     try {
       await onSubmit(submissionData);
     } catch (err) {
-      toast.error(err.message || 'Error al guardar.');
+      // El error de la API (400) será capturado aquí
+      toast.error(err.response?.data?.message || err.message || 'Error al guardar.');
     } finally {
       setIsSubmitting(false);
     }
@@ -127,7 +134,7 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
         
         <form onSubmit={handleSubmit} noValidate>
           <div className="servicios-admin-form-grid">
-            
+            {/* El JSX del formulario permanece igual */}
             <div className="servicios-admin-form-group">
               <label>Nombre del Servicio <span className="required-asterisk">*</span></label>
               <input name="nombre" value={formData.nombre || ''} onChange={handleChange} className="form-control" />
@@ -152,13 +159,13 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
             
             <div className="servicios-admin-form-group">
               <label>Categoría <span className="required-asterisk">*</span></label>
-              <select name="idCategoriaServicio" value={formData.idCategoriaServicio || ''} onChange={handleChange} className="form-control">
+              <select name="categoriaServicioId" value={formData.categoriaServicioId || ''} onChange={handleChange} className="form-control">
                 <option value="">Seleccione una categoría...</option>
-                {categorias.map(cat => (
+                {(categorias || []).map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
                 ))}
               </select>
-              {formErrors.idCategoriaServicio && <span className="field-error-message">{formErrors.idCategoriaServicio}</span>}
+              {formErrors.categoriaServicioId && <span className="field-error-message">{formErrors.categoriaServicioId}</span>}
             </div>
             
             <div className="servicios-admin-form-group">

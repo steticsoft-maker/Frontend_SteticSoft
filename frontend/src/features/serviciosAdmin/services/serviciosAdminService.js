@@ -72,19 +72,26 @@ export const cambiarEstadoServicio = async (id, nuevoEstado) => {
 
 export const getActiveCategoriasForSelect = async () => {
   try {
+    // La función getCategoriasServicio devuelve la respuesta completa de Axios
     const response = await getCategoriasServicio({ estado: true });
-    // CORRECCIÓN: Acceder directamente a 'response.data' que contiene el arreglo.
-     const todasCategoriasActivas = response.data || []; 
-    
-    if (todasCategoriasActivas.length === 0) {
-      console.warn("No se encontraron categorías activas desde la API.");
+
+    // CAMBIO CLAVE: El array de datos está dentro de response.data.data
+    const categoriasArray = response.data?.data;
+
+    // Se valida que sea un array antes de continuar
+    if (!Array.isArray(categoriasArray)) {
+      console.error("La respuesta de la API no contenía un array de categorías en la ubicación esperada.");
+      return []; // Devuelve un array vacío para no romper la aplicación
     }
-    return todasCategoriasActivas.map(cat => ({
-      value: cat.idCategoriaServicio, // Usar 'value' y 'label' es una convención común en librerías de componentes
+
+    return categoriasArray.map(cat => ({
+      value: cat.idCategoriaServicio,
       label: cat.nombre
     }));
+
   } catch (error) {
-   console.error("ERROR GRAVE al obtener categorías de servicio activas:", error);
+    console.error("Error al obtener las categorías:", error);
+    toast.error("No se pudieron cargar las categorías.");
     return []; 
   }
 };
