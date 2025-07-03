@@ -4,18 +4,25 @@ const API_BASE_PATH = "/categorias-producto"; // Ruta base de la API para catego
 
 /**
  * Función para obtener todas las categorías de producto desde el backend.
- * Permite filtrar por estado y tipo de uso.
- * @param {object} [filters={}] - Opciones de filtro (estado, tipoUso).
+ * Permite filtrar por estado, tipo de uso y un término de búsqueda general.
+ * @param {object} [filters={}] - Opciones de filtro ({ estado, tipoUso, search }).
  * @returns {Promise<Array>} Una promesa que resuelve con la lista de categorías.
  */
-export const fetchCategoriasProducto = async (filters = {}) => {
+export const fetchCategoriasProducto = async (filters = {}) => { 
   try {
     const params = new URLSearchParams();
+    
+    // Filtros existentes (estado, tipoUso)
     if (filters.estado !== undefined) {
       params.append('estado', filters.estado);
     }
     if (filters.tipoUso) {
       params.append('tipoUso', filters.tipoUso);
+    }
+
+    // AÑADIDO: Si hay un término de búsqueda, lo añadimos como parámetro 'search'
+    if (filters.search) {
+      params.append('search', filters.search);
     }
 
     const response = await apiClient.get(`${API_BASE_PATH}?${params.toString()}`);
@@ -86,11 +93,6 @@ export const saveCategoriaProducto = async (categoriaData) => {
 export const toggleCategoriaProductoEstado = async (idCategoria, nuevoEstado) => {
   try {
     const endpoint = nuevoEstado ? `${API_BASE_PATH}/${idCategoria}/habilitar` : `${API_BASE_PATH}/${idCategoria}/anular`;
-    // Aunque el backend tiene `/estado`, podemos usar las rutas específicas para anular/habilitar
-    // si el componente sabe el estado deseado.
-    // Si queremos usar la ruta genérica `PATCH /:idCategoria/estado`, sería así:
-    // const response = await apiClient.patch(`${API_BASE_PATH}/${idCategoria}/estado`, { estado: nuevoEstado });
-
     const response = await apiClient.patch(endpoint); // Para anular/habilitar no necesitamos body según tus rutas
     return response.data.data;
   } catch (error) {

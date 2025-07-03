@@ -8,7 +8,7 @@ import CategoriaProductoDetalleModal from "../components/CategoriaProductoDetall
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
 import {
-  fetchCategoriasProducto,
+  fetchCategoriasProducto, // <--- Esta es la función que ahora aceptará un searchTerm
   saveCategoriaProducto,
   deleteCategoriaProductoById,
   toggleCategoriaProductoEstado,
@@ -16,11 +16,10 @@ import {
 import "../css/CategoriasProducto.css";
 
 function ListaCategoriasProductoPage() {
-  // Inicializamos categorias como un array vacío para evitar errores de .filter
   const [categorias, setCategorias] = useState([]);
-  const [busqueda, setBusqueda] = useState("");
-  const [loading, setLoading] = useState(true); // Nuevo estado de carga
-  const [, setError] = useState(null); // Nuevo estado para errores de API
+  const [busqueda, setBusqueda] = useState(""); // Término de búsqueda
+  const [loading, setLoading] = useState(true);
+  const [, setError] = useState(null); // Usado para errores internos o de carga inicial que no van al modal de validación
 
   // Estados para modales
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
@@ -32,25 +31,37 @@ function ListaCategoriasProductoPage() {
   const [currentCategoria, setCurrentCategoria] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
 
-  // CAMBIO CLAVE: Cargar datos de la API de forma asíncrona
-  useEffect(() => {
-    const loadCategorias = async () => {
-      try {
-        setLoading(true); // Inicia carga
-        const data = await fetchCategoriasProducto(); // Llama a la API
-        setCategorias(data);
-      } catch (err) {
-        console.error("Error al cargar las categorías:", err);
-        setError("No se pudieron cargar las categorías. Inténtalo de nuevo."); // Mensaje amigable
-        setValidationMessage("No se pudieron cargar las categorías. Por favor, intente recargar la página.");
-        setIsValidationModalOpen(true);
-      } finally {
-        setLoading(false); // Finaliza carga
-      }
-    };
+  /**
+   * Carga las categorías de producto desde el backend, aplicando un término de búsqueda.
+   * @param {string} [searchTerm=""] - El término de búsqueda a enviar al backend.
+   */
+  const loadCategorias = async (searchTerm = "") => { // Ahora acepta un searchTerm
+    try {
+      setLoading(true);
+      setError(null); // Limpiar errores antes de una nueva carga
+      const data = await fetchCategoriasProducto(searchTerm); // Pasa el searchTerm al servicio
+      setCategorias(data);
+    } catch (err) {
+      console.error("Error al cargar las categorías:", err);
+      setError("No se pudieron cargar las categorías. Inténtalo de nuevo.");
+      setValidationMessage("No se pudieron cargar las categorías. Por favor, intente recargar la página o contacte soporte.");
+      setIsValidationModalOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadCategorias();
-  }, []); // El array vacío asegura que se ejecuta solo una vez al montar
+  // Efecto para cargar categorías inicialmente y cada vez que el término de búsqueda cambie
+  useEffect(() => {
+    // Implementación de "debounce" para optimizar llamadas a la API mientras el usuario escribe
+    const delayDebounceFn = setTimeout(() => {
+      loadCategorias(busqueda); // Llama a `loadCategorias` con el término de búsqueda actual
+    }, 300); // Espera 300ms después de que el usuario deja de escribir
+
+    // Función de limpieza que se ejecuta si el componente se desmonta o si `busqueda` cambia de nuevo antes del timeout
+    return () => clearTimeout(delayDebounceFn);
+  }, [busqueda]); // Este efecto se re-ejecuta cada vez que `busqueda` cambia
+
 
   const handleOpenModal = (type, categoria = null) => {
     setCurrentCategoria(categoria);
@@ -73,18 +84,13 @@ function ListaCategoriasProductoPage() {
 
   const handleCrearModalClose = () => {
     setIsCrearModalOpen(false);
-    // Vuelve a cargar las categorías para reflejar los cambios
-    // Podríamos optimizar esto para solo añadir la nueva categoría a la lista,
-    // pero una recarga completa es más segura para garantizar la consistencia.
-    // También, podríamos pasar la nueva categoría desde el servicio y añadirla.
-    loadCategorias(); 
+    loadCategorias(busqueda); // Recargar categorías manteniendo el filtro de búsqueda
   };
 
   const handleEditarModalClose = () => {
     setIsEditarModalOpen(false);
     setCurrentCategoria(null);
-    // Vuelve a cargar las categorías para reflejar los cambios
-    loadCategorias(); 
+    loadCategorias(busqueda); // Recargar categorías manteniendo el filtro de búsqueda
   };
 
   const closeOtherModals = () => {
@@ -92,37 +98,18 @@ function ListaCategoriasProductoPage() {
     setIsConfirmDeleteOpen(false);
     setIsValidationModalOpen(false);
     setValidationMessage("");
-    // Solo resetea currentCategoria si ningún modal de edición/creación está abierto
     if (!isCrearModalOpen && !isEditarModalOpen) {
       setCurrentCategoria(null);
     }
-    // Después de cerrar el modal de confirmación/validación, volvemos a cargar las categorías para asegurar la consistencia.
-    loadCategorias();
+    loadCategorias(busqueda); // Recargar categorías manteniendo el filtro de búsqueda
   };
 
-  const loadCategorias = async () => { // Función para recargar categorías
-    try {
-      setLoading(true);
-      const data = await fetchCategoriasProducto();
-      setCategorias(data);
-    } catch (err) {
-      console.error("Error al recargar las categorías:", err);
-      setError("No se pudieron recargar las categorías.");
-      setValidationMessage("Hubo un problema al recargar las categorías.");
-      setIsValidationModalOpen(true);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // CAMBIO: La función handleSave ahora es asíncrona
   const handleSave = async (categoriaData) => {
     try {
-      // CAMBIO: Usar idCategoriaProducto para determinar si es edición
-      const isEditing = !!categoriaData.idCategoriaProducto; 
+      const isEditing = !!categoriaData.idCategoriaProducto;
       await saveCategoriaProducto(categoriaData); // Llama al servicio API
       
-      // Si la operación fue exitosa, cerramos el modal y recargamos las categorías.
       if (isEditing) {
         handleEditarModalClose();
       } else {
@@ -133,18 +120,16 @@ function ListaCategoriasProductoPage() {
 
     } catch (error) {
       console.error("Error al guardar categoría:", error);
-      // Muestra el mensaje de error del backend si existe, o un mensaje genérico.
       const errorMessage = error.response?.data?.message || "Error al guardar la categoría. Por favor, revise los datos.";
       setValidationMessage(errorMessage);
       setIsValidationModalOpen(true);
     }
   };
 
-  // CAMBIO: La función handleDelete ahora es asíncrona
   const handleDelete = async () => {
-    if (currentCategoria && currentCategoria.idCategoriaProducto) { // CAMBIO: Usar idCategoriaProducto
+    if (currentCategoria && currentCategoria.idCategoriaProducto) {
       try {
-        await deleteCategoriaProductoById(currentCategoria.idCategoriaProducto); // Llama al servicio API
+        await deleteCategoriaProductoById(currentCategoria.idCategoriaProducto);
         closeOtherModals();
         setValidationMessage("Categoría eliminada exitosamente.");
         setIsValidationModalOpen(true);
@@ -157,22 +142,17 @@ function ListaCategoriasProductoPage() {
     }
   };
 
-  // CAMBIO: La función handleToggleEstado ahora es asíncrona
-  const handleToggleEstado = async (idCategoriaProducto) => { // CAMBIO: Recibe idCategoriaProducto
+  const handleToggleEstado = async (idCategoriaProducto) => {
     try {
-      // Obtenemos la categoría actual para saber su estado anterior
       const categoriaToToggle = categorias.find(cat => cat.idCategoriaProducto === idCategoriaProducto);
       if (!categoriaToToggle) {
         throw new Error("Categoría no encontrada para cambiar estado.");
       }
-      // Llamamos al servicio para cambiar el estado.
-      // El servicio maneja si es anular o habilitar, pasándole el ID y el nuevo estado.
       await toggleCategoriaProductoEstado(idCategoriaProducto, !categoriaToToggle.estado);
       
-      // Si todo va bien, recargamos la lista para ver el cambio reflejado.
       setValidationMessage("Estado de la categoría actualizado exitosamente.");
       setIsValidationModalOpen(true);
-      loadCategorias();
+      loadCategorias(busqueda); // Recargar categorías manteniendo el filtro de búsqueda
 
     } catch (error) {
       console.error("Error al cambiar estado de categoría:", error);
@@ -182,13 +162,8 @@ function ListaCategoriasProductoPage() {
     }
   };
 
-  // Filtrado de categorías (asumiendo que los datos ya están en el estado 'categorias')
-  const filteredCategorias = categorias.filter(
-    (cat) =>
-      (cat.nombre && cat.nombre.toLowerCase().includes(busqueda.toLowerCase())) ||
-      (cat.descripcion && cat.descripcion.toLowerCase().includes(busqueda.toLowerCase())) ||
-      (cat.tipoUso && cat.tipoUso.toLowerCase().includes(busqueda.toLowerCase()))
-  );
+  // La lógica de filtrado local (filteredCategorias) se ELIMINA porque el filtrado se hace en el backend.
+  // La variable 'categorias' contendrá directamente los datos filtrados del backend.
 
   // Renderizado condicional para carga y errores
   if (loading) {
@@ -205,10 +180,6 @@ function ListaCategoriasProductoPage() {
     );
   }
 
-  // Comentario: El manejo de 'error' podría redirigir o mostrar un mensaje permanente
-  // si el error es grave y no se soluciona recargando.
-  // Por ahora, el ValidationModal ya muestra el mensaje.
-
   return (
     <div className="categorias-producto-admin-page-container">
       <NavbarAdmin />
@@ -219,7 +190,8 @@ function ListaCategoriasProductoPage() {
             <div className="categorias-producto-admin-search-bar">
               <input
                 type="text"
-                placeholder="Buscar categoría..."
+                // CAMBIO AQUÍ: Nuevo placeholder para la barra de búsqueda
+                placeholder="Buscar por los campos de la tabla" 
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
               />
@@ -232,7 +204,7 @@ function ListaCategoriasProductoPage() {
             </button>
           </div>
           <CategoriasProductoTable
-            categorias={filteredCategorias}
+            categorias={categorias} // Pasa directamente el estado 'categorias' (que ya viene filtrado del backend)
             onView={(cat) => handleOpenModal("details", cat)}
             onEdit={(cat) => handleOpenModal("edit", cat)}
             onDeleteConfirm={(cat) => handleOpenModal("delete", cat)}
