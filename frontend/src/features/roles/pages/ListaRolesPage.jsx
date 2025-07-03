@@ -7,6 +7,7 @@ import RolEditarModal from "../components/RolEditarModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import RolDetailsModal from "../components/RolDetailsModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
+import Pagination from "../../../shared/components/common/Pagination"; // Importar Pagination
 import useRoles from "../hooks/useRoles"; // Importar el custom hook
 import "../css/Rol.css";
 // Los imports de servicios API ya no son necesarios aquí
@@ -14,7 +15,8 @@ import "../css/Rol.css";
 
 function ListaRolesPage() {
   const {
-    roles, // Ya filtrados si se implementa la lógica en el hook
+    roles, // Ya filtrados y paginados por el hook
+    totalRolesFiltrados, // Para el conteo en el título y el componente Pagination
     permisos, // Para pasar a los modales
     permisosAgrupados, // Para pasar a los modales
     isLoading,
@@ -36,13 +38,17 @@ function ListaRolesPage() {
     handleSaveRol,
     handleDeleteRol,
     handleToggleEstado,
+    // Paginación
+    currentPage,
+    itemsPerPage,
+    paginate,
   } = useRoles();
 
   return (
     <div className="rol-container">
       <NavbarAdmin />
       <div className="rol-content">
-        <h1>Gestión de Roles ({roles.length})</h1>{" "}
+        <h1>Gestión de Roles ({totalRolesFiltrados})</h1>{" "}
         {/* Muestra el conteo de roles filtrados */}
         <div className="rol-accionesTop">
           <input
@@ -91,12 +97,18 @@ function ListaRolesPage() {
             onEdit={(role) => handleOpenModal("edit", role)}
             onDeleteConfirm={(role) => handleOpenModal("delete", role)}
             onToggleAnular={handleToggleEstado}
-            currentPage={1} // VALOR TENTATIVO - Reemplazar con estado/prop de paginación real
-            rowsPerPage={10} // VALOR TENTATIVO - Reemplazar con estado/prop de paginación real
+            currentPage={currentPage}
+            rowsPerPage={itemsPerPage}
           />
         )}
-        {/* Aquí irían los controles de paginación si se implementan */}
-        {/* Ejemplo: <Paginacion currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} /> */}
+        { !isLoading && !error && totalRolesFiltrados > itemsPerPage && (
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={totalRolesFiltrados}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        )}
       </div>
 
       <RolCrearModal

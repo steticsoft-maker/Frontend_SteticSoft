@@ -42,6 +42,43 @@
     box-sizing: border-box;
   }
   
+  .usuarios-filtro-estado {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el span y el select */
+  }
+
+  .usuarios-filtro-estado span {
+    font-size: 0.95rem; /* Tamaño de la etiqueta "Filtrar por estado:" */
+    color: #333;
+  }
+
+  .usuarios-filtro-estado select {
+    padding: 9px 10px;
+    border: 1px solid var(--color-border-light, #c287b5); /* Usando variable si está definida, sino fallback */
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--color-background-light, #fff);
+    color: var(--color-text-dark, #333);
+    min-width: 150px;
+    height: 41px; /* Para alinear altura con otros inputs/botones si es necesario */
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Transiciones suaves */
+  }
+
+  .usuarios-filtro-estado select:focus {
+    border-color: var(--color-admin-hover, #b660a3); /* Usando variable si está definida, sino fallback */
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); /* Sombra al enfocar */
+    outline: none;
+  }
+
+  .usuarios-filtro-estado select:disabled {
+    background-color: var(--color-disabled-bg, #f0f0f0); /* Color de fondo para deshabilitado */
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
   .usuarios-barraBusqueda {
     flex-grow: 1;
     min-width: 250px;
@@ -433,25 +470,14 @@
     width: 100%;
     display: flex;
     justify-content: center; /* O flex-start / flex-end según preferencia */
-    align-items: center;
-    gap: 10px;
+    /* align-items: center; ya está en los estilos base de .usuarios-filtro-estado */
+    /* gap: 10px; ya está en los estilos base de .usuarios-filtro-estado */
   }
-  .usuarios-filtro-estado select {
-    padding: 9px 10px; /* Coincidir con Abastecimiento */
-    border-radius: 5px;
-    border: 1px solid var(--color-border-light, #c287b5); /* Coincidir con Abastecimiento */
-    font-size: 1rem; /* Coincidir con Abastecimiento */
-    background-color: var(--color-background-light, #fff); /* Coincidir con Abastecimiento */
-    color: var(--color-text-dark, #333); /* Coincidir con Abastecimiento */
-    min-width: 150px;
-    height: 41px; /* Coincidir con Abastecimiento */
-    box-sizing: border-box; /* Coincidir con Abastecimiento */
-  }
-  .usuarios-filtro-estado select:focus { /* Añadir estado de foco como en Abastecimiento */
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
-    outline: none;
-  }
+  /* Los estilos para .usuarios-filtro-estado select y select:focus
+     ya están definidos globalmente, no es necesario repetirlos aquí
+     a menos que haya una diferencia específica para móviles.
+     Dado que se buscaba coincidir con Abastecimiento y esos estilos ya son globales,
+     se pueden omitir aquí. */
   
     /* Tabla Responsiva (ya estaba bien definida) */
     .usuarios-table thead { display: none; }
