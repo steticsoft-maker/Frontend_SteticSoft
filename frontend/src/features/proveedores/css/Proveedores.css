@@ -12,7 +12,7 @@
 .proveedores-main-content {
     flex: 1; 
     padding: 30px; 
-    margin-left: 270px; /* ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */
+    margin-left: 270px;
     overflow-y: auto;
     box-sizing: border-box;
 }

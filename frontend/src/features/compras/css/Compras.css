@@ -403,3 +403,62 @@
     color: #0f5132;
     border-color: #28a745;
 }
+
+/* ... (todos tus estilos anteriores de Compras.css) ... */
+
+/* ✅ CAMBIO: Texto del estado en negro y fondos más pálidos para contraste */
+.estado.completado,
+.estado.anulada {
+    color: #333; /* Texto negro/gris oscuro */
+    font-weight: 500;
+}
+.estado.completado {
+    background-color: #d4edda; /* Verde pálido */
+}
+.estado.anulada {
+    background-color: #e9ecef; /* Gris claro */
+}
+
+/* ✅ CAMBIO: Estilos para el nuevo modal de detalle (reutilizados de proveedores) */
+.proveedor-details-list p {
+    text-align: left;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    color: #333;
+    font-size: 1rem;
+}
+.proveedor-details-list p strong {
+    color: #eb0985; /* Rosa principal */
+    margin-right: 8px;
+    font-weight: 600;
+    min-width: 150px;
+    display: inline-block;
+}
+
+.modal-subtitle-proveedores {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #6d0b58;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+.btn-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #d32f2f; /* Rojo para PDF */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.btn-pdf:hover {
+    background-color: #b71c1c;
+}

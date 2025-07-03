@@ -1,5 +1,4 @@
-// src/features/compras/pages/FormCompraPage.jsx
-import React, { useState, useEffect } from 'react'; // useCallback removed
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import CompraForm from '../components/CompraForm';
@@ -8,7 +7,7 @@ import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import { comprasService } from '../services/comprasService';
 import { proveedoresService } from '../../proveedores/services/proveedoresService';
 import { productosAdminService } from '../../productosAdmin/services/productosAdminService';
-import { useAuth } from '../../../shared/contexts/authHooks'; // Path updated
+import { useAuth } from '../../../shared/contexts/authHooks';
 import '../css/FormCompra.css';
 
 function FormCompraPage() {
@@ -28,23 +27,53 @@ function FormCompraPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // ✅ --- useEffect ACTUALIZADO con lógica robusta --- ✅
   useEffect(() => {
     const cargarDatosIniciales = async () => {
       setIsLoading(true);
+      console.log("Iniciando carga de datos...");
+
       try {
-        const [proveedoresData, productosData] = await Promise.all([
+        // Usamos Promise.allSettled para que una promesa fallida no cancele a la otra
+        const results = await Promise.allSettled([
           proveedoresService.getProveedores(),
           productosAdminService.getProductos()
         ]);
-        setProveedoresList(proveedoresData || []);
-        setProductosList(productosData?.productos || []);
+
+        // -- PROVEEDORES --
+        const proveedoresResult = results[0];
+        if (proveedoresResult.status === 'fulfilled') {
+          console.log('✅ Éxito al cargar proveedores. Datos:', proveedoresResult.value);
+          const proveedoresData = proveedoresResult.value;
+          setProveedoresList(Array.isArray(proveedoresData) ? proveedoresData : []);
+        } else {
+          console.error('❌ Error al cargar proveedores:', proveedoresResult.reason);
+          setProveedoresList([]); // En caso de error, establece una lista vacía
+        }
+
+        // -- PRODUCTOS --
+        const productosResult = results[1];
+        if (productosResult.status === 'fulfilled') {
+          console.log('✅ Éxito al cargar productos. Datos:', productosResult.value);
+          const productosData = productosResult.value;
+          setProductosList(Array.isArray(productosData?.productos) ? productosData.productos : []);
+        } else {
+          console.error('❌ Error al cargar productos:', productosResult.reason);
+          setProductosList([]); // En caso de error, establece una lista vacía
+        }
+
       } catch (error) {
-        setValidationMessage('Error al cargar datos necesarios: ' + (error.message || 'Error desconocido'));
+        console.error("Error inesperado en cargarDatosIniciales:", error);
+        setValidationMessage('Ocurrió un error general al cargar los datos.');
         setIsValidationModalOpen(true);
+        setProveedoresList([]);
+        setProductosList([]);
       } finally {
         setIsLoading(false);
+        console.log("Carga de datos finalizada.");
       }
     };
+
     cargarDatosIniciales();
   }, []);
 
@@ -53,7 +82,6 @@ function FormCompraPage() {
   const total = subtotal + iva;
 
   const handleGuardar = () => {
-    // La validación ahora funcionará porque 'proveedorSeleccionado' será el objeto correcto
     if (!proveedorSeleccionado) {
       setValidationMessage("Debe seleccionar un proveedor válido de la lista.");
       setIsValidationModalOpen(true);
@@ -66,7 +94,7 @@ function FormCompraPage() {
     }
     const hasInvalidItems = itemsCompra.some(item => !item.id || item.cantidad <= 0 || item.precio < 0);
     if (hasInvalidItems) {
-      setValidationMessage("Revise los productos. Todos deben tener cantidad y precio válidos (precio puede ser 0).");
+      setValidationMessage("Revise los productos. Todos deben tener cantidad y precio válidos.");
       setIsValidationModalOpen(true);
       return;
     }
@@ -78,7 +106,6 @@ function FormCompraPage() {
     setIsSubmitting(true);
 
     const compraData = {
-      // Ahora 'proveedorSeleccionado.idProveedor' no dará error
       proveedorId: proveedorSeleccionado.idProveedor,
       usuarioId: user.idUsuario,
       fecha: fechaCompra,
@@ -117,33 +144,32 @@ function FormCompraPage() {
       <NavbarAdmin />
       <div className="agregar-compra-content"> 
         <div className="agregar-compra-form-wrapper">
-            <h2 className="agregar-compra-title">Registrar Nueva Compra</h2>
-            {isLoading ? (
-              <p style={{ textAlign: 'center' }}>Cargando datos necesarios...</p>
-            ) : (
-              <CompraForm
-                  // CORRECCIÓN CLAVE: La prop ahora se llama 'proveedorSeleccionado' y pasa el objeto completo.
-                  proveedorSeleccionado={proveedorSeleccionado} 
-                  setProveedor={setProveedorSeleccionado}
-                  fecha={fechaCompra}
-                  setFecha={setFechaCompra}
-                  items={itemsCompra}
-                  setItems={setItemsCompra}
-                  productosList={productosList}
-                  proveedoresList={proveedoresList}
-                  subtotal={subtotal}
-                  iva={iva}
-                  total={total}
-              />
-            )}
-            <div className="agregar-compra-buttons">
-              <button className="btn-guardar-agregar-compra" onClick={handleGuardar} disabled={isSubmitting || isLoading}>
-                  {isSubmitting ? 'Guardando...' : 'Guardar Compra'}
-              </button>
-              <button className="btnCancelarAgregarCompra" onClick={() => navigate("/admin/compras")} disabled={isSubmitting || isLoading}>
-                  Cancelar
-              </button>
-            </div>
+          <h2 className="agregar-compra-title">Registrar Nueva Compra</h2>
+          {isLoading ? (
+            <p style={{ textAlign: 'center' }}>Cargando datos necesarios...</p>
+          ) : (
+            <CompraForm
+              proveedorSeleccionado={proveedorSeleccionado} 
+              setProveedor={setProveedorSeleccionado}
+              fecha={fechaCompra}
+              setFecha={setFechaCompra}
+              items={itemsCompra}
+              setItems={setItemsCompra}
+              productosList={productosList}
+              proveedoresList={proveedoresList}
+              subtotal={subtotal}
+              iva={iva}
+              total={total}
+            />
+          )}
+          <div className="agregar-compra-buttons">
+            <button className="btn-guardar-agregar-compra" onClick={handleGuardar} disabled={isSubmitting || isLoading}>
+              {isSubmitting ? 'Guardando...' : 'Guardar Compra'}
+            </button>
+            <button className="btnCancelarAgregarCompra" onClick={() => navigate("/admin/compras")} disabled={isSubmitting || isLoading}>
+              Cancelar
+            </button>
+          </div>
         </div>
       </div>
 

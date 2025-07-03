@@ -1,11 +1,9 @@
-// src/features/compras/components/CompraForm.jsx
 import React, { useState, useMemo } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 
 const CompraForm = ({
-  // Se cambia el nombre de la prop 'proveedor' a 'proveedorSeleccionado' para más claridad
   proveedorSeleccionado, 
   setProveedor,
   fecha, setFecha,
@@ -17,8 +15,10 @@ const CompraForm = ({
   const [showProveedorSelectModal, setShowProveedorSelectModal] = useState(false);
   const [showProductoSelectModal, setShowProductoSelectModal] = useState(false);
 
+  // CORRECCIÓN CLAVE: Usamos Array.isArray() para una validación más estricta.
+  // Si productosList no es un arreglo, devuelve un arreglo vacío y evita el error.
   const todosLosProductosParaModal = useMemo(() => {
-    if (!productosList) return [];
+    if (!Array.isArray(productosList)) return [];
     return productosList.map(p => ({
       ...p,
       value: p.idProducto,
@@ -26,8 +26,9 @@ const CompraForm = ({
     }));
   }, [productosList]);
 
+  // Misma corrección para proveedoresList.
   const todosLosProveedoresParaModal = useMemo(() => {
-    if (!proveedoresList) return [];
+    if (!Array.isArray(proveedoresList)) return [];
     return proveedoresList.map(p => ({
         ...p,
         value: p.idProveedor,
@@ -38,10 +39,10 @@ const CompraForm = ({
   const handleAgregarProductoRow = () => {
     setShowProductoSelectModal(true); 
   };
-
+  
+  // (El resto de tus funciones de manejo de productos e ítems se mantienen igual)
   const handleSelectProductoParaAgregar = (productoSeleccionado) => {
     const itemExistente = items.find(item => item.id === productoSeleccionado.idProducto); 
-
     if (itemExistente) {
       setItems(items.map(item => 
         item.id === productoSeleccionado.idProducto
@@ -68,7 +69,6 @@ const CompraForm = ({
   const handleCambioItem = (index, campo, valor) => {
     const nuevosItems = [...items];
     const item = nuevosItems[index];
-
     let numValor = parseFloat(valor);
     if (isNaN(numValor) || numValor < 0) {
         numValor = 0;
@@ -85,7 +85,6 @@ const CompraForm = ({
         <input
             type="text"
             className="buscar-proveedor-input"
-            // Ahora lee el nombre del objeto proveedorSeleccionado
             value={proveedorSeleccionado?.nombre || ''}
             onClick={() => setShowProveedorSelectModal(true)}
             placeholder="Seleccionar proveedor"
@@ -107,53 +106,18 @@ const CompraForm = ({
           <table>
             <thead>
               <tr>
-                <th>Categoría</th>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio Unit.</th>
-                <th>Total</th>
-                <th>Acción</th>
+                <th>Categoría</th><th>Producto</th><th>Cantidad</th><th>Precio Unit.</th><th>Total</th><th>Acción</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item, index) => (
                 <tr key={item.id || index}>
-                  <td>
-                    <input type="text" value={item.categoria || ''} readOnly className="input-text-readonly" />
-                  </td>
-                  <td>
-                    <input type="text" value={item.nombre || ''} readOnly className="input-text-readonly" />
-                  </td>
-                  <td>
-                    <input
-                      className="input-cantidad-precio"
-                      type="number"
-                      value={item.cantidad || 1}
-                      onChange={(e) => handleCambioItem(index, "cantidad", e.target.value)}
-                      min="1"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      className="input-cantidad-precio"
-                      type="number"
-                      value={item.precio || 0}
-                      onChange={(e) => handleCambioItem(index, "precio", e.target.value)}
-                      min="0"
-                      step="0.01"
-                    />
-                  </td>
+                  <td><input type="text" value={item.categoria || ''} readOnly className="input-text-readonly" /></td>
+                  <td><input type="text" value={item.nombre || ''} readOnly className="input-text-readonly" /></td>
+                  <td><input className="input-cantidad-precio" type="number" value={item.cantidad || 1} onChange={(e) => handleCambioItem(index, "cantidad", e.target.value)} min="1" /></td>
+                  <td><input className="input-cantidad-precio" type="number" value={item.precio || 0} onChange={(e) => handleCambioItem(index, "precio", e.target.value)} min="0" step="0.01" /></td>
                   <td>${item.total ? item.total.toLocaleString('es-CO') : '0.00'}</td>
-                  <td>
-                    <button
-                      type="button"
-                      className="btn-icono-eliminar-producto-compra"
-                      onClick={() => handleEliminarProductoRow(index)}
-                      title="Eliminar producto"
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </td>
+                  <td><button type="button" className="btn-icono-eliminar-producto-compra" onClick={() => handleEliminarProductoRow(index)} title="Eliminar producto"><FontAwesomeIcon icon={faTrash} /></button></td>
                 </tr>
               ))}
             </tbody>
@@ -172,7 +136,6 @@ const CompraForm = ({
         onClose={() => setShowProveedorSelectModal(false)}
         title="Seleccionar Proveedor"
         items={todosLosProveedoresParaModal}
-        // CORRECCIÓN CLAVE: Se pasa el objeto completo (selectedItem) en lugar de solo el nombre (selectedItem.label)
         onSelectItem={(selectedItem) => { setProveedor(selectedItem); setShowProveedorSelectModal(false); }}
         searchPlaceholder="Buscar proveedor..."
       />
