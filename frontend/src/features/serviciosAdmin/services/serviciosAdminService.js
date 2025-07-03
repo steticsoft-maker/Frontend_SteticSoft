@@ -73,18 +73,18 @@ export const cambiarEstadoServicio = async (id, nuevoEstado) => {
 export const getActiveCategoriasForSelect = async () => {
   try {
     const response = await getCategoriasServicio({ estado: true });
-    const todasCategoriasActivas = response?.data?.data || []; 
+    // CORRECCIÓN: Acceder directamente a 'response.data' que contiene el arreglo.
+     const todasCategoriasActivas = response.data || []; 
     
-    if (!todasCategoriasActivas || todasCategoriasActivas.length === 0) {
+    if (todasCategoriasActivas.length === 0) {
       console.warn("No se encontraron categorías activas desde la API.");
     }
-    
     return todasCategoriasActivas.map(cat => ({
-      id: cat.idCategoriaServicio,
-      nombre: cat.nombre
+      value: cat.idCategoriaServicio, // Usar 'value' y 'label' es una convención común en librerías de componentes
+      label: cat.nombre
     }));
   } catch (error) {
-    console.error("ERROR GRAVE al obtener categorías de servicio activas:", error);
-    return [];
+   console.error("ERROR GRAVE al obtener categorías de servicio activas:", error);
+    return []; 
   }
 };
