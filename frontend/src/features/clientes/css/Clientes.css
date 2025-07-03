@@ -155,55 +155,82 @@ input:checked+.slider:before { transform: translateX(16px); }
     max-width: 500px; 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     max-height: 90vh; overflow-y: auto; box-sizing: border-box;
+    position: relative; /* Añadido para posicionar la X */
 }
 .modal-content-clientes.formulario { 
     max-width: 650px;
 }
 
+/* Nuevo estilo para el encabezado del modal con título y botón de cierre */
+.modal-header-clientes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* Ajusta el espacio debajo del encabezado */
+    padding-bottom: 5px; /* Pequeño padding para separar del resto del formulario */
+}
+
 .modal-content-clientes h2 {
-    text-align: center;
+    text-align: center; /* Mantén el título centrado si lo deseas, o ajusta a 'left' */
     color: #6d0b58;
-    margin-top: 0;
-    /* margin-bottom: 10px; */ /* Línea original comentada o eliminada */
-    margin-bottom: 2px;  /* NUEVO VALOR: Reduce el espacio debajo del título */
-    padding-bottom: 0;
+    margin: 0; /* Elimina márgenes predeterminados para control total por flexbox */
     font-size: 1.6rem;
     line-height: 1.3;
+    flex-grow: 1; /* Permite que el título ocupe el espacio restante */
 }
+
+/* Estilos para el botón de cierre 'X' */
+.modal-close-button {
+    background: none;
+    border: none;
+    font-size: 2.2rem; /* Tamaño más grande para la 'X' */
+    color: #b660a3; /* Color rosa */
+    cursor: pointer;
+    position: absolute; /* Posición absoluta con respecto al modal-content-clientes */
+    top: 10px; /* Distancia desde arriba */
+    right: 10px; /* Distancia desde la derecha */
+    padding: 0 5px; /* Espaciado interno para hacer clic más fácil */
+    line-height: 1; /* Asegura que la X no tenga espacio extra de línea */
+    transition: color 0.2s ease;
+    z-index: 1001; /* Asegura que esté por encima de otros elementos */
+}
+
+.modal-close-button:hover {
+    color: #6d0b58; /* Color rosa más oscuro al pasar el ratón */
+}
+
 
 /* === ESTILOS ESPECÍFICOS PARA LA LISTA DE DETALLES DEL CLIENTE === */
 .cliente-details-list {
-    text-align: left;   /* Alinea el bloque de detalles a la izquierda */ /* */
+    text-align: left;
     width: 100%;
-    margin-top: 0;      /* Sin margen superior para la lista de detalles */ /* */
-    padding-top: 0;     /* Sin padding superior para la lista de detalles */ /* */
+    margin-top: 0;
+    padding-top: 0;
 }
 
 .cliente-details-list p {
-    text-align: left;   /* Texto dentro de cada párrafo alineado a la izquierda */ /* */
-    margin-top: 0;      /* Sin margen superior en los párrafos de detalle */ /* */
-    margin-bottom: 8px; /* Espacio entre cada línea de detalle (Nombre, Apellido, etc.) */ /* */
-    line-height: 1.5;   /* Altura de línea para los detalles */ /* */
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 8px;
+    line-height: 1.5;
     color: #333;
     font-size: 1rem;
 }
 
 .cliente-details-list p:first-child {
-    margin-top: 0; /* Asegura que el primer detalle no tenga margen superior extra */ /* */
+    margin-top: 0;
 }
 
-/* Estilo para las etiquetas (Nombre:, Apellido:, etc.) dentro de los detalles */
 .cliente-details-list p strong { 
-    color: #6d0b58;     /* Color de la etiqueta */
-    margin-right: 8px;  /* Espacio entre la etiqueta y el valor */
+    color: #6d0b58;
+    margin-right: 8px;
     font-weight: 600; 
-    min-width: 160px;   /* Ancho mínimo para que las etiquetas se alineen verticalmente */
-    display: inline-block; /* Necesario para que min-width tenga efecto */
+    min-width: 160px;
+    display: inline-block;
 }
 
-/* Estilo para el botón "Cerrar" en el modal de detalles */
 .botonModalCancelar-Cerrar.detalle-modal-cerrar-btn { 
-    margin-top: 20px; /* Más espacio antes del botón de cerrar */
+    margin-top: 20px;
     background-color: #b660a3; 
     color: white; 
     display: block; 
@@ -233,7 +260,16 @@ input:checked+.slider:before { transform: translateX(16px); }
 .clientes-form-group {
     display: flex; flex-direction: column; gap: 8px; 
 }
-.clientes-form-group.full-width-group { grid-column: 1 / -1; }
+
+/* --- ESTILO PARA EL CAMPO DE CORREO (O CUALQUIER CAMPO DE ANCHO COMPLETO) --- */
+.clientes-form-group-full-width {
+    grid-column: 1 / -1; /* Esto hace que el elemento ocupe todas las columnas */
+    display: flex; /* Asegura que el contenido interno se comporte como un flexbox */
+    flex-direction: column; /* Apila el label y el input verticalmente */
+    gap: 8px; /* Mantiene el mismo gap que .clientes-form-group */
+}
+
+
 .clientes-form-group label { 
     font-weight: 600; color: #6d0b58; 
     font-size: 0.9rem; text-align: left; 
@@ -242,7 +278,13 @@ input:checked+.slider:before { transform: translateX(16px); }
 .clientes-form-group input[type="email"],
 .clientes-form-group input[type="password"],
 .clientes-form-group input[type="date"],
-.clientes-form-group select { 
+.clientes-form-group select,
+/* Incluye los inputs dentro de la nueva clase también */
+.clientes-form-group-full-width input[type="text"],
+.clientes-form-group-full-width input[type="email"],
+.clientes-form-group-full-width input[type="password"],
+.clientes-form-group-full-width input[type="date"],
+.clientes-form-group-full-width select { 
     padding: 10px 12px; border: 1px solid #c287b5; 
     border-radius: 5px; font-size: 1rem;
     color: #333; background-color: #fff;
@@ -250,7 +292,9 @@ input:checked+.slider:before { transform: translateX(16px); }
     box-sizing: border-box; width: 100%;
 }
 .clientes-form-group input:focus,
-.clientes-form-group select:focus {
+.clientes-form-group select:focus,
+.clientes-form-group-full-width input:focus, /* Asegura el focus para el nuevo grupo */
+.clientes-form-group-full-width select:focus {
     border-color: #b660a3; 
     box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
     outline: none;
@@ -261,7 +305,7 @@ input:checked+.slider:before { transform: translateX(16px); }
     border-top: 1px solid #e0e0e0; 
 }
 .clientes-form-actions .botonguardarClienteModal,
-.clientes-form-actions .botonModalCancelar-Cerrar {
+.clientes-form-actions .botonModalCancelar-Cerrar { /* NOTA: este selector puede ser eliminado si no hay otro boton cancelar */
     padding: 10px 20px; border: none; border-radius: 5px;
     cursor: pointer; font-size: 1rem; font-weight: 500;
     transition: background-color 0.3s ease;
@@ -273,12 +317,28 @@ input:checked+.slider:before { transform: translateX(16px); }
 .clientes-form-actions .botonguardarClienteModal:hover {
     background-color: #6d0b58;
 }
-.clientes-form-actions .botonModalCancelar-Cerrar {
-    background-color: #95a5a6; color: white;
+.clientes-form-actions .botonModalCancelar-Cerrar { /* NOTA: este selector puede ser eliminado si no hay otro boton cancelar */
+    background-color: #95a5a5; /* Color del botón cancelar anterior */
+    color: white;
 }
-.clientes-form-actions .botonModalCancelar-Cerrar:hover {
+.clientes-form-actions .botonModalCancelar-Cerrar:hover { /* NOTA: este selector puede ser eliminado si no hay otro boton cancelar */
     background-color: #7f8c8d;
 }
+
+/* Estilo para los mensajes de error */
+.error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    text-align: left;
+}
+
+.error-message.general-error {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
 
 /* === ESTILOS RESPONSIVOS === */
 @media (max-width: 768px) {
@@ -323,7 +383,29 @@ input:checked+.slider:before { transform: translateX(16px); }
     .modal-content-clientes.formulario { 
         padding: 20px; max-width: 95%; 
     }
+    /* En pantallas pequeñas, el modal-header-clientes se puede ajustar */
+    .modal-header-clientes {
+        flex-direction: column; /* Apila el título y la X */
+        align-items: flex-end; /* Alinea la X a la derecha */
+        margin-bottom: 10px;
+    }
+    .modal-content-clientes h2 {
+        text-align: center; /* Mantiene el título centrado */
+        width: 100%; /* Ocupa todo el ancho disponible */
+        margin-bottom: 10px;
+    }
+    .modal-close-button {
+        position: static; /* Elimina la posición absoluta en móvil para que se alinee con flex */
+        margin-top: -10px; /* Ajusta la posición si es necesario */
+        align-self: flex-end; /* Asegura que la X se alinee a la derecha */
+        font-size: 2rem; /* Un poco más pequeño si lo prefieres */
+    }
+
     .clientes-form-grid { grid-template-columns: 1fr; gap: 15px; }
+    /* Asegurar que full-width-group se mantenga full-width en móvil */
+    .clientes-form-group-full-width {
+        grid-column: 1 / -1;
+    }
     .clientes-form-group label { font-size: 0.9rem; }
     .clientes-form-group input, .clientes-form-group select {
         font-size: 0.95rem; padding: 10px;
@@ -337,4 +419,3 @@ input:checked+.slider:before { transform: translateX(16px); }
         width: 100%; padding: 12px;
     }
 }
-

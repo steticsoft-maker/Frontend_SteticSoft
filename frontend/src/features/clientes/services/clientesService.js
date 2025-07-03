@@ -2,17 +2,27 @@
 import apiClient from "../../../shared/services/apiClient"; // Asegúrate de que apiClient maneje headers de autenticación y errores HTTP.
 
 /**
- * Obtiene todos los clientes del backend.
+ * Obtiene todos los clientes del backend, con soporte para búsqueda.
+ * @param {string} [searchTerm=''] - El término de búsqueda para filtrar clientes.
  * @returns {Promise<Array>} Una promesa que resuelve con un array de objetos cliente.
  */
-export const fetchClientes = async () => {
+export const fetchClientes = async (searchTerm = '') => { // Ahora acepta un searchTerm opcional
   try {
-    const response = await apiClient.get("/clientes");
+    let url = "/clientes";
+    // Si hay un término de búsqueda, lo añadimos como parámetro de consulta
+    if (searchTerm) {
+      // Codificamos el término de búsqueda para que sea seguro en la URL
+      url = `/clientes?search=${encodeURIComponent(searchTerm)}`;
+    }
+
+    const response = await apiClient.get(url);
+    
     // El backend devuelve { success: true, data: clientes }.
     // Asegúrate de retornar directamente el array de clientes.
     if (response.data && Array.isArray(response.data.data)) {
       return response.data.data;
     }
+    
     // Si la respuesta no es el formato esperado, puedes loggear o devolver un array vacío
     console.warn("Formato de respuesta inesperado para fetchClientes:", response.data);
     return [];
@@ -78,13 +88,6 @@ export const saveCliente = async (clienteData, isCreating, currentEditingCliente
       if (dataToSend.password) {
         delete dataToSend.password;
       }
-
-      // El frontend ya envía 'correo' por defecto desde ClienteForm,
-      // así que no se necesita mapear 'email' a 'correo' aquí.
-      // if (dataToSend.hasOwnProperty('email')) {
-      //     dataToSend.correo = dataToSend.email;
-      //     delete dataToSend.email;
-      // }
 
       // Mapear 'estado' del frontend a 'estadoCliente' y 'estadoUsuario' para el backend
       // ¡ESTO ES CLAVE PARA EL 400!
