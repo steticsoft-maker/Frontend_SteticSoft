@@ -258,9 +258,14 @@ input:checked+.slider:before { transform: translateX(16px); }
     flex-direction: column; 
     gap: 8px;
 }
-.proveedores-form-group.form-full-width { 
-    grid-column: 1 / -1;
+
+.proveedores-form-group.form-full-width {
+    grid-column: 1 / -1; /* 1. Hace que el elemento ocupe ambas columnas */
+    padding-left: 0;     /* 2. Asegura que no haya padding a la izquierda */
+    padding-right: 0;    /* 3. Asegura que no haya padding a la derecha */
+    box-sizing: border-box;
 }
+
 .proveedores-form-group label {
     font-weight: 600;
     color: var(--color-primary-darker, #6d0b58);
@@ -296,34 +301,36 @@ input:checked+.slider:before { transform: translateX(16px); }
     margin-left: 2px;
 }
 
-/* --- AJUSTE DE ALTURA PARA CAMPO DE DOCUMENTO --- */
-.documento-container { 
+.documento-container {
     display: flex;
-    align-items: stretch; /* Se mantiene */
     width: 100%;
-    /* Quitamos borde y overflow para que cada hijo lo maneje */
+    gap: 0; /* Eliminar cualquier espacio que rompa el flujo */
 }
+
 .documento-container .select-tipo-documento {
+    width: 30%;
     border: 1px solid var(--color-border-light, #c287b5);
     border-right: none;
     border-radius: 5px 0 0 5px;
-    padding: 10px; 
-    background-color: var(--color-background-input-addon, #e9ecef); 
+    padding: 10px;
+    background-color: var(--color-background-input-addon, #e9ecef);
     font-size: 1rem;
     cursor: pointer;
-    height: 42px; /* Altura unificada */
+    height: 42px;
     box-sizing: border-box;
 }
+
 .documento-container .input-documento {
+    width: 70%;
     border: 1px solid var(--color-border-light, #c287b5);
     border-left: none;
     border-radius: 0 5px 5px 0;
-    flex-grow: 1; 
-    padding: 10px 12px; 
+    padding: 10px 12px;
     font-size: 1rem;
-    height: 42px; /* Altura unificada */
+    height: 42px;
     box-sizing: border-box;
 }
+
 .documento-container .input-documento:focus {
     /* El focus se aplica al input, no al contenedor */
     outline: none;
@@ -365,7 +372,6 @@ input:checked+.slider:before { transform: translateX(16px); }
     gap: 15px;
     margin-top: 25px;
     padding-top: 20px;
-    border-top: 1px solid var(--color-border-light, #eee);
     width: 100%;
 }
 .proveedores-form-button-guardar, 
@@ -402,71 +408,92 @@ input.is-invalid, .input-documento.is-invalid {
     border-color: #dc3545 !important;
 }
 
-
-/* ========================================================== */
-/* ========= INICIO DE CORRECCIÓN PARA LÍNEA VERTICAL ========= */
-/* ========================================================== */
+/* ================= LÍNEA VERTICAL DE SEPARACIÓN ================= */
 
 /* Eliminamos la regla anterior que no funcionaba bien */
 .form-section-title-container::before {
     display: none; /* Desactivamos el pseudo-elemento anterior */
 }
-
-/* Título de la sección de la Persona Encargada */
-.form-section-title-container {
-    grid-column: 2 / 3; /* Lo mantiene en la segunda columna */
-    grid-row: 1 / 2;    /* Lo mantiene en la primera fila */
-    position: relative; /* Mantenemos por si se necesita en el futuro */
-    align-self: end;    /* Lo baja para que se alinee con el campo de al lado */
-    margin-bottom: 8px; /* Espacio consistente */
-    /* Ya NO necesita padding-left, el borde lo manejará */
+/* ================= MEJORADA: LÍNEA VERTICAL ================= */
+.proveedores-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    position: relative;
+    padding-bottom: 1rem; /* espacio para no pegar al final */
 }
+
+/* Línea vertical */
+.proveedores-form-grid::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 28%; /* Ajusta según el tamaño del formulario */
+    left: 50%;
+    width: 1px;
+    background-color: var(--color-border-light, #e0e0e0);
+    transform: translateX(-0.5px);
+    z-index: 1;
+}
+
+/* Espacio interior */
+.proveedores-form-group:nth-child(odd) {
+    padding-right: 20px;
+    z-index: 2;
+}
+.proveedores-form-group:nth-child(even) {
+    padding-left: 20px;
+    z-index: 2;
+}
+
+/* ================= TÍTULO DE SECCIÓN ================= */
+.form-section-title-container {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    align-self: end;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    z-index: 2;
+}
+
 .form-section-title-container h4 {
     margin: 0;
     font-weight: 600;
     font-size: 1.1em;
-    color: var(--color-primary-darker, #6d0b58); /* Color del título */
-    padding-bottom: 5px;
-    border-bottom: 1px solid var(--color-border-light, #e0e0e0);
+    color: var(--color-primary-darker, #6d0b58);
+    padding-bottom: 4px;
+    border-bottom: none; /* Quitamos la línea horizontal */
 }
 
-/* --- NUEVA LÓGICA PARA LA LÍNEA VERTICAL --- */
-/* Le decimos al grid que todos los elementos en la segunda columna,
-   a partir de la segunda fila, tengan un borde izquierdo. */
-.proveedores-form-grid > .proveedores-form-group:nth-child(2n):not(:first-child) {
-    border-left: 1px solid var(--color-border-light, #e0e0e0);
-    padding-left: 25px; /* Añade un espacio para que el contenido no se pegue a la línea */
-}
-
-/* El título de la sección (que está en la primera fila) también necesita este padding */
-.form-section-title-container {
-    padding-left: 25px;
-}
-
-/* En móvil, eliminamos la línea y el padding para que vuelva a ser una sola columna */
+/* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
-    .proveedores-form-grid > .proveedores-form-group:nth-child(2n):not(:first-child) {
-        border-left: none;
-        padding-left: 0;
+    .proveedores-form-grid {
+        grid-template-columns: 1fr;
     }
+
+    .proveedores-form-grid::before {
+        display: none;
+    }
+
+    .proveedores-form-group {
+        padding: 0 !important;
+    }
+
     .form-section-title-container {
+        grid-column: 1 / 2;
         padding-left: 0;
     }
 }
 
-/* ======================================================== */
-/* ========= FIN DE CORRECCIÓN PARA LÍNEA VERTICAL ======== */
-/* ======================================================== */
 
 
 /* ======================================================== */
 /* ============= INICIO DE ESTILOS RESPONSIVE ============= */
 /* ======================================================== */
 
-/* --- Para Tablets y pantallas medianas (hasta 992px) --- */
 @media (max-width: 992px) {
     .proveedores-main-content {
-        margin-left: 0; /* Eliminar margen cuando la barra lateral se oculte */
+        margin-left: 0;
     }
 
     .modal-content-Proveedores.formulario-modal {
