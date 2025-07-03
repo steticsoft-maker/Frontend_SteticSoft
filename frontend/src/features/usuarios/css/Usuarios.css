@@ -42,6 +42,24 @@
     box-sizing: border-box;
   }
   
+  .usuarios-filtro-estado {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre "Estado:", el switch, y la etiqueta "Activos/Inactivos" */
+    margin-right: 15px; /* Espacio a la derecha del grupo de filtro */
+  }
+
+  .usuarios-filtro-estado > span:first-child { /* "Estado:" */
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  .switch-label {
+    font-size: 0.95rem;
+    color: #333;
+    user-select: none; /* Para que el texto no sea seleccionable, común en etiquetas de controles */
+  }
+
   .usuarios-barraBusqueda {
     flex-grow: 1;
     min-width: 250px;
