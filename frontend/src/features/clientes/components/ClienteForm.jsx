@@ -1,10 +1,9 @@
 // src/features/clientes/components/ClienteForm.jsx
 import React from 'react';
+import "../css/Clientes.css"; // Ruta corregida
 
-// Los tipos de documento DEBEN coincidir exactamente con los valores permitidos en el backend
-// (src/shared/src_api/validators/cliente.validators.js -> isIn)
+// ¡Asegúrate de que esta declaración esté aquí, fuera de la función del componente!
 const TIPOS_DOCUMENTO = ['Cédula de Ciudadanía', 'Cédula de Extranjería', 'Pasaporte', 'Tarjeta de Identidad'];
-// Si necesitas "NIT", asegúrate de añadirlo también en el backend validator.
 
 const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // Agregado formErrors como prop
   const handleChange = (e) => {
@@ -25,12 +24,14 @@ const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // 
         <input type="text" id="apellido" name="apellido" value={formData.apellido || ''} onChange={handleChange} placeholder="Apellido" required />
         {formErrors.apellido && <p className="error-message">{formErrors.apellido}</p>}
       </div>
-      <div className="clientes-form-group">
-        {/* Cambiado de 'email' a 'correo' para coincidir con el backend */}
+
+      {/* Campo de Correo ocupando todo el ancho */}
+      <div className="clientes-form-group-full-width">
         <label htmlFor="correo">Correo: <span className="required-asterisk">*</span></label>
         <input type="email" id="correo" name="correo" value={formData.correo || ''} onChange={handleChange} placeholder="Correo electrónico" required />
         {formErrors.correo && <p className="error-message">{formErrors.correo}</p>}
       </div>
+
       <div className="clientes-form-group">
         <label htmlFor="telefono">Teléfono: <span className="required-asterisk">*</span></label>
         <input type="text" id="telefono" name="telefono" value={formData.telefono || ''} onChange={handleChange} placeholder="Teléfono" required />

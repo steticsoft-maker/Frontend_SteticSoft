@@ -26,4 +26,4 @@ const ClienteDetalleModal = ({ isOpen, onClose, cliente }) => {
   );
 };
 
-export default ClienteDetalleModal;
+export default ClienteDetalleModal; 
