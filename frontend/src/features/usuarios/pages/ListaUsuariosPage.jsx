@@ -102,6 +102,8 @@ function ListaUsuariosPage() {
               onEdit={(usuario) => handleOpenModal("edit", usuario)}
               onDeleteConfirm={(usuario) => handleOpenModal("delete", usuario)} // Abre el modal de confirmación
               onToggleAnular={handleToggleEstadoUsuario}
+              currentPage={currentPage}
+              rowsPerPage={usersPerPage}
             />
             { totalUsuariosFiltrados > 0 && usersPerPage > 0 && totalUsuariosFiltrados > usersPerPage && (
                 <Pagination

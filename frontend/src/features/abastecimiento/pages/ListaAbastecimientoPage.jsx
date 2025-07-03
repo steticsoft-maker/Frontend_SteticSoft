@@ -8,12 +8,14 @@ import AbastecimientoDetailsModal from "../components/AbastecimientoDetailsModal
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import DepleteProductModal from "../components/DepleteProductModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
+import Pagination from "../../../shared/components/common/Pagination"; // Importar Pagination
 import useAbastecimiento from "../hooks/useAbastecimiento";
 import "../css/Abastecimiento.css";
 
 function ListaAbastecimientoPage() {
   const {
-    entries,
+    entries, // Ya filtrados y paginados por el hook
+    totalEntriesFiltrados, // Para el conteo en el título y el componente Pagination
     isLoading,
     isSubmitting,
     error,
@@ -34,6 +36,10 @@ function ListaAbastecimientoPage() {
     handleSubmitForm,
     handleDeleteConfirmed,
     handleDepleteConfirmed,
+    // Paginación
+    currentPage,
+    itemsPerPage,
+    paginate,
   } = useAbastecimiento();
 
   // INICIO DE MODIFICACIÓN: Estructura del JSX corregida.
@@ -44,7 +50,7 @@ function ListaAbastecimientoPage() {
       {/* Contenedor principal del contenido de la página */}
       <div className="abastecimiento-main-content">
         <div className="abastecimiento-content-wrapper">
-          <h1>Gestión de Abastecimiento ({entries.length})</h1>
+          <h1>Gestión de Abastecimiento ({totalEntriesFiltrados})</h1>
           <div className="abastecimiento-actions-bar">
             <div className="abastecimiento-search-bar">
               <input
@@ -78,11 +84,21 @@ function ListaAbastecimientoPage() {
             <p className="error-message" style={{ textAlign: 'center', marginTop: '20px' }}>{error}</p>
           ) : (
             <AbastecimientoTable
-              entries={entries}
+              entries={entries} // Estos serán los entries de la página actual más adelante
               onView={(entry) => handleOpenModal("details", entry)}
               onEdit={(entry) => handleOpenModal("edit", entry)}
               onDelete={(entry) => handleOpenModal("delete", entry)}
               onDeplete={(entry) => handleOpenModal("deplete", entry)}
+              currentPage={currentPage}
+              rowsPerPage={itemsPerPage}
+            />
+          )}
+          { !isLoading && !error && totalEntriesFiltrados > itemsPerPage && (
+            <Pagination
+              itemsPerPage={itemsPerPage}
+              totalItems={totalEntriesFiltrados}
+              paginate={paginate}
+              currentPage={currentPage}
             />
           )}
         </div>
