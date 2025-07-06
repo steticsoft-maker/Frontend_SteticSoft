@@ -1,6 +1,7 @@
-// src/features/serviciosAdmin/components/ServiciosAdminTable.jsx
 import React from 'react';
 import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa';
+
+// Este componente de helper ya no es necesario, la lógica se simplifica inline.
 
 const ServiciosAdminTable = ({
   servicios,
@@ -10,61 +11,66 @@ const ServiciosAdminTable = ({
   onToggleEstado,
   loadingId,
 }) => {
-  if (!servicios || servicios.length === 0) {
-    return <p>No hay servicios para mostrar.</p>;
-  }
-
+  
   const formatCurrency = (value) => {
-    const numericValue = parseFloat(value);
-    if (isNaN(numericValue)) {
-      return 'N/A';
-    }
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(numericValue);
+    }).format(parseFloat(value) || 0);
   };
 
   const getFullImageUrl = (relativePath) => {
     if (!relativePath) return null;
-    return `http://localhost:3000/${relativePath}`;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+    return `${backendUrl}/${relativePath}`;
   };
 
+  // Fallback para imágenes rotas
+  const handleImageError = (e) => {
+    e.target.onerror = null; 
+    e.target.src = "https://via.placeholder.com/150?text=Error"; // Muestra una imagen de error si la URL existe pero está rota
+  };
+
+  if (!servicios || servicios.length === 0) {
+    return <p style={{ textAlign: 'center', marginTop: '20px' }}>No hay servicios que coincidan con tu búsqueda.</p>;
+  }
+
   return (
-    <table className="tablaServicio">
+    <table className="servicios-admin-table">
       <thead>
         <tr>
+          <th>#</th>
           <th>Nombre</th>
           <th>Precio</th>
-          <th>Categoría</th>
           <th>Imagen</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        {servicios.map((servicio) => (
+        {servicios.map((servicio, index) => (
           <tr key={servicio.idServicio}>
+            <td data-label="#">{index + 1}</td>
             <td data-label="Nombre:">{servicio.nombre}</td>
             <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
-            <td data-label="Categoría:">
-              {servicio.categoria?.nombre || 'N/A'}
-            </td>
+            
+            {/* CAMBIO CLAVE: Lógica condicional para la celda de la imagen */}
             <td data-label="Imagen:">
               {servicio.imagen ? (
                 <img
                   src={getFullImageUrl(servicio.imagen)}
                   alt={servicio.nombre}
-                  className="servicio-table-imagen"
+                  className="table-img"
+                  onError={handleImageError}
                 />
               ) : (
-                'Sin Imagen'
+                <span style={{ color: '#aaa' }}>N/A</span>
               )}
             </td>
+
             <td data-label="Estado:">
-              <label className="switch" title={servicio.estado ? 'Desactivar' : 'Activar'}>
+              <label className="switch">
                 <input
                   type="checkbox"
                   checked={servicio.estado}
@@ -75,31 +81,10 @@ const ServiciosAdminTable = ({
               </label>
             </td>
             <td data-label="Acciones:">
-              <div className="servicios-admin-actions">
-                <button
-                  className="botonVerDetallesServicios"
-                  onClick={() => onView(servicio)}
-                  title="Ver Detalles"
-                  disabled={loadingId === servicio.idServicio}
-                >
-                  <FaRegEye />
-                </button>
-                <button
-                  className="botonEditarServicios"
-                  onClick={() => onEdit(servicio)}
-                  title="Editar Servicio"
-                  disabled={loadingId === servicio.idServicio}
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  className="botonEliminarServicios"
-                  onClick={() => onDeleteConfirm(servicio)}
-                  title="Eliminar Servicio"
-                  disabled={loadingId === servicio.idServicio}
-                >
-                  <FaTrashAlt />
-                </button>
+              <div className="actions-cell">
+                <button onClick={() => onView(servicio)}> <FaRegEye /> </button>
+                <button onClick={() => onEdit(servicio)}> <FaEdit /> </button>
+                <button onClick={() => onDeleteConfirm(servicio)}> <FaTrashAlt /> </button>
               </div>
             </td>
           </tr>

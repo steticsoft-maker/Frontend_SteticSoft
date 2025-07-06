@@ -1,16 +1,15 @@
-// src/features/serviciosAdmin/pages/ListaServiciosAdminPage.jsx
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
-import { toast } from 'react-toastify'; // Importar toast para notificaciones
-import 'react-toastify/dist/ReactToastify.css'; // Estilos de react-toastify
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// --- Componentes hijos ---
+// --- Componentes del Módulo ---
 import ServiciosAdminTable from "../components/ServiciosAdminTable";
 import ServicioAdminFormModal from "../components/ServicioAdminFormModal";
 import ServicioAdminDetalleModal from "../components/ServicioAdminDetalleModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 
-// --- Servicios de la API (Funciones Reales) ---
+// --- Servicios de API ---
 import {
   getServicios,
   createServicio,
@@ -20,145 +19,102 @@ import {
   getActiveCategoriasForSelect,
 } from "../services/serviciosAdminService";
 
-// --- Estilos ---
+// --- Estilos Específicos del Módulo ---
 import "../css/ServiciosAdmin.css";
 
 function ListaServiciosAdminPage() {
-  // --- Estados para los datos de la API ---
   const [servicios, setServicios] = useState([]);
-  const [categoriasParaFiltroYForm, setCategoriasParaFiltroYForm] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  // --- Estados para filtros y búsqueda ---
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
-  const [filtroEstado, setFiltroEstado] = useState('todos'); // 'todos', 'activos', 'inactivos'
-  // ELIMINADO: const [filtroCategoriaId, setFiltroCategoriaId] = useState(''); // ID de categoría para filtrar
-
-  // --- Estados para los modales y selección ---
+  const [filtroEstado, setFiltroEstado] = useState('todos');
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  
   const [currentServicio, setCurrentServicio] = useState(null);
   const [formType, setFormType] = useState("create");
   const [loadingId, setLoadingId] = useState(null);
 
-
-  // --- Lógica de Carga de Datos (API) ---
-  const cargarServiciosYCategorias = useCallback(async () => {
+  const cargarDatos = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      // Prepara los filtros para la API
-      const filtrosApi = {};
-      if (filtroEstado !== 'todos') {
-        filtrosApi.estado = filtroEstado === 'activos' ? true : false;
+      const filtrosApi = { 
+        estado: filtroEstado === 'todos' ? undefined : filtroEstado === 'activos' 
+      };
+      if (terminoBusqueda.trim()) {
+        filtrosApi.busqueda = terminoBusqueda.trim();
       }
-      // ELIMINADO: if (filtroCategoriaId) {
-      // ELIMINADO:   filtrosApi.categoriaServicioId = filtroCategoriaId;
-      // ELIMINADO: }
-
-      // Carga servicios con filtros y categorías activas en paralelo
       const [serviciosResponse, categoriasData] = await Promise.all([
-        getServicios(filtrosApi), // Pasar filtros a la API
-        getActiveCategoriasForSelect(), // Todavía se necesita para el formulario
+        getServicios(filtrosApi),
+        getActiveCategoriasForSelect(),
       ]);
-
-      const serviciosData = serviciosResponse?.data || [];
-      setServicios(serviciosData);
-      setCategoriasParaFiltroYForm(categoriasData);
-
+      setServicios(serviciosResponse?.data || []);
+      setCategorias(categoriasData);
     } catch (err) {
-      console.error("Error al cargar datos:", err);
-      const errorMessage = err?.message || 'Error al cargar los datos iniciales.';
+      const errorMessage = err?.message || 'Error al cargar los datos.';
       setError(errorMessage);
       toast.error(errorMessage);
-      setServicios([]);
-      setCategoriasParaFiltroYForm([]);
     } finally {
       setLoading(false);
     }
-  }, [filtroEstado]); // ELIMINADO: filtroCategoriaId de las dependencias
+  }, [filtroEstado, terminoBusqueda]);
 
   useEffect(() => {
-    cargarServiciosYCategorias();
-  }, [cargarServiciosYCategorias]);
+    const debounceTimer = setTimeout(() => {
+      cargarDatos();
+    }, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [cargarDatos]);
 
-  // --- Lógica de Búsqueda (en cliente) ---
-  const serviciosFiltradosYBuscados = useMemo(() => {
-    let resultados = [...servicios];
-
-    if (terminoBusqueda.trim() !== "") {
-      const busquedaLower = terminoBusqueda.toLowerCase();
-      resultados = resultados.filter(s =>
-        s.nombre.toLowerCase().includes(busquedaLower) ||
-        s.descripcion?.toLowerCase().includes(busquedaLower) || // Buscar también en descripción
-        s.categoria?.nombre?.toLowerCase().includes(busquedaLower) || // Sigue buscando por categoría
-        s.especialidad?.nombre?.toLowerCase().includes(busquedaLower)
-      );
-    }
-    return resultados;
-  }, [terminoBusqueda, servicios]);
-
-  // --- Manejadores de Modales ---
   const handleOpenModal = (type, servicio = null) => {
     setCurrentServicio(servicio);
-    if (type === "details") {
-      setIsDetailsModalOpen(true);
-    } else if (type === "delete") {
-      setIsConfirmModalOpen(true);
-    } else {
+    setError('');
+    if (type === "details") setIsDetailsModalOpen(true);
+    else if (type === "delete") setIsConfirmModalOpen(true);
+    else {
       setFormType(type);
       setIsFormModalOpen(true);
     }
-    setError('');
   };
 
-  const closeModal = (modal) => {
-    if (modal === 'form') setIsFormModalOpen(false);
-    if (modal === 'details') setIsDetailsModalOpen(false);
-    if (modal === 'confirm') setIsConfirmModalOpen(false);
+  const closeModal = () => {
+    setIsFormModalOpen(false);
+    setIsDetailsModalOpen(false);
+    setIsConfirmModalOpen(false);
     setCurrentServicio(null);
   };
 
-  // --- Manejadores de Acciones (API) ---
-  const handleSave = async (servicioData, initialData) => {
+  const handleSave = async (servicioData) => {
     try {
-      if (formType === "edit" && initialData) {
-        await updateServicio(initialData.idServicio, servicioData);
+      if (formType === "edit") {
+        await updateServicio(currentServicio.idServicio, servicioData);
         toast.success('Servicio actualizado exitosamente!');
       } else {
         await createServicio(servicioData);
         toast.success('Servicio creado exitosamente!');
       }
-      closeModal('form');
-      cargarServiciosYCategorias();
+      closeModal();
+      cargarDatos();
     } catch (err) {
-      console.error("Error al guardar:", err);
-      const errorMessage = err?.message || "Error al guardar el servicio.";
-      setError(errorMessage);
-      toast.error(errorMessage);
+      toast.error(err?.message || "Error al guardar el servicio.");
       throw err;
     }
   };
 
   const handleDelete = async () => {
-    if (currentServicio) {
-      setLoadingId(currentServicio.idServicio);
-      try {
-        await deleteServicio(currentServicio.idServicio);
-        toast.success('Servicio eliminado exitosamente!');
-        closeModal('confirm');
-        cargarServiciosYCategorias();
-      } catch (err) {
-        console.error("Error al eliminar:", err);
-        const errorMessage = err?.message || "Error al eliminar el servicio.";
-        setError(errorMessage);
-        toast.error(errorMessage);
-      } finally {
-        setLoadingId(null);
-      }
+    if (!currentServicio) return;
+    setLoadingId(currentServicio.idServicio);
+    try {
+      await deleteServicio(currentServicio.idServicio);
+      toast.success('Servicio eliminado exitosamente!');
+      closeModal();
+      cargarDatos();
+    } catch (err) {
+      toast.error(err?.message || "Error al eliminar el servicio.");
+    } finally {
+      setLoadingId(null);
     }
   };
 
@@ -166,35 +122,30 @@ function ListaServiciosAdminPage() {
     setLoadingId(servicio.idServicio);
     try {
       await cambiarEstadoServicio(servicio.idServicio, !servicio.estado);
-      toast.success(`Servicio ${!servicio.estado ? 'habilitado' : 'anulado'} exitosamente!`);
-      cargarServiciosYCategorias();
+      toast.success(`Estado del servicio cambiado exitosamente!`);
+      setServicios(prev => prev.map(s => s.idServicio === servicio.idServicio ? { ...s, estado: !s.estado } : s));
     } catch (err) {
-      console.error("Error al cambiar estado:", err);
-      const errorMessage = err?.message || "Error al cambiar el estado.";
-      setError(errorMessage);
-      toast.error(errorMessage);
+      toast.error(err?.message || "Error al cambiar el estado.");
     } finally {
       setLoadingId(null);
     }
   };
 
-  // --- Renderizado ---
   return (
     <div className="servicios-admin-page-container">
       <NavbarAdmin />
       <div className="servicios-content">
-        <h1 className="tituloServicios">Gestión de Servicios</h1>
-        <div className="barraBusqueda-BotonSuperiorAgregarServicio">
-          <div className="BarraBusquedaServicio">
+        <h1>Gestión de Servicios</h1>
+        
+        <div className="servicios-admin-controls">
+          <div className="servicios-admin-search-bar">
             <input
               type="text"
-              placeholder="Buscar por nombre, descripción, categoría o especialidad..."
+              placeholder="Buscar por nombre o precio..."
               value={terminoBusqueda}
               onChange={(e) => setTerminoBusqueda(e.target.value)}
             />
-            {/* Filtro por Estado (se mantiene) */}
             <select
-              className="filtro-select"
               value={filtroEstado}
               onChange={(e) => setFiltroEstado(e.target.value)}
             >
@@ -202,17 +153,6 @@ function ListaServiciosAdminPage() {
               <option value="activos">Activos</option>
               <option value="inactivos">Inactivos</option>
             </select>
-            {/* ELIMINADO: Filtro por Categoría */}
-            {/* <select
-              className="filtro-select"
-              value={filtroCategoriaId}
-              onChange={(e) => setFiltroCategoriaId(e.target.value)}
-            >
-              <option value="">Todas las categorías</option>
-              {categoriasParaFiltroYForm.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.nombre}</option>
-              ))}
-            </select> */}
           </div>
           <button
             className="botonAgregarServicio"
@@ -222,13 +162,13 @@ function ListaServiciosAdminPage() {
           </button>
         </div>
 
-        {error && <p className="error" style={{ textAlign: 'center' }}>ERROR: {error}</p>}
+        {error && <p style={{ textAlign: 'center', color: 'red' }}>ERROR: {error}</p>}
 
         {loading ? (
-          <p>Cargando servicios...</p>
+          <p style={{ textAlign: 'center' }}>Cargando servicios...</p>
         ) : (
           <ServiciosAdminTable
-            servicios={serviciosFiltradosYBuscados}
+            servicios={servicios}
             onView={(servicio) => handleOpenModal("details", servicio)}
             onEdit={(servicio) => handleOpenModal("edit", servicio)}
             onDeleteConfirm={(servicio) => handleOpenModal("delete", servicio)}
@@ -238,28 +178,26 @@ function ListaServiciosAdminPage() {
         )}
       </div>
 
-      {/* --- Modales --- */}
       <ServicioAdminFormModal
         isOpen={isFormModalOpen}
-        onClose={() => closeModal('form')}
+        onClose={closeModal}
         onSubmit={handleSave}
         initialData={currentServicio}
         isEditMode={formType === "edit"}
-        categorias={categoriasParaFiltroYForm} // Todavía se pasa al formulario
+        categorias={categorias}
       />
       <ServicioAdminDetalleModal
         isOpen={isDetailsModalOpen}
-        onClose={() => closeModal('details')}
+        onClose={closeModal}
         servicio={currentServicio}
       />
       <ConfirmModal
         isOpen={isConfirmModalOpen}
-        onClose={() => closeModal('confirm')}
+        onClose={closeModal}
         onConfirm={handleDelete}
         title="Confirmar Eliminación"
-        message={`¿Estás seguro de que deseas eliminar el servicio "${currentServicio?.nombre || ""}"? Esta acción no se puede deshacer y el servicio no se eliminará si está asociado a ventas.`}
-        confirmText={loadingId ? "Eliminando..." : "Eliminar"}
-        isConfirming={loadingId !== null}
+        message={`¿Estás seguro de eliminar el servicio "${currentServicio?.nombre}"?`}
+        isConfirming={loadingId === currentServicio?.idServicio}
       />
     </div>
   );
