@@ -39,7 +39,7 @@ function ListaCategoriasProductoPage() {
     try {
       setLoading(true);
       setError(null); // Limpiar errores antes de una nueva carga
-      const data = await fetchCategoriasProducto(searchTerm); // Pasa el searchTerm al servicio
+      const data = await fetchCategoriasProducto({ search: searchTerm }); // Pasa el searchTerm al servicio
       setCategorias(data);
     } catch (err) {
       console.error("Error al cargar las categorías:", err);
