@@ -71,34 +71,20 @@ export const createRoleAPI = async (roleData) => {
  * @param {object} roleData - Datos del rol a actualizar (nombre, descripcion, estado, idPermisos).
  */
 export const updateRoleAPI = async (roleId, roleData) => {
-  // roleData puede contener: { nombre, descripcion, estado, idPermisos }
-  const { idPermisos, ...dataToUpdate } = roleData; // Separamos idPermisos del resto
-
+  // --- INICIO DE MODIFICACIÓN ---
+  // Antes, esta función no usaba el roleId en la URL. Ahora sí.
   try {
-    // 1. Actualizar los datos básicos del rol (nombre, descripción, estado)
-    // La URL es PUT /api/roles/:roleId
-    const roleResponse = await apiClient.put(`/roles/${roleId}`, dataToUpdate);
-
-    // 2. Actualizar los permisos del rol si se proporcionaron idPermisos.
-    // Esta llamada es POST /api/roles/:roleId/permisos y espera un cuerpo como { idPermisos: [...] }
-    // Es importante que esta llamada se haga incluso si idPermisos es un array vacío,
-    // para que el backend pueda eliminar todos los permisos existentes si ese es el caso.
-    if (typeof idPermisos !== 'undefined') { // Chequea si la propiedad idPermisos existe, incluso si es []
-      await apiClient.post(`/roles/${roleId}/permisos`, { idPermisos });
-    }
-
-    // Si ambas operaciones son exitosas, devolvemos la respuesta de la actualización del rol.
-    // Podríamos necesitar combinar respuestas o devolver un mensaje genérico.
-    // Por ahora, devolvemos la respuesta de la primera llamada, asumiendo que es la principal.
-    return roleResponse.data; // Devuelve { message: "...", data: { ... } }
+    const response = await apiClient.put(`/roles/${roleId}`, roleData);
+    return response.data;
   } catch (error) {
     console.error(
-      "Error al actualizar el rol:",
+      `Error al actualizar el rol con ID ${roleId}:`,
       error.response?.data || error.message
     );
-    // Propagar el error para que useRoles.js pueda manejarlo
-    throw error;
+    // Propagar el error para que el hook lo maneje
+    throw error.response?.data || error;
   }
+  // --- FIN DE MODIFICACIÓN ---
 };
 
 /**
