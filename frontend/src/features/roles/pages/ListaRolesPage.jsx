@@ -101,7 +101,7 @@ function ListaRolesPage() {
             rowsPerPage={itemsPerPage}
           />
         )}
-        { !isLoading && !error && totalRolesFiltrados > itemsPerPage && (
+        {!isLoading && !error && totalRolesFiltrados > itemsPerPage && (
           <Pagination
             itemsPerPage={itemsPerPage}
             totalItems={totalRolesFiltrados}
@@ -123,7 +123,7 @@ function ListaRolesPage() {
         isOpen={isEditarModalOpen}
         onClose={closeModal}
         onSubmit={handleSaveRol}
-        roleData={currentRole} // Pasamos el rol actual que podría tener ya los permisos (si getRoleDetailsAPI los trae)
+        roleId={currentRole?.idRol}
         // o solo id, nombre, desc. El modal puede necesitar cargar detalles o usar lo que se le pasa.
         permisosDisponibles={permisos}
         permisosAgrupados={permisosAgrupados}

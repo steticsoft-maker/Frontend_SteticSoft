@@ -8,7 +8,7 @@ const MAX_FILE_SIZE_MB = MAX_FILE_SIZE_BYTES / (1024 * 1024);
 const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const getInitialFormState = () => ({
     nombre: "",
-    idCategoriaProducto: "",
+    idCategoriaProducto: "", // <-- Este es el nombre correcto para el estado del form
     precio: "",
     existencia: "",
     stockMinimo: "",
@@ -17,6 +17,8 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     imagen: null,
     imagenPreview: null,
     estado: true,
+    tipoUso: 'Venta Directa', // <-- Añadido
+    vidaUtilDias: ''         // <-- Añadido
   });
 
   const [formData, setFormData] = useState(getInitialFormState());
@@ -99,6 +101,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    // ✅ MANTENEMOS TU LÓGICA DE MAPEO Y AÑADIMOS LOS NUEVOS CAMPOS
     const dataToSubmit = {
       nombre: formData.nombre,
       descripcion: formData.descripcion || null,
@@ -106,9 +109,11 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       precio: Number(formData.precio),
       stockMinimo: formData.stockMinimo ? Number(formData.stockMinimo) : null,
       stockMaximo: formData.stockMaximo ? Number(formData.stockMaximo) : null,
-      categoriaProductoId: formData.idCategoriaProducto,
-      imagen: formData.imagenPreview, // Enviar base64
+      categoriaProductoId: formData.idCategoriaProducto, // <-- Mapeo correcto
+      imagen: formData.imagenPreview,
       estado: formData.estado,
+      tipoUso: formData.tipoUso, // <-- Añadido
+      vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : null // <-- Añadido
     };
     onSubmit(dataToSubmit);
   };

@@ -2,7 +2,17 @@
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import logoEmpresa from '/logo.png'; // La importación del logo se mantiene, aunque no lo arreglemos ahora.
+import logoEmpresa from '/logo.png';
+
+// ✅ FUNCIÓN CLAVE: Añadida para formatear la fecha sin ser afectada por la zona horaria.
+const formatFechaSinTimezone = (fechaString) => {
+  if (!fechaString) return 'N/A';
+  // Extrae solo la parte de la fecha (ej: "2025-07-05") del string de la BD.
+  const fechaPart = fechaString.split('T')[0];
+  const [year, month, day] = fechaPart.split('-');
+  // Reordena al formato DÍA/MES/AÑO.
+  return `${day}/${month}/${year}`;
+};
 
 export const generarPDFCompraUtil = (compra) => {
   if (!compra) {
@@ -23,42 +33,40 @@ export const generarPDFCompraUtil = (compra) => {
   // --- Información de la Compra ---
   doc.setFontSize(10);
   doc.text(`ID Compra: ${compra.idCompra}`, 15, 40);
-  doc.text(`Fecha: ${new Date(compra.fecha).toLocaleDateString('es-CO')}`, 15, 47);
+
+  // ✅ CAMBIO APLICADO: Usamos la nueva función para mostrar la fecha.
+  doc.text(`Fecha: ${formatFechaSinTimezone(compra.fecha)}`, 15, 47);
+
   doc.text(`Proveedor: ${compra.proveedor?.nombre || 'N/A'}`, 105, 40);
   doc.text(`Estado: ${compra.estado ? 'Activa' : 'Anulada'}`, 105, 47);
   
   // --- Tabla de Productos ---
   const tableColumn = ["Producto", "Cantidad", "Valor Unitario", "Subtotal"];
-
-  // ✅ CORRECCIÓN 1: Usar `compra.productos` en lugar de `compra.productosComprados`.
+  
   const tableRows = (compra.productos || []).map(p => {
-    
-    // ✅ CORRECCIÓN 2: Usar `p.CompraXProducto` para acceder a los datos de la tabla intermedia.
-    const pivot = p.detalleCompra; 
-    
+    const pivot = p.detalleCompra; // Se mantiene tu corrección
     const cantidad = pivot?.cantidad || 0;
     const valorUnitario = pivot?.valorUnitario || 0;
-
     const subtotalItem = cantidad * valorUnitario;
     return [
-        p.nombre,
-        cantidad,
-        `$${Number(valorUnitario).toLocaleString('es-CO')}`,
-        `$${Number(subtotalItem).toLocaleString('es-CO')}`
+      p.nombre,
+      cantidad,
+      `$${Number(valorUnitario).toLocaleString('es-CO')}`,
+      `$${Number(subtotalItem).toLocaleString('es-CO')}`
     ];
   });
 
   autoTable(doc, {
     head: [tableColumn],
-    body: tableRows.length > 0 ? tableRows : [['-']], // Muestra un guion si no hay productos
+    body: tableRows.length > 0 ? tableRows : [['-']],
     startY: 60,
     theme: 'grid',
     headStyles: { fillColor: [182, 96, 163] },
     styles: { halign: 'center' },
     columnStyles: {
-        0: { halign: 'left' },
-        2: { halign: 'right' },
-        3: { halign: 'right' }
+      0: { halign: 'left' },
+      2: { halign: 'right' },
+      3: { halign: 'right' }
     }
   });
 

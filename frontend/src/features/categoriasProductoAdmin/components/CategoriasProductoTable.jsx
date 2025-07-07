@@ -2,12 +2,13 @@
 import React from 'react';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 
-const CategoriasProductoTable = ({ categorias, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
+const CategoriasProductoTable = ({ categorias, onView, onEdit, onDeleteConfirm, onToggleEstado, startIndex }) => {
 
   return (
     <table className="tablaCategoriaProductos">
       <thead>
         <tr>
+          <th>#</th>
           <th>Nombre</th>
           <th>Descripción</th>
           <th>Vida Útil</th>
@@ -17,9 +18,10 @@ const CategoriasProductoTable = ({ categorias, onView, onEdit, onDeleteConfirm, 
         </tr>
       </thead>
       <tbody>
-        {categorias.map((categoria) => (
+        {categorias.map((categoria, index) => (
           // CAMBIO: Usar categoria.idCategoriaProducto como key
           <tr key={categoria.idCategoriaProducto}>
+            <td>{startIndex + index + 1}</td>
             <td>{categoria.nombre}</td>
             <td>{categoria.descripcion}</td>
             {/* CAMBIO: Usar categoria.vidaUtilDias */}

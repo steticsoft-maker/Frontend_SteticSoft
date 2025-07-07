@@ -4,11 +4,20 @@ import { fetchCategoriasProducto as getCategoriasAPI } from '../../categoriasPro
 
 // --- Funciones que se conectan a la API REAL ---
 
-const getProductos = async () => {
+const getProductos = async (searchTerm = '') => {
   try {
-    const response = await apiClient.get('/productos');
-    // Asumiendo que la data viene en response.data.data
-    return response.data?.data || response.data;
+    // 1. Construimos la URL dinámicamente.
+    // Si hay un término de búsqueda, lo añadimos a la URL.
+    const url = searchTerm
+      ? `/productos?search=${encodeURIComponent(searchTerm)}`
+      : '/productos';
+      
+    // 2. Usamos la nueva URL para llamar a la API.
+    const response = await apiClient.get(url);
+
+    // 3. Devolvemos los datos. Tu lógica original para encontrar los productos está bien.
+    return response.data?.data?.productos || response.data?.data || response.data || [];
+
   } catch (error) {
     console.error("Error en getProductos:", error.response?.data || error.message);
     throw error.response?.data || new Error("Error al obtener los productos.");

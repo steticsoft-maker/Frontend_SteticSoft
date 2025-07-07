@@ -436,3 +436,24 @@ input:checked+.slider:before { transform: translateX(16px); }
         width: 100%;
     }
 }
+
+/* === ESTILOS PARA FORMULARIO EN DOS COLUMNAS === */
+
+/* Contenedor principal del formulario que crea el grid */
+.producto-admin-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Crea dos columnas de igual tamaño */
+  gap: 18px 25px; /* Espacio vertical y horizontal entre campos */
+}
+
+/* Un grupo de campo (label + input) que ocupa todo el ancho */
+.producto-admin-form-group.full-width {
+  grid-column: 1 / -1; /* Hace que el elemento ocupe desde la primera a la última columna */
+}
+
+/* === AJUSTES PARA MÓVILES === */
+@media (max-width: 768px) {
+  .producto-admin-form-grid {
+    grid-template-columns: 1fr; /* En pantallas pequeñas, vuelve a una sola columna */
+  }
+}

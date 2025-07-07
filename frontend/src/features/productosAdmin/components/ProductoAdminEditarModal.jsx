@@ -43,21 +43,24 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
       // CAMBIO: Carga de datos iniciales del producto
       // Ajustamos los nombres de los campos de 'initialData' para que coincidan con 'formData'
       setFormData({
-        // CAMBIO: Usar idProducto para el ID
         idProducto: initialData.idProducto, 
         nombre: initialData.nombre || '',
-        // CAMBIO: Usar idCategoriaProducto del initialData
-        idCategoriaProducto: initialData.categoria ? initialData.categoria.idCategoriaProducto : '', 
+        
+        // ✅ 1. CORRECCIÓN EN LA CARGA DE DATOS:
+        // Usamos el ID de la categoría directamente desde el producto.
+        // Esto es más seguro que depender del objeto 'categoria' anidado.
+        idCategoriaProducto: initialData.categoriaProductoId || '', 
+        
         precio: initialData.precio?.toString() || '',
-        // CAMBIO: Usar existencia en lugar de stock
         existencia: initialData.existencia?.toString() || '', 
-        stockMinimo: initialData.stockMinimo?.toString() || '0', // Asegurarse de tener stockMinimo y Maximo
+        stockMinimo: initialData.stockMinimo?.toString() || '0',
         stockMaximo: initialData.stockMaximo?.toString() || '0',
         descripcion: initialData.descripcion || '',
-        // CAMBIO: Usar imagen y imagenPreview
-        imagenPreview: initialData.imagen || null, // La imagen que ya viene del backend
-        imagen: null, // Para la nueva imagen a subir
+        imagenPreview: initialData.imagen || null,
+        imagen: null,
         estado: initialData.estado !== undefined ? initialData.estado : true,
+        tipoUso: initialData.tipoUso || 'Venta Directa',
+        vidaUtilDias: initialData.vidaUtilDias || ''
       });
 
     } else if (isOpen && !initialData) {
@@ -126,9 +129,7 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
     e.preventDefault();
     if (!validateForm()) return;
 
-    // CAMBIO: Preparar los datos para la API con los nombres correctos
     const dataToSubmit = {
-      // CAMBIO: ID del producto para actualizar
       idProducto: formData.idProducto, 
       nombre: formData.nombre,
       descripcion: formData.descripcion,
@@ -136,14 +137,16 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
       precio: parseFloat(formData.precio),
       stockMinimo: parseInt(formData.stockMinimo),
       stockMaximo: parseInt(formData.stockMaximo),
-      // CAMBIO: Enviar idCategoriaProducto al backend
-      categoriaProductoId: formData.idCategoriaProducto, 
-      // CAMBIO: Enviar imagenPreview (base64) como 'imagen'
+      
+      // ✅ 2. CORRECCIÓN AL ENVIAR LOS DATOS:
+      // Si no hay idCategoriaProducto, enviamos 'null' en lugar de un string vacío.
+      categoriaProductoId: formData.idCategoriaProducto || null, 
+      
       imagen: formData.imagenPreview, 
       estado: formData.estado,
+      tipoUso: formData.tipoUso,
+      vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : null
     };
-    // La función onSubmit en la página principal (ProductosAdminPage)
-    // se encargará de llamar a productosAdminService.updateProducto con estos datos.
     onSubmit(dataToSubmit); 
   };
 

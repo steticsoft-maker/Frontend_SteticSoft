@@ -8,11 +8,15 @@ const API_BASE_PATH = "/categorias-producto"; // Ruta base de la API para catego
  * @param {object} [filters={}] - Opciones de filtro ({ estado, tipoUso, search }).
  * @returns {Promise<Array>} Una promesa que resuelve con la lista de categorías.
  */
-export const fetchCategoriasProducto = async (filters = {}) => { 
+export const fetchCategoriasProducto = async (filters = {}) => {
   try {
+    // Objeto para construir los parámetros de la URL de forma limpia.
     const params = new URLSearchParams();
-    
-    // Filtros existentes (estado, tipoUso)
+
+    // Añade cada filtro a los parámetros solo si tiene un valor.
+    if (filters.search) {
+      params.append('search', filters.search);
+    }
     if (filters.estado !== undefined) {
       params.append('estado', filters.estado);
     }
@@ -20,18 +24,23 @@ export const fetchCategoriasProducto = async (filters = {}) => {
       params.append('tipoUso', filters.tipoUso);
     }
 
-    // AÑADIDO: Si hay un término de búsqueda, lo añadimos como parámetro 'search'
-    if (filters.search) {
-      params.append('search', filters.search);
-    }
+    // Define el endpoint específico para esta solicitud.
+    const endpoint = `/categorias-producto?${params.toString()}`;
 
-    const response = await apiClient.get(`${API_BASE_PATH}?${params.toString()}`);
-    // La API devuelve un objeto con { success: true, data: [...] }
-    return response.data.data;
+    // Llama a la API usando el cliente (ej. axios) y el endpoint construido.
+    const response = await apiClient.get(endpoint);
+
+    // --- CORRECCIÓN CLAVE ---
+    // Se verifica de forma segura que la respuesta contenga los datos esperados.
+    // Si `response.data` o `response.data.data` no existen, devuelve un array vacío
+    // para evitar que la aplicación se rompa.
+    return response?.data?.data || [];
+
   } catch (error) {
     console.error("Error al obtener categorías de producto desde la API:", error);
-    // Propaga el error para que sea manejado por el componente o quien llame.
-    throw error;
+    // Se retorna un array vacío también en caso de error para mantener la consistencia
+    // y evitar que la UI falle. El error ya se registró en la consola.
+    return [];
   }
 };
 

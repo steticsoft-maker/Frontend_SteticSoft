@@ -1,6 +1,16 @@
 import React from 'react';
 import '../css/Compras.css';
 
+// ✅ FUNCIÓN AUXILIAR: Añadida para formatear la fecha de forma segura.
+const formatFechaSinTimezone = (fechaString) => {
+  if (!fechaString) return 'N/A';
+  // Extrae solo la parte de la fecha (ej: "2025-07-01") del string que viene de la BD.
+  const fechaPart = fechaString.split('T')[0];
+  const [year, month, day] = fechaPart.split('-');
+  // Reordena al formato DÍA/MES/AÑO.
+  return `${day}/${month}/${year}`;
+};
+
 const CompraDetalleModal = ({ compra, onClose }) => {
   if (!compra) {
     return null;
@@ -16,10 +26,12 @@ const CompraDetalleModal = ({ compra, onClose }) => {
         
         <h3 className="proveedores-modal-title">Detalle de la Compra</h3>
         
-        {/* --- Información General --- */}
         <div className="proveedor-details-list">
             <p><strong>ID Compra:</strong> {idCompra}</p>
-            <p><strong>Fecha:</strong> {new Date(fecha).toLocaleDateString('es-CO')}</p>
+
+            {/* ✅ CAMBIO APLICADO: Usamos la nueva función para mostrar la fecha. */}
+            <p><strong>Fecha:</strong> {formatFechaSinTimezone(fecha)}</p>
+            
             <p><strong>Proveedor:</strong> {proveedor?.nombre || 'N/A'}</p>
             <p><strong>Registrado por:</strong> {usuario?.nombre || 'N/A'}</p>
             <p><strong>Estado:</strong> 
@@ -29,7 +41,6 @@ const CompraDetalleModal = ({ compra, onClose }) => {
             </p>
         </div>
 
-        {/* --- Productos y Totales --- */}
         <h4 className="modal-subtitle-proveedores">Productos y Totales</h4>
         <table className="detalle-productos-simple">
             <thead>
@@ -70,7 +81,6 @@ const CompraDetalleModal = ({ compra, onClose }) => {
             <button className="proveedores-detalle-modal-button-cerrar" onClick={onClose}>
                 Cerrar
             </button>
-            {/* El botón de PDF ha sido eliminado */}
         </div>
 
       </div>

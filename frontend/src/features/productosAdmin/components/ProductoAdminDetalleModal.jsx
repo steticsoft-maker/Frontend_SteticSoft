@@ -17,6 +17,9 @@ const ProductoAdminDetalleModal = ({ isOpen, onClose, producto }) => {
           <p><strong>Nombre:</strong> {producto.nombre}</p>
           {/* CAMBIO CLAVE: Acceder a 'nombre' de 'producto.categoria' */}
           <p><strong>Categoría:</strong> {producto.categoria ? producto.categoria.nombre : 'N/A'}</p> 
+          {/* ✅ --- AÑADE ESTAS DOS LÍNEAS AQUÍ --- */}
+          <p><strong>Tipo de Uso:</strong> {producto.tipoUso || 'No especificado'}</p>
+          <p><strong>Vida Útil:</strong> {producto.vidaUtilDias ? `${producto.vidaUtilDias} días` : 'No especificado'}</p>
           <p><strong>Precio:</strong> ${producto.precio ? producto.precio.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0.00'}</p>
           {/* CAMBIO: Mostrar 'producto.existencia' en lugar de 'producto.stock' */}
           <p><strong>Existencia (Stock):</strong> {producto.existencia}</p>
