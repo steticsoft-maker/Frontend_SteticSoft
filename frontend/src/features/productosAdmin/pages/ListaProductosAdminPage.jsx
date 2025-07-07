@@ -1,4 +1,5 @@
-// src/features/productosAdmin/pages/ListaProductosAdminPage.jsx
+// RUTA: src/features/productosAdmin/pages/ListaProductosAdminPage.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ProductosAdminTable from '../components/ProductosAdminTable';
@@ -7,16 +8,18 @@ import ProductoAdminEditarModal from '../components/ProductoAdminEditarModal';
 import ProductoAdminDetalleModal from '../components/ProductoAdminDetalleModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
-
-// CAMBIO: Importamos el objeto del servicio, no las funciones sueltas
+import Pagination from "../../../shared/components/common/Pagination";
 import { productosAdminService } from '../services/productosAdminService';
 import '../css/ProductosAdmin.css';
 
 function ListaProductosAdminPage() {
   const [productos, setProductos] = useState([]);
   const [busqueda, setBusqueda] = useState('');
-  const [isLoading, setIsLoading] = useState(true); // NUEVO: Estado de carga
-  const [error, setError] = useState(null); // NUEVO: Estado de error
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   // Estados para modales (sin cambios)
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
@@ -28,13 +31,11 @@ function ListaProductosAdminPage() {
   const [currentProducto, setCurrentProducto] = useState(null);
   const [validationMessage, setValidationMessage] = useState('');
 
-  // CAMBIO: Lógica para cargar datos desde la API
-  const cargarProductos = useCallback(async () => {
+  const cargarProductos = useCallback(async (searchTerm = "") => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await productosAdminService.getProductos();
-      // Asumiendo que la API devuelve { success: true, data: [...] }
+      const response = await productosAdminService.getProductos(searchTerm);
       setProductos(response || []);
     } catch (err) {
       setError(err.message || "Error al cargar los productos.");
@@ -44,8 +45,12 @@ function ListaProductosAdminPage() {
   }, []);
 
   useEffect(() => {
-    cargarProductos();
-  }, [cargarProductos]);
+    const delayDebounceFn = setTimeout(() => {
+        cargarProductos(busqueda);
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [busqueda, cargarProductos]);
 
   const closeModal = () => {
     setIsCrearModalOpen(false);
@@ -65,59 +70,51 @@ function ListaProductosAdminPage() {
     else if (type === 'edit') setIsEditarModalOpen(true);
   };
   
-  // CAMBIO: Lógica de guardado asíncrona que llama a la API
   const handleSave = async (productoData) => {
-  try {
-    // ✅ CORRECCIÓN: Cambiamos 'productoData.id' por 'productoData.idProducto'
-    // para que coincida con el nombre del ID que se maneja en el formulario de edición.
-    if (productoData.idProducto) { // Editando un producto existente
-      await productosAdminService.updateProducto(productoData.idProducto, productoData);
-    } else { // Creando un producto nuevo
-      await productosAdminService.createProducto(productoData);
-    }
-    await cargarProductos();
-    closeModal();
-  } catch (err) {
-    setValidationMessage(err.message || "Error al guardar el producto.");
-    setIsValidationModalOpen(true);
-  }
-};
-
-  // CAMBIO: Lógica de borrado asíncrona
-  const handleDelete = async () => {
-  // ✅ CORRECCIÓN: Cambiamos 'currentProducto?.id' por 'currentProducto?.idProducto'
-  if (currentProducto?.idProducto) {
     try {
-      // Llamamos al servicio con el ID correcto
-      await productosAdminService.deleteProducto(currentProducto.idProducto);
-      await cargarProductos(); // Recargamos la lista para que el producto desaparezca
+      if (productoData.idProducto) {
+        await productosAdminService.updateProducto(productoData.idProducto, productoData);
+      } else {
+        await productosAdminService.createProducto(productoData);
+      }
+      await cargarProductos(busqueda);
       closeModal();
     } catch (err) {
-      setValidationMessage(err.message || "Error al eliminar el producto.");
+      setValidationMessage(err.message || "Error al guardar el producto.");
       setIsValidationModalOpen(true);
-      // No cerramos el modal de confirmación aquí, solo el de validación después.
     }
-  }
-};
+  };
+
+  const handleDelete = async () => {
+    if (currentProducto?.idProducto) {
+      try {
+        await productosAdminService.deleteProducto(currentProducto.idProducto);
+        await cargarProductos(busqueda);
+        closeModal();
+      } catch (err) {
+        setValidationMessage(err.message || "Error al eliminar el producto.");
+        setIsValidationModalOpen(true);
+      }
+    }
+  };
   
-  // CAMBIO: Lógica de cambio de estado asíncrona
   const handleToggleEstado = async (productoId) => {
-    const producto = productos.find(p => p.id === productoId);
+    const producto = productos.find(p => p.idProducto === productoId);
     if (producto) {
         try {
             await productosAdminService.toggleEstado(productoId, !producto.estado);
-            await cargarProductos();
+            await cargarProductos(busqueda);
         } catch(err) {
             setValidationMessage(err.message || "Error al cambiar el estado.");
             setIsValidationModalOpen(true);
         }
     }
   };
-
-  const filteredProductos = productos.filter(p =>
-    (p.nombre?.toLowerCase() || '').includes(busqueda.toLowerCase()) ||
-    (p.categoria?.toLowerCase() || '').includes(busqueda.toLowerCase())
-  );
+  
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const productosPaginados = productos.slice(indexOfFirstItem, indexOfLastItem);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="productos-admin-page-container">
@@ -129,7 +126,7 @@ function ListaProductosAdminPage() {
             <div className="productos-admin-search-bar">
               <input
                 type="text"
-                placeholder="Buscar producto (nombre, categoría)..."
+                placeholder="Busca por cualquier campo de la tabla"
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
               />
@@ -144,13 +141,21 @@ function ListaProductosAdminPage() {
           {isLoading && <p>Cargando productos...</p>}
           {error && <p className="error-message">{error}</p>}
           {!isLoading && !error && (
-            <ProductosAdminTable
-              productos={filteredProductos}
-              onView={(prod) => handleOpenModal('details', prod)}
-              onEdit={(prod) => handleOpenModal('edit', prod)}
-              onDeleteConfirm={(prod) => handleOpenModal('delete', prod)}
-              onToggleEstado={handleToggleEstado}
-            />
+            <>
+              <ProductosAdminTable
+                productos={productosPaginados}
+                onView={(prod) => handleOpenModal('details', prod)}
+                onEdit={(prod) => handleOpenModal('edit', prod)}
+                onDeleteConfirm={(prod) => handleOpenModal('delete', prod)}
+                onToggleEstado={handleToggleEstado}
+              />
+              <Pagination
+                itemsPerPage={itemsPerPage}
+                totalItems={productos.length}
+                paginate={paginate}
+                currentPage={currentPage}
+              />
+            </>
           )}
         </div>
       </div>
