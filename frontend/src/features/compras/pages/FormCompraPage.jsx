@@ -56,7 +56,7 @@ function FormCompraPage() {
         if (productosResult.status === 'fulfilled') {
           console.log('✅ Éxito al cargar productos. Datos:', productosResult.value);
           const productosData = productosResult.value;
-          setProductosList(Array.isArray(productosData?.productos) ? productosData.productos : []);
+          setProductosList(Array.isArray(productosData) ? productosData : []);
         } else {
           console.error('❌ Error al cargar productos:', productosResult.reason);
           setProductosList([]); // En caso de error, establece una lista vacía
