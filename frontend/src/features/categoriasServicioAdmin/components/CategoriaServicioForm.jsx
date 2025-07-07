@@ -23,62 +23,78 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) =
       } else {
         setFormData(INITIAL_FORM_STATE);
       }
+      // Limpiar errores al abrir/cambiar de modo
       setErrors({});
       setApiError('');
     }
   }, [isOpen, isEditMode, initialData]);
 
-  // --- CAMBIO CLAVE 1: Lógica de validación dentro de handleChange ---
+  // --- VALIDACIÓN EN TIEMPO REAL ---
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'nombre') {
-      let error = '';
-      if (/\s/.test(value)) {
-        error = 'El nombre no puede contener espacios.';
-      }
-      else if (/[^a-zA-Z0-9]/.test(value)) {
-        error = 'Solo se permiten letras y números.';
-      }
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        nombre: error
-      }));
-    }
     setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Validar en tiempo real para dar feedback inmediato al usuario
+    validateField(name, value);
   };
-  const validateForm = () => {
-    const newErrors = { ...errors };
-    const nombreTrimmed = formData.nombre;
 
-    if (!nombreTrimmed) {
-      newErrors.nombre = 'El nombre es obligatorio.';
-    } else if (nombreTrimmed.length < 3) {
-      newErrors.nombre = 'El nombre debe tener al menos 3 caracteres.';
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    // En el evento onBlur, realizamos una validación completa del campo
+    validateField(name, value, true);
+  };
+
+  // --- FUNCIÓN DE VALIDACIÓN CENTRALIZADA ---
+  const validateField = (name, value, checkLength = false) => {
+    let error = '';
+    const trimmedValue = value.trim();
+
+    // Regla: No permite caracteres especiales, ni espacios al inicio o al final.
+    const validationRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+(\s[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+)*$/;
+
+    if (name === 'nombre' || name === 'descripcion') {
+        if (value && !validationRegex.test(value)) {
+            if (/^\s|\s$/.test(value)) {
+                error = 'No se permiten espacios al inicio o al final.';
+            } else {
+                error = 'Solo se permiten letras, números y espacios intermedios.';
+            }
+        }
     }
-    if (formData.descripcion.trim().length > 255) {
-      newErrors.descripcion = 'La descripción no puede exceder los 255 caracteres.';
-    } else {
-      if ('descripcion' in newErrors) delete newErrors.descripcion;
+    
+    // --- Validaciones de longitud (aplicadas en onBlur o al enviar) ---
+    if (name === 'nombre' && !error) {
+        if (!trimmedValue) {
+          error = 'El nombre es obligatorio.';
+        } else if (checkLength && trimmedValue.length < 3) {
+          error = 'El nombre debe tener al menos 3 caracteres.';
+        }
     }
 
-    setErrors(newErrors);
-    return Object.values(newErrors).every(error => !error);
+    if (name === 'descripcion' && !error) {
+        if (trimmedValue.length > 255) {
+          error = 'La descripción no puede exceder los 255 caracteres.';
+        }
+    }
+
+    setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
+    return !error;
   };
   
-  const handleBlur = (e) => {
-    const { name } = e.target;
-    if (name === 'nombre' && !errors.nombre && formData.nombre.length > 0 && formData.nombre.length < 3) {
-         setErrors(prev => ({ ...prev, nombre: 'Debe tener al menos 3 caracteres.' }));
-    }
+  // --- VALIDACIÓN FINAL ANTES DE ENVIAR ---
+  const validateForm = () => {
+    const isNombreValid = validateField('nombre', formData.nombre, true);
+    const isDescripcionValid = validateField('descripcion', formData.descripcion, true);
+
+    return isNombreValid && isDescripcionValid;
   };
-
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError('');
-
+    
+    // Ejecutar validación final
     if (!validateForm()) {
-      console.log("Validación final falló, envío detenido.");
       return;
     }
 
@@ -86,6 +102,8 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) =
     try {
       const datosAEnviar = {
         ...formData,
+        nombre: formData.nombre.trim(),
+        descripcion: formData.descripcion.trim(),
       };
       
       await onSubmit(datosAEnviar);
@@ -99,7 +117,7 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) =
   };
 
   if (!isOpen) return null;
-  const isFormInvalid = Object.values(errors).some(error => !!error) || !formData.nombre;
+  const isFormInvalid = Object.values(errors).some(error => !!error) || !formData.nombre.trim();
 
   return (
     <div className="modal-Categoria">
@@ -121,7 +139,7 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) =
               disabled={loading}
               required
               autoComplete="off"
-              placeholder="Ej: LimpiezaHogar"
+              placeholder="Ej: Limpieza de Hogar"
             />
             {errors.nombre && <div className="error">{errors.nombre}</div>}
           </div>
@@ -134,6 +152,7 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) =
               className={`campoAgregarCategoria ${errors.descripcion ? 'input-error' : ''}`}
               value={formData.descripcion}
               onChange={handleChange}
+              onBlur={handleBlur}
               rows="4"
               disabled={loading}
             ></textarea>

@@ -14,7 +14,6 @@ const CategoriasServicioTable = ({ categorias, onEditar, onEliminar, onCambiarEs
         </tr>
       </thead>
       <tbody>
-        {}
         {!categorias || categorias.length === 0 ? (
           <tr>
             <td colSpan="5" className="no-data-cell">No se encontraron categorías.</td>

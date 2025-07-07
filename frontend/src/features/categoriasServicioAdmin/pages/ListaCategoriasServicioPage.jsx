@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import CategoriasTabla from '../components/CategoriasServicioTable';
 import CategoriaForm from '../components/CategoriaServicioForm.jsx';
 import CategoriaServicioDetalleModal from '../components/CategoriaServicioDetalleModal';
-import ConfirmModal from '../../../shared//components/common/ConfirmModal'; 
+import ConfirmModal from '../../../shared//components/common/ConfirmModal';
 
 // --- Estilos ---
 import '../css/CategoriasServicio.css';
@@ -25,14 +25,14 @@ const ListaCategoriasServicioPage = () => {
   const [loadingId, setLoadingId] = useState(null);
   const [error, setError] = useState('');
 
-  // --- Estados para los modales (sin cambios) ---
+  // --- Estados para los modales ---
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [categoriaActual, setCategoriaActual] = useState(null);
 
-  // --- Lógica de carga de datos (pequeño ajuste en el catch) ---
+  // --- Lógica de carga de datos ---
   const cargarCategorias = useCallback(async () => {
     setLoading(true);
     setError('');
@@ -52,6 +52,7 @@ const ListaCategoriasServicioPage = () => {
     cargarCategorias();
   }, [cargarCategorias]);
 
+  // --- Lógica de filtrado ---
   const categoriasFiltradas = useMemo(() => {
     let dataFiltrada = [...categorias];
 
@@ -69,8 +70,9 @@ const ListaCategoriasServicioPage = () => {
     }
     
     return dataFiltrada;
-  }, [categorias, terminoBusqueda, filtroEstado]); 
-  // --- Manejadores de Acciones (sin cambios, pero he limpiado el de submit) ---
+  }, [categorias, terminoBusqueda, filtroEstado]);
+
+  // --- Manejadores de Acciones ---
   const handleAbrirCrearModal = () => {
     setIsEditMode(false);
     setCategoriaActual(null);
@@ -88,18 +90,16 @@ const ListaCategoriasServicioPage = () => {
     setIsDetailModalOpen(true);
   };
 
+  // ✅ CORRECCIÓN: Se elimina el try/catch innecesario.
+  // El manejo de errores ahora se delega al componente del formulario.
   const handleFormSubmit = async (formData) => {
-    try {
-      if (isEditMode) {
-        await updateCategoriaServicio(categoriaActual.idCategoriaServicio, formData);
-      } else {
-        await createCategoriaServicio(formData);
-      }
-      setIsFormModalOpen(false);
-      cargarCategorias();
-    } catch (err) {
-      throw err;
+    if (isEditMode) {
+      await updateCategoriaServicio(categoriaActual.idCategoriaServicio, formData);
+    } else {
+      await createCategoriaServicio(formData);
     }
+    setIsFormModalOpen(false);
+    cargarCategorias();
   };
 
   const handleEliminarCategoria = (categoria) => {
@@ -134,30 +134,36 @@ const ListaCategoriasServicioPage = () => {
     }
   };
 
-  return (
+return (
     <div className="Categoria-content">
       <div className="categorias-servicio-content-wrapper">
         <h1>Gestión de Categorías de Servicio</h1>
 
+        {/* ✅ El contenedor principal ahora envuelve correctamente los filtros Y el botón */}
         <div className="ContainerBotonAgregarCategoria">
-          <div className="BusquedaBotonCategoria">
+          <div className="filtros-wrapper">
             <input
+              className="filtro-input"
               type="text"
               placeholder="Buscar por nombre o descripción..."
               value={terminoBusqueda}
               onChange={(e) => setTerminoBusqueda(e.target.value)}
             />
+            <div className="filtro-estado-grupo">
+              <label htmlFor="filtro-estado">Estado:</label>
+                <select
+                  id="filtro-estado"
+                  className="filtro-input"
+                  value={filtroEstado}
+                  onChange={(e) => setFiltroEstado(e.target.value)}
+                >
+                  <option value="todos">Todos</option>
+                  <option value="activos">Activos</option>
+                  <option value="inactivos">Inactivos</option>
+                </select>
+            </div>
           </div>
-          {}
-          <select
-            className="filtro-estado-select"
-            value={filtroEstado}
-            onChange={(e) => setFiltroEstado(e.target.value)}
-          >
-            <option value="todos">Todos los estados</option>
-            <option value="activos">Activos</option>
-            <option value="inactivos">Inactivos</option>
-          </select>
+
           <button className="botonAgregarCategoria" onClick={handleAbrirCrearModal}>
             Agregar Nueva Categoría
           </button>
@@ -179,7 +185,7 @@ const ListaCategoriasServicioPage = () => {
         )}
       </div>
 
-      {}
+      {/* --- Modales --- */}
       <CategoriaForm
         isOpen={isFormModalOpen}
         onClose={() => setIsFormModalOpen(false)}

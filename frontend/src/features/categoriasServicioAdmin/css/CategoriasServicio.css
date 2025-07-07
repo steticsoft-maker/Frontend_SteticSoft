@@ -51,17 +51,59 @@
  font-size: 1.8rem;
 }
 
+/* --- Contenedor principal de los controles --- */
 .ContainerBotonAgregarCategoria {
- display: flex;
- justify-content: space-between;
- align-items: center;
- margin-bottom: 25px;
- gap: 20px;
- flex-wrap: wrap;
- width: 100%;
- box-sizing: border-box;
+  display: flex;
+  justify-content: space-between; /* Empuja el botón a la derecha */
+  align-items: center;
+  flex-wrap: wrap; /* Para que sea responsivo en pantallas pequeñas */
+  gap: 1.5rem; /* Espacio entre el grupo de filtros y el botón */
+  margin-bottom: 1.5rem;
 }
 
+/* --- Agrupador para la búsqueda y el filtro de estado --- */
+.filtros-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Espacio entre la búsqueda y el filtro de estado */
+  flex-grow: 1; /* Permite que este grupo ocupe el espacio disponible */
+  min-width: 300px; /* Ancho mínimo para evitar que se aplaste demasiado */
+}
+
+/* --- Estilo unificado para input y select --- */
+.filtro-input {
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+.filtro-input:focus {
+  outline: none;
+  border-color: var(--color-border-light);
+}
+
+/* --- Estilo específico para la barra de búsqueda --- */
+input.filtro-input {
+  /* La clave: le dice al input que crezca para llenar el espacio de su contenedor */
+  flex-grow: 1;
+  width: 100%; /* Asegura que tome el ancho del espacio que se le asigna */
+}
+
+/* --- Grupo específico para el filtro de estado y su etiqueta --- */
+.filtro-estado-grupo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre "Estado:" y el select */
+}
+
+.filtro-estado-grupo label {
+  white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+  font-weight: 500;
+  color: #333;
+}
 .BusquedaBotonCategoria {
  flex-grow: 1;
  display: flex;
