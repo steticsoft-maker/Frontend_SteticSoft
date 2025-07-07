@@ -1,133 +1,130 @@
 // src/features/usuarios/services/usuariosService.js
-
-import apiClient from "../../../shared/services/api";
-
-/**
- * REFINAMIENTO: Centraliza el manejo de errores de la API para evitar repetición.
- * Extrae el mensaje de error de la respuesta de Axios o crea un error genérico.
- * @param {Error} error - El objeto de error capturado.
- * @param {string} defaultMessage - Mensaje por defecto si no se encuentra uno específico.
- * @throws {Error} Lanza un nuevo error con un mensaje limpio.
- */
-const handleApiError = (error, defaultMessage) => {
-  const errorMessage =
-    error.response?.data?.message || error.message || defaultMessage;
-  throw new Error(errorMessage);
-};
+import apiClient from "../../../shared/services/api"; // Ajusta la ruta a tu apiClient
 
 /**
- * Obtiene la lista de todos los usuarios.
- * @returns {Promise<Array>} Una promesa que resuelve a un array de usuarios.
+ * Obtiene la lista de todos los usuarios desde la API.
  */
 export const getUsuariosAPI = async () => {
   try {
     const response = await apiClient.get("/usuarios");
     return response.data;
   } catch (error) {
-    handleApiError(error, "Error al obtener la lista de usuarios.");
+    // console.error("[usuariosService.js] Error en getUsuariosAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al obtener la lista de usuarios.")
+    );
   }
 };
 
 /**
- * Obtiene los detalles de un usuario por su ID.
- * @param {string} idUsuario - El ID del usuario.
- * @returns {Promise<object>} Una promesa que resuelve al objeto del usuario.
+ * Verifica si un correo electrónico ya existe en el sistema.
+ * @param {string} correo - El correo electrónico a verificar.
+ * @returns {Promise<object>} La respuesta de la API, que podría incluir un booleano o un mensaje.
+ *                            Ej. { existe: true } o { existe: false }
+ * @throws {Error} Relanza el error si la llamada a la API falla.
+ */
+export const verificarCorreoAPI = async (correo) => {
+  try {
+    const response = await apiClient.get(`/usuarios/verificar-correo?correo=${encodeURIComponent(correo)}`);
+    return response.data; // Asume que la API devuelve algo como { existe: true/false }
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en verificarCorreoAPI:", error.response?.data || error.message);
+    // Es importante decidir cómo manejar errores aquí. ¿Un error de red debe interpretarse como "no existe" o fallar la validación?
+    // Por ahora, relanzamos para que el hook lo maneje.
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al verificar el correo.")
+    );
+  }
+};
+
+/**
+ * Obtiene los detalles de un usuario específico por su ID.
  */
 export const getUsuarioByIdAPI = async (idUsuario) => {
   try {
     const response = await apiClient.get(`/usuarios/${idUsuario}`);
     return response.data;
   } catch (error) {
-    handleApiError(error, "Error al obtener los detalles del usuario.");
+    // console.error("[usuariosService.js] Error en getUsuarioByIdAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al obtener los detalles del usuario.")
+    );
   }
 };
 
 /**
  * Crea un nuevo usuario en el sistema.
- * @param {object} nuevoUsuarioData - Datos completos del usuario a crear.
- * @returns {Promise<object>} El nuevo usuario creado.
  */
 export const createUsuarioAPI = async (nuevoUsuarioData) => {
+  // console.log("[usuariosService.js] Creando usuario con datos:", nuevoUsuarioData);
   try {
     const response = await apiClient.post("/usuarios", nuevoUsuarioData);
     return response.data;
   } catch (error) {
-    handleApiError(error, "Error al crear el nuevo usuario.");
+    // console.error("[usuariosService.js] Error en createUsuarioAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al crear el nuevo usuario.")
+    );
   }
 };
 
 /**
- * Actualiza un usuario existente.
- * @param {string} idUsuario - El ID del usuario a actualizar.
- * @param {object} usuarioData - Datos del usuario a modificar.
- * @returns {Promise<object>} El usuario actualizado.
+ * Actualiza un usuario existente en el sistema.
  */
 export const updateUsuarioAPI = async (idUsuario, usuarioData) => {
+  // console.log(`[usuariosService.js] Actualizando usuario ${idUsuario} con datos:`, usuarioData);
   try {
     const response = await apiClient.put(`/usuarios/${idUsuario}`, usuarioData);
     return response.data;
   } catch (error) {
-    handleApiError(error, "Error al actualizar el usuario.");
+    // console.error("[usuariosService.js] Error en updateUsuarioAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al actualizar el usuario.")
+    );
   }
 };
 
 /**
- * CORRECCIÓN: Cambia el estado de un usuario (activo/inactivo).
- * El backend espera una petición PATCH a /usuarios/:id/estado con { "activo": boolean }.
- * @param {string} idUsuario - El ID del usuario.
- * @param {boolean} nuevoEstado - `true` para activar, `false` para desactivar.
- * @returns {Promise<object>} El usuario con el estado modificado.
+ * Cambia el estado de un usuario (activo/inactivo) llamando al endpoint PATCH.
+ * @param {number|string} idUsuario - El ID del usuario a modificar.
+ * @param {boolean} nuevoEstado - El nuevo estado para el usuario (true para activo, false para inactivo).
+ * @returns {Promise<object>} La respuesta de la API.
  */
 export const toggleUsuarioEstadoAPI = async (idUsuario, nuevoEstado) => {
+  // console.log(`[usuariosService.js] Cambiando estado del usuario ${idUsuario} a:`, nuevoEstado);
   try {
+    // Se utiliza la ruta PATCH específica para cambiar el estado.
+    // El backend espera un objeto con la propiedad 'estado' en el cuerpo de la solicitud.
     const response = await apiClient.patch(`/usuarios/${idUsuario}/estado`, {
-      activo: nuevoEstado, // CORRECCIÓN: El backend espera la clave 'activo'.
+      estado: nuevoEstado,
     });
     return response.data;
   } catch (error) {
-    handleApiError(error, "Error al cambiar el estado del usuario.");
+    // console.error("[usuariosService.js] Error en toggleUsuarioEstadoAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al cambiar el estado del usuario.")
+    );
   }
 };
 
 /**
- * NUEVA FUNCIÓN: Elimina un usuario físicamente del sistema.
- * @param {string} idUsuario - El ID del usuario a eliminar.
- * @returns {Promise<void>} No devuelve contenido en caso de éxito.
- */
-export const deleteUsuarioAPI = async (idUsuario) => {
-  try {
-    await apiClient.delete(`/usuarios/${idUsuario}`);
-  } catch (error) {
-    handleApiError(error, "Error al eliminar el usuario.");
-  }
-};
-
-/**
- * CORRECCIÓN: Verifica si un correo ya existe usando POST.
- * El backend espera una petición POST a /usuarios/verificar-correo.
- * @param {string} correo - El correo a verificar.
- * @returns {Promise<{existe: boolean}>} Un objeto indicando si el correo existe.
- */
-export const verificarCorreoAPI = async (correo) => {
-  try {
-    const response = await apiClient.post("/usuarios/verificar-correo", {
-      correo,
-    });
-    return response.data;
-  } catch (error) {
-    handleApiError(error, "Error al verificar el correo.");
-  }
-};
-
-/**
- * Obtiene la lista de roles disponibles.
- * @returns {Promise<Array>} Una promesa que resuelve a un array de roles.
+ * Obtiene la lista de roles disponibles desde la API.
  */
 export const getRolesAPI = async () => {
   try {
     const response = await apiClient.get("/roles");
     return response.data;
   } catch (error) {
-    handleApiError(error, "Error al obtener la lista de roles.");
+    // console.error("[usuariosService.js] Error en getRolesAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al obtener la lista de roles.")
+    );
   }
 };
