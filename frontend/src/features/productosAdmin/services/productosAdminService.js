@@ -7,8 +7,7 @@ import { fetchCategoriasProducto as getCategoriasAPI } from '../../categoriasPro
 const getProductos = async () => {
   try {
     const response = await apiClient.get('/productos');
-    // Asumiendo que la data viene en response.data.data
-    return response.data?.data || response.data;
+    return response.data?.data?.productos || [];
   } catch (error) {
     console.error("Error en getProductos:", error.response?.data || error.message);
     throw error.response?.data || new Error("Error al obtener los productos.");

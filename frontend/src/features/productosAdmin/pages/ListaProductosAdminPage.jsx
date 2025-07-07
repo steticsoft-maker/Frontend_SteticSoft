@@ -35,7 +35,7 @@ function ListaProductosAdminPage() {
     try {
       const response = await productosAdminService.getProductos();
       // Asumiendo que la API devuelve { success: true, data: [...] }
-      setProductos(response.data || []);
+      setProductos(response || []);
     } catch (err) {
       setError(err.message || "Error al cargar los productos.");
     } finally {
@@ -67,34 +67,38 @@ function ListaProductosAdminPage() {
   
   // CAMBIO: Lógica de guardado asíncrona que llama a la API
   const handleSave = async (productoData) => {
-    try {
-      if (productoData.id) { // Editando
-        await productosAdminService.updateProducto(productoData.id, productoData);
-      } else { // Creando
-        await productosAdminService.createProducto(productoData);
-      }
-      await cargarProductos(); // Recargar la lista
-      closeModal();
-    } catch (err) {
-      setValidationMessage(err.message || "Error al guardar el producto.");
-      setIsValidationModalOpen(true);
+  try {
+    // ✅ CORRECCIÓN: Cambiamos 'productoData.id' por 'productoData.idProducto'
+    // para que coincida con el nombre del ID que se maneja en el formulario de edición.
+    if (productoData.idProducto) { // Editando un producto existente
+      await productosAdminService.updateProducto(productoData.idProducto, productoData);
+    } else { // Creando un producto nuevo
+      await productosAdminService.createProducto(productoData);
     }
-  };
+    await cargarProductos();
+    closeModal();
+  } catch (err) {
+    setValidationMessage(err.message || "Error al guardar el producto.");
+    setIsValidationModalOpen(true);
+  }
+};
 
   // CAMBIO: Lógica de borrado asíncrona
   const handleDelete = async () => {
-    if (currentProducto?.id) {
-      try {
-        await productosAdminService.deleteProducto(currentProducto.id);
-        await cargarProductos();
-        closeModal();
-      } catch (err) {
-        setValidationMessage(err.message || "Error al eliminar el producto.");
-        setIsValidationModalOpen(true);
-        closeModal();
-      }
+  // ✅ CORRECCIÓN: Cambiamos 'currentProducto?.id' por 'currentProducto?.idProducto'
+  if (currentProducto?.idProducto) {
+    try {
+      // Llamamos al servicio con el ID correcto
+      await productosAdminService.deleteProducto(currentProducto.idProducto);
+      await cargarProductos(); // Recargamos la lista para que el producto desaparezca
+      closeModal();
+    } catch (err) {
+      setValidationMessage(err.message || "Error al eliminar el producto.");
+      setIsValidationModalOpen(true);
+      // No cerramos el modal de confirmación aquí, solo el de validación después.
     }
-  };
+  }
+};
   
   // CAMBIO: Lógica de cambio de estado asíncrona
   const handleToggleEstado = async (productoId) => {

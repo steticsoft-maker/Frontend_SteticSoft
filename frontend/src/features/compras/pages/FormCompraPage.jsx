@@ -106,12 +106,16 @@ function FormCompraPage() {
     setIsSubmitting(true);
 
     const compraData = {
+      // ✅ LA LÍNEA CORRECTA Y DEFINITIVA
+      // El backend espera 'proveedorId', no 'idProveedor'.
       proveedorId: proveedorSeleccionado.idProveedor,
+
+      // El resto de los datos se mantienen igual
       usuarioId: user.idUsuario,
       fecha: fechaCompra,
       total: total,
       iva: iva,
-      estado: true, 
+      estado: true,
       productos: itemsCompra.map(item => ({
         productoId: item.id,
         cantidad: Number(item.cantidad),
@@ -120,6 +124,7 @@ function FormCompraPage() {
     };
 
     try {
+      // La función del servicio recibe el objeto con el nombre de campo correcto
       await comprasService.createCompra(compraData);
       setValidationMessage("Compra guardada exitosamente. Redirigiendo...");
       setIsValidationModalOpen(true);
@@ -127,7 +132,8 @@ function FormCompraPage() {
         navigate("/admin/compras");
       }, 2000);
     } catch (error) {
-      setValidationMessage(error.response?.data?.message || error.message || 'Error al guardar la compra.');
+      // El mensaje de error que te aparece viene de esta línea
+      setValidationMessage(error.response?.data?.errors[0]?.msg || error.message || 'Error al guardar la compra.');
       setIsValidationModalOpen(true);
       setIsSubmitting(false);
     }
