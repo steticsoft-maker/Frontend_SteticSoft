@@ -2,7 +2,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   fetchRolesAPI,
-  saveRoleAPI,
+  // saveRoleAPI, // Reemplazada por createRoleAPI y updateRoleAPI
+  createRoleAPI,
+  updateRoleAPI,
   deleteRoleAPI,
   toggleRoleStatusAPI,
   getRoleDetailsAPI,
@@ -144,33 +146,44 @@ const useRoles = () => {
     async (roleData) => {
       setIsSubmitting(true);
       try {
-        // El servicio saveRoleAPI debe manejar si es creación o edición basado en la presencia de roleData.idRol
-        const response = await saveRoleAPI(roleData);
+        let response;
+        // En RolEditarModal, el id se almacena como `formData.id` que viene de `roleDetails.idRol`.
+        // En RolCrearModal, no hay `id`.
+        if (roleData.id) { 
+          const { id, ...dataToUpdate } = roleData;
+          // Asegurarnos que idPermisos se envíe correctamente si está presente en dataToUpdate
+          response = await updateRoleAPI(id, dataToUpdate);
+        } else {
+          // Para crear, roleData ya debería tener idPermisos del RolCrearModal
+          response = await createRoleAPI(roleData);
+        }
+
         setValidationMessage(
-          response.message ||
-            (roleData.idRol
+          response.message || // Asumiendo que la API devuelve un { message: "..." }
+            (roleData.id
               ? "Rol actualizado exitosamente."
               : "Rol creado exitosamente.")
         );
         setIsValidationModalOpen(true);
         closeModal();
-        await cargarDatos();
+        await cargarDatos(); // Recargar datos después de guardar
       } catch (err) {
+        // Intentar obtener el mensaje de error de la respuesta de la API si está disponible
+        const apiErrorMessage = err.response?.data?.message || err.response?.data?.error;
         setValidationMessage(
-          err.response?.data?.message ||
-            err.message ||
-            "Error al guardar el rol."
+          apiErrorMessage || err.message || "Error al guardar el rol."
         );
         setIsValidationModalOpen(true);
-        // No cerrar modal en error para que el usuario pueda corregir
+        // No cerrar el modal en caso de error para que el usuario pueda corregir o reintentar.
       } finally {
         setIsSubmitting(false);
       }
     },
-    [cargarDatos, closeModal]
+    [cargarDatos, closeModal] // No olvidar agregar createRoleAPI y updateRoleAPI a las dependencias si es necesario, aunque usualmente no para funciones importadas.
   );
 
   const handleDeleteRol = useCallback(async () => {
+    // currentRole.idRol es el que se usa para la API de borrado
     if (!currentRole?.idRol) return;
     if (currentRole.nombre === "Administrador") {
       // Doble chequeo

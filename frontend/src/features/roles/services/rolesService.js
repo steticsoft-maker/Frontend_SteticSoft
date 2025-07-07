@@ -45,36 +45,59 @@ export const fetchRolesAPI = async (searchTerm) => {
 };
 
 /**
- * Guarda (crea o actualiza) un rol y sus permisos.
- * @param {object} roleData - Los datos del rol. Si incluye un 'id', se actualiza; si no, se crea.
+ * Crea un nuevo rol con sus permisos.
+ * El backend espera idPermisos en el mismo payload.
+ * @param {object} roleData - Datos del rol, incluyendo nombre, descripcion, estado (opcional), y idPermisos.
  */
-export const saveRoleAPI = async (roleData) => {
-  const { id, idPermisos, ...dataToSend } = roleData;
+export const createRoleAPI = async (roleData) => {
   try {
-    let roleResponse;
-    if (id) {
-      // Actualizar un rol existente (PUT)
-      roleResponse = await apiClient.put(`/roles/${id}`, dataToSend);
-      if (idPermisos) {
-        await apiClient.post(`/roles/${id}/permisos`, { idPermisos });
-      }
-    } else {
-      // Crear un nuevo rol (POST)
-      roleResponse = await apiClient.post("/roles", dataToSend);
-      const newRoleId = roleResponse.data?.data?.idRol;
-      if (newRoleId && idPermisos?.length > 0) {
-        await apiClient.post(`/roles/${newRoleId}/permisos`, { idPermisos });
-      }
-    }
-    return roleResponse.data;
+    // Aseguramos que idPermisos (si existe) se envíe junto con otros datos del rol.
+    // El backend espera recibir: { nombre, descripcion, idPermisos: [...] }
+    const response = await apiClient.post("/roles", roleData);
+    return response.data; // Devuelve la respuesta completa del backend (ej: { message: "...", data: { idRol: ... } })
   } catch (error) {
     console.error(
-      "Error al guardar el rol:",
+      "Error al crear el rol:",
       error.response?.data || error.message
     );
-    throw new Error(
-      error.response?.data?.message || "Error al guardar el rol."
+    // Propagar el error para que useRoles.js pueda manejarlo y mostrar el mensaje de error de la API
+    throw error;
+  }
+};
+
+/**
+ * Actualiza un rol existente y sus permisos.
+ * @param {string|number} roleId - El ID del rol a actualizar.
+ * @param {object} roleData - Datos del rol a actualizar (nombre, descripcion, estado, idPermisos).
+ */
+export const updateRoleAPI = async (roleId, roleData) => {
+  // roleData puede contener: { nombre, descripcion, estado, idPermisos }
+  const { idPermisos, ...dataToUpdate } = roleData; // Separamos idPermisos del resto
+
+  try {
+    // 1. Actualizar los datos básicos del rol (nombre, descripción, estado)
+    // La URL es PUT /api/roles/:roleId
+    const roleResponse = await apiClient.put(`/roles/${roleId}`, dataToUpdate);
+
+    // 2. Actualizar los permisos del rol si se proporcionaron idPermisos.
+    // Esta llamada es POST /api/roles/:roleId/permisos y espera un cuerpo como { idPermisos: [...] }
+    // Es importante que esta llamada se haga incluso si idPermisos es un array vacío,
+    // para que el backend pueda eliminar todos los permisos existentes si ese es el caso.
+    if (typeof idPermisos !== 'undefined') { // Chequea si la propiedad idPermisos existe, incluso si es []
+      await apiClient.post(`/roles/${roleId}/permisos`, { idPermisos });
+    }
+
+    // Si ambas operaciones son exitosas, devolvemos la respuesta de la actualización del rol.
+    // Podríamos necesitar combinar respuestas o devolver un mensaje genérico.
+    // Por ahora, devolvemos la respuesta de la primera llamada, asumiendo que es la principal.
+    return roleResponse.data; // Devuelve { message: "...", data: { ... } }
+  } catch (error) {
+    console.error(
+      "Error al actualizar el rol:",
+      error.response?.data || error.message
     );
+    // Propagar el error para que useRoles.js pueda manejarlo
+    throw error;
   }
 };
 
