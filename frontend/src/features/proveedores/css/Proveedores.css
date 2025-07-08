@@ -679,3 +679,36 @@ input.is-invalid, .input-documento.is-invalid {
         width: 100%;
     }
 }
+
+.pagination-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+
+.pagination-button {
+  background-color: var(--color-admin-primary-lighter, #e978d0);
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pagination-button:hover {
+  background-color: var(--color-primary-darker, #6d0b58);
+}
+
+.pagination-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination-button.active {
+  background-color: var(--color-primary-darker, #6d0b58);
+  font-weight: bold;
+}

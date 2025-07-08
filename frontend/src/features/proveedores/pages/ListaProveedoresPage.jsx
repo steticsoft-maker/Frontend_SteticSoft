@@ -1,6 +1,6 @@
 // src/features/proveedores/pages/ListaProveedoresPage.jsx
 
-import React, { useState, useEffect, useCallback, useMemo } from "react"; // ✨ Se agrega useMemo
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import ProveedoresTable from "../components/ProveedoresTable";
 import ProveedorCrearModal from "../components/ProveedorCrearModal";
@@ -14,7 +14,7 @@ import "../css/Proveedores.css";
 function ListaProveedoresPage() {
   const [proveedores, setProveedores] = useState([]);
   const [search, setSearch] = useState("");
-  const [filtroEstado, setFiltroEstado] = useState("todos"); // ✨ 1. Se añade el estado para el filtro
+  const [filtroEstado, setFiltroEstado] = useState("todos");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -45,7 +45,6 @@ function ListaProveedoresPage() {
   }, [cargarProveedores]);
 
   const closeModal = () => {
-    // ... (sin cambios en esta función)
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
     setIsDetailsModalOpen(false);
@@ -57,7 +56,6 @@ function ListaProveedoresPage() {
   };
 
   const handleOpenModal = (type, proveedor = null) => {
-    // ... (sin cambios en esta función)
     setCurrentProveedor(proveedor);
     if (type === "ver") setIsDetailsModalOpen(true);
     else if (type === "delete") { setModalAction('delete'); setIsConfirmDeleteOpen(true); }
@@ -67,7 +65,6 @@ function ListaProveedoresPage() {
   };
 
   const handleSave = async (proveedorData) => {
-    // ... (sin cambios en esta función)
     const idProveedorLimpio = parseInt(proveedorData.idProveedor, 10);
     const datosLimpiosParaEnviar = {
       nombre: proveedorData.nombre, tipo: proveedorData.tipo, telefono: proveedorData.telefono,
@@ -100,7 +97,6 @@ function ListaProveedoresPage() {
   };
 
   const handleDelete = async () => {
-    // ... (sin cambios en esta función)
     if (currentProveedor?.idProveedor) {
       setIsConfirmDeleteOpen(false);
       try {
@@ -117,7 +113,6 @@ function ListaProveedoresPage() {
   };
 
   const handleToggleEstado = async () => {
-    // ... (sin cambios en esta función)
     if (currentProveedor) {
       try {
         await proveedoresService.toggleEstado(currentProveedor.idProveedor, !currentProveedor.estado);
@@ -133,25 +128,19 @@ function ListaProveedoresPage() {
   };
 
   const handleConfirmAction = () => {
-    // ... (sin cambios en esta función)
     if (modalAction === 'delete') handleDelete();
     else if (modalAction === 'status') handleToggleEstado();
   };
-  
-  // ✨ 2. Se reemplaza la lógica de filtrado con useMemo para incluir el estado
+
   const filteredProveedores = useMemo(() => {
     let dataFiltrada = [...proveedores];
-
-    // Primero, filtrar por estado
     if (filtroEstado !== "todos") {
       const esActivo = filtroEstado === "activos";
       dataFiltrada = dataFiltrada.filter((p) => p.estado === esActivo);
     }
-    
-    // Luego, filtrar por el término de búsqueda sobre el resultado anterior
     const term = search.toLowerCase();
     if (term) {
-        dataFiltrada = dataFiltrada.filter((p) => {
+      dataFiltrada = dataFiltrada.filter((p) => {
         const nombre = p.nombre || "";
         const tipoDocumento =
           p.tipo === "Natural"
@@ -160,7 +149,6 @@ function ListaProveedoresPage() {
         const telefono = p.telefono || "";
         const correo = p.correo || "";
         const direccion = p.direccion || "";
-
         return (
           nombre.toLowerCase().includes(term) ||
           tipoDocumento.toLowerCase().includes(term) ||
@@ -170,12 +158,27 @@ function ListaProveedoresPage() {
         );
       });
     }
-
     return dataFiltrada;
-  }, [proveedores, search, filtroEstado]); // La función se re-ejecuta si cambia la data, la búsqueda o el estado
+  }, [proveedores, search, filtroEstado]);
+
+  // ✨ Paginación
+  const [paginaActual, setPaginaActual] = useState(1);
+  const proveedoresPorPagina = 10;
+
+  const totalPaginas = Math.ceil(filteredProveedores.length / proveedoresPorPagina);
+
+  const proveedoresPaginados = useMemo(() => {
+    const inicio = (paginaActual - 1) * proveedoresPorPagina;
+    return filteredProveedores.slice(inicio, inicio + proveedoresPorPagina);
+  }, [paginaActual, filteredProveedores]);
+
+  const irAPagina = (nuevaPagina) => {
+    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+      setPaginaActual(nuevaPagina);
+    }
+  };
 
   const getConfirmModalMessage = () => {
-    // ... (sin cambios en esta función)
     if (!currentProveedor) return '';
     if (modalAction === 'delete') return `¿Estás seguro de que deseas eliminar al proveedor "${currentProveedor.nombre}"?`;
     if (modalAction === 'status') return `¿Estás seguro de que deseas ${currentProveedor.estado ? 'desactivar' : 'activar'} al proveedor "${currentProveedor.nombre}"?`;
@@ -189,7 +192,6 @@ function ListaProveedoresPage() {
         <div className="proveedores-content-wrapper">
           <h1>Gestión de Proveedores</h1>
           <div className="proveedores-actions-bar">
-            {/* ✨ 3. Se añade el HTML del filtro de estado */}
             <div className="proveedores-filters">
               <div className="proveedores-search-bar">
                 <input
@@ -227,12 +229,41 @@ function ListaProveedoresPage() {
           {error && <p className="error-message">{error}</p>}
           {!isLoading && !error && (
             <ProveedoresTable
-              proveedores={filteredProveedores} // La tabla ya recibe los datos filtrados
+              proveedores={proveedoresPaginados}
               onView={(prov) => handleOpenModal("ver", prov)}
               onEdit={(prov) => handleOpenModal("edit", prov)}
               onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}
               onToggleEstado={(prov) => handleOpenModal("status", prov)}
             />
+          )}
+
+          {/* Paginación */}
+          {!isLoading && totalPaginas > 1 && (
+            <div className="pagination-bar">
+              <button
+                onClick={() => irAPagina(paginaActual - 1)}
+                disabled={paginaActual === 1}
+                className="pagination-button"
+              >
+                ← Anterior
+              </button>
+              {[...Array(totalPaginas)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => irAPagina(index + 1)}
+                  className={`pagination-button ${paginaActual === index + 1 ? "active" : ""}`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => irAPagina(paginaActual + 1)}
+                disabled={paginaActual === totalPaginas}
+                className="pagination-button"
+              >
+                Siguiente →
+              </button>
+            </div>
           )}
         </div>
       </div>
