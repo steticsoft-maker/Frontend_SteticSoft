@@ -1,6 +1,4 @@
-// RUTA: src/features/categoriasProductoAdmin/pages/ListaCategoriasProductoPage.jsx
-
-import React, { useState, useEffect, useMemo, useCallback } from "react"; // ✨ Se agrega useMemo y useCallback
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import CategoriasProductoTable from "../components/CategoriasProductoTable";
 import CategoriaProductoCrearModal from "../components/CategoriaProductoCrearModal";
@@ -20,14 +18,13 @@ import "../css/CategoriasProducto.css";
 function ListaCategoriasProductoPage() {
     const [categorias, setCategorias] = useState([]);
     const [busqueda, setBusqueda] = useState("");
-    const [filtroEstado, setFiltroEstado] = useState("todos"); // ✨ Nuevo estado para el filtro de estado
+    const [filtroEstado, setFiltroEstado] = useState("todos");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
 
-    // Estados para modales (sin cambios)
     const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
     const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -36,13 +33,11 @@ function ListaCategoriasProductoPage() {
     const [currentCategoria, setCurrentCategoria] = useState(null);
     const [validationMessage, setValidationMessage] = useState("");
 
-    // ✨ loadCategorias ahora carga todo, el filtrado de búsqueda se hace en useMemo
     const loadCategorias = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
-            // Ya no pasamos searchTerm aquí, cargamos todo y filtramos en el frontend
-            const data = await fetchCategoriasProducto(); 
+            const data = await fetchCategoriasProducto();
             setCategorias(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error("Error al cargar las categorías:", err);
@@ -51,49 +46,52 @@ function ListaCategoriasProductoPage() {
         } finally {
             setLoading(false);
         }
-    }, []); // Dependencias vacías, solo se crea una vez
+    }, []);
 
     useEffect(() => {
-        loadCategorias(); // Carga inicial de todas las categorías
+        loadCategorias();
     }, [loadCategorias]);
 
-    // ✨ Reiniciar la página a 1 cuando cambia la búsqueda o el filtro de estado
     useEffect(() => {
         setCurrentPage(1);
     }, [busqueda, filtroEstado]);
 
-    // ✨ Lógica de filtrado con useMemo para combinar búsqueda y filtro por estado
     const filteredCategorias = useMemo(() => {
         let dataFiltrada = [...categorias];
 
-        // 1. Filtrar por estado
         if (filtroEstado !== "todos") {
             const esActivo = filtroEstado === "activos";
             dataFiltrada = dataFiltrada.filter((c) => c.estado === esActivo);
         }
 
-        // 2. Filtrar por término de búsqueda sobre el resultado anterior
         const term = busqueda.toLowerCase();
         if (term) {
             dataFiltrada = dataFiltrada.filter((c) => {
-                const nombre = c.nombre || "";
-                const descripcion = c.descripcion || "";
+                const id = c.idCategoriaProducto?.toString() || "";
+                const nombre = c.nombre?.toLowerCase() || "";
+                const descripcion = c.descripcion?.toLowerCase() || "";
+                const estadoTexto = c.estado ? "activo" : "inactivo";
+                const vidaUtil = c.vidaUtil?.toString().toLowerCase() || "";
+                const tipoUso = c.tipoUso?.toLowerCase() || "";
+
                 return (
-                    nombre.toLowerCase().includes(term) ||
-                    descripcion.toLowerCase().includes(term)
+                    id.includes(term) ||
+                    nombre.includes(term) ||
+                    descripcion.includes(term) ||
+                    estadoTexto.includes(term) ||
+                    vidaUtil.includes(term) ||
+                    tipoUso.includes(term)
                 );
             });
         }
+
         return dataFiltrada;
-    }, [categorias, busqueda, filtroEstado]); // Dependencias para re-ejecutar el memo
+    }, [categorias, busqueda, filtroEstado]);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    // ✨ La paginación ahora se aplica sobre la lista filtrada
     const categoriasPaginadas = filteredCategorias.slice(indexOfFirstItem, indexOfLastItem);
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    // ... (resto de funciones closeOtherModals, handleOpenModal, handleSave, handleDelete, handleToggleEstado sin cambios)
 
     const handleOpenModal = (type, categoria = null) => {
         setCurrentCategoria(categoria);
@@ -107,22 +105,20 @@ function ListaCategoriasProductoPage() {
             if (categoria) {
                 setIsEditarModalOpen(true);
             } else {
-                console.error(
-                    "Intento de abrir modal de edición sin datos de categoría de producto."
-                );
+                console.error("Intento de abrir modal de edición sin datos de categoría de producto.");
             }
         }
     };
 
     const handleCrearModalClose = () => {
         setIsCrearModalOpen(false);
-        loadCategorias(); // ✨ Se recargan todas las categorías
+        loadCategorias();
     };
 
     const handleEditarModalClose = () => {
         setIsEditarModalOpen(false);
         setCurrentCategoria(null);
-        loadCategorias(); // ✨ Se recargan todas las categorías
+        loadCategorias();
     };
 
     const closeOtherModals = () => {
@@ -133,9 +129,8 @@ function ListaCategoriasProductoPage() {
         if (!isCrearModalOpen && !isEditarModalOpen) {
             setCurrentCategoria(null);
         }
-        loadCategorias(); // ✨ Se recargan todas las categorías
+        loadCategorias();
     };
-
 
     const handleSave = async (categoriaData) => {
         try {
@@ -149,7 +144,6 @@ function ListaCategoriasProductoPage() {
             }
             setValidationMessage(`Categoría ${isEditing ? "actualizada" : "creada"} exitosamente.`);
             setIsValidationModalOpen(true);
-
         } catch (error) {
             console.error("Error al guardar categoría:", error);
             const errorMessage = error.response?.data?.message || "Error al guardar la categoría. Por favor, revise los datos.";
@@ -184,8 +178,7 @@ function ListaCategoriasProductoPage() {
 
             setValidationMessage("Estado de la categoría actualizado exitosamente.");
             setIsValidationModalOpen(true);
-            loadCategorias(); // ✨ Se recargan todas las categorías
-
+            loadCategorias();
         } catch (error) {
             console.error("Error al cambiar estado de categoría:", error);
             const errorMessage = error.response?.data?.message || "Error al cambiar el estado de la categoría.";
@@ -201,18 +194,16 @@ function ListaCategoriasProductoPage() {
                 <div className="categorias-producto-admin-content-wrapper">
                     <h1>Gestión Categorías de Productos</h1>
                     <div className="categorias-producto-admin-actions-bar">
-                        {/* ✨ Controles de filtro y búsqueda */}
-                        <div className="categorias-producto-admin-filters"> {/* Agrupamos los filtros */}
+                        <div className="categorias-producto-admin-filters">
                             <div className="categorias-producto-admin-search-bar">
                                 <input
                                     type="text"
-                                    placeholder="Buscar por nombre o descripción"
+                                    placeholder="Busca por cualquier campo..."
                                     value={busqueda}
                                     onChange={(e) => setBusqueda(e.target.value)}
                                     disabled={loading}
                                 />
                             </div>
-                            {/* ✨ Select para el filtro de estado */}
                             <div className="filtro-estado-grupo">
                                 <select
                                     id="filtro-estado"
@@ -243,7 +234,7 @@ function ListaCategoriasProductoPage() {
                     ) : (
                         <>
                             <CategoriasProductoTable
-                                categorias={categoriasPaginadas} // ✨ La tabla recibe los datos paginados y filtrados
+                                categorias={categoriasPaginadas}
                                 startIndex={indexOfFirstItem}
                                 onView={(cat) => handleOpenModal("details", cat)}
                                 onEdit={(cat) => handleOpenModal("edit", cat)}
@@ -252,7 +243,7 @@ function ListaCategoriasProductoPage() {
                             />
                             <Pagination
                                 itemsPerPage={itemsPerPage}
-                                totalItems={filteredCategorias.length} // ✨ La paginación usa la longitud de los elementos filtrados
+                                totalItems={filteredCategorias.length}
                                 paginate={paginate}
                                 currentPage={currentPage}
                             />
@@ -261,7 +252,6 @@ function ListaCategoriasProductoPage() {
                 </div>
             </div>
 
-            {/* Todos tus modales se mantienen exactamente igual */}
             <CategoriaProductoCrearModal
                 isOpen={isCrearModalOpen}
                 onClose={handleCrearModalClose}
@@ -283,9 +273,7 @@ function ListaCategoriasProductoPage() {
                 onClose={closeOtherModals}
                 onConfirm={handleDelete}
                 title="Confirmar Eliminación"
-                message={`¿Está seguro de que desea eliminar la categoría "${
-                    currentCategoria?.nombre || ""
-                }"?`}
+                message={`¿Está seguro de que desea eliminar la categoría "${currentCategoria?.nombre || ""}"?`}
             />
             <ValidationModal
                 isOpen={isValidationModalOpen}
@@ -296,4 +284,5 @@ function ListaCategoriasProductoPage() {
         </div>
     );
 }
+
 export default ListaCategoriasProductoPage;

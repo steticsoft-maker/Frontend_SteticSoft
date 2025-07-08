@@ -193,7 +193,7 @@ function ListaComprasPage() {
                             <div className="proveedores-search-bar">
                                 <input
                                     type="text"
-                                    placeholder="Buscar por ID, proveedor, fecha..."
+                                    placeholder="Busca por cualquier campo..."
                                     value={busqueda}
                                     onChange={(e) => setBusqueda(e.target.value)}
                                 />
