@@ -41,6 +41,14 @@
     box-sizing: border-box;
 }
 
+.proveedores-filters {
+    display: flex; /* Convierte este contenedor en un flex container */
+    gap: 20px; /* Espacio entre la barra de búsqueda y el filtro */
+    flex-grow: 1; /* Permite que este contenedor crezca y ocupe el espacio disponible */
+    align-items: center; /* Alinea verticalmente los elementos dentro */
+    flex-wrap: wrap; /* Permite que los elementos internos se envuelvan en pantallas pequeñas */
+}
+
 .proveedores-search-bar { 
     flex-grow: 1;
     display: flex;
@@ -61,6 +69,40 @@
 .proveedores-search-bar input:focus {
     border-color: var(--color-admin-hover, #b660a3); 
     box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+    outline: none;
+}
+
+.filtro-estado-grupo {
+    flex-shrink: 0; /* Evita que este grupo se encoja cuando hay poco espacio */
+    /* Si necesitas alinear elementos dentro de este div (por ejemplo, un label y el select),
+       puedes añadir 'display: flex; align-items: center; gap: Xpx;' aquí */
+}
+
+.filtro-input {
+    padding: 9px 10px; /* Consistente con el select de Usuarios */
+    border: 1px solid var(--color-border-light, #c287b5);
+    border-radius: 5px;
+    font-size: 1rem; /* Consistente con el select de Usuarios */
+    background-color: var(--color-background-light, #fff);
+    color: var(--color-text-dark, #333);
+    min-width: 150px; /* Asegura un ancho mínimo */
+    height: 41px; /* Para que coincida con la altura del input de búsqueda y el botón */
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    -webkit-appearance: none; /* Elimina la apariencia por defecto del sistema */
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236d0b58%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E'); /* Icono de flecha SVG */
+    background-repeat: no-repeat;
+    background-position: right 8px top 50%;
+    background-size: .65em auto;
+    padding-right: 25px; /* Espacio para el icono de flecha */
+}
+
+.filtro-input:focus {
+    border-color: var(--color-admin-hover, #b660a3);
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
     outline: none;
 }
 
@@ -374,21 +416,32 @@
 
 /* Estilos para el select de estado en la tabla */
 .estado-select {
-    padding: 5px 8px;
-    border: 1px solid #ccc;
+    padding: 9px 10px; /* Consistente con el select de Usuarios */
+    border: 1px solid var(--color-border-light, #c287b5);
     border-radius: 5px;
-    font-size: 0.9em;
-    font-weight: 500;
-    background-color: #f8f9fa;
+    font-size: 1rem; /* Consistente con el select de Usuarios */
+    background-color: var(--color-background-light, #fff);
+    color: var(--color-text-dark, #333);
+    min-width: 150px; /* Añadido para consistencia */
+    height: 41px; /* Añadido para que coincida con la altura del botón y el input */
+    box-sizing: border-box;
     cursor: pointer;
-    -webkit-appearance: none; /* Quitar apariencia por defecto en webkit */
-    -moz-appearance: none; /* Quitar apariencia por defecto en mozilla */
-    appearance: none; /* Quitar apariencia por defecto */
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236d0b58%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right 8px top 50%;
     background-size: .65em auto;
-    padding-right: 25px; /* Espacio para la flecha */
+    padding-right: 25px;
+    flex-shrink: 0; /* Evita que el select se encoja cuando hay poco espacio */
+}
+
+.estado-select:focus {
+    border-color: var(--color-admin-hover, #b660a3);
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    outline: none;
 }
 
 /* Colores para cada estado en el select */

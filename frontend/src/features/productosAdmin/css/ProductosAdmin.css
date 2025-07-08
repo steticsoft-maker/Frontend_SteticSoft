@@ -10,8 +10,8 @@
 }
 
 .productos-admin-main-content { /* Contenido principal al lado del NavbarAdmin */
-    flex: 1; 
-    padding: 30px; 
+    flex: 1;
+    padding: 30px;
     margin-left: 270px; /* CRUCIAL: ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */
     overflow-y: auto;
     box-sizing: border-box;
@@ -35,44 +35,88 @@
     font-size: 1.8rem; /* Consistencia */
 }
 
-/* === BARRA DE ACCIONES SUPERIORES (BÚSQUEDA Y BOTÓN AGREGAR) === */
+/* === BARRA DE ACCIONES SUPERIORES (BÚSQUEDA, FILTRO Y BOTÓN AGREGAR) === */
 .productos-admin-actions-bar { /* Antes: search-add-container */
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px; 
-    gap: 20px;
-    flex-wrap: wrap; 
+    justify-content: space-between; /* Alinea los grupos a los extremos */
+    align-items: flex-end; /* Alinea los elementos al final (parte inferior) */
+    margin-bottom: 25px;
+    gap: 20px; /* Espacio entre los bloques principales (filtros y botón) */
+    flex-wrap: wrap;
     width: 100%; /* Ocupa el ancho del wrapper */
     box-sizing: border-box;
 }
 
+/* Nuevo contenedor para agrupar la búsqueda y el filtro de estado */
+.productos-admin-filters {
+    display: flex;
+    gap: 20px; /* Espacio entre la barra de búsqueda y el filtro de estado */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+    flex-grow: 1; /* Permite que este contenedor ocupe el espacio disponible */
+    align-items: flex-end; /* Alinea el input de búsqueda y el select al final (parte inferior) */
+}
+
+
 .productos-admin-search-bar { /* Contenedor del input de búsqueda */
     flex-grow: 1; /* Permite que la barra de búsqueda ocupe el espacio disponible */
     display: flex; /* Para alinear el input interno si fuera necesario */
+    min-width: 250px; /* Asegura que el input tenga un tamaño mínimo */
 }
 .productos-admin-search-bar input { /* Antes: inputBarraBusqueda */
-    padding: 10px 12px; 
-    width: 100%; 
-    min-width: 250px; /* Ancho mínimo para la barra */
+    padding: 10px 12px;
+    width: 100%;
     font-size: 1rem;
-    border: 1px solid var(--color-border-light, #c287b5); 
+    border: 1px solid var(--color-border-light, #c287b5);
     border-radius: 5px;
     background-color: var(--color-background-light, #fff);
     color: var(--color-text-dark, #333);
     box-sizing: border-box;
 }
 .productos-admin-search-bar input:focus {
-    border-color: var(--color-admin-hover, #b660a3); 
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+    border-color: var(--color-admin-hover, #b660a3);
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
     outline: none;
 }
 
+/* Estilos para el select de filtro de estado */
+.filtro-estado-grupo {
+    display: flex; /* Para alinear la etiqueta y el select si fuera necesario */
+    flex-direction: column; /* Coloca la etiqueta encima del select */
+    min-width: 150px; /* Ancho mínimo para el select */
+    flex-shrink: 0; /* Evita que el select se encoja */
+}
+
+.filtro-estado-grupo label {
+    font-weight: 600;
+    color: var(--color-primary-darker, #6d0b58);
+    font-size: 0.95rem;
+    margin-bottom: 5px; /* Espacio entre la etiqueta y el select */
+}
+
+.filtro-input { /* Clase aplicada directamente al select */
+    padding: 10px 12px;
+    border: 1px solid var(--color-border-light, #c287b5);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--color-background-input, #fff);
+    color: var(--color-text-dark, #333);
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 41px; /* Asegura que tenga la misma altura que el input de búsqueda */
+}
+
+.filtro-input:focus {
+    border-color: var(--color-admin-hover, #b660a3);
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    outline: none;
+}
+
+
 .productos-admin-add-button { /* Antes: botonAgregarProductoAdministrador */
-    padding: 10px 20px; 
-    font-size: 1rem; 
+    padding: 10px 20px;
+    font-size: 1rem;
     background-color: var(--color-admin-hover, #b660a3); /* Color consistente */
-    color: var(--color-text-light, white); 
+    color: var(--color-text-light, white);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -91,26 +135,26 @@
     width: 100%; /* Ocupa el ancho del wrapper */
     border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
     border-radius: 8px;
-    overflow: hidden; 
+    overflow: hidden;
     font-size: 0.95rem;
 }
 .tablaProductosAdministrador th {
-    background-color: var(--color-admin-primary-lighter, #e978d0); 
-    color: var(--color-text-dark, black); 
-    padding: 12px 15px; 
-    text-align: center; 
-    font-weight: 600; 
-    font-size: 1rem; 
-    border: 1px solid var(--color-admin-primary-border, #e978d0); 
+    background-color: var(--color-admin-primary-lighter, #e978d0);
+    color: var(--color-text-dark, black);
+    padding: 12px 15px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 1px solid var(--color-admin-primary-border, #e978d0);
 }
 .tablaProductosAdministrador td {
-    padding: 12px 15px; 
-    border: 1px solid var(--color-admin-primary-border, #e978d0); 
-    color: var(--color-text-dark, #333); 
-    font-size: 0.9rem; 
+    padding: 12px 15px;
+    border: 1px solid var(--color-admin-primary-border, #e978d0);
+    color: var(--color-text-dark, #333);
+    font-size: 0.9rem;
     text-align: left; /* Default, se ajusta abajo */
     vertical-align: middle;
 }
@@ -146,21 +190,21 @@ input:checked+.slider:before { transform: translateX(16px); }
 
 /* === BOTONES DE ACCIÓN EN TABLA === */
 .productos-admin-table-actions { /* Contenedor de los botones (puede ser el <td> o un div interno) */
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 10px; /* ESPACIO ENTRE BOTONES */
 }
-.productos-admin-table-actions .iconBotonProductoAdministrador { 
-    padding: 8px 10px; 
-    font-size: 0.9rem; 
-    border: none; 
+.productos-admin-table-actions .iconBotonProductoAdministrador {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border: none;
     border-radius: 5px;
-    color: white; 
-    cursor: pointer; 
+    color: white;
+    cursor: pointer;
     transition: background-color 0.3s ease;
-    display: inline-flex; 
-    align-items: center; 
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
     margin: 0; /* Quitar margen individual si gap lo maneja */
 }
@@ -193,28 +237,28 @@ input:checked+.slider:before { transform: translateX(16px); }
 /* === ESTILOS DE MODAL === */
 .modalProductosAdministrador { /* Overlay */
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); 
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex; justify-content: center; align-items: center;
     z-index: 1050; padding: 20px; box-sizing: border-box; overflow-y: auto;
 }
 
 .modal-content-ProductosAdministrador { /* Contenido del modal base */
-    background: var(--color-background-light, #fff); 
-    padding: 25px 30px; 
+    background: var(--color-background-light, #fff);
+    padding: 25px 30px;
     border-radius: 10px;
     width: 50%;
     /* Ancho se define más abajo para detalle vs formulario */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
     max-height: 90vh; overflow-y: auto; box-sizing: border-box;
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-content-ProductosAdministrador h2 { /* Título del modal */
     text-align: center;
     color: var(--color-primary-darker, #6d0b58);
     margin-top: 0;
-    margin-bottom: 25px; 
+    margin-bottom: 25px;
     font-size: 1.6rem;
 }
 
@@ -222,48 +266,48 @@ input:checked+.slider:before { transform: translateX(16px); }
 .modal-content-ProductosAdministrador.detalle-modal {
     max-width: 500px; /* Ancho para modal de detalles */
 }
-.modal-content-ProductosAdministrador.detalle-modal p { 
-    text-align: left;   
-    margin-bottom: 12px; 
-    line-height: 1.6;   
+.modal-content-ProductosAdministrador.detalle-modal p {
+    text-align: left;
+    margin-bottom: 12px;
+    line-height: 1.6;
     color: var(--color-text-dark, #333);
-    font-size: 1rem; 
+    font-size: 1rem;
 }
-.modal-content-ProductosAdministrador.detalle-modal p strong { 
-    color: var(--color-primary-darker, #6d0b58);     
-    margin-right: 8px;  
-    font-weight: 600;   
-    min-width: 100px;   /* Ajusta para alinear los ":" */
-    display: inline-block; 
+.modal-content-ProductosAdministrador.detalle-modal p strong {
+    color: var(--color-primary-darker, #6d0b58);
+    margin-right: 8px;
+    font-weight: 600;
+    min-width: 100px;
+    display: inline-block;
 }
 .modal-content-ProductosAdministrador.detalle-modal .detalle-imagen-container { /* Si tienes esta clase en el JSX */
     margin-top: 10px;
     margin-bottom: 15px;
-    text-align: left; 
+    text-align: left;
 }
 .modal-content-ProductosAdministrador.detalle-modal .detalle-imagen-container strong {
-    display: block; 
+    display: block;
     margin-bottom: 5px;
 }
 .modal-content-ProductosAdministrador.detalle-modal .producto-admin-detalle-imagen { /* Si usas esta clase en JSX */
-    max-width: 180px; 
+    max-width: 180px;
     max-height: 180px;
     display: block; /* O inline-block si quieres texto al lado */
-    margin: 5px 0 15px 0; 
+    margin: 5px 0 15px 0;
     border-radius: 4px;
     border: 1px solid var(--color-border-light, #ddd);
     object-fit: contain;
 }
 .productos-admin-modal-button-cerrar { /* Botón Cerrar en modal de detalles */
-    background-color: var(--color-admin-hover, #b660a3); 
-    color: white; 
+    background-color: var(--color-admin-hover, #b660a3);
+    color: white;
     display: block; width: auto; min-width: 120px;
-    margin: 25px auto 0; 
-    padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; 
+    margin: 25px auto 0;
+    padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
     font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
 }
 .productos-admin-modal-button-cerrar:hover {
-    background-color: var(--color-primary-darker, #6d0b58); 
+    background-color: var(--color-primary-darker, #6d0b58);
 }
 
 /* === ESTILOS PARA MODAL DE FORMULARIO (Crear/Editar) === */
@@ -272,13 +316,13 @@ input:checked+.slider:before { transform: translateX(16px); }
 }
 .modal-content-ProductosAdministrador.formulario-modal form {
     display: flex;
-    flex-direction: column; 
-    gap: 18px; 
+    flex-direction: column;
+    gap: 18px;
 }
 
-.producto-admin-form-group { 
+.producto-admin-form-group {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     gap: 8px;
 }
 .producto-admin-form-group label {
@@ -323,7 +367,7 @@ input:checked+.slider:before { transform: translateX(16px); }
     border: 1px solid var(--color-border-light, #ddd);
     border-radius: 4px; object-fit: cover;
 }
-.required-asterisk { 
+.required-asterisk {
     color: red;
     margin-left: 2px;
 }
@@ -335,7 +379,7 @@ input:checked+.slider:before { transform: translateX(16px); }
 
 
 /* Botones de acción para el formulario modal */
-.botonesGuardarCancelarProductoAdministrador { 
+.botonesGuardarCancelarProductoAdministrador {
     display: flex;
     justify-content: center;
     gap: 15px;
@@ -344,8 +388,8 @@ input:checked+.slider:before { transform: translateX(16px); }
     border-top: 1px solid var(--color-border-light, #eee);
     width: 100%;
 }
-.botonGuardarProducto, 
-.botonCancelarAgregarProducto { 
+.botonGuardarProducto,
+.botonCancelarAgregarProducto {
     padding: 10px 20px;
     font-size: 1rem;
     font-weight: 500;
@@ -374,40 +418,47 @@ input:checked+.slider:before { transform: translateX(16px); }
 
 /* === ESTILOS RESPONSIVOS === */
 @media (max-width: 768px) {
-    .productos-admin-main-content { 
-        margin-left: 0; padding: 15px; 
+    .productos-admin-main-content {
+        margin-left: 0; padding: 15px;
     }
     .productos-admin-content-wrapper { padding: 0; }
-    .productos-admin-actions-bar { 
-        flex-direction: column; gap: 15px; 
+    .productos-admin-actions-bar {
+        flex-direction: column; gap: 15px;
+        align-items: flex-start; /* Alinea los elementos a la izquierda en columna */
+    }
+    .productos-admin-search-bar, /* Asegura que la barra de búsqueda ocupe el 100% */
+    .productos-admin-filters { /* Asegura que el contenedor de filtros ocupe el 100% */
+        width: 100%;
     }
     .productos-admin-search-bar input,
-    .productos-admin-add-button {
+    .productos-admin-add-button,
+    .filtro-estado-grupo, /* Asegura que el grupo de filtro ocupe el 100% */
+    .filtro-input { /* Asegura que el select ocupe el 100% */
         width: 100%;
     }
     .productos-admin-add-button { height: auto; padding: 12px 20px; }
 
     .tablaProductosAdministrador thead { display: none; }
-    .tablaProductosAdministrador, 
-    .tablaProductosAdministrador tbody, 
-    .tablaProductosAdministrador tr, 
+    .tablaProductosAdministrador,
+    .tablaProductosAdministrador tbody,
+    .tablaProductosAdministrador tr,
     .tablaProductosAdministrador td {
         display: block; width: 100%;
     }
     .tablaProductosAdministrador tr {
-        margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0); 
+        margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0);
         border-radius: 8px; padding: 10px;
         background-color: #ffffff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .tablaProductosAdministrador td {
-        text-align: right; padding-left: 50% !important; 
-        position: relative; border: none; 
-        border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; 
+        text-align: right; padding-left: 50% !important;
+        position: relative; border: none;
+        border-bottom: 1px solid #f0f0f0; font-size: 0.9rem;
     }
     .tablaProductosAdministrador td:last-child { border-bottom: none; }
     .tablaProductosAdministrador td::before {
-        content: attr(data-label); 
-        position: absolute; left: 10px; width: calc(50% - 20px); 
+        content: attr(data-label);
+        position: absolute; left: 10px; width: calc(50% - 20px);
         padding-right: 10px; white-space: nowrap;
         font-weight: bold; color: var(--color-primary-darker, #6d0b58); text-align: left;
     }
@@ -428,7 +479,7 @@ input:checked+.slider:before { transform: translateX(16px); }
     .productos-admin-modal-button-cerrar { /* Botón cerrar del modal de detalle */
         width: 100%; max-width: none; padding: 12px;
     }
-    
+
     .botonesGuardarCancelarProductoAdministrador { /* Botones del modal de formulario */
         flex-direction: column;
     }
@@ -441,19 +492,19 @@ input:checked+.slider:before { transform: translateX(16px); }
 
 /* Contenedor principal del formulario que crea el grid */
 .producto-admin-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Crea dos columnas de igual tamaño */
-  gap: 18px 25px; /* Espacio vertical y horizontal entre campos */
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Crea dos columnas de igual tamaño */
+    gap: 18px 25px; /* Espacio vertical y horizontal entre campos */
 }
 
 /* Un grupo de campo (label + input) que ocupa todo el ancho */
 .producto-admin-form-group.full-width {
-  grid-column: 1 / -1; /* Hace que el elemento ocupe desde la primera a la última columna */
+    grid-column: 1 / -1; /* Hace que el elemento ocupe desde la primera a la última columna */
 }
 
 /* === AJUSTES PARA MÓVILES === */
 @media (max-width: 768px) {
-  .producto-admin-form-grid {
-    grid-template-columns: 1fr; /* En pantallas pequeñas, vuelve a una sola columna */
-  }
+    .producto-admin-form-grid {
+        grid-template-columns: 1fr; /* En pantallas pequeñas, vuelve a una sola columna */
+    }
 }

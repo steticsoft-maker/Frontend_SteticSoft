@@ -15,6 +15,17 @@ const CompraForm = ({
   const [showProveedorSelectModal, setShowProveedorSelectModal] = useState(false);
   const [showProductoSelectModal, setShowProductoSelectModal] = useState(false);
 
+  const getTodayString = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+
+  const getMinDateString = () => {
+    const today = new Date();
+    const minDate = new Date(today.setFullYear(today.getFullYear() - 5));
+    return minDate.toISOString().split("T")[0];
+  };
+
   // CORRECCIÓN CLAVE: Usamos Array.isArray() para una validación más estricta.
   // Si productosList no es un arreglo, devuelve un arreglo vacío y evita el error.
   const todosLosProductosParaModal = useMemo(() => {
@@ -94,8 +105,17 @@ const CompraForm = ({
 
       <div className="form-group">
         <label htmlFor="fechaCompra">Fecha de Compra <span className="required-asterisk">*</span>:</label>
-        <input type="date" id="fechaCompra" value={fecha} onChange={(e) => setFecha(e.target.value)} className="LaFecha" required />
-      </div>
+        <input 
+          type="date" 
+          id="fechaCompra" 
+          value={fecha} 
+          onChange={(e) => setFecha(e.target.value)} 
+          className="LaFecha" 
+          required 
+          max={getTodayString()}
+          min={getMinDateString()}
+        />
+        </div>
 
       <button type="button" className="btn-agregar-producto-compra" onClick={handleAgregarProductoRow}>
         Agregar Producto a la Compra

@@ -15,6 +15,10 @@
     margin-left: 270px; /* ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */
     overflow-y: auto;
     box-sizing: border-box;
+    /* ✅ CAMBIO: Alineación del contenido principal a la izquierda */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea los hijos a la izquierda */
 }
 
 .categorias-producto-admin-content-wrapper { /* Clase de tu ListaCategoriasProductoPage.jsx */
@@ -24,37 +28,53 @@
     margin-right: auto;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra los hijos directos (título, barra de acciones, tabla) */
+    /* align-items: center; */ /* Centra los hijos directos (título, barra de acciones, tabla) */
+    /* ✅ CAMBIO: Quitar align-items: center para permitir que los elementos internos se alineen según su propio ancho */
+    align-items: flex-start; /* Alinea el contenido a la izquierda dentro del wrapper */
 }
 
 .categorias-producto-admin-content-wrapper h1 { /* Título de la página */
-    text-align: center;
+    /* text-align: center; */ /* ✅ CAMBIO: El título se centrará con flexbox en la barra de acciones */
     color: var(--color-primary-darker, #6d0b58);
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 1.8rem;
+    width: 100%; /* Asegura que el h1 ocupe todo el ancho para centrado con flex */
 }
 
 /* === BARRA DE ACCIONES SUPERIORES === */
 .categorias-producto-admin-actions-bar { /* Tu clase en ListaCategoriasProductoPage.jsx */
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */ /* ✅ CAMBIO: Justify-content para control de alineación */
     align-items: center;
     margin-bottom: 25px; 
     gap: 20px;
     flex-wrap: wrap; 
     width: 100%; 
     box-sizing: border-box;
+
+    /* ✅ CAMBIO: Nuevos estilos para centrar y controlar el flujo */
+    justify-content: flex-start; /* Alinea elementos al inicio, o 'center' si prefieres centrar todo */
+}
+
+/* ✅ NUEVO: Contenedor para los filtros de búsqueda y estado */
+.categorias-producto-admin-filters {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los filtros se envuelvan en pantallas pequeñas */
+    gap: 20px;
+    flex-grow: 1; /* Permite que este grupo crezca y ocupe espacio */
+    align-items: center;
 }
 
 .categorias-producto-admin-search-bar { /* Tu clase en ListaCategoriasProductoPage.jsx */
     flex-grow: 1;
     display: flex;
+    min-width: 250px; /* Asegura que el input no sea demasiado pequeño */
 }
 .categorias-producto-admin-search-bar input { /* Input dentro de la barra de búsqueda */
     padding: 10px 12px; 
     width: 100%; 
-    min-width: 250px;
+    /* min-width: 250px; */ /* Ya lo definimos en el padre flex-grow */
     font-size: 1rem;
     border: 1px solid var(--color-border-light, #c287b5); 
     border-radius: 5px;
@@ -67,6 +87,44 @@
     box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
     outline: none;
 }
+
+/* ✅ NUEVO: Estilos para el grupo del filtro de estado */
+.filtro-estado-grupo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filtro-estado-grupo label {
+    font-weight: 600;
+    color: var(--color-primary-darker, #6d0b58);
+    font-size: 0.95rem;
+}
+
+.filtro-input { /* Asumiendo que el select tiene esta clase, o puedes usar select directamente */
+    padding: 10px 12px;
+    border: 1px solid var(--color-border-light, #c287b5);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--color-background-input, #fff);
+    color: var(--color-text-dark, #333);
+    cursor: pointer;
+    box-sizing: border-box;
+    -webkit-appearance: none; /* Quitar estilo nativo en WebKit */
+    -moz-appearance: none; /* Quitar estilo nativo en Firefox */
+    appearance: none; /* Quitar estilo nativo */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%236d0b58" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Flecha personalizada */
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 30px; /* Espacio para la flecha */
+}
+
+.filtro-input:focus {
+    border-color: var(--color-admin-hover, #b660a3);
+    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    outline: none;
+}
+
 
 .categorias-producto-admin-add-button { /* Tu clase en ListaCategoriasProductoPage.jsx */
     padding: 10px 20px; 
@@ -164,7 +222,7 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 }
 /* Colores consistentes */
 .table-action-button-categoria:nth-child(1), /* Ver */
-.table-action-button-categoria:nth-child(2)  /* Editar */
+.table-action-button-categoria:nth-child(2)   /* Editar */
 { background-color: var(--color-admin-action-view, #fc8de4); }
 
 .table-action-button-categoria:nth-child(1):hover,
@@ -238,12 +296,13 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 }
 
 .modal-title { /* Tu clase para el título <h2> dentro de los modales */
-    text-align: center; /* Centra el título si lo prefieres así */
+    /* text-align: center; */ /* Centra el título si lo prefieres así */
     color: var(--color-primary-darker, #6d0b58);
     margin: 0; /* Elimina márgenes predeterminados para control total por flexbox */
     font-size: 1.6rem;
     line-height: 1.3;
     flex-grow: 1; /* Permite que el título ocupe el espacio restante */
+    text-align: left; /* Alineación del título a la izquierda */
 }
 
 .modal-close-button {
@@ -406,12 +465,34 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 
     .categorias-producto-admin-actions-bar { /* Antes .BarraBusquedaBotonAgregarCategoriaProductos */
         flex-direction: column; gap: 15px; 
+        /* ✅ CAMBIO: Alineación en móvil para la barra de acciones */
+        align-items: flex-start; /* Alinea los elementos a la izquierda cuando se apilan */
+    }
+    .categorias-producto-admin-search-bar {
+        width: 100%; /* Asegura que la barra de búsqueda ocupe todo el ancho */
+        min-width: auto; /* Permite que el min-width se adapte */
     }
     .categorias-producto-admin-search-bar input, /* Antes .inputBarraBusquedaCategoriaProductos */
     .categorias-producto-admin-add-button { /* Antes .botonAgregarCategoriaProducto */
         width: 100%;
     }
     .categorias-producto-admin-add-button { height: auto; padding: 12px 20px; }
+
+    /* ✅ NUEVO: Ajuste para el grupo de filtros en móvil */
+    .categorias-producto-admin-filters {
+        flex-direction: column; /* Apila los filtros verticalmente */
+        width: 100%; /* Ocupa todo el ancho disponible */
+        gap: 15px; /* Espacio entre el input de búsqueda y el select */
+        align-items: flex-start; /* Alinea los elementos a la izquierda */
+    }
+    
+    .filtro-estado-grupo {
+        width: 100%; /* Asegura que el grupo de estado ocupe todo el ancho */
+        justify-content: space-between; /* Espacia label y select */
+    }
+    .filtro-input {
+        flex-grow: 1; /* Permite que el select ocupe el espacio restante */
+    }
 
     .tablaCategoriaProductos thead { display: none; }
     .tablaCategoriaProductos, 
