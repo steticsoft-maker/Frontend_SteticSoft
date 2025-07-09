@@ -1,4 +1,5 @@
 // src/features/roles/components/RolForm.jsx
+
 import React, { useState } from "react";
 import PermisosSelector from "./PermisosSelector";
 
@@ -8,10 +9,8 @@ const RolForm = ({
   permisosDisponibles,
   permisosAgrupados,
   onToggleModulo,
-  // --- INICIO DE NUEVO CÓDIGO ---
   onSelectAll,
   onDeselectAll,
-  // --- FIN DE NUEVO CÓDIGO ---
   isEditing,
   isRoleAdmin,
   formErrors,
@@ -36,7 +35,6 @@ const RolForm = ({
   return (
     <>
       <div className="rol-seccionInformacionRol">
-        {/* ... El resto de la sección de información del rol no cambia ... */}
         <h3>Información del Rol</h3>
         <div className="rol-formularioInformacionRol">
           <div className="rol-campoContainer">
@@ -57,6 +55,34 @@ const RolForm = ({
               <span className="error-message">{formErrors.nombre}</span>
             )}
           </div>
+
+          {/* --- INICIO DE CORRECCIÓN --- */}
+          <div className="rol-campoContainer">
+            <label htmlFor="tipoPerfilInput" className="rol-label">
+              Tipo de Perfil: <span className="required-asterisk">*</span>
+            </label>
+            <select
+              id="tipoPerfilInput"
+              name="tipoPerfil"
+              // Lógica simplificada: usa el valor del formData o el default 'EMPLEADO'
+              value={formData.tipoPerfil || 'EMPLEADO'}
+              onChange={handleInputChange}
+              className="rol-input"
+              // No se puede cambiar el tipo de perfil de los roles base (Admin, Empleado, Cliente) una vez creados.
+              disabled={isRoleAdmin}
+              required
+            >
+              {/* No es necesaria una opción placeholder si siempre hay un valor seleccionado */}
+              <option value="EMPLEADO">Empleado</option>
+              <option value="CLIENTE">Cliente</option>
+              <option value="NINGUNO">Ninguno (Solo Acceso al Sistema)</option>
+            </select>
+            {formErrors.tipoPerfil && (
+              <span className="error-message">{formErrors.tipoPerfil}</span>
+            )}
+          </div>
+          {/* --- FIN DE CORRECCIÓN --- */}
+
           <div className="rol-campoContainer">
             <label htmlFor="descripcionRolInput" className="rol-label">
               Descripción del Rol:
@@ -70,6 +96,7 @@ const RolForm = ({
               disabled={isRoleAdmin}
             />
           </div>
+
           {isEditing && !isRoleAdmin && (
             <div className="rol-campoContainer">
               <label className="rol-label">Estado (Activo):</label>
@@ -99,18 +126,16 @@ const RolForm = ({
         </button>
       )}
 
-      {/* --- INICIO DE MODIFICACIÓN --- */}
       <PermisosSelector
         permisosAgrupados={permisosAgrupados}
         permisosSeleccionadosIds={formData.idPermisos || []}
         onTogglePermiso={onToggleModulo}
-        onSelectAll={onSelectAll} // Pasamos la nueva prop
-        onDeselectAll={onDeselectAll} // Pasamos la nueva prop
+        onSelectAll={onSelectAll}
+        onDeselectAll={onDeselectAll}
         isRoleAdmin={isRoleAdmin}
         mostrar={mostrarPermisos || isRoleAdmin}
-        isEditing={isEditing} // <--- Añadido para controlar el estado open de los acordeones
+        isEditing={isEditing}
       />
-      {/* --- FIN DE MODIFICACIÓN --- */}
 
       {(mostrarPermisos || isRoleAdmin) && (
         <div className="rol-seccionModulosSeleccionados">

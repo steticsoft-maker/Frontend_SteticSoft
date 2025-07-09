@@ -1,8 +1,8 @@
 // src/features/roles/hooks/useRoles.js
+
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   fetchRolesAPI,
-  // saveRoleAPI, // Reemplazada por createRoleAPI y updateRoleAPI
   createRoleAPI,
   updateRoleAPI,
   deleteRoleAPI,
@@ -15,15 +15,12 @@ import {
 const groupPermissionsByModule = (permissions) => {
   if (!permissions || permissions.length === 0) return {};
   return permissions.reduce((acc, permiso) => {
-    const parts = permiso.nombre.split("_"); // Ej: MODULO_USUARIOS_CREAR
+    const parts = permiso.nombre.split("_");
     if (parts.length > 2 && parts[0] === "MODULO") {
-      const moduleName = parts[1]; // USUARIOS
-      // const action = parts.slice(2).join("_"); // CREAR, GESTIONAR, LEER, etc.
-
+      const moduleName = parts[1];
       if (!acc[moduleName]) {
         acc[moduleName] = [];
       }
-      // Guardamos el objeto permiso completo, ya que el PermisosSelector puede necesitar el idPermiso.
       acc[moduleName].push(permiso);
     }
     return acc;
@@ -32,28 +29,21 @@ const groupPermissionsByModule = (permissions) => {
 
 const useRoles = () => {
   const [roles, setRoles] = useState([]);
-  const [permisos, setPermisos] = useState([]); // Todos los permisos disponibles
-
+  const [permisos, setPermisos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Para acciones de formulario
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-
-  const [currentRole, setCurrentRole] = useState(null); // Para modales de edición/detalles/eliminación
-
-  // --- Estados para Modales ---
+  const [currentRole, setCurrentRole] = useState(null);
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterEstado, setFilterEstado] = useState("todos");
 
-  // --- Estados para Búsqueda y Filtrado (Requerimiento 3) ---
-  const [inputValue, setInputValue] = useState(""); // Para el input de búsqueda inmediato
-  const [searchTerm, setSearchTerm] = useState(""); // Para el término de búsqueda "debounced"
-  const [filterEstado, setFilterEstado] = useState("todos"); // 'todos', 'activos', 'inactivos'
-
-  // Derivar permisos agrupados usando useMemo
   const permisosAgrupados = useMemo(
     () => groupPermissionsByModule(permisos),
     [permisos]
@@ -63,13 +53,12 @@ const useRoles = () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Pasamos searchTerm a fetchRolesAPI
       const [rolesResponse, permisosResponse] = await Promise.all([
-        fetchRolesAPI(searchTerm), // MODIFICADO: pasar searchTerm
+        fetchRolesAPI(searchTerm),
         getPermisosAPI(),
       ]);
       setRoles(rolesResponse.data || []);
-      setPermisos(permisosResponse || []); // Asumiendo que permisosResponse es el array directamente
+      setPermisos(permisosResponse || []);
     } catch (err) {
       setError(err.message || "Error al cargar los datos de roles o permisos.");
       setRoles([]);
@@ -77,7 +66,7 @@ const useRoles = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm]); // MODIFICADO: añadir searchTerm como dependencia
+  }, [searchTerm]);
 
   useEffect(() => {
     cargarDatos();
@@ -91,7 +80,6 @@ const useRoles = () => {
     setIsValidationModalOpen(false);
     setCurrentRole(null);
     setValidationMessage("");
-    // No resetear isSubmitting aquí, se maneja en las funciones de submit
   }, []);
 
   const handleOpenModal = useCallback(async (type, role = null) => {
@@ -108,34 +96,31 @@ const useRoles = () => {
       return;
     }
 
-    setCurrentRole(role); // Establecer currentRole para todos los tipos que lo necesiten
+    setCurrentRole(role);
 
     if (type === "details" && role?.idRol) {
-      setIsSubmitting(true); // Usar isSubmitting para feedback de carga de detalles
+      setIsSubmitting(true);
       try {
         const roleDetails = await getRoleDetailsAPI(role.idRol);
-        setCurrentRole(roleDetails); // Actualizar currentRole con todos los detalles (incluyendo permisos del rol)
+        setCurrentRole(roleDetails);
         setIsDetailsModalOpen(true);
       } catch (err) {
         setValidationMessage(
           err.message || "No se pudieron cargar los detalles del rol."
         );
         setIsValidationModalOpen(true);
-        setCurrentRole(null); // Limpiar currentRole si falla la carga
+        setCurrentRole(null);
       } finally {
         setIsSubmitting(false);
       }
     } else if (type === "edit" && role?.idRol) {
-      // Para editar, el RolEditarModal usualmente carga sus propios datos por ID o recibe initialData.
-      // Si RolEditarModal carga sus datos, solo necesitamos pasar el ID.
-      // Si pasamos initialData, currentRole ya está seteado.
-      // Aquí asumimos que RolEditarModal usará currentRole (que puede ser solo {idRol, nombre, descripcion})
-      // y que el modal se encargará de buscar los permisos asociados a ese rol si es necesario,
-      // o que saveRoleAPI maneja la asignación de permisos.
-      // El `permisosAgrupados` y `permisos` se pasan al modal para la selección.
       setIsEditarModalOpen(true);
     } else if (type === "create") {
-      setCurrentRole(null); // Asegurar que no hay datos previos para creación
+      // --- LÓGICA CORRECTA ---
+      // Simplemente abre el modal de creación.
+      // El modal (RolCrearModal) es responsable de gestionar su propio estado de formulario.
+      // No es necesario setear un `formData` aquí.
+      setCurrentRole(null);
       setIsCrearModalOpen(true);
     } else if (type === "delete") {
       setIsDeleteModalOpen(true);
@@ -147,46 +132,39 @@ const useRoles = () => {
       setIsSubmitting(true);
       try {
         let response;
-        // En RolEditarModal, el id se almacena como `formData.id` que viene de `roleDetails.idRol`.
-        // En RolCrearModal, no hay `id`.
-        if (roleData.id) { 
+        if (roleData.id) {
           const { id, ...dataToUpdate } = roleData;
-          // Asegurarnos que idPermisos se envíe correctamente si está presente en dataToUpdate
           response = await updateRoleAPI(id, dataToUpdate);
         } else {
-          // Para crear, roleData ya debería tener idPermisos del RolCrearModal
+          // El objeto `roleData` que viene del modal de creación debe tener todos los campos necesarios.
           response = await createRoleAPI(roleData);
         }
 
         setValidationMessage(
-          response.message || // Asumiendo que la API devuelve un { message: "..." }
+          response.message ||
             (roleData.id
               ? "Rol actualizado exitosamente."
               : "Rol creado exitosamente.")
         );
         setIsValidationModalOpen(true);
         closeModal();
-        await cargarDatos(); // Recargar datos después de guardar
+        await cargarDatos();
       } catch (err) {
-        // Intentar obtener el mensaje de error de la respuesta de la API si está disponible
         const apiErrorMessage = err.response?.data?.message || err.response?.data?.error;
         setValidationMessage(
           apiErrorMessage || err.message || "Error al guardar el rol."
         );
         setIsValidationModalOpen(true);
-        // No cerrar el modal en caso de error para que el usuario pueda corregir o reintentar.
       } finally {
         setIsSubmitting(false);
       }
     },
-    [cargarDatos, closeModal] // No olvidar agregar createRoleAPI y updateRoleAPI a las dependencias si es necesario, aunque usualmente no para funciones importadas.
+    [cargarDatos, closeModal]
   );
 
   const handleDeleteRol = useCallback(async () => {
-    // currentRole.idRol es el que se usa para la API de borrado
     if (!currentRole?.idRol) return;
     if (currentRole.nombre === "Administrador") {
-      // Doble chequeo
       setValidationMessage("El rol 'Administrador' no puede ser eliminado.");
       setIsValidationModalOpen(true);
       closeModal();
@@ -202,7 +180,6 @@ const useRoles = () => {
     } catch (err) {
       setValidationMessage(err.message || "Error al eliminar el rol.");
       setIsValidationModalOpen(true);
-      // closeModal(); // Considerar si cerrar el modal de confirmación en error
     } finally {
       setIsSubmitting(false);
     }
@@ -217,86 +194,55 @@ const useRoles = () => {
         setIsValidationModalOpen(true);
         return;
       }
-      // setIsSubmitting(true); // Opcional, para feedback visual en la tabla si se desea
       try {
         await toggleRoleStatusAPI(roleToToggle.idRol, !roleToToggle.estado);
-        await cargarDatos(); // Recargar para mostrar el nuevo estado.
-        // setValidationMessage("Estado del rol actualizado."); // Opcional
-        // setIsValidationModalOpen(true);
+        await cargarDatos();
       } catch (err) {
         setValidationMessage(
           err.message || "Error al cambiar el estado del rol."
         );
         setIsValidationModalOpen(true);
-      } finally {
-        // setIsSubmitting(false);
       }
     },
     [cargarDatos]
   );
 
-  // Efecto para debounce de la búsqueda
   useEffect(() => {
     const timerId = setTimeout(() => {
       setSearchTerm(inputValue);
-    }, 500); // 500ms de debounce
-
-    return () => {
-      clearTimeout(timerId);
-    };
+    }, 500);
+    return () => clearTimeout(timerId);
   }, [inputValue]);
 
-  // Lógica de Búsqueda y Filtrado (Requerimiento 3)
   const processedRoles = useMemo(() => {
     let filtered = roles;
-
     if (filterEstado !== "todos") {
       const isActive = filterEstado === "activos";
       filtered = filtered.filter((r) => r.estado === isActive);
     }
-
-    // El filtrado por searchTerm (nombre, descripción, permisos) ahora se espera que lo haga el backend.
-    // Si searchTerm está vacío, el backend debería devolver todos los roles (o los filtrados por otros criterios si los hubiera).
-    // La lógica de filtrado por nombre/descripción que estaba aquí se elimina.
-    // if (searchTerm) {
-    //   const lowerSearchTerm = searchTerm.toLowerCase();
-    //   filtered = filtered.filter(r =>
-    //     r.nombre?.toLowerCase().includes(lowerSearchTerm) ||
-    //     r.descripcion?.toLowerCase().includes(lowerSearchTerm)
-    //     // Si el backend NO buscara por permisos, la lógica podría ir aquí,
-    //     // pero el objetivo es que el backend lo haga.
-    //   );
-    // }
     return filtered;
-  }, [roles, filterEstado]); // MODIFICADO: searchTerm ya no es una dependencia directa aquí porque 'roles' ya viene filtrado.
+  }, [roles, filterEstado]);
 
-  // (No hay paginación en la versión original de ListaRolesPage, se podría añadir si es necesario)
-
-  // --- Estados para Paginación ---
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Fijo en 10
+  const itemsPerPage = 10;
 
-  // Calcular roles para la página actual
   const currentRolesForTable = useMemo(() => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     return processedRoles.slice(indexOfFirstItem, indexOfLastItem);
   }, [processedRoles, currentPage, itemsPerPage]);
 
-  // Función para cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Resetear a la página 1 cuando los filtros o término de búsqueda cambian
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterEstado]);
 
-
   return {
-    roles: currentRolesForTable, // Roles filtrados Y PAGINADOS para la tabla
-    totalRolesFiltrados: processedRoles.length, // Total para el componente de paginación
-    permisos, // Todos los permisos para los modales de creación/edición
-    permisosAgrupados, // Permisos agrupados por módulo para los modales
+    roles: currentRolesForTable,
+    totalRolesFiltrados: processedRoles.length,
+    permisos,
+    permisosAgrupados,
     isLoading,
     isSubmitting,
     error,
@@ -307,8 +253,8 @@ const useRoles = () => {
     isDeleteModalOpen,
     isValidationModalOpen,
     validationMessage,
-    inputValue, // Para el input de búsqueda
-    setInputValue, // Para actualizar el valor del input inmediato
+    inputValue,
+    setInputValue,
     filterEstado,
     setFilterEstado,
     closeModal,
@@ -316,7 +262,6 @@ const useRoles = () => {
     handleSaveRol,
     handleDeleteRol,
     handleToggleEstado,
-    // Paginación
     currentPage,
     itemsPerPage,
     paginate,

@@ -25,11 +25,10 @@ export const getPermisosAPI = async () => {
  * @param {string} [searchTerm] - Término opcional para buscar roles.
  */
 export const fetchRolesAPI = async (searchTerm) => {
-  // Añadido searchTerm como parámetro
   try {
     let url = "/roles";
     if (searchTerm && searchTerm.trim() !== "") {
-      url += `?search=${encodeURIComponent(searchTerm.trim())}`; // Añadir query param si searchTerm existe
+      url += `?search=${encodeURIComponent(searchTerm.trim())}`;
     }
     const response = await apiClient.get(url);
     return response.data;
@@ -46,21 +45,17 @@ export const fetchRolesAPI = async (searchTerm) => {
 
 /**
  * Crea un nuevo rol con sus permisos.
- * El backend espera idPermisos en el mismo payload.
- * @param {object} roleData - Datos del rol, incluyendo nombre, descripcion, estado (opcional), y idPermisos.
+ * @param {object} roleData - Datos del rol, incluyendo nombre, descripcion, tipoPerfil, y idPermisos.
  */
 export const createRoleAPI = async (roleData) => {
   try {
-    // Aseguramos que idPermisos (si existe) se envíe junto con otros datos del rol.
-    // El backend espera recibir: { nombre, descripcion, idPermisos: [...] }
     const response = await apiClient.post("/roles", roleData);
-    return response.data; // Devuelve la respuesta completa del backend (ej: { message: "...", data: { idRol: ... } })
+    return response.data;
   } catch (error) {
     console.error(
       "Error al crear el rol:",
       error.response?.data || error.message
     );
-    // Propagar el error para que useRoles.js pueda manejarlo y mostrar el mensaje de error de la API
     throw error;
   }
 };
@@ -68,11 +63,9 @@ export const createRoleAPI = async (roleData) => {
 /**
  * Actualiza un rol existente y sus permisos.
  * @param {string|number} roleId - El ID del rol a actualizar.
- * @param {object} roleData - Datos del rol a actualizar (nombre, descripcion, estado, idPermisos).
+ * @param {object} roleData - Datos del rol a actualizar (nombre, descripcion, tipoPerfil, estado, idPermisos).
  */
 export const updateRoleAPI = async (roleId, roleData) => {
-  // --- INICIO DE MODIFICACIÓN ---
-  // Antes, esta función no usaba el roleId en la URL. Ahora sí.
   try {
     const response = await apiClient.put(`/roles/${roleId}`, roleData);
     return response.data;
@@ -81,10 +74,9 @@ export const updateRoleAPI = async (roleId, roleData) => {
       `Error al actualizar el rol con ID ${roleId}:`,
       error.response?.data || error.message
     );
-    // Propagar el error para que el hook lo maneje
+
     throw error.response?.data || error;
   }
-  // --- FIN DE MODIFICACIÓN ---
 };
 
 /**

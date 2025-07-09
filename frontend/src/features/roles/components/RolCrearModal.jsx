@@ -4,17 +4,23 @@ import RolForm from './RolForm';
 
 const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
 
+  // --- INICIO DE CORRECCIÓN ---
+  // Añadimos 'tipoPerfil' al estado inicial del formulario.
+  // Este es el valor que se enviará al backend si no se cambia.
   const getInitialFormState = () => ({
     nombre: '',
     descripcion: '',
     idPermisos: [],
     estado: true,
+    tipoPerfil: 'EMPLEADO' // <-- ¡LA LÍNEA CLAVE!
   });
+  // --- FIN DE CORRECCIÓN ---
 
   const [formData, setFormData] = useState(getInitialFormState());
   const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
+    // Cuando el modal se abre, reseteamos al estado inicial completo.
     if (isOpen) {
       setFormData(getInitialFormState());
       setFormErrors({});
@@ -38,29 +44,24 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
     });
   };
 
-  // --- INICIO DE NUEVO CÓDIGO ---
-  /**
-   * Selecciona todos los permisos disponibles.
-   * Obtiene todos los IDs de 'permisosDisponibles' y los establece en el estado.
-   */
   const handleSelectAll = () => {
     const allIds = permisosDisponibles.map(p => p.idPermiso);
     setFormData(prev => ({ ...prev, idPermisos: allIds }));
   };
 
-  /**
-   * Deselecciona todos los permisos.
-   * Simplemente establece el array 'idPermisos' a un array vacío.
-   */
   const handleDeselectAll = () => {
     setFormData(prev => ({ ...prev, idPermisos: [] }));
   };
-  // --- FIN DE NUEVO CÓDIGO ---
 
   const validateForm = () => {
     const errors = {};
     if (!formData.nombre.trim()) {
       errors.nombre = "El nombre del rol es obligatorio.";
+    }
+    // La validación del tipo de perfil la hará el backend,
+    // pero nos aseguramos de que no esté vacío.
+    if (!formData.tipoPerfil) {
+        errors.tipoPerfil = "Debe seleccionar un tipo de perfil."
     }
     if (!formData.idPermisos || formData.idPermisos.length === 0) {
       errors.permisos = "Debe seleccionar al menos un permiso.";
@@ -72,6 +73,7 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
   const handleSubmitForm = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
+    // El formData que se envía ahora sí contiene el campo tipoPerfil.
     onSubmit(formData);
   };
 
@@ -91,10 +93,8 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
             permisosDisponibles={permisosDisponibles}
             permisosAgrupados={permisosAgrupados}
             onToggleModulo={handleToggleModulo}
-            // --- INICIO DE MODIFICACIÓN ---
             onSelectAll={handleSelectAll}
             onDeselectAll={handleDeselectAll}
-            // --- FIN DE MODIFICACIÓN ---
             isEditing={false}
             isRoleAdmin={false}
             formErrors={formErrors}
