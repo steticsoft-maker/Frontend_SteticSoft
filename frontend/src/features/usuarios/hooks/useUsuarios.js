@@ -42,7 +42,7 @@ const useUsuarios = () => {
   const [touchedFields, setTouchedFields] = useState({}); // Para controlar qué campos han sido "tocados" (onBlur)
 
   // --- Funciones de Validación (Requerimiento 4) ---
-  const validateField = useCallback((name, value, currentFormData, formType = 'create') => {
+  const validateField = useCallback((name, value, currentFormData, formType = 'create') => { // eslint-disable-line no-unused-vars
     let error = '';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\d{7,15}$/; // Teléfono entre 7 y 15 dígitos
@@ -50,7 +50,8 @@ const useUsuarios = () => {
 
     // Campos de perfil según el rol
     const selectedRoleObj = availableRoles.find(r => r.idRol === parseInt(currentFormData.idRol));
-    const requiresProfile = selectedRoleObj && (selectedRoleObj.nombre === 'Cliente' || selectedRoleObj.nombre === 'Empleado');
+    // Usar tipoPerfil para determinar si se requieren campos de perfil
+    const requiresProfile = selectedRoleObj && (selectedRoleObj.tipoPerfil === 'CLIENTE' || selectedRoleObj.tipoPerfil === 'EMPLEADO');
 
     switch (name) {
       case 'correo':
@@ -110,7 +111,8 @@ const useUsuarios = () => {
     }
 
     const selectedRoleObj = availableRoles.find(r => r.idRol === parseInt(dataToValidate.idRol));
-    const requiresProfile = selectedRoleObj && (selectedRoleObj.nombre === 'Cliente' || selectedRoleObj.nombre === 'Empleado');
+    // Usar tipoPerfil para determinar si se requieren campos de perfil
+    const requiresProfile = selectedRoleObj && (selectedRoleObj.tipoPerfil === 'CLIENTE' || selectedRoleObj.tipoPerfil === 'EMPLEADO');
 
     if (requiresProfile) {
       fieldsToValidate.push('nombre', 'apellido', 'tipoDocumento', 'numeroDocumento', 'telefono', 'fechaNacimiento');
@@ -163,12 +165,11 @@ const useUsuarios = () => {
     setIsLoadingPage(true);
     setErrorPage(null);
     try {
-      const [usuariosResponse, rolesResponse] = await Promise.all([getUsuariosAPI(), getRolesAPI()]);
-      const rolesFromAPI = rolesResponse.data || [];
-      // Filtrar el rol "Administrador" de los roles disponibles para asignación/edición
-      const filteredRoles = rolesFromAPI.filter(rol => rol.nombre !== 'Administrador');
+      const [usuariosData, rolesData] = await Promise.all([getUsuariosAPI(), getRolesAPI()]);
+      // Con los cambios en el servicio, usuariosData y rolesData son directamente los arrays
+      const filteredRoles = (rolesData || []).filter(rol => rol.nombre !== 'Administrador');
 
-      setUsuarios(usuariosResponse.data || []);
+      setUsuarios(usuariosData || []);
       setAvailableRoles(filteredRoles);
     } catch (err) {
       setErrorPage(err.message || "No se pudieron cargar los datos de usuarios o roles.");
@@ -279,13 +280,12 @@ const useUsuarios = () => {
       if (value !== originalEmail) {
         setIsVerifyingEmail(true);
         try {
-          const response = await verificarCorreoAPI(value);
-          if (response.existe) {
+          const response = await verificarCorreoAPI(value); // response es { success: true, estaEnUso: boolean, message: "..." }
+          if (response.estaEnUso) {
             setFormErrors(prevErrors => ({ ...prevErrors, correo: 'Este correo ya está registrado.' }));
           } else {
-            if (formErrors.correo === 'Este correo ya está registrado.') {
-                 setFormErrors(prevErrors => ({ ...prevErrors, correo: '' }));
-            }
+            // Correo disponible, solo mantener error de formato síncrono (variable 'error') si existe, sino limpiar.
+            setFormErrors(prevErrors => ({ ...prevErrors, correo: error || '' }));
           }
         } catch (apiError) {
           console.error("Error verificando correo:", apiError);
@@ -294,30 +294,24 @@ const useUsuarios = () => {
           setIsVerifyingEmail(false);
         }
       } else if (value === originalEmail && formErrors.correo === 'Este correo ya está registrado.'){
-        setFormErrors(prevErrors => ({ ...prevErrors, correo: '' }));
+        // Si el correo es el original y había un error de unicidad (quizás de un intento anterior de cambio), limpiarlo.
+        setFormErrors(prevErrors => ({ ...prevErrors, correo: error || '' })); // También considerar el error de formato síncrono
       }
     }
-  }, [formData, validateField, currentUsuario, formErrors.correo]); // No añadir setTouchedFields a las dependencias para evitar bucles si se usa en useEffect
+  }, [formData, validateField, currentUsuario, formErrors.correo]);
 
 
   const handleSaveUsuario = useCallback(async () => {
     const formType = formData.idUsuario ? 'edit' : 'create';
-    // Re-ejecutar todas las validaciones síncronas para asegurar el estado más reciente de los errores
-    const { errors: syncErrors, isValid: syncIsValid } = runValidations(formData, formType);
+    // Re-ejecutar todas las validaciones síncronas para asegurar el estado más reciente de los errores.
+    // runValidations ya considera el formErrors.correo para la unicidad.
+    const { errors: currentFormErrors, isValid: currentFormIsValid } = runValidations(formData, formType);
 
-    let combinedErrors = { ...syncErrors };
-    let finalIsValid = syncIsValid;
+    setFormErrors(currentFormErrors); // Actualizar los errores con el resultado de runValidations
 
-    // Mantener el error de unicidad de correo si aún es relevante
-    if (formErrors.correo === 'Este correo ya está registrado.') {
-        combinedErrors.correo = formErrors.correo;
-        finalIsValid = false;
-    }
-    setFormErrors(combinedErrors);
-    // setIsFormValid se actualiza a través del useEffect que observa formErrors y formData.
-    // No es necesario setearlo directamente aquí si el useEffect está bien configurado.
-
-    if (!finalIsValid) {
+    // isFormValid se actualizará por el useEffect que depende de formErrors.
+    // Sin embargo, para la lógica inmediata de esta función, usamos currentFormIsValid.
+    if (!currentFormIsValid) {
       setValidationMessage("Por favor, corrija los errores en el formulario.");
       setIsValidationModalOpen(true);
       // Marcar todos los campos como tocados para mostrar todos los errores
@@ -337,10 +331,16 @@ const useUsuarios = () => {
       }
 
       const selectedRoleObj = availableRoles.find(r => r.idRol === parseInt(dataParaAPI.idRol));
-      const roleRequiresProfile = selectedRoleObj && (selectedRoleObj.nombre === 'Cliente' || selectedRoleObj.nombre === 'Empleado');
-      if (!roleRequiresProfile) {
+      // Usar tipoPerfil para determinar si se deben enviar/borrar campos de perfil
+      const shouldHaveProfile = selectedRoleObj &&
+                                (selectedRoleObj.tipoPerfil === 'CLIENTE' || selectedRoleObj.tipoPerfil === 'EMPLEADO');
+
+      if (!shouldHaveProfile) {
+        // Si el rol, según tipoPerfil, no requiere perfil, eliminar los campos de perfil.
         ['nombre', 'apellido', 'tipoDocumento', 'numeroDocumento', 'telefono', 'fechaNacimiento'].forEach(field => delete dataParaAPI[field]);
       }
+      // Si shouldHaveProfile es true, los campos se envían tal como están en formData.
+      // El backend (servicio crearUsuario) validará si los campos requeridos para ese perfil están presentes.
 
       if (dataParaAPI.idUsuario) {
         await updateUsuarioAPI(dataParaAPI.idUsuario, dataParaAPI);
