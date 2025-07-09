@@ -161,22 +161,19 @@ const eliminarUsuarioFisico = async (req, res, next) => {
 const verificarCorreo = async (req, res, next) => {
   try {
     const { correo } = req.query;
-    const estaEnUso = await usuarioService.verificarCorreoExistente(correo);
+    // El servicio ahora devuelve true si está en uso, false si no.
+    const enUso = await usuarioService.verificarCorreoExistente(correo);
 
-    if (estaEnUso) {
-      return res.status(200).json({
-        success: true,
-        estaEnUso: true,
-        message: "El correo electrónico ya está registrado.",
-      });
-    } else {
-      return res.status(200).json({
-        success: true,
-        estaEnUso: false,
-        message: "El correo electrónico está disponible.",
-      });
-    }
+    // La respuesta al frontend es la misma que antes, solo cambia cómo se obtiene 'enUso'
+    return res.status(200).json({
+      success: true,
+      estaEnUso: enUso, // Usar el valor booleano directamente
+      message: enUso
+        ? "El correo electrónico ya está registrado."
+        : "El correo electrónico está disponible.",
+    });
   } catch (error) {
+    console.error(`[usuario.controller.js] Error en verificarCorreo para el correo "${req.query.correo}":`, error.message, error.stack);
     next(error);
   }
 };
@@ -190,5 +187,5 @@ module.exports = {
   habilitarUsuario,
   eliminarUsuarioFisico,
   cambiarEstadoUsuario,
-  verificarCorreo, // <-- EXPORTACIÓN AÑADIDA
+  verificarCorreo,
 };
