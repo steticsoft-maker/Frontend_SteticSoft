@@ -1,11 +1,11 @@
-const db = require("../models");
+const db = require("../models/index.js");
 const { Op } = db.Sequelize;
 const {
   NotFoundError,
   ConflictError,
   CustomError,
   BadRequestError,
-} = require("../errors");
+} = require("../errors/index.js");
 
 const servicioService = require("../services/servicio.service.js");
 
@@ -45,7 +45,7 @@ const listarServicios = async (req, res, next) => {
     const servicios = await servicioService.obtenerTodosLosServicios(
       opcionesDeFiltro
     );
-    
+
     // El servicio ahora devuelve directamente el array de datos.
     res.status(200).json({
       success: true,

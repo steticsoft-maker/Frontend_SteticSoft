@@ -2,20 +2,20 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const db = require("../models");
+const db = require("../models/index.js");
 const {
   NotFoundError,
   BadRequestError,
   UnauthorizedError,
   CustomError,
   ConflictError,
-} = require("../errors");
+} = require("../errors/index.js");
 const {
   JWT_SECRET,
   EMAIL_FROM,
   APP_NAME,
   FRONTEND_URL,
-} = require("../config/env.config");
+} = require("../config/env.config.js");
 const mailerService = require("./mailer.service.js");
 
 const JWT_EXPIRATION = "1d";
@@ -212,13 +212,12 @@ const loginUsuario = async (correo, contrasena) => {
   if (usuarioJSON.rol) {
     delete usuarioJSON.rol.permisos; // Quitar el array de objetos de permisos
   }
-  
+
   // Añadir el array de nombres de permisos al objeto de usuario
   usuarioJSON.permisos = permisosNombres;
 
   return { usuario: usuarioJSON, token };
 };
-
 
 const solicitarRecuperacionContrasena = async (correo) => {
   const usuario = await db.Usuario.findOne({ where: { correo, estado: true } });

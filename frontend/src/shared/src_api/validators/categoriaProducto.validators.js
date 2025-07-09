@@ -3,7 +3,7 @@ const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
-const db = require("../models"); // Asegúrate de que esto esté bien importado
+const db = require("../models/index.js"); // Asegúrate de que esto esté bien importado
 
 const tiposDeUsoPermitidos = ["Interno", "Externo"];
 

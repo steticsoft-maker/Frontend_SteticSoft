@@ -3,7 +3,7 @@ const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
-const db = require("../models");
+const db = require("../models/index.js");
 
 const crearCompraValidators = [
   body("fecha")
@@ -29,7 +29,9 @@ const crearCompraValidators = [
       fechaMinima.setHours(0, 0, 0, 0); // Ignorar la hora
 
       if (fechaIngresada < fechaMinima) {
-        throw new Error("La fecha de la compra no puede ser de hace más de 5 años.");
+        throw new Error(
+          "La fecha de la compra no puede ser de hace más de 5 años."
+        );
       }
       return true;
     }),
@@ -143,7 +145,9 @@ const actualizarCompraValidators = [
       fechaMinima.setHours(0, 0, 0, 0); // Ignorar la hora
 
       if (fechaIngresada < fechaMinima) {
-        throw new Error("La fecha de la compra no puede ser de hace más de 5 años.");
+        throw new Error(
+          "La fecha de la compra no puede ser de hace más de 5 años."
+        );
       }
       return true;
     }),

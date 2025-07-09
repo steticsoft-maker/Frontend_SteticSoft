@@ -1,5 +1,5 @@
 // src/middlewares/authorization.middleware.js
-const db = require("../models"); // Ajusta la ruta si es necesario
+const db = require("../models/index.js"); // Ajusta la ruta si es necesario
 
 // ======================= CORRECCIÓN CLAVE =======================
 // Se importan ambos errores desde el archivo 'index.js' central,
