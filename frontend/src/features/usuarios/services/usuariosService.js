@@ -7,7 +7,8 @@ import apiClient from "../../../shared/services/api"; // Ajusta la ruta a tu api
 export const getUsuariosAPI = async () => {
   try {
     const response = await apiClient.get("/usuarios");
-    return response.data;
+    // Asumiendo que el backend devuelve { success: true, data: [...] }
+    return response.data.data; // Devolver directamente el array de usuarios
   } catch (error) {
     // console.error("[usuariosService.js] Error en getUsuariosAPI:", error.response?.data || error.message);
     throw (
@@ -27,11 +28,11 @@ export const getUsuariosAPI = async () => {
 export const verificarCorreoAPI = async (correo) => {
   try {
     const response = await apiClient.get(`/usuarios/verificar-correo?correo=${encodeURIComponent(correo)}`);
-    return response.data; // Asume que la API devuelve algo como { existe: true/false }
+    // El backend devuelve { success: true, estaEnUso: boolean, message: "..." }
+    // El hook usará response.estaEnUso
+    return response.data;
   } catch (error) {
     // console.error("[usuariosService.js] Error en verificarCorreoAPI:", error.response?.data || error.message);
-    // Es importante decidir cómo manejar errores aquí. ¿Un error de red debe interpretarse como "no existe" o fallar la validación?
-    // Por ahora, relanzamos para que el hook lo maneje.
     throw (
       error.response?.data ||
       new Error(error.message || "Error al verificar el correo.")
@@ -45,7 +46,8 @@ export const verificarCorreoAPI = async (correo) => {
 export const getUsuarioByIdAPI = async (idUsuario) => {
   try {
     const response = await apiClient.get(`/usuarios/${idUsuario}`);
-    return response.data;
+    // Asumiendo que el backend devuelve { success: true, data: {} }
+    return response.data.data;
   } catch (error) {
     // console.error("[usuariosService.js] Error en getUsuarioByIdAPI:", error.response?.data || error.message);
     throw (
@@ -62,7 +64,8 @@ export const createUsuarioAPI = async (nuevoUsuarioData) => {
   // console.log("[usuariosService.js] Creando usuario con datos:", nuevoUsuarioData);
   try {
     const response = await apiClient.post("/usuarios", nuevoUsuarioData);
-    return response.data;
+    // Asumiendo que el backend devuelve { success: true, message: "...", data: {} }
+    return response.data.data;
   } catch (error) {
     // console.error("[usuariosService.js] Error en createUsuarioAPI:", error.response?.data || error.message);
     throw (
@@ -79,7 +82,8 @@ export const updateUsuarioAPI = async (idUsuario, usuarioData) => {
   // console.log(`[usuariosService.js] Actualizando usuario ${idUsuario} con datos:`, usuarioData);
   try {
     const response = await apiClient.put(`/usuarios/${idUsuario}`, usuarioData);
-    return response.data;
+    // Asumiendo que el backend devuelve { success: true, message: "...", data: {} }
+    return response.data.data;
   } catch (error) {
     // console.error("[usuariosService.js] Error en updateUsuarioAPI:", error.response?.data || error.message);
     throw (
@@ -103,7 +107,8 @@ export const toggleUsuarioEstadoAPI = async (idUsuario, nuevoEstado) => {
     const response = await apiClient.patch(`/usuarios/${idUsuario}/estado`, {
       estado: nuevoEstado,
     });
-    return response.data;
+    // Asumiendo que el backend devuelve { success: true, message: "...", data: {} }
+    return response.data.data;
   } catch (error) {
     // console.error("[usuariosService.js] Error en toggleUsuarioEstadoAPI:", error.response?.data || error.message);
     throw (
@@ -119,7 +124,8 @@ export const toggleUsuarioEstadoAPI = async (idUsuario, nuevoEstado) => {
 export const getRolesAPI = async () => {
   try {
     const response = await apiClient.get("/roles");
-    return response.data;
+    // Asumiendo que el backend de roles devuelve { success: true, data: [...] }
+    return response.data.data; // Devolver directamente el array de roles
   } catch (error) {
     // console.error("[usuariosService.js] Error en getRolesAPI:", error.response?.data || error.message);
     throw (

@@ -24,8 +24,11 @@ const UsuarioForm = ({
   const selectedRole = availableRoles.find(
     (rol) => rol.idRol === parseInt(formData.idRol)
   );
+  // Usar tipoPerfil para determinar si se muestran los campos de perfil
+  // Y asegurar que el rol Administrador nunca muestre campos de perfil (ya que no tiene tipoPerfil 'CLIENTE' o 'EMPLEADO')
   const requiresProfileFields =
-    selectedRole && selectedRole.nombre !== "Administrador";
+    selectedRole &&
+    (selectedRole.tipoPerfil === "CLIENTE" || selectedRole.tipoPerfil === "EMPLEADO");
 
   return (
     <div className="usuarios-form-grid-container">
