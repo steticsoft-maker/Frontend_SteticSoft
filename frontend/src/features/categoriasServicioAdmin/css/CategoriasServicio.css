@@ -1,22 +1,22 @@
 :root {
---color-background-admin-content: #f5f5f5;
---color-primary-darker: #6d0b58;
---color-admin-hover: #b660a3;
---color-border-light: #c287b5;
---color-background-light: #fff;
---color-text-dark: #333;
---color-admin-primary-lighter: #e978d0;
---color-admin-primary-border: #e978d0;
---color-table-row-even: #f8eaf5;
---color-table-row-hover: #f3d9ec;
---color-admin-action-edit: #fc8de4;
---color-admin-action-edit-hover: #d66abf;
---color-admin-action-delete: #b660a3;
---color-admin-action-delete-hover: #6d0b58;
---color-danger: red;
+  --color-background-admin-content: #f5f5f5;
+  --color-primary-darker: #6d0b58;
+  --color-admin-hover: #b660a3;
+  --color-border-light: #c287b5;
+  --color-background-light: #fff;
+  --color-text-dark: #333;
+  --color-admin-primary-lighter: #e978d0;
+  --color-admin-primary-border: #e978d0;
+  --color-table-row-even: #f8eaf5;
+  --color-table-row-hover: #f3d9ec;
+  --color-admin-action-edit: #fc8de4;
+  --color-admin-action-edit-hover: #d66abf;
+  --color-admin-action-delete: #b660a3;
+  --color-admin-action-delete-hover: #6d0b58;
+  --color-danger: red;
 }
-/* Contenedor general de la página */
 
+/* Contenedor general de la página */
 .Categoria-container {
   display: flex;
   min-height: 100vh;
@@ -27,37 +27,37 @@
 .Categoria-content {
   flex: 1;
   padding: 30px;
-  margin-left: 270px; /* Para el menú lateral en escritorio */
+  margin-left: 270px;
   overflow-y: auto;
   box-sizing: border-box;
 }
 
 .categorias-servicio-content-wrapper {
- width: 100%;
- max-width: 1200px;
- margin-left: auto;
- margin-right: auto;
- display: flex;
- flex-direction: column;
- align-items: center;
-
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .Categoria-content h1 {
- text-align: center;
- color: var(--color-primary-darker);
- margin-top: 0;
- margin-bottom: 25px;
- font-size: 1.8rem;
+  text-align: center;
+  color: var(--color-primary-darker);
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
 }
 
 /* --- Contenedor principal de los controles --- */
 .ContainerBotonAgregarCategoria {
+  width: 100%; /* Asegura que ocupe todo el ancho disponible del wrapper */
   display: flex;
-  justify-content: space-between; /* Empuja el botón a la derecha */
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* Para que sea responsivo en pantallas pequeñas */
-  gap: 1.5rem; /* Espacio entre el grupo de filtros y el botón */
+  flex-wrap: wrap;
+  gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
 
@@ -65,9 +65,9 @@
 .filtros-wrapper {
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* Espacio entre la búsqueda y el filtro de estado */
+  gap: 1.5rem;
   flex-grow: 1; /* Permite que este grupo ocupe el espacio disponible */
-  min-width: 300px; /* Ancho mínimo para evitar que se aplaste demasiado */
+  min-width: 300px;
 }
 
 /* --- Estilo unificado para input y select --- */
@@ -78,74 +78,57 @@
   font-size: 1rem;
   background-color: #fff;
   transition: border-color 0.2s;
+  height: 41px; /* Altura fija para alinear con el botón */
+  box-sizing: border-box;
 }
 
 .filtro-input:focus {
   outline: none;
-  border-color: var(--color-border-light);
+  border-color: var(--color-admin-hover);
 }
 
 /* --- Estilo específico para la barra de búsqueda --- */
 input.filtro-input {
-  /* La clave: le dice al input que crezca para llenar el espacio de su contenedor */
   flex-grow: 1;
-  width: 100%; /* Asegura que tome el ancho del espacio que se le asigna */
+  width: 100%; /* Necesario para que el flex-grow funcione correctamente */
 }
 
 /* --- Grupo específico para el filtro de estado y su etiqueta --- */
 .filtro-estado-grupo {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* Espacio entre "Estado:" y el select */
+  gap: 0.5rem;
 }
 
 .filtro-estado-grupo label {
-  white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+  white-space: nowrap;
   font-weight: 500;
   color: #333;
 }
-.BusquedaBotonCategoria {
- flex-grow: 1;
- display: flex;
-}
 
-.BusquedaBotonCategoria input {
- padding: 10px 12px;
- width: 100%;
- min-width: 250px;
- border: 1px solid var(--color-border-light);
- border-radius: 5px;
- background-color: var(--color-background-light);
- color: var(--color-text-dark);
- font-size: 1rem;
- box-sizing: border-box;
-}
-
-.BusquedaBotonCategoria input:focus {
- border-color: var(--color-admin-hover);
- box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
- outline: none;
-}
+/* --- CORRECCIÓN: Se elimina bloque redundante .BusquedaBotonCategoria --- */
+/* Las reglas anteriores en .filtros-wrapper ya manejan este layout de forma más limpia. */
 
 .botonAgregarCategoria {
- background-color: var(--color-admin-hover);
- color: white;
- padding: 10px 20px;
- border: none;
- border-radius: 5px;
- cursor: pointer;
- transition: background-color 0.3s ease;
- font-size: 1rem;
- font-weight: 500;
- flex-shrink: 0;
- height: 41px;
- box-sizing: border-box;
+  background-color: var(--color-admin-hover);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  flex-shrink: 0;
+  height: 41px;
+  box-sizing: border-box;
 }
 
 .botonAgregarCategoria:hover {
- background-color: var(--color-primary-darker);
+  background-color: var(--color-primary-darker);
 }
 
+/* --- Estilos de la Tabla --- */
 .tablaCategoria {
   width: 100%;
   border-collapse: collapse;
@@ -156,315 +139,139 @@ input.filtro-input {
   overflow: hidden;
   font-size: 0.95rem;
 }
-
-.tablaCategoria th {
- background-color: var(--color-admin-primary-lighter);
- color: var(--color-text-dark);
- font-weight: 600;
- text-align: center;
- padding: 12px 15px;
- font-size: 1rem;
- border: 1px solid var(--color-admin-primary-border);
-}
-
-.tablaCategoria td {
- border: 1px solid var(--color-admin-primary-border);
- text-align: left;
- padding: 12px 15px;
- vertical-align: middle;
- font-size: 0.95rem;
- color: var(--color-text-dark);
-}
-
-.tablaCategoria td:nth-child(1), .tablaCategoria td:nth-child(4), .tablaCategoria td:nth-child(5) {
- text-align: center;
-}
-
-.tablaCategoria tbody tr:nth-child(even) {
- background-color: var(--color-table-row-even);
-}
-
-.tablaCategoria tbody tr:hover {
- background-color: var(--color-table-row-hover);
-}
-
+/* ... (el resto de los estilos de la tabla y acciones se mantienen igual) ... */
+.tablaCategoria th { background-color: var(--color-admin-primary-lighter); color: var(--color-text-dark); font-weight: 600; text-align: center; padding: 12px 15px; font-size: 1rem; border: 1px solid var(--color-admin-primary-border); }
+.tablaCategoria td { border: 1px solid var(--color-admin-primary-border); text-align: left; padding: 12px 15px; vertical-align: middle; font-size: 0.95rem; color: var(--color-text-dark); }
+.tablaCategoria td:nth-child(1), .tablaCategoria td:nth-child(4), .tablaCategoria td:nth-child(5) { text-align: center; }
+.tablaCategoria tbody tr:nth-child(even) { background-color: var(--color-table-row-even); }
+.tablaCategoria tbody tr:hover { background-color: var(--color-table-row-hover); }
 .switch { position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;}
-
 .switch input { opacity: 0; width: 0; height: 0; }
-
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-
 .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-
 input:checked + .slider { background-color: #2ecc71; }
-
 input:checked + .slider:before { transform: translateX(16px); }
+.categorias-servicio-actions { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; }
+.categorias-servicio-actions button { padding: 6px 10px; font-size: 0.85rem; border: none; border-radius: 5px; color: white; cursor: pointer; transition: background-color 0.3s ease; }
+.botonEditarCategoria, .botonVerDetallesCategoria { background-color: var(--color-admin-action-edit); }
+.botonEditarCategoria:hover, .botonVerDetallesCategoria:hover { background-color: var(--color-admin-action-edit-hover); }
+.botonEliminarCategoria { background-color: var(--color-admin-action-delete); }
+.botonEliminarCategoria:hover { background-color: var(--color-admin-action-delete-hover); }
 
-.categorias-servicio-actions {
- display: flex;
- justify-content: center;
- align-items: center;
- gap: 8px;
- flex-wrap: wrap;
-}
-
-.categorias-servicio-actions button {
- padding: 6px 10px;
- font-size: 0.85rem;
- border: none;
- border-radius: 5px;
- color: white;
- cursor: pointer;
- transition: background-color 0.3s ease;
-}
-
-.botonEditarCategoria, .botonVerDetallesCategoria { 
-  background-color: var(--color-admin-action-edit); 
-}
-
-.botonEditarCategoria, .botonVerDetallesCategoria:hover { 
-  background-color: var(--color-admin-action-edit-hover); 
-}
-
-.botonEliminarCategoria { 
-  background-color: var(--color-admin-action-delete); 
-}
-
-.botonEliminarCategoria:hover { 
-  background-color: var(--color-admin-action-delete-hover); 
-}
-
-.modal-Categoria {
-  position: fixed;
-  top: 0;
-  left: 0;
+/* --- NUEVO: Estilos para la Paginación --- */
+.pagination-container {
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  /* MODIFICADO: Centra los elementos hijos en el contenedor */
+  justify-content: center; 
+  align-items: center;
+  gap: 30px; /* Añade un espacio entre el dropdown y los botones */
+  margin-top: 24px;
+  padding: 16px 0;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.rows-per-page-container {
   display: flex;
   align-items: center;
+  gap: 8px;
+  color: var(--color-text-dark);
+}
+
+.rows-per-page-container select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid var(--color-border-light);
+  background-color: #fff;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  /* MODIFICADO: Asegura que los botones se centren si el contenedor crece */
   justify-content: center;
-  z-index: 1050;
-  padding: 15px; /* Añadimos un padding general para que el modal no toque los bordes en móvil */
-  box-sizing: border-box;
 }
 
-/* REFINADO: Unificamos los estilos del contenido del modal */
-.modal-content-Categoria {
-  background-color: var(--color-background-light);
-  padding: 25px 30px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-  width: 100%;
-  max-width: 550px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-sizing: border-box;
-  text-align: left;
-  position: relative;
+.pagination-controls button {
+  padding: 8px 14px;
+  border: 1px solid var(--color-border-light);
+  background-color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
-.modal-content-Categoria.formulario { 
-  max-width: 550px; 
+.pagination-controls button:hover:not(:disabled) {
+  background-color: var(--color-table-row-hover);
+  border-color: var(--color-admin-hover);
 }
 
-.modal-content-Categoria h3 {
- text-align: center;
- color: var(--color-primary-darker);
- margin-top: 0;
- margin-bottom: 25px;
- font-size: 1.6rem;
-
+.pagination-controls button.active {
+  background-color: var(--color-admin-hover);
+  color: white;
+  border-color: var(--color-admin-hover);
+  font-weight: bold;
 }
 
-.modal-body-content {
- margin: 20px 0;
- line-height: 1.6;
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-.modal-body-content p {
- margin: 0 0 10px;
-}
-
-.modal-content-Categoria.detalle .detalle-item {
- margin-bottom: 15px;
-}
-
-.modal-content-Categoria.detalle .detalle-item strong {
- display: block;
- font-weight: 600;
- color: var(--color-primary-darker);
- font-size: 0.9rem;
- margin-bottom: 4px;
-}
-
-.modal-content-Categoria.detalle .detalle-item p {
- margin: 0;
- font-size: 1rem;
-}
-
-.estado-label {
- padding: 3px 8px;
- border-radius: 4px;
- color: white;
- font-size: 0.9rem;
- font-weight: bold;
-}
-
+/* ... (el resto de los estilos para modales se mantienen igual) ... */
+.modal-Categoria { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1050; padding: 15px; box-sizing: border-box; }
+.modal-content-Categoria { background-color: var(--color-background-light); padding: 25px 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.25); width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; box-sizing: border-box; text-align: left; position: relative; }
+.modal-content-Categoria.formulario { max-width: 550px; }
+.modal-content-Categoria h3 { text-align: center; color: var(--color-primary-darker); margin-top: 0; margin-bottom: 25px; font-size: 1.6rem; }
+.modal-body-content { margin: 20px 0; line-height: 1.6; }
+.modal-body-content p { margin: 0 0 10px; }
+.modal-content-Categoria.detalle .detalle-item { margin-bottom: 15px; }
+.modal-content-Categoria.detalle .detalle-item strong { display: block; font-weight: 600; color: var(--color-primary-darker); font-size: 0.9rem; margin-bottom: 4px; }
+.modal-content-Categoria.detalle .detalle-item p { margin: 0; font-size: 1rem; }
+.estado-label { padding: 3px 8px; border-radius: 4px; color: white; font-size: 0.9rem; font-weight: bold; }
 .estado-label.inactivo { background-color: #6c757d; }
-
 .modal-Categoria-form-grid { display: flex; flex-direction: column; gap: 18px; }
-
 .camposAgregarCategoria { display: flex; flex-direction: column; gap: 8px; }
-
-.camposAgregarCategoria label {
- font-weight: 600; color: var(--color-primary-darker);
- font-size: 0.95rem; text-align: left;
-}
-
-.campoAgregarCategoria {
- width: 100%; padding: 10px 12px;
- border: 1px solid var(--color-border-light);
- border-radius: 5px; font-size: 1rem; box-sizing: border-box;
- color: var(--color-text-dark);
- transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.campoAgregarCategoria:focus {
- border-color: var(--color-admin-hover);
- box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
- outline: none;
-}
-
+.camposAgregarCategoria label { font-weight: 600; color: var(--color-primary-darker); font-size: 0.95rem; text-align: left; }
+.campoAgregarCategoria { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-light); border-radius: 5px; font-size: 1rem; box-sizing: border-box; color: var(--color-text-dark); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.campoAgregarCategoria:focus { border-color: var(--color-admin-hover); box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); outline: none; }
 textarea.campoAgregarCategoria { min-height: 80px; resize: vertical; }
-
 .requiredCategoria { color: var(--color-danger); margin-left: 2px; }
+.input-error { border-color: var(--color-danger) !important; background-color: #fff0f0; }
+.error { color: var(--color-danger); font-size: 0.85rem; margin-top: 5px; }
+.containerBotonesAgregarCategoria { display: flex; justify-content: center; gap: 15px; margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
+.containerBotonesAgregarCategoria button { padding: 10px 20px; font-size: 1rem; font-weight: 500; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; text-align: center; min-width: 120px; }
+.modal-close-button { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; font-weight: 300; line-height: 1; color: #888; cursor: pointer; padding: 0; transition: color 0.2s ease; }
+.modal-close-button:hover { color: #000; }
 
-.input-error { 
-  border-color: var(--color-danger) !important; 
-  background-color: #fff0f0; 
-}
-
-.error { 
-  color: var(--color-danger); 
-  font-size: 0.85rem; margin-top: 5px; 
-}
-.containerBotonesAgregarCategoria {
- display: flex; justify-content: center; gap: 15px;
- margin-top: 25px; padding-top: 20px;
- border-top: 1px solid #eee;
- width: 100%;
-}
-
-.containerBotonesAgregarCategoria button {
- padding: 10px 20px; font-size: 1rem; font-weight: 500;
- border: none; border-radius: 5px; cursor: pointer;
- transition: background-color 0.3s ease; text-align: center;
-  min-width: 120px;
-}
 /* === ESTILOS RESPONSIVOS === */
-
 @media (max-width: 992px) {
-  /* Ocultamos el menú lateral y el contenido ocupa todo el ancho */
   .Categoria-content {
     margin-left: 0;
   }
 }
 
 @media (max-width: 768px) {
-  .Categoria-content {
-    padding: 15px; /* Reducimos el padding en pantallas pequeñas */
-  }
+  .Categoria-content { padding: 15px; }
+  .categorias-servicio-content-wrapper { padding: 0; }
+  .ContainerBotonAgregarCategoria { flex-direction: column; gap: 15px; }
+  .botonAgregarCategoria { width: 100%; }
+  .filtros-wrapper { width: 100%; flex-direction: column; }
+  .tablaCategoria thead { display: none; }
+  .tablaCategoria, .tablaCategoria tbody, .tablaCategoria tr, .tablaCategoria td { display: block; width: 100%; }
+  .tablaCategoria tr { margin-bottom: 1rem; border: 1px solid var(--color-admin-primary-border); border-radius: 8px; padding: 0.5rem; }
+  .tablaCategoria td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 0.75rem 0.5rem !important; position: relative; border: none; border-bottom: 1px solid #f0f0f0; }
+  .tablaCategoria td:last-child { border-bottom: none; }
+  .tablaCategoria td::before { content: attr(data-label); font-weight: bold; color: var(--color-primary-darker); text-align: left; margin-right: 1rem; }
+  .tablaCategoria td.no-data-cell { display: block; justify-content: center; text-align: center; padding: 2rem 1rem !important; }
+  .tablaCategoria td.no-data-cell::before { display: none; }
+  .modal-content-Categoria { width: 95vw; }
 
-  .categorias-servicio-content-wrapper {
-    padding: 0;
-  }
-
-  /* Apila el buscador y el botón de agregar */
-  .ContainerBotonAgregarCategoria {
+  /* --- NUEVO: Paginación Responsiva --- */
+  .pagination-container {
     flex-direction: column;
     gap: 15px;
-  }
-
-  .BusquedaBotonCategoria input, .botonAgregarCategoria {
-    width: 100%;
-  }
-
-  /* --- AJUSTES RESPONSIVOS PARA LA TABLA --- */
-
-  .tablaCategoria thead {
-    display: none; /* Correcto, ocultamos los encabezados */
-  }
-
-  .tablaCategoria, .tablaCategoria tbody, .tablaCategoria tr, .tablaCategoria td {
-    display: block;
-    width: 100%;
-  }
-
-  .tablaCategoria tr {
-    margin-bottom: 1rem;
-    border: 1px solid var(--color-admin-primary-border);
-    border-radius: 8px;
-    padding: 0.5rem;
-  }
-
-  /* REFINADO: Usamos Flexbox para hacer las celdas más flexibles */
-  .tablaCategoria td {
-    display: flex;
-    justify-content: space-between; /* El label a un lado, el valor al otro */
     align-items: center;
-    text-align: right; /* El texto del valor se alinea a la derecha */
-    padding: 0.75rem 0.5rem !important;
-    position: relative;
-    border: none;
-    border-bottom: 1px solid #f0f0f0;
   }
-
-  .tablaCategoria td:last-child {
-    border-bottom: none;
-  }
-
-  .tablaCategoria td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: var(--color-primary-darker);
-    text-align: left;
-    margin-right: 1rem;
-  }
-
-.tablaCategoria td.no-data-cell {
-  display: block;
-  justify-content: center; /* Lo centramos horizontalmente */
-  text-align: center;      /* Aseguramos que el texto esté centrado */
-  padding: 2rem 1rem !important;
-}
-
-/* También nos aseguramos que no se muestre un "label" fantasma para esta celda */
-.tablaCategoria td.no-data-cell::before {
-  display: none;
-}
-  
-  .modal-content-Categoria {
-    width: 95vw; 
-  }
-}
-
-/* Estilos para el botón 'X' */
-.modal-close-button {
-  position: absolute;
-  top: 15px; /* Distancia desde la parte superior */
-  right: 20px; /* Distancia desde la derecha */
-  background: none;
-  border: none;
-  font-size: 2rem; /* Tamaño del ícono '×' */
-  font-weight: 300;
-  line-height: 1; /* Asegura que no tenga altura extra */
-  color: #888; /* Un color gris sutil */
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s ease;
-}
-
-.modal-close-button:hover {
-  color: #000; /* Se oscurece al pasar el ratón por encima */
 }
