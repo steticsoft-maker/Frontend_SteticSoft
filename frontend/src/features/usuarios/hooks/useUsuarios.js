@@ -50,7 +50,8 @@ const useUsuarios = () => {
 
     // Campos de perfil según el rol
     const selectedRoleObj = availableRoles.find(r => r.idRol === parseInt(currentFormData.idRol));
-    const requiresProfile = selectedRoleObj && (selectedRoleObj.nombre === 'Cliente' || selectedRoleObj.nombre === 'Empleado');
+    // Usar tipoPerfil para determinar si se requieren campos de perfil
+    const requiresProfile = selectedRoleObj && (selectedRoleObj.tipoPerfil === 'CLIENTE' || selectedRoleObj.tipoPerfil === 'EMPLEADO');
 
     switch (name) {
       case 'correo':
@@ -110,7 +111,8 @@ const useUsuarios = () => {
     }
 
     const selectedRoleObj = availableRoles.find(r => r.idRol === parseInt(dataToValidate.idRol));
-    const requiresProfile = selectedRoleObj && (selectedRoleObj.nombre === 'Cliente' || selectedRoleObj.nombre === 'Empleado');
+    // Usar tipoPerfil para determinar si se requieren campos de perfil
+    const requiresProfile = selectedRoleObj && (selectedRoleObj.tipoPerfil === 'CLIENTE' || selectedRoleObj.tipoPerfil === 'EMPLEADO');
 
     if (requiresProfile) {
       fieldsToValidate.push('nombre', 'apellido', 'tipoDocumento', 'numeroDocumento', 'telefono', 'fechaNacimiento');
@@ -329,10 +331,16 @@ const useUsuarios = () => {
       }
 
       const selectedRoleObj = availableRoles.find(r => r.idRol === parseInt(dataParaAPI.idRol));
-      const roleRequiresProfile = selectedRoleObj && (selectedRoleObj.nombre === 'Cliente' || selectedRoleObj.nombre === 'Empleado');
-      if (!roleRequiresProfile) {
+      // Usar tipoPerfil para determinar si se deben enviar/borrar campos de perfil
+      const shouldHaveProfile = selectedRoleObj &&
+                                (selectedRoleObj.tipoPerfil === 'CLIENTE' || selectedRoleObj.tipoPerfil === 'EMPLEADO');
+
+      if (!shouldHaveProfile) {
+        // Si el rol, según tipoPerfil, no requiere perfil, eliminar los campos de perfil.
         ['nombre', 'apellido', 'tipoDocumento', 'numeroDocumento', 'telefono', 'fechaNacimiento'].forEach(field => delete dataParaAPI[field]);
       }
+      // Si shouldHaveProfile es true, los campos se envían tal como están en formData.
+      // El backend (servicio crearUsuario) validará si los campos requeridos para ese perfil están presentes.
 
       if (dataParaAPI.idUsuario) {
         await updateUsuarioAPI(dataParaAPI.idUsuario, dataParaAPI);
