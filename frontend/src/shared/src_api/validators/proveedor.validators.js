@@ -3,7 +3,7 @@ const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
-const db = require("../models/index.js");
+const db = require("../models");
 
 const crearProveedorValidators = [
   body("nombre")
@@ -42,13 +42,13 @@ const crearProveedorValidators = [
     .custom(async (value) => {
       const proveedorExistente = await db.Proveedor.findOne({
         where: { correo: value, estado: true }, // <-- AÑADIR ESTO
-      });
-      if (proveedorExistente) {
-        return Promise.reject(
-          "El correo electrónico ya está registrado en un proveedor activo."
-        );
-      }
-    }),
+        });
+        if (proveedorExistente) {
+          return Promise.reject(
+            "El correo electrónico ya está registrado en un proveedor activo."
+          );
+        }
+      }),
   body("direccion")
     .trim()
     .notEmpty()
@@ -61,7 +61,7 @@ const crearProveedorValidators = [
     .optional({ nullable: true, checkFalsy: true })
     .trim()
     .isString(),
-
+  
   // --- INICIO DE CORRECCIÓN ---
   body("numeroDocumento")
     .optional({ nullable: true, checkFalsy: true })
@@ -72,14 +72,12 @@ const crearProveedorValidators = [
       if (value) {
         const proveedorExistente = await db.Proveedor.findOne({
           where: { numeroDocumento: value, estado: true }, // <-- AÑADIR ESTO
-        });
-        if (proveedorExistente) {
-          return Promise.reject(
-            "El número de documento ya está registrado en un proveedor activo."
-          );
+          });
+          if (proveedorExistente) {
+            return Promise.reject("El número de documento ya está registrado en un proveedor activo.");
+          }
         }
-      }
-    }),
+      }),
   // --- FIN DE CORRECCIÓN ---
 
   body("nitEmpresa")
@@ -93,14 +91,12 @@ const crearProveedorValidators = [
       if (value) {
         const proveedorExistente = await db.Proveedor.findOne({
           where: { nitEmpresa: value, estado: true }, // <-- AÑADIR ESTO
-        });
-        if (proveedorExistente) {
-          return Promise.reject(
-            "El NIT de empresa ya está registrado en un proveedor activo."
-          );
+          });
+          if (proveedorExistente) {
+            return Promise.reject("El NIT de empresa ya está registrado en un proveedor activo.");
+          }
         }
-      }
-    }),
+      }),
   body("nombrePersonaEncargada")
     .optional({ nullable: true, checkFalsy: true })
     .trim()
@@ -197,22 +193,22 @@ const actualizarProveedorValidators = [
     .isString()
     .isLength({ max: 45 })
     .custom(async (value, { req }) => {
-      if (value) {
-        const idProveedor = Number(req.params.idProveedor);
-        const proveedorExistente = await db.Proveedor.findOne({
-          where: {
-            numeroDocumento: value,
-            idProveedor: { [db.Sequelize.Op.ne]: idProveedor },
-            estado: true,
-          },
-        });
-        if (proveedorExistente) {
-          return Promise.reject(
-            "El número de documento ya está registrado para otro proveedor."
-          );
+        if (value) {
+          const idProveedor = Number(req.params.idProveedor);
+          const proveedorExistente = await db.Proveedor.findOne({
+            where: {
+              numeroDocumento: value,
+              idProveedor: { [db.Sequelize.Op.ne]: idProveedor },
+              estado: true,
+            },
+          });
+          if (proveedorExistente) {
+            return Promise.reject(
+              "El número de documento ya está registrado para otro proveedor."
+            );
+          }
         }
-      }
-    }),
+      }),
   // --- FIN DE CORRECCIÓN ---
 
   body("nitEmpresa")

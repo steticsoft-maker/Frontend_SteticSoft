@@ -3,7 +3,7 @@ const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
-const db = require("../models/index.js"); // Para validaciones personalizadas
+const db = require("../models"); // Para validaciones personalizadas
 
 const crearEstadoValidators = [
   body("nombreEstado")
@@ -18,10 +18,8 @@ const crearEstadoValidators = [
       const estadoExistente = await db.Estado.findOne({
         where: { nombreEstado: value },
       });
-      console.log(
-        `Validador: Buscando estado existente con nombre: '${value}'`
-      );
-      console.log("Validador: Resultado de estadoExistente:", estadoExistente);
+      console.log(`Validador: Buscando estado existente con nombre: '${value}'`);
+      console.log('Validador: Resultado de estadoExistente:', estadoExistente);
       if (estadoExistente) {
         return Promise.reject("El nombre del estado ya existe.");
       }

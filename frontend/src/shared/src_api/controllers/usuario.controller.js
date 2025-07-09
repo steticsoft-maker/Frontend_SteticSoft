@@ -162,8 +162,8 @@ const verificarCorreo = async (req, res, next) => {
   try {
     const { correo } = req.query;
     // El servicio ahora devuelve true si está en uso, false si no.
-    const enUso = await usuarioService.verificarCorreoExistente(correo);
-
+    const enUso = await usuarioService.verificarCorreoExistente(correo); 
+    
     // La respuesta al frontend es la misma que antes, solo cambia cómo se obtiene 'enUso'
     return res.status(200).json({
       success: true,
@@ -183,9 +183,9 @@ module.exports = {
   listarUsuarios,
   obtenerUsuarioPorId,
   actualizarUsuario,
-  anularUsuario,
-  habilitarUsuario,
-  eliminarUsuarioFisico,
-  cambiarEstadoUsuario,
+  anularUsuario, 
+  habilitarUsuario, 
+  eliminarUsuarioFisico, 
+  cambiarEstadoUsuario, 
   verificarCorreo,
 };

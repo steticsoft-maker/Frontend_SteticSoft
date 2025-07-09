@@ -3,13 +3,11 @@ const express = require("express");
 const router = express.Router();
 
 // Importar el controlador de abastecimiento
-const AbastecimientoController = require("../controllers/abastecimiento.controller.js");
+const AbastecimientoController = require("../controllers/abastecimiento.controller");
 
 // Importar los middlewares
-const authMiddleware = require("../middlewares/auth.middleware.js");
-const {
-  checkPermission,
-} = require("../middlewares/authorization.middleware.js");
+const authMiddleware = require("../middlewares/auth.middleware");
+const { checkPermission } = require("../middlewares/authorization.middleware");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
@@ -21,7 +19,7 @@ const {
   idValidator,
   toggleEstadoValidator,
   agotarAbastecimientoValidators, // Importar el nuevo validador
-} = require("../validators/abastecimiento.validators.js");
+} = require("../validators/abastecimiento.validators");
 
 const PERMISO_GESTION = "MODULO_ABASTECIMIENTOS_GESTIONAR";
 
