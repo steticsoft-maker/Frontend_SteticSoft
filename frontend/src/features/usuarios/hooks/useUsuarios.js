@@ -332,7 +332,11 @@ const useUsuarios = () => {
 
       const selectedRoleObj = availableRoles.find(r => r.idRol === parseInt(dataParaAPI.idRol));
       // Usar tipoPerfil para determinar si se deben enviar/borrar campos de perfil
+<<<<<<< HEAD
       const shouldHaveProfile = selectedRoleObj && 
+=======
+      const shouldHaveProfile = selectedRoleObj &&
+>>>>>>> 71915c50d923944165848ad12b1091468225cbd9
                                 (selectedRoleObj.tipoPerfil === 'CLIENTE' || selectedRoleObj.tipoPerfil === 'EMPLEADO');
 
       if (!shouldHaveProfile) {
