@@ -27,7 +27,9 @@ export const getUsuariosAPI = async () => {
  */
 export const verificarCorreoAPI = async (correo) => {
   try {
-    const response = await apiClient.get(`/usuarios/verificar-correo?correo=${encodeURIComponent(correo)}`);
+    const response = await apiClient.get(
+      `/usuarios/verificar-correo?correo=${encodeURIComponent(correo)}`
+    );
     // El backend devuelve { success: true, estaEnUso: boolean, message: "..." }
     // El hook usará response.estaEnUso
     return response.data;
