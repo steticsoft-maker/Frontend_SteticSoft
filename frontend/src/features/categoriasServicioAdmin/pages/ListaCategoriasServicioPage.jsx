@@ -21,6 +21,10 @@ const ListaCategoriasServicioPage = () => {
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
 
+  // --- Estados para la paginación ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
   const [loading, setLoading] = useState(true);
   const [loadingId, setLoadingId] = useState(null);
   const [error, setError] = useState('');
@@ -51,8 +55,8 @@ const ListaCategoriasServicioPage = () => {
   useEffect(() => {
     cargarCategorias();
   }, [cargarCategorias]);
-
-  // --- Lógica de filtrado ---
+  
+  // --- Lógica de filtrado y paginación combinada ---
   const categoriasFiltradas = useMemo(() => {
     let dataFiltrada = [...categorias];
 
@@ -72,6 +76,26 @@ const ListaCategoriasServicioPage = () => {
     return dataFiltrada;
   }, [categorias, terminoBusqueda, filtroEstado]);
 
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return categoriasFiltradas.slice(startIndex, endIndex);
+  }, [currentPage, rowsPerPage, categoriasFiltradas]);
+  
+  const totalPages = Math.ceil(categoriasFiltradas.length / rowsPerPage);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setCurrentPage(1);
+  };
+
+
   // --- Manejadores de Acciones ---
   const handleAbrirCrearModal = () => {
     setIsEditMode(false);
@@ -90,8 +114,6 @@ const ListaCategoriasServicioPage = () => {
     setIsDetailModalOpen(true);
   };
 
-  // ✅ CORRECCIÓN: Se elimina el try/catch innecesario.
-  // El manejo de errores ahora se delega al componente del formulario.
   const handleFormSubmit = async (formData) => {
     if (isEditMode) {
       await updateCategoriaServicio(categoriaActual.idCategoriaServicio, formData);
@@ -134,12 +156,11 @@ const ListaCategoriasServicioPage = () => {
     }
   };
 
-return (
+  return (
     <div className="Categoria-content">
       <div className="categorias-servicio-content-wrapper">
         <h1>Gestión de Categorías de Servicio</h1>
 
-        {/* ✅ El contenedor principal ahora envuelve correctamente los filtros Y el botón */}
         <div className="ContainerBotonAgregarCategoria">
           <div className="filtros-wrapper">
             <input
@@ -147,7 +168,10 @@ return (
               type="text"
               placeholder="Buscar por nombre o descripción..."
               value={terminoBusqueda}
-              onChange={(e) => setTerminoBusqueda(e.target.value)}
+              onChange={(e) => {
+                setTerminoBusqueda(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <div className="filtro-estado-grupo">
               <label htmlFor="filtro-estado">Estado:</label>
@@ -155,7 +179,10 @@ return (
                   id="filtro-estado"
                   className="filtro-input"
                   value={filtroEstado}
-                  onChange={(e) => setFiltroEstado(e.target.value)}
+                  onChange={(e) => {
+                    setFiltroEstado(e.target.value);
+                    setCurrentPage(1);
+                  }}
                 >
                   <option value="todos">Todos</option>
                   <option value="activos">Activos</option>
@@ -174,14 +201,41 @@ return (
         {loading ? (
           <p>Cargando categorías...</p>
         ) : (
-          <CategoriasTabla
-            categorias={categoriasFiltradas}
-            onEditar={handleAbrirEditarModal}
-            onEliminar={handleEliminarCategoria}
-            onCambiarEstado={handleCambiarEstadoCategoria}
-            onVerDetalles={handleVerDetalles}
-            loadingId={loadingId}
-          />
+          <>
+            <CategoriasTabla
+              categorias={paginatedData} 
+              onEditar={handleAbrirEditarModal}
+              onEliminar={handleEliminarCategoria}
+              onCambiarEstado={handleCambiarEstadoCategoria}
+              onVerDetalles={handleVerDetalles}
+              loadingId={loadingId}
+            />
+
+            {/* --- Renderizado de los controles de paginación MODIFICADO --- */}
+            {totalPages > 1 && ( // Solo muestra la paginación si hay más de 1 página
+              <div className="pagination-container">
+                  <div className="rows-per-page-container">
+                      <label htmlFor="rows-per-page">Filas por página:</label>
+                      <select id="rows-per-page" value={rowsPerPage} onChange={handleRowsPerPageChange}>
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                      </select>
+                  </div>
+                  <div className="pagination-controls">
+                      {/* Se eliminan los botones "Anterior" y "Siguiente" */}
+                      {[...Array(totalPages).keys()].map(num => (
+                          <button
+                              key={num + 1}
+                              onClick={() => handlePageChange(num + 1)}
+                              className={currentPage === num + 1 ? 'active' : ''}
+                          >
+                              {num + 1}
+                          </button>
+                      ))}
+                  </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
