@@ -16,17 +16,54 @@ const saltRounds = 10;
  * Internal helper to change a user's status.
  */
 const cambiarEstadoUsuario = async (idUsuario, nuevoEstado) => {
-  const usuario = await db.Usuario.findByPk(idUsuario);
-  if (!usuario) {
-    throw new NotFoundError("User not found to change status.");
+  const usuarioIdNumerico = Number(idUsuario);
+  if (isNaN(usuarioIdNumerico)) {
+    throw new BadRequestError("El ID de usuario proporcionado no es un número válido para cambiar estado.");
   }
+  const usuario = await db.Usuario.findByPk(usuarioIdNumerico);
+  if (!usuario) {
+    throw new NotFoundError(`Usuario con ID ${usuarioIdNumerico} no encontrado para cambiar estado.`);
+  }
+
+  // Protección para el rol de Administrador (asumiendo que el rol Admin tiene idRol = 1 o un nombre específico)
+  // Es más robusto buscar el rol Admin por su nombre si el ID puede variar.
+  const rolAdmin = await db.Rol.findOne({ where: { nombre: 'Administrador' } });
+  if (rolAdmin && usuario.idRol === rolAdmin.idRol && nuevoEstado === false) {
+      throw new CustomError("El estado del usuario Administrador no puede ser cambiado a inactivo.", 403); // 403 Forbidden
+  }
+
   if (usuario.estado === nuevoEstado) {
     const { contrasena: _, ...usuarioSinCambio } = usuario.toJSON();
     return usuarioSinCambio;
   }
-  await usuario.update({ estado: nuevoEstado });
-  const { contrasena: _, ...usuarioActualizado } = usuario.toJSON();
-  return usuarioActualizado;
+
+  const t = await db.sequelize.transaction();
+  try {
+    await usuario.update({ estado: nuevoEstado }, { transaction: t });
+
+    // Actualizar estado del perfil asociado si existe
+    const rol = await db.Rol.findByPk(usuario.idRol, { transaction: t });
+    if (rol) {
+      const perfilData = { estado: nuevoEstado };
+      const commonWhere = { idUsuario: usuarioIdNumerico };
+
+      if (rol.nombre === "Cliente" || rol.tipoPerfil === "CLIENTE") {
+        const cliente = await db.Cliente.findOne({ where: commonWhere, transaction: t });
+        if (cliente) await cliente.update(perfilData, { transaction: t });
+      } else if (rol.nombre === "Empleado" || rol.tipoPerfil === "EMPLEADO") {
+        const empleado = await db.Empleado.findOne({ where: commonWhere, transaction: t });
+        if (empleado) await empleado.update(perfilData, { transaction: t });
+      }
+    }
+    await t.commit();
+    const { contrasena: _, ...usuarioActualizado } = usuario.toJSON();
+    return usuarioActualizado;
+
+  } catch (error) {
+    await t.rollback();
+    console.error(`[usuario.service.js] Error al cambiar estado del usuario ${usuarioIdNumerico}:`, error);
+    throw new CustomError(`Error al cambiar el estado del usuario: ${error.message}`, 500);
+  }
 };
 
 // --- INICIO DE CORRECCIÓN ---
@@ -40,72 +77,117 @@ const cambiarEstadoUsuario = async (idUsuario, nuevoEstado) => {
  */
 const crearUsuario = async (usuarioData) => {
   const {
-    email,
-    password,
-    rolId,
-    nombres,
-    apellidos,
+    correo, // Cambiado de email a correo para coincidir con frontend y modelo Usuario
+    contrasena, // Cambiado de password a contrasena
+    idRol, // Cambiado de rolId a idRol
+    nombre, // Cambiado de nombres a nombre
+    apellido, // Cambiado de apellidos a apellido
     telefono,
     tipoDocumento,
     numeroDocumento,
     fechaNacimiento,
+    estado // Se añade estado, aunque el modelo Usuario tiene un default true
   } = usuarioData;
 
   // PASO 1: Verificar la existencia del rol ANTES de la transacción.
-  const rol = await db.Rol.findByPk(rolId);
-  if (!rol) {
-    throw new NotFoundError("El rol especificado no existe o no está activo.");
+  // Asegurarse de que idRol sea un número para la búsqueda.
+  const rolIdNumerico = Number(idRol);
+  if (isNaN(rolIdNumerico)) {
+    throw new BadRequestError("El ID del rol proporcionado no es un número válido.");
   }
 
-  // PASO 2: Iniciar la transacción SOLO para las operaciones de escritura.
+  const rol = await db.Rol.findOne({ where: { idRol: rolIdNumerico, estado: true } });
+  if (!rol) {
+    // Log para depuración en el backend
+    console.error(`[usuario.service.js] Rol no encontrado o inactivo para idRol: ${rolIdNumerico}`);
+    throw new NotFoundError(`El rol especificado con ID ${rolIdNumerico} no existe o no está activo.`);
+  }
+
+  // Protección adicional: no permitir crear otro Administrador si ya existe uno y el rol seleccionado es Administrador.
+  if (rol.nombre === 'Administrador') {
+    const adminExistente = await db.Usuario.findOne({ where: { idRol: rolIdNumerico } }); // Buscar por idRol del admin
+    if (adminExistente) {
+      throw new ConflictError("Ya existe un usuario Administrador. No se pueden crear más con este rol.");
+    }
+  }
+
+  // PASO 2: Iniciar la transacción.
   const t = await db.sequelize.transaction();
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // Verificar si el correo ya existe para otro usuario
+    const usuarioExistenteCorreo = await db.Usuario.findOne({ where: { correo }, transaction: t });
+    if (usuarioExistenteCorreo) {
+      await t.rollback();
+      throw new ConflictError("El correo electrónico ya está registrado.");
+    }
+
+    const requierePerfil = rol.nombre === "Cliente" || rol.nombre === "Empleado" || rol.tipoPerfil === "CLIENTE" || rol.tipoPerfil === "EMPLEADO";
+
+    // Verificar si el número de documento ya existe para el tipo de perfil correspondiente (solo si se requiere perfil y se provee numeroDocumento)
+    if (requierePerfil && numeroDocumento) {
+      if (rol.nombre === 'Cliente' || rol.tipoPerfil === 'CLIENTE') {
+          const clienteExistente = await db.Cliente.findOne({ where: { numeroDocumento }, transaction: t });
+          if (clienteExistente) {
+              await t.rollback();
+              throw new ConflictError("El número de documento ya está registrado para un cliente.");
+          }
+      } else if (rol.nombre === 'Empleado' || rol.tipoPerfil === 'EMPLEADO') {
+          const empleadoExistente = await db.Empleado.findOne({ where: { numeroDocumento }, transaction: t });
+          if (empleadoExistente) {
+              await t.rollback();
+              throw new ConflictError("El número de documento ya está registrado para un empleado.");
+          }
+      }
+    }
+
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(contrasena, salt);
 
     const nuevoUsuario = await db.Usuario.create(
       {
-        email,
-        contrasena: hashedPassword, // Corregido para usar el nombre de campo correcto del modelo
-        idRol: rolId,
+        correo,
+        contrasena: hashedPassword,
+        idRol: rolIdNumerico, // Usar el ID numérico
+        estado: typeof estado === 'boolean' ? estado : true, // Usar estado si se provee, sino default
       },
       { transaction: t }
     );
 
-    // La creación del perfil permanece igual, ya era correcta.
-    if (rol.tipoPerfil === "CLIENTE") {
-      await db.Cliente.create(
-        {
-          nombres,
-          apellidos,
-          telefono,
-          correo: email,
-          tipoDocumento,
-          numeroDocumento,
-          fechaNacimiento,
-          idUsuario: nuevoUsuario.idUsuario, // Usamos la PK correcta del usuario creado
-        },
-        { transaction: t }
-      );
-    } else if (rol.tipoPerfil === "EMPLEADO") {
-      await db.Empleado.create(
-        {
-          nombres,
-          apellidos,
-          telefono,
-          correo: email,
-          tipoDocumento,
-          numeroDocumento,
-          fechaNacimiento,
-          idUsuario: nuevoUsuario.idUsuario, // Usamos la PK correcta del usuario creado
-        },
-        { transaction: t }
-      );
+    // Crear perfil si el rol lo requiere (basado en nombre o tipoPerfil)
+    // Es preferible usar tipoPerfil si está consistentemente definido en el modelo Rol.
+    // El frontend envía nombre, apellido, etc. El backend debe mapearlos correctamente.
+    const requierePerfil = rol.nombre === "Cliente" || rol.nombre === "Empleado" || rol.tipoPerfil === "CLIENTE" || rol.tipoPerfil === "EMPLEADO";
+
+    if (requierePerfil) {
+      const perfilData = {
+        nombre,
+        apellido,
+        telefono,
+        correo: nuevoUsuario.correo, // Usar el correo del usuario creado
+        tipoDocumento,
+        numeroDocumento,
+        fechaNacimiento,
+        idUsuario: nuevoUsuario.idUsuario,
+        estado: nuevoUsuario.estado,
+      };
+
+      if (rol.nombre === "Cliente" || rol.tipoPerfil === "CLIENTE") {
+        if (!nombre || !apellido || !telefono || !tipoDocumento || !numeroDocumento || !fechaNacimiento) {
+          await t.rollback();
+          throw new BadRequestError("Para el rol Cliente, los campos de perfil (nombre, apellido, teléfono, tipo/número de documento, fecha de nacimiento) son requeridos.");
+        }
+        await db.Cliente.create(perfilData, { transaction: t });
+      } else if (rol.nombre === "Empleado" || rol.tipoPerfil === "EMPLEADO") {
+         if (!nombre || !apellido || !telefono || !tipoDocumento || !numeroDocumento || !fechaNacimiento) {
+          await t.rollback();
+          throw new BadRequestError("Para el rol Empleado, los campos de perfil (nombre, apellido, teléfono, tipo/número de documento, fecha de nacimiento) son requeridos.");
+        }
+        await db.Empleado.create(perfilData, { transaction: t });
+      }
     }
 
     await t.commit();
 
-    // Devolvemos el usuario completo después de la creación exitosa.
     const usuarioCompleto = await db.Usuario.findByPk(nuevoUsuario.idUsuario, {
       include: [
         { model: db.Rol, as: "rol" },
@@ -118,8 +200,29 @@ const crearUsuario = async (usuarioData) => {
     return usuarioCompleto;
   } catch (error) {
     await t.rollback();
-    console.error("Error al crear el usuario:", error);
-    throw new Error(`Error en el servicio al crear usuario: ${error.message}`);
+    console.error("[usuario.service.js] Error al crear el usuario:", error.message, error.stack);
+    if (error instanceof NotFoundError || error instanceof ConflictError || error instanceof BadRequestError || error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(`Error en el servicio al crear usuario: ${error.message}`, 500);
+  }
+};
+
+/**
+ * Verifica si un correo electrónico ya existe.
+ * @param {string} correo El correo a verificar.
+ * @returns {Promise<boolean>} True si el correo existe, false en caso contrario.
+ */
+const verificarCorreoExistente = async (correo) => {
+  if (!correo) {
+    throw new BadRequestError("El correo es requerido para la verificación.");
+  }
+  try {
+    const usuario = await db.Usuario.findOne({ where: { correo } });
+    return !!usuario; // Devuelve true si el usuario existe, false si no
+  } catch (error) {
+    console.error("[usuario.service.js] Error al verificar correo existente:", error);
+    throw new CustomError("Error al verificar la existencia del correo.", 500);
   }
 };
 
