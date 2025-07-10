@@ -53,7 +53,7 @@ function ListaRolesPage() {
         <div className="rol-accionesTop">
           <input
             type="text"
-            placeholder="Buscar rol por nombre o descripción..."
+            placeholder="Buscar por nombre, descripción, permiso o estado..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="rol-barraBusqueda"
