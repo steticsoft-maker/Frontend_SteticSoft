@@ -80,7 +80,7 @@ const UsuariosTable = ({
                       <button
                         className="usuarios-table-button usuarios-table-button-delete"
                         onClick={() => onDeleteConfirm(usuario)}
-                        title="Desactivar Usuario"
+                        title="Eliminar Usuario"
                       >
                         <FaTrash />
                       </button>
