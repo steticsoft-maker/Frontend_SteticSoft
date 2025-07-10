@@ -42,7 +42,8 @@ export const calculateRemainingLifetime = (abastecimientoEntry) => {
 const getAbastecimientos = async () => {
   try {
     const response = await apiClient.get("/abastecimientos");
-    return response.data?.data || [];
+    // Corregido: El controlador de abastecimiento devuelve el array directamente en response.data
+    return response.data || [];
   } catch (error) {
     throw error.response?.data ||
       new Error("Error al obtener los registros de abastecimiento.");

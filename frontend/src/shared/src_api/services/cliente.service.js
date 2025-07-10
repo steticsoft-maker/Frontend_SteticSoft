@@ -128,23 +128,35 @@ const crearCliente = async (datosCompletos) => {
  */
 const obtenerTodosLosClientes = async (opcionesDeFiltro = {}) => {
   try {
-    const clientes = await db.Cliente.findAll({
-      where: opcionesDeFiltro.where || {}, // Asegúrate de que `where` sea un objeto si no se provee
+    const limit = opcionesDeFiltro.limit;
+    const offset = opcionesDeFiltro.offset;
+
+    const { count, rows } = await db.Cliente.findAndCountAll({
+      where: opcionesDeFiltro.where || {},
       include: [
         {
           model: db.Usuario,
-          as: "usuarioCuenta", // Alias definido en Cliente.model.js
-          attributes: ["idUsuario", "correo", "estado", "idRol"], // Incluir idRol del Usuario
-          include: [{ // Anidar para obtener el nombre del rol
+          as: "usuarioCuenta",
+          attributes: ["idUsuario", "correo", "estado", "idRol"],
+          include: [{
             model: db.Rol,
-            as: "rol", // Alias definido en Usuario.model.js
+            as: "rol",
             attributes: ["nombre"]
           }]
         },
       ],
       order: [["apellido", "ASC"], ["nombre", "ASC"]],
+      limit: limit,
+      offset: offset,
+      distinct: true, // Necesario con include y limit para que count sea correcto
     });
-    return clientes;
+
+    return {
+      totalItems: count,
+      clientes: rows,
+      totalPages: limit ? Math.ceil(count / limit) : 1,
+      currentPage: offset && limit ? Math.floor(offset / limit) + 1 : 1,
+    };
   } catch (error) {
     // console.error("Error al obtener todos los clientes en el servicio:", error.message); // Comentado
     throw new CustomError(`Error al obtener clientes: ${error.message}`, 500);
