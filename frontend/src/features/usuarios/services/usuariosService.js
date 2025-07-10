@@ -96,26 +96,71 @@ export const updateUsuarioAPI = async (idUsuario, usuarioData) => {
 };
 
 /**
- * Cambia el estado de un usuario (activo/inactivo) llamando al endpoint PATCH.
+ * Cambia/alterna el estado de un usuario (activo <-> inactivo) llamando al endpoint PATCH.
+ * El backend ahora infiere el nuevo estado.
  * @param {number|string} idUsuario - El ID del usuario a modificar.
- * @param {boolean} nuevoEstado - El nuevo estado para el usuario (true para activo, false para inactivo).
- * @returns {Promise<object>} La respuesta de la API.
+ * @returns {Promise<object>} Los datos del usuario actualizado devueltos por la API.
  */
-export const toggleUsuarioEstadoAPI = async (idUsuario, nuevoEstado) => {
-  // console.log(`[usuariosService.js] Cambiando estado del usuario ${idUsuario} a:`, nuevoEstado);
+export const toggleUsuarioEstadoAPI = async (idUsuario) => {
+  // console.log(`[usuariosService.js] Toggling estado del usuario ${idUsuario}`);
   try {
-    // Se utiliza la ruta PATCH específica para cambiar el estado.
-    // El backend espera un objeto con la propiedad 'estado' en el cuerpo de la solicitud.
-    const response = await apiClient.patch(`/usuarios/${idUsuario}/estado`, {
-      estado: nuevoEstado,
-    });
-    // Asumiendo que el backend devuelve { success: true, message: "...", data: {} }
+    // Llama al nuevo endpoint PATCH que no requiere body.
+    const response = await apiClient.patch(`/usuarios/${idUsuario}/toggle-estado`);
+    // Asumiendo que el backend devuelve { success: true, message: "...", data: { ...usuarioActualizado } }
     return response.data.data;
   } catch (error) {
     // console.error("[usuariosService.js] Error en toggleUsuarioEstadoAPI:", error.response?.data || error.message);
     throw (
       error.response?.data ||
       new Error(error.message || "Error al cambiar el estado del usuario.")
+    );
+  }
+};
+
+/**
+ * Realiza un borrado lógico (desactiva y bloquea) de un usuario.
+ * Llama al endpoint PATCH /usuarios/:idUsuario/desactivar.
+ * @param {number|string} idUsuario - El ID del usuario a desactivar.
+ * @returns {Promise<object>} La respuesta de la API (puede ser solo un mensaje de éxito).
+ */
+export const desactivarUsuarioAPI = async (idUsuario) => {
+  // console.log(`[usuariosService.js] Desactivando (soft delete) usuario ${idUsuario}`);
+  try {
+    const response = await apiClient.patch(`/usuarios/${idUsuario}/desactivar`);
+    // El backend para desactivar devuelve: { message: 'Usuario desactivado y bloqueado exitosamente.' }
+    return response.data; // Devolver el objeto de respuesta completo { message: "..." }
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en desactivarUsuarioAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || 'Error al desactivar el usuario.')
+    );
+  }
+};
+
+/**
+ * Elimina físicamente un usuario del sistema (Hard Delete).
+ * Llama al endpoint DELETE /usuarios/:idUsuario.
+ * @param {number|string} idUsuario - El ID del usuario a eliminar permanentemente.
+ * @returns {Promise<boolean>} True si la eliminación fue exitosa (status 204).
+ */
+export const eliminarUsuarioFisicoAPI = async (idUsuario) => {
+  // console.log(`[usuariosService.js] Eliminando físicamente (hard delete) usuario ${idUsuario}`);
+  try {
+    const response = await apiClient.delete(`/usuarios/${idUsuario}`);
+    // El backend para delete físico devuelve 204 No Content.
+    // Validar el status code es una buena práctica aquí.
+    if (response.status === 204) {
+      return true; // Éxito, no hay contenido que devolver
+    }
+    // Si por alguna razón no es 204, pero no lanzó error, tratarlo como un caso inesperado.
+    // Aunque apiClient usualmente lanza error para status no exitosos.
+    return response.data; // O manejar como un error si se espera estrictamente 204
+  } catch (error) {
+    // console.error("[usuariosService.js] Error en eliminarUsuarioFisicoAPI:", error.response?.data || error.message);
+    throw (
+      error.response?.data ||
+      new Error(error.message || 'Error al eliminar permanentemente el usuario.')
     );
   }
 };

@@ -85,20 +85,19 @@ const actualizarUsuario = async (req, res, next) => {
 };
 
 /**
- * Cambia el estado (activo/inactivo) de un usuario.
+ * Cambia/ alterna el estado (activo <-> inactivo) de un usuario.
+ * Este controlador corresponde a la ruta PATCH /:idUsuario/toggle-estado
  */
-const cambiarEstadoUsuario = async (req, res, next) => {
+const toggleUsuarioEstado = async (req, res, next) => {
   try {
     const { idUsuario } = req.params;
-    const { estado } = req.body; // Se espera un booleano
-
-    const usuarioActualizado = await usuarioService.cambiarEstadoUsuario(
-      Number(idUsuario),
-      estado
+    // El servicio toggleUsuarioEstado ahora infiere el nuevo estado.
+    const usuarioActualizado = await usuarioService.toggleUsuarioEstado(
+      Number(idUsuario)
     );
     res.status(200).json({
       success: true,
-      message: `Estado del usuario ID ${idUsuario} cambiado a ${estado} exitosamente.`,
+      message: `Estado del usuario ID ${idUsuario} cambiado a ${usuarioActualizado.estado} exitosamente.`,
       data: usuarioActualizado,
     });
   } catch (error) {
@@ -107,38 +106,17 @@ const cambiarEstadoUsuario = async (req, res, next) => {
 };
 
 /**
- * Anula un usuario (borrado lógico, estado = false).
+ * Controlador para el borrado lógico (desactivar y bloquear cuenta).
+ * Este controlador corresponde a la ruta PATCH /:idUsuario/desactivar
  */
-const anularUsuario = async (req, res, next) => {
+const desactivarUsuario = async (req, res, next) => {
   try {
+    const { id } = req.params; // La ruta usa :id, pero el servicio espera un número.
+                               // Corregido en rutas a :idUsuario para consistencia.
+                               // Si la ruta realmente usa :id, aquí sería req.params.id
     const { idUsuario } = req.params;
-    const usuarioAnulado = await usuarioService.anularUsuario(
-      Number(idUsuario)
-    );
-    res.status(200).json({
-      success: true,
-      message: "Usuario anulado (deshabilitado) exitosamente.",
-      data: usuarioAnulado,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
- * Habilita un usuario (estado = true).
- */
-const habilitarUsuario = async (req, res, next) => {
-  try {
-    const { idUsuario } = req.params;
-    const usuarioHabilitado = await usuarioService.habilitarUsuario(
-      Number(idUsuario)
-    );
-    res.status(200).json({
-      success: true,
-      message: "Usuario habilitado exitosamente.",
-      data: usuarioHabilitado,
-    });
+    await usuarioService.desactivarYBloquearUsuario(Number(idUsuario));
+    res.status(200).json({ message: 'Usuario desactivado y bloqueado exitosamente.' });
   } catch (error) {
     next(error);
   }

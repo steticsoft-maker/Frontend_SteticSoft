@@ -13,54 +13,53 @@ const {
 const saltRounds = 10;
 
 /**
- * Internal helper to change a user's status.
+ * Internal helper to change a user's status and its associated profile.
+ * This function does NOT modify the password.
  */
-const cambiarEstadoUsuario = async (idUsuario, nuevoEstado) => {
+const cambiarEstadoUsuarioInternal = async (idUsuario, nuevoEstado, transactionExt = null) => {
   const usuarioIdNumerico = Number(idUsuario);
   if (isNaN(usuarioIdNumerico)) {
     throw new BadRequestError(
       "El ID de usuario proporcionado no es un número válido para cambiar estado."
     );
   }
-  const usuario = await db.Usuario.findByPk(usuarioIdNumerico);
-  if (!usuario) {
-    throw new NotFoundError(
-      `Usuario con ID ${usuarioIdNumerico} no encontrado para cambiar estado.`
-    );
-  }
 
-  // Protección para el rol de Administrador
-  const rolAdmin = await db.Rol.findOne({ where: { nombre: "Administrador" } });
-  if (rolAdmin && usuario.idRol === rolAdmin.idRol && nuevoEstado === false) {
-    throw new CustomError(
-      "El estado del usuario Administrador no puede ser cambiado a inactivo.",
-      403
-    );
-  }
-
-  if (usuario.estado === nuevoEstado) {
-    const { contrasena: _, ...usuarioSinCambio } = usuario.toJSON();
-    return usuarioSinCambio;
-  }
-
-  const t = await db.sequelize.transaction();
+  const t = transactionExt || (await db.sequelize.transaction());
   try {
+    const usuario = await db.Usuario.findByPk(usuarioIdNumerico, { transaction: t });
+    if (!usuario) {
+      if (!transactionExt) await t.rollback();
+      throw new NotFoundError(
+        `Usuario con ID ${usuarioIdNumerico} no encontrado para cambiar estado.`
+      );
+    }
+
+    // Protección para el rol de Administrador si se intenta desactivar
+    if (nuevoEstado === false) {
+        const rolUsuario = await db.Rol.findByPk(usuario.idRol, { transaction: t });
+        if (rolUsuario && rolUsuario.nombre === "Administrador") {
+            if (!transactionExt) await t.rollback();
+            throw new CustomError(
+                "El estado del usuario Administrador no puede ser cambiado a inactivo.",
+                403
+            );
+        }
+    }
+
+    if (usuario.estado === nuevoEstado) {
+      if (!transactionExt) await t.commit(); // Commit if transaction is local
+      const { contrasena: _, ...usuarioSinCambio } = usuario.toJSON();
+      return usuarioSinCambio;
+    }
+
     await usuario.update({ estado: nuevoEstado }, { transaction: t });
 
     // Actualizar estado del perfil asociado si existe
     const rol = await db.Rol.findByPk(usuario.idRol, { transaction: t });
-    if (rol) {
+    if (rol && (rol.tipoPerfil === "CLIENTE" || rol.tipoPerfil === "EMPLEADO")) {
       const perfilData = { estado: nuevoEstado };
       const commonWhere = { idUsuario: usuarioIdNumerico };
-      // Verificamos si el perfil existe antes de intentar actualizarlo
-      if (rol.tipoPerfil !== "CLIENTE" && rol.tipoPerfil !== "EMPLEADO") {
-        await t.rollback();
-        throw new CustomError(
-          `El tipo de perfil '${rol.tipoPerfil}' no es válido para actualizar estado.`,
-          400
-        );
-      }
-      // Solo dependemos de tipoPerfil
+
       if (rol.tipoPerfil === "CLIENTE") {
         const cliente = await db.Cliente.findOne({
           where: commonWhere,
@@ -75,23 +74,45 @@ const cambiarEstadoUsuario = async (idUsuario, nuevoEstado) => {
         if (empleado) await empleado.update(perfilData, { transaction: t });
       }
     }
-    await t.commit();
+    if (!transactionExt) await t.commit();
     const { contrasena: _, ...usuarioActualizado } = usuario.toJSON();
     return usuarioActualizado;
   } catch (error) {
-    await t.rollback();
+    if (!transactionExt) await t.rollback();
     console.error(
       `[usuario.service.js] Error al cambiar estado del usuario ${usuarioIdNumerico}:`,
       error
     );
+    // Preserve specific error types if they are already CustomError or NotFoundError
+    if (error instanceof CustomError || error instanceof NotFoundError || error instanceof BadRequestError) {
+        throw error;
+    }
     throw new CustomError(
       `Error al cambiar el estado del usuario: ${error.message}`,
-      500
+      error.statusCode || 500
     );
   }
 };
 
-// --- INICIO DE CORRECCIÓN ---
+
+/**
+ * Toggles a user's state (active <-> inactive) without altering the password.
+ * Also updates the associated profile's state.
+ */
+const toggleUsuarioEstado = async (idUsuario) => {
+  const usuarioIdNumerico = Number(idUsuario);
+  if (isNaN(usuarioIdNumerico)) {
+    throw new BadRequestError("El ID de usuario proporcionado no es un número válido.");
+  }
+  const usuario = await db.Usuario.findByPk(usuarioIdNumerico);
+  if (!usuario) {
+    throw new NotFoundError(`Usuario con ID ${usuarioIdNumerico} no encontrado.`);
+  }
+  // Determine the new state by inverting the current state
+  const nuevoEstado = !usuario.estado;
+  return await cambiarEstadoUsuarioInternal(idUsuario, nuevoEstado);
+};
+
 
 /**
  * @function crearUsuario
@@ -459,82 +480,123 @@ const actualizarUsuario = async (idUsuario, datosActualizar) => {
 };
 
 /**
- * Disable a user (logical deletion, sets status = false).
+ * Desactiva un usuario y anula su contraseña para impedir el acceso (Soft Delete).
+ * También desactiva el perfil asociado (Cliente/Empleado).
  */
-const anularUsuario = async (idUsuario) => {
-  try {
-    return await cambiarEstadoUsuario(idUsuario, false);
-  } catch (error) {
-    if (error instanceof NotFoundError) throw error;
-    throw new CustomError(`Error al disable user: ${error.message}`, 500);
+const desactivarYBloquearUsuario = async (idUsuario) => {
+  const usuarioIdNumerico = Number(idUsuario);
+  if (isNaN(usuarioIdNumerico)) {
+    throw new BadRequestError("El ID de usuario proporcionado no es un número válido.");
   }
-};
 
-/**
- * Enable a user (changes status = true).
- */
-const habilitarUsuario = async (idUsuario) => {
-  try {
-    return await cambiarEstadoUsuario(idUsuario, true);
-  } catch (error) {
-    if (error instanceof NotFoundError) throw error;
-    throw new CustomError(`Error al enable user: ${error.message}`, 500);
-  }
-};
-
-/**
- * Physically delete a user from the database.
- */
-const eliminarUsuarioFisico = async (idUsuario) => {
   const transaction = await db.sequelize.transaction();
   try {
-    const usuario = await db.Usuario.findByPk(idUsuario, { transaction });
-    if (!usuario) {
-      await transaction.rollback();
-      throw new NotFoundError("User not found to physically delete.");
-    }
-
-    // Solo dependemos de tipoPerfil
-    const rol = await db.Rol.findByPk(usuario.idRol, { transaction });
-    if (rol.tipoPerfil === "CLIENTE") {
-      await db.Cliente.destroy({
-        where: { usuarioId: idUsuario },
-        transaction,
-      });
-    } else if (rol.tipoPerfil === "EMPLEADO") {
-      await db.Empleado.destroy({
-        where: { usuarioId: idUsuario },
-        transaction,
-      });
-    }
-
-    const filasEliminadas = await db.Usuario.destroy({
-      where: { idUsuario },
-      transaction,
+    const usuario = await db.Usuario.findByPk(usuarioIdNumerico, {
+      include: [{ model: db.Rol, as: 'rol' }], // Incluir rol para verificar si es Administrador
+      transaction
     });
 
+    if (!usuario) {
+      await transaction.rollback();
+      throw new NotFoundError("Usuario no encontrado para desactivar.");
+    }
+
+    if (usuario.rol && usuario.rol.nombre === 'Administrador') {
+      await transaction.rollback();
+      throw new CustomError("El Administrador no puede ser desactivado ni bloqueado.", 403);
+    }
+
+    // Acción 1: Anular contraseña y poner estado en false para el Usuario
+    await usuario.update({
+      estado: false,
+      contrasena: null // O un hash inválido conocido y no recuperable, ej: "BLOCKED_BY_ADMIN_INVALID_HASH"
+    }, { transaction });
+
+    // Acción 2: Poner estado en false para el Perfil asociado (Cliente o Empleado)
+    // Reutilizamos cambiarEstadoUsuarioInternal para esto, pasándole la transacción.
+    // No es necesario que cambiarEstadoUsuarioInternal anule contraseña, solo estado.
+    // La protección de Admin ya está en cambiarEstadoUsuarioInternal, pero la de aquí es prioritaria.
+    if (usuario.rol && (usuario.rol.tipoPerfil === "CLIENTE" || usuario.rol.tipoPerfil === "EMPLEADO")) {
+        await cambiarEstadoUsuarioInternal(usuarioIdNumerico, false, transaction);
+    }
+    // Si no tiene perfil Cliente/Empleado, no hay perfil que desactivar más allá del propio usuario.
+
     await transaction.commit();
-    return filasEliminadas > 0;
+    const { contrasena: _, ...usuarioDesactivado } = usuario.toJSON();
+    return usuarioDesactivado; // Devolver el usuario modificado sin la contraseña
   } catch (error) {
     await transaction.rollback();
-    if (error instanceof NotFoundError || error instanceof ConflictError) {
-      throw error;
+    // Preserve specific error types
+    if (error instanceof CustomError || error instanceof NotFoundError || error instanceof BadRequestError) {
+        throw error;
     }
-    throw new CustomError(
-      `Error al physically delete user: ${error.message}`,
-      500
-    );
+    throw new CustomError(`Error al desactivar y bloquear usuario: ${error.message}`, error.statusCode || 500);
   }
 };
+
+/**
+ * Elimina físicamente un usuario y su perfil asociado (Hard Delete).
+ * Esta acción es destructiva y debe usarse con precaución.
+ */
+const eliminarUsuarioFisico = async (idUsuario) => {
+  const usuarioIdNumerico = Number(idUsuario);
+  if (isNaN(usuarioIdNumerico)) {
+    throw new BadRequestError("El ID de usuario proporcionado no es un número válido para eliminar.");
+  }
+
+  const transaction = await db.sequelize.transaction();
+  try {
+    const usuario = await db.Usuario.findByPk(usuarioIdNumerico, {
+        include: [{ model: db.Rol, as: 'rol' }], // Incluir rol para obtener tipoPerfil
+        transaction
+    });
+
+    if (!usuario) {
+      await transaction.rollback();
+      throw new NotFoundError("Usuario no encontrado para eliminar físicamente.");
+    }
+
+    // Importante: No permitir eliminar al usuario Administrador principal.
+    // Esta es una salvaguarda adicional a los permisos de ruta.
+    if (usuario.rol && usuario.rol.nombre === 'Administrador') {
+        // Podríamos verificar si es el ÚNICO admin, pero por seguridad, mejor prohibir directamente desde aquí.
+        await transaction.rollback();
+        throw new CustomError("El usuario Administrador no puede ser eliminado físicamente.", 403);
+    }
+
+    const { tipoPerfil } = usuario.rol; // Obtenido del include
+    const commonWhere = { idUsuario: usuarioIdNumerico }; // Correcto, FK en Cliente/Empleado es idUsuario
+
+    if (tipoPerfil === 'CLIENTE') {
+      await db.Cliente.destroy({ where: commonWhere, transaction });
+    } else if (tipoPerfil === 'EMPLEADO') {
+      await db.Empleado.destroy({ where: commonWhere, transaction });
+    }
+    // Si no es ni Cliente ni Empleado (ej. solo un rol sin perfil) no hay perfil que borrar.
+
+    // Finalmente, eliminar el usuario
+    const filasEliminadas = await db.Usuario.destroy({ where: { idUsuario: usuarioIdNumerico }, transaction });
+
+    await transaction.commit();
+    return filasEliminadas > 0; // Retorna true si se eliminó algo, false si no (aunque ya se verificó antes)
+  } catch (error) {
+    await transaction.rollback();
+    if (error instanceof NotFoundError || error instanceof CustomError || error instanceof BadRequestError) {
+      throw error;
+    }
+    throw new CustomError(`Error al eliminar físicamente el usuario: ${error.message}`, error.statusCode || 500);
+  }
+};
+
 
 module.exports = {
   crearUsuario,
   obtenerTodosLosUsuarios,
   obtenerUsuarioPorId,
   actualizarUsuario,
-  anularUsuario,
-  habilitarUsuario,
-  eliminarUsuarioFisico,
-  cambiarEstadoUsuario,
+  toggleUsuarioEstado, // Reemplaza anularUsuario y habilitarUsuario
+  desactivarYBloquearUsuario, // Nuevo para Soft Delete + Bloqueo
+  eliminarUsuarioFisico, // Revisado y corregido
+  // cambiarEstadoUsuarioInternal, // Es un helper interno, no se exporta usualmente
   verificarCorreoExistente,
 };

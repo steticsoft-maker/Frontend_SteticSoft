@@ -7,9 +7,14 @@ const usuarioValidators = require("../validators/usuario.validators.js");
 const authMiddleware = require("../middlewares/auth.middleware.js");
 const {
   checkPermission,
+  checkRole, // Import checkRole
 } = require("../middlewares/authorization.middleware.js");
 
-const PERMISO_MODULO_USUARIOS = "MODULO_USUARIOS_GESTIONAR";
+const PERMISO_MODULO_USUARIOS = "MODULO_USUARIOS_GESTIONAR"; // Used for general user management actions
+const PERMISO_USUARIOS_ADMIN_OPERATIONS = "MODULO_USUARIOS_ADMIN_OPERATIONS"; // Potentially for more sensitive operations like soft delete
+
+// Nota: Asumimos que el validador de ID es el mismo para todos los params :idUsuario
+const { idUsuarioValidator } = usuarioValidators;
 
 router.post(
   "/",
@@ -37,7 +42,7 @@ router.get(
   "/:idUsuario",
   authMiddleware,
   checkPermission(PERMISO_MODULO_USUARIOS),
-  usuarioValidators.idUsuarioValidator,
+  idUsuarioValidator,
   usuarioController.obtenerUsuarioPorId
 );
 
@@ -49,37 +54,35 @@ router.put(
   usuarioController.actualizarUsuario
 );
 
-// NUEVA RUTA: Cambiar el estado de un usuario
+// Ruta para cambiar el estado de un usuario (Activo <-> Inactivo)
+// El controlador usuarioController.toggleUsuarioEstado se creará/ajustará en el siguiente paso.
 router.patch(
-  "/:idUsuario/estado",
+  "/:idUsuario/toggle-estado", // Renamed for clarity
   authMiddleware,
-  checkPermission(PERMISO_MODULO_USUARIOS),
-  usuarioValidators.cambiarEstadoUsuarioValidators,
-  usuarioController.cambiarEstadoUsuario
+  checkPermission(PERMISO_MODULO_USUARIOS), // General permission to manage users
+  idUsuarioValidator, // Ensure idUsuario is valid
+  // usuarioValidators.cambiarEstadoUsuarioValidators, // This might be too specific if it validates 'estado' in body. toggle doesn't need body.
+  usuarioController.toggleUsuarioEstado // This controller will use the new service
 );
 
+// Ruta para el borrado lógico (desactivar y bloquear cuenta)
 router.patch(
-  "/:idUsuario/anular",
+  "/:idUsuario/desactivar",
   authMiddleware,
+  // Using PERMISO_MODULO_USUARIOS, assuming it's sufficient.
+  // Or, a more specific permission like PERMISO_USUARIOS_ADMIN_OPERATIONS could be used if defined.
   checkPermission(PERMISO_MODULO_USUARIOS),
-  usuarioValidators.idUsuarioValidator,
-  usuarioController.anularUsuario
+  idUsuarioValidator,
+  usuarioController.desactivarUsuario // Este controlador se creará en el siguiente paso
 );
 
-router.patch(
-  "/:idUsuario/habilitar",
-  authMiddleware,
-  checkPermission(PERMISO_MODULO_USUARIOS),
-  usuarioValidators.idUsuarioValidator,
-  usuarioController.habilitarUsuario
-);
-
+// Ruta para el borrado físico (ahora controlado por permiso)
 router.delete(
   "/:idUsuario",
   authMiddleware,
-  checkPermission(PERMISO_MODULO_USUARIOS),
-  usuarioValidators.idUsuarioValidator,
-  usuarioController.eliminarUsuarioFisico
+  checkPermission(PERMISO_MODULO_USUARIOS), // Cambiado de checkRole a checkPermission
+  idUsuarioValidator,
+  usuarioController.eliminarUsuarioFisico // Este controlador ya existe y usa el servicio actualizado
 );
 
 module.exports = router;

@@ -23,21 +23,31 @@ function ListaUsuariosPage() {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isDeleteModalOpen, // Para el ConfirmModal de desactivación
+    // isDeleteModalOpen se usará para el Hard Delete Confirm Modal
+    isDeleteModalOpen,
     isValidationModalOpen,
     validationMessage,
-    inputValue,      // Para el input de búsqueda
-    setInputValue,   // Para actualizar el término de búsqueda inmediato
-    filterEstado,    // Para el control de filtro (se implementará en Req 3)
-    setFilterEstado, // Para actualizar el filtro de estado (se implementará en Req 3)
+    inputValue,
+    setInputValue,
+    filterEstado,
+    setFilterEstado,
     currentPage,
     usersPerPage,
     paginate,
     closeModal,
     handleOpenModal,
     handleSaveUsuario,
-    handleConfirmDesactivarUsuario,
+    // handleConfirmDesactivarUsuario, // Eliminado, reemplazado por handleConfirmSoftDelete
     handleToggleEstadoUsuario,
+
+    // Nuevos handlers y estados del hook para los nuevos flujos
+    showSoftDeleteModal,    // Para abrir el modal de confirmación de soft delete
+    showHardDeleteModal,    // Para abrir el modal de confirmación de hard delete
+    handleConfirmSoftDelete, // Función a ejecutar en confirmación de soft delete
+    handleConfirmHardDelete, // Función a ejecutar en confirmación de hard delete
+    isConfirmSoftDeleteModalOpen, // Estado para el modal de confirmación de soft delete
+    // currentUsuario ya está disponible y se usa como usuarioToAction
+
     // Props para el formulario y su validación
     formData,
     formErrors,
@@ -97,11 +107,12 @@ function ListaUsuariosPage() {
         {!isLoadingPage && !errorPage && (
           <>
             <UsuariosTable
-              usuarios={usuarios} // Estos son los currentUsersForTable del hook
+              usuarios={usuarios}
               onView={(usuario) => handleOpenModal("details", usuario)}
-              onEdit={(usuario) => handleOpenModal("edit", usuario)}
-              onDeleteConfirm={(usuario) => handleOpenModal("delete", usuario)} // Abre el modal de confirmación
-              onToggleAnular={handleToggleEstadoUsuario}
+              onEditar={(usuario) => handleOpenModal("edit", usuario)} // Prop renombrada
+              onToggleEstado={handleToggleEstadoUsuario} // Prop renombrada
+              onDesactivar={showSoftDeleteModal} // Nueva prop para soft delete
+              onEliminarFisico={showHardDeleteModal} // Nueva prop para hard delete
               currentPage={currentPage}
               rowsPerPage={usersPerPage}
             />
@@ -151,18 +162,41 @@ function ListaUsuariosPage() {
         onClose={closeModal}
         usuario={currentUsuario}
       />
-      <ConfirmModal // Modal para confirmar la desactivación
-        isOpen={isDeleteModalOpen}
-        onClose={closeModal}
-        onConfirm={handleConfirmDesactivarUsuario} // Usar la función renombrada del hook
+
+      {/* Modal para Borrado Lógico (Soft Delete) */}
+      <ConfirmModal
+        isOpen={isConfirmSoftDeleteModalOpen}
+        onClose={closeModal} // closeModal ya resetea currentUsuario y cierra este modal específico
+        onConfirm={handleConfirmSoftDelete}
         title="Confirmar Desactivación"
-        message={`¿Estás seguro de que deseas desactivar al usuario "${
-          currentUsuario?.clienteInfo?.nombre || currentUsuario?.empleadoInfo?.nombre || currentUsuario?.correo || ""
-        }"?`}
-        confirmText="Desactivar"
+        // Usando message prop que puede interpretar HTML simple, o pasar children
+        message={
+          currentUsuario
+          ? `¿Estás seguro de que deseas desactivar a <strong>${currentUsuario.correo}</strong>? El usuario no podrá iniciar sesión.`
+          : ""
+        }
+        confirmText="Desactivar y Bloquear"
         cancelText="Cancelar"
         isLoading={isSubmitting}
       />
+
+      {/* Modal para Borrado Físico (Hard Delete) - Modificando el existente */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen} // isDeleteModalOpen es para el hard delete
+        onClose={closeModal} // closeModal resetea currentUsuario y cierra este modal
+        onConfirm={handleConfirmHardDelete} // Usar el nuevo handler para hard delete
+        title="¡ADVERTENCIA! ACCIÓN IRREVERSIBLE"
+        message={
+          currentUsuario
+          ? `Estás a punto de <strong>ELIMINAR PERMANENTEMENTE</strong> al usuario <strong>${currentUsuario.correo}</strong> y todos sus datos asociados. ¿Estás absolutamente seguro?`
+          : ""
+        }
+        confirmText="Eliminar Permanentemente"
+        confirmButtonClass="btn-danger" // Clase para el botón de confirmación peligroso
+        cancelText="Cancelar"
+        isLoading={isSubmitting}
+      />
+
       <ValidationModal
         isOpen={isValidationModalOpen}
         onClose={closeModal}

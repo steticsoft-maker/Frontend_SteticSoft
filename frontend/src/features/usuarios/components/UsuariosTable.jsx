@@ -1,21 +1,29 @@
 // src/features/usuarios/components/UsuariosTable.jsx
 import React from "react";
-import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
+// Import FaUserLock and FaBomb if using react-icons, or ensure Font Awesome is linked for <i> tags
+// For this example, we'll assume Font Awesome is globally available for <i> tags
+// import { FaEye, FaEdit, FaUserLock, FaBomb } from "react-icons/fa";
+import { FaEye, FaEdit } from "react-icons/fa"; // FaTrash removed as per new buttons
+import { useAuth } from "../../../shared/contexts/AuthContext"; // Import useAuth
+import Tooltip from "../../../shared/components/Tooltip"; // Assuming Tooltip component exists
 
 const UsuariosTable = ({
   usuarios,
-  onView,
-  onEdit,
-  onDeleteConfirm,
-  onToggleAnular,
-  currentPage = 1, // Valor por defecto para currentPage
-  rowsPerPage = 10, // Valor por defecto para rowsPerPage, ajustar si es necesario
+  onView, // Mantener onView si existe y se usa
+  onEditar, // Renombrado de onEdit para consistencia con el prompt
+  onToggleEstado, // Nuevo prop para el switch
+  onDesactivar, // Nuevo prop para Soft Delete
+  onEliminarFisico, // Nuevo prop para Hard Delete
+  currentPage = 1,
+  rowsPerPage = 10,
 }) => {
+  const { authState } = useAuth(); // Obtener el estado de autenticación
+
   return (
     <table className="usuarios-table">
       <thead>
         <tr>
-          <th>#</th> {/* Nueva columna para numeración */}
+          <th>#</th>
           <th>Nombres</th>
           <th>Apellidos</th>
           <th>Correo Electrónico</th>
@@ -28,63 +36,89 @@ const UsuariosTable = ({
       <tbody>
         {usuarios.map((usuario, index) => {
           const numeroFila = (currentPage - 1) * rowsPerPage + index + 1;
-          // 'perfil' contendrá los datos específicos del cliente o empleado
           const perfil = usuario.clienteInfo || usuario.empleadoInfo || {};
-
           const nombreRol = usuario.rol?.nombre || "No asignado";
           const estaActivo = typeof usuario.estado === 'boolean' ? usuario.estado : false;
 
+          // No se pueden realizar acciones de cambio de estado, desactivación o eliminación sobre el rol Administrador.
+          const isUsuarioAdmin = nombreRol === "Administrador";
+
           return (
             <tr key={usuario.idUsuario}>
-              <td data-label="#">{numeroFila}</td> {/* Celda para el número de fila */}
-              {/* Ahora usamos la variable 'perfil' para acceder a los datos */}
+              <td data-label="#">{numeroFila}</td>
               <td data-label="Nombres:">{perfil.nombre || 'N/A'}</td>
-              <td data-label="Apellidos:">{perfil.apellido || 'N/A'}</td> {/* Muestra el apellido */}
-              {/* Aquí se muestra el correo de la cuenta de usuario, que debería ser el mismo que el del perfil */}
+              <td data-label="Apellidos:">{perfil.apellido || 'N/A'}</td>
               <td data-label="Correo:">{usuario.correo || 'N/A'}</td> 
               <td data-label="Rol:">{nombreRol}</td>
-              <td data-label="Teléfono:">{perfil.telefono || 'N/A'}</td> {/* Muestra el teléfono */}
+              <td data-label="Teléfono:">{perfil.telefono || 'N/A'}</td>
               <td data-label="Estado:">
-                {nombreRol !== "Administrador" ? (
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={estaActivo}
-                      onChange={() => onToggleAnular(usuario)}
-                      title={estaActivo ? "Desactivar usuario" : "Activar usuario"}
-                    />
-                    <span className="slider"></span>
-                  </label>
+                {/* El switch para cambiar estado (Activo <-> Inactivo) */}
+                {!isUsuarioAdmin ? (
+                  <Tooltip text={estaActivo ? 'Desactivar' : 'Activar'}>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={estaActivo}
+                        onChange={() => onToggleEstado(usuario)}
+                        // title ya no es necesario aquí si Tooltip funciona bien
+                      />
+                      <span className="slider round"></span>
+                    </label>
+                  </Tooltip>
                 ) : (
-                  <span>Activo</span>
+                  // Los administradores siempre se muestran como activos y no se pueden desactivar desde aquí
+                  <Tooltip text="El estado del Administrador no se puede cambiar desde aquí.">
+                    <span>Activo</span>
+                  </Tooltip>
                 )}
               </td>
-              <td data-label="Acciones:">
+              <td data-label="Acciones:" className="actions-cell"> {/* Added actions-cell class if needed for styling */}
                 <div className="usuarios-table-iconos">
-                  <button
-                    className="usuarios-table-button"
-                    onClick={() => onView(usuario)}
-                    title="Ver Detalles"
-                  >
-                    <FaEye />
-                  </button>
-                  {nombreRol !== "Administrador" && (
-                    <>
+                  {/* Botón Ver Detalles (si se mantiene) */}
+                  <Tooltip text="Ver Detalles">
+                    <button
+                      className="usuarios-table-button icon-button" // Added icon-button for consistency
+                      onClick={() => onView(usuario)}
+                    >
+                      <FaEye />
+                    </button>
+                  </Tooltip>
+
+                  {/* Botón de Editar */}
+                  {!isUsuarioAdmin && (
+                    <Tooltip text="Editar">
                       <button
-                        className="usuarios-table-button"
-                        onClick={() => onEdit(usuario)}
-                        title="Editar Usuario"
+                        className="usuarios-table-button icon-button"
+                        onClick={() => onEditar(usuario)}
                       >
                         <FaEdit />
                       </button>
+                    </Tooltip>
+                  )}
+
+                  {/* Botón de Borrado Lógico (Soft Delete) - No para Admin */}
+                  {!isUsuarioAdmin && (
+                    <Tooltip text="Desactivar y Bloquear Acceso">
                       <button
-                        className="usuarios-table-button usuarios-table-button-delete"
-                        onClick={() => onDeleteConfirm(usuario)}
-                        title="Desactivar Usuario"
+                        className="icon-button soft-delete-button"
+                        onClick={() => onDesactivar(usuario)}
                       >
-                        <FaTrash />
+                        <i className="fas fa-user-lock"></i>
                       </button>
-                    </>
+                    </Tooltip>
+                  )}
+
+                  {/* Botón de Borrado Físico (Hard Delete) - SOLO para el rol 'Administrador' del sistema,
+                      y no para el propio usuario Administrador listado */}
+                  {authState.rol === 'Administrador' && !isUsuarioAdmin && (
+                    <Tooltip text="Eliminar Permanentemente (IRREVERSIBLE)">
+                      <button
+                        className="icon-button hard-delete-button"
+                        onClick={() => onEliminarFisico(usuario)}
+                      >
+                        <i className="fas fa-bomb"></i>
+                      </button>
+                    </Tooltip>
                   )}
                 </div>
               </td>

@@ -5,6 +5,9 @@ import {
   createUsuarioAPI,
   updateUsuarioAPI,
   toggleUsuarioEstadoAPI,
+  // Nuevos servicios importados:
+  desactivarUsuarioAPI,
+  eliminarUsuarioFisicoAPI,
   getRolesAPI,
   verificarCorreoAPI,
 } from "../services/usuariosService";
@@ -29,7 +32,13 @@ const useUsuarios = () => {
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  // isDeleteModalOpen se usará para la confirmación del Hard Delete.
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // Nuevo estado para el modal de confirmación de Soft Delete (Desactivar y Bloquear)
+  const [isConfirmSoftDeleteModalOpen, setIsConfirmSoftDeleteModalOpen] = useState(false);
+  // currentUsuario se usará como usuarioToAction
+
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
 
@@ -298,9 +307,10 @@ const useUsuarios = () => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
     setIsDetailsModalOpen(false);
-    setIsDeleteModalOpen(false);
+    setIsDeleteModalOpen(false); // Para hard delete
+    setIsConfirmSoftDeleteModalOpen(false); // Para soft delete
     setIsValidationModalOpen(false);
-    setCurrentUsuario(null);
+    setCurrentUsuario(null); // currentUsuario es nuestro usuarioToAction
     setValidationMessage("");
     setFormData({});
     setFormErrors({});
@@ -485,15 +495,17 @@ const useUsuarios = () => {
         CAMPOS_PERFIL.forEach((field) => delete dataParaAPI[field]);
       }
 
+      let successMessage = "";
       if (dataParaAPI.idUsuario) {
         await updateUsuarioAPI(dataParaAPI.idUsuario, dataParaAPI);
-        setValidationMessage("Usuario actualizado exitosamente.");
+        successMessage = `El usuario ${dataParaAPI.correo} ha sido actualizado.`;
       } else {
         await createUsuarioAPI(dataParaAPI);
-        setValidationMessage("Usuario creado exitosamente.");
+        successMessage = `El usuario ${dataParaAPI.correo} ha sido creado exitosamente.`;
       }
       closeModal();
       await cargarDatos();
+      setValidationMessage(successMessage); // Usar el successMessage definido
       setIsValidationModalOpen(true);
     } catch (err) {
       const apiErrorMessage =
@@ -525,59 +537,122 @@ const useUsuarios = () => {
     }
   }, [formData, runValidations, closeModal, cargarDatos, checkRequiresProfile]);
 
-  const handleConfirmDesactivarUsuario = useCallback(async () => {
+  // Funciones para mostrar los nuevos modales de confirmación
+  const showSoftDeleteModal = (usuario) => {
+    setCurrentUsuario(usuario); // usuarioToAction
+    setIsConfirmSoftDeleteModalOpen(true);
+  };
+
+  const showHardDeleteModal = (usuario) => {
+    // Reutiliza la lógica de no permitir acciones sobre Admin de handleOpenModal si es necesario,
+    // o se maneja en el componente de tabla/botones.
+    // Por ahora, se asume que el botón de hard delete para Admin no se mostrará o estará deshabilitado.
+    setCurrentUsuario(usuario); // usuarioToAction
+    setIsDeleteModalOpen(true); // Usamos el modal de delete existente para la confirmación del hard delete
+  };
+
+  // Nuevo handler para Soft Delete (Desactivar y Bloquear)
+  const handleConfirmSoftDelete = useCallback(async () => {
     if (!currentUsuario?.idUsuario) return;
+
+    // Doble chequeo, aunque el botón no debería mostrarse para Admin para esta acción.
     if (currentUsuario.rol?.nombre === "Administrador") {
-      setValidationMessage(
-        "El usuario 'Administrador' no puede ser desactivado."
-      );
-      setIsValidationModalOpen(true);
-      closeModal();
-      return;
+        setValidationMessage("El usuario Administrador no puede ser desactivado y bloqueado.");
+        setIsValidationModalOpen(true);
+        closeModal(); // Cierra el modal de confirmación si se abrió por error
+        return;
     }
+
     setIsSubmitting(true);
     try {
-      await toggleUsuarioEstadoAPI(currentUsuario.idUsuario, false);
-      setValidationMessage(
-        `Usuario "${
-          currentUsuario?.clienteInfo?.nombre ||
-          currentUsuario?.empleadoInfo?.nombre ||
-          currentUsuario?.correo
-        }" desactivado.`
-      );
+      await desactivarUsuarioAPI(currentUsuario.idUsuario);
       closeModal();
       await cargarDatos();
+      setValidationMessage(
+        `El usuario "${currentUsuario.correo}" fue desactivado y su acceso bloqueado.`
+      );
       setIsValidationModalOpen(true);
     } catch (err) {
-      setValidationMessage(err.message || "Error al desactivar el usuario.");
+      setValidationMessage(
+        err.response?.data?.message ||
+          err.message ||
+          "Error al desactivar y bloquear el usuario."
+      );
       setIsValidationModalOpen(true);
     } finally {
       setIsSubmitting(false);
+      setCurrentUsuario(null); // Limpiar usuario en acción
     }
   }, [currentUsuario, cargarDatos, closeModal]);
+
+  // Nuevo handler para Hard Delete (Eliminar Físico)
+  const handleConfirmHardDelete = useCallback(async () => {
+    if (!currentUsuario?.idUsuario) return;
+
+    // Doble chequeo, crucial aquí.
+    if (currentUsuario.rol?.nombre === "Administrador") {
+        setValidationMessage("El usuario Administrador no puede ser eliminado permanentemente.");
+        setIsValidationModalOpen(true);
+        closeModal();
+        return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await eliminarUsuarioFisicoAPI(currentUsuario.idUsuario);
+      closeModal();
+      await cargarDatos();
+      setValidationMessage(
+        `El usuario "${currentUsuario.correo}" fue eliminado permanentemente.`
+      );
+      setIsValidationModalOpen(true);
+    } catch (err) {
+      setValidationMessage(
+        err.response?.data?.message ||
+          err.message ||
+          "Error al eliminar permanentemente el usuario."
+      );
+      setIsValidationModalOpen(true);
+    } finally {
+      setIsSubmitting(false);
+      setCurrentUsuario(null); // Limpiar usuario en acción
+    }
+  }, [currentUsuario, cargarDatos, closeModal]);
+
 
   const handleToggleEstadoUsuario = useCallback(
     async (usuarioToToggle) => {
       if (!usuarioToToggle?.idUsuario) return;
-      if (usuarioToToggle.rol?.nombre === "Administrador") {
+      // La protección para Admin ya está en el servicio de backend y en la API.
+      // Aquí, simplemente intentamos la acción. Si falla por ser Admin, el error lo indicará.
+      // Opcionalmente, se puede mantener una verificación aquí para feedback inmediato si se prefiere.
+      if (usuarioToToggle.rol?.nombre === "Administrador" && !usuarioToToggle.estado) {
+         setValidationMessage("El usuario Administrador no puede ser desactivado.");
+         setIsValidationModalOpen(true);
+         return;
+      }
+
+      setIsSubmitting(true); // Indicar que una acción está en progreso
+      try {
+        // toggleUsuarioEstadoAPI ya no necesita el segundo argumento 'nuevoEstado'
+        const updatedUsuario = await toggleUsuarioEstadoAPI(usuarioToToggle.idUsuario);
+        await cargarDatos(); // Recargar los datos para reflejar el cambio
         setValidationMessage(
-          "El estado del usuario 'Administrador' no puede ser modificado."
+          `El estado del usuario "${usuarioToToggle.correo}" ha sido actualizado a ${updatedUsuario.estado ? 'Activo' : 'Inactivo'} exitosamente.`
         );
         setIsValidationModalOpen(true);
-        return;
-      }
-      try {
-        const nuevoEstado = !usuarioToToggle.estado;
-        await toggleUsuarioEstadoAPI(usuarioToToggle.idUsuario, nuevoEstado);
-        await cargarDatos();
       } catch (err) {
         setValidationMessage(
-          err.message || "Error al cambiar el estado del usuario."
+          err.response?.data?.message ||
+            err.message ||
+            "Error al cambiar el estado del usuario."
         );
         setIsValidationModalOpen(true);
+      } finally {
+        setIsSubmitting(false); // Finalizar la indicación de acción en progreso
       }
     },
-    [cargarDatos]
+    [cargarDatos] // No es necesario closeModal aquí, ya que no abre un modal de confirmación propio.
   );
 
   useEffect(() => {
@@ -641,10 +716,24 @@ const useUsuarios = () => {
     usersPerPage,
     paginate,
     closeModal,
-    handleOpenModal,
+    handleOpenModal, // Para crear/editar/ver detalles
     handleSaveUsuario,
-    handleConfirmDesactivarUsuario,
+
+    // Para Toggle Estado (Switch en la tabla)
     handleToggleEstadoUsuario,
+
+    // Para Soft Delete (Desactivar y Bloquear)
+    showSoftDeleteModal, // Abre el modal de confirmación para soft delete
+    handleConfirmSoftDelete, // Ejecuta el soft delete
+    isConfirmSoftDeleteModalOpen, // Estado del modal de confirmación de soft delete
+
+    // Para Hard Delete (Eliminar Físico)
+    showHardDeleteModal, // Abre el modal de confirmación para hard delete
+    handleConfirmHardDelete, // Ejecuta el hard delete
+    // isDeleteModalOpen ya está exportado y se usa para el modal de hard delete
+
+    // currentUsuario (usuarioToAction) ya está exportado
+
     formData,
     formErrors,
     isFormValid,
