@@ -58,20 +58,30 @@ function ListaProveedoresPage() {
   const handleOpenModal = (type, proveedor = null) => {
     setCurrentProveedor(proveedor);
     if (type === "ver") setIsDetailsModalOpen(true);
-    else if (type === "delete") { setModalAction('delete'); setIsConfirmDeleteOpen(true); }
-    else if (type === "status") { setModalAction('status'); setIsConfirmDeleteOpen(true); }
-    else if (type === "create") setIsCrearModalOpen(true);
+    else if (type === "delete") {
+      setModalAction("delete");
+      setIsConfirmDeleteOpen(true);
+    } else if (type === "status") {
+      setModalAction("status");
+      setIsConfirmDeleteOpen(true);
+    } else if (type === "create") setIsCrearModalOpen(true);
     else if (type === "edit" && proveedor) setIsEditarModalOpen(true);
   };
 
   const handleSave = async (proveedorData) => {
     const idProveedorLimpio = parseInt(proveedorData.idProveedor, 10);
     const datosLimpiosParaEnviar = {
-      nombre: proveedorData.nombre, tipo: proveedorData.tipo, telefono: proveedorData.telefono,
-      correo: proveedorData.correo, direccion: proveedorData.direccion, tipoDocumento: proveedorData.tipoDocumento,
-      numeroDocumento: proveedorData.numeroDocumento, nitEmpresa: proveedorData.nitEmpresa,
+      nombre: proveedorData.nombre,
+      tipo: proveedorData.tipo,
+      telefono: proveedorData.telefono,
+      correo: proveedorData.correo,
+      direccion: proveedorData.direccion,
+      tipoDocumento: proveedorData.tipoDocumento,
+      numeroDocumento: proveedorData.numeroDocumento,
+      nitEmpresa: proveedorData.nitEmpresa,
       nombrePersonaEncargada: proveedorData.nombrePersonaEncargada,
-      telefonoPersonaEncargada: proveedorData.telefonoPersonaEncargada, emailPersonaEncargada: proveedorData.emailPersonaEncargada,
+      telefonoPersonaEncargada: proveedorData.telefonoPersonaEncargada,
+      emailPersonaEncargada: proveedorData.emailPersonaEncargada,
       estado: proveedorData.estado,
     };
     const onSaveSuccess = async () => {
@@ -81,7 +91,10 @@ function ListaProveedoresPage() {
     };
     try {
       if (idProveedorLimpio) {
-        await proveedoresService.updateProveedor(idProveedorLimpio, datosLimpiosParaEnviar);
+        await proveedoresService.updateProveedor(
+          idProveedorLimpio,
+          datosLimpiosParaEnviar
+        );
         setValidationMessage("Proveedor actualizado exitosamente.");
       } else {
         await proveedoresService.createProveedor(datosLimpiosParaEnviar);
@@ -89,7 +102,8 @@ function ListaProveedoresPage() {
       }
       await onSaveSuccess();
     } catch (err) {
-      const apiErrorMessage = err.response?.data?.message || "Ocurrió un error inesperado.";
+      const apiErrorMessage =
+        err.response?.data?.message || "Ocurrió un error inesperado.";
       const userFriendlyMessage = `Error al guardar: ${apiErrorMessage}. Por favor, revise los campos únicos como Correo, NIT o Documento.`;
       setValidationMessage(userFriendlyMessage);
       setIsValidationModalOpen(true);
@@ -100,26 +114,40 @@ function ListaProveedoresPage() {
     if (currentProveedor?.idProveedor) {
       setIsConfirmDeleteOpen(false);
       try {
+        // Se llama directamente a deleteProveedor para eliminación física
         await proveedoresService.deleteProveedor(currentProveedor.idProveedor);
-        setValidationMessage("Proveedor eliminado exitosamente.");
-        await cargarProveedores();
+        setValidationMessage("Proveedor eliminado físicamente exitosamente.");
+        await cargarProveedores(); // Recargar la lista de proveedores
       } catch (err) {
-        const errorMessage = err.response?.data?.message || "Ocurrió un error inesperado al intentar eliminar.";
-        setValidationMessage(errorMessage);
+        // Manejo de errores mejorado para mostrar mensajes más claros
+        const apiErrorMessage =
+          err.response?.data?.message || "Ocurrió un error inesperado.";
+        const userFriendlyMessage = `Error al eliminar el proveedor: ${apiErrorMessage}.`;
+        setValidationMessage(userFriendlyMessage);
       } finally {
+        // Asegurarse de que el modal de validación se muestre en cualquier caso
+        setCurrentProveedor(null); // Limpiar el proveedor actual
+        setModalAction(null); // Limpiar la acción del modal
         setIsValidationModalOpen(true);
       }
     }
   };
 
+  // La función handleToggleEstado se mantiene por si se decide usarla para activar/desactivar en otro contexto,
+  // pero la acción de "eliminar" ahora es una eliminación física.
   const handleToggleEstado = async () => {
     if (currentProveedor) {
       try {
-        await proveedoresService.toggleEstado(currentProveedor.idProveedor, !currentProveedor.estado);
+        await proveedoresService.toggleEstado(
+          currentProveedor.idProveedor,
+          !currentProveedor.estado
+        );
         setValidationMessage("Estado del proveedor cambiado exitosamente.");
         await cargarProveedores();
       } catch (err) {
-        setValidationMessage(err.response?.data?.message || "Error al cambiar el estado.");
+        setValidationMessage(
+          err.response?.data?.message || "Error al cambiar el estado."
+        );
       } finally {
         closeModal();
         setIsValidationModalOpen(true);
@@ -128,8 +156,13 @@ function ListaProveedoresPage() {
   };
 
   const handleConfirmAction = () => {
-    if (modalAction === 'delete') handleDelete();
-    else if (modalAction === 'status') handleToggleEstado();
+    // Si la acción es 'delete', se llama a handleDelete (que ahora elimina físicamente)
+    // Si la acción es 'status', se llama a handleToggleEstado (para cambiar estado activo/inactivo)
+    if (modalAction === "delete") {
+      handleDelete();
+    } else if (modalAction === "status") {
+      handleToggleEstado();
+    }
   };
 
   const filteredProveedores = useMemo(() => {
@@ -165,7 +198,9 @@ function ListaProveedoresPage() {
   const [paginaActual, setPaginaActual] = useState(1);
   const proveedoresPorPagina = 10;
 
-  const totalPaginas = Math.ceil(filteredProveedores.length / proveedoresPorPagina);
+  const totalPaginas = Math.ceil(
+    filteredProveedores.length / proveedoresPorPagina
+  );
 
   const proveedoresPaginados = useMemo(() => {
     const inicio = (paginaActual - 1) * proveedoresPorPagina;
@@ -179,10 +214,16 @@ function ListaProveedoresPage() {
   };
 
   const getConfirmModalMessage = () => {
-    if (!currentProveedor) return '';
-    if (modalAction === 'delete') return `¿Estás seguro de que deseas eliminar al proveedor "${currentProveedor.nombre}"?`;
-    if (modalAction === 'status') return `¿Estás seguro de que deseas ${currentProveedor.estado ? 'desactivar' : 'activar'} al proveedor "${currentProveedor.nombre}"?`;
-    return '';
+    if (!currentProveedor) return "";
+    // Mensaje específico para la eliminación física
+    if (modalAction === "delete")
+      return `¿Estás seguro de que deseas eliminar permanentemente al proveedor "${currentProveedor.nombre}"? Esta acción no se puede deshacer.`;
+    // Mensaje para cambiar estado (activar/desactivar)
+    if (modalAction === "status")
+      return `¿Estás seguro de que deseas ${
+        currentProveedor.estado ? "desactivar" : "activar"
+      } al proveedor "${currentProveedor.nombre}"?`;
+    return "";
   };
 
   return (
@@ -251,7 +292,9 @@ function ListaProveedoresPage() {
                 <button
                   key={index + 1}
                   onClick={() => irAPagina(index + 1)}
-                  className={`pagination-button ${paginaActual === index + 1 ? "active" : ""}`}
+                  className={`pagination-button ${
+                    paginaActual === index + 1 ? "active" : ""
+                  }`}
                 >
                   {index + 1}
                 </button>
@@ -268,11 +311,35 @@ function ListaProveedoresPage() {
         </div>
       </div>
 
-      <ProveedorCrearModal isOpen={isCrearModalOpen} onClose={closeModal} onSubmit={handleSave} />
-      <ProveedorEditarModal isOpen={isEditarModalOpen} onClose={closeModal} onSubmit={handleSave} initialData={currentProveedor} />
-      <ProveedorDetalleModal isOpen={isDetailsModalOpen} onClose={closeModal} proveedor={currentProveedor} />
-      <ConfirmModal isOpen={isConfirmDeleteOpen} onClose={closeModal} onConfirm={handleConfirmAction} title="Confirmar Acción" message={getConfirmModalMessage()} />
-      <ValidationModal isOpen={isValidationModalOpen} onClose={closeModal} title="Aviso de Proveedores" message={validationMessage} />
+      <ProveedorCrearModal
+        isOpen={isCrearModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSave}
+      />
+      <ProveedorEditarModal
+        isOpen={isEditarModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSave}
+        initialData={currentProveedor}
+      />
+      <ProveedorDetalleModal
+        isOpen={isDetailsModalOpen}
+        onClose={closeModal}
+        proveedor={currentProveedor}
+      />
+      <ConfirmModal
+        isOpen={isConfirmDeleteOpen}
+        onClose={closeModal}
+        onConfirm={handleConfirmAction}
+        title="Confirmar Acción"
+        message={getConfirmModalMessage()}
+      />
+      <ValidationModal
+        isOpen={isValidationModalOpen}
+        onClose={closeModal}
+        title="Aviso de Proveedores"
+        message={validationMessage}
+      />
     </div>
   );
 }

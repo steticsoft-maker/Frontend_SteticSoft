@@ -1,101 +1,60 @@
-// src/features/novedades/components/HorariosTable.jsx
-import React from "react";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
-
-const HorariosTable = ({
-  horarios,
-  empleados,
-  onView,
-  onEdit,
-  onDeleteConfirm,
-  onToggleEstado,
-}) => {
-  const getEmpleadoNombre = (empleadoId) => {
-    // console.log(`Buscando empleado con ID: ${empleadoId} (tipo: ${typeof empleadoId})`);
-    // console.log("Lista de empleados en tabla:", JSON.stringify(empleados, null, 2));
-    if (empleadoId === null || empleadoId === undefined)
-      return "ID Encargado N/A";
-
-    const empleadoIdNumero = parseInt(empleadoId); // Asegurar que la comparación sea numérica
-    if (isNaN(empleadoIdNumero)) return "ID Inválido";
-
-    const emp = empleados.find((e) => e.id === empleadoIdNumero);
-    // console.log("Empleado encontrado para ID " + empleadoIdNumero + ":", emp ? emp.nombre : "No encontrado");
-
-    return emp && emp.nombre ? emp.nombre : "Desconocido";
-  };
-
+// src/features/horarios/components/HorariosTable.jsx
+import React from 'react';
+// --- MODIFICADO: Se reciben todas las props necesarias desde el componente padre ---
+const HorariosTable = ({ horarios, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
   return (
     <div className="novedades-table-container">
       <table className="novedades-table-horarios">
         <thead>
           <tr>
+            <th>#</th>
             <th>Encargado</th>
-            <th>Periodo</th>
+            <th>Fechas de Vigencia</th>
             <th>Días y Horarios</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {horarios && horarios.length > 0 ? (
-            horarios.map((horario) => (
+          {horarios.length > 0 ? (
+            horarios.map((horario, index) => (
               <tr key={horario.id}>
-                <td data-label="Encargado:">
-                  {getEmpleadoNombre(horario.empleadoId)}
+                <td>{index + 1}</td>
+                <td>{horario.empleado?.nombre || 'N/A'}</td>
+                <td>{horario.fecha_inicio} al {horario.fecha_fin}</td>
+                <td>
+                  {horario.dias.map(d => (
+                    <div key={d.id || d.dia} className="novedades-dia-horario-item">
+                      <strong>{d.dia}:</strong> {d.hora_inicio} - {d.hora_fin}
+                    </div>
+                  ))}
                 </td>
-                <td data-label="Periodo:">
-                  {horario.fechaInicio || "Fecha N/A"} a{" "}
-                  {horario.fechaFin || "Fecha N/A"}
+                <td>
+                  <div onClick={() => onToggleEstado(horario)} style={{ display: 'inline-block', cursor: 'pointer' }}>
+                    <label className="switch">
+                      <input type="checkbox" checked={horario.estado} readOnly />
+                      <span className="slider round"></span>
+                    </label>
+                  </div>
                 </td>
-                <td data-label="Días y Horarios:">
-                  {horario.dias && horario.dias.length > 0
-                    ? horario.dias.map((dia, idx) => (
-                        <div key={idx} className="novedades-dia-horario-item">
-                          <strong>{dia.dia || "Día N/A"}:</strong>
-                          {dia.horaInicio || "--:--"} - {dia.horaFin || "--:--"}
-                        </div>
-                      ))
-                    : "No hay días definidos"}
-                </td>
-                <td data-label="Estado:">
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={!!horario.estado} // Asegurar que sea booleano
-                      onChange={() => onToggleEstado(horario.id)}
-                    />
-                    <span className="slider round"></span>
-                  </label>
-                </td>
-                <td data-label="Acciones:" className="novedades-actions">
-                  <button
-                    className="novedades-table-button"
-                    onClick={() => onView(horario)}
-                    title="Ver Detalles"
-                  >
-                    <FaEye />
+                <td className="novedades-actions">
+                  <button onClick={() => onView(horario)} className="novedades-table-button" title="Ver Detalles">
+                    👁️
                   </button>
-                  <button
-                    className="novedades-table-button"
-                    onClick={() => onEdit(horario)}
-                    title="Editar Horario"
-                  >
-                    <FaEdit />
+
+                  <button onClick={() => onEdit(horario)} className="novedades-table-button" title="Editar">
+                    ✏️
                   </button>
-                  <button
-                    className="novedades-table-button novedades-table-button-delete"
-                    onClick={() => onDeleteConfirm(horario)}
-                    title="Eliminar Horario"
-                  >
-                    <FaTrash />
+                  
+                  <button onClick={() => onDeleteConfirm(horario)} className="novedades-table-button novedades-table-button-delete" title="Eliminar">
+                    🗑️
                   </button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" style={{ textAlign: "center" }}>
+              <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
                 No hay horarios para mostrar.
               </td>
             </tr>
@@ -105,4 +64,5 @@ const HorariosTable = ({
     </div>
   );
 };
+
 export default HorariosTable;

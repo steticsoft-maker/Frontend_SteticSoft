@@ -136,3 +136,20 @@ export const getRolesAPI = async () => {
     );
   }
 };
+
+/**
+ * Elimina físicamente un usuario del sistema.
+ * @param {number} idUsuario - El ID del usuario a eliminar.
+ */
+export const eliminarUsuarioFisicoAPI = async (idUsuario) => {
+  try {
+    // La respuesta a un DELETE exitoso (204 No Content) no tiene cuerpo.
+    await apiClient.delete(`/usuarios/${idUsuario}`);
+    return true; // Retornamos true para indicar éxito.
+  } catch (error) {
+    // Lanzamos el mensaje de error que viene de la API o uno genérico.
+    throw (
+      error.response?.data || new Error("Error al eliminar permanentemente el usuario.")
+    );
+  }
+};

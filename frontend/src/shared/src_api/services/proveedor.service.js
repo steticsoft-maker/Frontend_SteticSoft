@@ -208,7 +208,7 @@ const actualizarProveedor = async (idProveedor, datosActualizar) => {
       const otroProveedorConNit = await db.Proveedor.findOne({
         where: {
           nitEmpresa: nitEmpresa,
-          estado: true, // Condición 1: Solo buscar en proveedores ACTIVOS
+          // estado: true, // Se elimina esta condición para que coincida con la restricción UNIQUE de la BD
           idProveedor: { [Op.ne]: idProveedor }, // Condición 2: Excluirse a SÍ MISMO
         },
       });
@@ -225,7 +225,7 @@ const actualizarProveedor = async (idProveedor, datosActualizar) => {
       const otroProveedorConCorreo = await db.Proveedor.findOne({
         where: {
           correo: correo,
-          estado: true, // Condición 1: Solo buscar en proveedores ACTIVOS
+          // estado: true, // Se elimina esta condición para que coincida con la restricción UNIQUE de la BD
           idProveedor: { [Op.ne]: idProveedor }, // Condición 2: Excluirse a SÍ MISMO
         },
       });
@@ -242,7 +242,7 @@ const actualizarProveedor = async (idProveedor, datosActualizar) => {
       const otroProveedorConDocumento = await db.Proveedor.findOne({
         where: {
           numeroDocumento: numeroDocumento,
-          estado: true, // Condición 1: Solo buscar en proveedores ACTIVOS
+          // estado: true, // Se elimina esta condición para que coincida con la restricción UNIQUE de la BD (asumiendo que existe)
           idProveedor: { [Op.ne]: idProveedor }, // Condición 2: Excluirse a SÍ MISMO
         },
       });
@@ -270,7 +270,7 @@ const actualizarProveedor = async (idProveedor, datosActualizar) => {
         where: {
           nombre: nombreFinal,
           tipo: tipoFinal,
-          estado: true, // Condición 1: Solo buscar en proveedores ACTIVOS
+          // estado: true, // Se elimina esta condición para que coincida con el índice UNIQUE de la BD
           idProveedor: { [Op.ne]: idProveedor }, // Condición 2: Excluirse a SÍ MISMO
         },
       });
@@ -416,7 +416,7 @@ const eliminarProveedorFisico = async (idProveedor) => {
  */
 const verificarDatosUnicos = async (campos, idExcluir = null) => {
     const errores = {};
-    const whereClause = { estado: true }; // <-- CORRECCIÓN
+    const whereClause = { }; // Se elimina el filtro por estado para ser consistente
     if (idExcluir) {
         whereClause.idProveedor = { [Op.ne]: idExcluir };
     }

@@ -1,160 +1,132 @@
-// src/features/novedades/components/HorarioForm.jsx
-import React from 'react';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
+import { getEmpleadosParaHorarios } from '../services/horariosService';
 
-const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+const diasSemanaOpciones = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
-const HorarioForm = ({
-  formData,
-  onFormChange,
-  onDiaChange,
-  onAddDia,
-  onRemoveDia,
-  empleadosDisponibles,
-  formErrors,
-  isEditing
-}) => {
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    onFormChange(name, value);
+const HorarioForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing }) => {
+  const [id_empleado, setIdEmpleado] = useState(initialData?.id_empleado || '');
+  
+  const nextId = useRef(0);
+  const crearNuevoDia = () => ({
+    id: `new_${nextId.current++}`, 
+    dia: '', 
+    hora_inicio: '', 
+    hora_fin: '' 
+  });
+
+  const [dias, setDias] = useState(
+    initialData?.dias?.length > 0
+      ? initialData.dias.map(dia => ({ ...dia, id: dia.idNovedad || `db_${dia.idNovedad}` }))
+      : [crearNuevoDia()]
+  );
+  
+  const [listaEmpleados, setListaEmpleados] = useState([]);
+
+  useEffect(() => {
+    const cargarEmpleados = async () => {
+      try {
+        const empleados = await getEmpleadosParaHorarios();
+        setListaEmpleados(Array.isArray(empleados) ? empleados : []);
+      } catch (error) {
+        console.error("Error al cargar empleados", error);
+        setListaEmpleados([]);
+      }
+    };
+    cargarEmpleados();
+  }, []);
+
+  const handleChangeDia = (id, event) => {
+    const { name, value } = event.target;
+    setDias(dias.map(item => (item.id === id ? { ...item, [name]: value } : item)));
   };
 
-  const handleDiaFieldChange = (index, field, value) => {
-    onDiaChange(index, field, value);
+  const handleAddDia = () => {
+    setDias([...dias, crearNuevoDia()]);
+  };
+
+  const handleRemoveDia = (id) => {
+    if (dias.length > 1) {
+      setDias(dias.filter(item => item.id !== id));
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    if (dias.some(d => !d.dia || !d.hora_inicio || !d.hora_fin)) {
+      alert("Error: Por favor, completa todos los campos (Día, Inicio, Fin) para cada fila.");
+      return;
+    }
+
+   const formData = {
+      idEmpleado: id_empleado, 
+      dias: dias.map(d => ({
+        diaSemana: d.dia,
+        horaInicio: d.hora_inicio,
+        horaFin: d.hora_fin,
+      })),
+    };
+    onFormSubmit(formData);
   };
 
   return (
-    // Basado en modalHorariosCitas-form-grid del CSS original
-    <div className="novedades-form-grid">
+    <form onSubmit={handleSubmit} className="novedades-form">
       <div className="form-encargado">
-        <label htmlFor="empleadoId">
-          Encargado <span className="requiredAsteriscoHorarioCitas">*</span>
-        </label>
-        <select
-          id="empleadoId"
-          name="empleadoId"
-          value={formData.empleadoId || ""}
-          onChange={handleInputChange}
-          required
-        >
-          <option value="">Seleccionar encargado</option>
-          {empleadosDisponibles.map((enc) => (
-            <option key={enc.id} value={enc.id}>{enc.nombre}</option>
+        <label>Encargado (Empleado) <span className="requiredAsteriscoHorarioCitas">*</span></label>
+        <select value={id_empleado} onChange={(e) => setIdEmpleado(e.target.value)} required disabled={isEditing}>
+          <option value="" disabled>Seleccione un empleado...</option>
+          {listaEmpleados.map(emp => (
+            <option key={emp.idEmpleado} value={emp.idEmpleado}>{emp.nombre} {emp.apellido}</option>
           ))}
         </select>
-        {formErrors?.empleadoId && <span className="errorHorariocitas">{formErrors.empleadoId}</span>}
       </div>
-
-      <div className="form-fechas">
-        <div className="form-fechaHorarioCitas">
-          <label htmlFor="fechaInicio">
-            Fecha Inicio <span className="requiredAsteriscoHorarioCitas">*</span>
-          </label>
-          <input
-            type="date"
-            id="fechaInicio"
-            name="fechaInicio"
-            value={formData.fechaInicio || ""}
-            onChange={handleInputChange}
-            required
-          />
-          {formErrors?.fechaInicio && <span className="errorHorariocitas">{formErrors.fechaInicio}</span>}
-        </div>
-        <div className="form-fechaHorarioCitas">
-          <label htmlFor="fechaFin">
-            Fecha Fin <span className="requiredAsteriscoHorarioCitas">*</span>
-          </label>
-          <input
-            type="date"
-            id="fechaFin"
-            name="fechaFin"
-            value={formData.fechaFin || ""}
-            onChange={handleInputChange}
-            min={formData.fechaInicio}
-            required
-          />
-          {formErrors?.fechaFin && <span className="errorHorariocitas">{formErrors.fechaFin}</span>}
-        </div>
-      </div>
-
       <div className="form-dias-horarios-container">
-        <label className="asteriscoHorarioCitas">
-          Días y Horarios <span className="requiredAsteriscoHorarioCitas">*</span>
-        </label>
+        <label>Días y Horarios <span className="requiredAsteriscoHorarioCitas">*</span></label>
         <div className="dias-grid">
-          {(formData.dias || []).map((diaHorario, index) => (
-            <div key={index} className="dia-fields">
-              <div className="containerAgregarHorarioCitas-inputs">
-                <div>
-                  <select
-                    name="dia"
-                    value={diaHorario.dia || ""}
-                    onChange={(e) => handleDiaFieldChange(index, "dia", e.target.value)}
-                    required
-                  >
-                    <option value="">Día</option>
-                    {DIAS_SEMANA.map((d) => <option key={d} value={d}>{d}</option>)}
-                  </select>
-                  {formErrors && formErrors[`dias[${index}].dia`] && <span className="errorHorariocitas">{formErrors[`dias[${index}].dia`]}</span>}
-                </div>
-                <div>
-                  <input
-                    type="time"
-                    name="horaInicio"
-                    value={diaHorario.horaInicio || ""}
-                    onChange={(e) => handleDiaFieldChange(index, "horaInicio", e.target.value)}
-                    required
-                  />
-                   {formErrors && formErrors[`dias[${index}].horaInicio`] && <span className="errorHorariocitas">{formErrors[`dias[${index}].horaInicio`]}</span>}
-                </div>
-                <span>a</span>
-                <div>
-                  <input
-                    type="time"
-                    name="horaFin"
-                    value={diaHorario.horaFin || ""}
-                    onChange={(e) => handleDiaFieldChange(index, "horaFin", e.target.value)}
-                    min={diaHorario.horaInicio}
-                    required
-                  />
-                  {formErrors && formErrors[`dias[${index}].horaFin`] && <span className="errorHorariocitas">{formErrors[`dias[${index}].horaFin`]}</span>}
-                </div>
-                {index > 0 && ( // Solo mostrar botón de eliminar si hay más de un día
-                  <button
-                    type="button"
-                    className="botonCerrar botonRemoverDia"
-                    onClick={() => onRemoveDia(index)}
-                  >
-                    <FaMinus />
+          {dias.map((item, index) => (
+            <div key={item.id} className="dia-fields">
+              <div className="dia-fields-header">
+                <strong>Día {index + 1}</strong>
+                {dias.length > 1 && (
+                  <button type="button" onClick={() => handleRemoveDia(item.id)} className="botonRemoverDia">
+                    &times;
                   </button>
                 )}
+              </div>
+              <div className="containerAgregarHorarioCitas-inputs">
+                <div>
+                  <label>Día</label>
+                  <select name="dia" value={item.dia} onChange={(e) => handleChangeDia(item.id, e)} required>
+                    <option value="" disabled>Seleccionar...</option>
+                    {diasSemanaOpciones.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label>Inicio</label>
+                  <input type="time" name="hora_inicio" value={item.hora_inicio} onChange={(e) => handleChangeDia(item.id, e)} required />
+                </div>
+                <div>
+                  <label>Fin</label>
+                  <input type="time" name="hora_fin" value={item.hora_fin} onChange={(e) => handleChangeDia(item.id, e)} required />
+                </div>
               </div>
             </div>
           ))}
         </div>
-        <button
-          type="button"
-          className="botonAgregar botonAgregarDia"
-          onClick={onAddDia}
-        >
-          <FaPlus /> Agregar otro día
+        <button type="button" onClick={handleAddDia} className="botonAgregarDia">
+          Añadir otro día
         </button>
       </div>
-      {isEditing && (
-        <div className="form-group-novedades"> {/* Asegúrate de tener esta clase en tu CSS */}
-            <label className="form-label-novedades">Estado (Activo):</label>
-            <label className="switch">
-                <input
-                    type="checkbox"
-                    name="estado"
-                    checked={formData.estado}
-                    onChange={(e) => onFormChange('estado', e.target.checked)}
-                />
-                <span className="slider round"></span>
-            </label>
-        </div>
-      )}
-    </div>
+
+      <div className="botonesAgregarHorarioCitasGuardarCancelar">
+        <button type="submit" disabled={isLoading} className="botonAgregar">
+          {isLoading ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Guardar')}
+        </button>
+        <button type="button" onClick={onCancel} className="botonAgregar botonCerrar" disabled={isLoading}>
+          Cancelar
+        </button>
+      </div>
+    </form>
   );
 };
 
