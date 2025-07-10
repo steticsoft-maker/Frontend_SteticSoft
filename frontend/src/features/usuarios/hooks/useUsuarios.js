@@ -57,6 +57,29 @@ const useUsuarios = () => {
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
   const [touchedFields, setTouchedFields] = useState({});
 
+
+  const cargarDatos = useCallback(async () => {
+    setIsLoadingPage(true);
+    setErrorPage(null);
+    try {
+      const [usuariosData, rolesData] = await Promise.all([
+        getUsuariosAPI(),
+        getRolesAPI(),
+      ]);
+      const filteredRoles = (rolesData || []).filter(
+        (rol) => rol.nombre !== "Administrador"
+      );
+      setUsuarios(usuariosData || []);
+      setAvailableRoles(filteredRoles);
+    } catch (err) {
+      setErrorPage(err.message || "No se pudieron cargar los datos.");
+      setUsuarios([]);
+      setAvailableRoles([]);
+    } finally {
+      setIsLoadingPage(false);
+    }
+  }, []);
+
   // ... (Las funciones de validación como getRoleById, checkRequiresProfile, validateField, runValidations no tienen cambios)
   const getRoleById = useCallback(
     (roleId) => {
@@ -232,28 +255,6 @@ const useUsuarios = () => {
   useEffect(() => {
     cargarDatos();
   }, [cargarDatos]);
-
-  const cargarDatos = useCallback(async () => {
-    setIsLoadingPage(true);
-    setErrorPage(null);
-    try {
-      const [usuariosData, rolesData] = await Promise.all([
-        getUsuariosAPI(),
-        getRolesAPI(),
-      ]);
-      const filteredRoles = (rolesData || []).filter(
-        (rol) => rol.nombre !== "Administrador"
-      );
-      setUsuarios(usuariosData || []);
-      setAvailableRoles(filteredRoles);
-    } catch (err) {
-      setErrorPage(err.message || "No se pudieron cargar los datos.");
-      setUsuarios([]);
-      setAvailableRoles([]);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  }, []);
 
   useEffect(() => {
     if (
@@ -668,6 +669,7 @@ const useUsuarios = () => {
   return {
     usuarios: currentUsersForTable,
     totalUsuariosFiltrados: processedUsuarios.length,
+    cargarDatos,
     availableRoles,
     isLoadingPage,
     isSubmitting,
