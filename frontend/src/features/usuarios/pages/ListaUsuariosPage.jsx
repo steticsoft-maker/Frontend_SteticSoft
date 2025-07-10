@@ -63,7 +63,7 @@ function ListaUsuariosPage() {
         <div className="usuarios-accionesTop">
           <input
             type="text"
-            placeholder="Buscar por nombre, correo, documento o rol..."
+            placeholder="Buscar por nombre, apellido, correo, documento, teléfono, rol o estado..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)} // Usar setInputValue del hook
             className="usuarios-barraBusqueda"

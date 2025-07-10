@@ -216,12 +216,29 @@ const useRoles = () => {
 
   const processedRoles = useMemo(() => {
     let filtered = roles;
+
+    // Filtrar por estado
     if (filterEstado !== "todos") {
       const isActive = filterEstado === "activos";
       filtered = filtered.filter((r) => r.estado === isActive);
     }
+
+    // Filtrar por término de búsqueda
+    if (searchTerm) {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      filtered = filtered.filter((r) => {
+        const nombreMatch = r.nombre?.toLowerCase().includes(lowerSearchTerm);
+        const descripcionMatch = r.descripcion?.toLowerCase().includes(lowerSearchTerm);
+        const permisosMatch = r.permisos?.some(p => p.nombre?.toLowerCase().includes(lowerSearchTerm));
+        const estadoString = typeof r.estado === 'boolean' ? (r.estado ? "activo" : "inactivo") : "";
+        const estadoMatch = estadoString.includes(lowerSearchTerm);
+
+        return nombreMatch || descripcionMatch || permisosMatch || estadoMatch;
+      });
+    }
+
     return filtered;
-  }, [roles, filterEstado]);
+  }, [roles, filterEstado, searchTerm]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
