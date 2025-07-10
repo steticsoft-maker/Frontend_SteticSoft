@@ -136,7 +136,7 @@ const useAbastecimiento = () => {
         await abastecimientoService.updateAbastecimiento(entryId, dataToUpdate);
         setValidationMessage("Registro de abastecimiento actualizado exitosamente.");
       }
-      await cargarDatos();
+      await cargarDatosPrincipales();
       closeModal();
       setIsValidationModalOpen(true);
     } catch (err) {
@@ -145,7 +145,7 @@ const useAbastecimiento = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [cargarDatos, closeModal, currentEntry]);
+  }, [cargarDatosPrincipales, closeModal, currentEntry]);
 
   const handleDeleteConfirmed = useCallback(async () => {
     if (!currentEntry?.idAbastecimiento) return;
@@ -153,7 +153,7 @@ const useAbastecimiento = () => {
     try {
       await abastecimientoService.deleteAbastecimiento(currentEntry.idAbastecimiento);
       setValidationMessage("Registro eliminado exitosamente.");
-      await cargarDatos();
+      await cargarDatosPrincipales();
       closeModal();
       setIsValidationModalOpen(true);
     } catch (err) {
@@ -162,7 +162,7 @@ const useAbastecimiento = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [currentEntry, cargarDatos, closeModal]);
+  }, [currentEntry, cargarDatosPrincipales, closeModal]);
 
   const handleDepleteConfirmed = useCallback(async (reason) => {
     if (!currentEntry?.idAbastecimiento) return;
@@ -174,7 +174,7 @@ const useAbastecimiento = () => {
       };
       await abastecimientoService.updateAbastecimiento(currentEntry.idAbastecimiento, dataToUpdate);
       setValidationMessage(`Producto "${currentEntry.producto?.nombre || ''}" marcado como agotado.`);
-      await cargarDatos();
+      await cargarDatosPrincipales();
       closeModal();
       setIsValidationModalOpen(true);
     } catch (err) {
@@ -183,7 +183,7 @@ const useAbastecimiento = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [currentEntry, cargarDatos, closeModal]);
+  }, [currentEntry, cargarDatosPrincipales, closeModal]);
 
   const processedEntries = useMemo(() => {
     let filtered = entries;
