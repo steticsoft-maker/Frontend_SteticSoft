@@ -40,9 +40,13 @@ function ListaAbastecimientoPage() {
     currentPage,
     itemsPerPage,
     paginate,
+    // --- INICIO: Obtener productos y empleados del hook ---
+    productosInternos,
+    empleadosActivos,
+    isLoadingModalDependencies,
+    // --- FIN: Obtener productos y empleados del hook ---
   } = useAbastecimiento();
 
-  // INICIO DE MODIFICACIÓN: Estructura del JSX corregida.
   return (
     <div className="abastecimiento-page-container">
       <NavbarAdmin />
@@ -71,15 +75,15 @@ function ListaAbastecimientoPage() {
             </div>
             <button
               className="abastecimiento-add-button"
-              onClick={() => handleOpenModal("create")}
-              disabled={isLoading || isSubmitting}
+              onClick={() => handleOpenModal("create")} // handleOpenModal se encarga de setIsCrearModalOpen(true)
+              disabled={isLoading || isSubmitting || isLoadingModalDependencies} // Deshabilitar si las dependencias del modal están cargando
             >
               Agregar Registro
             </button>
           </div>
 
           {isLoading ? (
-            <p style={{ textAlign: 'center', margin: '20px 0' }}>Cargando datos...</p>
+            <p style={{ textAlign: 'center', margin: '20px 0' }}>Cargando datos de abastecimiento...</p>
           ) : error ? (
             <p className="error-message" style={{ textAlign: 'center', marginTop: '20px' }}>{error}</p>
           ) : (
@@ -112,14 +116,19 @@ function ListaAbastecimientoPage() {
         isOpen={isCrearModalOpen}
         onClose={closeModal}
         onSubmit={(data) => handleSubmitForm(data, true)}
-        isLoading={isSubmitting}
+        isSubmitting={isSubmitting} // Prop renombrada para claridad
+        // --- INICIO: Pasar props al modal de creación ---
+        productosInternos={productosInternos}
+        empleadosActivos={empleadosActivos}
+        isLoadingProductos={isLoadingModalDependencies} // Usar el estado de carga de dependencias del modal
+        // --- FIN: Pasar props al modal de creación ---
       />
       <AbastecimientoEditarModal
         isOpen={isEditarModalOpen}
         onClose={closeModal}
         onSubmit={(data) => handleSubmitForm(data, false)}
         initialData={currentEntry}
-        isLoading={isSubmitting}
+        isSubmitting={isSubmitting}
       />
       <AbastecimientoDetailsModal
         isOpen={isDetailsModalOpen}
@@ -136,14 +145,14 @@ function ListaAbastecimientoPage() {
         }"?`}
         confirmText="Eliminar"
         cancelText="Cancelar"
-        isLoading={isSubmitting}
+        isSubmitting={isSubmitting}
       />
       <DepleteProductModal
         isOpen={isDepleteModalOpen}
         onClose={closeModal}
         onConfirm={handleDepleteConfirmed}
         productName={currentEntry?.producto?.nombre}
-        isLoading={isSubmitting}
+        isSubmitting={isSubmitting}
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
