@@ -24,7 +24,13 @@ const useAbastecimiento = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEstado, setFilterEstado] = useState("todos"); // 'todos', 'disponibles', 'agotados'
 
-  const cargarDatos = useCallback(async () => {
+  // --- INICIO: Nuevos estados para productos y empleados para el modal de creación ---
+  const [productosInternos, setProductosInternos] = useState([]);
+  const [empleadosActivos, setEmpleadosActivos] = useState([]);
+  const [isLoadingModalDependencies, setIsLoadingModalDependencies] = useState(false);
+  // --- FIN: Nuevos estados ---
+
+  const cargarDatosPrincipales = useCallback(async () => { // Renombrado de cargarDatos a cargarDatosPrincipales
     setIsLoading(true);
     setError(null);
     try {
@@ -38,9 +44,37 @@ const useAbastecimiento = () => {
     }
   }, []);
 
+  // --- INICIO: Nueva función para cargar dependencias del modal ---
+  const cargarModalCreacionDependencies = useCallback(async () => {
+    setIsLoadingModalDependencies(true);
+    try {
+      const [prods, emps] = await Promise.all([
+        abastecimientoService.getProductosActivosUsoInterno(),
+        abastecimientoService.getEmpleadosActivos(),
+      ]);
+      // El filtro que había añadido antes en el modal ahora se asegura aquí o se confía en el servicio.
+      // Por el bug report, se asume que getProductosActivosUsoInterno YA DEBERÍA devolver solo internos.
+      // Reintroducimos el filtro como medida de seguridad en el frontend.
+      const filteredProds = (prods || []).filter(p => p.tipoUso === 'Interno');
+      setProductosInternos(filteredProds);
+      setEmpleadosActivos(emps || []);
+    } catch (err) {
+      // Manejar error de carga de dependencias del modal si es necesario,
+      // por ejemplo, mostrando un mensaje en el modal de creación.
+      // setError(err.message || "No se pudieron cargar datos para el formulario."); // Podría sobreescribir el error de la tabla
+      console.error("Error cargando dependencias para el modal de creación:", err);
+      setProductosInternos([]);
+      setEmpleadosActivos([]);
+    } finally {
+      setIsLoadingModalDependencies(false);
+    }
+  }, []);
+  // --- FIN: Nueva función ---
+
   useEffect(() => {
-    cargarDatos();
-  }, [cargarDatos]);
+    cargarDatosPrincipales();
+    cargarModalCreacionDependencies(); // Cargar dependencias del modal una vez
+  }, [cargarDatosPrincipales, cargarModalCreacionDependencies]);
 
   // Efecto para debounce de la búsqueda
   useEffect(() => {
@@ -103,7 +137,7 @@ const useAbastecimiento = () => {
         await abastecimientoService.updateAbastecimiento(entryId, dataToUpdate);
         setValidationMessage("Registro de abastecimiento actualizado exitosamente.");
       }
-      await cargarDatos();
+      await cargarDatosPrincipales();
       closeModal();
       setIsValidationModalOpen(true);
     } catch (err) {
@@ -112,7 +146,7 @@ const useAbastecimiento = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [cargarDatos, closeModal, currentEntry]);
+  }, [cargarDatosPrincipales, closeModal, currentEntry]);
 
   const handleDeleteConfirmed = useCallback(async () => {
     if (!currentEntry?.idAbastecimiento) return;
@@ -120,7 +154,7 @@ const useAbastecimiento = () => {
     try {
       await abastecimientoService.deleteAbastecimiento(currentEntry.idAbastecimiento);
       setValidationMessage("Registro eliminado exitosamente.");
-      await cargarDatos();
+      await cargarDatosPrincipales();
       closeModal();
       setIsValidationModalOpen(true);
     } catch (err) {
@@ -129,7 +163,7 @@ const useAbastecimiento = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [currentEntry, cargarDatos, closeModal]);
+  }, [currentEntry, cargarDatosPrincipales, closeModal]);
 
   const handleDepleteConfirmed = useCallback(async (reason) => {
     if (!currentEntry?.idAbastecimiento) return;
@@ -141,7 +175,7 @@ const useAbastecimiento = () => {
       };
       await abastecimientoService.updateAbastecimiento(currentEntry.idAbastecimiento, dataToUpdate);
       setValidationMessage(`Producto "${currentEntry.producto?.nombre || ''}" marcado como agotado.`);
-      await cargarDatos();
+      await cargarDatosPrincipales();
       closeModal();
       setIsValidationModalOpen(true);
     } catch (err) {
@@ -150,7 +184,7 @@ const useAbastecimiento = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [currentEntry, cargarDatos, closeModal]);
+  }, [currentEntry, cargarDatosPrincipales, closeModal]);
 
   const processedEntries = useMemo(() => {
     let filtered = entries;
@@ -226,6 +260,11 @@ const useAbastecimiento = () => {
     currentPage,
     itemsPerPage,
     paginate,
+    // --- INICIO: Devolver nuevos estados ---
+    productosInternos,
+    empleadosActivos,
+    isLoadingModalDependencies,
+    // --- FIN: Devolver nuevos estados ---
   };
 };
 
