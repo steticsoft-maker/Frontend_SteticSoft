@@ -642,12 +642,16 @@ const useUsuarios = () => {
       const lowerSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter((u) => {
         const perfil = u.clienteInfo || u.empleadoInfo || {};
+        const estadoString = typeof u.estado === 'boolean' ? (u.estado ? "activo" : "inactivo") : "";
         return (
           perfil.nombre?.toLowerCase().includes(lowerSearchTerm) ||
           perfil.apellido?.toLowerCase().includes(lowerSearchTerm) ||
           u.correo?.toLowerCase().includes(lowerSearchTerm) ||
-          perfil.numeroDocumento?.includes(searchTerm) ||
-          u.rol?.nombre?.toLowerCase().includes(lowerSearchTerm)
+          perfil.tipoDocumento?.toLowerCase().includes(lowerSearchTerm) ||
+          perfil.numeroDocumento?.toLowerCase().includes(lowerSearchTerm) || // Changed to toLowerCase() for consistency
+          perfil.telefono?.toLowerCase().includes(lowerSearchTerm) ||
+          u.rol?.nombre?.toLowerCase().includes(lowerSearchTerm) ||
+          estadoString.includes(lowerSearchTerm)
         );
       });
     }
