@@ -43,21 +43,26 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
       // CAMBIO: Carga de datos iniciales del producto
       // Ajustamos los nombres de los campos de 'initialData' para que coincidan con 'formData'
       setFormData({
-        idProducto: initialData.idProducto, 
+        idProducto: initialData.idProducto,
         nombre: initialData.nombre || '',
-        
-        // ✅ 1. CORRECCIÓN EN LA CARGA DE DATOS:
-        // Usamos el ID de la categoría directamente desde el producto.
-        // Esto es más seguro que depender del objeto 'categoria' anidado.
-        idCategoriaProducto: initialData.categoriaProductoId || '', 
-        
+        idCategoriaProducto: initialData.categoriaProductoId || '',
         precio: initialData.precio?.toString() || '',
-        existencia: initialData.existencia?.toString() || '', 
+        existencia: initialData.existencia?.toString() || '',
         stockMinimo: initialData.stockMinimo?.toString() || '0',
         stockMaximo: initialData.stockMaximo?.toString() || '0',
         descripcion: initialData.descripcion || '',
-        imagenPreview: initialData.imagen || null,
-        imagen: null,
+        // Guardamos la URL de la imagen original. El componente ProductoAdminForm
+        // usará esto si imagenPreview es null.
+        imagen: initialData.imagen || null,
+        // imagenPreview se inicializa como null. Se poblará si el usuario carga una nueva imagen.
+        imagenPreview: null,
+        // Este campo 'imagenFile' o similar no es estrictamente necesario en formData si 'imagen'
+        // va a contener el File object cuando se carga una nueva imagen,
+        // o la URL string si se mantiene la existente.
+        // Para claridad, si 'imagen' va a ser polimórfico (File o string), está bien.
+        // Si prefieres separar:
+        // imagenUrl: initialData.imagen || null,
+        // imagenFile: null,
         estado: initialData.estado !== undefined ? initialData.estado : true,
         tipoUso: initialData.tipoUso || 'Venta Directa',
         vidaUtilDias: initialData.vidaUtilDias || ''
@@ -84,19 +89,23 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
     if (file) {
       if (file.size > MAX_FILE_SIZE_BYTES) {
         setFormErrors(prev => ({ ...prev, imagen: `La imagen debe ser menor a ${MAX_FILE_SIZE_MB}MB.` }));
-        // CAMBIO: Nombres de campo 'imagen' y 'imagenPreview'
-        setFormData(prev => ({ ...prev, imagen: null, imagenPreview: initialData?.imagen || null }));
-        e.target.value = null;
+        // Limpiar el input de archivo y la vista previa, pero mantener la imagen original en formData.imagen
+        setFormData(prev => ({ ...prev, imagenPreview: null /*, imagenFile: null */})); // formData.imagen (URL) no se toca aquí
+        e.target.value = null; // Limpiar el input de archivo
         return;
       }
       const reader = new FileReader();
       reader.onloadend = () => {
+        // Al cargar un nuevo archivo, imagenPreview obtiene el base64, y 'imagen' el File object
+        // La URL original (initialData.imagen) se mantiene en formData.imagen si el usuario luego deselecciona el archivo
         setFormData(prev => ({ ...prev, imagen: file, imagenPreview: reader.result }));
       };
       reader.readAsDataURL(file);
     } else {
-      // CAMBIO: Nombres de campo 'imagen' y 'imagenPreview'
-      setFormData(prev => ({ ...prev, imagen: null, imagenPreview: initialData?.imagen || null }));
+      // Si el usuario deselecciona un archivo (o no selecciona ninguno),
+      // limpiamos la vista previa y el archivo.
+      // La imagen original (URL) se mantiene en formData.imagen si initialData.imagen existía.
+      setFormData(prev => ({ ...prev, imagen: initialData?.imagen || null, imagenPreview: null /*, imagenFile: null */ }));
     }
   };
 
@@ -140,9 +149,13 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
       
       // ✅ 2. CORRECCIÓN AL ENVIAR LOS DATOS:
       // Si no hay idCategoriaProducto, enviamos 'null' en lugar de un string vacío.
-      categoriaProductoId: formData.idCategoriaProducto || null, 
+      categoriaProductoId: formData.idCategoriaProducto || null,
       
-      imagen: formData.imagenPreview, 
+      // Lógica para determinar qué enviar para la imagen:
+      // Si hay una imagenPreview (nueva imagen cargada), se envía esa (base64).
+      // Si no hay imagenPreview pero formData.imagen es una string (URL de imagen existente), se envía esa.
+      // Si no, se envía null (o lo que el backend espere para "sin imagen" o "eliminar imagen").
+      imagen: formData.imagenPreview ? formData.imagenPreview : (typeof formData.imagen === 'string' ? formData.imagen : null),
       estado: formData.estado,
       tipoUso: formData.tipoUso,
       vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : null
