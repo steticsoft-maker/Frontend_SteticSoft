@@ -166,7 +166,8 @@ const useAbastecimiento = () => {
         const nombreProducto = entry.producto?.nombre?.toLowerCase() || "";
         const nombreCategoria = entry.producto?.categoria?.nombre?.toLowerCase() || "";
         const nombreEmpleado = entry.empleado?.nombre?.toLowerCase() || "";
-        const fechaIngreso = entry.fechaIngreso ? new Date(entry.fechaIngreso).toLocaleDateString('es-ES') : "";
+        // Corregir búsqueda de fecha para que coincida con el formato de la tabla y sea más robusta.
+        const fechaIngreso = entry.fechaIngreso ? new Date(entry.fechaIngreso).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : "";
         return (
           nombreProducto.includes(lowerSearchTerm) ||
           nombreCategoria.includes(lowerSearchTerm) ||

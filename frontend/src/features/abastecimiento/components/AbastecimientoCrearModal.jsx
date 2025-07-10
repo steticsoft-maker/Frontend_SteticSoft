@@ -53,11 +53,35 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Limpiar error específico cuando el usuario empieza a corregir
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: null }));
+    }
+  };
+
+  // NUEVA FUNCIÓN DE VALIDACIÓN
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.productoId) {
+      errors.productoId = "Debe seleccionar un producto.";
+    }
+    if (!formData.empleadoId) {
+      errors.empleadoId = "Debe seleccionar un empleado.";
+    }
+    if (!formData.cantidad || isNaN(parseInt(formData.cantidad)) || parseInt(formData.cantidad) <= 0) {
+      errors.cantidad = "La cantidad debe ser un número positivo.";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSave = () => {
-    const { ...dataToSubmit } = formData;
-    onSubmit(dataToSubmit);
+    // MODIFICADO: llamar a validateForm antes de onSubmit
+    if (!validateForm()) {
+      return;
+    }
+    const { productoNombre, empleadoNombre, ...dataToSubmit } = formData; // Excluir nombres, solo enviar IDs
+    onSubmit(dataToSubmit); // dataToSubmit ya tiene productoId, empleadoId, cantidad
   };
 
   if (!isOpen) return null;
@@ -87,9 +111,8 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSubmit }) => {
               onSelectProduct={() => setShowProductSelectModal(true)}
               onSelectEmployee={() => setShowEmployeeSelectModal(true)}
               isEditing={false}
-              formErrors={formErrors}
-              categorias={[]} 
-              onCategoryChange={() => {}}
+              formErrors={formErrors} // Pasar formErrors al formulario
+              // categorias y onCategoryChange no son usados por AbastecimientoForm directamente
             />
             <div className="form-actions-abastecimiento">
               <button
