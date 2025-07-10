@@ -23,7 +23,8 @@ function ListaUsuariosPage() {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isDeleteModalOpen, // Para el ConfirmModal de desactivación
+    // isDeleteModalOpen, // Este estado ahora es isConfirmDeleteModalOpen en el hook
+    isConfirmDeleteModalOpen, // Usar el estado específico del hook para el modal de eliminación
     isValidationModalOpen,
     validationMessage,
     inputValue,      // Para el input de búsqueda
@@ -36,7 +37,9 @@ function ListaUsuariosPage() {
     closeModal,
     handleOpenModal,
     handleSaveUsuario,
-    handleConfirmDesactivarUsuario,
+    // handleConfirmDesactivarUsuario, // Ya no se usa directamente aquí para el botón de basura
+    showDeleteModal, // Usar showDeleteModal para abrir el modal de confirmación de eliminación física
+    handleConfirmDeleteUsuario, // Esta es la acción que se llamará desde el ConfirmModal
     handleToggleEstadoUsuario,
     // Props para el formulario y su validación
     formData,
@@ -63,7 +66,7 @@ function ListaUsuariosPage() {
         <div className="usuarios-accionesTop">
           <input
             type="text"
-            placeholder="Buscar por nombre, correo, documento o rol..."
+            placeholder="Buscar por nombre, apellido, correo, documento, teléfono, rol o estado..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)} // Usar setInputValue del hook
             className="usuarios-barraBusqueda"
@@ -100,8 +103,8 @@ function ListaUsuariosPage() {
               usuarios={usuarios} // Estos son los currentUsersForTable del hook
               onView={(usuario) => handleOpenModal("details", usuario)}
               onEdit={(usuario) => handleOpenModal("edit", usuario)}
-              onDeleteConfirm={(usuario) => handleOpenModal("delete", usuario)} // Abre el modal de confirmación
-              onToggleAnular={handleToggleEstadoUsuario}
+              onDeleteConfirm={showDeleteModal} // Llamar a showDeleteModal del hook
+              onToggleAnular={handleToggleEstadoUsuario} // Esto se mantiene para el switch de estado
               currentPage={currentPage}
               rowsPerPage={usersPerPage}
             />
@@ -151,15 +154,15 @@ function ListaUsuariosPage() {
         onClose={closeModal}
         usuario={currentUsuario}
       />
-      <ConfirmModal // Modal para confirmar la desactivación
-        isOpen={isDeleteModalOpen}
-        onClose={closeModal}
-        onConfirm={handleConfirmDesactivarUsuario} // Usar la función renombrada del hook
-        title="Confirmar Desactivación"
-        message={`¿Estás seguro de que deseas desactivar al usuario "${
+      <ConfirmModal // Modal para confirmar la eliminación física
+        isOpen={isConfirmDeleteModalOpen} // Usar el estado correcto del hook
+        onClose={closeModal} // O idealmente closeDeleteModal si solo cierra este modal
+        onConfirm={handleConfirmDeleteUsuario} // Usar la función de confirmación del hook
+        title="Confirmar Eliminación Permanente"
+        message={`¿Estás seguro de que deseas eliminar permanentemente al usuario "${
           currentUsuario?.clienteInfo?.nombre || currentUsuario?.empleadoInfo?.nombre || currentUsuario?.correo || ""
-        }"?`}
-        confirmText="Desactivar"
+        }"? Esta acción no se puede deshacer.`}
+        confirmText="Eliminar Permanentemente"
         cancelText="Cancelar"
         isLoading={isSubmitting}
       />
