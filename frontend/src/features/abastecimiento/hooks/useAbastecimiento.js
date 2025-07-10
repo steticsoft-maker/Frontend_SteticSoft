@@ -94,13 +94,37 @@ const useAbastecimiento = () => {
     setIsSubmitting(true);
     try {
       if (isCreating) {
-        await abastecimientoService.createAbastecimiento(formData);
+        // Asegurar que los nombres de campo sean los correctos para la API de creación
+        // Asumimos que formData puede tener selectedProductId y selectedEmployeeId, o productoId y empleadoId directamente.
+        // Si vienen como productoNombre y empleadoNombre, los modales deben pasar los IDs.
+        // Por seguridad, mapeamos aquí si es necesario, o confiamos en que el modal lo hace.
+        // Para este ejemplo, asumiré que formData ya tiene productoId y empleadoId correctamente.
+        // Si formData viene de un estado local del modal que usa nombres como `selectedProduct`,
+        // el modal debe transformarlo antes de llamar a handleSubmitForm.
+        // Ejemplo de transformación si vinieran con otros nombres:
+        // const apiData = {
+        //   cantidad: formData.cantidad,
+        //   productoId: formData.selectedProductId, // o como se llame en el estado del modal
+        //   empleadoId: formData.selectedEmployeeId, // o como se llame en el estado del modal
+        // };
+        // await abastecimientoService.createAbastecimiento(apiData);
+        await abastecimientoService.createAbastecimiento(formData); // Se asume que formData ya está formateado por el modal
         setValidationMessage("Registro de abastecimiento creado exitosamente.");
       } else {
-        const { idAbastecimiento, ...dataToUpdate } = formData;
+        // Para la actualización, el ID no debe estar en el cuerpo, sino en la URL.
+        // El servicio de actualización ya toma (id, data).
+        // Asegurarse de que idAbastecimiento no se envíe en dataToUpdate.
+        const { idAbastecimiento, ...dataToUpdate } = formData; // idAbastecimiento se usa para el entryId
         const entryId = idAbastecimiento || currentEntry?.idAbastecimiento;
+
         if (!entryId) throw new Error("ID de abastecimiento no encontrado para la actualización.");
-        await abastecimientoService.updateAbastecimiento(entryId, dataToUpdate);
+
+        // Eliminar productoId y empleadoId del payload de actualización si están presentes,
+        // ya que estos no deberían ser modificables según el validador de actualización del backend.
+        // El validador de backend para PUT solo permite 'cantidad' y 'estado'.
+        const { productoId, empleadoId, ...finalDataToUpdate } = dataToUpdate;
+
+        await abastecimientoService.updateAbastecimiento(entryId, finalDataToUpdate);
         setValidationMessage("Registro de abastecimiento actualizado exitosamente.");
       }
       await cargarDatos();
@@ -135,17 +159,14 @@ const useAbastecimiento = () => {
     if (!currentEntry?.idAbastecimiento) return;
     setIsSubmitting(true);
     try {
-      const dataToUpdate = {
-        estaAgotado: true,
-        razonAgotamiento: reason,
-      };
-      await abastecimientoService.updateAbastecimiento(currentEntry.idAbastecimiento, dataToUpdate);
-      setValidationMessage(`Producto "${currentEntry.producto?.nombre || ''}" marcado como agotado.`);
+      // Usar el nuevo servicio abastecimientoService.agotarAbastecimiento
+      await abastecimientoService.agotarAbastecimiento(currentEntry.idAbastecimiento, reason);
+      setValidationMessage(`Producto "${currentEntry.producto?.nombre || ''}" marcado como agotado exitosamente.`);
       await cargarDatos();
       closeModal();
       setIsValidationModalOpen(true);
     } catch (err) {
-      setValidationMessage(err.message || "Error al marcar como agotado.");
+      setValidationMessage(err.response?.data?.message || err.message || "Error al marcar como agotado.");
       setIsValidationModalOpen(true);
     } finally {
       setIsSubmitting(false);

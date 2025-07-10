@@ -147,4 +147,19 @@ export const abastecimientoService = {
   deleteAbastecimiento,
   getProductosActivosUsoInterno,
   getEmpleadosActivos,
+  agotarAbastecimiento, // Exportar la nueva función
+};
+
+// Nueva función para marcar un producto como agotado
+const agotarAbastecimiento = async (id, razon) => {
+  try {
+    // Asegurarse de enviar 'razon_agotamiento' como espera el backend
+    const response = await apiClient.patch(`/abastecimientos/${id}/agotar`, { razon_agotamiento: razon });
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error("Error al marcar el producto como agotado.")
+    );
+  }
 };

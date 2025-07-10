@@ -37,7 +37,8 @@ const ItemSelectionModal = ({
               const label = typeof item === 'object' ? item.label : item;
               return (
                 <li key={typeof item === 'object' ? item.value : index}>
-                  <button onClick={() => { onSelectItem(value); onClose(); }}>
+                  {/* Corregido: Pasar el objeto 'item' completo en lugar de solo 'value' */}
+                  <button onClick={() => { onSelectItem(item); onClose(); }}>
                     {label}
                   </button>
                 </li>
