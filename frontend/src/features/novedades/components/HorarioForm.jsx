@@ -58,15 +58,14 @@ const HorarioForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
       return;
     }
 
-    const formData = {
-      id_empleado: id_empleado,
+   const formData = {
+      idEmpleado: id_empleado, 
       dias: dias.map(d => ({
         diaSemana: d.dia,
         horaInicio: d.hora_inicio,
         horaFin: d.hora_fin,
       })),
     };
-
     onFormSubmit(formData);
   };
 
@@ -76,15 +75,11 @@ const HorarioForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
         <label>Encargado (Empleado) <span className="requiredAsteriscoHorarioCitas">*</span></label>
         <select value={id_empleado} onChange={(e) => setIdEmpleado(e.target.value)} required disabled={isEditing}>
           <option value="" disabled>Seleccione un empleado...</option>
-          {/* ** LA ÚNICA CORRECCIÓN ESTÁ AQUÍ **
-            Cambiamos 'emp.id_empleado' a 'emp.idEmpleado' para que coincida con la API.
-          */}
           {listaEmpleados.map(emp => (
             <option key={emp.idEmpleado} value={emp.idEmpleado}>{emp.nombre} {emp.apellido}</option>
           ))}
         </select>
       </div>
-
       <div className="form-dias-horarios-container">
         <label>Días y Horarios <span className="requiredAsteriscoHorarioCitas">*</span></label>
         <div className="dias-grid">
