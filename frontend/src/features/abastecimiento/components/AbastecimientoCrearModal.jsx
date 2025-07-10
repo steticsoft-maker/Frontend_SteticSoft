@@ -1,18 +1,21 @@
 // src/features/abastecimiento/components/AbastecimientoCrearModal.jsx
 import React, { useState, useEffect } from "react";
+// import ReactDOM from 'react-dom'; // ELIMINADO: Ya no se necesita el portal.
 import AbastecimientoForm from "./AbastecimientoForm";
 import ItemSelectionModal from "../../../shared/components/common/ItemSelectionModal";
+// import { abastecimientoService } from "../services/abastecimientoService"; // Ya no se usa directamente aquí
 
 const AbastecimientoCrearModal = ({
   isOpen,
   onClose,
   onSubmit,
-  isSubmitting,
+  isSubmitting, // Para el estado de guardado del formulario
+  // --- INICIO: Nuevas props ---
   productosInternos,
   empleadosActivos,
-  isLoadingProductos,
+  isLoadingProductos, // Para el estado de carga de las listas de productos/empleados
+  // --- FIN: Nuevas props ---
 }) => {
-  // Estado inicial del formulario
   const getInitialFormState = () => ({
     productoId: null,
     productoNombre: "",
@@ -23,27 +26,51 @@ const AbastecimientoCrearModal = ({
 
   const [formData, setFormData] = useState(getInitialFormState());
   const [formErrors, setFormErrors] = useState({});
+  // const [isLoading, setIsLoading] = useState(false); // Se reemplaza por isLoadingProductos y isSubmitting
+
+  // const [productos, setProductos] = useState([]); // Se reemplaza por productosInternos (prop)
+  // const [empleados, setEmpleados] = useState([]); // Se reemplaza por empleadosActivos (prop)
+
   const [showProductSelectModal, setShowProductSelectModal] = useState(false);
   const [showEmployeeSelectModal, setShowEmployeeSelectModal] = useState(false);
 
-  // Resetear formulario y errores al abrir el modal
+  // const cargarDependencias = useCallback(async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const [prods, emps] = await Promise.all([
+  //       abastecimientoService.getProductosActivosUsoInterno(),
+  //       abastecimientoService.getEmpleadosActivos(),
+  //     ]);
+  //     setProductos(prods);
+  //     setEmpleados(emps);
+  //   } catch {
+  //     setFormErrors({
+  //       _general: "No se pudieron cargar los datos para el formulario.",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (isOpen) {
+      // Las dependencias (productos, empleados) ahora se cargan en el hook/página padre
+      // y se pasan como props. Solo reseteamos el formulario.
       setFormData(getInitialFormState());
       setFormErrors({});
     }
-  }, [isOpen]);
+  }, [isOpen]); // Ya no depende de cargarDependencias
 
-  // Manejar cambios en los inputs del formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Limpiar error específico cuando el usuario empieza a corregir
     if (formErrors[name]) {
       setFormErrors((prev) => ({ ...prev, [name]: null }));
     }
   };
 
-  // Validación del formulario
+  // NUEVA FUNCIÓN DE VALIDACIÓN
   const validateForm = () => {
     const errors = {};
     if (!formData.productoId) {
@@ -63,11 +90,13 @@ const AbastecimientoCrearModal = ({
     return Object.keys(errors).length === 0;
   };
 
-  // Guardar el registro
   const handleSave = () => {
-    if (!validateForm()) return;
-    const { productoNombre, empleadoNombre, ...dataToSubmit } = formData; // eslint-disable-line no-unused-vars
-    onSubmit(dataToSubmit);
+    // MODIFICADO: llamar a validateForm antes de onSubmit
+    if (!validateForm()) {
+      return;
+    }
+    const { productoNombre: _pn, empleadoNombre: _en, ...dataToSubmit } = formData; // Excluir nombres, solo enviar IDs
+    onSubmit(dataToSubmit); // dataToSubmit ya tiene productoId, empleadoId, cantidad
   };
 
   if (!isOpen) return null;
@@ -87,6 +116,8 @@ const AbastecimientoCrearModal = ({
           <h2 className="abastecimiento-modal-title">
             Registrar Salida de Producto
           </h2>
+          {/* isLoadingProductos podría usarse aquí si se quiere mostrar un loader general para el modal */}
+          {/* Por ahora, el loader se maneja en los botones de selección o en la página principal */}
           <form
             className="abastecimiento-form-grid"
             onSubmit={(e) => {
@@ -99,10 +130,10 @@ const AbastecimientoCrearModal = ({
               onInputChange={handleInputChange}
               onSelectProduct={() =>
                 !isLoadingProductos && setShowProductSelectModal(true)
-              }
+              } // No abrir si las dependencias están cargando
               onSelectEmployee={() =>
                 !isLoadingProductos && setShowEmployeeSelectModal(true)
-              }
+              } // No abrir si las dependencias están cargando
               isEditing={false}
               formErrors={formErrors}
             />
@@ -131,6 +162,7 @@ const AbastecimientoCrearModal = ({
         isOpen={showProductSelectModal}
         onClose={() => setShowProductSelectModal(false)}
         title="Seleccionar Producto"
+        // Usar productosInternos de las props
         items={(productosInternos || []).map((p) => ({
           label: p.nombre,
           value: p.idProducto,
@@ -144,13 +176,14 @@ const AbastecimientoCrearModal = ({
           setShowProductSelectModal(false);
         }}
         searchPlaceholder="Buscar producto..."
-        isLoading={isLoadingProductos}
+        isLoading={isLoadingProductos} // Pasar estado de carga al modal de selección
       />
 
       <ItemSelectionModal
         isOpen={showEmployeeSelectModal}
         onClose={() => setShowEmployeeSelectModal(false)}
         title="Seleccionar Empleado"
+        // Usar empleadosActivos de las props
         items={(empleadosActivos || []).map((emp) => ({
           label: emp.empleadoInfo?.nombre || emp.correo,
           value: emp.empleadoInfo?.idEmpleado || emp.idUsuario,
@@ -164,7 +197,7 @@ const AbastecimientoCrearModal = ({
           setShowEmployeeSelectModal(false);
         }}
         searchPlaceholder="Buscar empleado..."
-        isLoading={isLoadingProductos}
+        isLoading={isLoadingProductos} // Pasar estado de carga al modal de selección
       />
     </>
   );

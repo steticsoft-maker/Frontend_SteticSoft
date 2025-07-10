@@ -50,7 +50,7 @@ function ListaAbastecimientoPage() {
   return (
     <div className="abastecimiento-page-container">
       <NavbarAdmin />
-      
+
       {/* Contenedor principal del contenido de la página */}
       <div className="abastecimiento-main-content">
         <div className="abastecimiento-content-wrapper">
@@ -67,7 +67,11 @@ function ListaAbastecimientoPage() {
             </div>
             <div className="abastecimiento-filtro-estado">
               <span>Estado: </span>
-              <select value={filterEstado} onChange={(e) => setFilterEstado(e.target.value)} disabled={isLoading}>
+              <select
+                value={filterEstado}
+                onChange={(e) => setFilterEstado(e.target.value)}
+                disabled={isLoading}
+              >
                 <option value="todos">Todos</option>
                 <option value="disponibles">Disponibles</option>
                 <option value="agotados">Agotados</option>
@@ -83,9 +87,16 @@ function ListaAbastecimientoPage() {
           </div>
 
           {isLoading ? (
-            <p style={{ textAlign: 'center', margin: '20px 0' }}>Cargando datos de abastecimiento...</p>
+            <p style={{ textAlign: "center", margin: "20px 0" }}>
+              Cargando datos de abastecimiento...
+            </p>
           ) : error ? (
-            <p className="error-message" style={{ textAlign: 'center', marginTop: '20px' }}>{error}</p>
+            <p
+              className="error-message"
+              style={{ textAlign: "center", marginTop: "20px" }}
+            >
+              {error}
+            </p>
           ) : (
             <AbastecimientoTable
               entries={entries} // Estos serán los entries de la página actual más adelante
@@ -97,7 +108,7 @@ function ListaAbastecimientoPage() {
               rowsPerPage={itemsPerPage}
             />
           )}
-          { !isLoading && !error && totalEntriesFiltrados > itemsPerPage && (
+          {!isLoading && !error && totalEntriesFiltrados > itemsPerPage && (
             <Pagination
               itemsPerPage={itemsPerPage}
               totalItems={totalEntriesFiltrados}
@@ -107,11 +118,11 @@ function ListaAbastecimientoPage() {
           )}
         </div>
       </div>
-      
+
       {/* Los modales ahora son hermanos de .abastecimiento-main-content */}
       {/* y ya no usan Portals, por lo que su posicionamiento será relativo 
           al viewport gracias a la clase .modal-abastecimiento-overlay */}
-      
+
       <AbastecimientoCrearModal
         isOpen={isCrearModalOpen}
         onClose={closeModal}

@@ -3,7 +3,7 @@ const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
-const db = require("../models");
+const db = require("../models/index.js");
 
 const crearVentaValidators = [
   body("fecha")

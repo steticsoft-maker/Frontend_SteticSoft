@@ -1,4 +1,4 @@
-// src/routes/cliente.routes.js 
+// src/routes/cliente.routes.js  
 const express = require("express");
 const router = express.Router();
 const clienteController = require("../controllers/cliente.controller.js");
@@ -32,6 +32,13 @@ router.get(
   checkPermission(PERMISO_MODULO_CLIENTES),
   clienteValidators.idClienteValidator,
   clienteController.obtenerClientePorId
+);
+
+router.get(
+  "/todos",
+  authMiddleware,
+  checkPermission(PERMISO_MODULO_CLIENTES),
+  clienteController.obtenerTodosLosClientes
 );
 
 router.put(
@@ -76,4 +83,3 @@ router.delete(
 );
 
 module.exports = router;
- 

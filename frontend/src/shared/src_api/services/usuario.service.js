@@ -51,8 +51,15 @@ const cambiarEstadoUsuario = async (idUsuario, nuevoEstado) => {
     const rol = await db.Rol.findByPk(usuario.idRol, { transaction: t });
     if (rol) {
       const perfilData = { estado: nuevoEstado };
-      const commonWhere = { usuarioId: usuarioIdNumerico };
-
+      const commonWhere = { idUsuario: usuarioIdNumerico };
+      // Verificamos si el perfil existe antes de intentar actualizarlo
+      if (rol.tipoPerfil !== "CLIENTE" && rol.tipoPerfil !== "EMPLEADO") {
+        await t.rollback();
+        throw new CustomError(
+          `El tipo de perfil '${rol.tipoPerfil}' no es válido para actualizar estado.`,
+          400
+        );
+      }
       // Solo dependemos de tipoPerfil
       if (rol.tipoPerfil === "CLIENTE") {
         const cliente = await db.Cliente.findOne({
@@ -199,7 +206,7 @@ const crearUsuario = async (usuarioData) => {
         tipoDocumento,
         numeroDocumento,
         fechaNacimiento,
-        usuarioId: nuevoUsuario.idUsuario,
+        idUsuario: nuevoUsuario.idUsuario, // CORRECCIÓN: Usar 'idUsuario' para coincidir con el modelo Sequelize
         estado: nuevoUsuario.estado,
       };
 
@@ -529,4 +536,5 @@ module.exports = {
   habilitarUsuario,
   eliminarUsuarioFisico,
   cambiarEstadoUsuario,
+  verificarCorreoExistente,
 };
