@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       numeroDocumento: {
         type: DataTypes.STRING(45),
         allowNull: true,
+        unique: true, // Añadir si la BD tiene esta restricción y se desea que sea así
         field: 'numero_documento' 
       },
       nitEmpresa: {
