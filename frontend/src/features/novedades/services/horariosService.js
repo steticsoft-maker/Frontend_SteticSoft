@@ -44,9 +44,9 @@ export const fetchHorarios = async () => {
 
 export const saveHorario = async (horarioData) => {
   const promesasDeCreacion = horarioData.dias.map(dia => {
-    // Construye el objeto con los nombres y tipos de datos que el backend espera.
     const nuevaNovedad = {
-      empleadoId: parseInt(horarioData.id_empleado, 10),
+      // La propiedad ya se llama 'empleadoId' y la parseamos a entero
+      empleadoId: parseInt(horarioData.idEmpleado, 10),
       diaSemana: diasMapa[dia.diaSemana],
       horaInicio: dia.horaInicio,
       horaFin: dia.horaFin,
@@ -65,9 +65,9 @@ export const updateHorario = async (idEmpleado, nuevosDatos) => {
   );
   await Promise.all(promesasDeBorrado);
 
-  const promesasDeCreacion = nuevosDatos.dias.map(dia => {
+ const promesasDeCreacion = nuevosDatos.dias.map(dia => {
     const nuevaNovedad = {
-      empleadoId: parseInt(idEmpleado, 10),
+      id_empleado: parseInt(idEmpleado, 10), // El id ya viene como parámetro
       diaSemana: diasMapa[dia.diaSemana],
       horaInicio: dia.horaInicio,
       horaFin: dia.horaFin,

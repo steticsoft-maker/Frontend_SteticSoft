@@ -60,7 +60,7 @@ const useAbastecimiento = () => {
       // Por el bug report, se asume que getProductosActivosUsoInterno YA DEBERÍA devolver solo internos.
       // Reintroducimos el filtro como medida de seguridad en el frontend.
       const filteredProds = (prods || []).filter(
-        (p) => p.tipoUso === "Interno"
+        (p) => p.tipo_uso === "Interno"
       );
       setProductosInternos(filteredProds);
       setEmpleadosActivos(emps || []);
