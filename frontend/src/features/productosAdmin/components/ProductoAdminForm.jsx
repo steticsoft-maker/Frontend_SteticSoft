@@ -95,8 +95,13 @@ return (
     <div className="producto-admin-form-group full-width">
       <label htmlFor="imagen">Imagen del Producto:</label>
       <input type="file" id="imagen" name="imagen" accept="image/*" onChange={onFileChange} />
-      {formData.imagenPreview && ( 
-        <img src={formData.imagenPreview} alt="Vista previa" style={{ maxWidth: '100px', marginTop: '10px' }} />
+      {/* Mostrar la imagen de vista previa si existe, de lo contrario, la imagen actual si es edición */}
+      {(formData.imagenPreview || (isEditing && formData.imagen)) && (
+        <img
+          src={formData.imagenPreview || (isEditing && formData.imagen)}
+          alt="Vista previa"
+          style={{ maxWidth: '100px', marginTop: '10px' }}
+        />
       )}
       {formErrors.imagen && <p className="error-message">{formErrors.imagen}</p>}
     </div>
