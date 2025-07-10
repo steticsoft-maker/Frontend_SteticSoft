@@ -8,17 +8,17 @@ const MAX_FILE_SIZE_MB = MAX_FILE_SIZE_BYTES / (1024 * 1024);
 const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const getInitialFormState = () => ({
     nombre: "",
-    idCategoriaProducto: "", // <-- Este es el nombre correcto para el estado del form
+    idCategoriaProducto: "", // Correcto
     precio: "",
     existencia: "",
     stockMinimo: "",
     stockMaximo: "",
     descripcion: "",
-    imagen: null,
-    imagenPreview: null,
+    imagen: null, // Contendrá el objeto File
+    imagenPreview: null, // Contendrá la URL para la vista previa
     estado: true,
-    tipoUso: 'Venta Directa', // <-- Añadido
-    vidaUtilDias: ''         // <-- Añadido
+    tipoUso: "Venta", // Ajustado a 'Venta' para coincidir con el validador
+    vidaUtilDias: "",
   });
 
   const [formData, setFormData] = useState(getInitialFormState());
@@ -29,7 +29,6 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     if (isOpen) {
       setFormData(getInitialFormState());
       setFormErrors({});
-
       const fetchCategorias = async () => {
         try {
           const categorias = await productosAdminService.getActiveCategorias();
@@ -39,7 +38,6 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
           setCategoriasDisponibles([]);
         }
       };
-
       fetchCategorias();
     }
   }, [isOpen]);
@@ -69,8 +67,8 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          imagen: file,
-          imagenPreview: reader.result,
+          imagen: file, // Guardamos el objeto File
+          imagenPreview: reader.result, // Guardamos la URL para la vista previa
         }));
       };
       reader.readAsDataURL(file);
@@ -84,14 +82,27 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     if (!formData.nombre.trim()) errors.nombre = "El nombre es obligatorio.";
     if (!formData.idCategoriaProducto)
       errors.idCategoriaProducto = "Debe seleccionar una categoría.";
-    if (!formData.precio || isNaN(parseFloat(formData.precio)) || parseFloat(formData.precio) <= 0) {
+    if (
+      !formData.precio ||
+      isNaN(parseFloat(formData.precio)) ||
+      parseFloat(formData.precio) <= 0
+    ) {
       errors.precio = "El precio debe ser un número positivo.";
     }
-    if (formData.existencia === "" || isNaN(parseInt(formData.existencia)) || parseInt(formData.existencia) < 0) {
-      errors.existencia = "La existencia debe ser un número igual o mayor a cero.";
+    if (
+      formData.existencia === "" ||
+      isNaN(parseInt(formData.existencia)) ||
+      parseInt(formData.existencia) < 0
+    ) {
+      errors.existencia =
+        "La existencia debe ser un número igual o mayor a cero.";
     }
-    if (formData.stockMaximo && formData.stockMinimo && Number(formData.stockMaximo) < Number(formData.stockMinimo)) {
-        errors.stockMaximo = "El stock máximo no puede ser menor al mínimo.";
+    if (
+      formData.stockMaximo &&
+      formData.stockMinimo &&
+      Number(formData.stockMaximo) < Number(formData.stockMinimo)
+    ) {
+      errors.stockMaximo = "El stock máximo no puede ser menor al mínimo.";
     }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -101,7 +112,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // ✅ MANTENEMOS TU LÓGICA DE MAPEO Y AÑADIMOS LOS NUEVOS CAMPOS
+    // --- INICIO DE LA CORRECCIÓN FINAL ---
     const dataToSubmit = {
       nombre: formData.nombre,
       descripcion: formData.descripcion || null,
@@ -109,12 +120,18 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       precio: Number(formData.precio),
       stockMinimo: formData.stockMinimo ? Number(formData.stockMinimo) : null,
       stockMaximo: formData.stockMaximo ? Number(formData.stockMaximo) : null,
-      categoriaProductoId: formData.idCategoriaProducto, // <-- Mapeo correcto
-      imagen: formData.imagenPreview,
+      // 1. El backend espera 'idCategoriaProducto', no 'categoriaProductoId'
+      idCategoriaProducto: formData.idCategoriaProducto,
+      // 2. El backend espera el archivo real ('imagen'), no la vista previa ('imagenPreview')
+      imagen: formData.imagen,
       estado: formData.estado,
-      tipoUso: formData.tipoUso, // <-- Añadido
-      vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : null // <-- Añadido
+      tipoUso: formData.tipoUso,
+      vidaUtilDias: formData.vidaUtilDias
+        ? Number(formData.vidaUtilDias)
+        : null,
     };
+    // --- FIN DE LA CORRECCIÓN FINAL ---
+
     onSubmit(dataToSubmit);
   };
 
@@ -131,7 +148,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
             onFileChange={handleFileChange}
             categoriasDisponibles={categoriasDisponibles}
             isEditing={false}
-            formErrors={formErrors} // Pasar errores al formulario
+            formErrors={formErrors}
           />
           <div className="botonesGuardarCancelarProductoAdministrador">
             <button type="submit" className="botonGuardarProducto">
