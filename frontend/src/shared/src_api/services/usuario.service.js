@@ -496,16 +496,19 @@ const eliminarUsuarioFisico = async (idUsuario) => {
 
     // Solo dependemos de tipoPerfil
     const rol = await db.Rol.findByPk(usuario.idRol, { transaction });
-    if (rol.tipoPerfil === "CLIENTE") {
-      await db.Cliente.destroy({
-        where: { usuarioId: idUsuario },
-        transaction,
-      });
-    } else if (rol.tipoPerfil === "EMPLEADO") {
-      await db.Empleado.destroy({
-        where: { usuarioId: idUsuario },
-        transaction,
-      });
+
+    if (rol) { // Verificar que el rol exista
+      if (rol.tipoPerfil === "CLIENTE") {
+        await db.Cliente.destroy({
+          where: { idUsuario: idUsuario }, // Corregido: debe ser idUsuario
+          transaction,
+        });
+      } else if (rol.tipoPerfil === "EMPLEADO") {
+        await db.Empleado.destroy({
+          where: { idUsuario: idUsuario }, // Corregido: debe ser idUsuario
+          transaction,
+        });
+      }
     }
 
     const filasEliminadas = await db.Usuario.destroy({
