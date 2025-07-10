@@ -1,30 +1,30 @@
-/* src/features/novedades/css/ConfigHorarios.css */
-/* Asegúrate de que _variables.css esté importado globalmente */
-
 /* ============================================= */
-/* === ESTILOS GENERALES DE PÁGINA (NOVEDADES) === */
+/* === ESTILOS GENERALES DE PÁGINA           === */
 /* ============================================= */
-.novedades-page-container {
+.novedades-page-container,
+.horarios-page-container {
   display: flex;
   min-height: 100vh;
   background-color: var(--color-background-admin-content, #f5f5f5);
-  font-family: var(--font-family-roboto, var(--font-family-sans-serif));
+  font-family: var(--font-family-roboto, sans-serif);
 }
 
-.novedades-content {
+.novedades-content,
+.horarios-content {
   flex: 1;
-  padding: 30px; /* Aumentado ligeramente para más aire */
-  margin-left: 270px; /* Ajustado para NavbarAdmin (ej: 250px + 20px) */
+  padding: 30px;
+  margin-left: 270px;
   overflow-y: auto;
   box-sizing: border-box;
 }
 
-.novedades-content h1 {
+.novedades-content h1,
+.horarios-content h1 {
   text-align: center;
   color: var(--color-primary-darker, #6d0b58);
   margin-top: 0;
-  margin-bottom: 30px; /* Aumentado para separar más del contenido */
-  font-size: 1.8rem; /* Consistencia */
+  margin-bottom: 30px;
+  font-size: 1.8rem;
 }
 
 /* ======================================== */
@@ -34,86 +34,93 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px; /* Aumentado */
+  margin-bottom: 30px;
   flex-wrap: wrap;
-  gap: 20px; /* Aumentado */
+  gap: 20px;
   width: 100%;
-  max-width: 1200px; /* Para centrar si el contenido es más ancho */
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
 }
 
-.novedades-search-bar { /* Clase para el input de búsqueda */
+.novedades-search-bar,
+.filtro-input { /* Clase genérica para filtros */
   padding: 10px 14px;
-  /* flex-grow: 1; Opcional si quieres que ocupe más espacio */
-  min-width: 280px; /* Ancho mínimo */
   border: 1px solid var(--color-border-light, #c287b5);
-  border-radius: 5px; /* Redondeo consistente */
+  border-radius: 5px;
   background-color: var(--color-background-light, #fff);
   color: var(--color-text-dark, #333);
-  font-size: 1rem; /* Tamaño de fuente consistente */
+  font-size: 1rem;
   box-sizing: border-box;
+  height: 41px;
 }
-.novedades-search-bar:focus {
+.novedades-search-bar {
+  flex-grow: 1; /* Hace que la barra de búsqueda se expanda */
+  min-width: 280px;
+}
+
+.novedades-search-bar:focus,
+.filtro-input:focus {
   border-color: var(--color-admin-hover, #b660a3);
   box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
   outline: none;
 }
 
-.novedades-add-button { /* Botón "Agregar Horario" */
+.novedades-add-button {
   background-color: var(--color-admin-hover, #b660a3);
-  color: var(--color-text-light, white); /* Texto blanco para contraste */
-  padding: 10px 20px; /* Padding consistente */
+  color: var(--color-text-light, white);
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-size: 1rem;
   font-weight: 500;
-  height: 41px; /* Para alinear con input si es necesario */
+  height: 41px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 .novedades-add-button:hover {
   background-color: var(--color-primary-darker, #6d0b58);
 }
 
 /* ======================================== */
-/* === ESTILOS DE TABLA DE HORARIOS     === */
+/* === ESTILOS DE TABLA                 === */
 /* ======================================== */
-.novedades-table-container { /* Div opcional alrededor de la tabla */
+.novedades-table-container {
   width: 100%;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  overflow-x: auto; /* Para tablas anchas en pantallas pequeñas */
+  overflow-x: auto;
 }
 
 .novedades-table-horarios {
   border-collapse: collapse;
   width: 100%;
-  background: var(--color-background-light, #fff); /* Fondo blanco para la tabla */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
+  background: var(--color-background-light, #fff);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
-  font-size: 0.9rem; /* Tamaño de fuente base para la tabla */
+  font-size: 0.9rem;
 }
 
 .novedades-table-horarios th,
 .novedades-table-horarios td {
-  border: 1px solid var(--color-admin-primary-border, #e9d3e4); /* Borde más suave */
-  padding: 12px 15px; /* Padding consistente */
+  border: 1px solid var(--color-admin-primary-border, #e9d3e4);
+  padding: 12px 15px;
   text-align: center;
-  vertical-align: middle; /* Alinear contenido verticalmente */
+  vertical-align: middle;
 }
 
 .novedades-table-horarios th {
   background-color: var(--color-admin-primary-lighter, #e978d0);
-  color: var(--color-text-dark, black); /* Texto oscuro para encabezados */
-  font-weight: 600; /* Ligeramente menos bold que 'bold' */
-  font-size: 0.95rem; /* Tamaño para encabezados */
+  color: var(--color-text-dark, black);
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .novedades-table-horarios tbody tr:nth-child(even) {
@@ -124,48 +131,32 @@
 }
 
 .novedades-dia-horario-item {
-  margin: 3px 0; /* Espacio entre múltiples días/horas */
-  font-size: 0.85rem; /* Un poco más pequeño para la lista interna */
+  margin: 3px 0;
+  font-size: 0.85rem;
   padding: 2px 0;
 }
 .novedades-dia-horario-item strong {
-  font-weight: 500; /* Peso para el día */
+  font-weight: 500;
 }
 
 /* --- Switch de Estado en Tabla --- */
-.novedades-table-horarios .switch {
-  /* Estilos ya definidos en otros CSS, si son globales, no se repiten aquí */
-  /* Si son específicos, se podrían añadir aquí. */
-  /* Ejemplo: */
-  /* position: relative; display: inline-block; width: 34px; height: 20px; */
-}
-.novedades-table-horarios .switch input { /* opacity: 0; width: 0; height: 0; */ }
-.novedades-table-horarios .slider {
-  /* position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; */
-  /* background-color: #ccc; border-radius: 20px; transition: .4s; */
-}
-.novedades-table-horarios .slider:before {
-  /* position: absolute; content: ""; height: 14px; width: 14px; */
-  /* left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .4s; */
-}
-.novedades-table-horarios input:checked + .slider { /* background-color: var(--color-success, #28a745); */ }
-.novedades-table-horarios input:checked + .slider:before { /* transform: translateX(14px); */ }
-.novedades-table-horarios .slider.round { /* border-radius: 20px; */ }
-.novedades-table-horarios .slider.round:before { /* border-radius: 50%; */ }
+.switch { position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--color-success, #28a745); }
+input:checked + .slider:before { transform: translateX(16px); }
 
 
 /* --- Botones de Acción en Tabla --- */
-.novedades-table-horarios td.novedades-actions {
-  text-align: center;
-}
-.novedades-actions { /* Contenedor de los botones de acción */
+.novedades-actions {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
 }
 .novedades-table-button {
-  padding: 7px 9px; /* Ligeramente más pequeños */
+  padding: 7px 9px;
   font-size: 0.85rem;
   border: none;
   border-radius: 5px;
@@ -176,481 +167,304 @@
   align-items: center;
   justify-content: center;
 }
-.novedades-table-button:nth-child(1), /* Ver */
-.novedades-table-button:nth-child(2) { /* Editar */
-  background-color: var(--color-admin-action-view, #fc8de4);
-}
-.novedades-table-button:nth-child(1):hover,
-.novedades-table-button:nth-child(2):hover {
-  background-color: var(--color-admin-action-view-hover, #d66abf);
-}
-.novedades-table-button.novedades-table-button-delete { /* Eliminar */
+.novedades-table-button.novedades-table-button-delete {
   background-color: var(--color-admin-action-delete, #b660a3);
 }
 .novedades-table-button.novedades-table-button-delete:hover {
   background-color: var(--color-admin-action-delete-hover, #6d0b58);
 }
+.novedades-table-button {
+  background-color: var(--color-admin-action-view, #fc8de4);
+}
+.novedades-table-button:hover {
+  background-color: var(--color-admin-action-view-hover, #d66abf);
+}
 
 /* ======================================== */
-/* === ESTILOS PARA MODALES (BASE)      === */
+/* === ESTILOS DE PAGINACIÓN            === */
 /* ======================================== */
+.pagination-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 24px auto 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-light, #e0e0e0);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+
+.pagination-controls button {
+  padding: 8px 14px;
+  border: 1px solid var(--color-border-light, #d1d1d1);
+  background-color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.pagination-controls button:hover:not(.active) {
+  background-color: var(--color-table-row-hover, #f3d9ec);
+  border-color: var(--color-admin-hover, #b660a3);
+}
+
+.pagination-controls button.active {
+  background-color: var(--color-admin-hover, #b660a3);
+  color: white;
+  border-color: var(--color-admin-hover, #b660a3);
+  font-weight: bold;
+}
+
+/* Contenido del modal: se le da un ancho máximo para la cuadrícula */
 .novedades-modal-overlay {
+  /* La clave para que se superponga a todo y ocupe la pantalla completa */
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.65); /* Ligeramente más oscuro */
+  
+  /* El color de fondo oscuro y semitransparente */
+  background: rgba(0, 0, 0, 0.6);
+
+  /* La magia para centrar el contenido del modal vertical y horizontalmente */
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Un z-index alto para asegurar que esté por encima de todo lo demás */
   z-index: 1050;
+
+  /* Añade un padding por si el modal es muy grande en pantallas pequeñas */
   padding: 20px;
   box-sizing: border-box;
 }
 
+/* --- El Contenido del Modal (La caja blanca) --- */
+/* Esta es la ventana que contiene el formulario. */
 .novedades-modal-content {
-  display: flex;
-  flex-direction: column;
-  width: 60%;
   background: var(--color-background-light, #fff);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
-  padding: 30px 35px; /* Más padding */
-  box-sizing: border-box;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  padding: 30px 35px;
+  border-radius: 10px;
+  
+  /* Define el ancho máximo para que no sea demasiado grande */
+  width: 100%;
+  max-width: 900px; /* Ancho que definimos para la cuadrícula 3x3 */
+
+  /* Evita que el modal sea más alto que la pantalla y permite el scroll interno */
   max-height: 90vh;
   overflow-y: auto;
-  border-radius: 10px; /* Redondeo consistente */
-}
-.novedades-modal-content h3 { /* Título general de los modales */
-  font-size: 1.5rem; /* Ligeramente más pequeño */
-  font-weight: 600;
-  margin-bottom: 25px; /* Más espacio */
-  color: var(--color-primary-darker, #6d0b58); /* Consistente con título de página */
-  width: 100%;
-  text-align: center;
-}
 
-/* --- Modal de Detalles --- */
-.novedades-modal-content.detalle-modal { /* Si añades esta clase al modal de detalle */
-  max-width: 550px; /* Ancho para detalles */
-}
-.novedades-modal-content p { /* Estilo base para <p> en modal de detalles */
-  margin-bottom: 12px;
-  line-height: 1.7; /* Un poco más de interlineado */
-  color: var(--color-text-dark, #333);
-  font-size: 1rem;
-}
-.novedades-modal-content p strong { /* Etiquetas <strong> en modal de detalles */
-  color: var(--color-primary, #eb0985); /* <<--- COLOR ROSADO PARA ETIQUETAS */
-  font-weight: 600;
-  margin-right: 8px;
-  display: inline-block;
-  min-width: 110px; /* Ajusta para alineación de dos puntos */
-}
-.novedades-modal-content div > strong { /* Label "Días y Horarios:" en modal de detalles */
-  color: var(--color-primary, #eb0985); /* <<--- COLOR ROSADO */
-  font-weight: 600;
-  display: block;
-  margin-bottom: 8px; /* Espacio antes de la lista de días */
-}
-.novedades-modal-content .botonesAgregarHorarioCitasGuardarCancelar { /* Contenedor del botón cerrar en Detalles */
-  margin-top: 25px;
-  padding-top: 0; /* Quitar padding si solo hay un botón */
-  border-top: none; /* Quitar borde si solo hay un botón */
-  justify-content: center; /* Centrar el botón Cerrar */
-}
-.novedades-modal-content .botonesAgregarHorarioCitasGuardarCancelar .botonCerrar {
-  /* Estilos ya definidos más abajo, pero podrías sobreescribir si es necesario */
-  background-color: var(--color-admin-action-view, #fc8de4);
-}
-.novedades-modal-content .botonesAgregarHorarioCitasGuardarCancelar .botonCerrar:hover {
-  background-color: var(--color-admin-action-view-hover, #d66abf);
-}
-
-
-/* ===================================================== */
-/* === ESTILOS FORMULARIO HORARIOS (MODAL CREAR/EDITAR) === */
-/* ===================================================== */
-.novedades-modal-content.form-modal { /* Si añades esta clase al modal de formulario */
-   max-width: 750px; /* Más ancho para el formulario */
-}
-
-.novedades-form-grid {
-  display: grid;
-  grid-template-columns: 1fr; /* Default a una columna */
-  gap: 20px; /* Espacio entre grupos principales */
-  padding: 5px 0;
-}
-
-@media (min-width: 600px) { /* A partir de 600px, usar dos columnas para fechas */
-  .novedades-form-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 20px 25px;
-  }
-  .form-encargado,
-  .form-dias-horarios-container,
-  .form-group-novedades { /* Para el switch de estado */
-      grid-column: 1 / -1;
-  }
-  .form-fechas {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-  }
-}
-
-.form-encargado, .form-fechas, .form-dias-horarios-container, .form-group-novedades {
+  /* La estructura interna del modal */
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Espacio entre label e input/select */
 }
 
-.form-encargado label,
-.form-fechaHorarioCitas label,
-.form-dias-horarios-container > label, /* Label principal de "Días y Horarios" */
-.form-group-novedades .form-label-novedades { /* Label del switch de estado */
+/* --- Estilos para el Encabezado del Modal --- */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--color-primary-darker, #6d0b58);
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+  line-height: 1;
+}
+.modal-close-button:hover {
+  color: #000;
+}
+
+/* Contenedor principal de los campos de días y horarios */
+.form-dias-horarios-container > label {
+  display: block;
   font-weight: 600;
-  color: var(--color-primary-darker, #6d0b58); /* Color de labels */
-  font-size: 0.9rem;
-  text-align: left;
+  color: var(--color-primary-darker, #6d0b58);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
 }
 
-.form-encargado select,
-.form-fechaHorarioCitas input[type="date"],
+/* --- LA CLAVE DE LA CUADRÍCULA --- */
+.dias-grid {
+  display: grid;
+  /* Crea 3 columnas de fracción de espacio igual (1fr) */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem; /* Espacio entre los bloques de día */
+}
+
+/* Estilo para cada bloque de día individual */
+.dia-fields {
+  padding: 1rem;
+  border: 1px solid var(--color-border-light, #e0e0e0);
+  border-radius: 8px;
+  background-color: var(--color-background-section-light, #f9f9f9);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dia-fields-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-text-dark, #333);
+}
+
+.containerAgregarHorarioCitas-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.containerAgregarHorarioCitas-inputs label {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.25rem;
+}
 .containerAgregarHorarioCitas-inputs select,
 .containerAgregarHorarioCitas-inputs input[type="time"] {
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px;
   border: 1px solid var(--color-border-light, #c287b5);
   border-radius: 5px;
-  background-color: var(--color-background-input, white);
-  color: var(--color-text-dark, #333);
-  box-sizing: border-box;
   font-size: 0.95rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.form-encargado select:focus,
-.form-fechaHorarioCitas input[type="date"]:focus,
-.containerAgregarHorarioCitas-inputs select:focus,
-.containerAgregarHorarioCitas-inputs input[type="time"]:focus {
-  border-color: var(--color-admin-hover, #b660a3); /* Color de foco */
-  box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
-  outline: none;
 }
 
-.dias-grid { /* Contenedor de todas las filas de día/hora */
-  display: flex; /* Cambiado a flex para mejor manejo de wrap */
-  flex-direction: column;
-  gap: 15px; /* Espacio entre cada fila de día */
-  width: 100%;
-  max-height: 280px; /* Altura máxima antes de scroll */
-  overflow-y: auto;
-  padding: 15px; /* Padding interno */
-  border: 1px solid var(--color-border-light, #e0e0e0); /* Borde más suave */
-  border-radius: 6px;
-  background-color: var(--color-background-section-light, #f9f9f9); /* Fondo suave */
-}
-
-.dia-fields { /* Cada fila de día/hora (label, select, inputs, botón menos) */
-  padding: 15px;
-  border: 1px solid var(--color-border-medium, #d1c4e9); /* Borde distintivo para cada día */
-  border-radius: 6px;
-  background-color: var(--color-background-light, #fff);
-  display: flex; /* Para alinear label y container-inputs */
-  flex-direction: column;
-  gap: 10px;
-}
-
-.containerAgregarHorarioCitas-inputs { /* Contenedor de select día, input hora, botón menos */
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap; /* Para que se ajuste en pantallas pequeñas */
-  width: 100%;
-}
-.containerAgregarHorarioCitas-inputs > div { /* Para los wrappers de select e inputs de tiempo */
-  flex: 1; /* Distribuye el espacio */
-  min-width: 100px; /* Ancho mínimo para cada control */
-}
-.containerAgregarHorarioCitas-inputs > span { /* "a" entre horas */
-  margin: 0 5px;
-  white-space: nowrap;
-  color: var(--color-text-medium, #555);
-  align-self: center; /* Centrar la "a" con los inputs */
-}
-
+/* Botones dentro del formulario */
 .botonRemoverDia {
-  background-color: var(--color-admin-action-delete, #b660a3);
-  color: white;
-  padding: 0; /* Quitar padding si es solo ícono */
-  border: none;
-  border-radius: 50%;
-  width: 28px; /* Tamaño fijo */
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  /* margin-left: auto; No necesario si el último div es el botón */
-}
-.botonRemoverDia:hover {
-  background-color: var(--color-admin-action-delete-hover, #6d0b58);
-}
-.botonRemoverDia svg { /* Ajustar tamaño del ícono si es necesario */
-  font-size: 0.9em;
+  background: none; border: none; font-size: 1.5rem; color: var(--color-danger, red); cursor: pointer;
 }
 
-
-.botonAgregarDia {
-  align-self: flex-start; /* Alinear a la izquierda */
-  margin-top: 15px;
-  padding: 9px 14px; /* Ligeramente más pequeño */
+/* --- ESTILO DE BOTONES (Guardar/Cancelar) --- */
+.botonAgregar {
+  align-self: center; 
+  margin-top: 1.5rem;
+  padding: 9px 14px;
   font-size: 0.9rem;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: var(--color-admin-action-view, #fc8de4); /* Rosa claro */
-  color: var(--color-text-dark, black); /* Texto oscuro para contraste */
+  background-color: var(--color-admin-action-view, #fc8de4);
+  color: var(--color-text-dark, black);
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.botonAgregarDia:hover {
+.botonAgregar:hover {
   background-color: var(--color-admin-action-view-hover, #d66abf);
 }
-.botonAgregarDia svg { /* Ajustar tamaño del ícono + */
-  font-size: 0.9em;
+
+.botonCerrar{
+  background-color: var(--color-admin-action-delete);
 }
 
-
-.requiredAsteriscoHorarioCitas {
-  color: var(--color-danger, red);
-  margin-left: 3px;
+.botonCerrar:hover {
+  background-color: var(--color-admin-action-delete-hover);
 }
-.errorHorariocitas {
-  color: var(--color-danger, red);
-  font-size: 0.8rem;
-  margin-top: 4px;
+
+.botonAgregarDia {
   display: block;
-  text-align: left;
+  width: -moz-fit-content; 
+  width: fit-content; 
+  margin-left: auto;   
+  margin-right: auto; 
+  margin-top: 1.5rem;
+  padding: 9px 14px;
+  font-size: 0.9rem;
+  border: 1px dashed #ccc;
+  gap: 6px;
+  background-color: var(--color-admin-action-view, #fc8de4);
+  color: var(--color-text-dark, black);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.form-group-novedades { /* Contenedor del switch de estado */
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 15px;
+.botonAgregarDia:hover {
+  background-color: var(--color-table-row-hover, #f3d9ec);
 }
 
 /* Botones Guardar/Cancelar del Modal de Formulario */
 .botonesAgregarHorarioCitasGuardarCancelar {
-  grid-column: 1 / -1; /* Asegurar que ocupe todo el ancho si está en el grid principal */
+  grid-column: 1 / -1;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center; 
   gap: 15px;
-  margin-top: 30px; /* Más espacio antes de los botones */
+  margin-top: 30px;
   padding-top: 20px;
-  border-top: 1px solid var(--color-border-light, #e0e0e0); /* Línea divisoria más suave */
-}
-.botonesAgregarHorarioCitasGuardarCancelar .botonAgregar { /* Botón Guardar/Actualizar */
-  background-color: var(--color-admin-hover, #b660a3); /* Consistente con "Agregar Horario" */
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-weight: 500;
-}
-.botonesAgregarHorarioCitasGuardarCancelar .botonAgregar:hover {
-  background-color: var(--color-primary-darker, #6d0b58);
-}
-.botonesAgregarHorarioCitasGuardarCancelar .botonCerrar { /* Botón Cancelar */
-  background-color: var(--color-button-secondary-bg, #9e9e9e); /* Gris para cancelar */
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-weight: 500;
-}
-.botonesAgregarHorarioCitasGuardarCancelar .botonCerrar:hover {
-  background-color: #757575; /* Gris más oscuro */
+  border-top: 1px solid var(--color-border-light, #e0e0e0);
 }
 
-/* ======================================== */
-/* === ESTILOS PARA MODAL DE CONFIRMACIÓN === */
-/* ======================================== */
-.novedades-modal-confirm { /* Contenido específico del modal de confirmación */
-  background: var(--color-background-light, white);
-  padding: 30px 35px;
-  border-radius: 10px;
-  text-align: center;
-  max-width: 400px; /* Más pequeño para confirmaciones */
-  margin: 0 auto; /* Centrar si el overlay es flex */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+.dia-fields:only-child {
+  grid-column-start: 2;
 }
-.novedades-modal-confirm h3 {
-  font-size: 1.3rem;
-  color: var(--color-primary-darker, #6d0b58);
-  margin-bottom: 15px;
-}
-.novedades-modal-confirm p {
-  margin-bottom: 25px;
-  color: var(--color-text-dark, #333);
-  font-size: 1rem;
-  line-height: 1.6;
-}
-.novedades-modal-confirm-buttons { /* Contenedor de botones en modal de confirmación */
-  display: flex;
-  justify-content: center; /* Centrar botones */
-  gap: 15px;
-}
-/* Los botones dentro de .novedades-modal-confirm-buttons pueden usar las clases genéricas */
-/* .botonAgregar (para confirmar) y .botonCerrar (para cancelar), o clases específicas */
-/* si quieres colores diferentes (ej. rojo para confirmar eliminación) */
 
+/* --- Ajuste para pantallas de tablet y móvil --- */
+@media (max-width: 900px) {
+  .dia-fields:only-child {
+    grid-column-start: auto;
+  }
+}
+
+/* --- RESPONSIVIDAD PARA LA CUADRÍCULA --- */
+@media (max-width: 900px) {
+  .novedades-modal-content.form-modal { max-width: 650px; }
+  .dias-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .novedades-modal-content.form-modal { max-width: 100%; width: 95%; }
+  .dias-grid { grid-template-columns: 1fr; }
+}
 
 /* ======================================== */
 /* === ESTILOS RESPONSIVOS              === */
 /* ======================================== */
-@media (max-width: 900px) { /* Tablets y móviles grandes */
-  .novedades-content {
-      margin-left: 0; /* Si NavbarAdmin se oculta o cambia */
-      padding: 20px;
+@media (max-width: 900px) {
+  .novedades-content,
+  .horarios-content {
+    margin-left: 0;
+    padding: 20px;
   }
   .novedades-actions-bar {
-      flex-direction: column;
-      align-items: stretch; /* Estirar elementos */
+    flex-direction: column;
+    align-items: stretch;
   }
-  .novedades-search-bar {
-      width: 100%; /* Ocupar todo el ancho */
-  }
-  .novedades-add-button {
-      width: 100%; /* Ocupar todo el ancho */
-  }
-  .novedades-modal-content {
-      width: 95%;
-      max-width: 600px; /* Permitir un poco más en tablets */
-      padding: 20px 25px;
-  }
-  .novedades-form-grid { /* En tablet, mantener 2 columnas si es posible, pero ajustar gaps */
-      gap: 15px;
+  .novedades-search-bar,
+  .novedades-add-button,
+  .filtro-input {
+    width: 100%;
   }
 }
 
-@media (max-width: 600px) { /* Móviles */
-  .novedades-content h1 {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-  }
-  .novedades-table-horarios {
-      font-size: 0.8rem; /* Reducir fuente de la tabla */
-  }
-  .novedades-table-horarios th,
-  .novedades-table-horarios td {
-      padding: 8px 10px; /* Menos padding en celdas */
-  }
-  .novedades-actions { gap: 5px; }
-  .novedades-table-button { padding: 6px 8px; font-size: 0.75rem; }
-
-  .novedades-modal-content {
-      padding: 20px;
-      max-height: 95vh; /* Permitir más altura en vertical */
-  }
-  .novedades-modal-content h3 {
-      font-size: 1.3rem;
-      margin-bottom: 20px;
-  }
-  .novedades-form-grid { /* Formulario a una columna en móviles */
-      grid-template-columns: 1fr;
-      gap: 15px;
-  }
-  .form-fechas { /* Fechas también a una columna */
-      grid-template-columns: 1fr;
-      gap: 15px;
-  }
-  .containerAgregarHorarioCitas-inputs { /* Inputs de día/hora */
-      flex-direction: column;
-      align-items: stretch; /* Estirar inputs */
-      gap: 8px;
-  }
-  .containerAgregarHorarioCitas-inputs > div {
-      min-width: 100%;
-  }
-  .containerAgregarHorarioCitas-inputs > span { /* La "a" entre horas */
-      text-align: center;
-      margin: 5px 0;
-  }
-  .botonRemoverDia {
-      align-self: flex-end;
-      margin-top: 5px;
-  }
-  .botonAgregarDia {
-      width: 100%; /* Botón agregar día ocupa todo el ancho */
-      justify-content: center;
-  }
-  .botonesAgregarHorarioCitasGuardarCancelar {
-      flex-direction: column; /* Botones Guardar/Cancelar en columna */
-      gap: 10px;
-  }
-  .botonesAgregarHorarioCitasGuardarCancelar .botonAgregar,
-  .botonesAgregarHorarioCitasGuardarCancelar .botonCerrar {
-      width: 100%; /* Ocupar todo el ancho */
-  }
-}
-
-/* Estilos para el modo responsivo de la tabla (data-label) */
-@media (max-width: 768px) { /* O el breakpoint donde quieras que cambie la tabla */
-  .novedades-table-horarios thead {
-      display: none; /* Ocultar encabezados originales */
-  }
-  .novedades-table-horarios,
-  .novedades-table-horarios tbody,
-  .novedades-table-horarios tr,
-  .novedades-table-horarios td {
-      display: block;
-      width: 100%;
-  }
-  .novedades-table-horarios tr {
-      margin-bottom: 15px;
-      border: 1px solid var(--color-admin-primary-border, #e9d3e4);
-      border-radius: 8px;
-      padding: 10px;
-      background-color: var(--color-background-light, #fff);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  }
-  .novedades-table-horarios td {
-      text-align: right;
-      padding-left: 50% !important; /* Dejar espacio para la etiqueta */
-      position: relative;
-      border: none;
-      border-bottom: 1px solid var(--color-border-light, #f0f0f0);
-      font-size: 0.9rem;
-  }
-  .novedades-table-horarios td:last-child {
-      border-bottom: none;
-  }
-  .novedades-table-horarios td::before {
-      content: attr(data-label); /* Muestra el contenido de data-label */
-      position: absolute;
-      left: 10px;
-      width: calc(50% - 20px); /* Ancho de la etiqueta */
-      padding-right: 10px;
-      white-space: nowrap;
-      font-weight: 600;
-      color: var(--color-primary-darker, #6d0b58); /* Color de la etiqueta */
-      text-align: left;
-  }
-  /* Ajustes específicos para celdas de estado y acciones en móvil */
-  .novedades-table-horarios td[data-label="Estado:"]::before,
-  .novedades-table-horarios td[data-label="Acciones:"]::before {
-      /* Se puede ocultar la etiqueta si el contenido es muy obvio */
-      /* content: ""; */
-  }
-  .novedades-table-horarios td[data-label="Acciones:"] {
-      padding-left: 10px !important; /* Resetear padding para centrar acciones */
-      text-align: center; /* Centrar los botones de acción */
-  }
-  .novedades-table-horarios td[data-label="Estado:"] {
-    text-align: right; /* O center, según preferencia */
+@media (max-width: 768px) {
+  .pagination-container {
+    flex-direction: column;
+    gap: 15px;
   }
 }
