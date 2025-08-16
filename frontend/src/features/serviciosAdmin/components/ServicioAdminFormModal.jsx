@@ -1,3 +1,4 @@
+// src/features/serviciosAdmin/components/ServicioAdminFormModal.jsx
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import '../css/ServiciosAdmin.css';
@@ -10,19 +11,17 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // La lógica de validación por campo permanece igual
   const validateField = (name, value) => {
     let error = "";
     switch (name) {
       case 'nombre':
         if (!value.trim()) error = "El nombre es obligatorio.";
-        else if (!/^[a-zA-Z0-9\sñÑáéíóúÁÉÍÓÚüÜ]+$/.test(value)) error = "El nombre solo puede contener letras, números y espacios.";
         break;
       case 'precio':
         if (!String(value).trim()) error = "El precio es obligatorio.";
         else if (isNaN(value) || Number(value) < 0) error = "El precio debe ser un número no negativo.";
         break;
-      case 'categoriaServicioId':
+      case 'id_categoria_servicio':
         if (!value) error = "Debe seleccionar una categoría.";
         break;
       default:
@@ -32,7 +31,6 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     return error;
   };
 
-  // La inicialización del formulario permanece igual
   useEffect(() => {
     if (isOpen) {
       setFormErrors({});
@@ -51,8 +49,8 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
         nombre: isEditMode ? initialData.nombre || '' : '',
         descripcion: isEditMode ? initialData.descripcion || '' : '',
         precio: isEditMode ? initialData.precio || '' : '',
-        duracionEstimada: isEditMode ? initialData.duracionEstimadaMin || '' : '',
-        categoriaServicioId: isEditMode ? initialData.categoriaServicioId || '' : '',
+        // Se corrige el nombre de la propiedad para la categoría
+        id_categoria_servicio: isEditMode ? initialData.id_categoria_servicio || '' : '',
       });
       setPreviewUrl(getInitialImageUrl());
     }
@@ -72,53 +70,47 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     }
   };
 
-  // --- CAMBIO CLAVE: Lógica de envío de datos más robusta ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // 1. Validar todos los campos antes de continuar
+    // Validar todos los campos antes de continuar
     const validationErrors = {};
-    let firstErrorField = null;
-    Object.keys(formData).forEach(key => {
-      const error = validateField(key, formData[key]);
+    let hasErrors = false;
+    
+    const requiredFields = ['nombre', 'precio', 'id_categoria_servicio'];
+    requiredFields.forEach(field => {
+      const error = validateField(field, formData[field]);
       if (error) {
-        validationErrors[key] = error;
-        if (!firstErrorField) firstErrorField = key;
+        validationErrors[field] = error;
+        hasErrors = true;
       }
     });
 
-    if (Object.keys(validationErrors).length > 0) {
-      setFormErrors(validationErrors);
+    setFormErrors(validationErrors);
+    if (hasErrors) {
       toast.error("Por favor, corrige los errores del formulario.");
       return;
     }
     
     setIsSubmitting(true);
     
-    // 2. Construir el FormData de forma precisa
     const submissionData = new FormData();
-    
-    // Añadir campos obligatorios
     submissionData.append('nombre', formData.nombre);
     submissionData.append('precio', formData.precio);
-    submissionData.append('categoriaServicioId', formData.categoriaServicioId);
+    // Se corrige el nombre de la propiedad
+    submissionData.append('id_categoria_servicio', formData.id_categoria_servicio);
     
-    // Añadir campos opcionales SOLO SI tienen un valor
     if (formData.descripcion) {
       submissionData.append('descripcion', formData.descripcion);
     }
-    if (formData.duracionEstimada) {
-      submissionData.append('duracionEstimada', formData.duracionEstimada);
-    }
+
     if (imagenFile) {
       submissionData.append('imagen', imagenFile);
     }
 
-    // 3. Enviar los datos
     try {
       await onSubmit(submissionData);
     } catch (err) {
-      // El error de la API (400) será capturado aquí
       toast.error(err.response?.data?.message || err.message || 'Error al guardar.');
     } finally {
       setIsSubmitting(false);
@@ -134,7 +126,6 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
         
         <form onSubmit={handleSubmit} noValidate>
           <div className="servicios-admin-form-grid">
-            {/* El JSX del formulario permanece igual */}
             <div className="servicios-admin-form-group">
               <label>Nombre del Servicio <span className="required-asterisk">*</span></label>
               <input name="nombre" value={formData.nombre || ''} onChange={handleChange} className="form-control" />
@@ -152,20 +143,18 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
               {formErrors.precio && <span className="field-error-message">{formErrors.precio}</span>}
             </div>
             
-            <div className="servicios-admin-form-group">
-              <label>Duración Estimada (minutos)</label>
-              <input name="duracionEstimada" type="number" value={formData.duracionEstimada || ''} onChange={handleChange} className="form-control" />
-            </div>
+            {/* Se elimina el campo de duración estimada */}
             
             <div className="servicios-admin-form-group">
               <label>Categoría <span className="required-asterisk">*</span></label>
-              <select name="categoriaServicioId" value={formData.categoriaServicioId || ''} onChange={handleChange} className="form-control">
+              <select name="id_categoria_servicio" value={formData.id_categoria_servicio || ''} onChange={handleChange} className="form-control">
                 <option value="">Seleccione una categoría...</option>
                 {(categorias || []).map(cat => (
+                  // Se usa cat.value y cat.label que se formatean en serviciosAdminService
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
                 ))}
               </select>
-              {formErrors.categoriaServicioId && <span className="field-error-message">{formErrors.categoriaServicioId}</span>}
+              {formErrors.id_categoria_servicio && <span className="field-error-message">{formErrors.id_categoria_servicio}</span>}
             </div>
             
             <div className="servicios-admin-form-group">

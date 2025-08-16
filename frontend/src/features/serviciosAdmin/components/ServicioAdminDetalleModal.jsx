@@ -1,3 +1,4 @@
+// src/features/serviciosAdmin/components/ServicioAdminDetalleModal.jsx
 import React from 'react';
 
 const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
@@ -26,7 +27,7 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
     <div className="servicios-admin-modal-overlay" onClick={onClose}>
       <div className="servicios-admin-modal-content" onClick={(e) => e.stopPropagation()}>
         
-        {/* CAMBIO: Botón 'X' para cerrar el modal */}
+        {/* Botón 'X' para cerrar el modal */}
         <button className="modal-close-button" onClick={onClose}>&times;</button>
         
         <h3>Detalles del Servicio</h3>
@@ -35,7 +36,7 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
           <p><strong>Nombre:</strong> {servicio.nombre}</p>
           <p><strong>Descripción:</strong> {servicio.descripcion || 'No aplica'}</p>
           <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
-          <p><strong>Duración Estimada:</strong> {servicio.duracionEstimadaMin ? `${servicio.duracionEstimadaMin} minutos` : 'No aplica'}</p>
+          {/* Se elimina la referencia a duracionEstimadaMin para consistencia con el backend */}
           <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'No aplica'}</p>
           <p><strong>Estado:</strong> {servicio.estado ? 'Activo' : 'Inactivo'}</p>
 
@@ -46,8 +47,6 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
             </div>
           )}
         </div>
-
-        {/* CAMBIO: Se eliminó el botón 'Cerrar' de la parte inferior */}
       </div>
     </div>
   );

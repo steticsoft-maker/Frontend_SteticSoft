@@ -1,3 +1,4 @@
+// src/features/serviciosAdmin/pages/ListaServiciosAdminPage.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import { toast } from 'react-toastify';
@@ -86,13 +87,31 @@ function ListaServiciosAdminPage() {
     setCurrentServicio(null);
   };
 
+  // Helper para limpiar los espacios en blanco
+  const cleanInput = (data) => {
+    const cleanedData = new FormData();
+    for (let pair of data.entries()) {
+      const [key, value] = pair;
+      if (typeof value === 'string') {
+        cleanedData.append(key, value.trim());
+      } else {
+        cleanedData.append(key, value);
+      }
+    }
+    return cleanedData;
+  };
+  
   const handleSave = async (servicioData) => {
     try {
+      // Limpiamos los datos antes de enviarlos
+      const cleanedData = cleanInput(servicioData);
+      
       if (formType === "edit") {
-        await updateServicio(currentServicio.idServicio, servicioData);
+        // Se corrige el ID del servicio
+        await updateServicio(currentServicio.id_servicio, cleanedData); 
         toast.success('Servicio actualizado exitosamente!');
       } else {
-        await createServicio(servicioData);
+        await createServicio(cleanedData);
         toast.success('Servicio creado exitosamente!');
       }
       closeModal();
@@ -105,9 +124,11 @@ function ListaServiciosAdminPage() {
 
   const handleDelete = async () => {
     if (!currentServicio) return;
-    setLoadingId(currentServicio.idServicio);
+    // Se corrige el ID del servicio
+    setLoadingId(currentServicio.id_servicio); 
     try {
-      await deleteServicio(currentServicio.idServicio);
+      // Se corrige el ID del servicio
+      await deleteServicio(currentServicio.id_servicio); 
       toast.success('Servicio eliminado exitosamente!');
       closeModal();
       cargarDatos();
@@ -119,11 +140,14 @@ function ListaServiciosAdminPage() {
   };
 
   const handleToggleEstado = async (servicio) => {
-    setLoadingId(servicio.idServicio);
+    // Se corrige el ID del servicio
+    setLoadingId(servicio.id_servicio); 
     try {
-      await cambiarEstadoServicio(servicio.idServicio, !servicio.estado);
+      // Se corrige el ID del servicio
+      await cambiarEstadoServicio(servicio.id_servicio, !servicio.estado); 
       toast.success(`Estado del servicio cambiado exitosamente!`);
-      setServicios(prev => prev.map(s => s.idServicio === servicio.idServicio ? { ...s, estado: !s.estado } : s));
+      // Se corrige el ID del servicio
+      setServicios(prev => prev.map(s => s.id_servicio === servicio.id_servicio ? { ...s, estado: !s.estado } : s)); 
     } catch (err) {
       toast.error(err?.message || "Error al cambiar el estado.");
     } finally {
@@ -197,7 +221,8 @@ function ListaServiciosAdminPage() {
         onConfirm={handleDelete}
         title="Confirmar Eliminación"
         message={`¿Estás seguro de eliminar el servicio "${currentServicio?.nombre}"?`}
-        isConfirming={loadingId === currentServicio?.idServicio}
+        // Se corrige el ID del servicio
+        isConfirming={loadingId === currentServicio?.id_servicio} 
       />
     </div>
   );
