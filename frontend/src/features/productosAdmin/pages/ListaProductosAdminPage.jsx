@@ -32,6 +32,10 @@ function ListaProductosAdminPage() {
     const [currentProducto, setCurrentProducto] = useState(null);
     const [validationMessage, setValidationMessage] = useState('');
 
+    // ✨ NUEVO: Estados para confirmación de cambio de estado
+    const [isConfirmEstadoOpen, setIsConfirmEstadoOpen] = useState(false);
+    const [productoEstadoActual, setProductoEstadoActual] = useState(null);
+
     const cargarProductos = useCallback(async () => { // ✨ Eliminamos searchTerm de los parámetros porque el filtrado ahora es local
         setIsLoading(true);
         setError(null);
@@ -61,7 +65,9 @@ function ListaProductosAdminPage() {
         setIsDetailsModalOpen(false);
         setIsConfirmDeleteOpen(false);
         setIsValidationModalOpen(false);
+        setIsConfirmEstadoOpen(false); // ✨ Cierra el modal de confirmación de estado
         setCurrentProducto(null);
+        setProductoEstadoActual(null); // ✨ Limpia el producto de estado
         setValidationMessage('');
     };
 
@@ -101,16 +107,32 @@ function ListaProductosAdminPage() {
         }
     };
 
-    const handleToggleEstado = async (productoId) => {
+    // ✨ NUEVO: Solicitar confirmación antes de cambiar estado
+    const handleSolicitarToggleEstado = (productoId) => {
         const producto = productos.find(p => p.idProducto === productoId);
         if (producto) {
-            try {
-                await productosAdminService.toggleEstado(productoId, !producto.estado);
-                await cargarProductos(); // ✨ Cargamos todos los productos de nuevo después de cambiar el estado
-            } catch (err) {
-                setValidationMessage(err.message || "Error al cambiar el estado.");
-                setIsValidationModalOpen(true);
-            }
+            setProductoEstadoActual(producto);
+            setIsConfirmEstadoOpen(true);
+        }
+    };
+
+    // ✨ NUEVO: Confirmar y ejecutar el cambio de estado
+    const handleConfirmToggleEstado = async () => {
+        if (!productoEstadoActual) return;
+        try {
+            await productosAdminService.toggleEstado(
+                productoEstadoActual.idProducto,
+                !productoEstadoActual.estado
+            );
+            await cargarProductos();
+            setValidationMessage("Estado del producto actualizado exitosamente.");
+            setIsValidationModalOpen(true);
+        } catch (err) {
+            setValidationMessage(err.message || "Error al cambiar el estado.");
+            setIsValidationModalOpen(true);
+        } finally {
+            setIsConfirmEstadoOpen(false);
+            setProductoEstadoActual(null);
         }
     };
 
@@ -204,7 +226,7 @@ function ListaProductosAdminPage() {
                                 onView={(prod) => handleOpenModal('details', prod)}
                                 onEdit={(prod) => handleOpenModal('edit', prod)}
                                 onDeleteConfirm={(prod) => handleOpenModal('delete', prod)}
-                                onToggleEstado={handleToggleEstado}
+                                onToggleEstado={handleSolicitarToggleEstado} // ✨ Cambiado para usar confirmación
                             />
                             <Pagination
                                 itemsPerPage={itemsPerPage}
@@ -239,6 +261,18 @@ function ListaProductosAdminPage() {
                 onConfirm={handleDelete}
                 title="Confirmar Eliminación"
                 message={`¿Está seguro de que desea eliminar el producto "${currentProducto?.nombre || ''}"?`}
+            />
+            {/* ✨ NUEVO: Modal de confirmación de cambio de estado */}
+            <ConfirmModal
+                isOpen={isConfirmEstadoOpen}
+                onClose={closeModal}
+                onConfirm={handleConfirmToggleEstado}
+                title="Confirmar Acción"
+                message={
+                    productoEstadoActual
+                        ? `¿Está seguro de que desea ${productoEstadoActual.estado ? "desactivar" : "activar"} el producto "${productoEstadoActual.nombre}"?`
+                        : ""
+                }
             />
             <ValidationModal
                 isOpen={isValidationModalOpen}

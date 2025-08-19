@@ -36,6 +36,10 @@ const ListaCategoriasServicioPage = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [categoriaActual, setCategoriaActual] = useState(null);
 
+  // --- NUEVOS ESTADOS para confirmación de cambio de estado ---
+  const [isConfirmEstadoModalOpen, setIsConfirmEstadoModalOpen] = useState(false);
+  const [categoriaEstadoActual, setCategoriaEstadoActual] = useState(null);
+
   // --- Lógica de carga de datos ---
   const cargarCategorias = useCallback(async () => {
     setLoading(true);
@@ -143,16 +147,29 @@ const ListaCategoriasServicioPage = () => {
       setCategoriaActual(null);
     }
   };
-  
-  const handleCambiarEstadoCategoria = async (categoria) => {
-    setLoadingId(categoria.idCategoriaServicio);
+
+  // --- NUEVO: Manejador para solicitar confirmación de cambio de estado ---
+  const handleSolicitarCambioEstadoCategoria = (categoria) => {
+    setCategoriaEstadoActual(categoria);
+    setIsConfirmEstadoModalOpen(true);
+  };
+
+  // --- NUEVO: Manejador para confirmar el cambio de estado ---
+  const handleConfirmarCambioEstadoCategoria = async () => {
+    if (!categoriaEstadoActual) return;
+    setLoadingId(categoriaEstadoActual.idCategoriaServicio);
     try {
-      await cambiarEstadoCategoriaServicio(categoria.idCategoriaServicio, !categoria.estado);
+      await cambiarEstadoCategoriaServicio(
+        categoriaEstadoActual.idCategoriaServicio,
+        !categoriaEstadoActual.estado
+      );
       cargarCategorias();
     } catch (err) {
       setError(err?.response?.data?.message || 'Error al cambiar estado.');
     } finally {
       setLoadingId(null);
+      setIsConfirmEstadoModalOpen(false);
+      setCategoriaEstadoActual(null);
     }
   };
 
@@ -206,7 +223,7 @@ const ListaCategoriasServicioPage = () => {
               categorias={paginatedData} 
               onEditar={handleAbrirEditarModal}
               onEliminar={handleEliminarCategoria}
-              onCambiarEstado={handleCambiarEstadoCategoria}
+              onCambiarEstado={handleSolicitarCambioEstadoCategoria}
               onVerDetalles={handleVerDetalles}
               loadingId={loadingId}
             />
@@ -265,8 +282,20 @@ const ListaCategoriasServicioPage = () => {
         </p>
         <p style={{color: 'red', fontSize: '0.9rem'}}>Esta acción no se puede deshacer.</p>
       </ConfirmModal>
+
+      {/* --- NUEVO: Modal de confirmación de cambio de estado --- */}
+      <ConfirmModal
+        isOpen={isConfirmEstadoModalOpen}
+        onClose={() => setIsConfirmEstadoModalOpen(false)}
+        onConfirm={handleConfirmarCambioEstadoCategoria}
+        title="Confirmar Acción"
+        isConfirming={loadingId !== null}
+      >
+        <p>
+          ¿Estás seguro de que deseas {categoriaEstadoActual?.estado ? 'desactivar' : 'activar'} la categoría
+          <strong> "{categoriaEstadoActual?.nombre}"</strong>?
+        </p>
+      </ConfirmModal>
     </div>
   );
 };
-
-export default ListaCategoriasServicioPage;
