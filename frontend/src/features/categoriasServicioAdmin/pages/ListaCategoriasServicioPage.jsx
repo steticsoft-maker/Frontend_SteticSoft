@@ -299,3 +299,5 @@ const ListaCategoriasServicioPage = () => {
     </div>
   );
 };
+
+export default ListaCategoriasServicioPage;
