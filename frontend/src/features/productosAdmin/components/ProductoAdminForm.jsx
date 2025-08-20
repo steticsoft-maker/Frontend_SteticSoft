@@ -42,10 +42,10 @@ return (
     {/* --- Columna 1 --- */}
     <div className="producto-admin-form-group">
         <label htmlFor="tipoUso">Tipo de Uso</label>
-        <select id="tipoUso" name="tipoUso" value={formData.tipoUso} onChange={handleChange}>
-            <option value="Venta Directa">Venta Directa</option>
+        <select id="tipoUso" name="tipoUso" value={formData.tipoUso} onChange={handleChange} required>
+            <option value="">Selecciona tipo de uso</option>
             <option value="Interno">Interno</option>
-            <option value="Otro">Otro</option>
+          <option value="Externo">Externo</option>
         </select>
         {formErrors.tipoUso && <p className="error-message">{formErrors.tipoUso}</p>}
     </div>
