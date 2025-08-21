@@ -71,16 +71,12 @@ function ListaCategoriasProductoPage() {
                 const nombre = c.nombre?.toLowerCase() || "";
                 const descripcion = c.descripcion?.toLowerCase() || "";
                 const estadoTexto = c.estado ? "activo" : "inactivo";
-                const vidaUtil = c.vidaUtil?.toString().toLowerCase() || "";
-                const tipoUso = c.tipoUso?.toLowerCase() || "";
 
                 return (
                     id.includes(term) ||
                     nombre.includes(term) ||
                     descripcion.includes(term) ||
-                    estadoTexto.includes(term) ||
-                    vidaUtil.includes(term) ||
-                    tipoUso.includes(term)
+                    estadoTexto.includes(term)
                 );
             });
         }

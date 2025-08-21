@@ -196,7 +196,7 @@ function ProcesoVentaPage() {
       setTimeout(() => {
         setIsConfirmSaveModalOpen(false);
         setIsValidationModalOpen(false);
-        navigate("/ventas"); // Redirigir a la lista de ventas
+        navigate("/admin/ventas"); // Redirigir a la lista de ventas
       }, 2000);
     } catch (error) {
       setValidationMessage(error.message);
