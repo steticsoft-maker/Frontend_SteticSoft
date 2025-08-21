@@ -64,37 +64,46 @@ function ListaProveedoresPage() {
     else if (type === "edit" && proveedor) setIsEditarModalOpen(true);
   };
 
-  const handleSave = async (proveedorData) => {
-    const idProveedorLimpio = parseInt(proveedorData.idProveedor, 10);
-    const datosLimpiosParaEnviar = {
-      nombre: proveedorData.nombre, tipo: proveedorData.tipo, telefono: proveedorData.telefono,
-      correo: proveedorData.correo, direccion: proveedorData.direccion, tipoDocumento: proveedorData.tipoDocumento,
-      numeroDocumento: proveedorData.numeroDocumento, nitEmpresa: proveedorData.nitEmpresa,
-      nombrePersonaEncargada: proveedorData.nombrePersonaEncargada,
-      telefonoPersonaEncargada: proveedorData.telefonoPersonaEncargada, emailPersonaEncargada: proveedorData.emailPersonaEncargada,
-      estado: proveedorData.estado,
-    };
-    const onSaveSuccess = async () => {
-      closeModal();
-      await cargarProveedores();
-      setIsValidationModalOpen(true);
-    };
-    try {
-      if (idProveedorLimpio) {
-        await proveedoresService.updateProveedor(idProveedorLimpio, datosLimpiosParaEnviar);
-        setValidationMessage("Proveedor actualizado exitosamente.");
-      } else {
-        await proveedoresService.createProveedor(datosLimpiosParaEnviar);
-        setValidationMessage("Proveedor creado exitosamente.");
-      }
-      await onSaveSuccess();
-    } catch (err) {
-      const apiErrorMessage = err.response?.data?.message || "Ocurrió un error inesperado.";
-      const userFriendlyMessage = `Error al guardar: ${apiErrorMessage}. Por favor, revise los campos únicos como Correo, NIT o Documento.`;
-      setValidationMessage(userFriendlyMessage);
-      setIsValidationModalOpen(true);
-    }
+// ...código existente...
+
+const handleSave = async (proveedorData) => {
+  const idProveedorLimpio = parseInt(proveedorData.idProveedor, 10);
+  const datosLimpiosParaEnviar = {
+    nombre: proveedorData.nombre, tipo: proveedorData.tipo, telefono: proveedorData.telefono,
+    correo: proveedorData.correo, direccion: proveedorData.direccion, tipoDocumento: proveedorData.tipoDocumento,
+    numeroDocumento: proveedorData.numeroDocumento, nitEmpresa: proveedorData.nitEmpresa,
+    nombrePersonaEncargada: proveedorData.nombrePersonaEncargada,
+    telefonoPersonaEncargada: proveedorData.telefonoPersonaEncargada, emailPersonaEncargada: proveedorData.emailPersonaEncargada,
+    estado: proveedorData.estado,
   };
+  const onSaveSuccess = async () => {
+    closeModal();
+    await cargarProveedores();
+    setIsValidationModalOpen(true);
+  };
+  try {
+    if (idProveedorLimpio) {
+      await proveedoresService.updateProveedor(idProveedorLimpio, datosLimpiosParaEnviar);
+      setValidationMessage("Proveedor actualizado exitosamente.");
+    } else {
+      await proveedoresService.createProveedor(datosLimpiosParaEnviar);
+      setValidationMessage("Proveedor creado exitosamente.");
+    }
+    await onSaveSuccess();
+  } catch (err) {
+    // NUEVO: Mostrar mensajes de validación específicos del backend
+    let userFriendlyMessage = "Ocurrió un error inesperado.";
+    if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+      // Si el backend devuelve un array de errores de validación, los mostramos todos
+      userFriendlyMessage = err.response.data.errors.map(e => e.msg).join('\n');
+    } else if (err.response?.data?.message) {
+      userFriendlyMessage = err.response.data.message;
+    }
+    setValidationMessage(userFriendlyMessage);
+    setIsValidationModalOpen(true);
+  }
+};
+// ...código existente...
 
   const handleDelete = async () => {
     if (currentProveedor?.idProveedor) {
