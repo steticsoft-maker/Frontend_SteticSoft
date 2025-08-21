@@ -91,13 +91,13 @@ const handleSave = async (proveedorData) => {
     }
     await onSaveSuccess();
   } catch (err) {
-    // NUEVO: Mostrar mensajes de validación específicos del backend
+    // Mejor manejo de errores para mostrar mensajes específicos del backend
     let userFriendlyMessage = "Ocurrió un error inesperado.";
-    if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
-      // Si el backend devuelve un array de errores de validación, los mostramos todos
-      userFriendlyMessage = err.response.data.errors.map(e => e.msg).join('\n');
-    } else if (err.response?.data?.message) {
-      userFriendlyMessage = err.response.data.message;
+    const errorData = err.response?.data || err.error?.data || {};
+    if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+      userFriendlyMessage = errorData.errors.map(e => e.msg).join('\n');
+    } else if (errorData.message) {
+      userFriendlyMessage = errorData.message;
     }
     setValidationMessage(userFriendlyMessage);
     setIsValidationModalOpen(true);
