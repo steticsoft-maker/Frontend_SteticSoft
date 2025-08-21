@@ -140,7 +140,7 @@ function ListaVentasPage() {
           />
           <button
             className="botonAgregarVenta"
-            onClick={() => navigate('/ventas/proceso')} // Cambiado de /procesoventas
+            onClick={() => navigate('/admin/ventas/proceso')} // Cambiado de /procesoventas
           >
             Agregar Venta
           </button>
