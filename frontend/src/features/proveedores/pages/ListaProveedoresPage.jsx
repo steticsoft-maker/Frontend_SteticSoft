@@ -91,17 +91,26 @@ const handleSave = async (proveedorData) => {
     }
     await onSaveSuccess();
   } catch (err) {
-    // Mejor manejo de errores para mostrar mensajes específicos del backend
-    let userFriendlyMessage = "Ocurrió un error inesperado.";
-    const errorData = err.response?.data || err.error?.data || {};
-    if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
-      userFriendlyMessage = errorData.errors.map(e => e.msg).join('\n');
-    } else if (errorData.message) {
-      userFriendlyMessage = errorData.message;
-    }
-    setValidationMessage(userFriendlyMessage);
-    setIsValidationModalOpen(true);
+  // 👇 Imprime el error completo para depuración
+  console.log("ERROR AL GUARDAR PROVEEDOR:", err);
+
+  let userFriendlyMessage = "Ocurrió un error inesperado.";
+  // Intenta acceder a la data de error en diferentes rutas posibles
+  const errorData =
+    err?.response?.data ||
+    err?.data ||
+    err?.error?.data ||
+    err?.error ||
+    {};
+
+  if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+    userFriendlyMessage = errorData.errors.map(e => e.msg).join('\n');
+  } else if (errorData.message) {
+    userFriendlyMessage = errorData.message;
   }
+  setValidationMessage(userFriendlyMessage);
+  setIsValidationModalOpen(true);
+}
 };
 // ...código existente...
 
