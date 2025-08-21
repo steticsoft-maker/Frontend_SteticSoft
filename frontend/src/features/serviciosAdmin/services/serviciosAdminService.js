@@ -91,8 +91,9 @@ export const cambiarEstadoServicio = async (id, nuevoEstado) => {
  */
 export const getActiveCategoriasForSelect = async () => {
   try {
-    const response = await getCategoriasServicio({ estado: true }); // Envía el filtro 'estado'
-    const categoriasArray = response?.data?.data;
+    // getCategoriasServicio espera un booleano, no un objeto
+    const response = await getCategoriasServicio(true); // Solo categorías activas
+    const categoriasArray = response?.data;
 
     if (!Array.isArray(categoriasArray)) {
       console.error(
@@ -103,7 +104,7 @@ export const getActiveCategoriasForSelect = async () => {
     }
 
     return categoriasArray.map((cat) => ({
-      value: cat.id_categoria_servicio, // Corregido: Usa 'id_categoria_servicio' para coincidir con el backend
+      value: cat.id_categoria_servicio, // Ajusta según tu backend
       label: cat.nombre,
     }));
   } catch (error) {
