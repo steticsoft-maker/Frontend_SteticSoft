@@ -91,16 +91,16 @@ const handleSave = async (proveedorData) => {
     }
     await onSaveSuccess();
   } catch (err) {
-  // 👇 Imprime el error completo para depuración
+  // Imprime el error completo para depuración
   console.log("ERROR AL GUARDAR PROVEEDOR:", err);
 
   let userFriendlyMessage = "Ocurrió un error inesperado.";
+
   // Intenta acceder a la data de error en diferentes rutas posibles
   const errorData =
     err?.response?.data ||
     err?.data ||
-    err?.error?.data ||
-    err?.error ||
+    err ||
     {};
 
   if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
