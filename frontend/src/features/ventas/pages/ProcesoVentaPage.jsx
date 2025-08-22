@@ -1,25 +1,26 @@
 // src/features/ventas/pages/ProcesoVentaPage.jsx
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import VentaForm from "../components/VentaForm";
-import ItemSelectionModal from "../components/ItemSelectionModal"; // O el genérico de shared
+import ItemSelectionModal from "../components/ItemSelectionModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
 import {
-  getClientesParaVenta,
-  getProductosParaVenta,
-  getServiciosParaVenta,
+  getProductosParaVenta, // Ahora es una función asíncrona
+  getServiciosParaVenta, // Ahora es una función asíncrona
   saveNuevaVenta,
-  fetchVentas, // Para obtener la lista actual antes de guardar
+  fetchVentas,
 } from "../services/ventasService";
-import "../css/ProcesoVentas.css"; // Adaptado
+import { fetchClientes as getClientesParaVenta } from "../../clientes/services/clientesService";
+import "../css/ProcesoVentas.css";
 
 function ProcesoVentaPage() {
   const navigate = useNavigate();
 
   // Estado del formulario principal
-  const [modoCliente, setModoCliente] = useState(""); // 'existente' o 'nuevo'
+  const [modoCliente, setModoCliente] = useState("");
   const [datosCliente, setDatosCliente] = useState({
     nombre: "",
     documento: "",
@@ -33,12 +34,16 @@ function ProcesoVentaPage() {
   const [showProductoSelectModal, setShowProductoSelectModal] = useState(false);
   const [showServicioSelectModal, setShowServicioSelectModal] = useState(false);
 
-  // Listas de datos para los selectores (se cargarán desde el servicio)
+  // Listas de datos para los selectores
   const [clientesDisponibles, setClientesDisponibles] = useState([]);
   const [productosDisponibles, setProductosDisponibles] = useState([]);
   const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
 
-  // Estados para errores y confirmación
+  // Estados para la carga y errores de datos asíncronos
+  const [isLoadingClientes, setIsLoadingClientes] = useState(false);
+  const [errorClientes, setErrorClientes] = useState(null);
+
+  // Estados para errores y confirmación del formulario
   const [errorDatosCliente, setErrorDatosCliente] = useState("");
   const [errorItemsTabla, setErrorItemsTabla] = useState("");
   const [isConfirmSaveModalOpen, setIsConfirmSaveModalOpen] = useState(false);
@@ -46,54 +51,73 @@ function ProcesoVentaPage() {
   const [validationMessage, setValidationMessage] = useState("");
 
   useEffect(() => {
-    // Cargar datos para los selectores al montar la página
-    setClientesDisponibles(getClientesParaVenta());
-    setProductosDisponibles(getProductosParaVenta());
-    setServiciosDisponibles(getServiciosParaVenta());
+    const loadInitialData = async () => {
+      // Cargar productos y servicios al montar la página
+      const productos = await getProductosParaVenta();
+      const servicios = await getServiciosParaVenta();
+      setProductosDisponibles(productos);
+      setServiciosDisponibles(servicios);
+    };
+
+    loadInitialData();
   }, []);
 
   const handleDatosClienteChange = (e) => {
     const { name, value } = e.target;
     setDatosCliente((prev) => ({ ...prev, [name]: value }));
-    if (errorDatosCliente) setErrorDatosCliente(""); // Limpiar error al escribir
+    if (errorDatosCliente) setErrorDatosCliente("");
+  };
+
+  const handleAbrirModalClientes = async () => {
+    if (clientesDisponibles.length === 0) {
+      try {
+        setIsLoadingClientes(true);
+        setErrorClientes(null);
+        const clientes = await getClientesParaVenta();
+        setClientesDisponibles(clientes);
+      } catch (error) {
+        console.error("Error al cargar clientes:", error);
+        setErrorClientes("No se pudieron cargar los clientes. Inténtelo de nuevo.");
+      } finally {
+        setIsLoadingClientes(false);
+      }
+    }
+    setShowClienteSelectModal(true);
   };
 
   const seleccionarClienteDesdeModal = (cliente) => {
     setDatosCliente({
-      // Autocompletar campos con el cliente seleccionado
       nombre: cliente.nombre,
-      documento: cliente.documento,
+      documento: cliente.numeroDocumento,
       telefono: cliente.telefono,
       direccion: cliente.direccion,
     });
-    setModoCliente("existente"); // Asegurar que el modo refleje la acción
+    setModoCliente("existente");
     setShowClienteSelectModal(false);
     setErrorDatosCliente("");
   };
 
   const agregarItemDesdeModal = (itemSeleccionado, tipo) => {
-    // Verificar si el ítem ya está en la tabla
-    const itemExistenteIndex = itemsTabla.findIndex(
-      (item) => item.nombre === itemSeleccionado.nombre && item.tipo === tipo
-    );
+    setItemsTabla((prevItems) => {
+      const itemExistente = prevItems.find(
+        (item) => item.id === itemSeleccionado.id && item.tipo === tipo
+      );
 
-    if (itemExistenteIndex > -1) {
-      // Si ya existe, incrementar cantidad
-      const nuevaTabla = [...itemsTabla];
-      nuevaTabla[itemExistenteIndex].cantidad += 1;
-      setItemsTabla(nuevaTabla);
-    } else {
-      // Si no existe, agregarlo con cantidad 1
-      setItemsTabla((prevItems) => [
-        ...prevItems,
-        { ...itemSeleccionado, cantidad: 1, tipo },
-      ]);
-    }
+      if (itemExistente) {
+        return prevItems.map((item) =>
+          item.id === itemSeleccionado.id && item.tipo === tipo
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item
+        );
+      } else {
+        return [...prevItems, { ...itemSeleccionado, cantidad: 1, tipo }];
+      }
+    });
     setErrorItemsTabla("");
   };
 
   const handleActualizarCantidadItem = (index, nuevaCantidad) => {
-    const cantidad = Math.max(1, nuevaCantidad); // Asegurar que la cantidad sea al menos 1
+    const cantidad = Math.max(1, nuevaCantidad);
     setItemsTabla((prevItems) =>
       prevItems.map((item, i) => (i === index ? { ...item, cantidad } : item))
     );
@@ -103,12 +127,11 @@ function ProcesoVentaPage() {
     setItemsTabla((prevItems) => prevItems.filter((_, i) => i !== index));
   };
 
-  // Cálculo de totales
   const subtotal = itemsTabla.reduce(
     (acc, item) => acc + item.precio * item.cantidad,
     0
   );
-  const iva = subtotal * 0.19; // Asumiendo 19%
+  const iva = subtotal * 0.19;
   const total = subtotal + iva;
 
   const validarFormulario = () => {
@@ -122,9 +145,7 @@ function ProcesoVentaPage() {
     } else {
       for (const item of itemsTabla) {
         if (item.cantidad < 1) {
-          setErrorItemsTabla(
-            `La cantidad para "${item.nombre}" debe ser al menos 1.`
-          );
+          setErrorItemsTabla(`La cantidad para "${item.nombre}" debe ser al menos 1.`);
           isValid = false;
           break;
         }
@@ -132,10 +153,7 @@ function ProcesoVentaPage() {
     }
 
     if (modoCliente === "existente" && !datosCliente.nombre) {
-      // Solo verificar nombre si es existente y ya fue "seleccionado"
-      setErrorDatosCliente(
-        "Por favor selecciona un cliente existente de la lista."
-      );
+      setErrorDatosCliente("Por favor selecciona un cliente existente de la lista.");
       isValid = false;
     } else if (
       modoCliente === "nuevo" &&
@@ -144,14 +162,10 @@ function ProcesoVentaPage() {
         !datosCliente.telefono.trim() ||
         !datosCliente.direccion.trim())
     ) {
-      setErrorDatosCliente(
-        "Por favor completa todos los campos del cliente nuevo."
-      );
+      setErrorDatosCliente("Por favor completa todos los campos del cliente nuevo.");
       isValid = false;
     } else if (!modoCliente) {
-      setErrorDatosCliente(
-        "Por favor selecciona si el cliente es existente o nuevo."
-      );
+      setErrorDatosCliente("Por favor selecciona si el cliente es existente o nuevo.");
       isValid = false;
     }
     return isValid;
@@ -171,32 +185,30 @@ function ProcesoVentaPage() {
       telefono: datosCliente.telefono,
       direccion: datosCliente.direccion,
       items: itemsTabla.map((item) => ({
-        // Asegurar que se guardan los datos relevantes del ítem
+        id: item.id,
         nombre: item.nombre,
         cantidad: item.cantidad,
         precio: item.precio,
         total: item.precio * item.cantidad,
-        tipo: item.tipo, // Guardar si es producto o servicio
+        tipo: item.tipo,
       })),
       subtotal,
       iva,
       total,
-      fecha: new Date().toISOString().slice(0, 10), // Fecha actual
-      estado: "Activa", // Estado por defecto
+      fecha: new Date().toISOString().slice(0, 10),
+      estado: "Activa",
     };
 
     try {
       const ventasActuales = fetchVentas();
-      saveNuevaVenta(ventaData, ventasActuales); // ventasActualizadas removed as it's unused
-      // En lugar de pasar por estado, se actualiza localStorage y ListaVentasPage leerá de ahí
-      // navigate('/ventas', { state: { nuevaVenta: ventaDataConId } }); // ventaDataConId vendría del servicio
+      saveNuevaVenta(ventaData, ventasActuales);
 
       setValidationMessage("¡Venta guardada exitosamente! Redirigiendo...");
       setIsValidationModalOpen(true);
       setTimeout(() => {
         setIsConfirmSaveModalOpen(false);
         setIsValidationModalOpen(false);
-        navigate("/admin/ventas"); // Redirigir a la lista de ventas
+        navigate("/admin/ventas");
       }, 2000);
     } catch (error) {
       setValidationMessage(error.message);
@@ -212,29 +224,19 @@ function ProcesoVentaPage() {
 
   return (
     <div className="proceso-ventas-page">
-      {" "}
-      {/* Clase del CSS original */}
       <NavbarAdmin />
       <div className="proceso-ventas-main-content">
-        {" "}
-        {/* Clase del CSS original */}
         <h1>Proceso de Agregar Venta</h1>
         <form onSubmit={(e) => e.preventDefault()}>
-          {" "}
-          {/* Evitar submit tradicional del form */}
           <VentaForm
             modoCliente={modoCliente}
             setModoCliente={setModoCliente}
             datosCliente={datosCliente}
             onDatosClienteChange={handleDatosClienteChange}
-            onAbrirModalSeleccionCliente={() => setShowClienteSelectModal(true)}
+            onAbrirModalSeleccionCliente={handleAbrirModalClientes}
             itemsTabla={itemsTabla}
-            onAbrirModalCatalogoProductos={() =>
-              setShowProductoSelectModal(true)
-            }
-            onAbrirModalCatalogoServicios={() =>
-              setShowServicioSelectModal(true)
-            }
+            onAbrirModalCatalogoProductos={() => setShowProductoSelectModal(true)}
+            onAbrirModalCatalogoServicios={() => setShowServicioSelectModal(true)}
             onActualizarCantidadItem={handleActualizarCantidadItem}
             onEliminarItem={handleEliminarItem}
             subtotal={subtotal}
@@ -244,8 +246,6 @@ function ProcesoVentaPage() {
             errorItemsTabla={errorItemsTabla}
           />
           <div className="botones-accion">
-            {" "}
-            {/* Clase del CSS original */}
             <button
               type="button"
               className="guardar-venta-button"
@@ -256,22 +256,23 @@ function ProcesoVentaPage() {
             <button
               type="button"
               className="cancelar-venta-button"
-              onClick={() => navigate("/ventas")}
+              onClick={() => navigate("/admin/ventas")}
             >
               Cancelar Venta
             </button>
           </div>
         </form>
       </div>
-      {/* Modales de Selección */}
       <ItemSelectionModal
         isOpen={showClienteSelectModal}
         onClose={() => setShowClienteSelectModal(false)}
         title="Seleccionar Cliente Existente"
-        items={clientesDisponibles.map((c) => ({ ...c, tipo: "cliente" }))} // Añadir tipo para getItemDisplayLabel si es necesario
+        items={clientesDisponibles.map((c) => ({ ...c, tipo: "cliente" }))}
         onSelectItem={seleccionarClienteDesdeModal}
         searchPlaceholder="Buscar cliente por nombre o documento..."
         displayFields={["nombre", "documento"]}
+        isLoading={isLoadingClientes}
+        errorMessage={errorClientes}
       />
       <ItemSelectionModal
         isOpen={showProductoSelectModal}
@@ -291,7 +292,6 @@ function ProcesoVentaPage() {
         searchPlaceholder="Buscar servicio..."
         displayFields={["nombre", "precio"]}
       />
-      {/* Modal de Confirmación para Guardar */}
       <ConfirmModal
         isOpen={isConfirmSaveModalOpen}
         onClose={() => setIsConfirmSaveModalOpen(false)}
@@ -299,7 +299,6 @@ function ProcesoVentaPage() {
         title="Confirmar Guardar Venta"
         message="¿Está seguro de que desea guardar esta venta?"
       />
-      {/* Modal de Validación/Error */}
       <ValidationModal
         isOpen={isValidationModalOpen}
         onClose={handleCloseValidationModal}

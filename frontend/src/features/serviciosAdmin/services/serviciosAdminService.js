@@ -12,10 +12,12 @@ import { getCategoriasServicio } from "../../categoriasServicioAdmin/services/ca
 export const getServicios = async (filtros = {}) => {
   try {
     const response = await apiClient.get("/api/servicios", { params: filtros });
-    return response.data;
+    // CORRECCIÓN CLAVE: Retorna la respuesta completa de la API.
+    return response;
   } catch (error) {
     console.error("Error al obtener servicios:", error);
-    throw error.response?.data || new Error(error.message);
+    // Devuelve un objeto con datos vacíos en caso de error.
+    return { data: { data: [] } };
   }
 };
 
@@ -91,8 +93,7 @@ export const cambiarEstadoServicio = async (id, nuevoEstado) => {
  */
 export const getActiveCategoriasForSelect = async () => {
   try {
-    // getCategoriasServicio espera un booleano, no un objeto
-    const response = await getCategoriasServicio(true); // Solo categorías activas
+    const response = await getCategoriasServicio(true);
     const categoriasArray = response?.data;
 
     if (!Array.isArray(categoriasArray)) {
@@ -104,7 +105,7 @@ export const getActiveCategoriasForSelect = async () => {
     }
 
     return categoriasArray.map((cat) => ({
-      value: cat.id_categoria_servicio, // Ajusta según tu backend
+      value: cat.id_categoria_servicio,
       label: cat.nombre,
     }));
   } catch (error) {
@@ -112,7 +113,6 @@ export const getActiveCategoriasForSelect = async () => {
       "Error en getActiveCategoriasForSelect al obtener las categorías:",
       error
     );
-    // Devuelve un array vacío para evitar errores en la UI
     return [];
   }
 };

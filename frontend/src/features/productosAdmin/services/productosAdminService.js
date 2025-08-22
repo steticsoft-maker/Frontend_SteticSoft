@@ -10,12 +10,11 @@ const getProductos = async (searchTerm = "") => {
       ? `/productos?search=${encodeURIComponent(searchTerm)}`
       : "/productos";
     const response = await apiClient.get(url);
-    return (
-      response.data?.data?.productos ||
-      response.data?.data ||
-      response.data ||
-      []
-    );
+    // CORRECCIÓN: Extrae el array de datos sin importar el anidamiento.
+    const productosData = response.data?.data?.productos || response.data?.data || response.data;
+    
+    // Asegura que siempre se retorne un array.
+    return Array.isArray(productosData) ? productosData : [];
   } catch (error) {
     console.error(
       "Error en getProductos:",
