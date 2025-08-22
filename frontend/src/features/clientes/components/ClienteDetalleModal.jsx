@@ -13,6 +13,7 @@ const ClienteDetalleModal = ({ isOpen, onClose, cliente }) => {
           <p><strong>Apellido:</strong> {cliente.apellido}</p>
           <p><strong>Correo:</strong> {cliente.correo}</p> {/* Cambiado de 'cliente.email' a 'cliente.correo' */}
           <p><strong>Teléfono:</strong> {cliente.telefono}</p>
+          <p><strong>Dirección:</strong> {cliente.direccion}</p>
           <p><strong>Tipo de Documento:</strong> {cliente.tipoDocumento}</p>
           <p><strong>Número de Documento:</strong> {cliente.numeroDocumento}</p>
           <p><strong>Fecha de Nacimiento:</strong> {cliente.fechaNacimiento}</p>

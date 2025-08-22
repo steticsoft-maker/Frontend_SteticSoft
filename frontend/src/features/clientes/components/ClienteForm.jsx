@@ -32,6 +32,13 @@ const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // 
         {formErrors.correo && <p className="error-message">{formErrors.correo}</p>}
       </div>
 
+      {/* Campo de Dirección ocupando todo el ancho */}
+      <div className="clientes-form-group-full-width">
+        <label htmlFor="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" value={formData.direccion || ''} onChange={handleChange} placeholder="Dirección" />
+        {formErrors.direccion && <p className="error-message">{formErrors.direccion}</p>}
+      </div>
+
       <div className="clientes-form-group">
         <label htmlFor="telefono">Teléfono: <span className="required-asterisk">*</span></label>
         <input type="text" id="telefono" name="telefono" value={formData.telefono || ''} onChange={handleChange} placeholder="Teléfono" required />

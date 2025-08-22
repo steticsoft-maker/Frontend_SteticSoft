@@ -25,6 +25,7 @@ const ClientesTable = ({
             <th>Apellido</th>
             <th>Correo</th>
             <th>Teléfono</th>
+            <th>Dirección</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -39,6 +40,7 @@ const ClientesTable = ({
                 <td data-label="Apellido:">{cliente.apellido}</td>
                 <td data-label="Correo:">{cliente.correo}</td>
                 <td data-label="Teléfono:">{cliente.telefono}</td>
+                <td data-label="Dirección:">{cliente.direccion}</td>
                 <td data-label="Estado:">
                   <label className="switch">
                     <input

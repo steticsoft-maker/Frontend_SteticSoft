@@ -69,6 +69,7 @@ export const saveCliente = async (clienteData, isCreating, currentEditingCliente
         apellido: clienteData.apellido,
         correo: clienteData.correo, // Ahora usamos clienteData.correo directamente del ClienteForm
         telefono: clienteData.telefono,
+        direccion: clienteData.direccion,
         tipoDocumento: clienteData.tipoDocumento,
         numeroDocumento: clienteData.numeroDocumento,
         fechaNacimiento: clienteData.fechaNacimiento,
