@@ -1,3 +1,4 @@
+const path = require("path");
 const db = require("../models");
 const { Op } = db.Sequelize;
 const {
@@ -13,13 +14,21 @@ const servicioService = require("../services/servicio.service.js");
  * Crea un nuevo servicio.
  */
 const crearServicio = async (req, res, next) => {
+    // --- INICIO DE LA DEPURACIÓN ---
+  console.log("--- INICIO DEPURACIÓN crearServicio ---");
+  console.log("CONTENIDO DE req.body:", JSON.stringify(req.body, null, 2));
+  console.log("CONTENIDO DE req.file:", JSON.stringify(req.file, null, 2));
+  // --- FIN DE LA DEPURACIÓN ---
   try {
     const servicioData = { ...req.body };
     if (req.file) {
-      // Esta lógica para extraer la ruta de la imagen es correcta.
-      const imagePath = req.file.path.replace(/\\/g, "/");
-      servicioData.imagen = imagePath.substring(imagePath.indexOf("uploads"));
+      servicioData.imagen = path.join('uploads', 'servicios', req.file.filename).replace(/\\/g, '/');
     }
+
+       // --- DEPURACIÓN ADICIONAL ---
+    console.log("DATOS ENVIADOS AL SERVICIO:", JSON.stringify(servicioData, null, 2));
+    // --- FIN DEPURACIÓN ADICIONAL ---
+
     const nuevoServicio = await servicioService.crearServicio(servicioData);
     res.status(201).json({
       success: true,
@@ -27,6 +36,9 @@ const crearServicio = async (req, res, next) => {
       data: nuevoServicio,
     });
   } catch (error) {
+        // --- DEPURACIÓN DE ERRORES ---
+    console.error("ERROR CAPTURADO EN EL CONTROLADOR:", error.message);
+    // --- FIN DEPURACIÓN DE ERRORES ---
     next(error);
   }
 };
@@ -82,10 +94,7 @@ const actualizarServicio = async (req, res, next) => {
     const { idServicio } = req.params;
     const datosActualizar = { ...req.body };
     if (req.file) {
-      const imagePath = req.file.path.replace(/\\/g, "/");
-      datosActualizar.imagen = imagePath.substring(
-        imagePath.indexOf("uploads")
-      );
+      datosActualizar.imagen = path.join('uploads', 'servicios', req.file.filename).replace(/\\/g, '/');
     }
     const servicioActualizado = await servicioService.actualizarServicio(
       Number(idServicio),
