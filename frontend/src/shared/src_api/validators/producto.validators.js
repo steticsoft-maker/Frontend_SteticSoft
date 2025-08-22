@@ -49,10 +49,10 @@ const crearProductoValidators = [
     .isInt({ gt: 0 })
     .withMessage("El ID de la categoría no es válido."),
   // FIN DE LA CORRECCIÓN
-  
-    body("tipoUso")
-  .isIn(["Interno", "Externo"])
-  .withMessage("El tipo de uso debe ser 'Interno' o 'Externo'."),
+
+  body("tipoUso")
+    .isIn(["Venta", "Interno"])
+    .withMessage("El tipo de uso no es válido."),
 
   // La imagen no se valida aquí porque multer ya la procesó.
   // Podemos validar opcionalmente otros campos si es necesario.
