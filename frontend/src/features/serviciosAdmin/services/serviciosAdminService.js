@@ -11,7 +11,7 @@ import { getCategoriasServicio } from "../../categoriasServicioAdmin/services/ca
  */
 export const getServicios = async (filtros = {}) => {
   try {
-    const response = await apiClient.get("/api/servicios", { params: filtros });
+    const response = await apiClient.get("/servicios", { params: filtros });
     // CORRECCIÓN CLAVE: Retorna la respuesta completa de la API.
     return response;
   } catch (error) {
@@ -28,13 +28,18 @@ export const getServicios = async (filtros = {}) => {
  */
 export const createServicio = async (formData) => {
   try {
-    const response = await apiClient.post("/api/servicios", formData);
+    const response = await apiClient.post("/servicios", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error al crear el servicio:", error);
     throw error.response?.data || new Error(error.message);
   }
 };
+
 
 /**
  * Actualiza un servicio existente en la API usando FormData.
@@ -44,14 +49,17 @@ export const createServicio = async (formData) => {
  */
 export const updateServicio = async (id, formData) => {
   try {
-    const response = await apiClient.put(`/api/servicios/${id}`, formData);
+    const response = await apiClient.put(`/servicios/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error(`Error al actualizar el servicio ${id}:`, error);
     throw error.response?.data || new Error(error.message);
   }
 };
-
 /**
  * Elimina un servicio de la API por su ID.
  * @param {number|string} id - ID del servicio a eliminar.
@@ -60,7 +68,7 @@ export const updateServicio = async (id, formData) => {
 export const deleteServicio = async (id) => {
   try {
     // La ruta para eliminar un servicio es la misma que la del PUT o GET
-    await apiClient.delete(`/api/servicios/${id}`);
+    await apiClient.delete(`/servicios/${id}`);
   } catch (error) {
     console.error(`Error al eliminar el servicio ${id}:`, error);
     throw error.response?.data || new Error(error.message);
@@ -75,7 +83,7 @@ export const deleteServicio = async (id) => {
  */
 export const cambiarEstadoServicio = async (id, nuevoEstado) => {
   try {
-    const response = await apiClient.patch(`/api/servicios/${id}/estado`, {
+    const response = await apiClient.patch(`/servicios/${id}/estado`, {
       estado: nuevoEstado,
     });
     return response.data;
@@ -94,7 +102,8 @@ export const cambiarEstadoServicio = async (id, nuevoEstado) => {
 export const getActiveCategoriasForSelect = async () => {
   try {
     const response = await getCategoriasServicio(true);
-    const categoriasArray = response?.data;
+    // CORRECCIÓN: Accede a response.data.data para obtener el array.
+    const categoriasArray = response?.data?.data;
 
     if (!Array.isArray(categoriasArray)) {
       console.error(
@@ -105,7 +114,7 @@ export const getActiveCategoriasForSelect = async () => {
     }
 
     return categoriasArray.map((cat) => ({
-      value: cat.id_categoria_servicio,
+      value: cat.idCategoriaServicio, // ¡ESTA ES LA LÍNEA CRÍTICA!
       label: cat.nombre,
     }));
   } catch (error) {

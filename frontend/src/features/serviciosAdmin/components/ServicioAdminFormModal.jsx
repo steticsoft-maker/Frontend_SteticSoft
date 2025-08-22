@@ -1,4 +1,3 @@
-// src/features/serviciosAdmin/components/ServicioAdminFormModal.jsx
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import '../css/ServiciosAdmin.css';
@@ -39,8 +38,12 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
       
       const getInitialImageUrl = () => {
         if (isEditMode && initialData?.imagen) {
-          const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-          return `${backendUrl}/${initialData.imagen}`;
+          // Asume que la URL base está en una variable de entorno
+          const backendUrl = import.meta.env.VITE_API_BASE_URL || '';
+          // Construye la URL completa solo si no es ya una URL absoluta
+          return initialData.imagen.startsWith('http') 
+            ? initialData.imagen 
+            : `${backendUrl}${initialData.imagen}`;
         }
         return '';
       };
@@ -49,8 +52,8 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
         nombre: isEditMode ? initialData.nombre || '' : '',
         descripcion: isEditMode ? initialData.descripcion || '' : '',
         precio: isEditMode ? initialData.precio || '' : '',
-        // Se corrige el nombre de la propiedad para la categoría
-        id_categoria_servicio: isEditMode ? initialData.id_categoria_servicio || '' : '',
+        // El estado interno usa 'id_categoria_servicio', lo cual está bien.
+        id_categoria_servicio: isEditMode ? (initialData.idCategoriaServicio || initialData.id_categoria_servicio || '') : '',
       });
       setPreviewUrl(getInitialImageUrl());
     }
@@ -67,13 +70,15 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     if (file) {
       setImagenFile(file);
       setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setImagenFile(null);
+      setPreviewUrl(isEditMode ? initialData?.imagen || '' : '');
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validar todos los campos antes de continuar
     const validationErrors = {};
     let hasErrors = false;
     
@@ -97,25 +102,26 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     const submissionData = new FormData();
     submissionData.append('nombre', formData.nombre);
     submissionData.append('precio', formData.precio);
-    // Se corrige el nombre de la propiedad
-    submissionData.append('id_categoria_servicio', formData.id_categoria_servicio);
+    submissionData.append('categoriaServicioId', formData.id_categoria_servicio);
     
     if (formData.descripcion) {
       submissionData.append('descripcion', formData.descripcion);
     }
 
-    if (imagenFile) {
+    if (imagenFile instanceof File) {
       submissionData.append('imagen', imagenFile);
     }
 
     try {
       await onSubmit(submissionData);
     } catch (err) {
-      toast.error(err.response?.data?.message || err.message || 'Error al guardar.');
+      const errorMsg = err.response?.data?.errors?.[0]?.msg || err.response?.data?.message || err.message || 'Error al guardar.';
+      toast.error(errorMsg);
     } finally {
       setIsSubmitting(false);
     }
   };
+  
   
   if (!isOpen) return null;
 
@@ -143,14 +149,12 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
               {formErrors.precio && <span className="field-error-message">{formErrors.precio}</span>}
             </div>
             
-            {/* Se elimina el campo de duración estimada */}
-            
             <div className="servicios-admin-form-group">
               <label>Categoría <span className="required-asterisk">*</span></label>
+              {/* El 'name' aquí coincide con el estado 'formData', lo cual es correcto. */}
               <select name="id_categoria_servicio" value={formData.id_categoria_servicio || ''} onChange={handleChange} className="form-control">
                 <option value="">Seleccione una categoría...</option>
                 {(categorias || []).map(cat => (
-                  // Se usa cat.value y cat.label que se formatean en serviciosAdminService
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
                 ))}
               </select>

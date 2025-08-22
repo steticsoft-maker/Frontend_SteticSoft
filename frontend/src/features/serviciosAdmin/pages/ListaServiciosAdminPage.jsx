@@ -37,28 +37,27 @@ function ListaServiciosAdminPage() {
   const [formType, setFormType] = useState("create");
   const [loadingId, setLoadingId] = useState(null);
 
-  const cargarDatos = useCallback(async () => {
+const cargarDatos = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const filtrosApi = { 
-        estado: filtroEstado === 'todos' ? undefined : filtroEstado === 'activos' 
+      const filtrosApi = {
+        estado: filtroEstado === 'todos' ? undefined : filtroEstado === 'activos'
       };
       if (terminoBusqueda.trim()) {
         filtrosApi.busqueda = terminoBusqueda.trim();
       }
       const [serviciosResponse, categoriasData] = await Promise.all([
         getServicios(filtrosApi),
-        getActiveCategoriasForSelect(),
+       getActiveCategoriasForSelect(),
       ]);
-      setServicios(serviciosResponse?.data || []);
+    // Asegúrate de extraer el array correctamente:
+      setServicios(Array.isArray(serviciosResponse?.data?.data) ? serviciosResponse.data.data : []);
       setCategorias(categoriasData);
-    } catch (err) {
-      const errorMessage = err?.message || 'Error al cargar los datos.';
-      setError(errorMessage);
-      toast.error(errorMessage);
+    } catch {
+    setError("Error al cargar servicios.");
     } finally {
-      setLoading(false);
+    setLoading(false);
     }
   }, [filtroEstado, terminoBusqueda]);
 
@@ -87,11 +86,14 @@ function ListaServiciosAdminPage() {
     setCurrentServicio(null);
   };
 
-  // Helper para limpiar los espacios en blanco
+    // Helper para limpiar los espacios en blanco de los campos de texto
   const cleanInput = (data) => {
     const cleanedData = new FormData();
     for (let pair of data.entries()) {
       const [key, value] = pair;
+      
+      // CORRECCIÓN: Solo aplica trim() a los strings.
+      // Los archivos (que son objetos File) se pasan tal cual, sin modificarlos.
       if (typeof value === 'string') {
         cleanedData.append(key, value.trim());
       } else {
@@ -103,12 +105,12 @@ function ListaServiciosAdminPage() {
   
   const handleSave = async (servicioData) => {
     try {
-      // Limpiamos los datos antes de enviarlos
+      // AHORA ESTA LÍNEA FUNCIONARÁ CORRECTAMENTE
       const cleanedData = cleanInput(servicioData);
       
       if (formType === "edit") {
-        // Se corrige el ID del servicio
-        await updateServicio(currentServicio.id_servicio, cleanedData); 
+        // Se usa la propiedad correcta del servicio actual (camelCase)
+        await updateServicio(currentServicio.idServicio, cleanedData); 
         toast.success('Servicio actualizado exitosamente!');
       } else {
         await createServicio(cleanedData);
@@ -125,10 +127,10 @@ function ListaServiciosAdminPage() {
   const handleDelete = async () => {
     if (!currentServicio) return;
     // Se corrige el ID del servicio
-    setLoadingId(currentServicio.id_servicio); 
+    setLoadingId(currentServicio.idServicio); 
     try {
       // Se corrige el ID del servicio
-      await deleteServicio(currentServicio.id_servicio); 
+      await deleteServicio(currentServicio.idServicio); 
       toast.success('Servicio eliminado exitosamente!');
       closeModal();
       cargarDatos();
@@ -141,14 +143,11 @@ function ListaServiciosAdminPage() {
 
   const handleToggleEstado = async (servicio) => {
     // Se corrige el ID del servicio
-    setLoadingId(servicio.id_servicio); 
+    setLoadingId(servicio.idServicio); 
     try {
-      // Se corrige el ID del servicio
-      await cambiarEstadoServicio(servicio.id_servicio, !servicio.estado); 
+      await cambiarEstadoServicio(servicio.idServicio, !servicio.estado); 
       toast.success(`Estado del servicio cambiado exitosamente!`);
-      // Se corrige el ID del servicio
-      setServicios(prev => prev.map(s => s.id_servicio === servicio.id_servicio ? { ...s, estado: !s.estado } : s)); 
-    } catch (err) {
+      setServicios(prev => prev.map(s => s.idServicio === servicio.idServicio ? { ...s, estado: !s.estado } : s)); } catch (err) {
       toast.error(err?.message || "Error al cambiar el estado.");
     } finally {
       setLoadingId(null);
@@ -222,7 +221,7 @@ function ListaServiciosAdminPage() {
         title="Confirmar Eliminación"
         message={`¿Estás seguro de eliminar el servicio "${currentServicio?.nombre}"?`}
         // Se corrige el ID del servicio
-        isConfirming={loadingId === currentServicio?.id_servicio} 
+        isConfirming={loadingId === currentServicio?.idServicio} 
       />
     </div>
   );
