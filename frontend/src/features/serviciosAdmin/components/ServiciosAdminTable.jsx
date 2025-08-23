@@ -22,8 +22,6 @@ const ServiciosAdminTable = ({
     return <p style={{ textAlign: 'center', marginTop: '20px' }}>No hay servicios que coincidan con tu búsqueda.</p>;
   }
 
-  // Obtiene la URL base de la API desde las variables de entorno.
-  // Asegúrate de tener esta variable en tu archivo .env (ej. VITE_API_BASE_URL=http://localhost:4000)
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
   return (
@@ -33,7 +31,6 @@ const ServiciosAdminTable = ({
           <th>#</th>
           <th>Imagen</th>
           <th>Nombre</th>
-          <th>Descripción</th>
           <th>Precio</th>
           <th>Estado</th>
           <th>Acciones</th>
@@ -41,6 +38,7 @@ const ServiciosAdminTable = ({
       </thead>
       <tbody>
         {servicios.map((servicio, index) => {
+          // Construye la URL completa solo si la imagen no es una URL absoluta
           const imageUrl = servicio.imagen?.startsWith('http')
             ? servicio.imagen
             : `${API_BASE_URL}${servicio.imagen}`;
@@ -49,18 +47,19 @@ const ServiciosAdminTable = ({
             <tr key={servicio.idServicio}>
               <td data-label="#">{index + 1}</td>
               <td data-label="Imagen:">
-                {servicio.imagen ? (
-                  <img 
-                    src={imageUrl} 
-                    alt={servicio.nombre} 
-                    className="servicio-imagen-thumbnail" // Clase para estilizar la imagen
-                  />
-                ) : (
-                  'N/A'
-                )}
+                <div className="image-cell-container">
+                  {servicio.imagen ? (
+                    <img 
+                      src={imageUrl} 
+                      alt={`Imagen de ${servicio.nombre}`} 
+                      className="servicio-imagen-thumbnail"
+                    />
+                  ) : (
+                    <span className="image-placeholder">-</span>
+                  )}
+                </div>
               </td>
               <td data-label="Nombre:">{servicio.nombre}</td>
-              <td data-label="Descripción:">{servicio.descripcion || 'Sin descripción'}</td>
               <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
               <td data-label="Estado:">
                 <label className="switch">

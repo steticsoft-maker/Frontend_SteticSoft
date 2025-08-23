@@ -16,7 +16,7 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
 
   const getFullImageUrl = (relativePath) => {
     if (!relativePath) return null;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
     return `${backendUrl}/${relativePath}`;
   };
 
@@ -27,7 +27,6 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
     <div className="servicios-admin-modal-overlay" onClick={onClose}>
       <div className="servicios-admin-modal-content" onClick={(e) => e.stopPropagation()}>
         
-        {/* Botón 'X' para cerrar el modal */}
         <button className="modal-close-button" onClick={onClose}>&times;</button>
         
         <h3>Detalles del Servicio</h3>
@@ -36,7 +35,6 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
           <p><strong>Nombre:</strong> {servicio.nombre}</p>
           <p><strong>Descripción:</strong> {servicio.descripcion || 'No aplica'}</p>
           <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
-          {/* Se elimina la referencia a duracionEstimadaMin para consistencia con el backend */}
           <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'No aplica'}</p>
           <p><strong>Estado:</strong> {servicio.estado ? 'Activo' : 'Inactivo'}</p>
 
