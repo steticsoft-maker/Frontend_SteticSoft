@@ -9,8 +9,8 @@ import { fetchClientes as getClientesActivos } from '../../clientes/services/cli
 const VENTAS_STORAGE_KEY = 'ventas_steticsoft_v2';
 
 const INITIAL_VENTAS = [
-  { id: 1, fecha: "2025-03-28", cliente: "Juan Pérez", documento: "123456789", telefono: "3001234567", direccion: "Calle 1", total: 50000, estado: "Activa", items: [{ nombre: "Producto A", cantidad: 2, precio: 10000, total: 20000 }, { nombre: "Servicio C", cantidad: 1, precio: 30000, total: 30000 }], subtotal: 42016.81, iva: 7983.19 },
-  { id: 2, fecha: "2025-03-29", cliente: "María Gómez", documento: "987654321", telefono: "3019876543", direccion: "Carrera 2", total: 120000, estado: "En proceso", items: [{ nombre: "Producto C", cantidad: 1, precio: 120000, total: 120000 }], subtotal: 100840.34, iva: 19159.66 },
+    { id: 1, fecha: "2025-03-28", cliente: "Juan Pérez", documento: "123456789", telefono: "3001234567", direccion: "Calle 1", total: 50000, estado: "Activa", items: [{ nombre: "Producto A", cantidad: 2, precio: 10000, total: 20000 }, { nombre: "Servicio C", cantidad: 1, precio: 30000, total: 30000 }], subtotal: 42016.81, iva: 7983.19 },
+    { id: 2, fecha: "2025-03-29", cliente: "María Gómez", documento: "987654321", telefono: "3019876543", direccion: "Carrera 2", total: 120000, estado: "En proceso", items: [{ nombre: "Producto C", cantidad: 1, precio: 120000, total: 120000 }], subtotal: 100840.34, iva: 19159.66 },
 ];
 
 // --- Funciones para el Proceso de Venta (Formulario) ---
@@ -45,9 +45,11 @@ export const getProductosParaVenta = async () => {
  */
 export const getServiciosParaVenta = async () => {
     try {
-        const response = await fetchServiciosAdmin();
-        const servicios = response?.data?.data || [];
-        return servicios.filter(s => s.estado === "Activo");
+        // Se pasa el filtro "estado: true" directamente a la función de la API.
+        // Esto optimiza el código ya que la API se encarga de filtrar los servicios.
+        const response = await fetchServiciosAdmin({ estado: true });
+        const serviciosActivos = response?.data?.data || [];
+        return serviciosActivos;
     } catch (error) {
         console.error("Error al obtener servicios para la venta:", error);
         return [];
@@ -57,21 +59,21 @@ export const getServiciosParaVenta = async () => {
 // --- Fin Funciones para Proceso de Venta ---
 
 export const fetchVentas = () => {
-  const stored = localStorage.getItem(VENTAS_STORAGE_KEY);
-  if (stored) {
-    try {
-      return JSON.parse(stored).map(v => ({...v, id: v.id || Date.now() + Math.random()}));
-    } catch (e) {
-      console.error("Error parsing ventas from localStorage", e);
-      localStorage.removeItem(VENTAS_STORAGE_KEY);
+    const stored = localStorage.getItem(VENTAS_STORAGE_KEY);
+    if (stored) {
+        try {
+            return JSON.parse(stored).map(v => ({ ...v, id: v.id || Date.now() + Math.random() }));
+        } catch (e) {
+            console.error("Error parsing ventas from localStorage", e);
+            localStorage.removeItem(VENTAS_STORAGE_KEY);
+        }
     }
-  }
-  persistVentas(INITIAL_VENTAS.map(v => ({...v, id: v.id || Date.now() + Math.random()})));
-  return INITIAL_VENTAS;
+    persistVentas(INITIAL_VENTAS.map(v => ({ ...v, id: v.id || Date.now() + Math.random() })));
+    return INITIAL_VENTAS;
 };
 
 const persistVentas = (ventas) => {
-  localStorage.setItem(VENTAS_STORAGE_KEY, JSON.stringify(ventas));
+    localStorage.setItem(VENTAS_STORAGE_KEY, JSON.stringify(ventas));
 };
 
 export const getVentaById = (ventaId) => {
@@ -80,34 +82,34 @@ export const getVentaById = (ventaId) => {
 };
 
 export const saveNuevaVenta = (ventaData, existingVentas) => {
-  if (!ventaData.cliente) throw new Error("El cliente es obligatorio.");
-  if (!ventaData.items || ventaData.items.length === 0) throw new Error("Debe agregar al menos un producto o servicio.");
+    if (!ventaData.cliente) throw new Error("El cliente es obligatorio.");
+    if (!ventaData.items || ventaData.items.length === 0) throw new Error("Debe agregar al menos un producto o servicio.");
 
-  const maxId = existingVentas.length > 0 ? Math.max(...existingVentas.map(v => v.id || 0)) : 0;
-  const newId = maxId + 1;
+    const maxId = existingVentas.length > 0 ? Math.max(...existingVentas.map(v => v.id || 0)) : 0;
+    const newId = maxId + 1;
 
-  const ventaAGuardar = {
-    ...ventaData,
-    id: newId,
-    estado: ventaData.estado || "Activa",
-  };
-  const updatedVentas = [...existingVentas, ventaAGuardar];
-  persistVentas(updatedVentas);
-  return updatedVentas;
+    const ventaAGuardar = {
+        ...ventaData,
+        id: newId,
+        estado: ventaData.estado || "Activa",
+    };
+    const updatedVentas = [...existingVentas, ventaAGuardar];
+    persistVentas(updatedVentas);
+    return updatedVentas;
 };
 
 export const anularVentaById = (ventaId, existingVentas) => {
-  const updatedVentas = existingVentas.map(venta =>
-    venta.id === ventaId ? { ...venta, estado: "Anulada" } : venta
-  );
-  persistVentas(updatedVentas);
-  return updatedVentas;
+    const updatedVentas = existingVentas.map(venta =>
+        venta.id === ventaId ? { ...venta, estado: "Anulada" } : venta
+    );
+    persistVentas(updatedVentas);
+    return updatedVentas;
 };
 
 export const cambiarEstadoVenta = (ventaId, nuevoEstado, existingVentas) => {
-  const updatedVentas = existingVentas.map(venta =>
-    venta.id === ventaId ? { ...venta, estado: nuevoEstado } : venta
-  );
-  persistVentas(updatedVentas);
-  return updatedVentas;
+    const updatedVentas = existingVentas.map(venta =>
+        venta.id === ventaId ? { ...venta, estado: nuevoEstado } : venta
+    );
+    persistVentas(updatedVentas);
+    return updatedVentas;
 };

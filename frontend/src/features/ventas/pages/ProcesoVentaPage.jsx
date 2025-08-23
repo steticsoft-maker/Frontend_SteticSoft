@@ -64,7 +64,14 @@ function ProcesoVentaPage() {
 
   const handleDatosClienteChange = (e) => {
     const { name, value } = e.target;
-    setDatosCliente((prev) => ({ ...prev, [name]: value }));
+
+    // --- LÓGICA DE VALIDACIÓN DE ESPACIOS ---
+    // 1. Reemplaza dos o más espacios seguidos con uno solo.
+    const sanitizedValue = value.replace(/\s{2,}/g, ' ');
+    // 2. Elimina un posible espacio al inicio del valor.
+    const finalValue = sanitizedValue.startsWith(' ') ? sanitizedValue.trimStart() : sanitizedValue;
+    
+    setDatosCliente((prev) => ({ ...prev, [name]: finalValue }));
     if (errorDatosCliente) setErrorDatosCliente("");
   };
 
@@ -269,7 +276,7 @@ function ProcesoVentaPage() {
         title="Seleccionar Cliente Existente"
         items={clientesDisponibles.map((c) => ({ ...c, tipo: "cliente" }))}
         onSelectItem={seleccionarClienteDesdeModal}
-        searchPlaceholder="Buscar cliente por nombre o documento..."
+        searchPlaceholder="Buscar cliente"
         displayFields={["nombre", "documento"]}
         isLoading={isLoadingClientes}
         errorMessage={errorClientes}
@@ -277,19 +284,19 @@ function ProcesoVentaPage() {
       <ItemSelectionModal
         isOpen={showProductoSelectModal}
         onClose={() => setShowProductoSelectModal(false)}
-        title="Agregar Producto al Carrito"
+        title="Agregar Producto"
         items={productosDisponibles.map((p) => ({ ...p, tipo: "producto" }))}
         onSelectItem={(producto) => agregarItemDesdeModal(producto, "producto")}
-        searchPlaceholder="Buscar producto..."
+        searchPlaceholder="Buscar producto"
         displayFields={["nombre", "precio"]}
       />
       <ItemSelectionModal
         isOpen={showServicioSelectModal}
         onClose={() => setShowServicioSelectModal(false)}
-        title="Agregar Servicio al Carrito"
+        title="Agregar Servicio"
         items={serviciosDisponibles.map((s) => ({ ...s, tipo: "servicio" }))}
         onSelectItem={(servicio) => agregarItemDesdeModal(servicio, "servicio")}
-        searchPlaceholder="Buscar servicio..."
+        searchPlaceholder="Buscar servicio"
         displayFields={["nombre", "precio"]}
       />
       <ConfirmModal
