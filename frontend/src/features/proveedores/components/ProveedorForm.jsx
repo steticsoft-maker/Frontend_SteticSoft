@@ -88,7 +88,7 @@ const ProveedorForm = ({ formData, onFormChange, onBlur, isEditing, errors = {} 
 
       {/* Columna 2 */}
       <div className="proveedores-form-group">
-        <label htmlFor="emailPersonaEncargada">Email Encargado:</label>
+        <label htmlFor="emailPersonaEncargada">Email Encargado: <span className="required-asterisk">*</span></label>
         <input type="email" id="emailPersonaEncargada" name="emailPersonaEncargada" value={formData.emailPersonaEncargada || ''} onChange={handleChange} onBlur={onBlur} className={errors.emailPersonaEncargada ? 'is-invalid' : ''} />
         {errors.emailPersonaEncargada && <p className="error-proveedores">{errors.emailPersonaEncargada}</p>}
       </div>
