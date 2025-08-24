@@ -125,7 +125,6 @@ function ListaServiciosAdminPage() {
         <h1>Gestión de Servicios</h1>
         
         <div className="servicios-admin-controls">
-          {/* Controles de búsqueda y filtros */}
           <div className="servicios-admin-search-bar">
             <input type="text" placeholder="Buscar por nombre o precio..." value={terminoBusqueda} onChange={(e) => setTerminoBusqueda(e.target.value)} />
             <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>

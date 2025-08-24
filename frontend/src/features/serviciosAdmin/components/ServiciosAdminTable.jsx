@@ -22,7 +22,7 @@ const ServiciosAdminTable = ({
     return <p style={{ textAlign: 'center', marginTop: '20px' }}>No hay servicios que coincidan con tu búsqueda.</p>;
   }
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+  const API_PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL || '';
 
   return (
     <table className="servicios-admin-table">
@@ -41,7 +41,7 @@ const ServiciosAdminTable = ({
           // Construye la URL completa solo si la imagen no es una URL absoluta
           const imageUrl = servicio.imagen?.startsWith('http')
             ? servicio.imagen
-            : `${API_BASE_URL}${servicio.imagen}`;
+            : `${API_PUBLIC_URL}/${servicio.imagen}`;
 
           return (
             <tr key={servicio.idServicio}>
