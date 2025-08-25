@@ -21,6 +21,31 @@ export const getPermisosAPI = async () => {
 };
 
 /**
+ * Verifica si ciertos datos de un rol ya existen en la base de datos.
+ * @param {object} data - Objeto con los campos a verificar. Ej: { nombre: 'SuperAdmin' }
+ */
+export const verificarDatosUnicos = async (data) => {
+  try {
+    const response = await apiClient.post("/roles/verificar-unicidad", data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error al verificar datos únicos del rol:",
+      error.response?.data || error.message
+    );
+    // Devuelve un objeto de error estándar para que el formulario pueda procesarlo.
+    return {
+      success: false,
+      errors: {
+        api:
+          error.response?.data?.message ||
+          "No se pudo conectar con el servidor para la verificación.",
+      },
+    };
+  }
+};
+
+/**
  * Obtiene la lista completa de roles desde la API, opcionalmente filtrada por un término de búsqueda.
  * @param {string} [searchTerm] - Término opcional para buscar roles.
  */

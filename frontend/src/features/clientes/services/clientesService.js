@@ -33,6 +33,30 @@ export const fetchClientes = async (searchTerm = '') => { // Ahora acepta un sea
 };
 
 /**
+ * Verifica si ciertos datos de un cliente ya existen en la base de datos.
+ * @param {object} data - Objeto con los campos a verificar. Ej: { correo: 'test@test.com' }
+ */
+export const verificarDatosUnicos = async (data) => {
+  try {
+    const response = await apiClient.post("/clientes/verificar-unicidad", data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error al verificar datos únicos del cliente:",
+      error.response?.data || error.message
+    );
+    return {
+      success: false,
+      errors: {
+        api:
+          error.response?.data?.message ||
+          "No se pudo conectar con el servidor para la verificación.",
+      },
+    };
+  }
+};
+
+/**
  * Obtiene un cliente específico por su ID del backend.
  * Útil para pre-rellenar formularios de edición.
  * @param {number} clienteId - El ID del cliente a obtener.

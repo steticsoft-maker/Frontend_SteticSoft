@@ -1,7 +1,7 @@
 // src/features/roles/components/RolEditarModal.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import RolForm from "./RolForm";
-import { getRoleDetailsAPI } from "../services/rolesService";
+import { getRoleDetailsAPI, rolesService } from "../services/rolesService";
 
 const RolEditarModal = ({
   isOpen,
@@ -18,38 +18,28 @@ const RolEditarModal = ({
     idPermisos: [],
     estado: true,
   });
-  const [formErrors, setFormErrors] = useState({});
+  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [originalNombre, setOriginalNombre] = useState('');
 
   const isRoleAdminProtected = formData.nombre === "Administrador";
-
-  // Funciones para Marcar/Desmarcar Todos los permisos
-  const handleSelectAll = () => {
-    if (isRoleAdminProtected) return;
-    const allIds = permisosDisponibles.map((p) => p.idPermiso);
-    setFormData((prev) => ({ ...prev, idPermisos: allIds }));
-  };
-
-  const handleDeselectAll = () => {
-    if (isRoleAdminProtected) return;
-    setFormData((prev) => ({ ...prev, idPermisos: [] }));
-  };
 
   const cargarDetallesRol = useCallback(async () => {
     if (!roleId) return;
     setIsLoading(true);
-    setFormErrors({});
+    setErrors({});
     try {
       const roleDetails = await getRoleDetailsAPI(roleId);
       setFormData({
         id: roleDetails.idRol,
         nombre: roleDetails.nombre,
         descripcion: roleDetails.descripcion || "",
-        estado: roleDetails.estado,
+        estado: roledetails.estado,
         idPermisos: roleDetails.permisos?.map((p) => p.idPermiso) || [],
       });
+      setOriginalNombre(roleDetails.nombre);
     } catch (err) {
-      setFormErrors({
+      setErrors({
         _general: err.message || "Error al cargar los detalles del rol.",
       });
     } finally {
@@ -63,48 +53,105 @@ const RolEditarModal = ({
     }
   }, [isOpen, cargarDetallesRol]);
 
-  const handleFormChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prevErr) => ({ ...prevErr, [name]: "" }));
+  const validateField = async (name, value) => {
+    let error = "";
+    switch (name) {
+      case "nombre":
+        if (!value) {
+          error = "El nombre del rol es obligatorio.";
+        } else if (value.length < 3) {
+          error = "El nombre del rol debe tener al menos 3 caracteres.";
+        } else if (value.length > 50) {
+          error = "El nombre del rol no debe exceder los 50 caracteres.";
+        } else if (value !== originalNombre) {
+            try {
+                const uniquenessErrors = await rolesService.verificarDatosUnicos({ nombre: value });
+                if (uniquenessErrors.nombre) {
+                    error = uniquenessErrors.nombre;
+                }
+            } catch (err) {
+                error = "No se pudo verificar el nombre del rol.";
+            }
+        }
+        break;
+      case "descripcion":
+        if (value.length > 255) {
+          error = "La descripción no debe exceder los 255 caracteres.";
+        }
+        break;
+      case "tipoPerfil":
+        if (!value) {
+          error = "El tipo de perfil es obligatorio.";
+        }
+        break;
+      case "idPermisos":
+        if (!isRoleAdminProtected && (!value || value.length === 0)) {
+            error = "Debe seleccionar al menos un permiso.";
+        }
+        break;
+      default:
+        break;
     }
+    return error;
+  };
+
+  const handleFormChange = async (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    const errorMessage = await validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: errorMessage }));
+  };
+
+  const handleBlur = async (e) => {
+    const { name, value } = e.target;
+    const errorMessage = await validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: errorMessage }));
   };
 
   const handleToggleModulo = (permisoId) => {
     if (isRoleAdminProtected) return;
-    setFormData((prev) => {
-      const idPermisosActuales = prev.idPermisos || [];
-      const idPermisosNuevos = idPermisosActuales.includes(permisoId)
-        ? idPermisosActuales.filter((id) => id !== permisoId)
+    const idPermisosActuales = formData.idPermisos || [];
+    const idPermisosNuevos = idPermisosActuales.includes(permisoId)
+        ? idPermisosActuales.filter(id => id !== permisoId)
         : [...idPermisosActuales, permisoId];
-      return { ...prev, idPermisos: idPermisosNuevos };
-    });
+    handleFormChange('idPermisos', idPermisosNuevos);
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
-    }
-    // Para el rol Admin no se valida la cantidad de permisos
-    if (
-      !isRoleAdminProtected &&
-      (!formData.idPermisos || formData.idPermisos.length === 0)
-    ) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+  const handleSelectAll = () => {
+    if (isRoleAdminProtected) return;
+    const allIds = permisosDisponibles.map((p) => p.idPermiso);
+    handleFormChange('idPermisos', allIds);
   };
 
-  const handleSubmitForm = (e) => {
+  const handleDeselectAll = () => {
+    if (isRoleAdminProtected) return;
+    handleFormChange('idPermisos', []);
+  };
+
+  const validateForm = async () => {
+    const newErrors = {};
+    const fieldsToValidate = ['nombre', 'tipoPerfil', 'idPermisos'];
+
+    for (const field of fieldsToValidate) {
+        const errorMessage = await validateField(field, formData[field]);
+        if (errorMessage) {
+            newErrors[field] = errorMessage;
+        }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
     if (isRoleAdminProtected) {
       onClose();
       return;
     }
-    if (!validateForm()) return;
-    onSubmit(formData);
+    const isValid = await validateForm();
+    if (isValid) {
+      onSubmit(formData);
+    }
   };
 
   if (!isOpen) return null;
@@ -122,8 +169,8 @@ const RolEditarModal = ({
         <h2>Editar Rol</h2>
         {isLoading ? (
           <p>Cargando...</p>
-        ) : formErrors._general ? (
-          <p className="error-message">{formErrors._general}</p>
+        ) : errors._general ? (
+          <p className="error-message">{errors._general}</p>
         ) : (
           <>
             {isRoleAdminProtected && (
@@ -136,17 +183,18 @@ const RolEditarModal = ({
               <RolForm
                 formData={formData}
                 onFormChange={handleFormChange}
+                onBlur={handleBlur}
                 permisosDisponibles={permisosDisponibles}
                 permisosAgrupados={permisosAgrupados}
                 onToggleModulo={handleToggleModulo}
-                onSelectAll={handleSelectAll} // <-- Añadido
-                onDeselectAll={handleDeselectAll} // <-- Añadido
+                onSelectAll={handleSelectAll}
+                onDeselectAll={handleDeselectAll}
                 isEditing={true}
                 isRoleAdmin={isRoleAdminProtected}
-                formErrors={formErrors}
+                errors={errors}
               />
-              {formErrors.permisos && (
-                <p className="rol-error-permisos">{formErrors.permisos}</p>
+              {errors.idPermisos && (
+                <p className="rol-error-permisos">{errors.idPermisos}</p>
               )}
               {!isRoleAdminProtected ? (
                 <div className="rol-form-actions">

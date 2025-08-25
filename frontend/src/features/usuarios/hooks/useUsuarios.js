@@ -55,8 +55,13 @@ const useUsuarios = () => {
   const [formErrors, setFormErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
-  const [touchedFields, setTouchedFields] = useState({});
 
+
+  const runAndSetValidations = useCallback((data, formType) => {
+    const { errors, isValid } = runValidations(data, formType);
+    setFormErrors(errors);
+    setIsFormValid(isValid);
+  }, [runValidations]);
 
   const cargarDatos = useCallback(async () => {
     setIsLoadingPage(true);
@@ -317,7 +322,6 @@ const useUsuarios = () => {
     setFormErrors({});
     setIsFormValid(false);
     setIsVerifyingEmail(false);
-    setTouchedFields({});
   }, []);
 
   // ✅ NUEVO: Función para cerrar solo el modal de borrado físico
@@ -346,14 +350,13 @@ const useUsuarios = () => {
 
       setFormErrors({});
       setIsVerifyingEmail(false);
-      setTouchedFields({});
       setCurrentUsuario(usuario);
 
       if (type === "create") {
         const defaultRole =
           availableRoles.find((r) => r.nombre === "Cliente") ||
           (availableRoles.length > 0 ? availableRoles[0] : null);
-        setFormData({
+        const initialData = {
           estado: true,
           idRol: defaultRole ? defaultRole.idRol : "",
           nombre: "",
@@ -365,11 +368,13 @@ const useUsuarios = () => {
           fechaNacimiento: "",
           contrasena: "",
           confirmarContrasena: "",
-        });
+        };
+        setFormData(initialData);
+        runAndSetValidations(initialData, "create");
         setIsCrearModalOpen(true);
       } else if (type === "edit" && usuario) {
         const perfil = usuario.clienteInfo || usuario.empleadoInfo || {};
-        setFormData({
+        const initialData = {
           idUsuario: usuario.idUsuario,
           correo: usuario.correo || "",
           idRol: usuario.rol?.idRol || "",
@@ -382,7 +387,9 @@ const useUsuarios = () => {
             ? perfil.fechaNacimiento.split("T")[0]
             : "",
           estado: typeof usuario.estado === "boolean" ? usuario.estado : true,
-        });
+        };
+        setFormData(initialData);
+        runAndSetValidations(initialData, "edit");
         setIsEditarModalOpen(true);
       } else if (type === "details") {
         setIsDetailsModalOpen(true);
@@ -411,8 +418,6 @@ const useUsuarios = () => {
     (e) => {
       const { name, value, type, checked } = e.target;
       const val = type === "checkbox" ? checked : value;
-
-      setTouchedFields((prev) => ({ ...prev, [name]: true }));
 
       setFormData((prevData) => {
         const newFormData = { ...prevData, [name]: val };
@@ -483,11 +488,6 @@ const useUsuarios = () => {
 
     if (!currentFormIsValid) {
       setFormErrors(currentFormErrors);
-      const allTouched = Object.keys(formData).reduce((acc, key) => {
-        acc[key] = true;
-        return acc;
-      }, {});
-      setTouchedFields(allTouched);
       setValidationMessage("Por favor, corrija los errores en el formulario.");
       setIsValidationModalOpen(true);
       return;
@@ -704,7 +704,6 @@ const useUsuarios = () => {
     isVerifyingEmail,
     handleInputChange,
     handleInputBlur,
-    touchedFields,
     requiresProfile: checkRequiresProfile(formData.idRol),
 
     // ✅ NUEVO: Exportaciones para el borrado físico
