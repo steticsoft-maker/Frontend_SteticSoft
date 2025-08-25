@@ -119,10 +119,15 @@ const useUsuarios = () => {
           if (!value) error = "El rol es requerido.";
           break;
         case "contrasena":
-          if (formType === "create" && !value)
+          if (formType === "create" && !value) {
             error = "La contraseña es requerida.";
-          else if (formType === "create" && value && value.length < 8)
-            error = "La contraseña debe tener al menos 8 caracteres.";
+          } else if (formType === "create" && value) {
+            if (value.length < 8) {
+              error = "La contraseña debe tener al menos 8 caracteres.";
+            } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(value)) {
+              error = "Debe incluir mayúscula, minúscula, número y símbolo.";
+            }
+          }
           break;
         case "confirmarContrasena":
           if (formType === "create" && !value)
