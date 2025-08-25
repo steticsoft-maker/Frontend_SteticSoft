@@ -1,26 +1,25 @@
-// src/features/home/pages/PublicProductosPage.jsx
-import React, { useState, useEffect, useRef } from 'react'; // useContext para Auth o Cart - removed
+import React, { useState, useEffect, useRef } from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
 import Navbar from '../../../shared/components/layout/Navbar';
-import ProductCard from '../components/ProductCard'; // Nuevo componente
-// import { CartContext } from '../../../shared/contexts/CartContext'; // Si creas un CartContext
-import '../css/PublicProductos.css'; // Nueva ruta CSS
+import ProductCard from '../components/ProductCard';
+import Footer from '../../../shared/components/layout/Footer';
+import '../css/Home.css';
 
-// Datos hardcodeados por ahora, luego vendrán de un servicio
 const initialProducts = [
   { id: 1, name: "Shampoo Hidratante", image: "https://www.oboticario.com.co/cdn/shop/files/52076-3-MATCH-SHAMP-CIEN-CURV-300ml_1500x.jpg?v=1727714610", price: 25000, description: "Limpieza profunda y brillo natural" },
-  // ...otros productos
+  { id: 2, name: "Acondicionador Reparador", image: "https://www.oboticario.com.co/cdn/shop/files/52076-3-MATCH-SHAMP-CIEN-CURV-300ml_1500x.jpg?v=1727714610", price: 27000, description: "Nutrición intensa para cabello dañado" },
+  { id: 3, name: "Mascarilla Capilar", image: "https://www.oboticario.com.co/cdn/shop/files/52076-3-MATCH-SHAMP-CIEN-CURV-300ml_1500x.jpg?v=1727714610", price: 35000, description: "Tratamiento semanal para una suavidad extrema" },
 ];
 
-function PublicProductosPage() {
-  const [products] = useState(initialProducts); // Más adelante: useEffect para fetchProducts - setProducts removed
-  const [cart, setCart] = useState([]); // O usar CartContext
-  const [showCart, setShowCart] = useState(false);
-  const productosPageRef = useRef(null); // Renombrado para claridad
 
-  // Lógica del carrito (podría moverse a useCart() o CartContext)
+function PublicProductosPage() {
+  const [products] = useState(initialProducts);
+  const [cart, setCart] = useState([]);
+  const [showCart, setShowCart] = useState(false);
+  const productosPageRef = useRef(null);
+
   useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem('publicCart')) || []; // Usar clave diferente si el admin tiene otro carrito
+    const savedCart = JSON.parse(localStorage.getItem('publicCart')) || [];
     setCart(savedCart);
   }, []);
 
@@ -60,21 +59,20 @@ function PublicProductosPage() {
       return total;
     }, 0);
   };
-  // Fin lógica del carrito
 
   return (
-    <div className="public-productos-page"> {/* Renombrado */}
+    <div className="public-productos-page">
       <Navbar />
 
-      <div className="public-cart-icon" onClick={() => setShowCart(!showCart)}>
+      <div className="cart-icon" onClick={() => setShowCart(!showCart)}>
         <FaShoppingCart size={30} />
         {cart.filter(item => item.type === 'product').length > 0 && (
-          <span className="public-cart-count">{cart.filter(item => item.type === 'product').reduce((acc, item) => acc + item.quantity, 0)}</span>
+          <span className="cart-count">{cart.filter(item => item.type === 'product').reduce((acc, item) => acc + item.quantity, 0)}</span>
         )}
       </div>
 
       {showCart && (
-        <div className="public-cart-modal">
+        <div className="cart-modal">
           <h2>Carrito de Productos</h2>
           {cart.filter(item => item.type === 'product').length === 0 ? (
             <p>No hay productos en el carrito.</p>
@@ -88,7 +86,7 @@ function PublicProductosPage() {
                 ))}
               </ul>
               <h3>Total Productos: ${getTotal().toFixed(2)}</h3>
-              <button onClick={handleOrder} className="public-primary-button">
+              <button onClick={handleOrder} className="primary-button">
                 Realizar Pedido
               </button>
             </>
@@ -96,14 +94,15 @@ function PublicProductosPage() {
         </div>
       )}
 
-      <h1 className="public-productos-title" ref={productosPageRef}>
-        Productos Disponibles
-      </h1>
-      <div className="public-productos-grid">
+      <div className="page-header">
+        <h1 ref={productosPageRef}>Productos Disponibles</h1>
+      </div>
+      <div className="productos-grid">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
         ))}
       </div>
+      <Footer />
     </div>
   );
 }
