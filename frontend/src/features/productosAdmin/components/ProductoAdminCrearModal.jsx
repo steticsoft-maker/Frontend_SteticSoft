@@ -8,16 +8,16 @@ const MAX_FILE_SIZE_MB = MAX_FILE_SIZE_BYTES / (1024 * 1024);
 const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const getInitialFormState = () => ({
     nombre: "",
-    idCategoriaProducto: "", // Correcto
+    idCategoriaProducto: "",
     precio: "",
     existencia: "",
     stockMinimo: "",
     stockMaximo: "",
     descripcion: "",
-    imagen: null, // Contendrá el objeto File
-    imagenPreview: null, // Contendrá la URL para la vista previa
+    imagen: null,           // Objeto File
+    imagenPreview: null,    // Vista previa
     estado: true,
-    tipoUso: "Venta", // Ajustado a 'Venta' para coincidir con el validador
+    tipoUso: "Externo",     // ✅ valor válido por defecto
     vidaUtilDias: "",
   });
 
@@ -67,8 +67,8 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          imagen: file, // Guardamos el objeto File
-          imagenPreview: reader.result, // Guardamos la URL para la vista previa
+          imagen: file, // ✅ objeto File real
+          imagenPreview: reader.result,
         }));
       };
       reader.readAsDataURL(file);
@@ -94,8 +94,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       isNaN(parseInt(formData.existencia)) ||
       parseInt(formData.existencia) < 0
     ) {
-      errors.existencia =
-        "La existencia debe ser un número igual o mayor a cero.";
+      errors.existencia = "La existencia debe ser un número igual o mayor a cero.";
     }
     if (
       formData.stockMaximo &&
@@ -112,7 +111,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // --- INICIO DE LA CORRECCIÓN FINAL ---
+    // ✅ Mandamos objeto plano, el service arma el FormData
     const dataToSubmit = {
       nombre: formData.nombre,
       descripcion: formData.descripcion || null,
@@ -120,17 +119,12 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       precio: Number(formData.precio),
       stockMinimo: formData.stockMinimo ? Number(formData.stockMinimo) : null,
       stockMaximo: formData.stockMaximo ? Number(formData.stockMaximo) : null,
-      // 1. El backend espera 'idCategoriaProducto', no 'categoriaProductoId'
       idCategoriaProducto: formData.idCategoriaProducto,
-      // 2. El backend espera el archivo real ('imagen'), no la vista previa ('imagenPreview')
-      imagen: formData.imagen,
       estado: formData.estado,
-      tipoUso: formData.tipoUso,
-      vidaUtilDias: formData.vidaUtilDias
-        ? Number(formData.vidaUtilDias)
-        : null,
+      tipoUso: formData.tipoUso, // Interno / Externo
+      vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : null,
+      imagen: formData.imagen,   // objeto File
     };
-    // --- FIN DE LA CORRECCIÓN FINAL ---
 
     onSubmit(dataToSubmit);
   };

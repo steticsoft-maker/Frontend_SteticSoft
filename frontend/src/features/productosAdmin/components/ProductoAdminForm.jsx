@@ -7,7 +7,7 @@ const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDis
     let parsedValue = value;
     // Aseguramos que los campos numéricos se manejen como números o un string vacío si el usuario borra el campo
     if (name === 'existencia' || name === 'precio' || name === 'stockMinimo' || name === 'stockMaximo' || name === 'idCategoriaProducto') {
-      parsedValue = value === '' ? '' : Number(value);
+      parsedValue = value === '' ? null : Number(value);
     }
     
     onFormChange(name, type === 'checkbox' ? checked : parsedValue);
