@@ -1,71 +1,75 @@
+// src/features/horarios/pages/GestionNovedadesPage.jsx
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
-import HorariosTable from "../components/HorariosTable";
-import HorarioDetalleModal from "../components/HorarioDetalleModal";
-import HorarioModal from '../components/HorarioModal';
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
-import { fetchHorarios, deleteHorario, toggleHorarioEstado } from "../services/horariosService";
-import "../css/ConfigHorarios.css";
 
-function ConfigHorariosPage() {
-  const [horarios, setHorarios] = useState([]);
+// --- MODIFICADO: Importar componentes y servicios correctos ---
+import NovedadesTable from "../components/NovedadesTable";
+// import NovedadDetalleModal from "../components/NovedadDetalleModal"; // Descomentar si creas este componente
+import NovedadModal from '../components/NovedadModal';
+import ConfirmModal from "../../../shared/components/common/ConfirmModal";
+import { 
+  obtenerTodasLasNovedades, 
+  eliminarNovedad, 
+  cambiarEstadoNovedad 
+} from "../services/horariosService"; // <-- SERVICIO CORRECTO
+import { toast } from 'react-toastify';
+import "../css/ConfigHorarios.css"; // Puedes renombrar este CSS si quieres
+
+// --- MODIFICADO: Renombrado del componente ---
+function GestionNovedadesPage() {
+  const [novedades, setNovedades] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // --- MODIFICADO: Estados para filtros que se enviarán a la API ---
   const [search, setSearch] = useState("");
-  const [filtroEstado, setFiltroEstado] = useState("todos");
+  const [filtroEstado, setFiltroEstado] = useState(""); // Usaremos "" para 'todos'
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   
-  const [currentHorario, setCurrentHorario] = useState(null);
+  const [currentNovedad, setCurrentNovedad] = useState(null);
   const [modalType, setModalType] = useState(null);
 
-  const cargarHorarios = useCallback(async () => {
+  // --- MODIFICADO: Carga las novedades pasando los filtros al backend ---
+  const cargarNovedades = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchHorarios();
-      setHorarios(data);
+      
+      const params = {};
+      if (filtroEstado) params.estado = filtroEstado === 'activos';
+      if (search) params.busqueda = search;
+
+      const data = await obtenerTodasLasNovedades(params);
+      setNovedades(data);
     } catch (err) {
       setError(err.message);
+      toast.error("Error al cargar las novedades.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [search, filtroEstado]); // Se re-ejecuta si los filtros cambian
 
   useEffect(() => {
-    cargarHorarios();
-  }, [cargarHorarios]);
+    // Usamos un debounce para no llamar a la API en cada tecla presionada
+    const timerId = setTimeout(() => {
+      cargarNovedades();
+    }, 500); // Espera 500ms después de que el usuario deja de escribir
 
-  const filteredHorarios = useMemo(() => {
-    return horarios
-      .filter(h => {
-        if (filtroEstado === "todos") return true;
-        const esActivo = filtroEstado === 'activos';
-        return h.estado === esActivo;
-      })
-      .filter(h => {
-        const lowerCaseSearch = search.toLowerCase().trim();
-        if (!lowerCaseSearch) return true;
+    return () => clearTimeout(timerId);
+  }, [cargarNovedades]);
 
-        const encargadoMatch = (h.empleado?.nombre ?? '').toLowerCase().includes(lowerCaseSearch) || (h.empleado?.apellido ?? '').toLowerCase().includes(lowerCaseSearch);
-        
-        const diasHorariosMatch = (h.dias ?? []).some(dia => 
-          (dia.dia ?? '').toString().toLowerCase().includes(lowerCaseSearch) ||
-          (dia.horaInicio ?? '').toLowerCase().includes(lowerCaseSearch) ||
-          (dia.horaFin ?? '').toLowerCase().includes(lowerCaseSearch)
-        );
 
-        return encargadoMatch || diasHorariosMatch;
-      });
-  }, [horarios, search, filtroEstado]);
-
-  const paginatedHorarios = useMemo(() => {
+  // --- Paginación (se aplica a los datos ya filtrados por el backend) ---
+  const paginatedNovedades = useMemo(() => {
     const startIndex = (currentPage - 1) * rowsPerPage;
-    return filteredHorarios.slice(startIndex, startIndex + rowsPerPage);
-  }, [filteredHorarios, currentPage, rowsPerPage]);
+    return novedades.slice(startIndex, startIndex + rowsPerPage);
+  }, [novedades, currentPage, rowsPerPage]);
 
-  const totalPages = Math.ceil(filteredHorarios.length / rowsPerPage);
+  const totalPages = Math.ceil(novedades.length / rowsPerPage);
 
+  // --- MANEJADORES ---
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(1);
@@ -81,129 +85,143 @@ function ConfigHorariosPage() {
     setCurrentPage(1);
   };
 
-  const openModal = (type, horario = null) => {
+  const openModal = (type, novedad = null) => {
     setModalType(type);
-    setCurrentHorario(horario);
+    setCurrentNovedad(novedad);
   };
 
   const closeModal = () => {
     setModalType(null);
-    setCurrentHorario(null);
+    setCurrentNovedad(null);
   };
   
   const handleSuccess = () => {
     closeModal();
-    cargarHorarios();
+    cargarNovedades();
+    toast.success("Operación realizada con éxito.");
   };
   
+  // --- MODIFICADO: Lógica de eliminación ---
   const handleDeleteConfirm = async () => {
-    if (!currentHorario) return;
+    if (!currentNovedad) return;
     try {
-      await deleteHorario(currentHorario.id);
+      await eliminarNovedad(currentNovedad.idNovedad); // <-- Se usa la función y el ID correctos
       handleSuccess();
     } catch (err) {
-      alert(`Error al eliminar: ${err.message}`);
+      toast.error(`Error al eliminar: ${err.message}`);
     }
   };
 
+  // --- MODIFICADO: Lógica de cambio de estado ---
   const handleToggleConfirm = async () => {
-    if (!currentHorario) return;
+    if (!currentNovedad) return;
     try {
-      await toggleHorarioEstado(currentHorario.id, !currentHorario.estado);
+      await cambiarEstadoNovedad(currentNovedad.idNovedad, !currentNovedad.estado); // <-- Se usa la función y el ID correctos
       handleSuccess();
     } catch (err) {
-      alert(`Error al cambiar estado: ${err.message}`);
+      toast.error(`Error al cambiar estado: ${err.message}`);
     }
   };
 
   if (error) return <div className="error-message">Error: {error}</div>;
 
   return (
-    <div className="novedades-page-container">
+    <div className="page-container">
       <NavbarAdmin />
-      <div className="novedades-content">
-        <h1>Configuración de Horarios de Empleados</h1>
+      <div className="content-container">
+        <h1>Gestión de Novedades de Horario</h1>
         
-        <div className="novedades-actions-bar">
+        <div className="actions-bar">
           <input
-            className="novedades-search-bar"
+            className="search-bar"
             type="text"
-            placeholder="Buscar por encargado, día u hora..."
+            placeholder="Buscar por correo, fecha..."
             value={search}
             onChange={handleSearchChange}
           />
           <select
-            className="filtro-input"
+            className="filter-select"
             value={filtroEstado}
             onChange={handleFilterChange}
           >
-            <option value="todos">Todos los Estados</option>
+            <option value="">Todos los Estados</option>
             <option value="activos">Activos</option>
             <option value="inactivos">Inactivos</option>
           </select>
-          <button className="novedades-add-button" onClick={() => openModal('form')}>
-            Agregar Horario
+          <button className="add-button" onClick={() => openModal('form')}>
+            + Agregar Novedad
           </button>
         </div>
 
         {loading ? (
-          <p style={{ textAlign: 'center' }}>Cargando horarios...</p>
+          <p style={{ textAlign: 'center' }}>Cargando...</p>
         ) : (
           <>
-            <HorariosTable
-              horarios={paginatedHorarios}
-              onView={horario => openModal('details', horario)}
-              onEdit={horario => openModal('form', horario)}
-              onDeleteConfirm={horario => openModal('confirmDelete', horario)}
-              onToggleEstado={horario => openModal('confirmToggle', horario)}
+            <NovedadesTable
+              novedades={paginatedNovedades}
+              onView={novedad => openModal('details', novedad)}
+              onEdit={novedad => openModal('form', novedad)}
+              onDeleteConfirm={novedad => openModal('confirmDelete', novedad)}
+              onToggleEstado={novedad => openModal('confirmToggle', novedad)}
             />
             {totalPages > 1 && (
-              <div className="pagination-container">
-                <div className="rows-per-page-container">
-                  <label htmlFor="rows-per-page">Filas por página:</label>
-                  <select id="rows-per-page" value={rowsPerPage} onChange={handleRowsPerPageChange}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                  </select>
-                </div>
-                <div className="pagination-controls">
-                  {[...Array(totalPages).keys()].map(num => (
-                    <button
-                      key={num + 1}
-                      onClick={() => setCurrentPage(num + 1)}
-                      className={currentPage === num + 1 ? 'active' : ''}
-                    >
-                      {num + 1}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+  <div className="pagination-container">
+    <div className="rows-per-page-container">
+      <label htmlFor="rows-per-page">Filas por página:</label>
+      <select
+        id="rows-per-page"
+        value={rowsPerPage}
+        onChange={handleRowsPerPageChange} // <-- Esta línea conecta la función
+      >
+        <option value={5}>5</option>
+        <option value={10}>10</option>
+        <option value={20}>20</option>
+      </select>
+    </div>
+
+    <div className="pagination-controls">
+      <button
+        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+        disabled={currentPage === 1}
+      >
+        Anterior
+      </button>
+      <span>
+        Página {currentPage} de {totalPages}
+      </span>
+      <button
+        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+        disabled={currentPage === totalPages}
+      >
+        Siguiente
+      </button>
+    </div>
+  </div>
+)}
           </>
         )}
       </div>
-
       {modalType === 'form' && (
-        <HorarioModal 
+        <NovedadModal 
           onClose={closeModal} 
           onSuccess={handleSuccess}
-          horarioToEdit={currentHorario}
+          novedadToEdit={currentNovedad}
+          isEditing={!!currentNovedad}
         />
       )}
-      {modalType === 'details' && (
-        <HorarioDetalleModal 
+      {/* {modalType === 'details' && (
+        <NovedadDetalleModal 
           onClose={closeModal} 
-          horario={currentHorario}
+          novedad={currentNovedad}
         />
-      )}
+      )} */}
       {modalType === 'confirmDelete' && (
         <ConfirmModal 
           isOpen={true} 
           onClose={closeModal} 
           onConfirm={handleDeleteConfirm} 
           title="Confirmar Eliminación" 
-          message={`¿Está seguro de que desea eliminar el horario de ${currentHorario?.empleado?.nombre ?? 'este empleado'}?`}
+          message={`¿Está seguro de eliminar la novedad del ${currentNovedad?.fechaInicio}?`}
         />
       )}
       {modalType === 'confirmToggle' && (
@@ -212,11 +230,11 @@ function ConfigHorariosPage() {
           onClose={closeModal} 
           onConfirm={handleToggleConfirm} 
           title="Confirmar Cambio de Estado" 
-          message={`¿Seguro que quieres ${currentHorario?.estado ? 'desactivar' : 'activar'} el horario de ${currentHorario?.empleado?.nombre ?? 'este empleado'}?`}
+          message={`¿Seguro que quieres ${currentNovedad?.estado ? 'desactivar' : 'activar'} esta novedad?`}
         />
       )}
     </div>
   );
 }
 
-export default ConfigHorariosPage;
+export default GestionNovedadesPage;

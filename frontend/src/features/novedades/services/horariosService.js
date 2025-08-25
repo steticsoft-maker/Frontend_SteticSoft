@@ -1,98 +1,98 @@
-import apiClient from '../../../shared/services/apiClient';
+// src/services/novedadesAdminService.js
+import apiClient from "../../../shared/services/apiClient"; // Asegúrate que la ruta a tu apiClient sea correcta
 
-// Agrupa las "novedades" de la API en "horarios" para el frontend.
-const transformarNovedadesAHorarios = (novedades) => {
-  if (!Array.isArray(novedades) || novedades.length === 0) {
-    return [];
+/**
+ * Obtiene una lista de todas las novedades.
+ * @param {object} params - Opciones para filtrar, ej: { estado: true, empleadoId: 5 }
+ * @returns {Promise<Array>} Una promesa que resuelve a un array de novedades.
+ */
+export const obtenerTodasLasNovedades = async (params = {}) => {
+  try {
+    const response = await apiClient.get("/novedades", { params });
+    return response.data.data; 
+  } catch (error) {
+    console.error("Error al obtener las novedades:", error);
+    throw error;
   }
-  const agrupadoPorEmpleado = novedades.reduce((acc, novedad) => {
-    const { id_empleado, empleado, estado, idNovedad, diaSemana, horaInicio, horaFin } = novedad;
-    if (!acc[id_empleado]) {
-      acc[id_empleado] = {
-        id: id_empleado,
-        id_empleado: id_empleado,
-        empleado: empleado,
-        estado: estado,
-        dias: [],
-      };
-    }
-    acc[id_empleado].dias.push({
-      idNovedad: idNovedad,
-      dia: diaSemana,
-      horaInicio: horaInicio,
-      horaFin: horaFin,
-    });
-    return acc;
-  }, {});
-  return Object.values(agrupadoPorEmpleado);
 };
 
-// Mapa para convertir el nombre del día a número antes de enviar a la API.
-const diasMapa = {
-  "Domingo": 0, "Lunes": 1, "Martes": 2, "Miércoles": 3, "Jueves": 4, "Viernes": 5, "Sábado": 6,
+/**
+ * Obtiene una novedad específica por su ID.
+ * @param {number} id - El ID de la novedad.
+ * @returns {Promise<object>} Una promesa que resuelve al objeto de la novedad.
+ */
+export const obtenerNovedadPorId = async (id) => {
+  try {
+    const response = await apiClient.get(`/novedades/${id}`);
+    return response.data.data;
+  } catch (error) {
+    console.error(`Error al obtener la novedad con ID ${id}:`, error);
+    throw error;
+  }
 };
 
-export const getEmpleadosParaHorarios = async () => {
-  const response = await apiClient.get('/empleados', { params: { estado: true } });
-  return response.data.data;
+/**
+ * Crea una nueva novedad y la asigna a los empleados.
+ * @param {object} novedadData - Los datos de la novedad.
+ * @param {string} novedadData.fechaInicio - Fecha de inicio en formato 'YYYY-MM-DD'.
+ * @param {string} novedadData.fechaFin - Fecha de fin en formato 'YYYY-MM-DD'.
+ * @param {string} novedadData.horaInicio - Hora de inicio en formato 'HH:mm'.
+ * @param {string} novedadData.horaFin - Hora de fin en formato 'HH:mm'.
+ * @param {number[]} novedadData.empleadosIds - Un array con los IDs de los empleados.
+ * @returns {Promise<object>} Una promesa que resuelve a la nueva novedad creada.
+ */
+export const crearNovedad = async (novedadData) => {
+  try {
+    const response = await apiClient.post("/novedades", novedadData);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error al crear la novedad:", error);
+    throw error;
+  }
 };
 
-export const fetchHorarios = async () => {
-  const response = await apiClient.get('/novedades');
-  return transformarNovedadesAHorarios(response.data.data);
+/**
+ * Actualiza una novedad existente.
+ * @param {number} id - El ID de la novedad a actualizar.
+ * @param {object} novedadData - Los datos a actualizar. Puede incluir el array empleadosIds.
+ * @returns {Promise<object>} Una promesa que resuelve a la novedad actualizada.
+ */
+export const actualizarNovedad = async (id, novedadData) => {
+  try {
+    const response = await apiClient.patch(`/novedades/${id}`, novedadData);
+    return response.data.data;
+  } catch (error) {
+    console.error(`Error al actualizar la novedad con ID ${id}:`, error);
+    throw error;
+  }
 };
 
-export const saveHorario = async (horarioData) => {
-  const promesasDeCreacion = horarioData.dias.map(dia => {
-    const nuevaNovedad = {
-      // La propiedad ya se llama 'empleadoId' y la parseamos a entero
-      empleadoId: parseInt(horarioData.idEmpleado, 10),
-      diaSemana: diasMapa[dia.diaSemana],
-      horaInicio: dia.horaInicio,
-      horaFin: dia.horaFin,
-    };
-    return apiClient.post('/novedades', nuevaNovedad);
-  });
-  return Promise.all(promesasDeCreacion);
+/**
+ * Cambia el estado (activo/inactivo) de una novedad.
+ * @param {number} id - El ID de la novedad.
+ * @param {boolean} estado - El nuevo estado (true para activo, false para inactivo).
+ * @returns {Promise<object>} Una promesa que resuelve a la novedad con su estado actualizado.
+ */
+export const cambiarEstadoNovedad = async (id, estado) => {
+  try {
+    const response = await apiClient.patch(`/novedades/${id}/estado`, { estado });
+    return response.data.data;
+  } catch (error) {
+    console.error(`Error al cambiar el estado de la novedad con ID ${id}:`, error);
+    throw error;
+  }
 };
 
-export const updateHorario = async (idEmpleado, nuevosDatos) => {
-  const response = await apiClient.get('/novedades', { params: { id_empleado: idEmpleado } });
-  const novedadesExistentes = response.data.data;
-  
-  const promesasDeBorrado = novedadesExistentes.map(novedad =>
-    apiClient.delete(`/novedades/${novedad.idNovedad}`)
-  );
-  await Promise.all(promesasDeBorrado);
-
- const promesasDeCreacion = nuevosDatos.dias.map(dia => {
-    const nuevaNovedad = {
-      id_empleado: parseInt(idEmpleado, 10), // El id ya viene como parámetro
-      diaSemana: diasMapa[dia.diaSemana],
-      horaInicio: dia.horaInicio,
-      horaFin: dia.horaFin,
-    };
-    return apiClient.post('/novedades', nuevaNovedad);
-  });
-  return Promise.all(promesasDeCreacion);
+/**
+ * Elimina una novedad por su ID.
+ * @param {number} id - El ID de la novedad a eliminar.
+ * @returns {Promise<void>} Una promesa que se resuelve cuando la eliminación es exitosa.
+ */
+export const eliminarNovedad = async (id) => {
+  try {
+    await apiClient.delete(`/novedades/${id}`);
+  } catch (error) {
+    console.error(`Error al eliminar la novedad con ID ${id}:`, error);
+    throw error;
+  }
 };
-
-export const deleteHorario = async (idEmpleado) => {
-  const response = await apiClient.get('/novedades', { params: { id_empleado: idEmpleado } });
-  const novedadesAEliminar = response.data.data;
-  if (novedadesAEliminar.length === 0) return;
-  const promesasDeBorrado = novedadesAEliminar.map(novedad =>
-    apiClient.delete(`/novedades/${novedad.idNovedad}`)
-  );
-  return Promise.all(promesasDeBorrado);
-}
-
-export const toggleHorarioEstado = async (idEmpleado, nuevoEstado) => {
-  const response = await apiClient.get('/novedades', { params: { id_empleado: idEmpleado } });
-  const novedadesACambiar = response.data.data;
-  if (novedadesACambiar.length === 0) return;
-  const promesasDeCambio = novedadesACambiar.map(novedad =>
-    apiClient.patch(`/novedades/${novedad.idNovedad}/estado`, { estado: nuevoEstado })
-  );
-  return Promise.all(promesasDeCambio);
-}
