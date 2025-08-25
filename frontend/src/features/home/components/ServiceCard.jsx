@@ -1,24 +1,25 @@
-// src/features/home/components/ServiceCard.jsx
 import React from 'react';
-// import '../css/ServiceCard.css'; // O estilos dentro de PublicServicios.css
 
 function ServiceCard({ service, onAddToCart }) {
   return (
-    <div className="public-servicios-card"> {/* Usar prefijo */}
+    <div className="service-card">
       {service.imagenURL && (
-        <img
-          src={service.imagenURL}
-          alt={service.nombre}
-          className="public-servicios-image"
-        />
+        <div className="service-card-image-container">
+          <img src={service.imagenURL} alt={service.nombre} className="service-card-image" />
+        </div>
       )}
-      <h3>{service.nombre}</h3>
-      <p>{service.description || service.categoria || ''}</p>
-      <p className="public-servicios-price">${service.price.toFixed(2)}</p>
-      <button onClick={() => onAddToCart(service)} className="public-add-button-servicio"> {/* Clase específica */}
-        Agregar
-      </button>
+      <div className="service-card-content">
+        <h3 className="service-card-title">{service.nombre}</h3>
+        <p className="service-card-description">{service.description || service.categoria || ''}</p>
+        <div className="service-card-footer">
+          <p className="service-card-price">${service.precio.toFixed(2)}</p>
+          <button onClick={() => onAddToCart(service)} className="service-card-button">
+            Agregar al Carrito
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
+
 export default ServiceCard;

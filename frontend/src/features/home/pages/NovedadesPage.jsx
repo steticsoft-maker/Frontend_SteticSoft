@@ -1,8 +1,8 @@
-// src/features/home/pages/NovedadesPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../../shared/components/layout/Navbar'; // Ruta actualizada
-import '../css/Novedades.css'; // Nueva ruta CSS
+import Navbar from '../../../shared/components/layout/Navbar';
+import Footer from '../../../shared/components/layout/Footer';
+import '../css/Home.css';
 
 function NovedadesPage() {
   const navigate = useNavigate();
@@ -20,14 +20,14 @@ function NovedadesPage() {
   };
 
   return (
-    <div className="novedades-page-container"> {/* Renombrado para claridad */}
+    <div className="novedades-page">
       <Navbar />
-      <div className="novedades-content-box"> {/* Renombrado */}
+      <div className="novedades-container">
         <h1 className="novedades-title">
           Selecciona el horario para tu servicio
         </h1>
         <form className="novedades-form" onSubmit={handleSchedule}>
-          <label htmlFor="schedule-select">Elige tu horario:</label> {/* Mejorar accesibilidad con htmlFor */}
+          <label htmlFor="schedule-select">Elige tu horario:</label>
           <select
             id="schedule-select"
             value={schedule}
@@ -40,22 +40,23 @@ function NovedadesPage() {
             <option value="2:00 PM">2:00 PM</option>
             <option value="4:00 PM">4:00 PM</option>
           </select>
-          <button type="submit" className="novedades-primary-button"> {/* Clase más específica */}
+          <button type="submit" className="novedades-button">
             Confirmar
           </button>
         </form>
         {confirmation && (
-          <div className="novedades-confirmation-section"> {/* Renombrado */}
-            <p className="novedades-confirmation-message">{confirmation}</p>
+          <div className="novedades-confirmation">
+            <p>{confirmation}</p>
             <button
-              onClick={() => navigate('/Servicios')} // Asumiendo que /Servicios es la ruta de PublicServiciosPage
-              className="novedades-secondary-button" // Clase más específica
+              onClick={() => navigate('/servicios')}
+              className="novedades-button-secondary"
             >
               Regresar a Servicios
             </button>
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

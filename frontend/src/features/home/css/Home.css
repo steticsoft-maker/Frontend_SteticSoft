@@ -1,64 +1,246 @@
-/* src/features/home/css/Home.css */
-/* El estilo para 'body' ya debería estar en src/index.css */
-
-.home-page-container {
-    /* Antes .home-container */
-    padding: 20px;
-    margin-top: 80px;
-    /* Ajustar según altura del Navbar + espacio */
-    /* Considerar max-width y margin: auto si quieres centrar el contenido principal */
+/* General Body Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
 }
 
-.home-header {
+:root {
+    --primary-color: #8a4baf;
+    --secondary-color: #f4e8fde8;
+    --dark-color: #333;
+    --light-color: #f9f9f9;
+    --text-color: #555;
+    --white-color: #fff;
+}
+
+/* Page Styles */
+.home-page, .novedades-page, .public-productos-page, .public-servicios-page {
+    background-color: var(--light-color);
+    padding-top: 80px; /* Space for navbar */
+}
+
+.page-header {
     text-align: center;
-    margin-bottom: 30px;
+    padding: 40px 20px;
+    background-color: var(--white-color);
+    border-bottom: 1px solid #eee;
 }
 
-.home-header h1 {
-    font-size: 2.5rem;
-    color: var(--color-primary);
-    /* Usar variable */
+.page-header h1 {
+    font-size: 2.8rem;
+    color: var(--primary-color);
 }
 
-.home-header p {
-    font-size: 1.2rem;
-    color: var(--color-text-dark);
-    /* Usar variable, o --color-text-muted */
-}
-
-.home-features-content {
-    /* Antes .home-content */
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    color: var(--white-color);
+    height: 80vh;
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.home-card {
-    /* Este estilo se puede quedar aquí si InfoCard.jsx no tiene su propio CSS */
-    background-color: #e9d5e2;
-    /* Considera var(--color-background-card-light) o similar */
-    border-radius: 10px;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    width: 30%;
-    min-width: 250px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 0 20px;
 }
 
-.home-card:hover {
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.hero-button {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.hero-button:hover {
+    background-color: #6d3a8d;
+}
+
+/* Home Sections */
+.home-section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.home-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: var(--dark-color);
+}
+
+/* Grids for Products and Services */
+.productos-grid, .servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 0 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Product and Service Cards */
+.product-card, .service-card {
+    background-color: var(--white-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover, .service-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-.home-card h2 {
-    color: var(--color-primary);
-    /* Usar variable */
+.product-card-image-container, .service-card-image-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.product-card-image, .service-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-card-content, .service-card-content {
+    padding: 20px;
+}
+
+.product-card-title, .service-card-title {
+    font-size: 1.4rem;
     margin-bottom: 10px;
+    color: var(--dark-color);
 }
 
-.home-card p {
-    color: var(--color-text-dark);
-    /* Usar variable */ }
+.product-card-description, .service-card-description {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+.product-card-footer, .service-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-card-price, .service-card-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.product-card-button, .service-card-button, .primary-button, .novedades-button {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.product-card-button:hover, .service-card-button:hover, .primary-button:hover, .novedades-button:hover {
+    background-color: #6d3a8d;
+}
+
+/* Novedades Page */
+.novedades-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: var(--white-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.novedades-title {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.novedades-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.novedades-select {
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.novedades-confirmation {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #28a745;
+}
+
+/* Cart */
+.cart-icon {
+    position: fixed;
+    top: 20px;
+    right: 40px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.cart-count {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+}
+
+.cart-modal {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 350px;
+    background-color: var(--white-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    padding: 20px;
+    z-index: 1000;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}

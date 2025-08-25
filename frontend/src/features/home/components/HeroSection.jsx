@@ -1,13 +1,15 @@
-// src/features/home/components/HeroSection.jsx
-import React from "react";
-// import '../css/HeroSection.css'; // Si necesita estilos propios
+import React from 'react';
 
-const HeroSection = () => (
-  <header className="home-header">
-    {" "}
-    {/* Usar clase de Home.css o una nueva */}
-    <h1>Bienvenido a SteticSoft</h1>
-    <p>Transformamos tu estilo, cuidamos tu imagen</p>
-  </header>
-);
+const HeroSection = () => {
+  return (
+    <div className="hero-section">
+      <div className="hero-content">
+        <h1>SteticSoft: Belleza y Bienestar a tu Alcance</h1>
+        <p>Descubre un mundo de servicios y productos de alta calidad diseñados para realzar tu belleza natural.</p>
+        <a href="#services" className="hero-button">Explora Nuestros Servicios</a>
+      </div>
+    </div>
+  );
+};
+
 export default HeroSection;
