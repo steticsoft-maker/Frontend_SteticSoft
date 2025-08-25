@@ -16,28 +16,45 @@ const ClienteForm = ({ formData, onFormChange, isEditing, formErrors: initialFor
     let error = "";
     switch (name) {
       case "nombre":
+        if (!value) error = "El nombre es obligatorio.";
+        else if (value.length < 2 || value.length > 100) error = "El nombre debe tener entre 2 y 100 caracteres.";
+        break;
       case "apellido":
+        if (!value) error = "El apellido es obligatorio.";
+        else if (value.length < 2 || value.length > 100) error = "El apellido debe tener entre 2 y 100 caracteres.";
+        break;
       case "telefono":
+        if (!value) error = "El teléfono es obligatorio.";
+        else if (!/^\d{7,45}$/.test(value)) error = "El teléfono debe tener entre 7 y 45 dígitos.";
+        break;
       case "numeroDocumento":
-        if (!value) error = "Este campo es obligatorio.";
+        if (!value) error = "El número de documento es obligatorio.";
+        else if (!/^\d{5,45}$/.test(value)) error = "El documento debe tener entre 5 y 45 dígitos.";
         break;
       case "direccion":
         if (!value) error = "La dirección es obligatoria.";
+        else if (value.length > 255) error = "La dirección no puede tener más de 255 caracteres.";
         break;
       case "correo":
+        if (!value) error = "El correo es obligatorio.";
+        else if (!/\S+@\S+\.\S+/.test(value)) error = "El formato del correo no es válido.";
+        break;
+      case "fechaNacimiento":
         if (!value) {
-          error = "El correo es obligatorio.";
-        } else if (!/\S+@\S+\.\S+/.test(value)) {
-          error = "El formato del correo no es válido.";
+          error = "La fecha de nacimiento es obligatoria.";
+        } else if (new Date(value) > new Date()) {
+          error = "La fecha de nacimiento no puede ser futura.";
         }
         break;
       case "contrasena":
         if (!isEditing && !value) {
           error = "La contraseña es obligatoria.";
-        } else if (!isEditing && value.length < 8) {
-          error = "La contraseña debe tener al menos 8 caracteres.";
-        } else if (!isEditing && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(value)) {
-          error = "Debe incluir mayúscula, minúscula, número y símbolo.";
+        } else if (!isEditing && value) {
+            if (value.length < 8) {
+              error = "La contraseña debe tener al menos 8 caracteres.";
+            } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(value)) {
+              error = "Debe incluir mayúscula, minúscula, número y símbolo.";
+            }
         }
         break;
       case "confirmPassword":

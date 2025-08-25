@@ -412,34 +412,42 @@ const useUsuarios = () => {
       const { name, value, type, checked } = e.target;
       const val = type === "checkbox" ? checked : value;
 
-      setFormData((prev) => {
-        const newFormData = { ...prev, [name]: val };
-        if (name === "idRol") {
-          const requiresProfileNewRole = checkRequiresProfile(val);
-          if (!requiresProfileNewRole) {
-            const newErrors = { ...formErrors };
-            CAMPOS_PERFIL.forEach((field) => {
-              if (newErrors[field]) delete newErrors[field];
-            });
-            setFormErrors(newErrors);
+      setTouchedFields((prev) => ({ ...prev, [name]: true }));
+
+      setFormData((prevData) => {
+        const newFormData = { ...prevData, [name]: val };
+
+        const formType = newFormData.idUsuario ? "edit" : "create";
+        const error = validateField(name, val, newFormData, formType);
+
+        setFormErrors((prevErrors) => {
+          const newErrors = { ...prevErrors, [name]: error };
+
+          if (name === "idRol") {
+            const requiresProfile = checkRequiresProfile(val);
+            if (!requiresProfile) {
+              CAMPOS_PERFIL.forEach(field => {
+                delete newErrors[field];
+              });
+            }
           }
-        }
+          return newErrors;
+        });
+
         return newFormData;
       });
     },
-    [checkRequiresProfile, formErrors]
+    [validateField, checkRequiresProfile]
   );
 
   const handleInputBlur = useCallback(
     async (e) => {
       const { name, value } = e.target;
-      setTouchedFields((prev) => ({ ...prev, [name]: true }));
+      // La validación en tiempo real ya se hace en handleInputChange.
+      // Aquí solo manejamos la lógica específica de onBlur, como la verificación de correo.
 
-      const formType = formData.idUsuario ? "edit" : "create";
-      const error = validateField(name, value, formData, formType);
-      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
-
-      if (name === "correo" && !error && value) {
+      if (name === "correo" && value && !formErrors.correo) {
+        const formType = formData.idUsuario ? "edit" : "create";
         const originalEmail =
           formType === "edit" && currentUsuario ? currentUsuario.correo : null;
         if (value !== originalEmail) {
@@ -451,14 +459,10 @@ const useUsuarios = () => {
                 ...prevErrors,
                 correo: "Este correo ya está registrado.",
               }));
-            } else {
-              setFormErrors((prevErrors) => ({
-                ...prevErrors,
-                correo: error || "",
-              }));
             }
           } catch (apiError) {
             console.error("Error verificando correo:", apiError);
+            // Opcional: mostrar un error de red si la verificación falla
             setFormErrors((prevErrors) => ({
               ...prevErrors,
               correo: "No se pudo verificar el correo.",
@@ -466,18 +470,10 @@ const useUsuarios = () => {
           } finally {
             setIsVerifyingEmail(false);
           }
-        } else if (
-          value === originalEmail &&
-          formErrors.correo === "Este correo ya está registrado."
-        ) {
-          setFormErrors((prevErrors) => ({
-            ...prevErrors,
-            correo: error || "",
-          }));
         }
       }
     },
-    [formData, validateField, currentUsuario, formErrors.correo]
+    [formData.idUsuario, currentUsuario, formErrors.correo]
   );
 
   const handleSaveUsuario = useCallback(async () => {

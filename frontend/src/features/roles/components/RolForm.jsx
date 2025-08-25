@@ -25,14 +25,28 @@ const RolForm = ({
 
   const validateField = (name, value) => {
     let error = "";
-    if (name === "nombre") {
-      if (!value) {
-        error = "El nombre del rol es obligatorio.";
-      } else if (value.length < 3) {
-        error = "El nombre del rol debe tener al menos 3 caracteres.";
-      } else if (value.length > 50) {
-        error = "El nombre del rol no debe exceder los 50 caracteres.";
-      }
+    switch (name) {
+      case "nombre":
+        if (!value) {
+          error = "El nombre del rol es obligatorio.";
+        } else if (value.length < 3) {
+          error = "El nombre del rol debe tener al menos 3 caracteres.";
+        } else if (value.length > 50) {
+          error = "El nombre del rol no debe exceder los 50 caracteres.";
+        }
+        break;
+      case "descripcion":
+        if (value.length > 255) {
+          error = "La descripción no debe exceder los 255 caracteres.";
+        }
+        break;
+      case "tipoPerfil":
+        if (!value) {
+          error = "El tipo de perfil es obligatorio.";
+        }
+        break;
+      default:
+        break;
     }
     return error;
   };
@@ -46,7 +60,7 @@ const RolForm = ({
 
     // Validar en tiempo real y actualizar el estado de errores local
     const error = validateField(name, fieldValue);
-    setErrors(prevErrors => ({
+    setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: error,
     }));
@@ -122,9 +136,12 @@ const RolForm = ({
               name="descripcion"
               value={formData.descripcion}
               onChange={handleInputChange}
-              className="rol-textarea"
+              className={`rol-textarea ${errors.descripcion ? 'input-error' : ''}`}
               disabled={isRoleAdmin}
             />
+            {errors.descripcion && (
+              <span className="error-message">{errors.descripcion}</span>
+            )}
           </div>
 
           {isEditing && !isRoleAdmin && (
