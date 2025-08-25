@@ -59,7 +59,7 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
         formatError = !value.trim() ? "Este campo es obligatorio." : null;
         break;
       case 'emailPersonaEncargada':
-        formatError = value && !/\S+@\S+\.\S+/.test(value) ? "El email del encargado no es válido." : null;
+        formatError = !value.trim() ? "Este campo es obligatorio." : !/\S+@\S+\.\S+/.test(value) ? "El formato del email no es válido." : null;
         break;
       default:
         break;
@@ -86,27 +86,26 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
   
   const handleBlur = async (e) => {
     const { name, value } = e.target;
-    if (!value.trim()) return; 
     const errorMessage = await validateField(name, value);
     setErrors(prev => ({ ...prev, [name]: errorMessage }));
   };
 
-  const validateFormOnSubmit = async () => {
-    const newErrors = {};
-    const fieldsToValidate = [
+const validateFormOnSubmit = async () => {
+  const newErrors = {};
+  const fieldsToValidate = [
         'nombre', 'telefono', 'correo', 'direccion', 
-        'nombrePersonaEncargada', 'telefonoPersonaEncargada',
+        'nombrePersonaEncargada', 'telefonoPersonaEncargada', 'emailPersonaEncargada', // <-- ¡Agrega este campo!
         ...(formData.tipo === 'Natural' ? ['numeroDocumento'] : ['nitEmpresa'])
-    ];
-    for (const field of fieldsToValidate) {
+      ];
+      for (const field of fieldsToValidate) {
         const errorMessage = await validateField(field, formData[field]);
         if (errorMessage) {
-            newErrors[field] = errorMessage;
+          newErrors[field] = errorMessage;
         }
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+      }
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+};
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
