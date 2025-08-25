@@ -52,7 +52,7 @@ const UsuarioForm = ({
           onBlur={onInputBlur}
           required
           className={`usuarios-form-input ${
-            errors.correo ? "input-error" : ""
+            touched.correo && errors.correo ? "input-error" : ""
           }`}
           disabled={(isUserAdmin && isEditing) || isVerifyingEmail}
         />
