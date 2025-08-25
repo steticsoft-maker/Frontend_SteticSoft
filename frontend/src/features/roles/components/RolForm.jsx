@@ -1,6 +1,6 @@
 // src/features/roles/components/RolForm.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PermisosSelector from "./PermisosSelector";
 
 const RolForm = ({
@@ -16,10 +16,40 @@ const RolForm = ({
   formErrors,
 }) => {
   const [mostrarPermisos, setMostrarPermisos] = useState(isEditing || false);
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    // Si los errores del formulario del padre cambian, los mostramos.
+    setErrors(formErrors);
+  }, [formErrors]);
+
+  const validateField = (name, value) => {
+    let error = "";
+    if (name === "nombre") {
+      if (!value) {
+        error = "El nombre del rol es obligatorio.";
+      } else if (value.length < 3) {
+        error = "El nombre del rol debe tener al menos 3 caracteres.";
+      } else if (value.length > 50) {
+        error = "El nombre del rol no debe exceder los 50 caracteres.";
+      }
+    }
+    return error;
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    onFormChange(name, type === "checkbox" ? checked : value);
+    const fieldValue = type === "checkbox" ? checked : value;
+
+    // Actualizar el estado del formulario en el componente padre
+    onFormChange(name, fieldValue);
+
+    // Validar en tiempo real y actualizar el estado de errores local
+    const error = validateField(name, fieldValue);
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: error,
+    }));
   };
 
   const handleToggleMostrarPermisos = () => {
@@ -47,12 +77,12 @@ const RolForm = ({
               name="nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              className="rol-input"
+              className={`rol-input ${errors.nombre ? 'input-error' : ''}`}
               disabled={isRoleAdmin}
               required
             />
-            {formErrors.nombre && (
-              <span className="error-message">{formErrors.nombre}</span>
+            {errors.nombre && (
+              <span className="error-message">{errors.nombre}</span>
             )}
           </div>
 
@@ -77,8 +107,8 @@ const RolForm = ({
               <option value="CLIENTE">Cliente</option>
               <option value="NINGUNO">Ninguno (Solo Acceso al Sistema)</option>
             </select>
-            {formErrors.tipoPerfil && (
-              <span className="error-message">{formErrors.tipoPerfil}</span>
+            {errors.tipoPerfil && (
+              <span className="error-message">{errors.tipoPerfil}</span>
             )}
           </div>
           {/* --- FIN DE CORRECCIÓN --- */}

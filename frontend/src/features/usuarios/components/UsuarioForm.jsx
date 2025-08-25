@@ -1,5 +1,5 @@
 // src/features/usuarios/components/UsuarioForm.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const RequiredAsterisk = () => (
   <span style={{ color: "red", marginLeft: "2px" }}>*</span>
@@ -7,20 +7,25 @@ const RequiredAsterisk = () => (
 
 const UsuarioForm = ({
   formData,
-  onInputChange, // Nuevo prop
-  onInputBlur, // Nuevo prop
+  onInputChange,
+  onInputBlur,
   availableRoles,
   isEditing,
   isUserAdmin,
   formErrors,
   isVerifyingEmail,
-  touchedFields, // Nuevo prop
+  touchedFields,
 }) => {
-  // handleChange se reemplaza por onInputChange y onInputBlur pasados como props
-  const errors = formErrors || {};
-  const touched = touchedFields || {}; // Asegurar que touchedFields no sea undefined
+  // Mantener un estado local de errores para reflejar instantáneamente los cambios
+  // que vienen del hook padre a través de formErrors.
+  const [errors, setErrors] = useState(formErrors || {});
 
-  // Determina si el rol seleccionado requiere campos de perfil
+  useEffect(() => {
+    setErrors(formErrors || {});
+  }, [formErrors]);
+
+  const touched = touchedFields || {};
+
   const selectedRole = availableRoles.find(
     (rol) => rol.idRol === parseInt(formData.idRol)
   );
