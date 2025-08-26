@@ -19,18 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       total: {
         type: DataTypes.DECIMAL(12, 2), 
         defaultValue: 0.0,
-        field: 'total',
-        validate: {
-          min: 0
-        }
+        field: 'total'
       },
       iva: {
         type: DataTypes.DECIMAL(12, 2), 
         defaultValue: 0.0,
-        field: 'iva',
-        validate: {
-          min: 0
-        }
+        field: 'iva'
       },
       idProveedor: { 
         type: DataTypes.INTEGER,

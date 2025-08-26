@@ -28,9 +28,8 @@ module.exports = (sequelize, DataTypes) => {
         field: "estado",
       },
       tipoPerfil: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "EMPLEADO",
         field: "tipo_perfil",
         validate: {
           isIn: [["CLIENTE", "EMPLEADO", "NINGUNO"]],

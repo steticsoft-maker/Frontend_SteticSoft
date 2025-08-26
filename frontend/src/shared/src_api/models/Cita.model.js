@@ -11,32 +11,20 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         field: 'id_cita' 
       },
-      // DEPRECADO: El campo 'estado' booleano fue reemplazado por la FK 'id_estado'.
-      // estado: {
-      //   type: DataTypes.BOOLEAN,
-      //   defaultValue: true,
-      //   allowNull: false,
-      //   field: 'estado'
-      // },
-      // DEPRECADO: El campo 'fechaHora' no existe en el nuevo schema. La información de horario viene de 'novedades'.
-      // fechaHora: {
-      //   type: DataTypes.DATE, // Se mapea a TIMESTAMP WITH TIME ZONE en PostgreSQL
-      //   allowNull: false,
-      //   field: 'fecha_hora'
-      // },
-      idNovedad: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        field: 'id_novedad',
-        references: {
-          model: 'novedades',
-          key: 'id_novedad'
-        },
-        onDelete: 'SET NULL'
+      estado: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+        field: 'estado'
+      },
+      fechaHora: {
+        type: DataTypes.DATE, // Se mapea a TIMESTAMP WITH TIME ZONE en PostgreSQL
+        allowNull: false,
+        field: 'fecha_hora' 
       },
       idCliente: { 
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false, // Una cita debe tener un cliente. Ajustado a NOT NULL.
         field: 'id_cliente', 
         references: {
           model: 'cliente',
@@ -44,35 +32,25 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: 'CASCADE'
       },
-      idUsuario: {
+      idEmpleado: { 
         type: DataTypes.INTEGER,
         allowNull: true,
-        field: 'id_usuario',
+        field: 'id_empleado', 
         references: {
-          model: 'usuario',
-          key: 'id_usuario'
+          model: 'empleado',
+          key: 'id_empleado' 
         },
         onDelete: 'SET NULL'
       },
       idEstado: { 
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false, // Una cita debe tener un estado.
         field: 'id_estado', 
         references: {
           model: 'estado',
           key: 'id_estado' 
         },
         onDelete: 'RESTRICT' 
-      },
-      idServicio: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        field: 'id_servicio',
-        references: {
-          model: 'servicio',
-          key: 'id_servicio'
-        },
-        onDelete: 'SET NULL'
       }
     },
     {
@@ -88,35 +66,16 @@ module.exports = (sequelize, DataTypes) => {
       as: 'cliente'
     });
 
-    // DEPRECADO: La asociación con Empleado fue reemplazada por una asociación con Usuario.
-    // // Una Cita es atendida por un Empleado.
-    // Cita.belongsTo(models.Empleado, {
-    //   foreignKey: 'idEmpleado',
-    //   as: 'empleado'
-    // });
-
-    // Una Cita puede estar basada en una Novedad de horario.
-    Cita.belongsTo(models.Novedad, {
-      foreignKey: 'idNovedad',
-      as: 'novedad'
-    });
-
-    // Una Cita es atendida por un Usuario (empleado).
-    Cita.belongsTo(models.Usuario, {
-      foreignKey: 'idUsuario',
-      as: 'empleado' // Se mantiene el alias 'empleado' para consistencia
+    // Una Cita es atendida por un Empleado.
+    Cita.belongsTo(models.Empleado, {
+      foreignKey: 'idEmpleado',
+      as: 'empleado'
     });
 
     // Una Cita tiene un Estado.
     Cita.belongsTo(models.Estado, {
       foreignKey: 'idEstado',
       as: 'estadoDetalle'
-    });
-
-    // Una Cita tiene un Servicio principal.
-    Cita.belongsTo(models.Servicio, {
-      foreignKey: 'idServicio',
-      as: 'servicioPrincipal'
     });
 
     // Una Cita puede incluir muchos Servicios.

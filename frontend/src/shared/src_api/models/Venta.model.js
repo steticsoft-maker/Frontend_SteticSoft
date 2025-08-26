@@ -11,13 +11,12 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         field: 'id_venta' 
       },
-      // DEPRECADO: El campo 'estado' fue eliminado de la tabla 'venta'. La gestión de estado se hace a través de 'id_estado'.
-      // estado: {
-      //   type: DataTypes.BOOLEAN,
-      //   defaultValue: true,
-      //   allowNull: false,
-      //   field: 'estado'
-      // },
+      estado: { 
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+        field: 'estado'
+      },
       fecha: {
         type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,

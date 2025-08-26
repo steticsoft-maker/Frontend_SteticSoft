@@ -24,9 +24,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
         field: "existencia",
-        validate: {
-          min: 0,
-        },
       },
       precio: {
         type: DataTypes.DECIMAL(12, 2),
@@ -54,26 +51,19 @@ module.exports = (sequelize, DataTypes) => {
         field: "estado",
       },
       tipoUso: {
-        type: DataTypes.STRING(10),
-        allowNull: false,
-        field: "tipo_uso",
-        validate: {
-          isIn: [['Interno', 'Externo']],
-        },
-      },
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      field: "tipo_uso",
+},
       vidaUtilDias: {
         type: DataTypes.INTEGER,
         allowNull: true,
         field: "vida_util_dias",
       },
-      idCategoriaProducto: {
+      categoriaProductoId: {
         type: DataTypes.INTEGER,
         allowNull: true,
         field: "id_categoria_producto",
-        references: {
-          model: 'categoria_producto',
-          key: 'id_categoria_producto'
-        }
       },
     },
     {
@@ -83,9 +73,10 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Producto.associate = (models) => {
+    // ✅ CORRECCIÓN CLAVE: Esta es la asociación que el error no encontraba.
     // Un Producto PERTENECE A una CategoriaProducto.
     Producto.belongsTo(models.CategoriaProducto, {
-      foreignKey: "idCategoriaProducto", // La FK en este modelo (Producto)
+      foreignKey: "categoriaProductoId", // La FK en este modelo (Producto)
       as: "categoria", // El alias que usaremos en las consultas
     });
 
