@@ -1,16 +1,16 @@
-// src/features/horarios/components/HorariosTable.jsx
 import React from 'react';
-import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa'; // O los íconos que prefieras
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+// ✅ Importamos el nuevo CSS específico para la tabla
+import '../css/ConfigHorarios.css'; 
 
-// --- MODIFICADO: Se recibe la prop como 'novedades' para mayor claridad ---
-const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
+const NovedadesTable = ({ novedades, onEdit, onDeleteConfirm, onToggleEstado }) => {
 
-  // Función para formatear las horas (ej: de "09:00:00" a "09:00")
   const formatTime = (timeString) => timeString ? timeString.slice(0, 5) : 'N/A';
 
   return (
-    <div className="table-container"> {/* Usa un nombre de clase más genérico si lo prefieres */}
-      <table className="custom-table">
+    // ✅ Se usa la misma estructura contenedora que la tabla de servicios
+    <div className="table-responsive">
+      <table className="table">
         <thead>
           <tr>
             <th>#</th>
@@ -18,38 +18,27 @@ const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEst
             <th>Rango de Fechas</th>
             <th>Horario</th>
             <th>Estado</th>
-            <th>Acciones</th>
+            <th className="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {novedades && novedades.length > 0 ? (
             novedades.map((novedad, index) => (
-              // Usamos idNovedad como key, que es más robusto
               <tr key={novedad.idNovedad}>
                 <td>{index + 1}</td>
-                
-                {/* Muestra todos los empleados asignados a esta novedad */}
                 <td>
                   {novedad.empleados && novedad.empleados.length > 0 ? (
                     novedad.empleados.map(emp => (
-                      <div key={emp.idUsuario}>{emp.correo || 'Empleado sin correo'}</div>
+                      <div key={emp.idUsuario} className="employee-email">
+                        {emp.correo || 'Empleado sin correo'}
+                      </div>
                     ))
                   ) : (
-                    'Sin asignar'
+                    <span className="text-muted">Sin asignar</span>
                   )}
                 </td>
-
-                {/* Muestra el rango de fechas */}
-                <td>
-                  {novedad.fechaInicio} al {novedad.fechaFin}
-                </td>
-
-                {/* Muestra el rango de horas */}
-                <td>
-                  {formatTime(novedad.horaInicio)} - {formatTime(novedad.horaFin)}
-                </td>
-                
-                {/* Muestra el estado con un interruptor (toggle) */}
+                <td>{`${novedad.fechaInicio} al ${novedad.fechaFin}`}</td>
+                <td>{`${formatTime(novedad.horaInicio)} - ${formatTime(novedad.horaFin)}`}</td>
                 <td>
                   <label className="switch">
                     <input 
@@ -60,13 +49,9 @@ const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEst
                     <span className="slider round"></span>
                   </label>
                 </td>
-                
-                {/* Muestra los botones de acciones */}
                 <td className="actions-cell">
-                  <button onClick={() => onView(novedad)} className="action-button" title="Ver Detalles">
-                    <FaRegEye />
-                  </button>
-                  <button onClick={() => onEdit(novedad)} className="action-button" title="Editar">
+                  {/* ✅ Se usan las mismas clases para los botones de acción */}
+                  <button onClick={() => onEdit(novedad)} className="action-button edit" title="Editar">
                     <FaEdit />
                   </button>
                   <button onClick={() => onDeleteConfirm(novedad)} className="action-button delete" title="Eliminar">
@@ -77,7 +62,7 @@ const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEst
             ))
           ) : (
             <tr>
-              <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
+              <td colSpan="6" className="text-center">
                 No hay novedades de horario para mostrar.
               </td>
             </tr>
@@ -88,4 +73,4 @@ const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEst
   );
 };
 
-export default HorariosTable;
+export default NovedadesTable;

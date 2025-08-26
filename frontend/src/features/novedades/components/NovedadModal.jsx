@@ -1,53 +1,39 @@
-// src/features/horarios/components/NovedadModal.jsx
 import React, { useState } from 'react';
+import NovedadForm from './NovedadForm';
+import { crearNovedad, actualizarNovedad } from '../services/horariosService';
+import { toast } from 'react-toastify';
+import '../css/ConfigHorarios.css'; // Un CSS genérico para modales
 
-// --- MODIFICADO: Se importa el formulario con el nuevo nombre ---
-import NovedadForm from './NovedadForm'; 
-
-// --- MODIFICADO: Se importan las funciones del servicio correcto ---
-import { crearNovedad, actualizarNovedad } from '../services/horariosService'; // Asegúrate que la ruta sea correcta
-
-// --- MODIFICADO: Componente y props renombrados para consistencia ---
-const NovedadModal = ({ onClose, onSuccess, novedadToEdit }) => {
+const NovedadModal = ({ onClose, onSuccess, novedadToEdit, isEditing }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const isEditing = !!novedadToEdit;
 
   const handleFormSubmit = async (formData) => {
     setIsLoading(true);
-    setError(null);
-
     try {
       if (isEditing) {
-        // --- MODIFICADO: Se llama a la nueva función de actualización ---
-        // Se usa 'idNovedad' que es la propiedad correcta del objeto
         await actualizarNovedad(novedadToEdit.idNovedad, formData);
+        toast.success('Novedad actualizada con éxito.');
       } else {
-        // --- MODIFICADO: Se llama a la nueva función de creación ---
         await crearNovedad(formData);
+        toast.success('Novedad creada con éxito.');
       }
-      onSuccess(); // Llama a la función de éxito para recargar la tabla y cerrar el modal
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || `Ocurrió un error.`;
-      setError(errorMessage);
-      console.error("Error al guardar la novedad:", err);
-    } finally {
-      setIsLoading(false);
+      onSuccess(); // Llama a la función onSuccess que recarga y cierra
+    } catch (error) {
+      console.error('Error al guardar la novedad:', error);
+      toast.error(error.message || 'Error al guardar la novedad.');
+      setIsLoading(false); // Detiene la carga solo si hay error
     }
+    // No es necesario setIsLoading(false) en caso de éxito porque el modal se cierra
   };
 
   return (
-    <div className="modal-overlay"> {/* Puedes usar nombres de clase genéricos */}
-      <div className="modal-content form-modal">
+    <div className="modal-overlay">
+      <div className="modal-content">
         <div className="modal-header">
-          <h3>{isEditing ? 'Editar Novedad de Horario' : 'Agregar Novedad de Horario'}</h3>
-          <button onClick={onClose} className="modal-close-button" disabled={isLoading}>&times;</button>
+          <h2>{isEditing ? 'Editar Novedad' : 'Crear Nueva Novedad'}</h2>
+          <button onClick={onClose} className="modal-close-button">&times;</button>
         </div>
         <div className="modal-body">
-          {error && <p className="error-message">{error}</p>}
-          
-          {/* --- MODIFICADO: Se renderiza el nuevo componente de formulario --- */}
           <NovedadForm
             onFormSubmit={handleFormSubmit}
             onCancel={onClose}
@@ -60,5 +46,6 @@ const NovedadModal = ({ onClose, onSuccess, novedadToEdit }) => {
     </div>
   );
 };
+
 
 export default NovedadModal;
