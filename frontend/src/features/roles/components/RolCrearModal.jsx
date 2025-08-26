@@ -1,8 +1,6 @@
 // src/features/roles/components/RolCrearModal.jsx
 import React, { useState, useEffect } from 'react';
 import RolForm from './RolForm';
-import { verificarNombreUnico } from '../services/rolesService.js';
-
 const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
 
   const getInitialFormState = () => ({
@@ -57,16 +55,6 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
           errorMessage = "El nombre del rol es obligatorio.";
         } else if (value.length > 50) {
           errorMessage = "El nombre no puede exceder los 50 caracteres.";
-        } else {
-            try {
-                const uniquenessErrors = await verificarNombreUnico({ nombre: value });
-                if (uniquenessErrors.nombre) {
-                    errorMessage = uniquenessErrors.nombre;
-                }
-            } catch (error) {
-                console.error(`API error during nombre validation:`, error);
-                errorMessage = "No se pudo conectar con el servidor para validar.";
-            }
         }
         break;
       case 'tipoPerfil':
