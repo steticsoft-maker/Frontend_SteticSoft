@@ -13,7 +13,7 @@ const UsuarioCrearModal = ({
   formData,
   formErrors,
   isFormValid,
-  isVerifyingEmail,
+  isVerifying,
   handleInputChange, // Para el onChange del UsuarioForm
   handleInputBlur   // Para el onBlur del UsuarioForm
 }) => {
@@ -49,7 +49,7 @@ const UsuarioCrearModal = ({
             isEditing={false}
             isUserAdmin={false} // En creación, nunca es el admin protegido
             formErrors={formErrors}
-            isVerifyingEmail={isVerifyingEmail} // Para mostrar feedback en el campo de correo
+            isVerifying={isVerifying} // Para mostrar feedback en el campo de correo
           />
           {/* El manejo de errores generales (_general) podría moverse al hook o mantenerse aquí si es específico del modal */}
           {/* {formErrors._general && <p className="auth-form-error" style={{textAlign: 'center'}}>{formErrors._general}</p>} */}
@@ -58,7 +58,7 @@ const UsuarioCrearModal = ({
             <button
               type="submit"
               className="usuarios-form-buttonGuardar"
-              disabled={!isFormValid || isLoading || isVerifyingEmail}
+              disabled={!isFormValid || isLoading || isVerifying}
             >
               {isLoading ? 'Creando...' : 'Crear Usuario'}
             </button>

@@ -13,7 +13,7 @@ const UsuarioForm = ({
   isEditing,
   isUserAdmin,
   formErrors = {},
-  isVerifyingEmail,
+  isVerifying,
   touchedFields = {},
 }) => {
 
@@ -45,10 +45,10 @@ const UsuarioForm = ({
           className={`usuarios-form-input ${
             formErrors.correo ? "input-error" : ""
           }`}
-          disabled={(isUserAdmin && isEditing) || isVerifyingEmail}
+          disabled={(isUserAdmin && isEditing) || isVerifying}
         />
-        {isVerifyingEmail && (
-          <span className="verifying-email-message">Verificando correo...</span>
+        {isVerifying && (
+          <span className="verifying-email-message">Verificando...</span>
         )}
         {touched.correo && formErrors.correo && (
           <span className="error-message">{formErrors.correo}</span>

@@ -14,7 +14,7 @@ const UsuarioEditarModal = ({
   formData,
   formErrors,
   isFormValid,
-  isVerifyingEmail,
+  isVerifying,
   handleInputChange,
   handleInputBlur
 }) => {
@@ -64,7 +64,7 @@ const UsuarioEditarModal = ({
             isEditing={true}
             isUserAdmin={isUserAdminProtected} // Determinado a partir de initialData (currentUsuario)
             formErrors={formErrors} // Del hook
-            isVerifyingEmail={isVerifyingEmail} // Del hook
+            isVerifying={isVerifying} // Del hook
           />
           {/* {formErrors._general && ( // Errores generales podrían manejarse con el ValidationModal general
             <p className="auth-form-error" style={{ textAlign: "center" }}>
@@ -77,7 +77,7 @@ const UsuarioEditarModal = ({
               <button
                 type="submit"
                 className="usuarios-form-buttonGuardar"
-                disabled={!isFormValid || isLoading || isVerifyingEmail}
+                disabled={!isFormValid || isLoading || isVerifying}
               >
                 {isLoading ? 'Actualizando...' : 'Actualizar Usuario'}
               </button>

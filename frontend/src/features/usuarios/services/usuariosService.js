@@ -18,7 +18,18 @@ export const getUsuariosAPI = async () => {
   }
 };
 
+export const verificarDatosUnicos = async (data) => {
+    try {
+        const response = await apiClient.post('/usuarios/verificar-datos-unicos', data);
+        return response.data;
+    } catch (error) {
+        console.error("Error al verificar datos unicos de usuario:", error);
+        throw error;
+    }
+};
+
 /**
+ * @deprecated Use verificarDatosUnicos instead.
  * Verifica si un correo electrónico ya existe en el sistema.
  * @param {string} correo - El correo electrónico a verificar.
  * @returns {Promise<object>} La respuesta de la API, que podría incluir un booleano o un mensaje.

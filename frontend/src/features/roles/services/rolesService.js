@@ -143,7 +143,7 @@ export const verificarNombreUnico = async (data) => {
   try {
     const response = await apiClient.post('/roles/verificar-nombre', data);
     return response.data;
-  } catch (error)
+  } catch (error) {
     console.error("Error al verificar el nombre del rol:", error);
     throw error;
   }

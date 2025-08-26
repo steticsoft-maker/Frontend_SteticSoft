@@ -1,7 +1,7 @@
 // src/features/roles/components/RolCrearModal.jsx
 import React, { useState, useEffect } from 'react';
 import RolForm from './RolForm';
-import { rolesService } from '../services/rolesService';
+import { verificarNombreUnico } from '../services/rolesService.js';
 
 const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
 
@@ -59,7 +59,7 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
           errorMessage = "El nombre no puede exceder los 50 caracteres.";
         } else {
             try {
-                const uniquenessErrors = await rolesService.verificarNombreUnico({ nombre: value });
+                const uniquenessErrors = await verificarNombreUnico({ nombre: value });
                 if (uniquenessErrors.nombre) {
                     errorMessage = uniquenessErrors.nombre;
                 }

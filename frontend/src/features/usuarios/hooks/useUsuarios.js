@@ -7,8 +7,8 @@ import {
   updateUsuarioAPI,
   toggleUsuarioEstadoAPI,
   getRolesAPI,
-  verificarCorreoAPI,
-  eliminarUsuarioFisicoAPI, // ✅ NUEVO: Importar la función del servicio
+  verificarDatosUnicos,
+  eliminarUsuarioFisicoAPI,
 } from "../services/usuariosService";
 
 const CAMPOS_PERFIL = [
@@ -54,7 +54,7 @@ const useUsuarios = () => {
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
-  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [touchedFields, setTouchedFields] = useState({});
 
 
@@ -274,7 +274,7 @@ const useUsuarios = () => {
       return;
     }
 
-    if (!isVerifyingEmail) {
+    if (!isVerifying) {
       const formType = formData.idUsuario ? "edit" : "create";
       const { errors, isValid } = runValidations(formData, formType);
 
@@ -298,7 +298,7 @@ const useUsuarios = () => {
   }, [
     formData,
     runValidations,
-    isVerifyingEmail,
+    isVerifying,
     checkRequiresProfile,
     isCrearModalOpen,
     isEditarModalOpen,
@@ -318,7 +318,7 @@ const useUsuarios = () => {
     setFormData({});
     setFormErrors({});
     setIsFormValid(false);
-    setIsVerifyingEmail(false);
+    setIsVerifying(false);
     setTouchedFields({});
   }, []);
 
@@ -347,7 +347,7 @@ const useUsuarios = () => {
       }
 
       setFormErrors({});
-      setIsVerifyingEmail(false);
+      setIsVerifying(false);
       setTouchedFields({});
       setCurrentUsuario(usuario);
 
@@ -441,45 +441,45 @@ const useUsuarios = () => {
       const error = validateField(name, value, formData, formType);
       setFormErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
 
-      if (name === "correo" && !error && value) {
-        const originalEmail =
-          formType === "edit" && currentUsuario ? currentUsuario.correo : null;
-        if (value !== originalEmail) {
-          setIsVerifyingEmail(true);
+      if ((name === "correo" || name === "numeroDocumento") && !error && value) {
+        const originalValue =
+          formType === "edit" && currentUsuario ? currentUsuario[name] : null;
+        if (value !== originalValue) {
+          setIsVerifying(true);
           try {
-            const response = await verificarCorreoAPI(value);
+            const response = await verificarDatosUnicos({ [name]: value });
             if (response.estaEnUso) {
               setFormErrors((prevErrors) => ({
                 ...prevErrors,
-                correo: "Este correo ya está registrado.",
+                [name]: `Este ${name} ya está registrado.`,
               }));
             } else {
               setFormErrors((prevErrors) => ({
                 ...prevErrors,
-                correo: error || "",
+                [name]: error || "",
               }));
             }
           } catch (apiError) {
-            console.error("Error verificando correo:", apiError);
+            console.error(`Error verificando ${name}:`, apiError);
             setFormErrors((prevErrors) => ({
               ...prevErrors,
-              correo: "No se pudo verificar el correo.",
+              [name]: `No se pudo verificar el ${name}.`,
             }));
           } finally {
-            setIsVerifyingEmail(false);
+            setIsVerifying(false);
           }
         } else if (
-          value === originalEmail &&
-          formErrors.correo === "Este correo ya está registrado."
+          value === originalValue &&
+          formErrors[name] === `Este ${name} ya está registrado.`
         ) {
           setFormErrors((prevErrors) => ({
             ...prevErrors,
-            correo: error || "",
+            [name]: error || "",
           }));
         }
       }
     },
-    [formData, validateField, currentUsuario, formErrors.correo]
+    [formData, validateField, currentUsuario, formErrors]
   );
 
   const handleSaveUsuario = useCallback(async () => {
@@ -707,7 +707,7 @@ const useUsuarios = () => {
     formData,
     formErrors,
     isFormValid,
-    isVerifyingEmail,
+    isVerifying,
     handleInputChange,
     handleInputBlur,
     touchedFields,

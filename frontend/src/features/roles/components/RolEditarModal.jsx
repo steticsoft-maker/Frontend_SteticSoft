@@ -1,7 +1,7 @@
 // src/features/roles/components/RolEditarModal.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import RolForm from "./RolForm";
-import { rolesService } from "../services/rolesService";
+import { getRoleDetailsAPI, verificarNombreUnico } from "../services/rolesService.js";
 
 const RolEditarModal = ({
   isOpen,
@@ -40,7 +40,7 @@ const RolEditarModal = ({
     setIsLoading(true);
     setErrors({});
     try {
-      const roleDetails = await rolesService.getRoleById(roleId);
+      const roleDetails = await getRoleDetailsAPI(roleId);
       setFormData({
         id: roleDetails.idRol,
         nombre: roleDetails.nombre,
@@ -93,7 +93,7 @@ const RolEditarModal = ({
           errorMessage = "El nombre no puede exceder los 50 caracteres.";
         } else if (value !== originalNombre) {
             try {
-                const uniquenessErrors = await rolesService.verificarNombreUnico({ nombre: value });
+                const uniquenessErrors = await verificarNombreUnico({ nombre: value });
                 if (uniquenessErrors.nombre) {
                     errorMessage = uniquenessErrors.nombre;
                 }
