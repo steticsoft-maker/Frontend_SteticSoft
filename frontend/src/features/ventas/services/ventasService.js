@@ -58,22 +58,26 @@ export const getServiciosParaVenta = async () => {
 
 // --- Fin Funciones para Proceso de Venta ---
 
+// Helper function para persistir los datos en localStorage
+const persistVentas = (ventas) => {
+    localStorage.setItem(VENTAS_STORAGE_KEY, JSON.stringify(ventas));
+};
+
 export const fetchVentas = () => {
     const stored = localStorage.getItem(VENTAS_STORAGE_KEY);
     if (stored) {
         try {
-            return JSON.parse(stored).map(v => ({ ...v, id: v.id || Date.now() + Math.random() }));
+            const ventas = JSON.parse(stored);
+            // La lógica de corrección se ha eliminado porque ya no es necesaria con el nuevo flujo de datos
+            return ventas;
         } catch (e) {
             console.error("Error parsing ventas from localStorage", e);
             localStorage.removeItem(VENTAS_STORAGE_KEY);
         }
     }
-    persistVentas(INITIAL_VENTAS.map(v => ({ ...v, id: v.id || Date.now() + Math.random() })));
+    // Si no hay datos, inicializa y persiste los datos de prueba
+    persistVentas(INITIAL_VENTAS);
     return INITIAL_VENTAS;
-};
-
-const persistVentas = (ventas) => {
-    localStorage.setItem(VENTAS_STORAGE_KEY, JSON.stringify(ventas));
 };
 
 export const getVentaById = (ventaId) => {
@@ -85,6 +89,7 @@ export const saveNuevaVenta = (ventaData, existingVentas) => {
     if (!ventaData.cliente) throw new Error("El cliente es obligatorio.");
     if (!ventaData.items || ventaData.items.length === 0) throw new Error("Debe agregar al menos un producto o servicio.");
 
+    // Se calcula el nuevo ID de manera incremental.
     const maxId = existingVentas.length > 0 ? Math.max(...existingVentas.map(v => v.id || 0)) : 0;
     const newId = maxId + 1;
 

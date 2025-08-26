@@ -1,69 +1,46 @@
 // src/features/ventas/pages/ListaVentasPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // useLocation si aún la usas para recibir nuevaVenta
+import { useNavigate } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import VentasTable from '../components/VentasTable';
-import VentaDetalleModal from '../components/VentaDetalleModal'; // Modal de detalles de venta
-import PdfViewModal from '../../../shared/components/common/PdfViewModal'; // Modal genérico para PDF
+import VentaDetalleModal from '../components/VentaDetalleModal';
+import PdfViewModal from '../../../shared/components/common/PdfViewModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
 import {
   fetchVentas,
   anularVentaById,
   cambiarEstadoVenta
-  // generarPDFVenta ya no se importa del servicio, se usa la utilidad directamente
 } from '../services/ventasService';
-import { generarPDFVentaUtil } from '../utils/pdfGeneratorVentas'; // Importar utilidad de PDF
+import { generarPDFVentaUtil } from '../utils/pdfGeneratorVentas';
 import '../css/Ventas.css';
 
 function ListaVentasPage() {
   const navigate = useNavigate();
-  const location = useLocation(); // Para recibir nuevaVenta de ProcesoVentaPage
 
   const [ventas, setVentas] = useState([]);
   const [busqueda, setBusqueda] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
 
-  // Estados de los Modales
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [showAnularConfirmModal, setShowAnularConfirmModal] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   
-  const [selectedVenta, setSelectedVenta] = useState(null); // Para detalles, PDF, anular
+  const [selectedVenta, setSelectedVenta] = useState(null);
   const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
   const [validationMessage, setValidationMessage] = useState('');
 
+  // **CAMBIO CLAVE**: Carga las ventas una única vez al montar el componente.
+  // Esto asegura que siempre se obtenga el estado más reciente de localStorage.
   useEffect(() => {
-    setVentas(fetchVentas());
+    const loadedVentas = fetchVentas();
+    setVentas(loadedVentas);
   }, []);
 
-  // Efecto para agregar nueva venta (si viene de ProcesoVentaPage)
-  useEffect(() => {
-    if (location.state && location.state.nuevaVenta) {
-      const { nuevaVenta } = location.state;
-      setVentas((prevVentas) => {
-        // Lógica para asegurar ID único si es necesario (ya lo hace el servicio)
-        // Solo agregamos si no existe ya (simple check)
-        if (!prevVentas.find(v => v.id === nuevaVenta.id)) {
-            return [...prevVentas, nuevaVenta];
-        }
-        return prevVentas;
-      });
-      // Limpiar el estado de la ubicación para no re-agregarla
-      navigate(location.pathname, { replace: true, state: {} });
-    }
-  }, [location.state, navigate, location.pathname]); // location.pathname added
-
-
-  useEffect(() => {
-    // Persistir ventas cuando cambien
-    if(ventas.length > 0) { // Solo guardar si hay ventas, para no sobrescribir con array vacío al inicio si localStorage tenía datos
-        localStorage.setItem('ventas_steticsoft_v2', JSON.stringify(ventas));
-    }
-  }, [ventas]);
-
+  // **ELIMINADO**: Se ha eliminado el useEffect que escuchaba el location.state.
+  // Ya no es necesario, ya que la página siempre cargará el estado correcto del servicio.
 
   const handleOpenDetails = (venta) => {
     setSelectedVenta(venta);
@@ -75,7 +52,7 @@ function ListaVentasPage() {
       const blob = generarPDFVentaUtil(venta);
       const url = URL.createObjectURL(blob);
       setPdfBlobUrl(url);
-      setSelectedVenta(venta); // Para el título del modal
+      setSelectedVenta(venta);
       setShowPdfModal(true);
     } catch (e) {
       setValidationMessage("Error al generar el PDF: " + e.message);
@@ -133,14 +110,14 @@ function ListaVentasPage() {
         <div className="barraBotonContainer">
           <input
             type="text"
-            placeholder="Buscar venta (cliente, ID, fecha)..."
+            placeholder="Buscar venta"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="barraBusquedaVenta"
           />
           <button
             className="botonAgregarVenta"
-            onClick={() => navigate('/admin/ventas/proceso')} // Cambiado de /procesoventas
+            onClick={() => navigate('/admin/ventas/proceso')}
           >
             Agregar Venta
           </button>
@@ -152,20 +129,18 @@ function ListaVentasPage() {
           onAnularVenta={handleOpenAnularConfirm}
           onEstadoChange={handleEstadoChange}
         />
-        {/* Paginación */}
         <div className="paginacionVenta">
-            {Array.from({ length: totalPages }, (_, i) => (
+          {Array.from({ length: totalPages }, (_, i) => (
             <button
-                key={i + 1}
-                onClick={() => paginate(i + 1)}
-                className={currentPage === i + 1 ? "active" : ""}
+              key={i + 1}
+              onClick={() => paginate(i + 1)}
+              className={currentPage === i + 1 ? "active" : ""}
             >
-                {i + 1}
+              {i + 1}
             </button>
-            ))}
+          ))}
         </div>
       </div>
-
       <VentaDetalleModal
         isOpen={showDetailsModal}
         onClose={handleCloseModals}
