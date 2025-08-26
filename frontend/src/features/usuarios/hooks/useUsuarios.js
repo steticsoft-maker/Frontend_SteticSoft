@@ -385,6 +385,7 @@ const useUsuarios = () => {
           fechaNacimiento: perfil.fechaNacimiento
             ? perfil.fechaNacimiento.split("T")[0]
             : "",
+          direccion: perfil.direccion || "", // Agregado para el modo de edición
           estado: typeof usuario.estado === "boolean" ? usuario.estado : true,
         });
         setIsEditarModalOpen(true);
