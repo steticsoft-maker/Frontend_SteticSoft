@@ -1,5 +1,5 @@
 // src/features/usuarios/components/UsuarioForm.jsx
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 const RequiredAsterisk = () => (
   <span style={{ color: "red", marginLeft: "2px" }}>*</span>
@@ -12,25 +12,16 @@ const UsuarioForm = ({
   availableRoles,
   isEditing,
   isUserAdmin,
-  formErrors,
+  formErrors = {},
   isVerifyingEmail,
-  touchedFields,
+  touchedFields = {},
 }) => {
-  // Mantener un estado local de errores para reflejar instantáneamente los cambios
-  // que vienen del hook padre a través de formErrors.
-  const [errors, setErrors] = useState(formErrors || {});
 
-  useEffect(() => {
-    setErrors(formErrors || {});
-  }, [formErrors]);
-
-  const touched = touchedFields || {};
+  const touched = touchedFields;
 
   const selectedRole = availableRoles.find(
     (rol) => rol.idRol === parseInt(formData.idRol)
   );
-  // Usar tipoPerfil para determinar si se muestran los campos de perfil
-  // Y asegurar que el rol Administrador nunca muestre campos de perfil (ya que no tiene tipoPerfil 'CLIENTE' o 'EMPLEADO')
   const requiresProfileFields =
     selectedRole &&
     (selectedRole.tipoPerfil === "CLIENTE" || selectedRole.tipoPerfil === "EMPLEADO");
@@ -52,15 +43,15 @@ const UsuarioForm = ({
           onBlur={onInputBlur}
           required
           className={`usuarios-form-input ${
-            errors.correo ? "input-error" : ""
+            formErrors.correo ? "input-error" : ""
           }`}
           disabled={(isUserAdmin && isEditing) || isVerifyingEmail}
         />
         {isVerifyingEmail && (
           <span className="verifying-email-message">Verificando correo...</span>
         )}
-        {touched.correo && errors.correo && (
-          <span className="error-message">{errors.correo}</span>
+        {touched.correo && formErrors.correo && (
+          <span className="error-message">{formErrors.correo}</span>
         )}
       </div>
 
@@ -76,7 +67,7 @@ const UsuarioForm = ({
           onBlur={onInputBlur}
           required
           className={`usuarios-form-select ${
-            touched.idRol && errors.idRol ? "input-error" : ""
+            touched.idRol && formErrors.idRol ? "input-error" : ""
           }`}
           disabled={isUserAdmin && isEditing}
         >
@@ -89,8 +80,8 @@ const UsuarioForm = ({
             </option>
           ))}
         </select>
-        {touched.idRol && errors.idRol && (
-          <span className="error-message">{errors.idRol}</span>
+        {touched.idRol && formErrors.idRol && (
+          <span className="error-message">{formErrors.idRol}</span>
         )}
       </div>
 
@@ -110,11 +101,11 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.contrasena && errors.contrasena ? "input-error" : ""
+                touched.contrasena && formErrors.contrasena ? "input-error" : ""
               }`}
             />
-            {touched.contrasena && errors.contrasena && (
-              <span className="error-message">{errors.contrasena}</span>
+            {touched.contrasena && formErrors.contrasena && (
+              <span className="error-message">{formErrors.contrasena}</span>
             )}
           </div>
 
@@ -135,14 +126,14 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.confirmarContrasena && errors.confirmarContrasena
+                touched.confirmarContrasena && formErrors.confirmarContrasena
                   ? "input-error"
                   : ""
               }`}
             />
-            {touched.confirmarContrasena && errors.confirmarContrasena && (
+            {touched.confirmarContrasena && formErrors.confirmarContrasena && (
               <span className="error-message">
-                {errors.confirmarContrasena}
+                {formErrors.confirmarContrasena}
               </span>
             )}
           </div>
@@ -179,12 +170,12 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.nombre && errors.nombre ? "input-error" : ""
+                touched.nombre && formErrors.nombre ? "input-error" : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.nombre && errors.nombre && (
-              <span className="error-message">{errors.nombre}</span>
+            {touched.nombre && formErrors.nombre && (
+              <span className="error-message">{formErrors.nombre}</span>
             )}
           </div>
 
@@ -202,12 +193,12 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.apellido && errors.apellido ? "input-error" : ""
+                touched.apellido && formErrors.apellido ? "input-error" : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.apellido && errors.apellido && (
-              <span className="error-message">{errors.apellido}</span>
+            {touched.apellido && formErrors.apellido && (
+              <span className="error-message">{formErrors.apellido}</span>
             )}
           </div>
 
@@ -223,7 +214,7 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-select ${
-                touched.tipoDocumento && errors.tipoDocumento
+                touched.tipoDocumento && formErrors.tipoDocumento
                   ? "input-error"
                   : ""
               }`}
@@ -236,8 +227,8 @@ const UsuarioForm = ({
               <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
               <option value="Pasaporte">Pasaporte</option>
             </select>
-            {touched.tipoDocumento && errors.tipoDocumento && (
-              <span className="error-message">{errors.tipoDocumento}</span>
+            {touched.tipoDocumento && formErrors.tipoDocumento && (
+              <span className="error-message">{formErrors.tipoDocumento}</span>
             )}
           </div>
 
@@ -255,14 +246,14 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.numeroDocumento && errors.numeroDocumento
+                touched.numeroDocumento && formErrors.numeroDocumento
                   ? "input-error"
                   : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.numeroDocumento && errors.numeroDocumento && (
-              <span className="error-message">{errors.numeroDocumento}</span>
+            {touched.numeroDocumento && formErrors.numeroDocumento && (
+              <span className="error-message">{formErrors.numeroDocumento}</span>
             )}
           </div>
 
@@ -280,12 +271,12 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.telefono && errors.telefono ? "input-error" : ""
+                touched.telefono && formErrors.telefono ? "input-error" : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.telefono && errors.telefono && (
-              <span className="error-message">{errors.telefono}</span>
+            {touched.telefono && formErrors.telefono && (
+              <span className="error-message">{formErrors.telefono}</span>
             )}
           </div>
 
@@ -302,14 +293,14 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.fechaNacimiento && errors.fechaNacimiento
+                touched.fechaNacimiento && formErrors.fechaNacimiento
                   ? "input-error"
                   : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.fechaNacimiento && errors.fechaNacimiento && (
-              <span className="error-message">{errors.fechaNacimiento}</span>
+            {touched.fechaNacimiento && formErrors.fechaNacimiento && (
+              <span className="error-message">{formErrors.fechaNacimiento}</span>
             )}
           </div>
         </>

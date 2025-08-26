@@ -1,36 +1,32 @@
 // src/features/roles/components/RolCrearModal.jsx
 import React, { useState, useEffect } from 'react';
 import RolForm from './RolForm';
+import { rolesService } from '../services/rolesService';
 
 const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
 
-  // --- INICIO DE CORRECCIÓN ---
-  // Añadimos 'tipoPerfil' al estado inicial del formulario.
-  // Este es el valor que se enviará al backend si no se cambia.
   const getInitialFormState = () => ({
     nombre: '',
     descripcion: '',
     idPermisos: [],
     estado: true,
-    tipoPerfil: 'EMPLEADO' // <-- ¡LA LÍNEA CLAVE!
+    tipoPerfil: 'EMPLEADO'
   });
-  // --- FIN DE CORRECCIÓN ---
 
   const [formData, setFormData] = useState(getInitialFormState());
-  const [formErrors, setFormErrors] = useState({});
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Cuando el modal se abre, reseteamos al estado inicial completo.
     if (isOpen) {
       setFormData(getInitialFormState());
-      setFormErrors({});
+      setErrors({});
     }
   }, [isOpen]);
 
   const handleFormChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
+    if (errors[name]) {
+      setErrors(prevErr => ({ ...prevErr, [name]: null }));
     }
   };
 
@@ -53,28 +49,68 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
     setFormData(prev => ({ ...prev, idPermisos: [] }));
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
+  const validateField = async (name, value) => {
+    let errorMessage = null;
+    switch (name) {
+      case 'nombre':
+        if (!value.trim()) {
+          errorMessage = "El nombre del rol es obligatorio.";
+        } else if (value.length > 50) {
+          errorMessage = "El nombre no puede exceder los 50 caracteres.";
+        } else {
+            try {
+                const uniquenessErrors = await rolesService.verificarNombreUnico({ nombre: value });
+                if (uniquenessErrors.nombre) {
+                    errorMessage = uniquenessErrors.nombre;
+                }
+            } catch (error) {
+                console.error(`API error during nombre validation:`, error);
+                errorMessage = "No se pudo conectar con el servidor para validar.";
+            }
+        }
+        break;
+      case 'tipoPerfil':
+        if (!value) {
+            errorMessage = "Debe seleccionar un tipo de perfil."
+        }
+        break;
+      default:
+        break;
     }
-    // La validación del tipo de perfil la hará el backend,
-    // pero nos aseguramos de que no esté vacío.
-    if (!formData.tipoPerfil) {
-        errors.tipoPerfil = "Debe seleccionar un tipo de perfil."
-    }
-    if (!formData.idPermisos || formData.idPermisos.length === 0) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    return errorMessage;
   };
 
-  const handleSubmitForm = (e) => {
+  const handleBlur = async (e) => {
+    const { name, value } = e.target;
+    const errorMessage = await validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: errorMessage }));
+  };
+
+  const validateFormOnSubmit = async () => {
+    const newErrors = {};
+    const fieldsToValidate = ['nombre', 'tipoPerfil'];
+
+    for (const field of fieldsToValidate) {
+      const errorMessage = await validateField(field, formData[field]);
+      if (errorMessage) {
+        newErrors[field] = errorMessage;
+      }
+    }
+
+    if (!formData.idPermisos || formData.idPermisos.length === 0) {
+      newErrors.permisos = "Debe seleccionar al menos un permiso.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-    // El formData que se envía ahora sí contiene el campo tipoPerfil.
-    onSubmit(formData);
+    const isValid = await validateFormOnSubmit();
+    if (isValid) {
+      onSubmit(formData);
+    }
   };
 
   if (!isOpen) return null;
@@ -86,10 +122,11 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
           &times;
         </button>
         <h2>Crear Rol</h2>
-        <form onSubmit={handleSubmitForm}>
+        <form onSubmit={handleSubmitForm} noValidate>
           <RolForm
             formData={formData}
             onFormChange={handleFormChange}
+            onBlur={handleBlur}
             permisosDisponibles={permisosDisponibles}
             permisosAgrupados={permisosAgrupados}
             onToggleModulo={handleToggleModulo}
@@ -97,9 +134,9 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
             onDeselectAll={handleDeselectAll}
             isEditing={false}
             isRoleAdmin={false}
-            formErrors={formErrors}
+            errors={errors}
           />
-          {formErrors.permisos && <p className="rol-error-permisos">{formErrors.permisos}</p>}
+          {errors.permisos && <p className="rol-error-permisos">{errors.permisos}</p>}
           <div className="rol-form-actions">
             <button type="submit" className="rol-form-buttonGuardar">
               Crear Rol

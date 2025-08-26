@@ -135,3 +135,16 @@ export const getRoleDetailsAPI = async (roleId) => {
     );
   }
 };
+
+/**
+ * Verifica si un nombre de rol ya existe.
+ */
+export const verificarNombreUnico = async (data) => {
+  try {
+    const response = await apiClient.post('/roles/verificar-nombre', data);
+    return response.data;
+  } catch (error)
+    console.error("Error al verificar el nombre del rol:", error);
+    throw error;
+  }
+};

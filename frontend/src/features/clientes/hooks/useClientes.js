@@ -5,6 +5,7 @@ import {
   saveCliente,
   deleteClienteById,
   toggleClienteEstado,
+  verificarDatosUnicos, // Import new function
 } from "../services/clientesService";
 
 const useClientes = () => {
@@ -22,22 +23,28 @@ const useClientes = () => {
   const [validationMessage, setValidationMessage] = useState("");
 
   // Estados para búsqueda y filtrado
-  const [inputValue, setInputValue] = useState(""); // Para el input de búsqueda inmediato
-  const [searchTerm, setSearchTerm] = useState(""); // Para la búsqueda con debounce
+  const [inputValue, setInputValue] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Estados para paginación
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // O hacerlo configurable
+  const [itemsPerPage] = useState(10);
+
+  // Form state
+  const [formData, setFormData] = useState({});
+  const [formErrors, setFormErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [touchedFields, setTouchedFields] = useState({});
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const loadClientes = useCallback(async (term) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetchClientes(term); // fetchClientes ya maneja el filtrado backend
+      const response = await fetchClientes(term);
       if (Array.isArray(response)) {
         setClientes(response);
       } else {
-        console.error("fetchClientes no devolvió un array:", response);
         setClientes([]);
         setError("Formato de datos de clientes inesperado.");
       }
@@ -51,15 +58,119 @@ const useClientes = () => {
     }
   }, []);
 
-  // Efecto para debounce de búsqueda
+  const validateField = useCallback(
+    (name, value) => {
+      let error = "";
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^\d{7,15}$/;
+      const docRegex = /^\d{5,20}$/;
+
+      switch (name) {
+        case "nombre":
+          if (!value) error = "El nombre es requerido.";
+          else if (value.length > 100) error = "El nombre no puede exceder los 100 caracteres.";
+          break;
+        case "apellido":
+          if (!value) error = "El apellido es requerido.";
+          else if (value.length > 100) error = "El apellido no puede exceder los 100 caracteres.";
+          break;
+        case "correo":
+          if (!value) error = "El correo es requerido.";
+          else if (value.length > 100) error = "El correo no puede exceder los 100 caracteres.";
+          else if (!emailRegex.test(value)) error = "Formato de correo inválido.";
+          break;
+        case "telefono":
+          if (!value) error = "El teléfono es requerido.";
+          else if (!phoneRegex.test(value)) error = "Inválido (solo números, 7-15 dígitos).";
+          break;
+        case "tipoDocumento":
+          if (!value) error = "El tipo de documento es requerido.";
+          break;
+        case "numeroDocumento":
+          if (!value) error = "El número de documento es requerido.";
+          else if (!docRegex.test(value)) error = "Inválido (solo números, 5-20 dígitos).";
+          break;
+        case "fechaNacimiento":
+          if (!value) error = "La fecha de nacimiento es requerida.";
+          else {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const inputDate = new Date(value);
+            if (inputDate > today) error = "La fecha de nacimiento no puede ser futura.";
+          }
+          break;
+        case "direccion":
+          if (!value) error = "La dirección es requerida.";
+          break;
+        case "contrasena":
+          if (!value) {
+            error = "La contraseña es requerida.";
+          } else if (value.length < 8) {
+            error = "La contraseña debe tener al menos 8 caracteres.";
+          }
+          break;
+        default:
+          break;
+      }
+      return error;
+    },
+    []
+  );
+
+  const runValidations = useCallback(
+    (dataToValidate) => {
+      const errors = {};
+      let isValid = true;
+      const fieldsToValidate = [
+        "nombre", "apellido", "correo", "telefono", "tipoDocumento",
+        "numeroDocumento", "fechaNacimiento", "direccion"
+      ];
+
+      if (!dataToValidate.idCliente) { // only for creation
+          fieldsToValidate.push("contrasena");
+      }
+
+      fieldsToValidate.forEach((field) => {
+        const error = validateField(field, dataToValidate[field]);
+        if (error) {
+          errors[field] = error;
+          isValid = false;
+        }
+      });
+
+      for (const field of ['correo', 'numeroDocumento']) {
+          if (formErrors[field]?.includes("ya está registrado")) {
+              errors[field] = formErrors[field];
+              isValid = false;
+          }
+      }
+
+      return { errors, isValid };
+    },
+    [validateField, formErrors]
+  );
+
+  useEffect(() => {
+    if (Object.keys(formData).length === 0 && !isCrearModalOpen && !isEditarModalOpen) {
+      setIsFormValid(false);
+      setFormErrors({});
+      return;
+    }
+    if (!isVerifying) {
+        const { errors, isValid } = runValidations(formData);
+        setFormErrors(errors);
+        setIsFormValid(isValid);
+    }
+  }, [formData, runValidations, isVerifying, isCrearModalOpen, isEditarModalOpen]);
+
+
   useEffect(() => {
     const timerId = setTimeout(() => {
       setSearchTerm(inputValue);
-    }, 500); // 500ms de debounce
+    }, 500);
     return () => clearTimeout(timerId);
   }, [inputValue]);
 
-  // Efecto para cargar clientes cuando searchTerm cambia
   useEffect(() => {
     loadClientes(searchTerm);
   }, [searchTerm, loadClientes]);
@@ -72,18 +183,85 @@ const useClientes = () => {
     setIsValidationModalOpen(false);
     setCurrentCliente(null);
     setValidationMessage("");
+    setFormData({});
+    setFormErrors({});
+    setIsFormValid(false);
+    setTouchedFields({});
   }, []);
 
   const handleOpenModal = useCallback((type, cliente = null) => {
     setCurrentCliente(cliente);
-    if (type === "create") setIsCrearModalOpen(true);
-    else if (type === "edit") setIsEditarModalOpen(true);
+    setFormErrors({});
+    setTouchedFields({});
+    if (type === "create") {
+        setFormData({
+            nombre: "",
+            apellido: "",
+            correo: "",
+            telefono: "",
+            tipoDocumento: "Cédula de Ciudadanía",
+            numeroDocumento: "",
+            fechaNacimiento: "",
+            direccion: "",
+            contrasena: "",
+            estado: true
+        });
+        setIsCrearModalOpen(true);
+    }
+    else if (type === "edit") {
+        setFormData({
+            ...cliente,
+            fechaNacimiento: cliente.fechaNacimiento ? cliente.fechaNacimiento.split("T")[0] : "",
+        });
+        setIsEditarModalOpen(true);
+    }
     else if (type === "details") setIsDetailsModalOpen(true);
     else if (type === "delete") setIsConfirmDeleteOpen(true);
   }, []);
 
+  const handleInputChange = useCallback((e) => {
+      const { name, value } = e.target;
+      setFormData(prev => ({...prev, [name]: value}));
+  }, []);
+
+  const handleInputBlur = useCallback(async (e) => {
+    const { name, value } = e.target;
+    setTouchedFields(prev => ({...prev, [name]: true}));
+
+    const error = validateField(name, value);
+    setFormErrors(prev => ({...prev, [name]: error}));
+
+    if (!error && (name === 'correo' || name === 'numeroDocumento')) {
+        const originalValue = currentCliente ? currentCliente[name] : null;
+        if (value !== originalValue) {
+            setIsVerifying(true);
+            try {
+                const response = await verificarDatosUnicos({ [name]: value });
+                if (response[name]) {
+                    setFormErrors(prev => ({...prev, [name]: response[name]}));
+                }
+            } catch (apiError) {
+                setFormErrors(prev => ({...prev, [name]: `No se pudo verificar el ${name}.`}));
+            } finally {
+                setIsVerifying(false);
+            }
+        }
+    }
+  }, [validateField, currentCliente]);
+
+
   const handleSave = useCallback(
     async (clienteData) => {
+      const { errors, isValid } = runValidations(clienteData);
+      setFormErrors(errors);
+      setTouchedFields(Object.keys(errors).reduce((acc, key) => ({...acc, [key]: true}), {}));
+
+      if (!isValid) {
+          setValidationMessage("Por favor, corrija los errores en el formulario.");
+          setIsValidationModalOpen(true);
+          return;
+      }
+
       const isEditing = !!currentCliente?.idCliente;
       const isCreating = !isEditing;
       try {
@@ -92,14 +270,13 @@ const useClientes = () => {
           isCreating,
           isEditing ? currentCliente.idCliente : null
         );
-        await loadClientes(searchTerm); // Recargar con el término de búsqueda actual
+        await loadClientes(searchTerm);
         closeModal();
         setValidationMessage(
           `Cliente ${isEditing ? "actualizado" : "creado"} exitosamente.`
         );
         setIsValidationModalOpen(true);
       } catch (err) {
-        console.error("Error al guardar cliente:", err);
         let errorMessage = "Ocurrió un error al guardar el cliente.";
         if (err.message) errorMessage = err.message;
         if (err.response?.data?.errors) {
@@ -111,7 +288,7 @@ const useClientes = () => {
         setIsValidationModalOpen(true);
       }
     },
-    [currentCliente, loadClientes, closeModal, searchTerm]
+    [currentCliente, loadClientes, closeModal, searchTerm, runValidations]
   );
 
   const handleDelete = useCallback(async () => {
@@ -159,13 +336,7 @@ const useClientes = () => {
     [clientes, loadClientes, searchTerm]
   );
 
-  // Lógica de paginación
-  // Como la búsqueda ya se hace en el backend, `processedClientes` es simplemente `clientes`.
-  // Si se quisiera añadir filtrado por estado en el frontend, se modificaría aquí.
   const processedClientes = useMemo(() => {
-    // Aquí se podría añadir más lógica de filtrado frontend si fuera necesario,
-    // por ejemplo, un filtro de estado que no esté soportado por el backend.
-    // Por ahora, como el backend ya filtra por `searchTerm`, `clientes` ya está "procesado" en ese aspecto.
     return clientes;
   }, [clientes]);
 
@@ -179,8 +350,6 @@ const useClientes = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Resetear a página 1 si el número total de páginas es menor que la actual
-  // (por ejemplo, después de una búsqueda que reduce mucho los resultados)
   useEffect(() => {
     if (totalClientesFiltrados > 0 && itemsPerPage > 0) {
       const totalPages = Math.ceil(totalClientesFiltrados / itemsPerPage);
@@ -192,8 +361,8 @@ const useClientes = () => {
 
 
   return {
-    clientes: currentClientesForTable, // Para la tabla
-    totalClientesFiltrados, // Para el componente de paginación y el título
+    clientes: currentClientesForTable,
+    totalClientesFiltrados,
     isLoading,
     error,
     currentCliente,
@@ -203,8 +372,8 @@ const useClientes = () => {
     isConfirmDeleteOpen,
     isValidationModalOpen,
     validationMessage,
-    inputValue, // Para el input de búsqueda
-    setInputValue, // Para actualizar el término de búsqueda inmediato
+    inputValue,
+    setInputValue,
     currentPage,
     itemsPerPage,
     paginate,
@@ -213,8 +382,14 @@ const useClientes = () => {
     handleSave,
     handleDelete,
     handleToggleEstado,
-    // Podrías también exponer `loadClientes` si necesitas llamarlo manualmente desde la página por alguna razón,
-    // aunque con los efectos actuales, debería ser automático.
+    // Form props
+    formData,
+    formErrors,
+    isFormValid,
+    touchedFields,
+    handleInputChange,
+    handleInputBlur,
+    isVerifying,
   };
 };
 

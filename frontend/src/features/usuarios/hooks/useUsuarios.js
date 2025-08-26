@@ -112,6 +112,8 @@ const useUsuarios = () => {
       switch (name) {
         case "correo":
           if (!value) error = "El correo es requerido.";
+          else if (value.length > 100)
+            error = "El correo no puede exceder los 100 caracteres.";
           else if (!emailRegex.test(value))
             error = "Formato de correo inválido.";
           break;

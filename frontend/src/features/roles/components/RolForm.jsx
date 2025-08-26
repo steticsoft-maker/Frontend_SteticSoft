@@ -1,11 +1,11 @@
 // src/features/roles/components/RolForm.jsx
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PermisosSelector from "./PermisosSelector";
 
 const RolForm = ({
   formData,
   onFormChange,
+  onBlur,
   permisosDisponibles,
   permisosAgrupados,
   onToggleModulo,
@@ -13,43 +13,14 @@ const RolForm = ({
   onDeselectAll,
   isEditing,
   isRoleAdmin,
-  formErrors,
+  errors = {},
 }) => {
   const [mostrarPermisos, setMostrarPermisos] = useState(isEditing || false);
-  const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    // Si los errores del formulario del padre cambian, los mostramos.
-    setErrors(formErrors);
-  }, [formErrors]);
-
-  const validateField = (name, value) => {
-    let error = "";
-    if (name === "nombre") {
-      if (!value) {
-        error = "El nombre del rol es obligatorio.";
-      } else if (value.length < 3) {
-        error = "El nombre del rol debe tener al menos 3 caracteres.";
-      } else if (value.length > 50) {
-        error = "El nombre del rol no debe exceder los 50 caracteres.";
-      }
-    }
-    return error;
-  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     const fieldValue = type === "checkbox" ? checked : value;
-
-    // Actualizar el estado del formulario en el componente padre
     onFormChange(name, fieldValue);
-
-    // Validar en tiempo real y actualizar el estado de errores local
-    const error = validateField(name, fieldValue);
-    setErrors(prevErrors => ({
-      ...prevErrors,
-      [name]: error,
-    }));
   };
 
   const handleToggleMostrarPermisos = () => {
@@ -77,16 +48,16 @@ const RolForm = ({
               name="nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              className={`rol-input ${errors.nombre ? 'input-error' : ''}`}
+              onBlur={onBlur}
+              className={`rol-input ${errors.nombre ? 'is-invalid' : ''}`}
               disabled={isRoleAdmin}
               required
             />
             {errors.nombre && (
-              <span className="error-message">{errors.nombre}</span>
+              <p className="error-message">{errors.nombre}</p>
             )}
           </div>
 
-          {/* --- INICIO DE CORRECCIÓN --- */}
           <div className="rol-campoContainer">
             <label htmlFor="tipoPerfilInput" className="rol-label">
               Tipo de Perfil: <span className="required-asterisk">*</span>
@@ -94,24 +65,21 @@ const RolForm = ({
             <select
               id="tipoPerfilInput"
               name="tipoPerfil"
-              // Lógica simplificada: usa el valor del formData o el default 'EMPLEADO'
               value={formData.tipoPerfil || 'EMPLEADO'}
               onChange={handleInputChange}
-              className="rol-input"
-              // No se puede cambiar el tipo de perfil de los roles base (Admin, Empleado, Cliente) una vez creados.
+              onBlur={onBlur}
+              className={`rol-input ${errors.tipoPerfil ? 'is-invalid' : ''}`}
               disabled={isRoleAdmin}
               required
             >
-              {/* No es necesaria una opción placeholder si siempre hay un valor seleccionado */}
               <option value="EMPLEADO">Empleado</option>
               <option value="CLIENTE">Cliente</option>
               <option value="NINGUNO">Ninguno (Solo Acceso al Sistema)</option>
             </select>
             {errors.tipoPerfil && (
-              <span className="error-message">{errors.tipoPerfil}</span>
+              <p className="error-message">{errors.tipoPerfil}</p>
             )}
           </div>
-          {/* --- FIN DE CORRECCIÓN --- */}
 
           <div className="rol-campoContainer">
             <label htmlFor="descripcionRolInput" className="rol-label">
@@ -122,6 +90,7 @@ const RolForm = ({
               name="descripcion"
               value={formData.descripcion}
               onChange={handleInputChange}
+              onBlur={onBlur}
               className="rol-textarea"
               disabled={isRoleAdmin}
             />

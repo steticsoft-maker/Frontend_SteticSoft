@@ -1,7 +1,7 @@
 // src/features/roles/components/RolEditarModal.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import RolForm from "./RolForm";
-import { getRoleDetailsAPI } from "../services/rolesService";
+import { rolesService } from "../services/rolesService";
 
 const RolEditarModal = ({
   isOpen,
@@ -18,12 +18,12 @@ const RolEditarModal = ({
     idPermisos: [],
     estado: true,
   });
-  const [formErrors, setFormErrors] = useState({});
+  const [originalNombre, setOriginalNombre] = useState("");
+  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const isRoleAdminProtected = formData.nombre === "Administrador";
 
-  // Funciones para Marcar/Desmarcar Todos los permisos
   const handleSelectAll = () => {
     if (isRoleAdminProtected) return;
     const allIds = permisosDisponibles.map((p) => p.idPermiso);
@@ -38,18 +38,20 @@ const RolEditarModal = ({
   const cargarDetallesRol = useCallback(async () => {
     if (!roleId) return;
     setIsLoading(true);
-    setFormErrors({});
+    setErrors({});
     try {
-      const roleDetails = await getRoleDetailsAPI(roleId);
+      const roleDetails = await rolesService.getRoleById(roleId);
       setFormData({
         id: roleDetails.idRol,
         nombre: roleDetails.nombre,
         descripcion: roleDetails.descripcion || "",
         estado: roleDetails.estado,
+        tipoPerfil: roleDetails.tipoPerfil,
         idPermisos: roleDetails.permisos?.map((p) => p.idPermiso) || [],
       });
+      setOriginalNombre(roleDetails.nombre);
     } catch (err) {
-      setFormErrors({
+      setErrors({
         _general: err.message || "Error al cargar los detalles del rol.",
       });
     } finally {
@@ -65,8 +67,8 @@ const RolEditarModal = ({
 
   const handleFormChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prevErr) => ({ ...prevErr, [name]: "" }));
+    if (errors[name]) {
+      setErrors((prevErr) => ({ ...prevErr, [name]: null }));
     }
   };
 
@@ -81,30 +83,72 @@ const RolEditarModal = ({
     });
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
+  const validateField = async (name, value) => {
+    let errorMessage = null;
+    switch (name) {
+      case 'nombre':
+        if (!value.trim()) {
+          errorMessage = "El nombre del rol es obligatorio.";
+        } else if (value.length > 50) {
+          errorMessage = "El nombre no puede exceder los 50 caracteres.";
+        } else if (value !== originalNombre) {
+            try {
+                const uniquenessErrors = await rolesService.verificarNombreUnico({ nombre: value });
+                if (uniquenessErrors.nombre) {
+                    errorMessage = uniquenessErrors.nombre;
+                }
+            } catch (error) {
+                console.error(`API error during nombre validation:`, error);
+                errorMessage = "No se pudo conectar con el servidor para validar.";
+            }
+        }
+        break;
+      case 'tipoPerfil':
+        if (!value) {
+            errorMessage = "Debe seleccionar un tipo de perfil."
+        }
+        break;
+      default:
+        break;
     }
-    // Para el rol Admin no se valida la cantidad de permisos
-    if (
-      !isRoleAdminProtected &&
-      (!formData.idPermisos || formData.idPermisos.length === 0)
-    ) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    return errorMessage;
   };
 
-  const handleSubmitForm = (e) => {
+  const handleBlur = async (e) => {
+    const { name, value } = e.target;
+    const errorMessage = await validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: errorMessage }));
+  };
+
+  const validateFormOnSubmit = async () => {
+    const newErrors = {};
+    const fieldsToValidate = ['nombre', 'tipoPerfil'];
+
+    for (const field of fieldsToValidate) {
+        const errorMessage = await validateField(field, formData[field]);
+        if (errorMessage) {
+            newErrors[field] = errorMessage;
+        }
+    }
+
+    if (!isRoleAdminProtected && (!formData.idPermisos || formData.idPermisos.length === 0)) {
+      newErrors.permisos = "Debe seleccionar al menos un permiso.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
     if (isRoleAdminProtected) {
       onClose();
       return;
     }
-    if (!validateForm()) return;
-    onSubmit(formData);
+    const isValid = await validateFormOnSubmit();
+    if (isValid) {
+      onSubmit(formData);
+    }
   };
 
   if (!isOpen) return null;
@@ -122,8 +166,8 @@ const RolEditarModal = ({
         <h2>Editar Rol</h2>
         {isLoading ? (
           <p>Cargando...</p>
-        ) : formErrors._general ? (
-          <p className="error-message">{formErrors._general}</p>
+        ) : errors._general ? (
+          <p className="error-message">{errors._general}</p>
         ) : (
           <>
             {isRoleAdminProtected && (
@@ -132,21 +176,22 @@ const RolEditarModal = ({
                 modificado.
               </p>
             )}
-            <form onSubmit={handleSubmitForm}>
+            <form onSubmit={handleSubmitForm} noValidate>
               <RolForm
                 formData={formData}
                 onFormChange={handleFormChange}
+                onBlur={handleBlur}
                 permisosDisponibles={permisosDisponibles}
                 permisosAgrupados={permisosAgrupados}
                 onToggleModulo={handleToggleModulo}
-                onSelectAll={handleSelectAll} // <-- Añadido
-                onDeselectAll={handleDeselectAll} // <-- Añadido
+                onSelectAll={handleSelectAll}
+                onDeselectAll={handleDeselectAll}
                 isEditing={true}
                 isRoleAdmin={isRoleAdminProtected}
-                formErrors={formErrors}
+                errors={errors}
               />
-              {formErrors.permisos && (
-                <p className="rol-error-permisos">{formErrors.permisos}</p>
+              {errors.permisos && (
+                <p className="rol-error-permisos">{errors.permisos}</p>
               )}
               {!isRoleAdminProtected ? (
                 <div className="rol-form-actions">

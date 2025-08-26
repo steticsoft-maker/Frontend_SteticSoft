@@ -13,8 +13,8 @@ import "../css/Clientes.css";
 
 function ListaClientesPage() {
   const {
-    clientes, // Ya paginados y listos para la tabla
-    totalClientesFiltrados, // Para el título y el componente Pagination
+    clientes,
+    totalClientesFiltrados,
     isLoading,
     error,
     currentCliente,
@@ -34,6 +34,13 @@ function ListaClientesPage() {
     handleSave,
     handleDelete,
     handleToggleEstado,
+    formData,
+    formErrors,
+    isFormValid,
+    touchedFields,
+    handleInputChange,
+    handleInputBlur,
+    isVerifying,
   } = useClientes();
 
   return (
@@ -65,7 +72,7 @@ function ListaClientesPage() {
         {!isLoading && !error && (
           <>
             <ClientesTable
-              clientes={clientes} // Estos son los currentClientesForTable del hook
+              clientes={clientes}
               onView={(cliente) => handleOpenModal("details", cliente)}
               onEdit={(cliente) => handleOpenModal("edit", cliente)}
               onDeleteConfirm={(cliente) => handleOpenModal("delete", cliente)}
@@ -87,23 +94,37 @@ function ListaClientesPage() {
 
       <ClienteCrearModal
         isOpen={isCrearModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         onSubmit={handleSave}
+        formData={formData}
+        formErrors={formErrors}
+        isFormValid={isFormValid}
+        touchedFields={touchedFields}
+        handleInputChange={handleInputChange}
+        handleInputBlur={handleInputBlur}
+        isVerifying={isVerifying}
       />
       <ClienteEditarModal
         isOpen={isEditarModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         onSubmit={handleSave}
         initialData={currentCliente}
+        formData={formData}
+        formErrors={formErrors}
+        isFormValid={isFormValid}
+        touchedFields={touchedFields}
+        handleInputChange={handleInputChange}
+        handleInputBlur={handleInputBlur}
+        isVerifying={isVerifying}
       />
       <ClienteDetalleModal
         isOpen={isDetailsModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         cliente={currentCliente}
       />
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         onConfirm={handleDelete}
         title="Confirmar Eliminación de Cliente"
         message={`¿Estás seguro de que deseas eliminar al cliente "${
@@ -113,12 +134,10 @@ function ListaClientesPage() {
         }"?`}
         confirmText="Eliminar"
         cancelText="Cancelar"
-        // Podrías añadir un isLoading al ConfirmModal si handleDelete es largo,
-        // pero por ahora el hook useClientes no expone un isSubmitting específico para delete.
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         title="Aviso de Clientes"
         message={validationMessage}
       />

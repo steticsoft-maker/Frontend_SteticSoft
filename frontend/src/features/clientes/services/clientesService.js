@@ -53,6 +53,16 @@ export const getClienteById = async (clienteId) => {
   }
 };
 
+export const verificarDatosUnicos = async (data) => {
+  try {
+    const response = await apiClient.post('/clientes/verificar-datos-unicos', data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al verificar datos unicos:", error);
+    throw error;
+  }
+};
+
 /**
  * Guarda un cliente (crea uno nuevo o actualiza uno existente) a través de la API del backend.
  *
