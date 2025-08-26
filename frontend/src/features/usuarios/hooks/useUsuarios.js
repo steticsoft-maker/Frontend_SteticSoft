@@ -18,6 +18,7 @@ const CAMPOS_PERFIL = [
   "numeroDocumento",
   "telefono",
   "fechaNacimiento",
+  "direccion", // Agregado para validación
 ];
 
 const useUsuarios = () => {
@@ -183,6 +184,13 @@ const useUsuarios = () => {
               error = "La fecha de nacimiento no puede ser futura.";
           }
           break;
+        case "direccion": {
+          const selectedRoleObj = getRoleById(currentData.idRol);
+          if (selectedRoleObj && selectedRoleObj.tipoPerfil === "CLIENTE" && !value) {
+            error = "La dirección es requerida para clientes.";
+          }
+          break;
+        }
         default:
           break;
       }
@@ -358,6 +366,7 @@ const useUsuarios = () => {
           correo: "",
           telefono: "",
           fechaNacimiento: "",
+          direccion: "", // Agregado para el estado inicial
           contrasena: "",
           confirmarContrasena: "",
         });
