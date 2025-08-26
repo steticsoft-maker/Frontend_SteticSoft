@@ -30,6 +30,9 @@ const UsuarioForm = ({
     selectedRole &&
     (selectedRole.tipoPerfil === "CLIENTE" || selectedRole.tipoPerfil === "EMPLEADO");
 
+  // Determina si el rol seleccionado es de tipo CLIENTE para mostrar el campo dirección
+  const isCliente = selectedRole && selectedRole.tipoPerfil === "CLIENTE";
+
   return (
     <div className="usuarios-form-grid-container">
       {/* --- Campos de la Cuenta (Siempre visibles) --- */}
@@ -283,6 +286,32 @@ const UsuarioForm = ({
               <span className="error-message">{errors.telefono}</span>
             )}
           </div>
+
+          {/* Campo de Dirección (solo para Clientes) */}
+          {isCliente && (
+            <div className="usuarios-form-grid-item">
+              <label htmlFor="direccion" className="usuarios-form-label">
+                Dirección <RequiredAsterisk />
+              </label>
+              <input
+                type="text"
+                id="direccion"
+                name="direccion"
+                placeholder="Dirección de residencia"
+                value={formData.direccion || ""}
+                onChange={onInputChange}
+                onBlur={onInputBlur}
+                required
+                className={`usuarios-form-input ${
+                  touched.direccion && errors.direccion ? "input-error" : ""
+                }`}
+                disabled={isUserAdmin && isEditing}
+              />
+              {touched.direccion && errors.direccion && (
+                <span className="error-message">{errors.direccion}</span>
+              )}
+            </div>
+          )}
 
           <div className="usuarios-form-grid-item">
             <label htmlFor="fechaNacimiento" className="usuarios-form-label">
