@@ -47,7 +47,7 @@ const RolForm = ({
               name="nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              className="rol-input"
+              className={`rol-input ${formErrors.nombre ? 'input-error' : ''}`}
               disabled={isRoleAdmin}
               required
             />
@@ -67,7 +67,7 @@ const RolForm = ({
               // Lógica simplificada: usa el valor del formData o el default 'EMPLEADO'
               value={formData.tipoPerfil || 'EMPLEADO'}
               onChange={handleInputChange}
-              className="rol-input"
+              className={`rol-input ${formErrors.tipoPerfil ? 'input-error' : ''}`}
               // No se puede cambiar el tipo de perfil de los roles base (Admin, Empleado, Cliente) una vez creados.
               disabled={isRoleAdmin}
               required
@@ -92,9 +92,12 @@ const RolForm = ({
               name="descripcion"
               value={formData.descripcion}
               onChange={handleInputChange}
-              className="rol-textarea"
+              className={`rol-textarea ${formErrors.descripcion ? 'input-error' : ''}`}
               disabled={isRoleAdmin}
             />
+            {formErrors.descripcion && (
+              <span className="error-message">{formErrors.descripcion}</span>
+            )}
           </div>
 
           {isEditing && !isRoleAdmin && (

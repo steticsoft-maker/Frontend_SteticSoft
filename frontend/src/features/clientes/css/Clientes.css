@@ -339,6 +339,11 @@ input:checked+.slider:before { transform: translateX(16px); }
     font-weight: bold;
 }
 
+/* Estilo para el borde del input cuando hay un error */
+.input-error {
+  border-color: #e74c3c !important; /* Rojo para el borde */
+}
+
 
 /* === ESTILOS RESPONSIVOS === */
 @media (max-width: 768px) {

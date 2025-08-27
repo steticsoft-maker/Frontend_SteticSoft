@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import "../css/Auth.css";
 import "../css/LoginStyles.css"; // Asegúrate que esta sea la importación correcta
 
-function LoginForm({ onSubmit, error }) {
+function LoginForm({ onSubmit, errors = {}, isLoading }) {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
@@ -18,10 +18,6 @@ function LoginForm({ onSubmit, error }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!credentials.email || !credentials.password) {
-      alert("Por favor, completa tu correo electrónico y contraseña.");
-      return;
-    }
     onSubmit(credentials, isCheckboxChecked);
   };
 
@@ -39,10 +35,11 @@ function LoginForm({ onSubmit, error }) {
           placeholder="ejemplo@correo.com"
           value={credentials.email}
           onChange={handleChange}
-          className="auth-form-input"
+          className={`auth-form-input ${errors.email ? 'input-error' : ''}`}
           required
-          autoComplete="email" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+          autoComplete="email"
         />
+        {errors.email && <p className="auth-form-error">{errors.email}</p>}
       </div>
 
       {/* Campo Contraseña */}
@@ -55,10 +52,11 @@ function LoginForm({ onSubmit, error }) {
           placeholder="Tu contraseña"
           value={credentials.password}
           onChange={handleChange}
-          className="auth-form-input"
+          className={`auth-form-input ${errors.password ? 'input-error' : ''}`}
           required
-          autoComplete="current-password" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+          autoComplete="current-password"
         />
+        {errors.password && <p className="auth-form-error">{errors.password}</p>}
       </div>
 
       {/* Checkbox Recordar Usuario */}
@@ -72,10 +70,10 @@ function LoginForm({ onSubmit, error }) {
         <label htmlFor="remember-user">Recordar usuario</label>
       </div>
 
-      {error && <p className="auth-form-error">{error}</p>}
+      {errors.general && <p className="auth-form-error" style={{ textAlign: 'center' }}>{errors.general}</p>}
 
-      <button type="submit" className="auth-primary-button">
-        Entrar
+      <button type="submit" className="auth-primary-button" disabled={isLoading}>
+        {isLoading ? 'Entrando...' : 'Entrar'}
       </button>
     </form>
   );

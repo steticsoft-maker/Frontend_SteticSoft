@@ -9,13 +9,12 @@ import "../css/LoginStyles.css";
 
 function LoginPage() {
   const navigate = useNavigate();
-  // Corregido: Usamos el hook useAuth() para obtener la función de login
   const { login } = useAuth();
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLoginSubmit = async (credentials, rememberMe) => {
-    setError("");
+    setErrors({});
     setIsLoading(true);
     try {
       const loginResult = await login(credentials, rememberMe);
@@ -33,7 +32,16 @@ function LoginPage() {
         }
       }
     } catch (err) {
-      setError(err.message || "Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+      if (err.response && (err.response.status === 400 || err.response.status === 422) && err.response.data.errors) {
+        const backendErrors = err.response.data.errors;
+        const newErrors = {};
+        backendErrors.forEach(error => {
+          newErrors[error.param] = error.msg;
+        });
+        setErrors(newErrors);
+      } else {
+        setErrors({ general: err.message || "Error al iniciar sesión. Por favor, inténtalo de nuevo." });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -44,7 +52,7 @@ function LoginPage() {
       <div className="auth-form-box">
         <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
         <h2 className="auth-form-title">Iniciar Sesión</h2>
-        <LoginForm onSubmit={handleLoginSubmit} error={error} isLoading={isLoading} />
+        <LoginForm onSubmit={handleLoginSubmit} errors={errors} isLoading={isLoading} />
         <div className="auth-form-actions">
           <Link to="/auth/solicitar-recuperacion" className="auth-secondary-button">
             ¿Olvidaste tu contraseña?

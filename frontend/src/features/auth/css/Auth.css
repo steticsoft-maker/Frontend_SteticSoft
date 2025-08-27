@@ -74,6 +74,10 @@
     outline: none;
 }
 
+.input-error {
+  border-color: #e74c3c !important; /* Rojo para el borde */
+}
+
 .auth-form-checkbox {
     display: flex;
     align-items: center;

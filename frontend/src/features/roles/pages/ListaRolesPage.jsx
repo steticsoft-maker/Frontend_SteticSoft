@@ -29,6 +29,7 @@ function ListaRolesPage() {
     isDeleteModalOpen,
     isValidationModalOpen,
     validationMessage,
+    formErrors, // Importar formErrors
     inputValue,
     setInputValue,
     filterEstado,
@@ -115,19 +116,20 @@ function ListaRolesPage() {
         isOpen={isCrearModalOpen}
         onClose={closeModal}
         onSubmit={handleSaveRol}
-        permisosDisponibles={permisos} // Pasamos todos los permisos
-        permisosAgrupados={permisosAgrupados} // Pasamos los permisos agrupados
-        isLoading={isSubmitting} // Estado de carga para el formulario
+        permisosDisponibles={permisos}
+        permisosAgrupados={permisosAgrupados}
+        isLoading={isSubmitting}
+        formErrors={formErrors} // Pasar errores al modal
       />
       <RolEditarModal
         isOpen={isEditarModalOpen}
         onClose={closeModal}
         onSubmit={handleSaveRol}
         roleId={currentRole?.idRol}
-        // o solo id, nombre, desc. El modal puede necesitar cargar detalles o usar lo que se le pasa.
         permisosDisponibles={permisos}
         permisosAgrupados={permisosAgrupados}
         isLoading={isSubmitting}
+        formErrors={formErrors} // Pasar errores al modal
       />
       <RolDetailsModal
         isOpen={isDetailsModalOpen}

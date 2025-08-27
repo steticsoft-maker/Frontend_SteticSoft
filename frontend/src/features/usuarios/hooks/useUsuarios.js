@@ -532,29 +532,24 @@ const useUsuarios = () => {
       setIsValidationModalOpen(true);
       // --- FIN DE LA CORRECCIÓN ---
     } catch (err) {
-      const apiErrorMessage =
-        err.response?.data?.message ||
-        err.message ||
-        "Error al guardar el usuario.";
-      if (
-        apiErrorMessage.toLowerCase().includes("correo") &&
-        apiErrorMessage.toLowerCase().includes("registrado")
-      ) {
-        setFormErrors((prev) => ({
-          ...prev,
-          correo: "Este correo ya está registrado.",
-        }));
-      } else if (
-        apiErrorMessage.toLowerCase().includes("documento") &&
-        apiErrorMessage.toLowerCase().includes("registrado")
-      ) {
-        setFormErrors((prev) => ({
-          ...prev,
-          numeroDocumento: "Este número de documento ya está registrado.",
-        }));
+      // INICIO DE MODIFICACIÓN: Manejo de errores de validación del backend
+      if (err.response && (err.response.status === 400 || err.response.status === 422) && err.response.data.errors) {
+        const backendErrors = err.response.data.errors;
+        const newErrors = {};
+        backendErrors.forEach(error => {
+          // No se necesita mapeo si los 'param' del backend coinciden con los 'name' del form
+          newErrors[error.param] = error.msg;
+        });
+        setFormErrors(prevErrors => ({ ...prevErrors, ...newErrors }));
+        setValidationMessage("Por favor, corrija los errores en el formulario.");
+        setIsValidationModalOpen(true);
+      } else {
+        // Manejo de otros tipos de errores (ej. 500, error de red, o errores de texto plano)
+        const apiErrorMessage = err.response?.data?.message || err.response?.data?.error || err.message || "Error al guardar el usuario.";
+        setValidationMessage(apiErrorMessage);
+        setIsValidationModalOpen(true);
       }
-      setValidationMessage(apiErrorMessage);
-      setIsValidationModalOpen(true);
+      // FIN DE MODIFICACIÓN
     } finally {
       setIsSubmitting(false);
     }

@@ -16,37 +16,37 @@ const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // 
     <div className="clientes-form-grid">
       <div className="clientes-form-group">
         <label htmlFor="nombre">Nombre: <span className="required-asterisk">*</span></label>
-        <input type="text" id="nombre" name="nombre" value={formData.nombre || ''} onChange={handleChange} placeholder="Nombre" required />
+        <input type="text" id="nombre" name="nombre" value={formData.nombre || ''} onChange={handleChange} placeholder="Nombre" required className={formErrors.nombre ? 'input-error' : ''} />
         {formErrors.nombre && <p className="error-message">{formErrors.nombre}</p>}
       </div>
       <div className="clientes-form-group">
         <label htmlFor="apellido">Apellido: <span className="required-asterisk">*</span></label>
-        <input type="text" id="apellido" name="apellido" value={formData.apellido || ''} onChange={handleChange} placeholder="Apellido" required />
+        <input type="text" id="apellido" name="apellido" value={formData.apellido || ''} onChange={handleChange} placeholder="Apellido" required className={formErrors.apellido ? 'input-error' : ''} />
         {formErrors.apellido && <p className="error-message">{formErrors.apellido}</p>}
       </div>
 
       {/* Campo de Correo ocupando todo el ancho */}
       <div className="clientes-form-group-full-width">
         <label htmlFor="correo">Correo: <span className="required-asterisk">*</span></label>
-        <input type="email" id="correo" name="correo" value={formData.correo || ''} onChange={handleChange} placeholder="Correo electrónico" required />
+        <input type="email" id="correo" name="correo" value={formData.correo || ''} onChange={handleChange} placeholder="Correo electrónico" required className={formErrors.correo ? 'input-error' : ''} />
         {formErrors.correo && <p className="error-message">{formErrors.correo}</p>}
       </div>
 
       {/* Campo de Dirección ocupando todo el ancho */}
       <div className="clientes-form-group-full-width">
         <label htmlFor="direccion">Dirección:</label>
-        <input type="text" id="direccion" name="direccion" value={formData.direccion || ''} onChange={handleChange} placeholder="Dirección" />
+        <input type="text" id="direccion" name="direccion" value={formData.direccion || ''} onChange={handleChange} placeholder="Dirección" className={formErrors.direccion ? 'input-error' : ''} />
         {formErrors.direccion && <p className="error-message">{formErrors.direccion}</p>}
       </div>
 
       <div className="clientes-form-group">
         <label htmlFor="telefono">Teléfono: <span className="required-asterisk">*</span></label>
-        <input type="text" id="telefono" name="telefono" value={formData.telefono || ''} onChange={handleChange} placeholder="Teléfono" required />
+        <input type="text" id="telefono" name="telefono" value={formData.telefono || ''} onChange={handleChange} placeholder="Teléfono" required className={formErrors.telefono ? 'input-error' : ''} />
         {formErrors.telefono && <p className="error-message">{formErrors.telefono}</p>}
       </div>
       <div className="clientes-form-group">
         <label htmlFor="tipoDocumento">Tipo de Documento: <span className="required-asterisk">*</span></label>
-        <select id="tipoDocumento" name="tipoDocumento" value={formData.tipoDocumento || ''} onChange={handleChange} required>
+        <select id="tipoDocumento" name="tipoDocumento" value={formData.tipoDocumento || ''} onChange={handleChange} required className={formErrors.tipoDocumento ? 'input-error' : ''}>
           <option value="" disabled>Seleccione un tipo</option>
           {TIPOS_DOCUMENTO.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
         </select>
@@ -54,13 +54,13 @@ const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // 
       </div>
       <div className="clientes-form-group">
         <label htmlFor="numeroDocumento">Número de Documento: <span className="required-asterisk">*</span></label>
-        <input type="text" id="numeroDocumento" name="numeroDocumento" value={formData.numeroDocumento || ''} onChange={handleChange} placeholder="Número de Documento" required />
+        <input type="text" id="numeroDocumento" name="numeroDocumento" value={formData.numeroDocumento || ''} onChange={handleChange} placeholder="Número de Documento" required className={formErrors.numeroDocumento ? 'input-error' : ''} />
         {formErrors.numeroDocumento && <p className="error-message">{formErrors.numeroDocumento}</p>}
       </div>
 
       <div className="clientes-form-group">
         <label htmlFor="fechaNacimiento">Fecha de Nacimiento: <span className="required-asterisk">*</span></label>
-        <input type="date" id="fechaNacimiento" name="fechaNacimiento" value={formData.fechaNacimiento || ''} onChange={handleChange} required />
+        <input type="date" id="fechaNacimiento" name="fechaNacimiento" value={formData.fechaNacimiento || ''} onChange={handleChange} required className={formErrors.fechaNacimiento ? 'input-error' : ''} />
         {formErrors.fechaNacimiento && <p className="error-message">{formErrors.fechaNacimiento}</p>}
       </div>
 
@@ -71,14 +71,14 @@ const ClienteForm = ({ formData, onFormChange, isEditing, formErrors }) => { // 
           <div className="clientes-form-group">
             {/* Cambiado de 'password' a 'contrasena' para coincidir con el backend */}
             <label htmlFor="contrasena">Contraseña: <span className="required-asterisk">*</span></label>
-            <input type="password" id="contrasena" name="contrasena" value={formData.contrasena || ''} onChange={handleChange} placeholder="Contraseña" required />
+            <input type="password" id="contrasena" name="contrasena" value={formData.contrasena || ''} onChange={handleChange} placeholder="Contraseña" required className={formErrors.contrasena ? 'input-error' : ''} />
             {formErrors.contrasena && <p className="error-message">{formErrors.contrasena}</p>}
           </div>
 
           {/* CAMPO AGREGADO: Confirmar Contraseña (validación solo de frontend) */}
           <div className="clientes-form-group">
             <label htmlFor="confirmPassword">Confirmar Contraseña: <span className="required-asterisk">*</span></label>
-            <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handleChange} placeholder="Confirmar Contraseña" required />
+            <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handleChange} placeholder="Confirmar Contraseña" required className={formErrors.confirmPassword ? 'input-error' : ''} />
             {formErrors.confirmPassword && <p className="error-message">{formErrors.confirmPassword}</p>}
           </div>
         </>

@@ -24,6 +24,7 @@ const useClientes = () => {
   // Estados para búsqueda y filtrado
   const [inputValue, setInputValue] = useState(""); // Para el input de búsqueda inmediato
   const [searchTerm, setSearchTerm] = useState(""); // Para la búsqueda con debounce
+  const [formErrors, setFormErrors] = useState({}); // Para errores de validación del formulario
 
   // Estados para paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,6 +73,7 @@ const useClientes = () => {
     setIsValidationModalOpen(false);
     setCurrentCliente(null);
     setValidationMessage("");
+    setFormErrors({}); // Limpiar errores al cerrar
   }, []);
 
   const handleOpenModal = useCallback((type, cliente = null) => {
@@ -86,29 +88,33 @@ const useClientes = () => {
     async (clienteData) => {
       const isEditing = !!currentCliente?.idCliente;
       const isCreating = !isEditing;
+      setFormErrors({}); // Limpiar errores antes de enviar
+
       try {
         await saveCliente(
           clienteData,
           isCreating,
           isEditing ? currentCliente.idCliente : null
         );
-        await loadClientes(searchTerm); // Recargar con el término de búsqueda actual
+        await loadClientes(searchTerm);
         closeModal();
         setValidationMessage(
           `Cliente ${isEditing ? "actualizado" : "creado"} exitosamente.`
         );
         setIsValidationModalOpen(true);
       } catch (err) {
-        console.error("Error al guardar cliente:", err);
-        let errorMessage = "Ocurrió un error al guardar el cliente.";
-        if (err.message) errorMessage = err.message;
-        if (err.response?.data?.errors) {
-          errorMessage = `Errores de validación: ${err.response.data.errors.map((e) => e.msg).join(" | ")}`;
-        } else if (err.response?.data?.message) {
-          errorMessage = err.response.data.message;
+        if (err.response && (err.response.status === 400 || err.response.status === 422) && err.response.data.errors) {
+          const backendErrors = err.response.data.errors;
+          const newErrors = {};
+          backendErrors.forEach(error => {
+            newErrors[error.param] = error.msg;
+          });
+          setFormErrors(newErrors);
+        } else {
+          const apiErrorMessage = err.response?.data?.message || err.response?.data?.error || err.message || "Error al guardar el cliente.";
+          setValidationMessage(apiErrorMessage);
+          setIsValidationModalOpen(true);
         }
-        setValidationMessage(errorMessage);
-        setIsValidationModalOpen(true);
       }
     },
     [currentCliente, loadClientes, closeModal, searchTerm]
@@ -203,6 +209,7 @@ const useClientes = () => {
     isConfirmDeleteOpen,
     isValidationModalOpen,
     validationMessage,
+    formErrors,
     inputValue, // Para el input de búsqueda
     setInputValue, // Para actualizar el término de búsqueda inmediato
     currentPage,

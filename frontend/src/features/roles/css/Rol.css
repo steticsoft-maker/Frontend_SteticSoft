@@ -1042,3 +1042,17 @@ input:checked+.slider:before {
         font-size: 1rem;
     }
 }
+
+/* Estilos para mensajes de error de validación */
+.error-message {
+  color: #e74c3c; /* Rojo para la validación */
+  font-size: 0.875rem;
+  margin-top: 4px;
+  text-align: left;
+  display: block; /* Asegura que ocupe su propia línea */
+}
+
+/* Estilo para el borde del input cuando hay un error */
+.input-error {
+  border-color: #e74c3c !important; /* Rojo para el borde */
+}

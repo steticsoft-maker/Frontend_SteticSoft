@@ -10,6 +10,7 @@ const RolEditarModal = ({
   roleId,
   permisosDisponibles,
   permisosAgrupados,
+  formErrors = {}, // Recibir formErrors como prop
 }) => {
   const [formData, setFormData] = useState({
     id: null,
@@ -18,8 +19,8 @@ const RolEditarModal = ({
     idPermisos: [],
     estado: true,
   });
-  const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [generalError, setGeneralError] = useState(null); // Estado para errores de carga
 
   const isRoleAdminProtected = formData.nombre === "Administrador";
 
@@ -38,7 +39,7 @@ const RolEditarModal = ({
   const cargarDetallesRol = useCallback(async () => {
     if (!roleId) return;
     setIsLoading(true);
-    setFormErrors({});
+    setGeneralError(null);
     try {
       const roleDetails = await getRoleDetailsAPI(roleId);
       setFormData({
@@ -49,9 +50,7 @@ const RolEditarModal = ({
         idPermisos: roleDetails.permisos?.map((p) => p.idPermiso) || [],
       });
     } catch (err) {
-      setFormErrors({
-        _general: err.message || "Error al cargar los detalles del rol.",
-      });
+      setGeneralError(err.message || "Error al cargar los detalles del rol.");
     } finally {
       setIsLoading(false);
     }
@@ -65,9 +64,6 @@ const RolEditarModal = ({
 
   const handleFormChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prevErr) => ({ ...prevErr, [name]: "" }));
-    }
   };
 
   const handleToggleModulo = (permisoId) => {
@@ -81,29 +77,12 @@ const RolEditarModal = ({
     });
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
-    }
-    // Para el rol Admin no se valida la cantidad de permisos
-    if (
-      !isRoleAdminProtected &&
-      (!formData.idPermisos || formData.idPermisos.length === 0)
-    ) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
   const handleSubmitForm = (e) => {
     e.preventDefault();
     if (isRoleAdminProtected) {
       onClose();
       return;
     }
-    if (!validateForm()) return;
     onSubmit(formData);
   };
 
@@ -122,8 +101,8 @@ const RolEditarModal = ({
         <h2>Editar Rol</h2>
         {isLoading ? (
           <p>Cargando...</p>
-        ) : formErrors._general ? (
-          <p className="error-message">{formErrors._general}</p>
+        ) : generalError ? (
+          <p className="error-message">{generalError}</p>
         ) : (
           <>
             {isRoleAdminProtected && (

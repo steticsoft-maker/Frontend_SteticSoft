@@ -8,13 +8,13 @@ import "../css/Auth.css";
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Obtenemos la función login para usarla después del registro
-  const [errorApi, setErrorApi] = useState("");
+  const { login } = useAuth();
+  const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRegisterSubmit = async (userData) => {
-    setErrorApi("");
+    setErrors({});
     setSuccessMessage("");
     setIsSubmitting(true);
 
@@ -23,25 +23,25 @@ function RegisterPage() {
 
       if (response.success) {
         setSuccessMessage("¡Registro exitoso! Iniciando sesión...");
-        
-        // Opcional: Iniciar sesión automáticamente después del registro exitoso
         await login({ email: userData.correo, password: userData.contrasena }, false);
-
-        // Espera un momento para que el usuario vea el mensaje y luego redirige
         setTimeout(() => {
-          navigate("/"); // Redirigir a la página principal
+          navigate("/");
         }, 1500);
       }
     } catch (err) {
-      const errorMessage = err.message || "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
-      setErrorApi(errorMessage);
-    } finally {
-      // No cambiar isSubmitting a false inmediatamente si hay éxito,
-      // para mantener el botón deshabilitado hasta la redirección.
-      if (errorApi) {
-        setIsSubmitting(false);
+      if (err.response && (err.response.status === 400 || err.response.status === 422) && err.response.data.errors) {
+        const backendErrors = err.response.data.errors;
+        const newErrors = {};
+        backendErrors.forEach(error => {
+          newErrors[error.param] = error.msg;
+        });
+        setErrors(newErrors);
+      } else {
+        setErrors({ general: err.message || "Ocurrió un error de conexión o registro. Inténtalo de nuevo." });
       }
+      setIsSubmitting(false);
     }
+    // No establecer isSubmitting a false aquí en caso de éxito, para que el botón permanezca deshabilitado.
   };
 
   return (
@@ -51,7 +51,7 @@ function RegisterPage() {
         <h2 className="auth-form-title">Crear Cuenta</h2>
         <RegisterForm
           onSubmit={handleRegisterSubmit}
-          error={errorApi}
+          errors={errors}
           successMessage={successMessage}
           isLoading={isSubmitting}
         />

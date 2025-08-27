@@ -40,6 +40,8 @@ const useRoles = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
+  // NUEVO ESTADO PARA ERRORES DE FORMULARIO
+  const [formErrors, setFormErrors] = useState({});
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEstado, setFilterEstado] = useState("todos");
@@ -80,6 +82,7 @@ const useRoles = () => {
     setIsValidationModalOpen(false);
     setCurrentRole(null);
     setValidationMessage("");
+    setFormErrors({}); // Limpiar errores de formulario al cerrar cualquier modal
   }, []);
 
   const handleOpenModal = useCallback(async (type, role = null) => {
@@ -130,13 +133,14 @@ const useRoles = () => {
   const handleSaveRol = useCallback(
     async (roleData) => {
       setIsSubmitting(true);
+      setFormErrors({}); // Limpiar errores previos
+
       try {
         let response;
         if (roleData.id) {
           const { id, ...dataToUpdate } = roleData;
           response = await updateRoleAPI(id, dataToUpdate);
         } else {
-          // El objeto `roleData` que viene del modal de creación debe tener todos los campos necesarios.
           response = await createRoleAPI(roleData);
         }
 
@@ -150,11 +154,25 @@ const useRoles = () => {
         closeModal();
         await cargarDatos();
       } catch (err) {
-        const apiErrorMessage = err.response?.data?.message || err.response?.data?.error;
-        setValidationMessage(
-          apiErrorMessage || err.message || "Error al guardar el rol."
-        );
-        setIsValidationModalOpen(true);
+        // INICIO DE MODIFICACIÓN: Manejo de errores de validación
+        if (err.response && (err.response.status === 400 || err.response.status === 422) && err.response.data.errors) {
+          const backendErrors = err.response.data.errors;
+          const newErrors = {};
+          backendErrors.forEach(error => {
+            // Mapeo del backend (nombre_rol) al frontend (nombre)
+            const fieldName = error.param === 'nombre_rol' ? 'nombre' : error.param;
+            newErrors[fieldName] = error.msg;
+          });
+          setFormErrors(newErrors);
+        } else {
+          // Manejo de otros tipos de errores (ej. 500, error de red)
+          const apiErrorMessage = err.response?.data?.message || err.response?.data?.error;
+          setValidationMessage(
+            apiErrorMessage || err.message || "Error al guardar el rol."
+          );
+          setIsValidationModalOpen(true);
+        }
+        // FIN DE MODIFICACIÓN
       } finally {
         setIsSubmitting(false);
       }
@@ -270,6 +288,7 @@ const useRoles = () => {
     isDeleteModalOpen,
     isValidationModalOpen,
     validationMessage,
+    formErrors, // <--- EXPORTAR ESTADO DE ERRORES
     inputValue,
     setInputValue,
     filterEstado,

@@ -24,6 +24,7 @@ function ListaClientesPage() {
     isConfirmDeleteOpen,
     isValidationModalOpen,
     validationMessage,
+    formErrors,
     inputValue,
     setInputValue,
     currentPage,
@@ -87,14 +88,16 @@ function ListaClientesPage() {
 
       <ClienteCrearModal
         isOpen={isCrearModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         onSubmit={handleSave}
+        formErrors={formErrors}
       />
       <ClienteEditarModal
         isOpen={isEditarModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         onSubmit={handleSave}
         initialData={currentCliente}
+        formErrors={formErrors}
       />
       <ClienteDetalleModal
         isOpen={isDetailsModalOpen}
