@@ -1,48 +1,72 @@
-// src/features/novedades/components/HorarioDetalleModal.jsx
 import React from 'react';
+import '../css/ConfigHorarios.css';
 
-const HorarioDetalleModal = ({ isOpen, onClose, horario }) => {
-  if (!isOpen || !horario) return null;
+const HorarioDetalleModal = ({ novedad, onClose }) => {
+  if (!novedad) return null;
 
-  // Mapeo para mostrar el nombre del día a partir del número de la API
-  const diasSemana = [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ];
+  const formatTime = (timeString) => timeString ? timeString.slice(0, 5) : 'N/A';
+  
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+    return adjustedDate.toLocaleDateString('es-CO', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
+  };
 
   return (
-    <div className="novedades-modal-overlay">
-      <div className="novedades-modal-content">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-            <h3>Detalles del Horario</h3>
-            <button onClick={onClose} className="close-button">&times;</button>
+          <h2>Detalles de la Novedad</h2>
+          <button onClick={onClose} className="modal-close-button">&times;</button>
         </div>
-        
         <div className="modal-body">
-            {/* El nombre del empleado ya viene en el objeto horario */}
-            <p><strong>Encargado:</strong> {horario.empleado?.nombre || 'Desconocido'}</p>
-            
-            <div>
-              <strong>Días y Horarios:</strong>
-              {/* Nos aseguramos que el array exista antes de mapearlo */}
-              {(horario.dias || []).map((dia) => (
-                <p key={dia.idNovedad} style={{ marginLeft: '20px' }}>
-                  {/* Usamos el mapeo para mostrar el nombre del día */}
-                  <strong>{diasSemana[dia.dia] || "Día N/A"}:</strong> {dia.horaInicio} - {dia.horaFin}
-                </p>
-              ))}
+          <div className="detail-section">
+            <div className="detail-item">
+              <strong>Rango de Fechas:</strong>
+              <span>{`${formatDate(novedad.fechaInicio)} - ${formatDate(novedad.fechaFin)}`}</span>
             </div>
+            <div className="detail-item">
+              <strong>Horario:</strong>
+              <span>{`${formatTime(novedad.horaInicio)} - ${formatTime(novedad.horaFin)}`}</span>
+            </div>
+            <div className="detail-item">
+              <strong>Estado:</strong>
+              <span className={novedad.estado ? 'status-active' : 'status-inactive'}>
+                {novedad.estado ? 'Activo' : 'Inactivo'}
+              </span>
+            </div>
+          </div>
 
-            <p><strong>Estado:</strong> {horario.estado ? "Activo" : "Anulado"}</p>
-        </div>
-
-        <div className="modal-footer">
-            <button className="btn-secondary" onClick={onClose}>Cerrar</button>
+          <div className="detail-section">
+            <h3>Empleados Asignados</h3>
+            {novedad.empleados && novedad.empleados.length > 0 ? (
+              <ul className="employee-list">
+                {novedad.empleados.map(user => (
+                  <li key={user.idUsuario}>
+                    <div className="employee-name-detail">
+                      {user.empleadoInfo ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}` : 'Nombre no disponible'}
+                    </div>
+                    {/* ✅ Se muestra el Correo y Número de Documento */}
+                    <div className="employee-contact-info">
+                      Correo: {user.correo}
+                    </div>
+                    <div className="employee-contact-info">
+                      Documento: {user.empleadoInfo?.numeroDocumento || 'No disponible'}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No hay empleados asignados a esta novedad.</p>
+            )}
+          </div>
+          
+          <div className="modal-actions">
+            <button onClick={onClose} className="button-secondary">Cerrar</button>
+          </div>
         </div>
       </div>
     </div>

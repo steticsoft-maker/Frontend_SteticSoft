@@ -1,16 +1,21 @@
-// src/features/horarios/components/HorariosTable.jsx
 import React from 'react';
-import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa'; // O los íconos que prefieras
+import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa';
+import '../css/ConfigHorarios.css'; // CSS específico para la tabla
 
-// --- MODIFICADO: Se recibe la prop como 'novedades' para mayor claridad ---
-const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
+const NovedadesTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
 
-  // Función para formatear las horas (ej: de "09:00:00" a "09:00")
   const formatTime = (timeString) => timeString ? timeString.slice(0, 5) : 'N/A';
+  
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+    return adjustedDate.toLocaleDateString('es-CO', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  };
 
   return (
-    <div className="table-container"> {/* Usa un nombre de clase más genérico si lo prefieres */}
-      <table className="custom-table">
+    <div className="table-responsive">
+      <table className="table">
         <thead>
           <tr>
             <th>#</th>
@@ -18,55 +23,38 @@ const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEst
             <th>Rango de Fechas</th>
             <th>Horario</th>
             <th>Estado</th>
-            <th>Acciones</th>
+            <th className="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {novedades && novedades.length > 0 ? (
             novedades.map((novedad, index) => (
-              // Usamos idNovedad como key, que es más robusto
               <tr key={novedad.idNovedad}>
                 <td>{index + 1}</td>
-                
-                {/* Muestra todos los empleados asignados a esta novedad */}
                 <td>
                   {novedad.empleados && novedad.empleados.length > 0 ? (
-                    novedad.empleados.map(emp => (
-                      <div key={emp.idUsuario}>{emp.correo || 'Empleado sin correo'}</div>
+                    novedad.empleados.map(user => (
+                      <div key={user.idUsuario} className="employee-name">
+                        {user.empleadoInfo ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}` : user.correo}
+                      </div>
                     ))
                   ) : (
-                    'Sin asignar'
+                    <span className="text-muted">Sin asignar</span>
                   )}
                 </td>
-
-                {/* Muestra el rango de fechas */}
-                <td>
-                  {novedad.fechaInicio} al {novedad.fechaFin}
-                </td>
-
-                {/* Muestra el rango de horas */}
-                <td>
-                  {formatTime(novedad.horaInicio)} - {formatTime(novedad.horaFin)}
-                </td>
-                
-                {/* Muestra el estado con un interruptor (toggle) */}
+                <td>{`${formatDate(novedad.fechaInicio)} al ${formatDate(novedad.fechaFin)}`}</td>
+                <td>{`${formatTime(novedad.horaInicio)} - ${formatTime(novedad.horaFin)}`}</td>
                 <td>
                   <label className="switch">
-                    <input 
-                      type="checkbox" 
-                      checked={novedad.estado} 
-                      onChange={() => onToggleEstado(novedad)} 
-                    />
+                    <input type="checkbox" checked={novedad.estado} onChange={() => onToggleEstado(novedad)} />
                     <span className="slider round"></span>
                   </label>
                 </td>
-                
-                {/* Muestra los botones de acciones */}
                 <td className="actions-cell">
-                  <button onClick={() => onView(novedad)} className="action-button" title="Ver Detalles">
+                  <button onClick={() => onView(novedad)} className="action-button view" title="Ver Detalles">
                     <FaRegEye />
                   </button>
-                  <button onClick={() => onEdit(novedad)} className="action-button" title="Editar">
+                  <button onClick={() => onEdit(novedad)} className="action-button edit" title="Editar">
                     <FaEdit />
                   </button>
                   <button onClick={() => onDeleteConfirm(novedad)} className="action-button delete" title="Eliminar">
@@ -77,9 +65,7 @@ const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEst
             ))
           ) : (
             <tr>
-              <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
-                No hay novedades de horario para mostrar.
-              </td>
+              <td colSpan="6" className="text-center">No hay novedades para mostrar.</td>
             </tr>
           )}
         </tbody>
@@ -88,4 +74,4 @@ const HorariosTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEst
   );
 };
 
-export default HorariosTable;
+export default NovedadesTable;
