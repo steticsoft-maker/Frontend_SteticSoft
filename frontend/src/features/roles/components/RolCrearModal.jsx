@@ -1,36 +1,32 @@
-// src/features/roles/components/RolCrearModal.jsx
+// INICIO DE MODIFICACIÓN
 import React, { useState, useEffect } from 'react';
 import RolForm from './RolForm';
 
 const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
-
-  // --- INICIO DE CORRECCIÓN ---
-  // Añadimos 'tipoPerfil' al estado inicial del formulario.
-  // Este es el valor que se enviará al backend si no se cambia.
   const getInitialFormState = () => ({
     nombre: '',
     descripcion: '',
     idPermisos: [],
     estado: true,
-    tipoPerfil: 'EMPLEADO' // <-- ¡LA LÍNEA CLAVE!
+    tipoPerfil: 'EMPLEADO'
   });
-  // --- FIN DE CORRECCIÓN ---
 
   const [formData, setFormData] = useState(getInitialFormState());
-  const [formErrors, setFormErrors] = useState({});
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Cuando el modal se abre, reseteamos al estado inicial completo.
     if (isOpen) {
       setFormData(getInitialFormState());
-      setFormErrors({});
+      setErrors({});
+      setLoading(false);
     }
   }, [isOpen]);
 
   const handleFormChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
+    if (errors[name]) {
+      setErrors(prevErr => ({ ...prevErr, [name]: null }));
     }
   };
 
@@ -53,28 +49,25 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
     setFormData(prev => ({ ...prev, idPermisos: [] }));
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
-    }
-    // La validación del tipo de perfil la hará el backend,
-    // pero nos aseguramos de que no esté vacío.
-    if (!formData.tipoPerfil) {
-        errors.tipoPerfil = "Debe seleccionar un tipo de perfil."
-    }
-    if (!formData.idPermisos || formData.idPermisos.length === 0) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmitForm = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-    // El formData que se envía ahora sí contiene el campo tipoPerfil.
-    onSubmit(formData);
+    setErrors({});
+    setLoading(true);
+    try {
+      await onSubmit(formData);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        const backendErrors = error.response.data.errors.reduce((acc, err) => {
+          acc[err.param] = err.msg;
+          return acc;
+        }, {});
+        setErrors(backendErrors);
+      } else {
+        setErrors({ general: error.message || "Ocurrió un error inesperado al crear el rol." });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -86,7 +79,7 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
           &times;
         </button>
         <h2>Crear Rol</h2>
-        <form onSubmit={handleSubmitForm}>
+        <form onSubmit={handleSubmit}>
           <RolForm
             formData={formData}
             onFormChange={handleFormChange}
@@ -97,14 +90,15 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
             onDeselectAll={handleDeselectAll}
             isEditing={false}
             isRoleAdmin={false}
-            formErrors={formErrors}
+            errors={errors}
           />
-          {formErrors.permisos && <p className="rol-error-permisos">{formErrors.permisos}</p>}
+          {errors.permisos && <p className="rol-error-permisos">{errors.permisos}</p>}
+          {errors.general && <p className="error-message">{errors.general}</p>}
           <div className="rol-form-actions">
-            <button type="submit" className="rol-form-buttonGuardar">
-              Crear Rol
+            <button type="submit" className="rol-form-buttonGuardar" disabled={loading}>
+              {loading ? 'Creando...' : 'Crear Rol'}
             </button>
-            <button type="button" className="rol-form-buttonCancelar" onClick={onClose}>
+            <button type="button" className="rol-form-buttonCancelar" onClick={onClose} disabled={loading}>
               Cancelar
             </button>
           </div>
@@ -113,5 +107,6 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
     </div>
   );
 };
+// FIN DE MODIFICACIÓN
 
 export default RolCrearModal;

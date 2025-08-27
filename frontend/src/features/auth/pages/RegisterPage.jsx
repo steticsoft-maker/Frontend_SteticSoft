@@ -1,22 +1,22 @@
-// src/features/auth/pages/RegisterPage.jsx
+// INICIO DE MODIFICACIÓN
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
-import { useAuth } from "../../../shared/contexts/authHooks"; // Path updated
+import { useAuth } from "../../../shared/contexts/authHooks";
 import { registerAPI } from "../services/authService";
 import "../css/Auth.css";
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Obtenemos la función login para usarla después del registro
-  const [errorApi, setErrorApi] = useState("");
+  const { login } = useAuth();
+  const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleRegisterSubmit = async (userData) => {
-    setErrorApi("");
+    setErrors({});
     setSuccessMessage("");
-    setIsSubmitting(true);
+    setLoading(true);
 
     try {
       const response = await registerAPI(userData);
@@ -24,22 +24,27 @@ function RegisterPage() {
       if (response.success) {
         setSuccessMessage("¡Registro exitoso! Iniciando sesión...");
         
-        // Opcional: Iniciar sesión automáticamente después del registro exitoso
         await login({ email: userData.correo, password: userData.contrasena }, false);
 
-        // Espera un momento para que el usuario vea el mensaje y luego redirige
         setTimeout(() => {
-          navigate("/"); // Redirigir a la página principal
+          navigate("/");
         }, 1500);
       }
     } catch (err) {
-      const errorMessage = err.message || "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
-      setErrorApi(errorMessage);
+      if (err.response && err.response.status === 400) {
+        const backendErrors = err.response.data.errors.reduce((acc, error) => {
+          acc[error.param] = error.msg;
+          return acc;
+        }, {});
+        setErrors(backendErrors);
+      } else {
+        setErrors({ general: err.message || "Ocurrió un error de conexión o registro. Inténtalo de nuevo." });
+      }
     } finally {
-      // No cambiar isSubmitting a false inmediatamente si hay éxito,
-      // para mantener el botón deshabilitado hasta la redirección.
-      if (errorApi) {
-        setIsSubmitting(false);
+      // Solo detenemos la carga si hubo un error. En caso de éxito,
+      // el botón permanecerá deshabilitado hasta la redirección.
+      if (Object.keys(errors).length > 0 || (err && (!err.response || err.response.status !== 400))) {
+        setLoading(false);
       }
     }
   };
@@ -51,15 +56,16 @@ function RegisterPage() {
         <h2 className="auth-form-title">Crear Cuenta</h2>
         <RegisterForm
           onSubmit={handleRegisterSubmit}
-          error={errorApi}
+          errors={errors}
+          setErrors={setErrors}
           successMessage={successMessage}
-          isLoading={isSubmitting}
+          loading={loading}
         />
         <div className="auth-form-actions">
           <button
             className="auth-secondary-button"
             onClick={() => navigate("/login")}
-            disabled={isSubmitting}
+            disabled={loading}
           >
             ¿Ya tienes cuenta? Iniciar Sesión
           </button>
@@ -68,5 +74,6 @@ function RegisterPage() {
     </div>
   );
 }
+// FIN DE MODIFICACIÓN
 
 export default RegisterPage;

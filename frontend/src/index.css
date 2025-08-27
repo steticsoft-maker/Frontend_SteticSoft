@@ -55,3 +55,13 @@ button {
 }
 
 /* Definir estilos de botón más específicos en componentes comunes o features */
+
+/* INICIO DE MODIFICACIÓN */
+.error-message {
+  color: #d9534f; /* Rojo para errores */
+  font-size: 0.85em;
+  margin-top: 5px;
+  margin-bottom: 0;
+  text-align: left;
+}
+/* FIN DE MODIFICACIÓN */

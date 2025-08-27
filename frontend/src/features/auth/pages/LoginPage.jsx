@@ -1,22 +1,21 @@
 // src/features/auth/pages/LoginPage.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-// Corregido: Importamos el hook personalizado useAuth
-import { useAuth } from "../../../shared/contexts/authHooks"; // Path updated
+// INICIO DE MODIFICACIÓN
+import { useAuth } from "../../../shared/contexts/authHooks";
 import LoginForm from "../components/LoginForm";
 import "../css/Auth.css";
 import "../css/LoginStyles.css";
 
 function LoginPage() {
   const navigate = useNavigate();
-  // Corregido: Usamos el hook useAuth() para obtener la función de login
   const { login } = useAuth();
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleLoginSubmit = async (credentials, rememberMe) => {
-    setError("");
-    setIsLoading(true);
+    setErrors({});
+    setLoading(true);
     try {
       const loginResult = await login(credentials, rememberMe);
 
@@ -33,9 +32,17 @@ function LoginPage() {
         }
       }
     } catch (err) {
-      setError(err.message || "Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+      if (err.response && err.response.status === 400) {
+        const backendErrors = err.response.data.errors.reduce((acc, error) => {
+          acc[error.param] = error.msg;
+          return acc;
+        }, {});
+        setErrors(backendErrors);
+      } else {
+        setErrors({ general: err.message || "Error al iniciar sesión. Por favor, inténtalo de nuevo." });
+      }
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -44,7 +51,12 @@ function LoginPage() {
       <div className="auth-form-box">
         <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
         <h2 className="auth-form-title">Iniciar Sesión</h2>
-        <LoginForm onSubmit={handleLoginSubmit} error={error} isLoading={isLoading} />
+        <LoginForm
+          onSubmit={handleLoginSubmit}
+          errors={errors}
+          loading={loading}
+          setErrors={setErrors} // Pasamos la función para limpiar errores
+        />
         <div className="auth-form-actions">
           <Link to="/auth/solicitar-recuperacion" className="auth-secondary-button">
             ¿Olvidaste tu contraseña?
@@ -57,5 +69,6 @@ function LoginPage() {
     </div>
   );
 }
+// FIN DE MODIFICACIÓN
 
 export default LoginPage;

@@ -13,7 +13,7 @@ const RolForm = ({
   onDeselectAll,
   isEditing,
   isRoleAdmin,
-  formErrors,
+  errors,
 }) => {
   const [mostrarPermisos, setMostrarPermisos] = useState(isEditing || false);
 
@@ -51,8 +51,8 @@ const RolForm = ({
               disabled={isRoleAdmin}
               required
             />
-            {formErrors.nombre && (
-              <span className="error-message">{formErrors.nombre}</span>
+            {errors.nombre && (
+              <span className="error-message">{errors.nombre}</span>
             )}
           </div>
 
@@ -77,8 +77,8 @@ const RolForm = ({
               <option value="CLIENTE">Cliente</option>
               <option value="NINGUNO">Ninguno (Solo Acceso al Sistema)</option>
             </select>
-            {formErrors.tipoPerfil && (
-              <span className="error-message">{formErrors.tipoPerfil}</span>
+            {errors.tipoPerfil && (
+              <span className="error-message">{errors.tipoPerfil}</span>
             )}
           </div>
           {/* --- FIN DE CORRECCIÓN --- */}

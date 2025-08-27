@@ -12,13 +12,11 @@ const UsuarioForm = ({
   availableRoles,
   isEditing,
   isUserAdmin,
-  formErrors,
+  errors: formErrors,
   isVerifyingEmail,
-  touchedFields, // Nuevo prop
 }) => {
   // handleChange se reemplaza por onInputChange y onInputBlur pasados como props
   const errors = formErrors || {};
-  const touched = touchedFields || {}; // Asegurar que touchedFields no sea undefined
 
   // Determina si el rol seleccionado requiere campos de perfil
   const selectedRole = availableRoles.find(
@@ -57,7 +55,7 @@ const UsuarioForm = ({
         {isVerifyingEmail && (
           <span className="verifying-email-message">Verificando correo...</span>
         )}
-        {touched.correo && errors.correo && (
+        {errors.correo && (
           <span className="error-message">{errors.correo}</span>
         )}
       </div>
@@ -74,7 +72,7 @@ const UsuarioForm = ({
           onBlur={onInputBlur}
           required
           className={`usuarios-form-select ${
-            touched.idRol && errors.idRol ? "input-error" : ""
+            errors.idRol ? "input-error" : ""
           }`}
           disabled={isUserAdmin && isEditing}
         >
@@ -87,7 +85,7 @@ const UsuarioForm = ({
             </option>
           ))}
         </select>
-        {touched.idRol && errors.idRol && (
+        {errors.idRol && (
           <span className="error-message">{errors.idRol}</span>
         )}
       </div>
@@ -108,10 +106,10 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.contrasena && errors.contrasena ? "input-error" : ""
+                errors.contrasena ? "input-error" : ""
               }`}
             />
-            {touched.contrasena && errors.contrasena && (
+            {errors.contrasena && (
               <span className="error-message">{errors.contrasena}</span>
             )}
           </div>
@@ -133,12 +131,12 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.confirmarContrasena && errors.confirmarContrasena
+                errors.confirmarContrasena
                   ? "input-error"
                   : ""
               }`}
             />
-            {touched.confirmarContrasena && errors.confirmarContrasena && (
+            {errors.confirmarContrasena && (
               <span className="error-message">
                 {errors.confirmarContrasena}
               </span>
@@ -177,11 +175,11 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.nombre && errors.nombre ? "input-error" : ""
+                errors.nombre ? "input-error" : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.nombre && errors.nombre && (
+            {errors.nombre && (
               <span className="error-message">{errors.nombre}</span>
             )}
           </div>
@@ -200,11 +198,11 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.apellido && errors.apellido ? "input-error" : ""
+                errors.apellido ? "input-error" : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.apellido && errors.apellido && (
+            {errors.apellido && (
               <span className="error-message">{errors.apellido}</span>
             )}
           </div>
@@ -221,7 +219,7 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-select ${
-                touched.tipoDocumento && errors.tipoDocumento
+                errors.tipoDocumento
                   ? "input-error"
                   : ""
               }`}
@@ -234,7 +232,7 @@ const UsuarioForm = ({
               <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
               <option value="Pasaporte">Pasaporte</option>
             </select>
-            {touched.tipoDocumento && errors.tipoDocumento && (
+            {errors.tipoDocumento && (
               <span className="error-message">{errors.tipoDocumento}</span>
             )}
           </div>
@@ -253,13 +251,13 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.numeroDocumento && errors.numeroDocumento
+                errors.numeroDocumento
                   ? "input-error"
                   : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.numeroDocumento && errors.numeroDocumento && (
+            {errors.numeroDocumento && (
               <span className="error-message">{errors.numeroDocumento}</span>
             )}
           </div>
@@ -278,11 +276,11 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.telefono && errors.telefono ? "input-error" : ""
+                errors.telefono ? "input-error" : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.telefono && errors.telefono && (
+            {errors.telefono && (
               <span className="error-message">{errors.telefono}</span>
             )}
           </div>
@@ -303,11 +301,11 @@ const UsuarioForm = ({
                 onBlur={onInputBlur}
                 required
                 className={`usuarios-form-input ${
-                  touched.direccion && errors.direccion ? "input-error" : ""
+                  errors.direccion ? "input-error" : ""
                 }`}
                 disabled={isUserAdmin && isEditing}
               />
-              {touched.direccion && errors.direccion && (
+            {errors.direccion && (
                 <span className="error-message">{errors.direccion}</span>
               )}
             </div>
@@ -326,13 +324,13 @@ const UsuarioForm = ({
               onBlur={onInputBlur}
               required
               className={`usuarios-form-input ${
-                touched.fechaNacimiento && errors.fechaNacimiento
+                errors.fechaNacimiento
                   ? "input-error"
                   : ""
               }`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.fechaNacimiento && errors.fechaNacimiento && (
+            {errors.fechaNacimiento && (
               <span className="error-message">{errors.fechaNacimiento}</span>
             )}
           </div>

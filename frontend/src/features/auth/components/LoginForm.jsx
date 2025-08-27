@@ -1,15 +1,18 @@
-// src/features/auth/components/LoginForm.jsx
+// INICIO DE MODIFICACIÓN
 import React, { useState } from "react";
 import "../css/Auth.css";
-import "../css/LoginStyles.css"; // Asegúrate que esta sea la importación correcta
+import "../css/LoginStyles.css";
 
-function LoginForm({ onSubmit, error }) {
+function LoginForm({ onSubmit, errors, loading, setErrors }) {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleCheckboxChange = (e) => {
@@ -18,10 +21,6 @@ function LoginForm({ onSubmit, error }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!credentials.email || !credentials.password) {
-      alert("Por favor, completa tu correo electrónico y contraseña.");
-      return;
-    }
     onSubmit(credentials, isCheckboxChecked);
   };
 
@@ -29,6 +28,8 @@ function LoginForm({ onSubmit, error }) {
 
   return (
     <form className="auth-form-content" onSubmit={handleSubmit}>
+      {errors.general && <p className="error-message">{errors.general}</p>}
+
       {/* Campo Correo Electrónico */}
       <div className="auth-form-group">
         <label htmlFor="login-email">Correo electrónico <RequiredAsterisk /></label>
@@ -39,10 +40,11 @@ function LoginForm({ onSubmit, error }) {
           placeholder="ejemplo@correo.com"
           value={credentials.email}
           onChange={handleChange}
-          className="auth-form-input"
+          className={`auth-form-input ${errors.email ? 'input-error' : ''}`}
           required
-          autoComplete="email" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+          autoComplete="email"
         />
+        {errors.email && <p className="error-message">{errors.email}</p>}
       </div>
 
       {/* Campo Contraseña */}
@@ -55,10 +57,11 @@ function LoginForm({ onSubmit, error }) {
           placeholder="Tu contraseña"
           value={credentials.password}
           onChange={handleChange}
-          className="auth-form-input"
+          className={`auth-form-input ${errors.password ? 'input-error' : ''}`}
           required
-          autoComplete="current-password" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+          autoComplete="current-password"
         />
+        {errors.password && <p className="error-message">{errors.password}</p>}
       </div>
 
       {/* Checkbox Recordar Usuario */}
@@ -72,13 +75,12 @@ function LoginForm({ onSubmit, error }) {
         <label htmlFor="remember-user">Recordar usuario</label>
       </div>
 
-      {error && <p className="auth-form-error">{error}</p>}
-
-      <button type="submit" className="auth-primary-button">
-        Entrar
+      <button type="submit" className="auth-primary-button" disabled={loading}>
+        {loading ? "Entrando..." : "Entrar"}
       </button>
     </form>
   );
 }
+// FIN DE MODIFICACIÓN
 
 export default LoginForm;

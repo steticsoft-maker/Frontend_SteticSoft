@@ -1,9 +1,9 @@
-// src/features/auth/components/RegisterForm.jsx
+// INICIO DE MODIFICACIÓN
 import React, { useState } from "react";
-import "../css/Auth.css"; // Estilos comunes
-import "../css/RegisterStyles.css"; // Estilos específicos del registro
+import "../css/Auth.css";
+import "../css/RegisterStyles.css";
 
-function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
+function RegisterForm({ onSubmit, errors, setErrors, successMessage, loading }) {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -16,59 +16,40 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-  const [formError, setFormError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: null }));
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    if (errors.confirmPassword) {
+      setErrors((prev) => ({ ...prev, confirmPassword: null }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFormError("");
-
-    for (const key in formData) {
-      if (Object.prototype.hasOwnProperty.call(formData, key) && formData[key] === "") {
-        let fieldName = key;
-        switch (key) {
-          case "nombre": fieldName = "Nombre"; break;
-          case "apellido": fieldName = "Apellido"; break;
-          case "correo": fieldName = "Correo Electrónico"; break;
-          case "contrasena": fieldName = "Contraseña"; break;
-          case "telefono": fieldName = "Teléfono"; break;
-          case "tipoDocumento": fieldName = "Tipo de Documento"; break;
-          case "numeroDocumento": fieldName = "Número de Documento"; break;
-          case "fechaNacimiento": fieldName = "Fecha de Nacimiento"; break;
-          default: break;
-        }
-        setFormError(`Por favor, completa el campo: ${fieldName}`);
-        return;
-      }
-    }
-    if (!confirmPassword) {
-      setFormError("Por favor, confirma tu contraseña.");
-      return;
-    }
     if (formData.contrasena !== confirmPassword) {
-      setFormError("Las contraseñas no coinciden.");
-      return;
-    }
-    if (formData.contrasena.length < 8) {
-      setFormError("La contraseña debe tener al menos 8 caracteres.");
+      setErrors((prev) => ({ ...prev, confirmPassword: "Las contraseñas no coinciden." }));
       return;
     }
     if (!isCheckboxChecked) {
-      setFormError("Debes aceptar los términos y condiciones.");
-      return;
+        setErrors((prev) => ({ ...prev, terms: "Debes aceptar los términos y condiciones." }));
+        return;
     }
     onSubmit(formData);
   };
 
-  // Componente para el asterisco rojo
   const RequiredAsterisk = () => <span style={{ color: "red" }}>*</span>;
 
   return (
     <form className="auth-form-content" onSubmit={handleSubmit}>
+      {errors.general && <p className="error-message">{errors.general}</p>}
       <div className="auth-form-grid">
         {/* Campo Nombre */}
         <div className="auth-form-group">
@@ -80,9 +61,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: Ana"
             value={formData.nombre}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.nombre ? 'input-error' : ''}`}
             required
           />
+          {errors.nombre && <p className="error-message">{errors.nombre}</p>}
         </div>
 
         {/* Campo Apellido */}
@@ -95,9 +77,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: Pérez López"
             value={formData.apellido}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.apellido ? 'input-error' : ''}`}
             required
           />
+          {errors.apellido && <p className="error-message">{errors.apellido}</p>}
         </div>
 
         {/* Campo Correo Electrónico */}
@@ -110,9 +93,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="ejemplo@correo.com"
             value={formData.correo}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.correo ? 'input-error' : ''}`}
             required
           />
+          {errors.correo && <p className="error-message">{errors.correo}</p>}
         </div>
 
         {/* Campo Contraseña */}
@@ -125,10 +109,11 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Mínimo 8 caracteres"
             value={formData.contrasena}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.contrasena ? 'input-error' : ''}`}
             required
             minLength="8"
           />
+          {errors.contrasena && <p className="error-message">{errors.contrasena}</p>}
         </div>
 
         {/* Campo Confirmar Contraseña */}
@@ -140,11 +125,12 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             name="confirmPassword"
             placeholder="Repite tu contraseña"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="auth-form-input"
+            onChange={handleConfirmPasswordChange}
+            className={`auth-form-input ${errors.confirmPassword ? 'input-error' : ''}`}
             required
             minLength="8"
           />
+          {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
         </div>
 
         {/* Campo Teléfono */}
@@ -157,9 +143,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: 3001234567"
             value={formData.telefono}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.telefono ? 'input-error' : ''}`}
             required
           />
+          {errors.telefono && <p className="error-message">{errors.telefono}</p>}
         </div>
 
         {/* Campo Tipo de Documento */}
@@ -170,13 +157,14 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             name="tipoDocumento"
             value={formData.tipoDocumento}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.tipoDocumento ? 'input-error' : ''}`}
             required
           >
             <option value="" disabled>Selecciona un tipo...</option>
             <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
             <option value="Cédula de Extranjería">Cédula de Extranjería</option>
           </select>
+          {errors.tipoDocumento && <p className="error-message">{errors.tipoDocumento}</p>}
         </div>
 
         {/* Campo Número de Documento */}
@@ -189,9 +177,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: 1020304050"
             value={formData.numeroDocumento}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.numeroDocumento ? 'input-error' : ''}`}
             required
           />
+          {errors.numeroDocumento && <p className="error-message">{errors.numeroDocumento}</p>}
         </div>
 
         {/* Campo Fecha de Nacimiento */}
@@ -203,11 +192,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             name="fechaNacimiento"
             value={formData.fechaNacimiento}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.fechaNacimiento ? 'input-error' : ''}`}
             required
-            // Puedes añadir max y min date si es necesario
-            // max={new Date().toISOString().split("T")[0]} // Ejemplo: no permitir fechas futuras
           />
+          {errors.fechaNacimiento && <p className="error-message">{errors.fechaNacimiento}</p>}
         </div>
       </div>
 
@@ -215,26 +203,26 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
         <div className="auth-form-checkbox">
           <input
             type="checkbox"
-            id="terms-check" // El label ya tiene htmlFor="terms-check"
+            id="terms-check"
             checked={isCheckboxChecked}
             onChange={(e) => setIsCheckboxChecked(e.target.checked)}
             required
           />
           <label htmlFor="terms-check">Acepto los términos y condiciones <RequiredAsterisk /></label>
         </div>
+        {errors.terms && <p className="error-message">{errors.terms}</p>}
 
-        {formError && <p className="auth-form-error">{formError}</p>}
-        {error && <p className="auth-form-error">{error}</p>}
         {successMessage && (
           <p className="auth-form-success">{successMessage}</p>
         )}
 
-        <button type="submit" className="auth-primary-button" disabled={isLoading}>
-          {isLoading ? "Registrando..." : "Registrarse"}
+        <button type="submit" className="auth-primary-button" disabled={loading}>
+          {loading ? "Registrando..." : "Registrarse"}
         </button>
       </div>
     </form>
   );
 }
+// FIN DE MODIFICACIÓN
 
 export default RegisterForm;

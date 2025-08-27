@@ -1,4 +1,4 @@
-// src/features/roles/components/RolEditarModal.jsx
+// INICIO DE MODIFICACIÓN
 import React, { useState, useEffect, useCallback } from "react";
 import RolForm from "./RolForm";
 import { getRoleDetailsAPI } from "../services/rolesService";
@@ -18,12 +18,12 @@ const RolEditarModal = ({
     idPermisos: [],
     estado: true,
   });
-  const [formErrors, setFormErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(false);
 
   const isRoleAdminProtected = formData.nombre === "Administrador";
 
-  // Funciones para Marcar/Desmarcar Todos los permisos
   const handleSelectAll = () => {
     if (isRoleAdminProtected) return;
     const allIds = permisosDisponibles.map((p) => p.idPermiso);
@@ -37,8 +37,8 @@ const RolEditarModal = ({
 
   const cargarDetallesRol = useCallback(async () => {
     if (!roleId) return;
-    setIsLoading(true);
-    setFormErrors({});
+    setInitialLoading(true);
+    setErrors({});
     try {
       const roleDetails = await getRoleDetailsAPI(roleId);
       setFormData({
@@ -49,11 +49,11 @@ const RolEditarModal = ({
         idPermisos: roleDetails.permisos?.map((p) => p.idPermiso) || [],
       });
     } catch (err) {
-      setFormErrors({
-        _general: err.message || "Error al cargar los detalles del rol.",
+      setErrors({
+        general: err.message || "Error al cargar los detalles del rol.",
       });
     } finally {
-      setIsLoading(false);
+      setInitialLoading(false);
     }
   }, [roleId]);
 
@@ -65,8 +65,8 @@ const RolEditarModal = ({
 
   const handleFormChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prevErr) => ({ ...prevErr, [name]: "" }));
+    if (errors[name]) {
+      setErrors((prevErr) => ({ ...prevErr, [name]: null }));
     }
   };
 
@@ -81,30 +81,29 @@ const RolEditarModal = ({
     });
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
-    }
-    // Para el rol Admin no se valida la cantidad de permisos
-    if (
-      !isRoleAdminProtected &&
-      (!formData.idPermisos || formData.idPermisos.length === 0)
-    ) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmitForm = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isRoleAdminProtected) {
       onClose();
       return;
     }
-    if (!validateForm()) return;
-    onSubmit(formData);
+    setErrors({});
+    setLoading(true);
+    try {
+        await onSubmit(formData);
+    } catch (error) {
+        if (error.response && error.response.status === 400) {
+            const backendErrors = error.response.data.errors.reduce((acc, err) => {
+                acc[err.param] = err.msg;
+                return acc;
+            }, {});
+            setErrors(backendErrors);
+        } else {
+            setErrors({ general: error.message || "Ocurrió un error inesperado al actualizar el rol." });
+        }
+    } finally {
+        setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -120,10 +119,10 @@ const RolEditarModal = ({
           &times;
         </button>
         <h2>Editar Rol</h2>
-        {isLoading ? (
+        {initialLoading ? (
           <p>Cargando...</p>
-        ) : formErrors._general ? (
-          <p className="error-message">{formErrors._general}</p>
+        ) : errors.general ? (
+          <p className="error-message">{errors.general}</p>
         ) : (
           <>
             {isRoleAdminProtected && (
@@ -132,31 +131,32 @@ const RolEditarModal = ({
                 modificado.
               </p>
             )}
-            <form onSubmit={handleSubmitForm}>
+            <form onSubmit={handleSubmit}>
               <RolForm
                 formData={formData}
                 onFormChange={handleFormChange}
                 permisosDisponibles={permisosDisponibles}
                 permisosAgrupados={permisosAgrupados}
                 onToggleModulo={handleToggleModulo}
-                onSelectAll={handleSelectAll} // <-- Añadido
-                onDeselectAll={handleDeselectAll} // <-- Añadido
+                onSelectAll={handleSelectAll}
+                onDeselectAll={handleDeselectAll}
                 isEditing={true}
                 isRoleAdmin={isRoleAdminProtected}
-                formErrors={formErrors}
+                errors={errors}
               />
-              {formErrors.permisos && (
-                <p className="rol-error-permisos">{formErrors.permisos}</p>
+              {errors.permisos && (
+                <p className="rol-error-permisos">{errors.permisos}</p>
               )}
               {!isRoleAdminProtected ? (
                 <div className="rol-form-actions">
-                  <button type="submit" className="rol-form-buttonGuardar">
-                    Actualizar Rol
+                  <button type="submit" className="rol-form-buttonGuardar" disabled={loading}>
+                    {loading ? 'Actualizando...' : 'Actualizar Rol'}
                   </button>
                   <button
                     type="button"
                     className="rol-form-buttonCancelar"
                     onClick={onClose}
+                    disabled={loading}
                   >
                     Cancelar
                   </button>
@@ -179,5 +179,6 @@ const RolEditarModal = ({
     </div>
   );
 };
+// FIN DE MODIFICACIÓN
 
 export default RolEditarModal;

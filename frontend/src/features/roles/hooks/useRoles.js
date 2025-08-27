@@ -150,6 +150,10 @@ const useRoles = () => {
         closeModal();
         await cargarDatos();
       } catch (err) {
+        if (err.response && err.response.status === 400) {
+          // This is a validation error. We will let the modal handle it.
+          throw err;
+        }
         const apiErrorMessage = err.response?.data?.message || err.response?.data?.error;
         setValidationMessage(
           apiErrorMessage || err.message || "Error al guardar el rol."

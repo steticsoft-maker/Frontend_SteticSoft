@@ -532,29 +532,21 @@ const useUsuarios = () => {
       setIsValidationModalOpen(true);
       // --- FIN DE LA CORRECCIÓN ---
     } catch (err) {
-      const apiErrorMessage =
-        err.response?.data?.message ||
-        err.message ||
-        "Error al guardar el usuario.";
-      if (
-        apiErrorMessage.toLowerCase().includes("correo") &&
-        apiErrorMessage.toLowerCase().includes("registrado")
-      ) {
-        setFormErrors((prev) => ({
-          ...prev,
-          correo: "Este correo ya está registrado.",
-        }));
-      } else if (
-        apiErrorMessage.toLowerCase().includes("documento") &&
-        apiErrorMessage.toLowerCase().includes("registrado")
-      ) {
-        setFormErrors((prev) => ({
-          ...prev,
-          numeroDocumento: "Este número de documento ya está registrado.",
-        }));
+      if (err.response && err.response.status === 400) {
+        const backendErrors = err.response.data.errors.reduce((acc, error) => {
+          acc[error.param] = error.msg;
+          return acc;
+        }, {});
+        setFormErrors(prev => ({ ...prev, ...backendErrors }));
+        // NO abrimos el modal de validación para errores de campo
+      } else {
+        const apiErrorMessage =
+          err.response?.data?.message ||
+          err.message ||
+          "Error al guardar el usuario.";
+        setValidationMessage(apiErrorMessage);
+        setIsValidationModalOpen(true); // Abrir modal solo para errores generales
       }
-      setValidationMessage(apiErrorMessage);
-      setIsValidationModalOpen(true);
     } finally {
       setIsSubmitting(false);
     }
