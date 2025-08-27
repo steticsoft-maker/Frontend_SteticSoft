@@ -1,29 +1,32 @@
 // src/features/auth/components/LoginForm.jsx
 import React, { useState } from "react";
 import "../css/Auth.css";
-import "../css/LoginStyles.css"; // Asegúrate que esta sea la importación correcta
+import "../css/LoginStyles.css";
 
-function LoginForm({ onSubmit, error }) {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+// INICIO DE MODIFICACIÓN: Aceptar 'errors' en lugar de 'error'.
+function LoginForm({ onSubmit, errors, isLoading }) {
+  // FIN DE MODIFICACIÓN
+
+  const [credentials, setCredentials] = useState({ correo: "", contrasena: "" });
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const handleChange = (e) => {
+    // INICIO DE MODIFICACIÓN: El estado ahora usa 'correo' y 'contrasena' para coincidir con el backend.
     const { name, value } = e.target;
     setCredentials((prev) => ({ ...prev, [name]: value }));
+    // FIN DE MODIFICACIÓN
   };
 
   const handleCheckboxChange = (e) => {
     setIsCheckboxChecked(e.target.checked);
   };
 
+  // INICIO DE MODIFICACIÓN: Se elimina la validación del lado del cliente.
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!credentials.email || !credentials.password) {
-      alert("Por favor, completa tu correo electrónico y contraseña.");
-      return;
-    }
     onSubmit(credentials, isCheckboxChecked);
   };
+  // FIN DE MODIFICACIÓN
 
   const RequiredAsterisk = () => <span style={{ color: "red" }}>*</span>;
 
@@ -35,14 +38,19 @@ function LoginForm({ onSubmit, error }) {
         <input
           type="email"
           id="login-email"
-          name="email"
+          name="correo" // MODIFICADO: 'name' ahora es 'correo'
           placeholder="ejemplo@correo.com"
-          value={credentials.email}
+          value={credentials.correo}
           onChange={handleChange}
-          className="auth-form-input"
+          // INICIO DE MODIFICACIÓN: Aplicar clase de error condicionalmente
+          className={`auth-form-input ${errors.correo ? 'input-error' : ''}`}
+          // FIN DE MODIFICACIÓN
           required
-          autoComplete="email" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+          autoComplete="email"
         />
+        {/* INICIO DE MODIFICACIÓN: Mostrar mensaje de error de campo */}
+        {errors.correo && <p className="error-message">{errors.correo}</p>}
+        {/* FIN DE MODIFICACIÓN */}
       </div>
 
       {/* Campo Contraseña */}
@@ -51,14 +59,15 @@ function LoginForm({ onSubmit, error }) {
         <input
           type="password"
           id="login-password"
-          name="password"
+          name="contrasena" // MODIFICADO: 'name' ahora es 'contrasena'
           placeholder="Tu contraseña"
-          value={credentials.password}
+          value={credentials.contrasena}
           onChange={handleChange}
-          className="auth-form-input"
+          className={`auth-form-input ${errors.contrasena ? 'input-error' : ''}`}
           required
-          autoComplete="current-password" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+          autoComplete="current-password"
         />
+        {errors.contrasena && <p className="error-message">{errors.contrasena}</p>}
       </div>
 
       {/* Checkbox Recordar Usuario */}
@@ -72,10 +81,13 @@ function LoginForm({ onSubmit, error }) {
         <label htmlFor="remember-user">Recordar usuario</label>
       </div>
 
-      {error && <p className="auth-form-error">{error}</p>}
+      {/* INICIO DE MODIFICACIÓN: Mostrar error general si existe */}
+      {errors.general && <p className="auth-form-error">{errors.general}</p>}
+      {/* FIN DE MODIFICACIÓN */}
 
-      <button type="submit" className="auth-primary-button">
-        Entrar
+      {/* MODIFICADO: Se pasa isLoading al botón */}
+      <button type="submit" className="auth-primary-button" disabled={isLoading}>
+        {isLoading ? 'Entrando...' : 'Entrar'}
       </button>
     </form>
   );

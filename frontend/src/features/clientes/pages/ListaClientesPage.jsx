@@ -7,16 +7,19 @@ import ClienteEditarModal from "../components/ClienteEditarModal";
 import ClienteDetalleModal from "../components/ClienteDetalleModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
-import Pagination from "../../../shared/components/common/Pagination"; // Importar Pagination
-import useClientes from "../hooks/useClientes"; // Importar el custom hook
+import Pagination from "../../../shared/components/common/Pagination";
+import useClientes from "../hooks/useClientes";
 import "../css/Clientes.css";
 
 function ListaClientesPage() {
   const {
-    clientes, // Ya paginados y listos para la tabla
-    totalClientesFiltrados, // Para el título y el componente Pagination
+    clientes,
+    totalClientesFiltrados,
     isLoading,
     error,
+    // INICIO DE MODIFICACIÓN: Destructurar 'errors' del hook.
+    errors,
+    // FIN DE MODIFICACIÓN
     currentCliente,
     isCrearModalOpen,
     isEditarModalOpen,
@@ -65,7 +68,7 @@ function ListaClientesPage() {
         {!isLoading && !error && (
           <>
             <ClientesTable
-              clientes={clientes} // Estos son los currentClientesForTable del hook
+              clientes={clientes}
               onView={(cliente) => handleOpenModal("details", cliente)}
               onEdit={(cliente) => handleOpenModal("edit", cliente)}
               onDeleteConfirm={(cliente) => handleOpenModal("delete", cliente)}
@@ -85,25 +88,33 @@ function ListaClientesPage() {
         )}
       </div>
 
+      {/* INICIO DE MODIFICACIÓN: Pasar 'errors' al modal de creación. */}
       <ClienteCrearModal
         isOpen={isCrearModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         onSubmit={handleSave}
+        errors={errors}
       />
+      {/* FIN DE MODIFICACIÓN */}
+
+      {/* INICIO DE MODIFICACIÓN: Pasar 'errors' al modal de edición. */}
       <ClienteEditarModal
         isOpen={isEditarModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         onSubmit={handleSave}
         initialData={currentCliente}
+        errors={errors}
       />
+      {/* FIN DE MODIFICACIÓN */}
+
       <ClienteDetalleModal
         isOpen={isDetailsModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         cliente={currentCliente}
       />
       <ConfirmModal
         isOpen={isConfirmDeleteOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         onConfirm={handleDelete}
         title="Confirmar Eliminación de Cliente"
         message={`¿Estás seguro de que deseas eliminar al cliente "${
@@ -113,12 +124,10 @@ function ListaClientesPage() {
         }"?`}
         confirmText="Eliminar"
         cancelText="Cancelar"
-        // Podrías añadir un isLoading al ConfirmModal si handleDelete es largo,
-        // pero por ahora el hook useClientes no expone un isSubmitting específico para delete.
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
+        onClose={closeModal}
         title="Aviso de Clientes"
         message={validationMessage}
       />

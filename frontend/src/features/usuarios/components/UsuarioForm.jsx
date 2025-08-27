@@ -7,30 +7,25 @@ const RequiredAsterisk = () => (
 
 const UsuarioForm = ({
   formData,
-  onInputChange, // Nuevo prop
-  onInputBlur, // Nuevo prop
+  onInputChange,
+  onInputBlur,
   availableRoles,
   isEditing,
   isUserAdmin,
   formErrors,
   isVerifyingEmail,
-  touchedFields, // Nuevo prop
+  // INICIO DE MODIFICACIÓN: Se elimina 'touchedFields' de los props ya que no se usará para mostrar errores.
 }) => {
-  // handleChange se reemplaza por onInputChange y onInputBlur pasados como props
   const errors = formErrors || {};
-  const touched = touchedFields || {}; // Asegurar que touchedFields no sea undefined
+  // const touched = touchedFields || {}; // Ya no es necesario.
+  // FIN DE MODIFICACIÓN
 
-  // Determina si el rol seleccionado requiere campos de perfil
   const selectedRole = availableRoles.find(
     (rol) => rol.idRol === parseInt(formData.idRol)
   );
-  // Usar tipoPerfil para determinar si se muestran los campos de perfil
-  // Y asegurar que el rol Administrador nunca muestre campos de perfil (ya que no tiene tipoPerfil 'CLIENTE' o 'EMPLEADO')
   const requiresProfileFields =
     selectedRole &&
     (selectedRole.tipoPerfil === "CLIENTE" || selectedRole.tipoPerfil === "EMPLEADO");
-
-  // Determina si el rol seleccionado es de tipo CLIENTE para mostrar el campo dirección
   const isCliente = selectedRole && selectedRole.tipoPerfil === "CLIENTE";
 
   return (
@@ -49,17 +44,19 @@ const UsuarioForm = ({
           onChange={onInputChange}
           onBlur={onInputBlur}
           required
-          className={`usuarios-form-input ${
-            errors.correo ? "input-error" : ""
-          }`}
+          // INICIO DE MODIFICACIÓN: La clase de error solo depende de si hay un error.
+          className={`usuarios-form-input ${errors.correo ? "input-error" : ""}`}
+          // FIN DE MODIFICACIÓN
           disabled={(isUserAdmin && isEditing) || isVerifyingEmail}
         />
         {isVerifyingEmail && (
           <span className="verifying-email-message">Verificando correo...</span>
         )}
-        {touched.correo && errors.correo && (
+        {/* INICIO DE MODIFICACIÓN: Mostrar el error sin depender de 'touched'. */}
+        {errors.correo && (
           <span className="error-message">{errors.correo}</span>
         )}
+        {/* FIN DE MODIFICACIÓN */}
       </div>
 
       <div className="usuarios-form-grid-item">
@@ -73,9 +70,7 @@ const UsuarioForm = ({
           onChange={onInputChange}
           onBlur={onInputBlur}
           required
-          className={`usuarios-form-select ${
-            touched.idRol && errors.idRol ? "input-error" : ""
-          }`}
+          className={`usuarios-form-select ${errors.idRol ? "input-error" : ""}`}
           disabled={isUserAdmin && isEditing}
         >
           <option value="" disabled>
@@ -87,7 +82,7 @@ const UsuarioForm = ({
             </option>
           ))}
         </select>
-        {touched.idRol && errors.idRol && (
+        {errors.idRol && (
           <span className="error-message">{errors.idRol}</span>
         )}
       </div>
@@ -107,11 +102,9 @@ const UsuarioForm = ({
               onChange={onInputChange}
               onBlur={onInputBlur}
               required
-              className={`usuarios-form-input ${
-                touched.contrasena && errors.contrasena ? "input-error" : ""
-              }`}
+              className={`usuarios-form-input ${errors.contrasena ? "input-error" : ""}`}
             />
-            {touched.contrasena && errors.contrasena && (
+            {errors.contrasena && (
               <span className="error-message">{errors.contrasena}</span>
             )}
           </div>
@@ -132,13 +125,9 @@ const UsuarioForm = ({
               onChange={onInputChange}
               onBlur={onInputBlur}
               required
-              className={`usuarios-form-input ${
-                touched.confirmarContrasena && errors.confirmarContrasena
-                  ? "input-error"
-                  : ""
-              }`}
+              className={`usuarios-form-input ${errors.confirmarContrasena ? "input-error" : ""}`}
             />
-            {touched.confirmarContrasena && errors.confirmarContrasena && (
+            {errors.confirmarContrasena && (
               <span className="error-message">
                 {errors.confirmarContrasena}
               </span>
@@ -147,18 +136,11 @@ const UsuarioForm = ({
         </>
       )}
 
-      {/* --- Campos de Perfil (Visibles condicionalmente) --- */}
       {requiresProfileFields && (
         <>
           <div className="usuarios-form-grid-item-full-width">
             <hr />
-            <h3
-              style={{
-                textAlign: "center",
-                color: "#6d0b58",
-                margin: "10px 0",
-              }}
-            >
+            <h3 style={{ textAlign: "center", color: "#6d0b58", margin: "10px 0" }}>
               Datos del Perfil de {selectedRole.nombre}
             </h3>
           </div>
@@ -176,12 +158,10 @@ const UsuarioForm = ({
               onChange={onInputChange}
               onBlur={onInputBlur}
               required
-              className={`usuarios-form-input ${
-                touched.nombre && errors.nombre ? "input-error" : ""
-              }`}
+              className={`usuarios-form-input ${errors.nombre ? "input-error" : ""}`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.nombre && errors.nombre && (
+            {errors.nombre && (
               <span className="error-message">{errors.nombre}</span>
             )}
           </div>
@@ -199,12 +179,10 @@ const UsuarioForm = ({
               onChange={onInputChange}
               onBlur={onInputBlur}
               required
-              className={`usuarios-form-input ${
-                touched.apellido && errors.apellido ? "input-error" : ""
-              }`}
+              className={`usuarios-form-input ${errors.apellido ? "input-error" : ""}`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.apellido && errors.apellido && (
+            {errors.apellido && (
               <span className="error-message">{errors.apellido}</span>
             )}
           </div>
@@ -220,21 +198,15 @@ const UsuarioForm = ({
               onChange={onInputChange}
               onBlur={onInputBlur}
               required
-              className={`usuarios-form-select ${
-                touched.tipoDocumento && errors.tipoDocumento
-                  ? "input-error"
-                  : ""
-              }`}
+              className={`usuarios-form-select ${errors.tipoDocumento ? "input-error" : ""}`}
               disabled={isUserAdmin && isEditing}
             >
               <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
-              <option value="Cédula de Extranjería">
-                Cédula de Extranjería
-              </option>
+              <option value="Cédula de Extranjería">Cédula de Extranjería</option>
               <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
               <option value="Pasaporte">Pasaporte</option>
             </select>
-            {touched.tipoDocumento && errors.tipoDocumento && (
+            {errors.tipoDocumento && (
               <span className="error-message">{errors.tipoDocumento}</span>
             )}
           </div>
@@ -252,14 +224,10 @@ const UsuarioForm = ({
               onChange={onInputChange}
               onBlur={onInputBlur}
               required
-              className={`usuarios-form-input ${
-                touched.numeroDocumento && errors.numeroDocumento
-                  ? "input-error"
-                  : ""
-              }`}
+              className={`usuarios-form-input ${errors.numeroDocumento ? "input-error" : ""}`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.numeroDocumento && errors.numeroDocumento && (
+            {errors.numeroDocumento && (
               <span className="error-message">{errors.numeroDocumento}</span>
             )}
           </div>
@@ -277,17 +245,14 @@ const UsuarioForm = ({
               onChange={onInputChange}
               onBlur={onInputBlur}
               required
-              className={`usuarios-form-input ${
-                touched.telefono && errors.telefono ? "input-error" : ""
-              }`}
+              className={`usuarios-form-input ${errors.telefono ? "input-error" : ""}`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.telefono && errors.telefono && (
+            {errors.telefono && (
               <span className="error-message">{errors.telefono}</span>
             )}
           </div>
 
-          {/* Campo de Dirección (solo para Clientes) */}
           {isCliente && (
             <div className="usuarios-form-grid-item">
               <label htmlFor="direccion" className="usuarios-form-label">
@@ -302,12 +267,10 @@ const UsuarioForm = ({
                 onChange={onInputChange}
                 onBlur={onInputBlur}
                 required
-                className={`usuarios-form-input ${
-                  touched.direccion && errors.direccion ? "input-error" : ""
-                }`}
+                className={`usuarios-form-input ${errors.direccion ? "input-error" : ""}`}
                 disabled={isUserAdmin && isEditing}
               />
-              {touched.direccion && errors.direccion && (
+              {errors.direccion && (
                 <span className="error-message">{errors.direccion}</span>
               )}
             </div>
@@ -325,21 +288,16 @@ const UsuarioForm = ({
               onChange={onInputChange}
               onBlur={onInputBlur}
               required
-              className={`usuarios-form-input ${
-                touched.fechaNacimiento && errors.fechaNacimiento
-                  ? "input-error"
-                  : ""
-              }`}
+              className={`usuarios-form-input ${errors.fechaNacimiento ? "input-error" : ""}`}
               disabled={isUserAdmin && isEditing}
             />
-            {touched.fechaNacimiento && errors.fechaNacimiento && (
+            {errors.fechaNacimiento && (
               <span className="error-message">{errors.fechaNacimiento}</span>
             )}
           </div>
         </>
       )}
 
-      {/* --- Switch de Estado (Solo para edición) --- */}
       {isEditing && !isUserAdmin && (
         <div className="usuarios-form-grid-item usuarios-form-group-estado">
           <label htmlFor="estado" className="usuarios-form-label">

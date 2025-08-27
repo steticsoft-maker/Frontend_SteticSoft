@@ -33,6 +33,8 @@ const useRoles = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  // NUEVO CÓDIGO: Estado para manejar los errores de validación del formulario.
+  const [errors, setErrors] = useState({});
   const [currentRole, setCurrentRole] = useState(null);
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
@@ -80,9 +82,15 @@ const useRoles = () => {
     setIsValidationModalOpen(false);
     setCurrentRole(null);
     setValidationMessage("");
+    // INICIO DE MODIFICACIÓN: Limpiar errores al cerrar cualquier modal.
+    setErrors({});
+    // FIN DE MODIFICACIÓN
   }, []);
 
   const handleOpenModal = useCallback(async (type, role = null) => {
+    // INICIO DE MODIFICACIÓN: Limpiar errores al abrir un modal.
+    setErrors({});
+    // FIN DE MODIFICACIÓN
     if (
       role?.nombre === "Administrador" &&
       (type === "edit" || type === "delete")
@@ -116,10 +124,6 @@ const useRoles = () => {
     } else if (type === "edit" && role?.idRol) {
       setIsEditarModalOpen(true);
     } else if (type === "create") {
-      // --- LÓGICA CORRECTA ---
-      // Simplemente abre el modal de creación.
-      // El modal (RolCrearModal) es responsable de gestionar su propio estado de formulario.
-      // No es necesario setear un `formData` aquí.
       setCurrentRole(null);
       setIsCrearModalOpen(true);
     } else if (type === "delete") {
@@ -130,13 +134,15 @@ const useRoles = () => {
   const handleSaveRol = useCallback(
     async (roleData) => {
       setIsSubmitting(true);
+      // INICIO DE MODIFICACIÓN: Limpiar errores antes de un nuevo intento.
+      setErrors({});
+      // FIN DE MODIFICACIÓN
       try {
         let response;
         if (roleData.id) {
           const { id, ...dataToUpdate } = roleData;
           response = await updateRoleAPI(id, dataToUpdate);
         } else {
-          // El objeto `roleData` que viene del modal de creación debe tener todos los campos necesarios.
           response = await createRoleAPI(roleData);
         }
 
@@ -150,11 +156,21 @@ const useRoles = () => {
         closeModal();
         await cargarDatos();
       } catch (err) {
-        const apiErrorMessage = err.response?.data?.message || err.response?.data?.error;
-        setValidationMessage(
-          apiErrorMessage || err.message || "Error al guardar el rol."
-        );
-        setIsValidationModalOpen(true);
+        // INICIO DE MODIFICACIÓN: Procesar errores de validación del backend.
+        if (err.response && err.response.data && Array.isArray(err.response.data.errors)) {
+            const backendErrors = err.response.data.errors.reduce((acc, error) => {
+              const fieldName = error.param || error.path;
+              acc[fieldName] = error.msg;
+              return acc;
+            }, {});
+            setErrors(backendErrors);
+        } else {
+            // Error genérico si la respuesta no es de validación
+            const apiErrorMessage = err.response?.data?.message || err.response?.data?.error;
+            setValidationMessage(apiErrorMessage || err.message || "Error al guardar el rol.");
+            setIsValidationModalOpen(true);
+        }
+        // FIN DE MODIFICACIÓN
       } finally {
         setIsSubmitting(false);
       }
@@ -216,14 +232,10 @@ const useRoles = () => {
 
   const processedRoles = useMemo(() => {
     let filtered = roles;
-
-    // Filtrar por estado
     if (filterEstado !== "todos") {
       const isActive = filterEstado === "activos";
       filtered = filtered.filter((r) => r.estado === isActive);
     }
-
-    // Filtrar por término de búsqueda
     if (searchTerm) {
       const lowerSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter((r) => {
@@ -232,11 +244,9 @@ const useRoles = () => {
         const permisosMatch = r.permisos?.some(p => p.nombre?.toLowerCase().includes(lowerSearchTerm));
         const estadoString = typeof r.estado === 'boolean' ? (r.estado ? "activo" : "inactivo") : "";
         const estadoMatch = estadoString.includes(lowerSearchTerm);
-
         return nombreMatch || descripcionMatch || permisosMatch || estadoMatch;
       });
     }
-
     return filtered;
   }, [roles, filterEstado, searchTerm]);
 
@@ -263,6 +273,10 @@ const useRoles = () => {
     isLoading,
     isSubmitting,
     error,
+    // INICIO DE MODIFICACIÓN: Exportar el estado de errores y su setter.
+    errors,
+    setErrors,
+    // FIN DE MODIFICACIÓN
     currentRole,
     isCrearModalOpen,
     isEditarModalOpen,

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import RolForm from "./RolForm";
 import { getRoleDetailsAPI } from "../services/rolesService";
 
+// INICIO DE MODIFICACIÓN: Aceptar 'errors' como prop.
 const RolEditarModal = ({
   isOpen,
   onClose,
@@ -10,7 +11,10 @@ const RolEditarModal = ({
   roleId,
   permisosDisponibles,
   permisosAgrupados,
+  errors,
 }) => {
+  // FIN DE MODIFICACIÓN
+
   const [formData, setFormData] = useState({
     id: null,
     nombre: "",
@@ -18,12 +22,14 @@ const RolEditarModal = ({
     idPermisos: [],
     estado: true,
   });
-  const [formErrors, setFormErrors] = useState({});
+  // INICIO DE MODIFICACIÓN: Se elimina el estado de errores interno.
+  // const [formErrors, setFormErrors] = useState({});
+  // FIN DE MODIFICACIÓN
   const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState(null); // Estado para error de carga
 
   const isRoleAdminProtected = formData.nombre === "Administrador";
 
-  // Funciones para Marcar/Desmarcar Todos los permisos
   const handleSelectAll = () => {
     if (isRoleAdminProtected) return;
     const allIds = permisosDisponibles.map((p) => p.idPermiso);
@@ -38,7 +44,7 @@ const RolEditarModal = ({
   const cargarDetallesRol = useCallback(async () => {
     if (!roleId) return;
     setIsLoading(true);
-    setFormErrors({});
+    setLoadError(null); // Limpiar error de carga anterior
     try {
       const roleDetails = await getRoleDetailsAPI(roleId);
       setFormData({
@@ -46,12 +52,11 @@ const RolEditarModal = ({
         nombre: roleDetails.nombre,
         descripcion: roleDetails.descripcion || "",
         estado: roleDetails.estado,
+        tipoPerfil: roleDetails.tipo_perfil || 'EMPLEADO', // Asegurar que tipoPerfil se cargue
         idPermisos: roleDetails.permisos?.map((p) => p.idPermiso) || [],
       });
     } catch (err) {
-      setFormErrors({
-        _general: err.message || "Error al cargar los detalles del rol.",
-      });
+      setLoadError(err.message || "Error al cargar los detalles del rol.");
     } finally {
       setIsLoading(false);
     }
@@ -65,9 +70,6 @@ const RolEditarModal = ({
 
   const handleFormChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prevErr) => ({ ...prevErr, [name]: "" }));
-    }
   };
 
   const handleToggleModulo = (permisoId) => {
@@ -81,21 +83,11 @@ const RolEditarModal = ({
     });
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
-    }
-    // Para el rol Admin no se valida la cantidad de permisos
-    if (
-      !isRoleAdminProtected &&
-      (!formData.idPermisos || formData.idPermisos.length === 0)
-    ) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  // INICIO DE MODIFICACIÓN: Se elimina la validación del lado del cliente.
+  /*
+  const validateForm = () => { ... };
+  */
+  // FIN DE MODIFICACIÓN
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
@@ -103,8 +95,10 @@ const RolEditarModal = ({
       onClose();
       return;
     }
-    if (!validateForm()) return;
+    // INICIO DE MODIFICACIÓN: Se elimina la llamada a la validación del cliente.
+    // if (!validateForm()) return;
     onSubmit(formData);
+    // FIN DE MODIFICACIÓN
   };
 
   if (!isOpen) return null;
@@ -122,8 +116,8 @@ const RolEditarModal = ({
         <h2>Editar Rol</h2>
         {isLoading ? (
           <p>Cargando...</p>
-        ) : formErrors._general ? (
-          <p className="error-message">{formErrors._general}</p>
+        ) : loadError ? (
+          <p className="error-message">{loadError}</p>
         ) : (
           <>
             {isRoleAdminProtected && (
@@ -133,21 +127,25 @@ const RolEditarModal = ({
               </p>
             )}
             <form onSubmit={handleSubmitForm}>
+              {/* INICIO DE MODIFICACIÓN: Pasar 'errors' en lugar de 'formErrors' */}
               <RolForm
                 formData={formData}
                 onFormChange={handleFormChange}
                 permisosDisponibles={permisosDisponibles}
                 permisosAgrupados={permisosAgrupados}
                 onToggleModulo={handleToggleModulo}
-                onSelectAll={handleSelectAll} // <-- Añadido
-                onDeselectAll={handleDeselectAll} // <-- Añadido
+                onSelectAll={handleSelectAll}
+                onDeselectAll={handleDeselectAll}
                 isEditing={true}
                 isRoleAdmin={isRoleAdminProtected}
-                formErrors={formErrors}
+                errors={errors} // Se pasa el nuevo prop de errores
               />
-              {formErrors.permisos && (
-                <p className="rol-error-permisos">{formErrors.permisos}</p>
+              {/* FIN DE MODIFICACIÓN */}
+
+              {errors.idPermisos && (
+                <p className="rol-error-permisos">{errors.idPermisos}</p>
               )}
+
               {!isRoleAdminProtected ? (
                 <div className="rol-form-actions">
                   <button type="submit" className="rol-form-buttonGuardar">

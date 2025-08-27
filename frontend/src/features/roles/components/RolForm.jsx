@@ -13,8 +13,10 @@ const RolForm = ({
   onDeselectAll,
   isEditing,
   isRoleAdmin,
-  formErrors,
+  // INICIO DE MODIFICACIÓN: Aceptar 'errors' en lugar de 'formErrors'.
+  errors,
 }) => {
+  // FIN DE MODIFICACIÓN
   const [mostrarPermisos, setMostrarPermisos] = useState(isEditing || false);
 
   const handleInputChange = (e) => {
@@ -47,16 +49,19 @@ const RolForm = ({
               name="nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              className="rol-input"
+              // INICIO DE MODIFICACIÓN: Aplicar clase de error y mostrar mensaje.
+              className={`rol-input ${errors.nombre ? 'input-error' : ''}`}
+              // FIN DE MODIFICACIÓN
               disabled={isRoleAdmin}
               required
             />
-            {formErrors.nombre && (
-              <span className="error-message">{formErrors.nombre}</span>
+            {/* INICIO DE MODIFICACIÓN: Usar el objeto 'errors' */}
+            {errors.nombre && (
+              <span className="error-message">{errors.nombre}</span>
             )}
+            {/* FIN DE MODIFICACIÓN */}
           </div>
 
-          {/* --- INICIO DE CORRECCIÓN --- */}
           <div className="rol-campoContainer">
             <label htmlFor="tipoPerfilInput" className="rol-label">
               Tipo de Perfil: <span className="required-asterisk">*</span>
@@ -64,24 +69,20 @@ const RolForm = ({
             <select
               id="tipoPerfilInput"
               name="tipoPerfil"
-              // Lógica simplificada: usa el valor del formData o el default 'EMPLEADO'
               value={formData.tipoPerfil || 'EMPLEADO'}
               onChange={handleInputChange}
-              className="rol-input"
-              // No se puede cambiar el tipo de perfil de los roles base (Admin, Empleado, Cliente) una vez creados.
+              className={`rol-input ${errors.tipoPerfil ? 'input-error' : ''}`}
               disabled={isRoleAdmin}
               required
             >
-              {/* No es necesaria una opción placeholder si siempre hay un valor seleccionado */}
               <option value="EMPLEADO">Empleado</option>
               <option value="CLIENTE">Cliente</option>
               <option value="NINGUNO">Ninguno (Solo Acceso al Sistema)</option>
             </select>
-            {formErrors.tipoPerfil && (
-              <span className="error-message">{formErrors.tipoPerfil}</span>
+            {errors.tipoPerfil && (
+              <span className="error-message">{errors.tipoPerfil}</span>
             )}
           </div>
-          {/* --- FIN DE CORRECCIÓN --- */}
 
           <div className="rol-campoContainer">
             <label htmlFor="descripcionRolInput" className="rol-label">
@@ -92,9 +93,12 @@ const RolForm = ({
               name="descripcion"
               value={formData.descripcion}
               onChange={handleInputChange}
-              className="rol-textarea"
+              className={`rol-textarea ${errors.descripcion ? 'input-error' : ''}`}
               disabled={isRoleAdmin}
             />
+            {errors.descripcion && (
+              <span className="error-message">{errors.descripcion}</span>
+            )}
           </div>
 
           {isEditing && !isRoleAdmin && (

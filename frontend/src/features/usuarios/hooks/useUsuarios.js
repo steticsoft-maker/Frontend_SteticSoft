@@ -7,8 +7,8 @@ import {
   updateUsuarioAPI,
   toggleUsuarioEstadoAPI,
   getRolesAPI,
-  verificarCorreoAPI,
-  eliminarUsuarioFisicoAPI, // ✅ NUEVO: Importar la función del servicio
+  // verificarCorreoAPI, // Ya no se usará en el blur
+  eliminarUsuarioFisicoAPI,
 } from "../services/usuariosService";
 
 const CAMPOS_PERFIL = [
@@ -18,7 +18,7 @@ const CAMPOS_PERFIL = [
   "numeroDocumento",
   "telefono",
   "fechaNacimiento",
-  "direccion", // Agregado para validación
+  "direccion",
 ];
 
 const useUsuarios = () => {
@@ -33,13 +33,7 @@ const useUsuarios = () => {
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  // ✅ MODIFICADO: Renombrado por claridad
-  const [isConfirmDesactivarModalOpen, setIsConfirmDesactivarModalOpen] =
-    useState(false);
-
-  // ✅ NUEVO: Estados para el borrado físico
-  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
-    useState(false);
+  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [usuarioToDelete, setUsuarioToDelete] = useState(null);
 
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
@@ -54,10 +48,15 @@ const useUsuarios = () => {
 
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
-  const [touchedFields, setTouchedFields] = useState({});
 
+  // INICIO DE MODIFICACIÓN: Se eliminan los estados y funciones de validación del lado del cliente.
+  // const [isFormValid, setIsFormValid] = useState(false);
+  // const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
+  // const [touchedFields, setTouchedFields] = useState({});
+  // const validateField = useCallback(...) -> ELIMINADO
+  // const runValidations = useCallback(...) -> ELIMINADO
+  // El useEffect que llamaba a runValidations -> ELIMINADO
+  // FIN DE MODIFICACIÓN
 
   const cargarDatos = useCallback(async () => {
     setIsLoadingPage(true);
@@ -74,259 +73,37 @@ const useUsuarios = () => {
       setAvailableRoles(filteredRoles);
     } catch (err) {
       setErrorPage(err.message || "No se pudieron cargar los datos.");
-      setUsuarios([]);
-      setAvailableRoles([]);
     } finally {
       setIsLoadingPage(false);
     }
   }, []);
 
-  // ... (Las funciones de validación como getRoleById, checkRequiresProfile, validateField, runValidations no tienen cambios)
-  const getRoleById = useCallback(
-    (roleId) => {
-      return availableRoles.find((r) => r.idRol === parseInt(roleId));
-    },
-    [availableRoles]
-  );
+  useEffect(() => {
+    cargarDatos();
+  }, [cargarDatos]);
 
   const checkRequiresProfile = useCallback(
     (roleId) => {
-      const selectedRoleObj = getRoleById(roleId);
+      const selectedRoleObj = availableRoles.find((r) => r.idRol === parseInt(roleId));
       return (
         selectedRoleObj &&
         (selectedRoleObj.tipoPerfil === "CLIENTE" ||
           selectedRoleObj.tipoPerfil === "EMPLEADO")
       );
     },
-    [getRoleById]
+    [availableRoles]
   );
-
-  const validateField = useCallback(
-    (name, value, currentData, formType = "create") => {
-      let error = "";
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const phoneRegex = /^\d{7,15}$/;
-      const docRegex = /^\d{5,20}$/;
-
-      const requiresProfile = checkRequiresProfile(currentData.idRol);
-
-      switch (name) {
-        case "correo":
-          if (!value) error = "El correo es requerido.";
-          else if (!emailRegex.test(value))
-            error = "Formato de correo inválido.";
-          break;
-        case "idRol":
-          if (!value) error = "El rol es requerido.";
-          break;
-        case "contrasena":
-          if (formType === "create" && !value)
-            error = "La contraseña es requerida.";
-          else if (formType === "create" && value && value.length < 8)
-            error = "La contraseña debe tener al menos 8 caracteres.";
-          break;
-        case "confirmarContrasena":
-          if (formType === "create" && !value)
-            error = "Debe confirmar la contraseña.";
-          else if (formType === "create" && value !== currentData.contrasena)
-            error = "Las contraseñas no coinciden.";
-          break;
-        case "nombre":
-          if (requiresProfile && !value) error = "El nombre es requerido.";
-          else if (
-            requiresProfile &&
-            value &&
-            (value.length < 2 || value.length > 100)
-          )
-            error = "El nombre debe tener entre 2 y 100 caracteres.";
-          break;
-        case "apellido":
-          if (requiresProfile && !value) error = "El apellido es requerido.";
-          else if (
-            requiresProfile &&
-            value &&
-            (value.length < 2 || value.length > 100)
-          )
-            error = "El apellido debe tener entre 2 y 100 caracteres.";
-          break;
-        case "tipoDocumento": {
-          if (requiresProfile && !value)
-            error = "El tipo de documento es requerido.";
-          const tiposValidos = [
-            "Cédula de Ciudadanía",
-            "Cédula de Extranjería",
-            "Pasaporte",
-            "Tarjeta de Identidad",
-          ];
-          if (requiresProfile && value && !tiposValidos.includes(value))
-            error = "Tipo de documento inválido.";
-          break;
-        }
-        case "numeroDocumento":
-          if (requiresProfile && !value)
-            error = "El número de documento es requerido.";
-          else if (requiresProfile && value && !docRegex.test(value))
-            error = "Inválido (solo números, 5-20 dígitos).";
-          break;
-        case "telefono":
-          if (requiresProfile && !value) error = "El teléfono es requerido.";
-          else if (requiresProfile && value && !phoneRegex.test(value))
-            error = "Inválido (solo números, 7-15 dígitos).";
-          break;
-        case "fechaNacimiento":
-          if (requiresProfile && !value)
-            error = "La fecha de nacimiento es requerida.";
-          else if (requiresProfile && value) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const inputDate = new Date(value);
-            if (inputDate > today)
-              error = "La fecha de nacimiento no puede ser futura.";
-          }
-          break;
-        case "direccion": {
-          const selectedRoleObj = getRoleById(currentData.idRol);
-          if (selectedRoleObj && selectedRoleObj.tipoPerfil === "CLIENTE" && !value) {
-            error = "La dirección es requerida para clientes.";
-          }
-          break;
-        }
-        default:
-          break;
-      }
-      return error;
-    },
-    [checkRequiresProfile]
-  );
-
-  const runValidations = useCallback(
-    (dataToValidate, formType) => {
-      const errors = {};
-      let isValid = true;
-      const fieldsToValidate = ["correo", "idRol"];
-      if (formType === "create") {
-        fieldsToValidate.push("contrasena", "confirmarContrasena");
-      }
-
-      const requiresProfile = checkRequiresProfile(dataToValidate.idRol);
-      if (requiresProfile) {
-        fieldsToValidate.push(...CAMPOS_PERFIL);
-      }
-
-      fieldsToValidate.forEach((field) => {
-        if (
-          Object.prototype.hasOwnProperty.call(dataToValidate, field) ||
-          ["correo", "idRol", "contrasena", "confirmarContrasena"].includes(
-            field
-          )
-        ) {
-          const error = validateField(
-            field,
-            dataToValidate[field],
-            dataToValidate,
-            formType
-          );
-          if (error) {
-            errors[field] = error;
-            isValid = false;
-          }
-        }
-      });
-
-      if (
-        formErrors.correo === "Este correo ya está registrado." &&
-        !errors.correo
-      ) {
-        errors.correo = formErrors.correo;
-        isValid = false;
-      }
-      if (
-        formErrors.numeroDocumento ===
-          "Este número de documento ya está registrado." &&
-        !errors.numeroDocumento &&
-        requiresProfile
-      ) {
-        errors.numeroDocumento = formErrors.numeroDocumento;
-        isValid = false;
-      }
-
-      return { errors, isValid };
-    },
-    [
-      validateField,
-      checkRequiresProfile,
-      formErrors.correo,
-      formErrors.numeroDocumento,
-    ]
-  );
-
-  useEffect(() => {
-    cargarDatos();
-  }, [cargarDatos]);
-
-  useEffect(() => {
-    if (
-      Object.keys(formData).length === 0 &&
-      !isCrearModalOpen &&
-      !isEditarModalOpen
-    ) {
-      setIsFormValid(false);
-      setFormErrors({});
-      return;
-    }
-
-    if (!isVerifyingEmail) {
-      const formType = formData.idUsuario ? "edit" : "create";
-      const { errors, isValid } = runValidations(formData, formType);
-
-      if (!checkRequiresProfile(formData.idRol)) {
-        CAMPOS_PERFIL.forEach((field) => {
-          if (errors[field]) delete errors[field];
-        });
-        const newIsValid = Object.keys(errors).length === 0;
-        setFormErrors(errors);
-        setIsFormValid(
-          newIsValid &&
-            formErrors.correo !== "Este correo ya está registrado." &&
-            formErrors.numeroDocumento !==
-              "Este número de documento ya está registrado."
-        );
-      } else {
-        setFormErrors(errors);
-        setIsFormValid(isValid);
-      }
-    }
-  }, [
-    formData,
-    runValidations,
-    isVerifyingEmail,
-    checkRequiresProfile,
-    isCrearModalOpen,
-    isEditarModalOpen,
-    formErrors.correo,
-    formErrors.numeroDocumento,
-  ]);
 
   const closeModal = useCallback(() => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
     setIsDetailsModalOpen(false);
-    setIsConfirmDesactivarModalOpen(false); // ✅ MODIFICADO
-    setIsConfirmDeleteModalOpen(false); // ✅ NUEVO
+    setIsConfirmDeleteModalOpen(false);
     setIsValidationModalOpen(false);
     setCurrentUsuario(null);
     setValidationMessage("");
     setFormData({});
     setFormErrors({});
-    setIsFormValid(false);
-    setIsVerifyingEmail(false);
-    setTouchedFields({});
-  }, []);
-
-  // ✅ NUEVO: Función para cerrar solo el modal de borrado físico
-  const closeDeleteModal = useCallback(() => {
-    setIsConfirmDeleteModalOpen(false);
-    setUsuarioToDelete(null);
   }, []);
 
   const handleOpenModal = useCallback(
@@ -334,28 +111,18 @@ const useUsuarios = () => {
       const rolNombre = usuario?.rol?.nombre;
       if (
         rolNombre === "Administrador" &&
-        (type === "edit" || type === "delete" || type === "desactivar")
+        (type === "edit" || type === "delete")
       ) {
-        let action = "modificado";
-        if (type === "delete") action = "eliminado permanentemente";
-        if (type === "desactivar") action = "desactivado";
-
-        setValidationMessage(
-          `El usuario 'Administrador' no puede ser ${action}.`
-        );
+        setValidationMessage(`El usuario 'Administrador' no puede ser modificado o eliminado.`);
         setIsValidationModalOpen(true);
         return;
       }
 
       setFormErrors({});
-      setIsVerifyingEmail(false);
-      setTouchedFields({});
       setCurrentUsuario(usuario);
 
       if (type === "create") {
-        const defaultRole =
-          availableRoles.find((r) => r.nombre === "Cliente") ||
-          (availableRoles.length > 0 ? availableRoles[0] : null);
+        const defaultRole = availableRoles.find((r) => r.nombre === "Cliente") || (availableRoles.length > 0 ? availableRoles[0] : null);
         setFormData({
           estado: true,
           idRol: defaultRole ? defaultRole.idRol : "",
@@ -366,9 +133,8 @@ const useUsuarios = () => {
           correo: "",
           telefono: "",
           fechaNacimiento: "",
-          direccion: "", // Agregado para el estado inicial
+          direccion: "",
           contrasena: "",
-          confirmarContrasena: "",
         });
         setIsCrearModalOpen(true);
       } else if (type === "edit" && usuario) {
@@ -382,29 +148,21 @@ const useUsuarios = () => {
           tipoDocumento: perfil.tipoDocumento || "Cédula de Ciudadanía",
           numeroDocumento: perfil.numeroDocumento || "",
           telefono: perfil.telefono || "",
-          fechaNacimiento: perfil.fechaNacimiento
-            ? perfil.fechaNacimiento.split("T")[0]
-            : "",
-          direccion: perfil.direccion || "", // Agregado para el modo de edición
+          fechaNacimiento: perfil.fechaNacimiento ? perfil.fechaNacimiento.split("T")[0] : "",
+          direccion: perfil.direccion || "",
           estado: typeof usuario.estado === "boolean" ? usuario.estado : true,
         });
         setIsEditarModalOpen(true);
       } else if (type === "details") {
         setIsDetailsModalOpen(true);
-      } else if (type === "desactivar") {
-        // ✅ MODIFICADO
-        setIsConfirmDesactivarModalOpen(true);
       }
     },
     [availableRoles]
   );
 
-  // ✅ NUEVO: Handler para mostrar el modal de borrado físico
   const showDeleteModal = useCallback((usuario) => {
     if (usuario.rol?.nombre === "Administrador") {
-      setValidationMessage(
-        "El usuario 'Administrador' no puede ser eliminado permanentemente."
-      );
+      setValidationMessage("El usuario 'Administrador' no puede ser eliminado.");
       setIsValidationModalOpen(true);
       return;
     }
@@ -412,108 +170,36 @@ const useUsuarios = () => {
     setIsConfirmDeleteModalOpen(true);
   }, []);
 
-  const handleInputChange = useCallback(
-    (e) => {
-      const { name, value, type, checked } = e.target;
-      const val = type === "checkbox" ? checked : value;
+  const handleInputChange = useCallback((e) => {
+    const { name, value, type, checked } = e.target;
+    const val = type === "checkbox" ? checked : value;
+    setFormData((prev) => ({ ...prev, [name]: val }));
+    // Limpiar el error del campo específico al escribir en él.
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  }, [formErrors]);
 
-      setFormData((prev) => {
-        const newFormData = { ...prev, [name]: val };
-        if (name === "idRol") {
-          const requiresProfileNewRole = checkRequiresProfile(val);
-          if (!requiresProfileNewRole) {
-            const newErrors = { ...formErrors };
-            CAMPOS_PERFIL.forEach((field) => {
-              if (newErrors[field]) delete newErrors[field];
-            });
-            setFormErrors(newErrors);
-          }
-        }
-        return newFormData;
-      });
-    },
-    [checkRequiresProfile, formErrors]
-  );
-
-  const handleInputBlur = useCallback(
-    async (e) => {
-      const { name, value } = e.target;
-      setTouchedFields((prev) => ({ ...prev, [name]: true }));
-
-      const formType = formData.idUsuario ? "edit" : "create";
-      const error = validateField(name, value, formData, formType);
-      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
-
-      if (name === "correo" && !error && value) {
-        const originalEmail =
-          formType === "edit" && currentUsuario ? currentUsuario.correo : null;
-        if (value !== originalEmail) {
-          setIsVerifyingEmail(true);
-          try {
-            const response = await verificarCorreoAPI(value);
-            if (response.estaEnUso) {
-              setFormErrors((prevErrors) => ({
-                ...prevErrors,
-                correo: "Este correo ya está registrado.",
-              }));
-            } else {
-              setFormErrors((prevErrors) => ({
-                ...prevErrors,
-                correo: error || "",
-              }));
-            }
-          } catch (apiError) {
-            console.error("Error verificando correo:", apiError);
-            setFormErrors((prevErrors) => ({
-              ...prevErrors,
-              correo: "No se pudo verificar el correo.",
-            }));
-          } finally {
-            setIsVerifyingEmail(false);
-          }
-        } else if (
-          value === originalEmail &&
-          formErrors.correo === "Este correo ya está registrado."
-        ) {
-          setFormErrors((prevErrors) => ({
-            ...prevErrors,
-            correo: error || "",
-          }));
-        }
-      }
-    },
-    [formData, validateField, currentUsuario, formErrors.correo]
-  );
+  // INICIO DE MODIFICACIÓN: Se elimina la validación en el blur.
+  const handleInputBlur = useCallback((e) => {
+    // Ya no se realiza validación en el onBlur para simplificar
+    // y depender de la validación del backend al enviar.
+  }, []);
+  // FIN DE MODIFICACIÓN
 
   const handleSaveUsuario = useCallback(async () => {
-    const formType = formData.idUsuario ? "edit" : "create";
-    const { errors: currentFormErrors, isValid: currentFormIsValid } =
-      runValidations(formData, formType);
-
-    if (!currentFormIsValid) {
-      setFormErrors(currentFormErrors);
-      const allTouched = Object.keys(formData).reduce((acc, key) => {
-        acc[key] = true;
-        return acc;
-      }, {});
-      setTouchedFields(allTouched);
-      setValidationMessage("Por favor, corrija los errores en el formulario.");
-      setIsValidationModalOpen(true);
-      return;
-    }
-
+    // INICIO DE MODIFICACIÓN: Se elimina la validación del lado del cliente antes de enviar.
     setIsSubmitting(true);
+    setFormErrors({}); // Limpiar errores previos
+
     try {
       const dataParaAPI = { ...formData };
-      if ("confirmarContrasena" in dataParaAPI)
-        delete dataParaAPI.confirmarContrasena;
 
       const requiresProfile = checkRequiresProfile(dataParaAPI.idRol);
       if (!requiresProfile) {
         CAMPOS_PERFIL.forEach((field) => delete dataParaAPI[field]);
       }
 
-      // --- INICIO DE LA CORRECCIÓN ---
       let successMessage = "";
       if (dataParaAPI.idUsuario) {
         await updateUsuarioAPI(dataParaAPI.idUsuario, dataParaAPI);
@@ -523,120 +209,68 @@ const useUsuarios = () => {
         successMessage = `El usuario ${dataParaAPI.correo} ha sido creado exitosamente.`;
       }
 
-      // 1. Cerrar el modal de edición/creación.
       closeModal();
-      // 2. Recargar los datos de la tabla.
       await cargarDatos();
-      // 3. Establecer el mensaje de éxito y ABRIR el modal de validación.
       setValidationMessage(successMessage);
       setIsValidationModalOpen(true);
-      // --- FIN DE LA CORRECCIÓN ---
     } catch (err) {
-      const apiErrorMessage =
-        err.response?.data?.message ||
-        err.message ||
-        "Error al guardar el usuario.";
-      if (
-        apiErrorMessage.toLowerCase().includes("correo") &&
-        apiErrorMessage.toLowerCase().includes("registrado")
-      ) {
-        setFormErrors((prev) => ({
-          ...prev,
-          correo: "Este correo ya está registrado.",
-        }));
-      } else if (
-        apiErrorMessage.toLowerCase().includes("documento") &&
-        apiErrorMessage.toLowerCase().includes("registrado")
-      ) {
-        setFormErrors((prev) => ({
-          ...prev,
-          numeroDocumento: "Este número de documento ya está registrado.",
-        }));
+      // Nueva lógica para manejar errores de validación del backend
+      if (err.response && err.response.data && Array.isArray(err.response.data.errors)) {
+        const backendErrors = err.response.data.errors.reduce((acc, error) => {
+          const fieldName = error.param || error.path;
+          acc[fieldName] = error.msg;
+          return acc;
+        }, {});
+        setFormErrors(backendErrors);
+      } else {
+        // Error genérico si la respuesta no es de validación
+        const apiErrorMessage = err.response?.data?.message || err.message || "Error al guardar el usuario.";
+        setValidationMessage(apiErrorMessage);
+        setIsValidationModalOpen(true);
       }
-      setValidationMessage(apiErrorMessage);
-      setIsValidationModalOpen(true);
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, runValidations, closeModal, cargarDatos, checkRequiresProfile]);
+    // FIN DE MODIFICACIÓN
+  }, [formData, closeModal, cargarDatos, checkRequiresProfile]);
 
-  const handleConfirmDesactivarUsuario = useCallback(async () => {
-    if (!currentUsuario?.idUsuario) return;
-
-    setIsSubmitting(true);
-    try {
-      await toggleUsuarioEstadoAPI(currentUsuario.idUsuario, false);
-      const nombreUsuario =
-        currentUsuario?.clienteInfo?.nombre ||
-        currentUsuario?.empleadoInfo?.nombre ||
-        currentUsuario?.correo;
-
-      setValidationMessage(`Usuario "${nombreUsuario}" desactivado.`);
-      closeModal();
-      await cargarDatos();
-      setIsValidationModalOpen(true);
-    } catch (err) {
-      setValidationMessage(err.message || "Error al desactivar el usuario.");
-      setIsValidationModalOpen(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [currentUsuario, cargarDatos, closeModal]);
-
-  // ✅ NUEVO: Handler para confirmar el borrado físico
   const handleConfirmDeleteUsuario = useCallback(async () => {
     if (!usuarioToDelete?.idUsuario) return;
-
     setIsSubmitting(true);
     try {
       await eliminarUsuarioFisicoAPI(usuarioToDelete.idUsuario);
-      await cargarDatos(); // Recargar la lista
-      closeDeleteModal();
-      setValidationMessage(
-        `El usuario "${usuarioToDelete.correo}" fue eliminado permanentemente.`
-      );
+      await cargarDatos();
+      setIsConfirmDeleteModalOpen(false);
+      setUsuarioToDelete(null);
+      setValidationMessage(`El usuario "${usuarioToDelete.correo}" fue eliminado.`);
       setIsValidationModalOpen(true);
     } catch (err) {
-      setValidationMessage(
-        err.message || "Error al eliminar permanentemente el usuario."
-      );
+      setValidationMessage(err.message || "Error al eliminar el usuario.");
       setIsValidationModalOpen(true);
     } finally {
       setIsSubmitting(false);
     }
-  }, [usuarioToDelete, cargarDatos, closeDeleteModal]);
+  }, [usuarioToDelete, cargarDatos]);
 
-  const handleToggleEstadoUsuario = useCallback(
-    async (usuarioToToggle) => {
-      if (!usuarioToToggle?.idUsuario) return;
-      if (usuarioToToggle.rol?.nombre === "Administrador") {
-        setValidationMessage(
-          "El estado del usuario 'Administrador' no puede ser modificado."
-        );
-        setIsValidationModalOpen(true);
-        return;
-      }
-      try {
-        const nuevoEstado = !usuarioToToggle.estado;
-        await toggleUsuarioEstadoAPI(usuarioToToggle.idUsuario, nuevoEstado);
-        await cargarDatos();
-        setValidationMessage(
-          `El estado de "${usuarioToToggle.correo}" se cambió a ${
-            nuevoEstado ? "Activo" : "Inactivo"
-          }.`
-        );
-        setIsValidationModalOpen(true);
-      } catch (err) {
-        setValidationMessage(
-          err.message || "Error al cambiar el estado del usuario."
-        );
-        setIsValidationModalOpen(true);
-      }
-    },
-    [cargarDatos]
-  );
+  const handleToggleEstadoUsuario = useCallback(async (usuarioToToggle) => {
+    if (!usuarioToToggle?.idUsuario) return;
+    if (usuarioToToggle.rol?.nombre === "Administrador") {
+      setValidationMessage("El estado del 'Administrador' no puede ser modificado.");
+      setIsValidationModalOpen(true);
+      return;
+    }
+    try {
+      const nuevoEstado = !usuarioToToggle.estado;
+      await toggleUsuarioEstadoAPI(usuarioToToggle.idUsuario, nuevoEstado);
+      await cargarDatos();
+      setValidationMessage(`El estado de "${usuarioToToggle.correo}" se cambió a ${nuevoEstado ? "Activo" : "Inactivo"}.`);
+      setIsValidationModalOpen(true);
+    } catch (err) {
+      setValidationMessage(err.message || "Error al cambiar el estado del usuario.");
+      setIsValidationModalOpen(true);
+    }
+  }, [cargarDatos]);
 
-  // ... (useMemo y useEffect de filtros y paginación sin cambios)
   useEffect(() => {
     const timerId = setTimeout(() => setSearchTerm(inputValue), 500);
     return () => clearTimeout(timerId);
@@ -658,7 +292,7 @@ const useUsuarios = () => {
           perfil.apellido?.toLowerCase().includes(lowerSearchTerm) ||
           u.correo?.toLowerCase().includes(lowerSearchTerm) ||
           perfil.tipoDocumento?.toLowerCase().includes(lowerSearchTerm) ||
-          perfil.numeroDocumento?.toLowerCase().includes(lowerSearchTerm) || // Changed to toLowerCase() for consistency
+          perfil.numeroDocumento?.toLowerCase().includes(lowerSearchTerm) ||
           perfil.telefono?.toLowerCase().includes(lowerSearchTerm) ||
           u.rol?.nombre?.toLowerCase().includes(lowerSearchTerm) ||
           estadoString.includes(lowerSearchTerm)
@@ -674,16 +308,12 @@ const useUsuarios = () => {
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsersForTable = processedUsuarios.slice(
-    indexOfFirstUser,
-    indexOfLastUser
-  );
+  const currentUsersForTable = processedUsuarios.slice(indexOfFirstUser, indexOfLastUser);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return {
     usuarios: currentUsersForTable,
     totalUsuariosFiltrados: processedUsuarios.length,
-    cargarDatos,
     availableRoles,
     isLoadingPage,
     isSubmitting,
@@ -692,7 +322,6 @@ const useUsuarios = () => {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isConfirmDesactivarModalOpen,
     isValidationModalOpen,
     validationMessage,
     inputValue,
@@ -705,22 +334,13 @@ const useUsuarios = () => {
     closeModal,
     handleOpenModal,
     handleSaveUsuario,
-    handleConfirmDesactivarUsuario,
     handleToggleEstadoUsuario,
     formData,
     formErrors,
-    isFormValid,
-    isVerifyingEmail,
     handleInputChange,
     handleInputBlur,
-    touchedFields,
-    requiresProfile: checkRequiresProfile(formData.idRol),
-
-    // ✅ NUEVO: Exportaciones para el borrado físico
     isConfirmDeleteModalOpen,
-    usuarioToDelete,
     showDeleteModal,
-    closeDeleteModal,
     handleConfirmDeleteUsuario,
   };
 };

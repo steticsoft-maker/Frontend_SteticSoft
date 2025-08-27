@@ -160,6 +160,21 @@
     width: 100%;
 }
 
+/* === Estilos para Validación de Campos === */
+
+.input-error {
+    border-color: #e74c3c !important; /* Usar !important para sobreescribir el :focus */
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+.error-message {
+    color: #e74c3c; /* Mismo color que el error general */
+    font-size: 0.85rem;
+    text-align: left;
+    margin-top: 5px;
+    min-height: 1em; /* Evita saltos en la UI */
+}
+
 .auth-form-success {
     min-height: 1.2em;
     font-size: 0.9rem;

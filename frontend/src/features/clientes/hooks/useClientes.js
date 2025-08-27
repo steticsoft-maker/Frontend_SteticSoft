@@ -13,6 +13,10 @@ const useClientes = () => {
   const [error, setError] = useState(null);
   const [currentCliente, setCurrentCliente] = useState(null);
 
+  // INICIO DE MODIFICACIÓN: Añadir estado para errores de formulario.
+  const [errors, setErrors] = useState({});
+  // FIN DE MODIFICACIÓN
+
   // Estados para modales
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
@@ -21,45 +25,38 @@ const useClientes = () => {
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
 
-  // Estados para búsqueda y filtrado
-  const [inputValue, setInputValue] = useState(""); // Para el input de búsqueda inmediato
-  const [searchTerm, setSearchTerm] = useState(""); // Para la búsqueda con debounce
+  const [inputValue, setInputValue] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Estados para paginación
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // O hacerlo configurable
+  const [itemsPerPage] = useState(10);
 
   const loadClientes = useCallback(async (term) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetchClientes(term); // fetchClientes ya maneja el filtrado backend
+      const response = await fetchClientes(term);
       if (Array.isArray(response)) {
         setClientes(response);
       } else {
-        console.error("fetchClientes no devolvió un array:", response);
         setClientes([]);
         setError("Formato de datos de clientes inesperado.");
       }
     } catch (err) {
-      setError(
-        err.message || "Error al cargar los clientes. Inténtalo de nuevo más tarde."
-      );
+      setError(err.message || "Error al cargar los clientes.");
       setClientes([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // Efecto para debounce de búsqueda
   useEffect(() => {
     const timerId = setTimeout(() => {
       setSearchTerm(inputValue);
-    }, 500); // 500ms de debounce
+    }, 500);
     return () => clearTimeout(timerId);
   }, [inputValue]);
 
-  // Efecto para cargar clientes cuando searchTerm cambia
   useEffect(() => {
     loadClientes(searchTerm);
   }, [searchTerm, loadClientes]);
@@ -72,9 +69,15 @@ const useClientes = () => {
     setIsValidationModalOpen(false);
     setCurrentCliente(null);
     setValidationMessage("");
+    // INICIO DE MODIFICACIÓN: Limpiar errores al cerrar modal.
+    setErrors({});
+    // FIN DE MODIFICACIÓN
   }, []);
 
   const handleOpenModal = useCallback((type, cliente = null) => {
+    // INICIO DE MODIFICACIÓN: Limpiar errores al abrir modal.
+    setErrors({});
+    // FIN DE MODIFICACIÓN
     setCurrentCliente(cliente);
     if (type === "create") setIsCrearModalOpen(true);
     else if (type === "edit") setIsEditarModalOpen(true);
@@ -84,31 +87,38 @@ const useClientes = () => {
 
   const handleSave = useCallback(
     async (clienteData) => {
-      const isEditing = !!currentCliente?.idCliente;
-      const isCreating = !isEditing;
+      const isCreating = !currentCliente?.idCliente;
+      // INICIO DE MODIFICACIÓN: Limpiar errores antes de enviar.
+      setErrors({});
+      // FIN DE MODIFICACIÓN
       try {
         await saveCliente(
           clienteData,
           isCreating,
-          isEditing ? currentCliente.idCliente : null
+          isCreating ? null : currentCliente.idCliente
         );
-        await loadClientes(searchTerm); // Recargar con el término de búsqueda actual
+        await loadClientes(searchTerm);
         closeModal();
         setValidationMessage(
-          `Cliente ${isEditing ? "actualizado" : "creado"} exitosamente.`
+          `Cliente ${isCreating ? "creado" : "actualizado"} exitosamente.`
         );
         setIsValidationModalOpen(true);
       } catch (err) {
-        console.error("Error al guardar cliente:", err);
-        let errorMessage = "Ocurrió un error al guardar el cliente.";
-        if (err.message) errorMessage = err.message;
-        if (err.response?.data?.errors) {
-          errorMessage = `Errores de validación: ${err.response.data.errors.map((e) => e.msg).join(" | ")}`;
-        } else if (err.response?.data?.message) {
-          errorMessage = err.response.data.message;
+        // INICIO DE MODIFICACIÓN: Procesar errores de validación del backend.
+        if (err.response && err.response.data && Array.isArray(err.response.data.errors)) {
+          const backendErrors = err.response.data.errors.reduce((acc, error) => {
+            const fieldName = error.param || error.path;
+            acc[fieldName] = error.msg;
+            return acc;
+          }, {});
+          setErrors(backendErrors);
+        } else {
+          // Error genérico si la respuesta no es de validación
+          const errorMessage = err.response?.data?.message || err.message || "Ocurrió un error al guardar el cliente.";
+          setValidationMessage(errorMessage);
+          setIsValidationModalOpen(true);
         }
-        setValidationMessage(errorMessage);
-        setIsValidationModalOpen(true);
+        // FIN DE MODIFICACIÓN
       }
     },
     [currentCliente, loadClientes, closeModal, searchTerm]
@@ -123,9 +133,7 @@ const useClientes = () => {
         setValidationMessage("Cliente eliminado exitosamente.");
         setIsValidationModalOpen(true);
       } catch (err) {
-        setValidationMessage(
-          err.message || "Ocurrió un error al eliminar el cliente."
-        );
+        setValidationMessage(err.message || "Ocurrió un error al eliminar el cliente.");
         setIsValidationModalOpen(true);
       }
     }
@@ -134,41 +142,22 @@ const useClientes = () => {
   const handleToggleEstado = useCallback(
     async (clienteId) => {
       const clienteToToggle = clientes.find((c) => c.idCliente === clienteId);
-      if (!clienteToToggle) {
-        setValidationMessage("Cliente no encontrado para cambiar estado.");
-        setIsValidationModalOpen(true);
-        return;
-      }
+      if (!clienteToToggle) return;
       const nuevoEstado = !clienteToToggle.estado;
       try {
         await toggleClienteEstado(clienteId, nuevoEstado);
         await loadClientes(searchTerm);
-        setValidationMessage(
-          `Estado del cliente cambiado a ${
-            nuevoEstado ? "Activo" : "Inactivo"
-          } exitosamente.`
-        );
+        setValidationMessage(`Estado del cliente cambiado a ${nuevoEstado ? "Activo" : "Inactivo"}.`);
         setIsValidationModalOpen(true);
       } catch (err) {
-        setValidationMessage(
-          err.message || "Ocurrió un error al cambiar el estado del cliente."
-        );
+        setValidationMessage(err.message || "Ocurrió un error al cambiar el estado.");
         setIsValidationModalOpen(true);
       }
     },
     [clientes, loadClientes, searchTerm]
   );
 
-  // Lógica de paginación
-  // Como la búsqueda ya se hace en el backend, `processedClientes` es simplemente `clientes`.
-  // Si se quisiera añadir filtrado por estado en el frontend, se modificaría aquí.
-  const processedClientes = useMemo(() => {
-    // Aquí se podría añadir más lógica de filtrado frontend si fuera necesario,
-    // por ejemplo, un filtro de estado que no esté soportado por el backend.
-    // Por ahora, como el backend ya filtra por `searchTerm`, `clientes` ya está "procesado" en ese aspecto.
-    return clientes;
-  }, [clientes]);
-
+  const processedClientes = useMemo(() => clientes, [clientes]);
   const totalClientesFiltrados = processedClientes.length;
 
   const currentClientesForTable = useMemo(() => {
@@ -179,8 +168,6 @@ const useClientes = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Resetear a página 1 si el número total de páginas es menor que la actual
-  // (por ejemplo, después de una búsqueda que reduce mucho los resultados)
   useEffect(() => {
     if (totalClientesFiltrados > 0 && itemsPerPage > 0) {
       const totalPages = Math.ceil(totalClientesFiltrados / itemsPerPage);
@@ -190,12 +177,14 @@ const useClientes = () => {
     }
   }, [totalClientesFiltrados, itemsPerPage, currentPage]);
 
-
   return {
-    clientes: currentClientesForTable, // Para la tabla
-    totalClientesFiltrados, // Para el componente de paginación y el título
+    clientes: currentClientesForTable,
+    totalClientesFiltrados,
     isLoading,
     error,
+    // INICIO DE MODIFICACIÓN: Exportar el objeto de errores.
+    errors,
+    // FIN DE MODIFICACIÓN
     currentCliente,
     isCrearModalOpen,
     isEditarModalOpen,
@@ -203,8 +192,8 @@ const useClientes = () => {
     isConfirmDeleteOpen,
     isValidationModalOpen,
     validationMessage,
-    inputValue, // Para el input de búsqueda
-    setInputValue, // Para actualizar el término de búsqueda inmediato
+    inputValue,
+    setInputValue,
     currentPage,
     itemsPerPage,
     paginate,
@@ -213,8 +202,6 @@ const useClientes = () => {
     handleSave,
     handleDelete,
     handleToggleEstado,
-    // Podrías también exponer `loadClientes` si necesitas llamarlo manualmente desde la página por alguna razón,
-    // aunque con los efectos actuales, debería ser automático.
   };
 };
 

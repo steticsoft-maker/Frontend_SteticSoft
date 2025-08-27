@@ -1,5 +1,5 @@
 // src/features/roles/pages/ListaRolesPage.jsx
-import React from "react"; // Removidos useState, useEffect, useCallback, useMemo
+import React from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import RolesTable from "../components/RolesTable";
 import RolCrearModal from "../components/RolCrearModal";
@@ -7,21 +7,22 @@ import RolEditarModal from "../components/RolEditarModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import RolDetailsModal from "../components/RolDetailsModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
-import Pagination from "../../../shared/components/common/Pagination"; // Importar Pagination
-import useRoles from "../hooks/useRoles"; // Importar el custom hook
+import Pagination from "../../../shared/components/common/Pagination";
+import useRoles from "../hooks/useRoles";
 import "../css/Rol.css";
-// Los imports de servicios API ya no son necesarios aquí
-// La función groupPermissionsByModule se ha movido al hook
 
 function ListaRolesPage() {
   const {
-    roles, // Ya filtrados y paginados por el hook
-    totalRolesFiltrados, // Para el conteo en el título y el componente Pagination
-    permisos, // Para pasar a los modales
-    permisosAgrupados, // Para pasar a los modales
+    roles,
+    totalRolesFiltrados,
+    permisos,
+    permisosAgrupados,
     isLoading,
-    isSubmitting, // Para deshabilitar botones mientras se carga detalle de rol o se guarda/elimina
+    isSubmitting,
     error,
+    // INICIO DE MODIFICACIÓN: Destructurar 'errors' del hook.
+    errors,
+    // FIN DE MODIFICACIÓN
     currentRole,
     isCrearModalOpen,
     isEditarModalOpen,
@@ -38,7 +39,6 @@ function ListaRolesPage() {
     handleSaveRol,
     handleDeleteRol,
     handleToggleEstado,
-    // Paginación
     currentPage,
     itemsPerPage,
     paginate,
@@ -48,8 +48,7 @@ function ListaRolesPage() {
     <div className="rol-container">
       <NavbarAdmin />
       <div className="rol-content">
-        <h1>Gestión de Roles ({totalRolesFiltrados})</h1>{" "}
-        {/* Muestra el conteo de roles filtrados */}
+        <h1>Gestión de Roles ({totalRolesFiltrados})</h1>
         <div className="rol-accionesTop">
           <input
             type="text"
@@ -57,7 +56,7 @@ function ListaRolesPage() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="rol-barraBusqueda"
-            disabled={isLoading} // Deshabilitar si está cargando datos iniciales
+            disabled={isLoading}
           />
           <div className="rol-filtro-estado">
             <span>Estado: </span>
@@ -74,7 +73,7 @@ function ListaRolesPage() {
           <button
             className="rol-botonAgregar"
             onClick={() => handleOpenModal("create")}
-            disabled={isLoading || isSubmitting} // Deshabilitar si carga o hay otra acción en curso
+            disabled={isLoading || isSubmitting}
           >
             Crear Rol
           </button>
@@ -92,7 +91,7 @@ function ListaRolesPage() {
           </p>
         ) : (
           <RolesTable
-            roles={roles} // roles ya está procesado (filtrado) por el hook
+            roles={roles}
             onView={(role) => handleOpenModal("details", role)}
             onEdit={(role) => handleOpenModal("edit", role)}
             onDeleteConfirm={(role) => handleOpenModal("delete", role)}
@@ -111,29 +110,36 @@ function ListaRolesPage() {
         )}
       </div>
 
+      {/* INICIO DE MODIFICACIÓN: Pasar 'errors' al modal de creación. */}
       <RolCrearModal
         isOpen={isCrearModalOpen}
         onClose={closeModal}
         onSubmit={handleSaveRol}
-        permisosDisponibles={permisos} // Pasamos todos los permisos
-        permisosAgrupados={permisosAgrupados} // Pasamos los permisos agrupados
-        isLoading={isSubmitting} // Estado de carga para el formulario
+        permisosDisponibles={permisos}
+        permisosAgrupados={permisosAgrupados}
+        isLoading={isSubmitting}
+        errors={errors}
       />
+      {/* FIN DE MODIFICACIÓN */}
+
+      {/* INICIO DE MODIFICACIÓN: Pasar 'errors' al modal de edición. */}
       <RolEditarModal
         isOpen={isEditarModalOpen}
         onClose={closeModal}
         onSubmit={handleSaveRol}
         roleId={currentRole?.idRol}
-        // o solo id, nombre, desc. El modal puede necesitar cargar detalles o usar lo que se le pasa.
         permisosDisponibles={permisos}
         permisosAgrupados={permisosAgrupados}
         isLoading={isSubmitting}
+        errors={errors}
       />
+      {/* FIN DE MODIFICACIÓN */}
+
       <RolDetailsModal
         isOpen={isDetailsModalOpen}
         onClose={closeModal}
-        role={currentRole} // currentRole ya tiene los detalles cargados por handleOpenModal
-        isLoading={isSubmitting} // Usar isSubmitting para el feedback de carga del detalle
+        role={currentRole}
+        isLoading={isSubmitting}
       />
       <ConfirmModal
         isOpen={isDeleteModalOpen}

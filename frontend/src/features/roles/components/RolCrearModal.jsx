@@ -2,37 +2,37 @@
 import React, { useState, useEffect } from 'react';
 import RolForm from './RolForm';
 
-const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
+// INICIO DE MODIFICACIÓN: Aceptar 'errors' como prop.
+const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados, errors }) => {
+  // FIN DE MODIFICACIÓN
 
-  // --- INICIO DE CORRECCIÓN ---
-  // Añadimos 'tipoPerfil' al estado inicial del formulario.
-  // Este es el valor que se enviará al backend si no se cambia.
   const getInitialFormState = () => ({
     nombre: '',
     descripcion: '',
     idPermisos: [],
     estado: true,
-    tipoPerfil: 'EMPLEADO' // <-- ¡LA LÍNEA CLAVE!
+    tipoPerfil: 'EMPLEADO'
   });
-  // --- FIN DE CORRECCIÓN ---
 
   const [formData, setFormData] = useState(getInitialFormState());
-  const [formErrors, setFormErrors] = useState({});
+
+  // INICIO DE MODIFICACIÓN: Se elimina el estado de errores interno y la validación del lado del cliente.
+  // const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
-    // Cuando el modal se abre, reseteamos al estado inicial completo.
     if (isOpen) {
       setFormData(getInitialFormState());
-      setFormErrors({});
+      // setFormErrors({}); // Ya no es necesario
     }
   }, [isOpen]);
 
   const handleFormChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
-    }
+    // La lógica para limpiar errores al escribir ya no es necesaria aquí,
+    // se podría manejar en el hook si se quisiera, pero es más simple que los errores
+    // se limpien en el siguiente envío.
   };
+  // FIN DE MODIFICACIÓN
 
   const handleToggleModulo = (permisoId) => {
     setFormData(prev => {
@@ -53,28 +53,18 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
     setFormData(prev => ({ ...prev, idPermisos: [] }));
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
-    }
-    // La validación del tipo de perfil la hará el backend,
-    // pero nos aseguramos de que no esté vacío.
-    if (!formData.tipoPerfil) {
-        errors.tipoPerfil = "Debe seleccionar un tipo de perfil."
-    }
-    if (!formData.idPermisos || formData.idPermisos.length === 0) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  // INICIO DE MODIFICACIÓN: Se elimina la función de validación del cliente.
+  /*
+  const validateForm = () => { ... };
+  */
+  // FIN DE MODIFICACIÓN
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-    // El formData que se envía ahora sí contiene el campo tipoPerfil.
+    // INICIO DE MODIFICACIÓN: Se elimina la llamada a la validación del cliente.
+    // if (!validateForm()) return;
     onSubmit(formData);
+    // FIN DE MODIFICACIÓN
   };
 
   if (!isOpen) return null;
@@ -87,6 +77,7 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
         </button>
         <h2>Crear Rol</h2>
         <form onSubmit={handleSubmitForm}>
+          {/* INICIO DE MODIFICACIÓN: Pasar 'errors' en lugar de 'formErrors' */}
           <RolForm
             formData={formData}
             onFormChange={handleFormChange}
@@ -97,9 +88,15 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
             onDeselectAll={handleDeselectAll}
             isEditing={false}
             isRoleAdmin={false}
-            formErrors={formErrors}
+            errors={errors} // Se pasa el nuevo prop de errores
           />
-          {formErrors.permisos && <p className="rol-error-permisos">{formErrors.permisos}</p>}
+          {/* FIN DE MODIFICACIÓN */}
+
+          {/* El error de 'permisos' se mostrará ahora dentro de PermisosSelector si es necesario, o aquí si se prefiere. */}
+          {/* Por consistencia, lo manejaremos dentro de RolForm si es posible. */}
+          {/* INICIO DE MODIFICACIÓN: Usar el objeto de errores del backend. */}
+          {errors.idPermisos && <p className="rol-error-permisos">{errors.idPermisos}</p>}
+          {/* FIN DE MODIFICACIÓN */}
           <div className="rol-form-actions">
             <button type="submit" className="rol-form-buttonGuardar">
               Crear Rol

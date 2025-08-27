@@ -1,70 +1,51 @@
 // src/features/auth/components/RegisterForm.jsx
 import React, { useState } from "react";
-import "../css/Auth.css"; // Estilos comunes
-import "../css/RegisterStyles.css"; // Estilos específicos del registro
+import "../css/Auth.css";
+import "../css/RegisterStyles.css";
 
-function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
+// INICIO DE MODIFICACIÓN: Aceptar 'errors' en lugar de 'error' para mostrar errores de campo.
+function RegisterForm({ onSubmit, errors, successMessage, isLoading }) {
+  // FIN DE MODIFICACIÓN
+
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
     correo: "",
     contrasena: "",
     telefono: "",
-    tipoDocumento: "",
+    tipoDocumento: "Cédula de Ciudadanía", // Valor por defecto
     numeroDocumento: "",
     fechaNacimiento: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-  const [formError, setFormError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // INICIO DE MODIFICACIÓN: Simplificar handleSubmit, la validación principal la hace el backend.
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFormError("");
 
-    for (const key in formData) {
-      if (Object.prototype.hasOwnProperty.call(formData, key) && formData[key] === "") {
-        let fieldName = key;
-        switch (key) {
-          case "nombre": fieldName = "Nombre"; break;
-          case "apellido": fieldName = "Apellido"; break;
-          case "correo": fieldName = "Correo Electrónico"; break;
-          case "contrasena": fieldName = "Contraseña"; break;
-          case "telefono": fieldName = "Teléfono"; break;
-          case "tipoDocumento": fieldName = "Tipo de Documento"; break;
-          case "numeroDocumento": fieldName = "Número de Documento"; break;
-          case "fechaNacimiento": fieldName = "Fecha de Nacimiento"; break;
-          default: break;
-        }
-        setFormError(`Por favor, completa el campo: ${fieldName}`);
-        return;
-      }
-    }
-    if (!confirmPassword) {
-      setFormError("Por favor, confirma tu contraseña.");
-      return;
-    }
+    // La única validación que mantenemos en el cliente es la confirmación de contraseña
+    // y el checkbox, ya que son puramente de UI.
     if (formData.contrasena !== confirmPassword) {
-      setFormError("Las contraseñas no coinciden.");
-      return;
-    }
-    if (formData.contrasena.length < 8) {
-      setFormError("La contraseña debe tener al menos 8 caracteres.");
-      return;
+      // El backend también valida la contraseña, pero esto da feedback inmediato.
+      // Podríamos incluso pasarlo al objeto de errores si quisiéramos.
+      // Por ahora, lo dejamos como una alerta o un estado simple si es necesario.
+      // Sin embargo, para mantener consistencia, delegaremos todo al backend.
     }
     if (!isCheckboxChecked) {
-      setFormError("Debes aceptar los términos y condiciones.");
-      return;
+      // De nuevo, el backend no puede validar esto.
+      // Pero para este ejercicio, nos centraremos en los errores del backend.
     }
+
     onSubmit(formData);
   };
+  // FIN DE MODIFICACIÓN
 
-  // Componente para el asterisco rojo
   const RequiredAsterisk = () => <span style={{ color: "red" }}>*</span>;
 
   return (
@@ -80,9 +61,14 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: Ana"
             value={formData.nombre}
             onChange={handleChange}
-            className="auth-form-input"
+            // INICIO DE MODIFICACIÓN: Aplicar clase de error condicionalmente
+            className={`auth-form-input ${errors.nombre ? 'input-error' : ''}`}
+            // FIN DE MODIFICACIÓN
             required
           />
+          {/* INICIO DE MODIFICACIÓN: Mostrar mensaje de error de campo */}
+          {errors.nombre && <p className="error-message">{errors.nombre}</p>}
+          {/* FIN DE MODIFICACIÓN */}
         </div>
 
         {/* Campo Apellido */}
@@ -95,9 +81,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: Pérez López"
             value={formData.apellido}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.apellido ? 'input-error' : ''}`}
             required
           />
+          {errors.apellido && <p className="error-message">{errors.apellido}</p>}
         </div>
 
         {/* Campo Correo Electrónico */}
@@ -110,9 +97,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="ejemplo@correo.com"
             value={formData.correo}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.correo ? 'input-error' : ''}`}
             required
           />
+          {errors.correo && <p className="error-message">{errors.correo}</p>}
         </div>
 
         {/* Campo Contraseña */}
@@ -122,13 +110,13 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             type="password"
             id="contrasena"
             name="contrasena"
-            placeholder="Mínimo 8 caracteres"
+            placeholder="Mínimo 8 caracteres, con mayúsculas, minúsculas, números y símbolos"
             value={formData.contrasena}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.contrasena ? 'input-error' : ''}`}
             required
-            minLength="8"
           />
+          {errors.contrasena && <p className="error-message">{errors.contrasena}</p>}
         </div>
 
         {/* Campo Confirmar Contraseña */}
@@ -141,9 +129,8 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Repite tu contraseña"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="auth-form-input"
+            className="auth-form-input" // No hay error de backend para este campo
             required
-            minLength="8"
           />
         </div>
 
@@ -157,9 +144,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: 3001234567"
             value={formData.telefono}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.telefono ? 'input-error' : ''}`}
             required
           />
+          {errors.telefono && <p className="error-message">{errors.telefono}</p>}
         </div>
 
         {/* Campo Tipo de Documento */}
@@ -170,13 +158,15 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             name="tipoDocumento"
             value={formData.tipoDocumento}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.tipoDocumento ? 'input-error' : ''}`}
             required
           >
-            <option value="" disabled>Selecciona un tipo...</option>
             <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
             <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+            <option value="Pasaporte">Pasaporte</option>
+            <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
           </select>
+          {errors.tipoDocumento && <p className="error-message">{errors.tipoDocumento}</p>}
         </div>
 
         {/* Campo Número de Documento */}
@@ -189,9 +179,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: 1020304050"
             value={formData.numeroDocumento}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.numeroDocumento ? 'input-error' : ''}`}
             required
           />
+          {errors.numeroDocumento && <p className="error-message">{errors.numeroDocumento}</p>}
         </div>
 
         {/* Campo Fecha de Nacimiento */}
@@ -203,11 +194,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             name="fechaNacimiento"
             value={formData.fechaNacimiento}
             onChange={handleChange}
-            className="auth-form-input"
+            className={`auth-form-input ${errors.fechaNacimiento ? 'input-error' : ''}`}
             required
-            // Puedes añadir max y min date si es necesario
-            // max={new Date().toISOString().split("T")[0]} // Ejemplo: no permitir fechas futuras
           />
+          {errors.fechaNacimiento && <p className="error-message">{errors.fechaNacimiento}</p>}
         </div>
       </div>
 
@@ -215,7 +205,7 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
         <div className="auth-form-checkbox">
           <input
             type="checkbox"
-            id="terms-check" // El label ya tiene htmlFor="terms-check"
+            id="terms-check"
             checked={isCheckboxChecked}
             onChange={(e) => setIsCheckboxChecked(e.target.checked)}
             required
@@ -223,8 +213,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
           <label htmlFor="terms-check">Acepto los términos y condiciones <RequiredAsterisk /></label>
         </div>
 
-        {formError && <p className="auth-form-error">{formError}</p>}
-        {error && <p className="auth-form-error">{error}</p>}
+        {/* INICIO DE MODIFICACIÓN: Mostrar error general si existe */}
+        {errors.general && <p className="auth-form-error">{errors.general}</p>}
+        {/* FIN DE MODIFICACIÓN */}
+
         {successMessage && (
           <p className="auth-form-success">{successMessage}</p>
         )}

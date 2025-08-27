@@ -333,6 +333,11 @@ input:checked+.slider:before { transform: translateX(16px); }
     text-align: left;
 }
 
+.input-error {
+    border-color: red !important;
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+}
+
 .error-message.general-error {
     text-align: center;
     margin-bottom: 10px;
