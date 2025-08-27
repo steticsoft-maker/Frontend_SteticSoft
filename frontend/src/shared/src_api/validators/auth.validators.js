@@ -1,87 +1,57 @@
 // src/validators/auth.validators.js
+
+// MODIFICADO: Importación de validadores compartidos para reutilización y consistencia.
+const {
+  nombreValidator,
+  correoValidator,
+  contrasenaValidator,
+  telefonoValidator,
+  numeroDocumentoValidator,
+  tipoDocumentoValidator,
+} = require('./shared.validators.js');
 const { body } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
 const db = require("../models");
 
+// MODIFICADO: Se utilizan los validadores compartidos para robustecer y estandarizar las reglas.
 const registrarUsuarioValidators = [
-  // Campos de Usuario
-  body("correo")
-    .trim()
-    .notEmpty()
-    .withMessage("El correo electrónico es obligatorio.")
-    .isEmail()
-    .withMessage("Debe proporcionar un correo electrónico válido.")
-    .normalizeEmail()
-    .custom(async (value) => {
-      const usuarioExistente = await db.Usuario.findOne({
-        where: { correo: value },
-      });
-      if (usuarioExistente) {
-        return Promise.reject(
-          "El correo electrónico ya está registrado para una cuenta."
-        );
-      }
-    }),
-  body("contrasena")
-    .notEmpty()
-    .withMessage("La contraseña es obligatoria.")
-    .isString()
-    .withMessage("La contraseña debe ser una cadena de texto.")
-    .isLength({ min: 8 })
-    .withMessage("La contraseña debe tener al menos 8 caracteres."),
-  // Aquí puedes añadir más reglas de complejidad para la contraseña
+  // --- Campos de Usuario ---
+  // MODIFICADO: Se usa el validador de correo compartido y se mantiene la validación de unicidad.
+  correoValidator().custom(async (value) => {
+    const usuarioExistente = await db.Usuario.findOne({
+      where: { correo: value },
+    });
+    if (usuarioExistente) {
+      return Promise.reject(
+        "El correo electrónico ya está registrado para una cuenta."
+      );
+    }
+  }),
+  // NUEVA REGLA: Se implementa la validación de contraseña segura.
+  contrasenaValidator(),
 
-  // Campos de Cliente (obligatorios para el registro)
-  body("nombre")
-    .trim()
-    .notEmpty()
-    .withMessage("El nombre es obligatorio.")
-    .isString()
-    .withMessage("El nombre debe ser una cadena de texto.")
-    .isLength({ min: 2, max: 45 })
-    .withMessage("El nombre debe tener entre 2 y 45 caracteres."),
-  body("apellido")
-    .trim()
-    .notEmpty()
-    .withMessage("El apellido es obligatorio.")
-    .isString()
-    .withMessage("El apellido debe ser una cadena de texto.")
-    .isLength({ min: 2, max: 45 })
-    .withMessage("El apellido debe tener entre 2 y 45 caracteres."),
-  body("telefono")
-    .trim()
-    .notEmpty()
-    .withMessage("El teléfono es obligatorio.") // Asumiendo que es obligatorio para el registro
-    .isString()
-    .withMessage("El teléfono debe ser una cadena de texto.")
-    .isLength({ min: 7, max: 45 })
-    .withMessage("El teléfono debe tener entre 7 y 45 caracteres."),
-  body("tipoDocumento")
-    .trim()
-    .notEmpty()
-    .withMessage("El tipo de documento es obligatorio.")
-    .isString()
-    .withMessage("El tipo de documento debe ser texto."),
-  body("numeroDocumento")
-    .trim()
-    .notEmpty()
-    .withMessage("El número de documento es obligatorio.")
-    .isString()
-    .withMessage("El número de documento debe ser texto.")
-    .isLength({ min: 5, max: 45 })
-    .withMessage("El número de documento debe tener entre 5 y 45 caracteres.")
-    .custom(async (value) => {
-      const clienteExistente = await db.Cliente.findOne({
-        where: { numeroDocumento: value },
-      });
-      if (clienteExistente) {
-        return Promise.reject(
-          "El número de documento ya está registrado para otro cliente."
-        );
-      }
-    }),
+  // --- Campos de Cliente (obligatorios para el registro) ---
+  // MODIFICADO: Se reemplazan validaciones manuales por los validadores compartidos.
+  nombreValidator('nombre'),
+  nombreValidator('apellido'),
+  telefonoValidator(),
+  tipoDocumentoValidator(),
+
+  // MODIFICADO: Se usa el validador de documento compartido y se mantiene la validación de unicidad.
+  numeroDocumentoValidator().custom(async (value) => {
+    const clienteExistente = await db.Cliente.findOne({
+      where: { numeroDocumento: value },
+    });
+    if (clienteExistente) {
+      return Promise.reject(
+        "El número de documento ya está registrado para otro cliente."
+      );
+    }
+  }),
+
+  // Se mantiene la validación original para fecha de nacimiento, que es específica.
   body("fechaNacimiento")
     .notEmpty()
     .withMessage("La fecha de nacimiento es obligatoria.")
@@ -90,46 +60,36 @@ const registrarUsuarioValidators = [
       "La fecha de nacimiento debe ser una fecha válida (YYYY-MM-DD)."
     )
     .toDate(),
-  // El idRol se asignará por defecto a 'Cliente' en el servicio, no se espera del usuario al registrarse.
-  // El estado se asignará por defecto a 'true' en el servicio.
+
   handleValidationErrors,
 ];
 
+// MODIFICADO: Se utiliza el validador de correo compartido.
 const loginValidators = [
-  body("correo")
-    .trim()
-    .notEmpty()
-    .withMessage("El correo electrónico es obligatorio.")
-    .isEmail()
-    .withMessage("Debe ser un correo electrónico válido.")
-    .normalizeEmail(),
+  correoValidator(),
+  // Para el login, solo se requiere que la contraseña no esté vacía.
   body("contrasena").notEmpty().withMessage("La contraseña es obligatoria."),
   handleValidationErrors,
 ];
 
+// MODIFICADO: Se utiliza el validador de correo compartido.
 const solicitarRecuperacionValidators = [
-  body("correo")
-    .trim()
-    .notEmpty()
-    .withMessage("El correo electrónico es obligatorio para la recuperación.")
-    .isEmail()
-    .withMessage("Debe proporcionar un correo electrónico válido.")
-    .normalizeEmail(),
+  correoValidator(),
   handleValidationErrors,
 ];
 
+// MODIFICADO: Se mejora la seguridad y la robustez de la validación de reseteo de contraseña.
 const resetearContrasenaValidators = [
   body("token")
     .trim()
+    .escape() // NUEVA REGLA: Sanitización del token para prevenir XSS.
     .notEmpty()
     .withMessage("El token de recuperación es obligatorio."),
-  body("nuevaContrasena")
-    .notEmpty()
-    .withMessage("La nueva contraseña es obligatoria.")
-    .isString()
-    .withMessage("La nueva contraseña debe ser una cadena de texto.")
-    .isLength({ min: 8 })
-    .withMessage("La nueva contraseña debe tener al menos 8 caracteres."),
+
+  // NUEVA REGLA: Se usa el validador de contraseña segura para la nueva contraseña.
+  contrasenaValidator('nuevaContrasena'),
+
+  // Se mantiene la lógica de confirmación de contraseña.
   body("confirmarNuevaContrasena")
     .notEmpty()
     .withMessage("La confirmación de la nueva contraseña es obligatoria.")
