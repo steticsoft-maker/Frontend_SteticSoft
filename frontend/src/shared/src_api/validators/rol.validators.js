@@ -1,74 +1,73 @@
 // src/validators/rol.validators.js
-
-// MODIFICADO: Importación de validadores compartidos.
-const {
-  nombreRolValidator,
-  descripcionValidator,
-  estadoValidator,
-  idParamValidator,
-} = require('./shared.validators.js');
 const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
+const db = require("../models");
 
 const tipoPerfilValues = ["CLIENTE", "EMPLEADO", "NINGUNO"];
+// MODIFICACIÓN: Expresión regular para nombres de roles.
+const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s_]+$/;
 
-// MODIFICADO: Se utilizan los validadores compartidos para 'nombre', 'descripcion' y 'estado'.
+
 const crearRolValidators = [
-  nombreRolValidator(),
-  descripcionValidator(),
-  estadoValidator(),
+  body("nombre")
+    .trim()
+    .notEmpty().withMessage("El nombre del rol es obligatorio.")
+    // MODIFICACIÓN: Longitud y validación de caracteres estándar.
+    .isLength({ min: 3, max: 50 }).withMessage("El nombre del rol debe tener entre 3 y 50 caracteres.")
+    .matches(nameRegex).withMessage("El nombre del rol solo puede contener letras, espacios y guiones bajos."),
+  body("descripcion")
+    .optional()
+    .trim()
+    .isString().withMessage("La descripción debe ser una cadena de texto.")
+    .isLength({ max: 255 }).withMessage("La descripción no debe exceder los 255 caracteres."),
+  body("estado")
+    .optional()
+    .isBoolean().withMessage("El estado debe ser un valor booleano (true o false)."),
   body("tipoPerfil")
     .optional()
-    .isString()
-    .withMessage("El tipo de perfil debe ser un string.")
-    .isIn(tipoPerfilValues)
-    .withMessage(
-      `El tipo de perfil debe ser uno de los siguientes valores: ${tipoPerfilValues.join(", ")}`
-    ),
+    .isString().withMessage("El tipo de perfil debe ser un string.")
+    .isIn(tipoPerfilValues).withMessage(`El tipo de perfil debe ser uno de los siguientes valores: ${tipoPerfilValues.join(", ")}`),
   handleValidationErrors,
 ];
 
-// MODIFICADO: Se utiliza el validador de ID compartido y se aplican las mismas reglas de seguridad a los campos opcionales.
 const actualizarRolValidators = [
-  idParamValidator('idRol'),
-
-  // MODIFICADO: Se aplica sanitización y validación estricta al nombre, pero se mantiene como opcional.
+  param("idRol")
+    .isInt({ gt: 0 }).withMessage("El ID del rol debe ser un entero positivo."),
   body("nombre")
     .optional()
     .trim()
-    .escape() // NUEVA REGLA: Sanitización
     .notEmpty().withMessage("El nombre del rol no puede estar vacío si se proporciona.")
+    // MODIFICACIÓN: Longitud y validación de caracteres estándar.
     .isLength({ min: 3, max: 50 }).withMessage("El nombre del rol debe tener entre 3 y 50 caracteres.")
-    .matches(/^[a-zA-Z\u00C0-\u017F\s]+$/).withMessage('El nombre del rol solo puede contener letras y espacios.'),
-
-  // MODIFICADO: Se usa el validador de descripción compartido, que ya es opcional.
-  descripcionValidator(),
-
-  // MODIFICADO: Se usa el validador de estado compartido.
-  estadoValidator(),
-
+    .matches(nameRegex).withMessage("El nombre del rol solo puede contener letras, espacios y guiones bajos."),
+  body("descripcion")
+    .optional({ nullable: true })
+    .trim()
+    .isString().withMessage("La descripción debe ser una cadena de texto.")
+    .isLength({ max: 255 }).withMessage("La descripción no debe exceder los 255 caracteres."),
+  body("estado")
+    .optional()
+    .isBoolean().withMessage("El estado debe ser un valor booleano (true o false)."),
   body("tipoPerfil")
     .optional()
-    .isString()
-    .withMessage("El tipo de perfil debe ser un string.")
-    .isIn(tipoPerfilValues)
-    .withMessage(
-      `El tipo de perfil debe ser uno de los siguientes valores: ${tipoPerfilValues.join(", ")}`
-    ),
+    .isString().withMessage("El tipo de perfil debe ser un string.")
+    .isIn(tipoPerfilValues).withMessage(`El tipo de perfil debe ser uno de los siguientes valores: ${tipoPerfilValues.join(", ")}`),
   handleValidationErrors,
 ];
 
-// MODIFICADO: Se utiliza el validador de ID compartido.
+// ... (el resto de validadores de rol.validators.js se mantienen igual)
 const idRolValidator = [
-  idParamValidator('idRol'),
+  param("idRol")
+    .isInt({ gt: 0 })
+    .withMessage("El ID del rol debe ser un entero positivo."),
   handleValidationErrors,
 ];
 
-// MODIFICADO: Se utiliza el validador de ID compartido.
 const gestionarPermisosRolValidators = [
-  idParamValidator('idRol'),
+  param('idRol')
+    .isInt({ gt: 0 }).withMessage('El ID del rol debe ser un entero positivo.'),
   body('idPermisos')
     .isArray({ min: 1 }).withMessage('Se requiere un array de idPermisos con al menos un elemento.')
     .custom((idPermisos) => {
@@ -80,21 +79,21 @@ const gestionarPermisosRolValidators = [
   handleValidationErrors
 ];
 
-// MODIFICADO: Se utiliza el validador de ID compartido para ambos parámetros.
 const gestionarUnPermisoRolValidators = [
-  idParamValidator('idRol'),
-  idParamValidator('idPermiso'),
+  param('idRol')
+    .isInt({ gt: 0 }).withMessage('El ID del rol debe ser un entero positivo.'),
+  param('idPermiso')
+    .isInt({ gt: 0 }).withMessage('El ID del permiso debe ser un entero positivo.'),
   handleValidationErrors
 ];
 
-// MODIFICADO: Se utiliza el validador de ID compartido.
 const cambiarEstadoRolValidators = [
-  idParamValidator('idRol'),
+  param("idRol")
+    .isInt({ gt: 0 })
+    .withMessage("El ID del rol debe ser un entero positivo."),
   body("estado")
     .exists({ checkFalsy: false })
-    .withMessage(
-      "El campo 'estado' es obligatorio en el cuerpo de la solicitud."
-    )
+    .withMessage("El campo 'estado' es obligatorio en el cuerpo de la solicitud.")
     .isBoolean()
     .withMessage("El valor de 'estado' debe ser un booleano (true o false)."),
   handleValidationErrors,
