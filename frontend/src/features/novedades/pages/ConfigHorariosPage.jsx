@@ -9,8 +9,10 @@ import {
   eliminarNovedad, 
   cambiarEstadoNovedad 
 } from "../services/horariosService";
+// El servicio de usuarios ya no es necesario aquí
+// import { getUsuariosAPI } from "../../usuarios/services/usuariosService"; 
 import { toast } from 'react-toastify';
-import "../css/ConfigHorarios.css"; // Estilos principales de la página
+import "../css/ConfigHorarios.css";
 
 function ConfigHorariosPage() {
   const [novedades, setNovedades] = useState([]);
@@ -20,11 +22,15 @@ function ConfigHorariosPage() {
   const [search, setSearch] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
 
+  // Se eliminan los estados 'filtroEmpleado' y 'listaEmpleados'
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   
   const [currentNovedad, setCurrentNovedad] = useState(null);
   const [modalType, setModalType] = useState(null);
+
+  // Se elimina la función 'cargarEmpleados'
 
   const cargarNovedades = useCallback(async () => {
     try {
@@ -34,6 +40,7 @@ function ConfigHorariosPage() {
       const params = {};
       if (filtroEstado) params.estado = filtroEstado === 'activos';
       if (search) params.busqueda = search;
+      // Se elimina la lógica de 'filtroEmpleado' de los parámetros
 
       const data = await obtenerTodasLasNovedades(params);
       setNovedades(data);
@@ -43,7 +50,9 @@ function ConfigHorariosPage() {
     } finally {
       setLoading(false);
     }
-  }, [search, filtroEstado]);
+  }, [search, filtroEstado]); // Se elimina 'filtroEmpleado' de las dependencias
+
+  // Se elimina el useEffect que llamaba a 'cargarEmpleados'
 
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -59,53 +68,22 @@ function ConfigHorariosPage() {
 
   const totalPages = Math.ceil(novedades.length / rowsPerPage);
 
-  // --- El resto de tus funciones (handlers) se mantienen exactamente igual ---
+  // --- MANEJADORES ---
+  const handleSearchChange = (event) => { setSearch(event.target.value); setCurrentPage(1); };
+  const handleFilterChange = (event) => { setFiltroEstado(event.target.value); setCurrentPage(1); };
+  
+  // Se elimina la función 'handleEmpleadoFilterChange'
+  
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(1);
   };
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-    setCurrentPage(1);
-  };
-  const handleFilterChange = (event) => {
-    setFiltroEstado(event.target.value);
-    setCurrentPage(1);
-  };
-  const openModal = (type, novedad = null) => {
-    setModalType(type);
-    setCurrentNovedad(novedad);
-  };
-  const closeModal = () => {
-    setModalType(null);
-    setCurrentNovedad(null);
-  };
-  const handleSuccess = () => {
-    closeModal();
-    cargarNovedades();
-  };
-  const handleDeleteConfirm = async () => {
-    if (!currentNovedad) return;
-    try {
-      await eliminarNovedad(currentNovedad.idNovedad);
-      toast.success("Novedad eliminada con éxito.");
-      handleSuccess();
-    } catch (err) {
-      toast.error(`Error al eliminar: ${err.message}`);
-      closeModal();
-    }
-  };
-  const handleToggleConfirm = async () => {
-    if (!currentNovedad) return;
-    try {
-      await cambiarEstadoNovedad(currentNovedad.idNovedad, !currentNovedad.estado);
-      toast.success("Estado de la novedad cambiado con éxito.");
-      handleSuccess();
-    } catch (err) {
-      toast.error(`Error al cambiar estado: ${err.message}`);
-      closeModal();
-    }
-  };
+  
+  const openModal = (type, novedad = null) => { setModalType(type); setCurrentNovedad(novedad); };
+  const closeModal = () => { setModalType(null); setCurrentNovedad(null); };
+  const handleSuccess = () => { closeModal(); cargarNovedades(); };
+  const handleDeleteConfirm = async () => { if (!currentNovedad) return; try { await eliminarNovedad(currentNovedad.idNovedad); toast.success("Novedad eliminada con éxito."); handleSuccess(); } catch (err) { toast.error(`Error al eliminar: ${err.message}`); closeModal(); } };
+  const handleToggleConfirm = async () => { if (!currentNovedad) return; try { await cambiarEstadoNovedad(currentNovedad.idNovedad, !currentNovedad.estado); toast.success("Estado de la novedad cambiado con éxito."); handleSuccess(); } catch (err) { toast.error(`Error al cambiar estado: ${err.message}`); closeModal(); } };
 
 
   if (error) return <div className="error-message">Error: {error}</div>;
@@ -117,22 +95,25 @@ function ConfigHorariosPage() {
         <h1>Gestión de Novedades de Horario</h1>
         
         <div className="actions-bar">
-          <input
-            className="search-bar"
-            type="text"
-            placeholder="Buscar..."
-            value={search}
-            onChange={handleSearchChange}
-          />
-          <select
-            className="filter-select"
-            value={filtroEstado}
-            onChange={handleFilterChange}
-          >
-            <option value="">Todos los Estados</option>
-            <option value="activos">Activos</option>
-            <option value="inactivos">Inactivos</option>
-          </select>
+          <div className="filters-container">
+            <input
+              className="search-bar"
+              type="text"
+              placeholder="Buscar por encargado, fecha, hora..."
+              value={search}
+              onChange={handleSearchChange}
+            />
+            <select
+              className="filter-select"
+              value={filtroEstado}
+              onChange={handleFilterChange}
+            >
+              <option value="">Todos los Estados</option>
+              <option value="activos">Activos</option>
+              <option value="inactivos">Inactivos</option>
+            </select>
+            {/* Se elimina el select de empleados de aquí */}
+          </div>
           <button className="add-button" onClick={() => openModal('form')}>
             + Agregar Novedad
           </button>
@@ -149,6 +130,7 @@ function ConfigHorariosPage() {
               onDeleteConfirm={novedad => openModal('confirmDelete', novedad)}
               onToggleEstado={novedad => openModal('confirmToggle', novedad)}
             />
+            
             {totalPages > 1 && (
               <div className="pagination-container">
                 <div className="rows-per-page-container">
@@ -174,41 +156,11 @@ function ConfigHorariosPage() {
         )}
       </div>
       
-      {modalType === 'form' && (
-        <NovedadModal 
-          onClose={closeModal} 
-          onSuccess={handleSuccess}
-          novedadToEdit={currentNovedad}
-          isEditing={!!currentNovedad}
-        />
-      )}
-      
-      {modalType === 'details' && (
-        <NovedadDetalleModal 
-          novedad={currentNovedad}
-          onClose={closeModal} 
-        />
-      )}
-
-      {modalType === 'confirmDelete' && (
-        <ConfirmModal 
-          isOpen={true} 
-          onClose={closeModal} 
-          onConfirm={handleDeleteConfirm} 
-          title="Confirmar Eliminación" 
-          message="¿Está seguro de eliminar esta novedad?"
-        />
-      )}
-      
-      {modalType === 'confirmToggle' && (
-        <ConfirmModal 
-          isOpen={true} 
-          onClose={closeModal} 
-          onConfirm={handleToggleConfirm} 
-          title="Confirmar Cambio de Estado" 
-          message={`¿Seguro que quieres ${currentNovedad?.estado ? 'desactivar' : 'activar'} esta novedad?`}
-        />
-      )}
+      {/* Modales */}
+      {modalType === 'form' && <NovedadModal onClose={closeModal} onSuccess={handleSuccess} novedadToEdit={currentNovedad} isEditing={!!currentNovedad} />}
+      {modalType === 'details' && <NovedadDetalleModal novedad={currentNovedad} onClose={closeModal} />}
+      {modalType === 'confirmDelete' && <ConfirmModal isOpen={true} onClose={closeModal} onConfirm={handleDeleteConfirm} title="Confirmar Eliminación" message="¿Está seguro de eliminar esta novedad?" />}
+      {modalType === 'confirmToggle' && <ConfirmModal isOpen={true} onClose={closeModal} onConfirm={handleToggleConfirm} title="Confirmar Cambio de Estado" message={`¿Seguro que quieres ${currentNovedad?.estado ? 'desactivar' : 'activar'} esta novedad?`} />}
     </div>
   );
 }

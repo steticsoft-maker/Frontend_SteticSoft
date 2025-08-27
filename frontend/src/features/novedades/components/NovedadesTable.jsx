@@ -51,13 +51,13 @@ const NovedadesTable = ({ novedades, onView, onEdit, onDeleteConfirm, onToggleEs
                   </label>
                 </td>
                 <td className="actions-cell">
-                  <button onClick={() => onView(novedad)} className="action-button view" title="Ver Detalles">
+                  <button onClick={() => onView(novedad)} className="action-button" title="Ver Detalles">
                     <FaRegEye />
                   </button>
-                  <button onClick={() => onEdit(novedad)} className="action-button edit" title="Editar">
+                  <button onClick={() => onEdit(novedad)} className="action-button" title="Editar">
                     <FaEdit />
                   </button>
-                  <button onClick={() => onDeleteConfirm(novedad)} className="action-button delete" title="Eliminar">
+                  <button onClick={() => onDeleteConfirm(novedad)} className="action-button" title="Eliminar">
                     <FaTrashAlt />
                   </button>
                 </td>

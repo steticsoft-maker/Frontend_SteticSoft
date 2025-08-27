@@ -1,503 +1,311 @@
-/* Estilos para Horarios, adaptados del módulo de Usuarios para consistencia y tamaño compacto */
+/* ==========================================================================
+   Estilos para el Módulo de Novedades (Horarios)
+   Adaptado desde ServiciosAdmin.css para consistencia visual
+   ========================================================================== */
 
-/* === ESTILOS GENERALES DE LA PÁGINA === */
+:root {
+  /* Paleta de colores extraída de ServiciosAdmin.css */
+  --color-background-page: #fefcff;
+  --color-primary-accent: #bfbcf6;
+  --color-primary-hover: #d3d3f6;
+  --color-secondary-button-bg: #ebe2f6;
+  --color-table-header-bg: #d3d3f6;
+  --color-table-row-alternate: #f9f0ec;
+  --color-input-focus-bg: #ebe2f6;
+  --color-border: #d3d3f6;
+  --color-text-dark: #333;
+  --color-text-on-primary: #fefcff;
+  --color-success: #2ecc71;
+  --color-danger: #e74c3c;
+}
+
+/* --- Layout Principal --- */
 .page-container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  background-color: var(--color-background-page);
   font-family: 'Roboto', sans-serif;
 }
 
 .content-container {
   flex: 1;
   padding: 30px;
-  margin-left: 280px; /* Ancho del NavbarAdmin */
-  overflow-y: auto;
+  margin-left: 270px; /* Asegúrate que coincida con el ancho de tu NavbarAdmin */
 }
 
 .content-container h1 {
-  margin-bottom: 20px;
-  color: #6d0b58;
   text-align: center;
-  font-weight: 600;
-  font-size: 2rem;
+  color: var(--color-text-dark);
+  margin-bottom: 25px;
+  font-size: 1.8rem;
 }
 
-/* === BARRA DE ACCIONES SUPERIORES === */
+/* --- Barra de Acciones (Búsqueda, Filtro y Botón) --- */
 .actions-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  margin: 0 auto 25px auto;
   gap: 20px;
+  flex-wrap: wrap;
   width: 100%;
-  max-width: 1200px; /* Ancho máximo para consistencia */
-  margin: 0 auto 20px auto;
+  max-width: 1200px;
 }
 
-.search-bar {
-  flex-grow: 1;
-  min-width: 250px;
-  padding: 10px 15px;
-  border: 1px solid #c287b5;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
+.search-bar,
 .filter-select {
-  padding: 9px 10px;
-  border: 1px solid #c287b5;
+  flex-grow: 1;
+  padding: 10px 12px;
+  min-width: 200px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-background-page);
   border-radius: 5px;
   font-size: 1rem;
-  min-width: 150px;
-  height: 41px;
-  cursor: pointer;
+  height: 41.5px; /* Altura consistente */
+  box-sizing: border-box;
+}
+
+.search-bar:focus,
+.filter-select:focus {
+  background-color: var(--color-input-focus-bg);
+  border-color: var(--color-primary-accent);
+  outline: none;
 }
 
 .add-button {
+  background-color: var(--color-primary-accent);
+  color: var(--color-text-on-primary);
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  font-size: 1rem;
-  color: white;
-  background-color: #b660a3;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  height: 41.5px;
 }
 
 .add-button:hover {
-  background-color: #6d0b58;
+  background-color: var(--color-primary-hover);
 }
 
-/* === ESTILOS PARA LA TABLA === */
+/* --- Tabla de Novedades --- */
 .table-responsive {
   width: 100%;
   max-width: 1200px;
-  margin: 20px auto 0 auto;
+  margin: 25px auto 0 auto;
   overflow-x: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #ffffff;
-}
-
-.table th {
-  padding: 15px;
-  border-bottom: 2px solid #d1a0c7;
-  color: black;
-  background-color: #e978d0;
-  text-align: left;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-.table td {
-  padding: 15px;
-  border-bottom: 1px solid #f0d9eb;
-  color: black;
-  vertical-align: middle;
-}
-
-.table tbody tr:hover {
-  background-color: #f3d9ec;
-}
-
-.actions-cell {
-  text-align: center;
-}
-
-.action-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.25rem;
-  padding: 0.5rem;
-  margin: 0 0.3rem;
-  color: #b660a3;
-  transition: color 0.2s;
-}
-
-.action-button:hover {
-  color: #6d0b58;
-}
-
-.action-button.delete:hover {
-  color: #c0392b;
-}
-
-/* === ESTILOS PARA MODALES === */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 25px 30px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  width: 100%;
-  max-width: 750px; /* Ancho para el formulario de 2 columnas */
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
-  margin-bottom: 20px;
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: #6d0b58;
-}
-
-.modal-close-button {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-}
-
-/* === ESTILOS PARA FORMULARIO DENTRO DEL MODAL === */
-.novedad-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 columnas */
-  gap: 15px 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group.full-width {
-  grid-column: span 2; /* Para el selector de empleados */
-}
-
-.form-group label {
-  margin-bottom: 5px;
-  color: #6d0b58;
-  font-weight: 500;
-}
-
-.form-group input,
-.react-select-container .react-select__control {
-  padding: 10px 12px;
-  border: 1px solid #c287b5;
-  border-radius: 5px;
-  font-size: 0.95rem;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 15px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-/* ... (otros estilos como botones primario/secundario y switch pueden ser reutilizados o añadidos aquí si es necesario) ... */
-
-/* === RESPONSIVIDAD === */
-@media (max-width: 768px) {
-  .content-container {
-    margin-left: 0;
-    padding: 15px;
-  }
-  .actions-bar {
-    flex-direction: column;
-  }
-  .form-grid {
-    grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
-  }
-  .form-group.full-width {
-    grid-column: span 1; /* En una columna, el span no es necesario */
-  }
-}
-
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 600px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e9ecef;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.modal-close-button {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  color: #6c757d;
-}
-
-.modal-body {
-  overflow-y: auto;
-  padding: 1.5rem;
-}
-
-
-/* Estilos para la tabla de Novedades, replicando el diseño de Servicios */
-
-.table-responsive {
-  overflow-x: auto;
-  background-color: #ffffff;
+  background-color: var(--color-background-page);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
+  overflow: hidden;
 }
 
 .table th,
 .table td {
-  padding: 1rem;
+  padding: 14px 15px;
   text-align: left;
   vertical-align: middle;
-  border-bottom: 1px solid #e9ecef;
+  border: 1px solid var(--color-border);
 }
 
-.table thead th {
-  background-color: #f8f9fa;
-  color: #495057;
+.table th {
+  background-color: var(--color-table-header-bg);
+  color: var(--color-text-dark);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.table tbody tr:last-child td {
-  border-bottom: none;
+.table tbody tr:nth-child(even) {
+  background-color: var(--color-table-row-alternate);
 }
 
 .table tbody tr:hover {
-  background-color: #f1f3f5;
+  background-color: var(--color-input-focus-bg);
 }
 
-.text-center {
-  text-align: center;
+.table .actions-cell {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 
-.employee-email {
-  display: block;
-  margin-bottom: 4px;
-}
-
-/* Estilos para los botones de acción */
-.actions-cell {
-  text-align: center;
-  white-space: nowrap;
-}
-
-.action-button {
-  background: none;
+.table .action-button {
+  padding: 6px 10px;
+  font-size: 0.85rem;
   border: none;
+  border-radius: 5px;
+  color: var(--color-text-on-primary);
   cursor: pointer;
-  font-size: 1.25rem;
-  padding: 0.5rem;
-  margin: 0 0.3rem;
-  color: #6c757d; /* Gris para íconos */
-  transition: color 0.2s;
+  transition: background-color 0.3s ease;
+  background-color: var(--color-primary-accent);
 }
 
-.action-button.edit:hover {
-  color: #0d6efd; /* Azul al pasar el cursor */
+.table .action-button:hover {
+  background-color: var(--color-primary-hover);
 }
 
-.action-button.delete:hover {
-  color: #dc3545; /* Rojo al pasar el cursor */
-}
-
-/* Estilos para el interruptor (toggle) de estado */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #28a745; /* Verde cuando está activo */
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #28a745;
-}
-
-input:checked + .slider:before {
-  transform: translateX(20px);
-}
-
-.slider.round {
-  border-radius: 24px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
+/* --- Switch de Estado --- */
+.switch { position: relative; display: inline-block; width: 40px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--color-success); }
+input:checked + .slider:before { transform: translateX(16px); }
+.slider.round { border-radius: 34px; }
+.slider.round:before { border-radius: 50%; }
 
 
-/* Estilos para el Modal de Detalles de Novedad */
-.detail-section {
-  margin-bottom: 1.5rem;
-}
-
-.detail-section h3 {
-  border-bottom: 1px solid #e9ecef;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  color: #495057;
-  font-size: 1.2rem;
-}
-
-.detail-item {
+/* --- Paginación --- */
+.pagination-container {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 0;
-  font-size: 1rem;
+  align-items: center;
+  padding: 16px;
+  margin-top: 20px;
+  border-top: 1px solid var(--color-border);
 }
 
-.detail-item strong {
-  color: #343a40;
-  font-weight: 600;
-}
-
-.status-active {
-  color: #198754;
-  font-weight: bold;
-}
-
-.status-inactive {
-  color: #dc3545;
-  font-weight: bold;
-}
-
-.employee-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.employee-list li {
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.employee-name-detail {
-  font-weight: bold;
-  color: #0d6efd;
-}
-
-.employee-contact-info {
-  font-size: 0.9rem;
-  color: #6c757d;
-  padding-left: 1rem;
-}
-
-.modal-actions {
+.rows-per-page-container {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e9ecef;
+  align-items: center;
+  gap: 8px;
 }
 
-.button-secondary {
-    padding: 0.75rem 1.5rem;
-    background-color: #6c757d; /* Gris para cancelar */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
+.rows-per-page-container select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
 }
 
-.button-secondary:hover {
-    background-color: #5c636a;
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pagination-controls button {
+  padding: 8px 16px;
+  border: 1px solid var(--color-border);
+  background-color: white;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: var(--color-input-focus-bg);
+}
+
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* --- Estilos para Modales (Formulario y Detalles) --- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1050; padding: 20px; box-sizing: border-box;
+}
+
+.modal-content {
+  background-color: var(--color-background-page);
+  padding: 25px 30px; border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  width: 100%; max-width: 700px; max-height: 90vh;
+  overflow-y: auto; position: relative;
+}
+
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 25px; padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-header h2 {
+  margin: 0; font-size: 1.6rem; color: var(--color-text-dark);
+}
+
+.modal-close-button {
+  position: absolute; top: 15px; right: 20px;
+  background: none; border: none; font-size: 2.5rem;
+  color: #888; cursor: pointer; line-height: 1;
+}
+
+/* --- Formulario de Novedades (dentro del modal) --- */
+.novedad-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.novedad-form .form-group {
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.novedad-form .form-group.full-width {
+  grid-column: span 2;
+}
+
+.novedad-form .form-group label {
+  font-weight: 600; color: var(--color-text-dark);
+}
+
+.novedad-form .form-group input,
+.novedad-form .react-select-container .react-select__control {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-background-page);
+  border-radius: 5px; font-size: 1rem;
+}
+
+.novedad-form .form-group input:focus {
+  background-color: var(--color-input-focus-bg);
+  border-color: var(--color-primary-accent);
+  box-shadow: 0 0 0 2px rgba(191, 188, 246, 0.5);
+  outline: none;
+}
+
+.novedad-form .form-actions {
+  display: flex; justify-content: center; gap: 15px;
+  margin-top: 25px; padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.novedad-form .button-primary {
+  background-color: var(--color-primary-accent); color: var(--color-text-on-primary);
+  padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
+  transition: background-color 0.3s ease; font-size: 1rem; font-weight: 500;
+}
+.novedad-form .button-primary:hover { background-color: var(--color-primary-hover); }
+
+.novedad-form .button-secondary {
+  background-color: var(--color-secondary-button-bg); color: var(--color-text-dark);
+  padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
+  transition: background-color 0.3s ease; font-size: 1rem; font-weight: 500;
+}
+.novedad-form .button-secondary:hover { background-color: #ddd4e4; }
+
+/* Otros */
+.error-message { color: var(--color-danger); }
+.text-center { text-align: center; }
+
+/* Responsividad */
+@media (max-width: 992px) {
+  .content-container { margin-left: 0; }
+}
+
+@media (max-width: 768px) {
+  .actions-bar { flex-direction: column; }
+  .search-bar, .filter-select, .add-button { width: 100%; }
+  .novedad-form .form-grid { grid-template-columns: 1fr; }
+  .novedad-form .form-group.full-width { grid-column: 1; }
 }

@@ -31,7 +31,6 @@ const NovedadModal = ({ onClose, onSuccess, novedadToEdit, isEditing }) => {
       <div className="modal-content">
         <div className="modal-header">
           <h2>{isEditing ? 'Editar Novedad' : 'Crear Nueva Novedad'}</h2>
-          <button onClick={onClose} className="modal-close-button">&times;</button>
         </div>
         <div className="modal-body">
           <NovedadForm

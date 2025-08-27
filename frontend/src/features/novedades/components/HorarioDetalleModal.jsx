@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/ConfigHorarios.css';
+import '../css/ConfigHorarios.css'; // Asegúrate de que este archivo CSS se importe
 
 const HorarioDetalleModal = ({ novedad, onClose }) => {
   if (!novedad) return null;
@@ -39,7 +39,6 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
               </span>
             </div>
           </div>
-
           <div className="detail-section">
             <h3>Empleados Asignados</h3>
             {novedad.empleados && novedad.empleados.length > 0 ? (
@@ -49,12 +48,11 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
                     <div className="employee-name-detail">
                       {user.empleadoInfo ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}` : 'Nombre no disponible'}
                     </div>
-                    {/* ✅ Se muestra el Correo y Número de Documento */}
                     <div className="employee-contact-info">
-                      Correo: {user.correo}
+                      <strong>Correo:</strong> {user.correo}
                     </div>
                     <div className="employee-contact-info">
-                      Documento: {user.empleadoInfo?.numeroDocumento || 'No disponible'}
+                      <strong>Documento:</strong> {user.empleadoInfo?.numeroDocumento || 'No disponible'}
                     </div>
                   </li>
                 ))}
@@ -62,10 +60,6 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
             ) : (
               <p>No hay empleados asignados a esta novedad.</p>
             )}
-          </div>
-          
-          <div className="modal-actions">
-            <button onClick={onClose} className="button-secondary">Cerrar</button>
           </div>
         </div>
       </div>
