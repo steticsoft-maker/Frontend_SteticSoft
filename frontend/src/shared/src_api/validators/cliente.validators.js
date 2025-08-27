@@ -1,114 +1,138 @@
-// src/shared/src_api/validators/cliente.validators.js  
-
-// MODIFICADO: Importación de validadores compartidos para consistencia y seguridad.
-const {
-  nombreValidator,
-  correoValidator,
-  contrasenaValidator,
-  telefonoValidator,
-  numeroDocumentoValidator,
-  tipoDocumentoValidator,
-  idParamValidator,
-  estadoValidator,
-} = require("./shared.validators.js");
+// src/shared/src_api/validators/cliente.validators.js
 const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
 const db = require("../models");
 
-// MODIFICADO: Se utilizan validadores compartidos para estandarizar y robustecer la creación de clientes.
+const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+
 const crearClienteValidators = [
   // --- Campos para el Perfil del Cliente ---
-  nombreValidator('nombre'),
-  nombreValidator('apellido'),
-  telefonoValidator(),
-  tipoDocumentoValidator(),
-  numeroDocumentoValidator().custom(async (value) => {
-    const clienteExistente = await db.Cliente.findOne({ where: { numeroDocumento: value } });
-    if (clienteExistente) {
-      return Promise.reject("El número de documento ya está registrado para otro cliente.");
-    }
-  }),
-  body("fechaNacimiento").notEmpty().withMessage("La fecha de nacimiento es obligatoria.")
-    .isISO8601().withMessage("La fecha de nacimiento debe ser una fecha válida (YYYY-MM-DD).").toDate(),
-  // NUEVA REGLA: Se añade sanitización a la dirección.
-  body("direccion").trim().escape().notEmpty().withMessage("La dirección es obligatoria."),
-  estadoValidator('estadoCliente'),
+  body("nombre")
+    .trim().notEmpty().withMessage("El nombre es obligatorio.")
+    .isLength({ min: 3, max: 50 }).withMessage("El nombre debe tener entre 3 y 50 caracteres.")
+    .matches(nameRegex).withMessage("El nombre solo puede contener letras y espacios."),
+  body("apellido")
+    .trim().notEmpty().withMessage("El apellido es obligatorio.")
+    .isLength({ min: 3, max: 50 }).withMessage("El apellido debe tener entre 3 y 50 caracteres.")
+    .matches(nameRegex).withMessage("El apellido solo puede contener letras y espacios."),
+  body("telefono")
+    .trim().notEmpty().withMessage("El teléfono es obligatorio.")
+    .isLength({ min: 7, max: 15 }).withMessage("El teléfono debe tener entre 7 y 15 dígitos.")
+    .isNumeric().withMessage("El teléfono solo puede contener números."),
+  body("tipoDocumento")
+    .trim().notEmpty().withMessage("El tipo de documento es obligatorio."),
+  body("numeroDocumento")
+    .trim().notEmpty().withMessage("El número de documento es obligatorio.")
+    .isLength({ min: 5, max: 20 }).withMessage("El número de documento debe tener entre 5 y 20 caracteres."),
+  body("fechaNacimiento")
+    .notEmpty().withMessage("La fecha de nacimiento es obligatoria.")
+    .isISO8601().withMessage("Formato de fecha no válido (YYYY-MM-DD).").toDate(),
+  body("direccion")
+    .trim().notEmpty().withMessage("La dirección es obligatoria.")
+    .isLength({ min: 5, max: 255 }).withMessage("La dirección debe tener entre 5 y 255 caracteres."),
   
   // --- Campos para la Cuenta de Usuario asociada ---
-  correoValidator().custom(async (value) => {
-    const usuarioExistente = await db.Usuario.findOne({ where: { correo: value } });
-    if (usuarioExistente) return Promise.reject("El correo electrónico ya está registrado para una cuenta de usuario.");
-    const clienteExistente = await db.Cliente.findOne({ where: { correo: value } });
-    if (clienteExistente) return Promise.reject("El correo electrónico ya está registrado para un perfil de cliente.");
-  }),
-  contrasenaValidator(),
-  estadoValidator('estadoUsuario'),
+  body("correo")
+    .trim().notEmpty().withMessage("El correo electrónico es obligatorio.")
+    .isEmail().withMessage("Debe ser un correo electrónico válido.").normalizeEmail(),
+  body("contrasena")
+    .notEmpty().withMessage("La contraseña es obligatoria.")
+    .isLength({ min: 8 }).withMessage("La contraseña debe tener al menos 8 caracteres."),
   
   handleValidationErrors,
 ];
 
-// MODIFICADO: Se aplican reglas de seguridad y consistencia a la actualización de clientes.
+// Validador para actualizar un cliente
 const actualizarClienteValidators = [
-  idParamValidator('idCliente'),
+  param("idCliente").isInt({ gt: 0 }).withMessage("El ID del cliente debe ser un entero positivo."),
   
-  // MODIFICADO: Se aplican reglas de seguridad (escape, regex) a campos opcionales.
-  body("nombre").optional().trim().escape().notEmpty().isLength({ min: 2, max: 100 }).matches(/^[a-zA-Z\u00C0-\u017F\s]+$/),
-  body("apellido").optional().trim().escape().notEmpty().isLength({ min: 2, max: 100 }).matches(/^[a-zA-Z\u00C0-\u017F\s]+$/),
-  body("telefono").optional().trim().escape().notEmpty().isLength({ min: 7, max: 20 }).matches(/^[0-9\s+()-]+$/),
-  body("tipoDocumento").optional().trim().isIn(['Cédula de Ciudadanía', 'Cédula de Extranjería', 'Pasaporte', 'Tarjeta de Identidad']),
-  body("numeroDocumento").optional().trim().escape().notEmpty().isLength({ min: 5, max: 45 }).isAlphanumeric('es-ES', { ignore: ' -' })
+  body("nombre").optional().trim().notEmpty().withMessage("El nombre no puede ser vacío si se provee.").isLength({ min: 2, max: 50 }),
+  body("apellido").optional().trim().notEmpty().withMessage("El apellido no puede ser vacío si se provee.").isLength({ min: 2, max: 50 }),
+  body("telefono").optional().trim().notEmpty().withMessage("El teléfono no puede ser vacío si se provee.").isLength({ min: 7, max: 20 }),
+  body("tipoDocumento").optional().trim().notEmpty().withMessage("El tipo de documento no puede ser vacío si se provee.")
+    .isIn(['Cédula de Ciudadanía', 'Cédula de Extranjería', 'Pasaporte', 'Tarjeta de Identidad']).withMessage("Tipo de documento no válido."),
+  body("numeroDocumento").optional().trim().notEmpty().withMessage("El número de documento no puede ser vacío si se provee.").isLength({ min: 5, max: 45 })
     .custom(async (value, { req }) => {
       if (value) {
-        const clienteExistente = await db.Cliente.findOne({
-          where: { numeroDocumento: value, id_cliente: { [db.Sequelize.Op.ne]: req.params.idCliente } },
-        });
-        if (clienteExistente) return Promise.reject("El número de documento ya está registrado para otro cliente.");
-      }
-    }),
-  body("fechaNacimiento").optional().isISO8601().toDate(),
-  body("direccion").optional().trim().escape().isLength({ max: 255 }),
-  estadoValidator('estadoCliente'),
-  body("correo").optional({ checkFalsy: true }).trim().isEmail().normalizeEmail()
-    .custom(async (value, { req }) => {
-      if (value) { 
         const idCliente = Number(req.params.idCliente);
-        const otroClienteConCorreo = await db.Cliente.findOne({ where: { correo: value, id_cliente: { [db.Sequelize.Op.ne]: idCliente } } });
-        if (otroClienteConCorreo) return Promise.reject("El correo ya está registrado para otro cliente.");
-
-        const clienteActual = await db.Cliente.findByPk(idCliente);
-        if (clienteActual && clienteActual.id_usuario) {
-          const otroUsuarioConCorreo = await db.Usuario.findOne({ where: { correo: value, id_usuario: { [db.Sequelize.Op.ne]: clienteActual.id_usuario } } });
-          if (otroUsuarioConCorreo) return Promise.reject("El correo ya está en uso por otra cuenta.");
+        const clienteExistente = await db.Cliente.findOne({
+          where: { numeroDocumento: value, idCliente: { [db.Sequelize.Op.ne]: idCliente } },
+        });
+        if (clienteExistente) {
+          return Promise.reject("El número de documento ya está registrado para otro cliente.");
         }
       }
     }),
-  estadoValidator('estadoUsuario'),
-  body("idUsuario").optional({ nullable: true }).isInt({ gt: 0 }).withMessage("El ID de usuario debe ser un entero positivo o null.")
+  body("fechaNacimiento").optional().isISO8601().withMessage("La fecha de nacimiento debe ser una fecha válida (YYYY-MM-DD) si se provee.").toDate(),
+  body("direccion").optional().trim().isString().withMessage("La dirección debe ser una cadena de texto.")
+    .isLength({ max: 255 }).withMessage("La dirección no puede tener más de 255 caracteres."),
+  body("estadoCliente").optional().isBoolean().withMessage("El estado del perfil del cliente debe ser un valor booleano."),
+
+  body("correo").optional({ checkFalsy: true })
+    .trim().isEmail().withMessage("Debe ser un correo electrónico válido si se provee.")
+    .normalizeEmail()
     .custom(async (value, { req }) => {
       if (value) {
+        const idCliente = Number(req.params.idCliente);
+        const otroClienteConCorreo = await db.Cliente.findOne({
+          where: { correo: value, idCliente: { [db.Sequelize.Op.ne]: idCliente } },
+        });
+        if (otroClienteConCorreo) {
+          return Promise.reject("El correo electrónico ya está registrado para otro perfil de cliente.");
+        }
+        const clienteActual = await db.Cliente.findByPk(idCliente);
+        if (clienteActual && clienteActual.idUsuario) {
+          const otroUsuarioConCorreo = await db.Usuario.findOne({
+            where: { correo: value, idUsuario: { [db.Sequelize.Op.ne]: clienteActual.idUsuario } },
+          });
+          if (otroUsuarioConCorreo) {
+            return Promise.reject("El correo electrónico ya está en uso por otra cuenta de usuario.");
+          }
+        }
+      }
+    }),
+  body("estadoUsuario").optional().isBoolean().withMessage("El estado de la cuenta de usuario debe ser un valor booleano."),
+  body("idUsuario")
+    .optional({ nullable: true })
+    .isInt({ gt: 0 })
+    .withMessage("El ID de usuario debe ser un entero positivo si se proporciona, o null para desvincular.")
+    .custom(async (value, { req }) => {
+      if (value) {
+        const idCliente = Number(req.params.idCliente);
         const usuario = await db.Usuario.findByPk(value);
-        if (!usuario) return Promise.reject("El usuario para asociar no existe.");
-        const otroCliente = await db.Cliente.findOne({ where: { id_usuario: value, id_cliente: { [db.Sequelize.Op.ne]: req.params.idCliente } } });
-        if (otroCliente) return Promise.reject("El usuario ya está asociado a otro cliente.");
+        if (!usuario) {
+          return Promise.reject("El usuario especificado para la asociación no existe.");
+        }
+        const otroClienteConEsteUsuario = await db.Cliente.findOne({
+          where: {
+            idUsuario: value,
+            idCliente: { [db.Sequelize.Op.ne]: idCliente },
+          },
+        });
+        if (otroClienteConEsteUsuario) {
+          return Promise.reject("El ID de usuario ya está asociado a otro cliente.");
+        }
       }
     }),
   handleValidationErrors,
 ];
 
-// MODIFICADO: Se utiliza el validador de ID compartido.
 const idClienteValidator = [
-  idParamValidator('idCliente'),
+  param("idCliente").isInt({ gt: 0 }).withMessage("El ID del cliente debe ser un entero positivo."),
   handleValidationErrors,
 ];
 
-// MODIFICADO: Se utiliza el validador de ID compartido.
 const cambiarEstadoClienteValidators = [
-  idParamValidator('idCliente'),
+  param("idCliente")
+    .isInt({ gt: 0 })
+    .withMessage("El ID del cliente debe ser un entero positivo."),
   body("estado")
-    .exists({ checkFalsy: false }).withMessage("El campo 'estado' es obligatorio.")
-    .isBoolean().withMessage("El valor de 'estado' debe ser un booleano (true o false)."),
+    .exists({ checkFalsy: false })
+    .withMessage("El campo 'estado' es obligatorio en el cuerpo de la solicitud.")
+    .isBoolean()
+    .withMessage("El valor de 'estado' debe ser un booleano (true o false)."),
   handleValidationErrors,
 ];
 
