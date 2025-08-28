@@ -1,74 +1,80 @@
-/* ============================================= */
-/* === ESTILOS GENERALES DE PÁGINA           === */
-/* ============================================= */
-.novedades-page-container,
-.horarios-page-container {
+/* ==========================================================================
+   Estilos para el Módulo de Novedades (Horarios)
+   Adaptado desde ServiciosAdmin.css para consistencia visual
+   ========================================================================== */
+
+:root {
+  /* Paleta de colores extraída de ServiciosAdmin.css */
+  --color-background-page: #fefcff;
+  --color-primary-accent: #bfbcf6;
+  --color-primary-hover: #d3d3f6;
+  --color-secondary-button-bg: #ebe2f6;
+  --color-table-header-bg: #d3d3f6;
+  --color-table-row-alternate: #f9f0ec;
+  --color-input-focus-bg: #ebe2f6;
+  --color-border: #d3d3f6;
+  --color-text-dark: #333;
+  --color-text-on-primary: #fefcff;
+  --color-success: #2ecc71;
+  --color-danger: #e74c3c;
+}
+
+/* --- Layout Principal --- */
+.page-container {
   display: flex;
   min-height: 100vh;
-  background-color: var(--color-background-admin-content, #f5f5f5);
-  font-family: var(--font-family-roboto, sans-serif);
+  background-color: var(--color-background-page);
+  font-family: 'Roboto', sans-serif;
 }
 
-.novedades-content,
-.horarios-content {
+.content-container {
   flex: 1;
   padding: 30px;
-  margin-left: 270px;
-  overflow-y: auto;
-  box-sizing: border-box;
+  margin-left: 270px; /* Asegúrate que coincida con el ancho de tu NavbarAdmin */
 }
 
-.novedades-content h1,
-.horarios-content h1 {
+.content-container h1 {
   text-align: center;
-  color: var(--color-primary-darker, #6d0b58);
-  margin-top: 0;
-  margin-bottom: 30px;
+  color: var(--color-text-dark);
+  margin-bottom: 25px;
   font-size: 1.8rem;
 }
 
-/* ======================================== */
-/* === BARRA DE ACCIONES SUPERIORES     === */
-/* ======================================== */
-.novedades-actions-bar {
+/* --- Barra de Acciones (Búsqueda, Filtro y Botón) --- */
+.actions-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
+  margin: 0 auto 25px auto;
   gap: 20px;
+  flex-wrap: wrap;
   width: 100%;
   max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.novedades-search-bar,
-.filtro-input { /* Clase genérica para filtros */
-  padding: 10px 14px;
-  border: 1px solid var(--color-border-light, #c287b5);
+.search-bar,
+.filter-select {
+  flex-grow: 1;
+  padding: 10px 12px;
+  min-width: 200px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-background-page);
   border-radius: 5px;
-  background-color: var(--color-background-light, #fff);
-  color: var(--color-text-dark, #333);
   font-size: 1rem;
+  height: 41.5px; /* Altura consistente */
   box-sizing: border-box;
-  height: 41px;
-}
-.novedades-search-bar {
-  flex-grow: 1; /* Hace que la barra de búsqueda se expanda */
-  min-width: 280px;
 }
 
-.novedades-search-bar:focus,
-.filtro-input:focus {
-  border-color: var(--color-admin-hover, #b660a3);
-  box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+.search-bar:focus,
+.filter-select:focus {
+  background-color: var(--color-input-focus-bg);
+  border-color: var(--color-primary-accent);
   outline: none;
 }
 
-.novedades-add-button {
-  background-color: var(--color-admin-hover, #b660a3);
-  color: var(--color-text-light, white);
+.add-button {
+  background-color: var(--color-primary-accent);
+  color: var(--color-text-on-primary);
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -76,395 +82,230 @@
   transition: background-color 0.3s ease;
   font-size: 1rem;
   font-weight: 500;
-  height: 41px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-}
-.novedades-add-button:hover {
-  background-color: var(--color-primary-darker, #6d0b58);
+  height: 41.5px;
 }
 
-/* ======================================== */
-/* === ESTILOS DE TABLA                 === */
-/* ======================================== */
-.novedades-table-container {
+.add-button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* --- Tabla de Novedades --- */
+.table-responsive {
   width: 100%;
   max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 25px auto 0 auto;
   overflow-x: auto;
 }
 
-.novedades-table-horarios {
-  border-collapse: collapse;
+.table {
   width: 100%;
-  background: var(--color-background-light, #fff);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-collapse: collapse;
+  background-color: var(--color-background-page);
   border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  font-size: 0.9rem;
 }
 
-.novedades-table-horarios th,
-.novedades-table-horarios td {
-  border: 1px solid var(--color-admin-primary-border, #e9d3e4);
-  padding: 12px 15px;
-  text-align: center;
+.table th,
+.table td {
+  padding: 14px 15px;
+  text-align: left;
   vertical-align: middle;
+  border: 1px solid var(--color-border);
 }
 
-.novedades-table-horarios th {
-  background-color: var(--color-admin-primary-lighter, #e978d0);
-  color: var(--color-text-dark, black);
+.table th {
+  background-color: var(--color-table-header-bg);
+  color: var(--color-text-dark);
   font-weight: 600;
-  font-size: 0.95rem;
 }
 
-.novedades-table-horarios tbody tr:nth-child(even) {
-  background-color: var(--color-table-row-even, #f8eaf5);
-}
-.novedades-table-horarios tbody tr:hover {
-  background-color: var(--color-table-row-hover, #f3d9ec);
+.table tbody tr:nth-child(even) {
+  background-color: var(--color-table-row-alternate);
 }
 
-.novedades-dia-horario-item {
-  margin: 3px 0;
-  font-size: 0.85rem;
-  padding: 2px 0;
-}
-.novedades-dia-horario-item strong {
-  font-weight: 500;
+.table tbody tr:hover {
+  background-color: var(--color-input-focus-bg);
 }
 
-/* --- Switch de Estado en Tabla --- */
-.switch { position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;}
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--color-success, #28a745); }
-input:checked + .slider:before { transform: translateX(16px); }
-
-
-/* --- Botones de Acción en Tabla --- */
-.novedades-actions {
+.table .actions-cell {
   display: flex;
   justify-content: center;
-  align-items: center;
   gap: 8px;
 }
-.novedades-table-button {
-  padding: 7px 9px;
+
+.table .action-button {
+  padding: 6px 10px;
   font-size: 0.85rem;
   border: none;
   border-radius: 5px;
-  color: white;
+  color: var(--color-text-on-primary);
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.novedades-table-button.novedades-table-button-delete {
-  background-color: var(--color-admin-action-delete, #b660a3);
-}
-.novedades-table-button.novedades-table-button-delete:hover {
-  background-color: var(--color-admin-action-delete-hover, #6d0b58);
-}
-.novedades-table-button {
-  background-color: var(--color-admin-action-view, #fc8de4);
-}
-.novedades-table-button:hover {
-  background-color: var(--color-admin-action-view-hover, #d66abf);
+  transition: background-color 0.3s ease;
+  background-color: var(--color-primary-accent);
 }
 
-/* ======================================== */
-/* === ESTILOS DE PAGINACIÓN            === */
-/* ======================================== */
+.table .action-button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* --- Switch de Estado --- */
+.switch { position: relative; display: inline-block; width: 40px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--color-success); }
+input:checked + .slider:before { transform: translateX(16px); }
+.slider.round { border-radius: 34px; }
+.slider.round:before { border-radius: 50%; }
+
+
+/* --- Paginación --- */
 .pagination-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 24px auto 0 auto;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 30px;
-  padding-top: 16px;
-  border-top: 1px solid var(--color-border-light, #e0e0e0);
+  padding: 16px;
+  margin-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.rows-per-page-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rows-per-page-container select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
 }
 
 .pagination-controls {
   display: flex;
   align-items: center;
-  gap: 5px;
-  justify-content: center;
+  gap: 15px;
 }
 
 .pagination-controls button {
-  padding: 8px 14px;
-  border: 1px solid var(--color-border-light, #d1d1d1);
+  padding: 8px 16px;
+  border: 1px solid var(--color-border);
   background-color: white;
+  color: var(--color-text-dark);
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  border-radius: 6px;
+  transition: background-color 0.2s;
 }
 
-.pagination-controls button:hover:not(.active) {
-  background-color: var(--color-table-row-hover, #f3d9ec);
-  border-color: var(--color-admin-hover, #b660a3);
+.pagination-controls button:hover:not(:disabled) {
+  background-color: var(--color-input-focus-bg);
 }
 
-.pagination-controls button.active {
-  background-color: var(--color-admin-hover, #b660a3);
-  color: white;
-  border-color: var(--color-admin-hover, #b660a3);
-  font-weight: bold;
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-/* Contenido del modal: se le da un ancho máximo para la cuadrícula */
-.novedades-modal-overlay {
-  /* La clave para que se superponga a todo y ocupe la pantalla completa */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  
-  /* El color de fondo oscuro y semitransparente */
-  background: rgba(0, 0, 0, 0.6);
-
-  /* La magia para centrar el contenido del modal vertical y horizontalmente */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Un z-index alto para asegurar que esté por encima de todo lo demás */
-  z-index: 1050;
-
-  /* Añade un padding por si el modal es muy grande en pantallas pequeñas */
-  padding: 20px;
-  box-sizing: border-box;
+/* --- Estilos para Modales (Formulario y Detalles) --- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1050; padding: 20px; box-sizing: border-box;
 }
 
-/* --- El Contenido del Modal (La caja blanca) --- */
-/* Esta es la ventana que contiene el formulario. */
-.novedades-modal-content {
-  background: var(--color-background-light, #fff);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  padding: 30px 35px;
-  border-radius: 10px;
-  
-  /* Define el ancho máximo para que no sea demasiado grande */
-  width: 100%;
-  max-width: 900px; /* Ancho que definimos para la cuadrícula 3x3 */
-
-  /* Evita que el modal sea más alto que la pantalla y permite el scroll interno */
-  max-height: 90vh;
-  overflow-y: auto;
-
-  /* La estructura interna del modal */
-  display: flex;
-  flex-direction: column;
+.modal-content {
+  background-color: var(--color-background-page);
+  padding: 25px 30px; border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  width: 100%; max-width: 700px; max-height: 90vh;
+  overflow-y: auto; position: relative;
 }
 
-/* --- Estilos para el Encabezado del Modal --- */
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding-bottom: 15px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 25px; padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.modal-header h3 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: var(--color-primary-darker, #6d0b58);
+.modal-header h2 {
+  margin: 0; font-size: 1.6rem; color: var(--color-text-dark);
 }
 
 .modal-close-button {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  color: #888;
-  padding: 0;
-  line-height: 1;
-}
-.modal-close-button:hover {
-  color: #000;
+  position: absolute; top: 15px; right: 20px;
+  background: none; border: none; font-size: 2.5rem;
+  color: #888; cursor: pointer; line-height: 1;
 }
 
-/* Contenedor principal de los campos de días y horarios */
-.form-dias-horarios-container > label {
-  display: block;
-  font-weight: 600;
-  color: var(--color-primary-darker, #6d0b58);
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-}
-
-/* --- LA CLAVE DE LA CUADRÍCULA --- */
-.dias-grid {
+/* --- Formulario de Novedades (dentro del modal) --- */
+.novedad-form .form-grid {
   display: grid;
-  /* Crea 3 columnas de fracción de espacio igual (1fr) */
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem; /* Espacio entre los bloques de día */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
 }
 
-/* Estilo para cada bloque de día individual */
-.dia-fields {
-  padding: 1rem;
-  border: 1px solid var(--color-border-light, #e0e0e0);
-  border-radius: 8px;
-  background-color: var(--color-background-section-light, #f9f9f9);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.novedad-form .form-group {
+  display: flex; flex-direction: column; gap: 8px;
 }
 
-.dia-fields-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--color-text-dark, #333);
+.novedad-form .form-group.full-width {
+  grid-column: span 2;
 }
 
-.containerAgregarHorarioCitas-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-.containerAgregarHorarioCitas-inputs label {
-  font-size: 0.85rem;
-  color: #555;
-  margin-bottom: 0.25rem;
-}
-.containerAgregarHorarioCitas-inputs select,
-.containerAgregarHorarioCitas-inputs input[type="time"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--color-border-light, #c287b5);
-  border-radius: 5px;
-  font-size: 0.95rem;
+.novedad-form .form-group label {
+  font-weight: 600; color: var(--color-text-dark);
 }
 
-/* Botones dentro del formulario */
-.botonRemoverDia {
-  background: none; border: none; font-size: 1.5rem; color: var(--color-danger, red); cursor: pointer;
+.novedad-form .form-group input,
+.novedad-form .react-select-container .react-select__control {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-background-page);
+  border-radius: 5px; font-size: 1rem;
 }
 
-/* --- ESTILO DE BOTONES (Guardar/Cancelar) --- */
-.botonAgregar {
-  align-self: center; 
-  margin-top: 1.5rem;
-  padding: 9px 14px;
-  font-size: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: var(--color-admin-action-view, #fc8de4);
-  color: var(--color-text-dark, black);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.botonAgregar:hover {
-  background-color: var(--color-admin-action-view-hover, #d66abf);
+.novedad-form .form-group input:focus {
+  background-color: var(--color-input-focus-bg);
+  border-color: var(--color-primary-accent);
+  box-shadow: 0 0 0 2px rgba(191, 188, 246, 0.5);
+  outline: none;
 }
 
-.botonCerrar{
-  background-color: var(--color-admin-action-delete);
+.novedad-form .form-actions {
+  display: flex; justify-content: center; gap: 15px;
+  margin-top: 25px; padding-top: 20px;
+  border-top: 1px solid var(--color-border);
 }
 
-.botonCerrar:hover {
-  background-color: var(--color-admin-action-delete-hover);
+.novedad-form .button-primary {
+  background-color: var(--color-primary-accent); color: var(--color-text-on-primary);
+  padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
+  transition: background-color 0.3s ease; font-size: 1rem; font-weight: 500;
 }
+.novedad-form .button-primary:hover { background-color: var(--color-primary-hover); }
 
-.botonAgregarDia {
-  display: block;
-  width: -moz-fit-content; 
-  width: fit-content; 
-  margin-left: auto;   
-  margin-right: auto; 
-  margin-top: 1.5rem;
-  padding: 9px 14px;
-  font-size: 0.9rem;
-  border: 1px dashed #ccc;
-  gap: 6px;
-  background-color: var(--color-admin-action-view, #fc8de4);
-  color: var(--color-text-dark, black);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.novedad-form .button-secondary {
+  background-color: var(--color-secondary-button-bg); color: var(--color-text-dark);
+  padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
+  transition: background-color 0.3s ease; font-size: 1rem; font-weight: 500;
 }
+.novedad-form .button-secondary:hover { background-color: #ddd4e4; }
 
-.botonAgregarDia:hover {
-  background-color: var(--color-table-row-hover, #f3d9ec);
-}
+/* Otros */
+.error-message { color: var(--color-danger); }
+.text-center { text-align: center; }
 
-/* Botones Guardar/Cancelar del Modal de Formulario */
-.botonesAgregarHorarioCitasGuardarCancelar {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: center; 
-  gap: 15px;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid var(--color-border-light, #e0e0e0);
-}
-
-.dia-fields:only-child {
-  grid-column-start: 2;
-}
-
-/* --- Ajuste para pantallas de tablet y móvil --- */
-@media (max-width: 900px) {
-  .dia-fields:only-child {
-    grid-column-start: auto;
-  }
-}
-
-/* --- RESPONSIVIDAD PARA LA CUADRÍCULA --- */
-@media (max-width: 900px) {
-  .novedades-modal-content.form-modal { max-width: 650px; }
-  .dias-grid { grid-template-columns: repeat(2, 1fr); }
+/* Responsividad */
+@media (max-width: 992px) {
+  .content-container { margin-left: 0; }
 }
 
 @media (max-width: 768px) {
-  .novedades-modal-content.form-modal { max-width: 100%; width: 95%; }
-  .dias-grid { grid-template-columns: 1fr; }
-}
-
-/* ======================================== */
-/* === ESTILOS RESPONSIVOS              === */
-/* ======================================== */
-@media (max-width: 900px) {
-  .novedades-content,
-  .horarios-content {
-    margin-left: 0;
-    padding: 20px;
-  }
-  .novedades-actions-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .novedades-search-bar,
-  .novedades-add-button,
-  .filtro-input {
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .pagination-container {
-    flex-direction: column;
-    gap: 15px;
-  }
+  .actions-bar { flex-direction: column; }
+  .search-bar, .filter-select, .add-button { width: 100%; }
+  .novedad-form .form-grid { grid-template-columns: 1fr; }
+  .novedad-form .form-group.full-width { grid-column: 1; }
 }

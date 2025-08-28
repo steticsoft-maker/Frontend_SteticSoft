@@ -1,12 +1,10 @@
-// src/features/horarios/components/NovedadForm.jsx
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select'; // <-- Importamos la nueva librería
-import { getUsuariosAPI } from '../../usuarios/services/usuariosService'; // <-- Necesitamos un servicio para obtener los usuarios/empleados
+import Select from 'react-select';
+import { getUsuariosAPI } from '../../usuarios/services/usuariosService';
 
-// --- El Formulario ---
 const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing }) => {
   
-  // --- ESTADO: Adaptado a la nueva estructura ---
+  // --- TODA LA LÓGICA DE ESTADO Y USEEFFECT SE MANTIENE IGUAL ---
   const [formData, setFormData] = useState({
     fechaInicio: '',
     fechaFin: '',
@@ -17,16 +15,13 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
   const [empleadoOptions, setEmpleadoOptions] = useState([]);
   const [error, setError] = useState('');
 
-  // --- EFECTO: Cargar la lista de empleados para el selector ---
   useEffect(() => {
     const cargarEmpleados = async () => {
       try {
-        // Asumiendo que tienes una función en un servicio que trae todos los usuarios/empleados
-        const empleados = await getUsuariosAPI({ rol: 'Empleado', estado: true });
-        // Transformamos los datos al formato que react-select necesita: { value, label }
-        const options = empleados.map(emp => ({
-          value: emp.idUsuario,
-          label: emp.correo, // O emp.nombre, lo que prefieras mostrar
+        const usuarios = await getUsuariosAPI({ rol: 'Empleado', estado: true });
+        const options = usuarios.map(user => ({
+          value: user.idUsuario,
+          label: user.empleadoInfo ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido} (${user.correo})` : user.correo,
         }));
         setEmpleadoOptions(options);
       } catch (err) {
@@ -36,25 +31,22 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
     cargarEmpleados();
   }, []);
 
-  // --- EFECTO: Rellenar el formulario si estamos en modo edición ---
   useEffect(() => {
     if (isEditing && initialData) {
       setFormData({
-        fechaInicio: initialData.fechaInicio || '',
-        fechaFin: initialData.fechaFin || '',
+        fechaInicio: initialData.fechaInicio?.split('T')[0] || '',
+        fechaFin: initialData.fechaFin?.split('T')[0] || '',
         horaInicio: initialData.horaInicio || '',
         horaFin: initialData.horaFin || '',
       });
-      // Pre-seleccionar los empleados que ya están asignados
-      const empleadosAsignados = initialData.empleados.map(emp => ({
+      const empleadosAsignados = initialData.empleados?.map(emp => ({
         value: emp.idUsuario,
         label: emp.correo,
-      }));
+      })) || [];
       setSelectedEmpleados(empleadosAsignados);
     }
   }, [isEditing, initialData]);
 
-  // --- MANEJADORES ---
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -68,16 +60,23 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
     e.preventDefault();
     setError('');
 
-    // Validación simple
     if (!formData.fechaInicio || !formData.fechaFin || !formData.horaInicio || !formData.horaFin || selectedEmpleados.length === 0) {
       setError("Todos los campos son obligatorios.");
       return;
     }
+    
+    if (new Date(formData.fechaFin) < new Date(formData.fechaInicio)) {
+      setError("La fecha de fin no puede ser anterior a la fecha de inicio.");
+      return;
+    }
 
-    // Preparamos los datos para enviar a la API
+    if (formData.horaFin <= formData.horaInicio) {
+      setError("La hora de fin debe ser posterior a la hora de inicio.");
+      return;
+    }
+
     const datosParaEnviar = {
       ...formData,
-      // Extraemos solo los IDs de los empleados seleccionados
       empleadosIds: selectedEmpleados.map(emp => emp.value),
     };
 
@@ -85,10 +84,11 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
   };
 
   return (
+    // ✅ Se usa la clase 'novedad-form' para el contenedor principal
     <form onSubmit={handleSubmit} className="novedad-form">
       {error && <p className="error-message">{error}</p>}
 
-      {/* --- CAMPOS DE FECHA Y HORA --- */}
+      {/* ✅ Se envuelven los campos en un grid de 2 columnas */}
       <div className="form-grid">
         <div className="form-group">
           <label>Fecha de Inicio</label>
@@ -106,26 +106,27 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
           <label>Hora de Fin</label>
           <input type="time" name="horaFin" value={formData.horaFin} onChange={handleChange} required />
         </div>
+        
+        {/* ✅ El selector ocupa el ancho completo del grid */}
+        <div className="form-group full-width">
+          <label>Asignar a Empleado(s)</label>
+          <Select
+            isMulti
+            name="empleados"
+            options={empleadoOptions}
+            className="react-select-container"
+            classNamePrefix="react-select"
+            placeholder="Seleccione uno o más empleados..."
+            value={selectedEmpleados}
+            onChange={handleEmpleadoChange}
+            isLoading={!empleadoOptions.length}
+            isDisabled={isLoading}
+            noOptionsMessage={() => 'No hay empleados para mostrar'}
+          />
+        </div>
       </div>
       
-      {/* --- SELECTOR MÚLTIPLE DE EMPLEADOS --- */}
-      <div className="form-group">
-        <label>Asignar a Empleado(s)</label>
-        <Select
-          isMulti
-          name="empleados"
-          options={empleadoOptions}
-          className="react-select-container"
-          classNamePrefix="react-select"
-          placeholder="Seleccione uno o más empleados..."
-          value={selectedEmpleados}
-          onChange={handleEmpleadoChange}
-          isLoading={!empleadoOptions.length}
-          isDisabled={isLoading}
-        />
-      </div>
-
-      {/* --- BOTONES DE ACCIÓN --- */}
+      {/* ✅ La sección de botones se mantiene igual */}
       <div className="form-actions">
         <button type="submit" disabled={isLoading} className="button-primary">
           {isLoading ? 'Guardando...' : (isEditing ? 'Actualizar Novedad' : 'Crear Novedad')}
