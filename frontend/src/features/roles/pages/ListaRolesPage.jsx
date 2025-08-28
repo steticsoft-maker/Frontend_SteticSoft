@@ -52,7 +52,6 @@ function ListaRolesPage() {
       <div className="rol-content">
         <h1>Gestión de Roles ({totalRolesFiltrados})</h1>
         <div className="rol-accionesTop">
-          {/* INICIO DE MODIFICACIÓN: Contenedor para búsqueda y error */}
           <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
             <input
               type="text"
