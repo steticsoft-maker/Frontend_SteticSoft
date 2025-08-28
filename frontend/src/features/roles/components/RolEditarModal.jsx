@@ -3,6 +3,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import RolForm from "./RolForm";
 import { getRoleDetailsAPI } from "../services/rolesService";
 
+const descriptionRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.,:;_-]+$/;
+
+
 const RolEditarModal = ({
   isOpen,
   onClose,
@@ -81,21 +84,34 @@ const RolEditarModal = ({
     });
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
-    }
-    // Para el rol Admin no se valida la cantidad de permisos
-    if (
-      !isRoleAdminProtected &&
-      (!formData.idPermisos || formData.idPermisos.length === 0)
-    ) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+   const validateForm = () => {
+     const errors = {};
+     if (!formData.nombre.trim()) {
+       errors.nombre = "El nombre del rol es obligatorio.";
+     } else if (formData.nombre.trim().length < 3) {
+       errors.nombre = "El nombre debe tener al menos 3 caracteres.";
+     }
+
+     // Validación para descripción
+     if (!formData.descripcion.trim()) {
+       errors.descripcion = "La descripción es obligatoria.";
+     } else if (formData.descripcion.trim().length < 3) {
+       errors.descripcion = "La descripción debe tener al menos 3 caracteres.";
+     } else if (!descriptionRegex.test(formData.descripcion)) {
+       // Aplicamos la nueva regex
+       errors.descripcion = "La descripción contiene caracteres no válidos.";
+     }
+
+     if (!formData.tipoPerfil) {
+       errors.tipoPerfil = "Debe seleccionar un tipo de perfil.";
+     }
+     if (!formData.idPermisos || formData.idPermisos.length === 0) {
+       errors.permisos = "Debe seleccionar al menos un permiso.";
+     }
+
+     setFormErrors(errors);
+     return Object.keys(errors).length === 0;
+   };
 
   const handleSubmitForm = (e) => {
     e.preventDefault();

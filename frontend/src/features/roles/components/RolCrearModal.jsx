@@ -2,25 +2,23 @@
 import React, { useState, useEffect } from 'react';
 import RolForm from './RolForm';
 
+// NUEVO: Definimos la regex aquí para reutilizarla
+const descriptionRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.,:;_-]+$/;
+
 const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
 
-  // --- INICIO DE CORRECCIÓN ---
-  // Añadimos 'tipoPerfil' al estado inicial del formulario.
-  // Este es el valor que se enviará al backend si no se cambia.
   const getInitialFormState = () => ({
     nombre: '',
     descripcion: '',
     idPermisos: [],
     estado: true,
-    tipoPerfil: 'EMPLEADO' // <-- ¡LA LÍNEA CLAVE!
+    tipoPerfil: 'EMPLEADO'
   });
-  // --- FIN DE CORRECCIÓN ---
 
   const [formData, setFormData] = useState(getInitialFormState());
   const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
-    // Cuando el modal se abre, reseteamos al estado inicial completo.
     if (isOpen) {
       setFormData(getInitialFormState());
       setFormErrors({});
@@ -53,27 +51,39 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
     setFormData(prev => ({ ...prev, idPermisos: [] }));
   };
 
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.nombre.trim()) {
-      errors.nombre = "El nombre del rol es obligatorio.";
-    }
-    // La validación del tipo de perfil la hará el backend,
-    // pero nos aseguramos de que no esté vacío.
-    if (!formData.tipoPerfil) {
-        errors.tipoPerfil = "Debe seleccionar un tipo de perfil."
-    }
-    if (!formData.idPermisos || formData.idPermisos.length === 0) {
-      errors.permisos = "Debe seleccionar al menos un permiso.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  // INICIO DE MODIFICACIÓN
+    const validateForm = () => {
+      const errors = {};
+      if (!formData.nombre.trim()) {
+        errors.nombre = "El nombre del rol es obligatorio.";
+      } else if (formData.nombre.trim().length < 3) {
+        errors.nombre = "El nombre debe tener al menos 3 caracteres.";
+      }
+
+      // Validación para descripción
+      if (!formData.descripcion.trim()) {
+        errors.descripcion = "La descripción es obligatoria.";
+      } else if (formData.descripcion.trim().length < 3) {
+        errors.descripcion = "La descripción debe tener al menos 3 caracteres.";
+      } else if (!descriptionRegex.test(formData.descripcion)) {
+        // Aplicamos la nueva regex
+        errors.descripcion = "La descripción contiene caracteres no válidos.";
+      }
+
+      if (!formData.tipoPerfil) {
+        errors.tipoPerfil = "Debe seleccionar un tipo de perfil.";
+      }
+      if (!formData.idPermisos || formData.idPermisos.length === 0) {
+        errors.permisos = "Debe seleccionar al menos un permiso.";
+      }
+      setFormErrors(errors);
+      return Object.keys(errors).length === 0;
+    };
+  // FIN DE MODIFICACIÓN
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    // El formData que se envía ahora sí contiene el campo tipoPerfil.
     onSubmit(formData);
   };
 
