@@ -4,6 +4,7 @@ import RolForm from "./RolForm";
 import { getRoleDetailsAPI } from "../services/rolesService";
 
 const descriptionRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.,:;_-]+$/;
+const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ_\s]+$/;
 
 
 const RolEditarModal = ({
@@ -84,34 +85,45 @@ const RolEditarModal = ({
     });
   };
 
-   const validateForm = () => {
-     const errors = {};
-     if (!formData.nombre.trim()) {
-       errors.nombre = "El nombre del rol es obligatorio.";
-     } else if (formData.nombre.trim().length < 3) {
-       errors.nombre = "El nombre debe tener al menos 3 caracteres.";
-     }
+  const validateForm = () => {
+        const errors = {};
+        const { nombre, descripcion, tipoPerfil, idPermisos } = formData;
 
-     // Validación para descripción
-     if (!formData.descripcion.trim()) {
-       errors.descripcion = "La descripción es obligatoria.";
-     } else if (formData.descripcion.trim().length < 3) {
-       errors.descripcion = "La descripción debe tener al menos 3 caracteres.";
-     } else if (!descriptionRegex.test(formData.descripcion)) {
-       // Aplicamos la nueva regex
-       errors.descripcion = "La descripción contiene caracteres no válidos.";
-     }
+        // Validación para Nombre
+        if (!nombre || !nombre.trim()) {
+            errors.nombre = "El nombre del rol es obligatorio.";
+        } else if (nombre.trim().length < 3) {
+            errors.nombre = "El nombre debe tener al menos 3 caracteres.";
+        } else if (nombre.trim().length > 50) { // <-- AÑADIDO
+            errors.nombre = "El nombre no debe exceder los 50 caracteres.";
+        } else if (!nameRegex.test(nombre)) {
+            errors.nombre = "El nombre solo puede contener letras, espacios y guiones bajos.";
+        }
 
-     if (!formData.tipoPerfil) {
-       errors.tipoPerfil = "Debe seleccionar un tipo de perfil.";
-     }
-     if (!formData.idPermisos || formData.idPermisos.length === 0) {
-       errors.permisos = "Debe seleccionar al menos un permiso.";
-     }
+        // Validación para Descripción
+        if (!descripcion || !descripcion.trim()) {
+            errors.descripcion = "La descripción es obligatoria.";
+        } else if (descripcion.trim().length < 3) {
+            errors.descripcion = "La descripción debe tener al menos 3 caracteres.";
+        } else if (descripcion.trim().length > 250) { // <-- AÑADIDO
+            errors.descripcion = "La descripción no debe exceder los 250 caracteres.";
+        } else if (!descriptionRegex.test(descripcion)) {
+            errors.descripcion = "La descripción contiene caracteres no válidos.";
+        }
+        
+        // Validación para Tipo de Perfil (Corregida)
+        if (!tipoPerfil) { // <-- CORREGIDO: Solo valida si está vacío
+            errors.tipoPerfil = "Debe seleccionar un tipo de perfil.";
+        }
+        
+        // Validación para Permisos
+        if (!isRoleAdminProtected && (!idPermisos || idPermisos.length === 0)) {
+            errors.permisos = "Debe seleccionar al menos un módulo.";
+        }
 
-     setFormErrors(errors);
-     return Object.keys(errors).length === 0;
-   };
+        setFormErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
