@@ -41,34 +41,63 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
       case 'nombre':
         formatError = !value.trim() ? "Este campo es obligatorio." : null;
         break;
+
       case 'numeroDocumento':
-        formatError = !/^\d{7,10}$/.test(value) ? "Debe tener entre 7 y 10 dígitos." : null;
+        formatError = !/^\d{7,10}$/.test(value)
+          ? "Debe tener entre 7 y 10 dígitos."
+          : null;
         break;
+
       case 'nitEmpresa':
-        formatError = !/^\d{9}-\d$/.test(value) ? "Formato: 123456789-0." : null;
+        formatError = !/^\d{9}-\d$/.test(value)
+          ? "Formato: 123456789-0."
+          : null;
         break;
+
       case 'telefono':
       case 'telefonoPersonaEncargada':
-        formatError = !/^\d{10}$/.test(value) ? "Debe tener 10 dígitos." : null;
+        formatError = !/^\d{10}$/.test(value)
+          ? "Debe tener 10 dígitos."
+          : null;
         break;
+
       case 'correo':
-        formatError = !/\S+@\S+\.\S+/.test(value) ? "El formato del email no es válido." : null;
+        formatError = !/\S+@\S+\.\S+/.test(value)
+          ? "El formato del email no es válido."
+          : null;
         break;
+
       case 'direccion':
+        if (!value.trim()) {
+          formatError = "Este campo es obligatorio.";
+        } else if (value.trim().length < 5) {
+          formatError = "La dirección debe tener al menos 5 caracteres.";
+        }
+        break;
+
       case 'nombrePersonaEncargada':
-        formatError = !value.trim() ? "Este campo es obligatorio." : null;
+        formatError = !value.trim()
+          ? "Este campo es obligatorio."
+          : null;
         break;
+
       case 'emailPersonaEncargada':
-        formatError = !value.trim() ? "Este campo es obligatorio." : !/\S+@\S+\.\S+/.test(value) ? "El formato del email no es válido." : null;
+        formatError = !value.trim()
+          ? "Este campo es obligatorio."
+          : !/\S+@\S+\.\S+/.test(value)
+          ? "El formato del email no es válido."
+          : null;
         break;
+
       default:
         break;
     }
-    
+
     if (formatError) {
       return formatError;
     }
 
+    // Validaciones de unicidad
     const uniqueFields = ['correo', 'numeroDocumento', 'nitEmpresa'];
     if (uniqueFields.includes(name)) {
       try {
@@ -83,29 +112,29 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
     }
     return null;
   };
-  
+
   const handleBlur = async (e) => {
     const { name, value } = e.target;
     const errorMessage = await validateField(name, value);
     setErrors(prev => ({ ...prev, [name]: errorMessage }));
   };
 
-const validateFormOnSubmit = async () => {
-  const newErrors = {};
-  const fieldsToValidate = [
-        'nombre', 'telefono', 'correo', 'direccion', 
-        'nombrePersonaEncargada', 'telefonoPersonaEncargada', 'emailPersonaEncargada', // <-- ¡Agrega este campo!
-        ...(formData.tipo === 'Natural' ? ['numeroDocumento'] : ['nitEmpresa'])
-      ];
-      for (const field of fieldsToValidate) {
-        const errorMessage = await validateField(field, formData[field]);
-        if (errorMessage) {
-          newErrors[field] = errorMessage;
-        }
+  const validateFormOnSubmit = async () => {
+    const newErrors = {};
+    const fieldsToValidate = [
+      'nombre', 'telefono', 'correo', 'direccion',
+      'nombrePersonaEncargada', 'telefonoPersonaEncargada', 'emailPersonaEncargada',
+      ...(formData.tipo === 'Natural' ? ['numeroDocumento'] : ['nitEmpresa'])
+    ];
+    for (const field of fieldsToValidate) {
+      const errorMessage = await validateField(field, formData[field]);
+      if (errorMessage) {
+        newErrors[field] = errorMessage;
       }
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-};
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
@@ -121,28 +150,30 @@ const validateFormOnSubmit = async () => {
     <div className="modal-Proveedores">
       <div className="modal-content-Proveedores formulario-modal">
         <h2 className="proveedores-modal-title">Agregar Proveedor</h2>
-        {/*
-          CORRECCIÓN FINAL:
-          Usamos la clase 'proveedores-form-grid' que tienes en tu CSS,
-          la cual aplica 'display: grid' y crea las dos columnas.
+        {/* 
+          Usamos la clase 'proveedores-form-grid' que aplica grid con dos columnas.
         */}
         <form className="proveedores-form-grid" onSubmit={handleSubmitForm} noValidate>
-            <ProveedorForm
-              formData={formData}
-              onFormChange={handleFormChange}
-              onBlur={handleBlur}
-              isEditing={false}
-              errors={errors}
-            />
-            <div className="proveedores-form-actions">
-                {errors.api && <p className="error-proveedores" style={{width: '100%', textAlign: 'center'}}>{errors.api}</p>}
-                <button type="submit" className="proveedores-form-button-guardar">
-                    Guardar Proveedor
-                </button>
-                <button type="button" className="proveedores-form-button-cancelar" onClick={onClose}>
-                    Cancelar
-                </button>
-            </div>
+          <ProveedorForm
+            formData={formData}
+            onFormChange={handleFormChange}
+            onBlur={handleBlur}
+            isEditing={false}
+            errors={errors}
+          />
+          <div className="proveedores-form-actions">
+            {errors.api && (
+              <p className="error-proveedores" style={{ width: '100%', textAlign: 'center' }}>
+                {errors.api}
+              </p>
+            )}
+            <button type="submit" className="proveedores-form-button-guardar">
+              Guardar Proveedor
+            </button>
+            <button type="button" className="proveedores-form-button-cancelar" onClick={onClose}>
+              Cancelar
+            </button>
+          </div>
         </form>
       </div>
     </div>
