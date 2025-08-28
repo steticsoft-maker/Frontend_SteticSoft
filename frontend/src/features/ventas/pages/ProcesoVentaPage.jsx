@@ -8,8 +8,8 @@ import ItemSelectionModal from "../components/ItemSelectionModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
 import {
-  getProductosParaVenta, // Ahora es una función asíncrona
-  getServiciosParaVenta, // Ahora es una función asíncrona
+  getProductosParaVenta,
+  getServiciosParaVenta,
   saveNuevaVenta,
   fetchVentas,
 } from "../services/ventasService";
@@ -19,7 +19,6 @@ import "../css/ProcesoVentas.css";
 function ProcesoVentaPage() {
   const navigate = useNavigate();
 
-  // Estado del formulario principal
   const [modoCliente, setModoCliente] = useState("");
   const [datosCliente, setDatosCliente] = useState({
     nombre: "",
@@ -29,21 +28,17 @@ function ProcesoVentaPage() {
   });
   const [itemsTabla, setItemsTabla] = useState([]);
 
-  // Estados para los modales de selección
   const [showClienteSelectModal, setShowClienteSelectModal] = useState(false);
   const [showProductoSelectModal, setShowProductoSelectModal] = useState(false);
   const [showServicioSelectModal, setShowServicioSelectModal] = useState(false);
 
-  // Listas de datos para los selectores
   const [clientesDisponibles, setClientesDisponibles] = useState([]);
   const [productosDisponibles, setProductosDisponibles] = useState([]);
   const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
 
-  // Estados para la carga y errores de datos asíncronos
   const [isLoadingClientes, setIsLoadingClientes] = useState(false);
   const [errorClientes, setErrorClientes] = useState(null);
 
-  // Estados para errores y confirmación del formulario
   const [errorDatosCliente, setErrorDatosCliente] = useState("");
   const [errorItemsTabla, setErrorItemsTabla] = useState("");
   const [isConfirmSaveModalOpen, setIsConfirmSaveModalOpen] = useState(false);
@@ -52,7 +47,6 @@ function ProcesoVentaPage() {
 
   useEffect(() => {
     const loadInitialData = async () => {
-      // Cargar productos y servicios al montar la página
       const productos = await getProductosParaVenta();
       const servicios = await getServiciosParaVenta();
       setProductosDisponibles(productos);
@@ -64,13 +58,21 @@ function ProcesoVentaPage() {
 
   const handleDatosClienteChange = (e) => {
     const { name, value } = e.target;
-
-    // --- LÓGICA DE VALIDACIÓN DE ESPACIOS ---
-    // 1. Reemplaza dos o más espacios seguidos con uno solo.
-    const sanitizedValue = value.replace(/\s{2,}/g, ' ');
-    // 2. Elimina un posible espacio al inicio del valor.
-    const finalValue = sanitizedValue.startsWith(' ') ? sanitizedValue.trimStart() : sanitizedValue;
+    let finalValue = value;
     
+    if (name === "nombre") {
+      finalValue = value.replace(/[0-9]/g, '').replace(/\s{2,}/g, ' ');
+    } else if (name === "documento") {
+      finalValue = value.replace(/[^0-9]/g, '');
+    } else if (name === "telefono") {
+      // Modificación: Solo permite números en el campo de teléfono.
+      finalValue = value.replace(/[^0-9]/g, '');
+    } else {
+      finalValue = value.replace(/\s{2,}/g, ' ');
+    }
+    
+    finalValue = finalValue.startsWith(' ') ? finalValue.trimStart() : finalValue;
+
     setDatosCliente((prev) => ({ ...prev, [name]: finalValue }));
     if (errorDatosCliente) setErrorDatosCliente("");
   };
@@ -158,23 +160,62 @@ function ProcesoVentaPage() {
         }
       }
     }
+    
+    if (modoCliente === "nuevo") {
+      const nombreValidacion = datosCliente.nombre.trim();
+      const documentoValidacion = datosCliente.documento.trim();
+      const telefonoValidacion = datosCliente.telefono.trim();
+      const direccionValidacion = datosCliente.direccion.trim();
 
-    if (modoCliente === "existente" && !datosCliente.nombre) {
+      // Validación del nombre
+      if (!nombreValidacion) {
+        setErrorDatosCliente("El nombre es un campo requerido.");
+        isValid = false;
+      } else if (nombreValidacion.length <= 3) {
+        setErrorDatosCliente("El nombre debe tener más de 3 letras.");
+        isValid = false;
+      } else if (/\d/.test(nombreValidacion)) {
+        setErrorDatosCliente("El nombre no puede contener números.");
+        isValid = false;
+      }
+
+      // Validación del documento
+      if (!documentoValidacion) {
+        setErrorDatosCliente("El documento es un campo requerido.");
+        isValid = false;
+      } else if (documentoValidacion.length < 7 || documentoValidacion.length > 10) {
+        setErrorDatosCliente("El documento debe tener entre 7 y 10 dígitos.");
+        isValid = false;
+      } else if (isNaN(documentoValidacion)) {
+        setErrorDatosCliente("El documento solo puede contener números.");
+        isValid = false;
+      }
+      
+      // Validación del teléfono
+      if (!telefonoValidacion) {
+        setErrorDatosCliente("El teléfono es un campo requerido.");
+        isValid = false;
+      } else if (telefonoValidacion.length !== 10) {
+        setErrorDatosCliente("El teléfono debe tener 10 dígitos.");
+        isValid = false;
+      } else if (isNaN(telefonoValidacion)) {
+        setErrorDatosCliente("El teléfono solo puede contener números.");
+        isValid = false;
+      }
+
+      // Validación de la dirección
+      if (!direccionValidacion) {
+        setErrorDatosCliente("La dirección es un campo requerido.");
+        isValid = false;
+      }
+    } else if (modoCliente === "existente" && !datosCliente.nombre) {
       setErrorDatosCliente("Por favor selecciona un cliente existente de la lista.");
-      isValid = false;
-    } else if (
-      modoCliente === "nuevo" &&
-      (!datosCliente.nombre.trim() ||
-        !datosCliente.documento.trim() ||
-        !datosCliente.telefono.trim() ||
-        !datosCliente.direccion.trim())
-    ) {
-      setErrorDatosCliente("Por favor completa todos los campos del cliente nuevo.");
       isValid = false;
     } else if (!modoCliente) {
       setErrorDatosCliente("Por favor selecciona si el cliente es existente o nuevo.");
       isValid = false;
     }
+
     return isValid;
   };
 
