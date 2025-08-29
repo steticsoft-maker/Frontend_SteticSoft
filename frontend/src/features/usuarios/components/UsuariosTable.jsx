@@ -57,7 +57,8 @@ const UsuariosTable = ({
                   </label>
                 ) : (
                   <span>Activo</span>
-                )}
+                )
+                }
               </td>
               <td data-label="Acciones:">
                 <div className="usuarios-table-iconos">

@@ -41,11 +41,6 @@ function ListaRolesPage() {
     paginate,
   } = useRoles();
 
-  // INICIO DE MODIFICACIÓN: Lógica de validación de búsqueda
-  const searchTerm = inputValue.trim();
-  const isSearchInvalid = searchTerm.length > 0 && searchTerm.length < 3;
-  // FIN DE MODIFICACIÓN
-
   return (
     <div className="rol-container">
       <NavbarAdmin />
@@ -55,17 +50,12 @@ function ListaRolesPage() {
           <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
             <input
               type="text"
-              placeholder="Buscar por nombre, descripción, permiso o estado..."
+              placeholder="Buscar por nombre, descripción o permiso..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               className="rol-barraBusqueda"
               disabled={isLoading}
             />
-            {isSearchInvalid && (
-              <span className="error-message" style={{ marginTop: '5px' }}>
-                La búsqueda debe tener al menos 3 caracteres.
-              </span>
-            )}
           </div>
           {/* FIN DE MODIFICACIÓN */}
           
