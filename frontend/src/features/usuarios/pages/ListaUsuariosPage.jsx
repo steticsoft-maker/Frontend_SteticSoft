@@ -1,4 +1,5 @@
-import React from "react"; // useState, useEffect, useCallback, useMemo removidos
+// src/features/usuarios/pages/ListaUsuariosPage.jsx
+import React from "react";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import UsuariosTable from "../components/UsuariosTable";
 import UsuarioCrearModal from "../components/UsuarioCrearModal";
@@ -7,14 +8,13 @@ import UsuarioDetalleModal from "../components/UsuarioDetalleModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination";
-import useUsuarios from "../hooks/useUsuarios"; // Importar el custom hook
+import useUsuarios from "../hooks/useUsuarios";
 import "../css/Usuarios.css";
-// Los imports de servicios API ya no son necesarios aquí
 
 function ListaUsuariosPage() {
   const {
-    usuarios, // Ya filtrados y paginados para la tabla
-    totalUsuariosFiltrados, // Para el componente de paginación
+    usuarios,
+    totalUsuariosFiltrados,
     availableRoles,
     isLoadingPage,
     isSubmitting,
@@ -23,40 +23,30 @@ function ListaUsuariosPage() {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    // isDeleteModalOpen, // Este estado ahora es isConfirmDeleteModalOpen en el hook
-    isConfirmDeleteModalOpen, // Usar el estado específico del hook para el modal de eliminación
+    isConfirmDeleteModalOpen,
     isValidationModalOpen,
     validationMessage,
-    inputValue,      // Para el input de búsqueda
-    setInputValue,   // Para actualizar el término de búsqueda inmediato
-    filterEstado,    // Para el control de filtro (se implementará en Req 3)
-    setFilterEstado, // Para actualizar el filtro de estado (se implementará en Req 3)
+    inputValue,
+    setInputValue,
+    filterEstado,
+    setFilterEstado,
     currentPage,
     usersPerPage,
     paginate,
     closeModal,
     handleOpenModal,
     handleSaveUsuario,
-    // handleConfirmDesactivarUsuario, // Ya no se usa directamente aquí para el botón de basura
-    showDeleteModal, // Usar showDeleteModal para abrir el modal de confirmación de eliminación física
-    handleConfirmDeleteUsuario, // Esta es la acción que se llamará desde el ConfirmModal
+    handleConfirmDeleteUsuario,
     handleToggleEstadoUsuario,
-    // Props para el formulario y su validación
     formData,
     formErrors,
     isFormValid,
     isVerifyingEmail,
     handleInputChange,
     handleInputBlur,
+    requiresProfile,
+    checkRequiresProfile,
   } = useUsuarios();
-
-  // El título ahora puede usar totalUsuariosFiltrados para reflejar el total después de aplicar filtros
-  // o podrías querer otro estado en el hook para el conteo total sin filtros.
-  // Por ahora, lo dejamos con usuarios.length que sería los usuarios de la página actual.
-  // Para mostrar el total real de usuarios en el sistema (antes de filtrar/paginar),
-  // el hook useUsuarios debería exponer ese conteo también.
-  // const [usuariosSinFiltrar, setUsuariosSinFiltrar] = useState([]); // en el hook
-  // y luego usar usuariosSinFiltrar.length aquí. De momento, usamos totalUsuariosFiltrados.
 
   return (
     <div className="usuarios-container">
@@ -66,29 +56,24 @@ function ListaUsuariosPage() {
         <div className="usuarios-accionesTop">
           <input
             type="text"
-            placeholder="Buscar por nombre, apellido, correo, documento, teléfono, rol o estado..."
+            placeholder="Buscar por nombre, correo, rol..."
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)} // Usar setInputValue del hook
+            onChange={(e) => setInputValue(e.target.value)}
             className="usuarios-barraBusqueda"
-            disabled={isLoadingPage} // Deshabilitar si la página está cargando datos iniciales
+            disabled={isLoadingPage}
           />
           <div className="usuarios-filtro-estado">
-            <span>Filtrar por estado: </span>
+            <span>Estado: </span>
             <select value={filterEstado} onChange={(e) => setFilterEstado(e.target.value)} disabled={isLoadingPage}>
               <option value="todos">Todos</option>
               <option value="activos">Activos</option>
               <option value="inactivos">Inactivos</option>
             </select>
           </div>
-          {/* <select value={filterEstado} onChange={(e) => setFilterEstado(e.target.value)}>
-            <option value="todos">Todos</option>
-            <option value="activos">Activos</option>
-            <option value="inactivos">Inactivos</option>
-          </select> */}
           <button
             className="usuarios-botonAgregar"
             onClick={() => handleOpenModal("create")}
-            disabled={isLoadingPage || isSubmitting} // Deshabilitar si carga o envía
+            disabled={isLoadingPage || isSubmitting}
           >
             Crear Usuario
           </button>
@@ -100,21 +85,19 @@ function ListaUsuariosPage() {
         {!isLoadingPage && !errorPage && (
           <>
             <UsuariosTable
-              usuarios={usuarios} // Estos son los currentUsersForTable del hook
+              usuarios={usuarios}
               onView={(usuario) => handleOpenModal("details", usuario)}
               onEdit={(usuario) => handleOpenModal("edit", usuario)}
-              onDeleteConfirm={showDeleteModal} // Llamar a showDeleteModal del hook
-              onToggleAnular={handleToggleEstadoUsuario} // Esto se mantiene para el switch de estado
-              currentPage={currentPage}
-              rowsPerPage={usersPerPage}
+              onDeleteConfirm={(usuario) => handleOpenModal('delete', usuario)}
+              onToggleAnular={handleToggleEstadoUsuario}
             />
-            { totalUsuariosFiltrados > 0 && usersPerPage > 0 && totalUsuariosFiltrados > usersPerPage && (
-                <Pagination
+            {totalUsuariosFiltrados > usersPerPage && (
+              <Pagination
                 itemsPerPage={usersPerPage}
-                totalItems={totalUsuariosFiltrados} // Usar el total después de filtros
+                totalItems={totalUsuariosFiltrados}
                 paginate={paginate}
                 currentPage={currentPage}
-                />
+              />
             )}
           </>
         )}
@@ -123,45 +106,45 @@ function ListaUsuariosPage() {
       <UsuarioCrearModal
         isOpen={isCrearModalOpen}
         onClose={closeModal}
-         onSubmit={handleSaveUsuario} // Este es handleSaveUsuario del hook
+        onSubmit={handleSaveUsuario}
         availableRoles={availableRoles}
         isLoading={isSubmitting}
-         // Props para el formulario desde el hook
-         formData={formData}
-         formErrors={formErrors}
-         isFormValid={isFormValid}
-         isVerifyingEmail={isVerifyingEmail}
-         handleInputChange={handleInputChange}
-         handleInputBlur={handleInputBlur}
-      />
-      <UsuarioEditarModal
-        isOpen={isEditarModalOpen}
-        onClose={closeModal}
-        onSubmit={handleSaveUsuario} // Este es handleSaveUsuario del hook
-        initialData={currentUsuario} // Para determinar si es admin protegido, etc.
-        availableRoles={availableRoles}
-        isLoading={isSubmitting}
-        // Props para el formulario desde el hook
         formData={formData}
         formErrors={formErrors}
         isFormValid={isFormValid}
         isVerifyingEmail={isVerifyingEmail}
         handleInputChange={handleInputChange}
         handleInputBlur={handleInputBlur}
+        requiresProfile={requiresProfile}
+        checkRequiresProfile={checkRequiresProfile}
       />
+      <UsuarioEditarModal
+        isOpen={isEditarModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSaveUsuario}
+        availableRoles={availableRoles}
+        isLoading={isSubmitting || isLoadingPage}
+        formData={formData}
+        formErrors={formErrors}
+        isFormValid={isFormValid}
+        isVerifyingEmail={isVerifyingEmail}
+        handleInputChange={handleInputChange}
+        handleInputBlur={handleInputBlur}
+        requiresProfile={requiresProfile}
+        checkRequiresProfile={checkRequiresProfile}
+      />
+
       <UsuarioDetalleModal
         isOpen={isDetailsModalOpen}
         onClose={closeModal}
         usuario={currentUsuario}
       />
-      <ConfirmModal // Modal para confirmar la eliminación física
-        isOpen={isConfirmDeleteModalOpen} // Usar el estado correcto del hook
-        onClose={closeModal} // O idealmente closeDeleteModal si solo cierra este modal
-        onConfirm={handleConfirmDeleteUsuario} // Usar la función de confirmación del hook
+      <ConfirmModal
+        isOpen={isConfirmDeleteModalOpen}
+        onClose={closeModal}
+        onConfirm={handleConfirmDeleteUsuario}
         title="Confirmar Eliminación Permanente"
-        message={`¿Estás seguro de que deseas eliminar permanentemente al usuario "${
-          currentUsuario?.clienteInfo?.nombre || currentUsuario?.empleadoInfo?.nombre || currentUsuario?.correo || ""
-        }"? Esta acción no se puede deshacer.`}
+        message={`¿Estás seguro de que deseas eliminar permanentemente al usuario "${formData?.correo || currentUsuario?.correo || ""}"? Esta acción no se puede deshacer.`}
         confirmText="Eliminar Permanentemente"
         cancelText="Cancelar"
         isLoading={isSubmitting}
@@ -170,7 +153,7 @@ function ListaUsuariosPage() {
         isOpen={isValidationModalOpen}
         onClose={closeModal}
         message={validationMessage}
-        title="Aviso" // El título podría ser dinámico también si se pasa desde el hook
+        title="Aviso de Usuarios"
       />
     </div>
   );
