@@ -1,4 +1,6 @@
 // src/features/usuarios/hooks/useUsuarios.js
+
+// --- IMPORTS ---
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   getUsuariosAPI,
@@ -8,51 +10,55 @@ import {
   getRolesAPI,
   verificarCorreoAPI,
   eliminarUsuarioFisicoAPI,
-  getUsuarioByIdAPI
+  getUsuarioByIdAPI,
 } from "../services/usuariosService";
 
-// Expresiones regulares para validación en el frontend (COINCIDEN CON EL BACKEND)
-const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/; // Solo letras y espacios
-const phoneRegex = /^\d+$/; // Solo números
-const alphanumericRegex = /^[a-zA-Z0-9]+$/; // Solo letras y números
+// --- CONSTANTES DE VALIDACIÓN ---
+const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const numericOnlyRegex = /^\d+$/;
+const alphanumericRegex = /^[a-zA-Z0-9]+$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
 const useUsuarios = () => {
-  // --- Estados de la página y datos ---
+  // --- ESTADOS PRINCIPALES ---
   const [usuarios, setUsuarios] = useState([]);
   const [availableRoles, setAvailableRoles] = useState([]);
   const [isLoadingPage, setIsLoadingPage] = useState(true);
   const [errorPage, setErrorPage] = useState(null);
   const [currentUsuario, setCurrentUsuario] = useState(null);
 
-  // --- Estados de Modales y Acciones ---
+  // --- ESTADOS DE MODALES Y ACCIONES ---
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
+    useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
   const [usuarioToDelete, setUsuarioToDelete] = useState(null);
 
-  // --- Estados del Formulario (Centralizados) ---
+  // --- ESTADOS DEL FORMULARIO ---
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // --- Estados de Filtro y Paginación ---
+  // --- ESTADOS DE FILTRO Y PAGINACIÓN ---
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEstado, setFilterEstado] = useState("todos");
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
 
+  // --- FUNCIONES DE CARGA DE DATOS ---
   const cargarDatos = useCallback(async () => {
     setIsLoadingPage(true);
     setErrorPage(null);
+    console.log("[DEBUG] Iniciando carga de datos de usuarios y roles...");
     try {
       const [usuariosData, rolesData] = await Promise.all([
         getUsuariosAPI(),
@@ -62,21 +68,27 @@ const useUsuarios = () => {
       setAvailableRoles(
         rolesData.filter((r) => r.nombre !== "Administrador") || []
       );
+      console.log("[DEBUG] Usuarios cargados:", usuariosData);
+      console.log("[DEBUG] Roles cargados:", rolesData);
     } catch (err) {
       setErrorPage(err.message || "No se pudieron cargar los datos.");
+      console.error("[DEBUG] Error al cargar datos:", err);
     } finally {
       setIsLoadingPage(false);
+      console.log("[DEBUG] Finalizó carga de datos.");
     }
   }, []);
 
   useEffect(() => {
+    console.log("[DEBUG] useEffect cargarDatos");
     cargarDatos();
   }, [cargarDatos]);
 
-  // --- LÓGICA DE VALIDACIÓN DEL FORMULARIO ---
+  // --- VALIDACIÓN DE FORMULARIO ---
   const getRoleById = useCallback(
     (roleId) => {
-      return availableRoles.find((r) => r.idRol === parseInt(roleId, 10));
+      const role = availableRoles.find((r) => r.idRol === parseInt(roleId, 10));
+      return role;
     },
     [availableRoles]
   );
@@ -84,11 +96,12 @@ const useUsuarios = () => {
   const checkRequiresProfile = useCallback(
     (roleId) => {
       const selectedRole = getRoleById(roleId);
-      return (
+      const result =
         selectedRole &&
         (selectedRole.tipoPerfil === "CLIENTE" ||
-          selectedRole.tipoPerfil === "EMPLEADO")
-      );
+          selectedRole.tipoPerfil === "EMPLEADO");
+      console.log("[DEBUG] checkRequiresProfile:", roleId, result);
+      return result;
     },
     [getRoleById]
   );
@@ -139,7 +152,7 @@ const useUsuarios = () => {
               docType === "Tarjeta de Identidad" ||
               docType === "Cédula de Extranjería"
             ) {
-              if (!phoneRegex.test(value)) {
+              if (!numericOnlyRegex.test(value)) {
                 error = "Para este tipo de documento, ingrese solo números.";
               }
             } else if (docType === "Pasaporte") {
@@ -154,7 +167,7 @@ const useUsuarios = () => {
           break;
         case "telefono":
           if (requiresProfile && !value) error = "El teléfono es requerido.";
-          else if (value && !phoneRegex.test(value))
+          else if (value && !numericOnlyRegex.test(value))
             error = "El teléfono solo debe contener números.";
           else if (value && (value.length < 7 || value.length > 15))
             error = "Debe tener entre 7 y 15 dígitos.";
@@ -163,15 +176,24 @@ const useUsuarios = () => {
           if (requiresProfile && !value) {
             error = "La fecha de nacimiento es requerida.";
           } else if (value) {
-            const birthDate = new Date(value);
+            // new Date() puede interpretar mal YYYY-MM-DD, así que añadimos T00:00:00 para evitar problemas de zona horaria.
+            const birthDate = new Date(`${value}T00:00:00`);
             const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-              age--;
-            }
-            if (age < 18) {
-              error = "El usuario debe ser mayor de 18 años.";
+            today.setHours(0, 0, 0, 0); // Normalizar a medianoche para una comparación justa
+
+            if (isNaN(birthDate.getTime())) {
+              error = "La fecha ingresada no es válida.";
+            } else if (birthDate > today) {
+              error = "La fecha de nacimiento no puede ser una fecha futura.";
+            } else {
+              let age = today.getFullYear() - birthDate.getFullYear();
+              const m = today.getMonth() - birthDate.getMonth();
+              if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+              }
+              if (age < 18) {
+                error = "El usuario debe ser mayor de 18 años.";
+              }
             }
           }
           break;
@@ -187,6 +209,13 @@ const useUsuarios = () => {
         default:
           break;
       }
+      if (error) {
+        console.log(
+          `[DEBUG] Campo '${name}' | Valor: '${value}' | Error: ${error}`
+        );
+      } else {
+        console.log(`[DEBUG] Campo '${name}' validado correctamente.`);
+      }
       return error;
     },
     [checkRequiresProfile, getRoleById]
@@ -196,8 +225,15 @@ const useUsuarios = () => {
     (data, formType) => {
       const errors = {};
       const allFields = [
-        "correo", "idRol", "nombre", "apellido", "tipoDocumento",
-        "numeroDocumento", "telefono", "fechaNacimiento", "direccion",
+        "correo",
+        "idRol",
+        "nombre",
+        "apellido",
+        "tipoDocumento",
+        "numeroDocumento",
+        "telefono",
+        "fechaNacimiento",
+        "direccion",
       ];
       if (formType === "create")
         allFields.push("contrasena", "confirmarContrasena");
@@ -206,6 +242,7 @@ const useUsuarios = () => {
         const error = validateField(field, data[field], data, formType);
         if (error) errors[field] = error;
       });
+      console.log("[DEBUG] Resultado de todas las validaciones:", errors);
       return errors;
     },
     [validateField]
@@ -222,9 +259,10 @@ const useUsuarios = () => {
     const combinedErrors = { ...validationErrors, ...existingApiError };
 
     setFormErrors(combinedErrors);
-    setIsFormValid(
-      Object.keys(combinedErrors).length === 0 && !isVerifyingEmail
-    );
+    const isValid =
+      Object.keys(combinedErrors).length === 0 && !isVerifyingEmail;
+    setIsFormValid(isValid);
+    console.log(`[DEBUG] ¿Es el formulario válido?: ${isValid}`);
   }, [
     formData,
     runAllValidations,
@@ -234,39 +272,49 @@ const useUsuarios = () => {
     formErrors.correo,
   ]);
 
+  // --- HANDLERS DE FORMULARIO ---
   const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     const val = type === "checkbox" ? checked : value;
     setFormData((prev) => ({ ...prev, [name]: val }));
+    console.log(`[DEBUG] handleInputChange: ${name} = ${val}`);
   }, []);
 
-  const handleInputBlur = useCallback(async (e) => {
-    const { name, value } = e.target;
-    const formType = formData.idUsuario ? "edit" : "create";
-    const error = validateField(name, value, formData, formType);
-    setFormErrors((prev) => ({ ...prev, [name]: error }));
+  const handleInputBlur = useCallback(
+    async (e) => {
+      const { name, value } = e.target;
+      const formType = formData.idUsuario ? "edit" : "create";
+      const error = validateField(name, value, formData, formType);
+      setFormErrors((prev) => ({ ...prev, [name]: error }));
+      console.log(
+        `[DEBUG] handleInputBlur: ${name} = ${value}, error: ${error}`
+      );
 
-    if (name === "correo" && !error && value) {
-      const originalEmail = isEditarModalOpen ? currentUsuario?.correo : null;
-      if (value !== originalEmail) {
-        setIsVerifyingEmail(true);
-        try {
-          const res = await verificarCorreoAPI(value);
-          if (res.estaEnUso) {
-            setFormErrors((prev) => ({
-              ...prev,
-              correo: "Este correo ya está registrado.",
-            }));
+      if (name === "correo" && !error && value) {
+        const originalEmail = isEditarModalOpen ? currentUsuario?.correo : null;
+        if (value !== originalEmail) {
+          setIsVerifyingEmail(true);
+          try {
+            const res = await verificarCorreoAPI(value);
+            console.log("[DEBUG] verificarCorreoAPI:", res);
+            if (res.estaEnUso) {
+              setFormErrors((prev) => ({
+                ...prev,
+                correo: "Este correo ya está registrado.",
+              }));
+            }
+          } catch (apiError) {
+            console.error("Error al verificar el correo:", apiError);
+          } finally {
+            setIsVerifyingEmail(false);
           }
-        } catch (apiError) {
-          console.error("Error al verificar el correo:", apiError);
-        } finally {
-          setIsVerifyingEmail(false);
         }
       }
-    }
-  }, [formData, validateField, currentUsuario, isEditarModalOpen]);
+    },
+    [formData, validateField, currentUsuario, isEditarModalOpen]
+  );
 
+  // --- HANDLERS DE MODALES ---
   const closeModal = useCallback(() => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
@@ -278,57 +326,92 @@ const useUsuarios = () => {
     setValidationMessage("");
     setFormData({});
     setFormErrors({});
+    console.log("[DEBUG] closeModal ejecutado");
   }, []);
 
-  const handleOpenModal = useCallback(async (type, usuario = null) => {
-    setFormErrors({});
-    if (type === "create") {
-      const defaultRole = availableRoles.find(r => r.nombre === 'Cliente') || availableRoles[0] || null;
-      setFormData({
-        idRol: defaultRole ? defaultRole.idRol : '',
-        tipoDocumento: 'Cédula de Ciudadanía',
-        estado: true,
-        nombre: '', apellido: '', correo: '', telefono: '',
-        numeroDocumento: '', fechaNacimiento: '', direccion: '',
-        contrasena: '', confirmarContrasena: ''
-      });
-      setIsCrearModalOpen(true);
-    } else if (type === "edit" && usuario) {
-      try {
-        setIsLoadingPage(true);
-        const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
-        setCurrentUsuario(fullUserData);
+  const handleOpenModal = useCallback(
+    async (type, usuario = null) => {
+      setFormErrors({});
+      console.log("[DEBUG] handleOpenModal:", type, usuario);
+      if (type === "create") {
+        const defaultRole =
+          availableRoles.find((r) => r.nombre === "Cliente") ||
+          availableRoles[0] ||
+          null;
         setFormData({
-          ...fullUserData,
-          fechaNacimiento: fullUserData.fechaNacimiento
-            ? fullUserData.fechaNacimiento.split("T")[0]
-            : "",
+          idRol: defaultRole ? defaultRole.idRol : "",
+          tipoDocumento: "Cédula de Ciudadanía",
+          estado: true,
+          nombre: "",
+          apellido: "",
+          correo: "",
+          telefono: "",
+          numeroDocumento: "",
+          fechaNacimiento: "",
+          direccion: "",
+          contrasena: "",
+          confirmarContrasena: "",
         });
-        setIsEditarModalOpen(true);
-      } catch (err) {
-        setErrorPage(err.message || "No se pudieron cargar los datos del usuario.");
-      } finally {
-        setIsLoadingPage(false);
+        setIsCrearModalOpen(true);
+      } else if (type === "edit" && usuario) {
+        try {
+          setIsLoadingPage(true);
+          const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
+          setCurrentUsuario(fullUserData);
+          setFormData({
+            ...fullUserData,
+            fechaNacimiento: fullUserData.fechaNacimiento
+              ? fullUserData.fechaNacimiento.split("T")[0]
+              : "",
+          });
+          setIsEditarModalOpen(true);
+          console.log(
+            "[DEBUG] handleOpenModal edit: usuario cargado",
+            fullUserData
+          );
+        } catch (err) {
+          setErrorPage(
+            err.message || "No se pudieron cargar los datos del usuario."
+          );
+          console.error("[DEBUG] handleOpenModal edit error:", err);
+        } finally {
+          setIsLoadingPage(false);
+        }
+      } else if (type === "delete" && usuario) {
+        setUsuarioToDelete(usuario);
+        setIsConfirmDeleteModalOpen(true);
+        console.log("[DEBUG] handleOpenModal delete: usuario", usuario);
       }
-    } else if (type === "delete" && usuario) {
-      setUsuarioToDelete(usuario);
-      setIsConfirmDeleteModalOpen(true);
-    }
-  }, [availableRoles]);
+    },
+    [availableRoles]
+  );
 
+  // --- HANDLERS DE ACCIONES DE USUARIO ---
   const handleSaveUsuario = useCallback(async () => {
     const formType = formData.idUsuario ? "edit" : "create";
     const validationErrors = runAllValidations(formData, formType);
+
     if (Object.keys(validationErrors).length > 0) {
       setFormErrors(validationErrors);
+      console.log(
+        "[DEBUG] Intento de envío bloqueado. Errores encontrados:",
+        validationErrors
+      );
       return;
     }
-    if (!isFormValid) return;
+    if (!isFormValid) {
+      console.log(
+        "[DEBUG] Intento de envío bloqueado. El estado isFormValid es false."
+      );
+      return;
+    }
 
     setIsSubmitting(true);
     try {
       const dataParaAPI = { ...formData };
       delete dataParaAPI.confirmarContrasena;
+
+      console.log("[DEBUG] Payload final enviado a la API:", dataParaAPI);
 
       const successMessage = formData.idUsuario
         ? `El usuario ${dataParaAPI.correo} ha sido actualizado.`
@@ -336,52 +419,86 @@ const useUsuarios = () => {
 
       if (formData.idUsuario) {
         await updateUsuarioAPI(formData.idUsuario, dataParaAPI);
+        console.log("[DEBUG] Usuario actualizado correctamente");
       } else {
         await createUsuarioAPI(dataParaAPI);
+        console.log("[DEBUG] Usuario creado correctamente");
       }
       await cargarDatos();
       closeModal();
       setValidationMessage(successMessage);
       setIsValidationModalOpen(true);
     } catch (err) {
-      const apiErrorMessage = err.response?.data?.message || err.message || "Error al guardar el usuario.";
+      const apiErrorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Error al guardar el usuario.";
+      console.error(
+        "[DEBUG] Error recibido de la API:",
+        err.response?.data || err
+      );
       setValidationMessage(apiErrorMessage);
       setIsValidationModalOpen(true);
     } finally {
       setIsSubmitting(false);
+      console.log("[DEBUG] handleSaveUsuario finalizado");
     }
   }, [formData, isFormValid, runAllValidations, cargarDatos, closeModal]);
 
   const handleConfirmDeleteUsuario = useCallback(async () => {
     if (!usuarioToDelete?.idUsuario) return;
     setIsSubmitting(true);
+    console.log(
+      "[DEBUG] handleConfirmDeleteUsuario: eliminando usuario",
+      usuarioToDelete
+    );
     try {
       await eliminarUsuarioFisicoAPI(usuarioToDelete.idUsuario);
       closeModal();
       await cargarDatos();
-      setValidationMessage(`El usuario "${usuarioToDelete.correo}" fue eliminado permanentemente.`);
+      setValidationMessage(
+        `El usuario "${usuarioToDelete.correo}" fue eliminado permanentemente.`
+      );
       setIsValidationModalOpen(true);
+      console.log("[DEBUG] Usuario eliminado correctamente");
     } catch (err) {
-      setValidationMessage(err.message || "Error al eliminar permanentemente el usuario.");
+      setValidationMessage(
+        err.message || "Error al eliminar permanentemente el usuario."
+      );
       setIsValidationModalOpen(true);
+      console.error("[DEBUG] Error al eliminar usuario:", err);
     } finally {
       setIsSubmitting(false);
+      console.log("[DEBUG] handleConfirmDeleteUsuario finalizado");
     }
   }, [usuarioToDelete, cargarDatos, closeModal]);
 
-  const handleToggleEstadoUsuario = useCallback(async (usuarioToToggle) => {
-    try {
-      const nuevoEstado = !usuarioToToggle.estado;
-      await toggleUsuarioEstadoAPI(usuarioToToggle.idUsuario, nuevoEstado);
-      await cargarDatos();
-      setValidationMessage(`El estado de "${usuarioToToggle.correo}" se cambió a ${nuevoEstado ? "Activo" : "Inactivo"}.`);
-      setIsValidationModalOpen(true);
-    } catch (err) {
-      setValidationMessage(err.message || "Error al cambiar el estado del usuario.");
-      setIsValidationModalOpen(true);
-    }
-  }, [cargarDatos]);
+  const handleToggleEstadoUsuario = useCallback(
+    async (usuarioToToggle) => {
+      console.log("[DEBUG] handleToggleEstadoUsuario:", usuarioToToggle);
+      try {
+        const nuevoEstado = !usuarioToToggle.estado;
+        await toggleUsuarioEstadoAPI(usuarioToToggle.idUsuario, nuevoEstado);
+        await cargarDatos();
+        setValidationMessage(
+          `El estado de "${usuarioToToggle.correo}" se cambió a ${
+            nuevoEstado ? "Activo" : "Inactivo"
+          }.`
+        );
+        setIsValidationModalOpen(true);
+        console.log("[DEBUG] Estado de usuario cambiado correctamente");
+      } catch (err) {
+        setValidationMessage(
+          err.message || "Error al cambiar el estado del usuario."
+        );
+        setIsValidationModalOpen(true);
+        console.error("[DEBUG] Error al cambiar estado de usuario:", err);
+      }
+    },
+    [cargarDatos]
+  );
 
+  // --- FILTRO Y PAGINACIÓN ---
   useEffect(() => {
     const timerId = setTimeout(() => setSearchTerm(inputValue.trim()), 500);
     return () => clearTimeout(timerId);
@@ -397,7 +514,12 @@ const useUsuarios = () => {
       const lowerSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter((u) => {
         const perfil = u.clienteInfo || u.empleadoInfo || {};
-        const estadoString = typeof u.estado === "boolean" ? (u.estado ? "activo" : "inactivo") : "";
+        const estadoString =
+          typeof u.estado === "boolean"
+            ? u.estado
+              ? "activo"
+              : "inactivo"
+            : "";
         return (
           perfil.nombre?.toLowerCase().includes(lowerSearchTerm) ||
           perfil.apellido?.toLowerCase().includes(lowerSearchTerm) ||
@@ -408,18 +530,27 @@ const useUsuarios = () => {
         );
       });
     }
+    console.log("[DEBUG] processedUsuarios:", filtered);
     return filtered;
   }, [usuarios, searchTerm, filterEstado]);
 
   useEffect(() => {
     setCurrentPage(1);
+    console.log("[DEBUG] Cambio de filtro o búsqueda, página actual a 1");
   }, [searchTerm, filterEstado]);
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsersForTable = processedUsuarios.slice(indexOfFirstUser, indexOfLastUser);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const currentUsersForTable = processedUsuarios.slice(
+    indexOfFirstUser,
+    indexOfLastUser
+  );
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    console.log("[DEBUG] paginate: página actual", pageNumber);
+  };
 
+  // --- RETORNO DEL HOOK ---
   return {
     usuarios: currentUsersForTable,
     totalUsuariosFiltrados: processedUsuarios.length,
