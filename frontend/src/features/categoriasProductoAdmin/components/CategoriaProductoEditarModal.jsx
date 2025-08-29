@@ -14,10 +14,7 @@ const CategoriaProductoEditarModal = ({ isOpen, onClose, onSubmit, initialData }
         idCategoriaProducto: initialData.idCategoriaProducto,
         nombre: initialData.nombre || '',
         descripcion: initialData.descripcion || '',
-        vidaUtilDias: initialData.vidaUtilDias !== undefined && initialData.vidaUtilDias !== null ? initialData.vidaUtilDias : '',
-        tipoUso: initialData.tipoUso || '',
         estado: initialData.estado !== undefined ? initialData.estado : true,
-        productos: initialData.productos || [],
       });
       setFormErrors({});
       setGeneralError('');
@@ -29,32 +26,29 @@ const CategoriaProductoEditarModal = ({ isOpen, onClose, onSubmit, initialData }
 
   const handleFormChange = (name, value) => {
     let error = '';
-    
-    // Validar espacios al inicio y más de dos espacios seguidos
-    const spaceValidationRegex = /^(?!\s)(?!.*\s{3,}).*$/;
 
-    // Validar caracteres especiales y emojis
+    // 1. Prevenir el espacio al inicio
+    if (value.startsWith(' ')) {
+      error = "El campo no puede empezar con un espacio.";
+      setFormErrors(prev => ({ ...prev, [name]: error }));
+      return; // No actualizar el estado si hay un espacio al inicio
+    }
+    // 2. Prevenir más de dos espacios seguidos
+    if (/\s{3,}/.test(value)) {
+      error = "No se permiten más de dos espacios seguidos.";
+      setFormErrors(prev => ({ ...prev, [name]: error }));
+      return; // No actualizar el estado si hay más de dos espacios
+    }
+
+    // 3. Prevenir caracteres especiales y emojis
     const specialCharsOrEmojisRegex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/;
-    
-    if (name === 'nombre' || name === 'descripcion') {
-        if (!spaceValidationRegex.test(value)) {
-            if (value.startsWith(' ')) {
-                error = "El campo no puede empezar con un espacio.";
-            } else if (/\s{3,}/.test(value)) {
-                error = "No se permiten más de dos espacios seguidos.";
-            }
-        } else if (!specialCharsOrEmojisRegex.test(value)) {
-            error = "Solo se permiten letras, números y espacios.";
-        }
-    }
-    
-    // Si hay un error, lo establecemos y no actualizamos el estado del formulario.
-    if (error) {
-        setFormErrors(prev => ({ ...prev, [name]: error }));
-        return;
+    if (value.length > 0 && !specialCharsOrEmojisRegex.test(value)) {
+      error = "Solo se permiten letras, números y espacios.";
+      setFormErrors(prev => ({ ...prev, [name]: error }));
+      return; // No actualizar el estado si hay caracteres no válidos
     }
 
-    // Si no hay errores, actualizamos el estado y limpiamos el error del campo
+    // Si todas las validaciones pasan, actualizamos el estado
     setFormData(prev => ({ ...prev, [name]: value }));
     setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
     if (generalError) {
@@ -65,60 +59,34 @@ const CategoriaProductoEditarModal = ({ isOpen, onClose, onSubmit, initialData }
   const validateAllFormFields = () => {
     const errors = {};
     let isValid = true;
-    const requiredFields = ['nombre', 'descripcion', 'vidaUtilDias', 'tipoUso'];
+    const requiredFields = ['nombre', 'descripcion'];
 
     requiredFields.forEach(field => {
-        const value = formData?.[field];
-        const trimmedValue = (typeof value === 'string') ? value?.trim() : value;
+      const value = formData?.[field];
 
-        // Validación de campo obligatorio
-        if (trimmedValue === '' || trimmedValue === null || trimmedValue === undefined) {
-            errors[field] = `El campo es obligatorio.`;
-            isValid = false;
-        } else {
-            // Re-validación de formato de espacios y caracteres al enviar
-            const spaceValidationRegex = /^(?!\s)(?!.*\s{3,}).*$/;
-            const specialCharsOrEmojisRegex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/;
-            
-            if (!spaceValidationRegex.test(value)) {
-                if (value.startsWith(' ')) {
-                    errors[field] = "El campo no puede empezar con un espacio.";
-                } else {
-                    errors[field] = "No se permiten más de dos espacios seguidos.";
-                }
-                isValid = false;
-            } else if (!specialCharsOrEmojisRegex.test(value)) {
-                errors[field] = "Solo se permiten letras, números y espacios.";
-                isValid = false;
-            }
-        }
+      if (!value || value.trim() === '') {
+        errors[field] = `El campo es obligatorio.`;
+        isValid = false;
+      } else {
+        const trimmedValue = value.trim();
 
-        // Aplicar validaciones de longitud y formato específicas de cada campo
-        if (field === 'nombre') {
-            if (trimmedValue?.length > 0 && (trimmedValue.length < 2 || trimmedValue.length > 100)) {
-                errors[field] = "El nombre debe tener entre 2 y 100 caracteres.";
-                isValid = false;
-            }
-        } else if (field === 'descripcion') {
-            if (trimmedValue?.length > 0 && trimmedValue.length > 500) {
-                errors[field] = "La descripción no debe exceder los 500 caracteres.";
-                isValid = false;
-            }
-        } else if (field === 'vidaUtilDias') {
-            const numValue = Number(value);
-            if (value !== '' && (isNaN(numValue) || numValue < 0 || !Number.isInteger(numValue))) {
-                errors[field] = "La vida útil debe ser un número entero no negativo de días.";
-                isValid = false;
-            }
-        } else if (field === 'tipoUso') {
-            if (trimmedValue?.length > 0 && !['Interno', 'Externo'].includes(trimmedValue)) {
-                errors[field] = "Tipo de uso no válido.";
-                isValid = false;
-            }
+        // **Validación: mínimo 3 caracteres**
+        if (trimmedValue.length < 3) {
+          errors[field] = `El campo debe tener al menos 3 caracteres.`;
+          isValid = false;
         }
+        // Validaciones de longitud máxima
+        else if (field === 'nombre' && trimmedValue.length > 100) {
+          errors[field] = "El nombre no debe exceder los 100 caracteres.";
+          isValid = false;
+        } else if (field === 'descripcion' && trimmedValue.length > 500) {
+          errors[field] = "La descripción no debe exceder los 500 caracteres.";
+          isValid = false;
+        }
+      }
     });
 
-    setFormErrors(prevErrors => ({ ...prevErrors, ...errors }));
+    setFormErrors(errors);
     return isValid;
   };
 
@@ -153,16 +121,22 @@ const CategoriaProductoEditarModal = ({ isOpen, onClose, onSubmit, initialData }
             setFormErrors(prev => ({ ...prev, ...fieldErrors }));
           }
           if (apiErrorMessage === "Ocurrió un error inesperado al actualizar la categoría." && Object.keys(fieldErrors).length > 0) {
-              apiErrorMessage = "Por favor, revisa los errores específicos en los campos.";
+            apiErrorMessage = "Por favor, revisa los errores específicos en los campos.";
           }
         } else if (error.response.data.message) {
           apiErrorMessage = error.response.data.message;
-          if (apiErrorMessage.includes("categoría de producto") && apiErrorMessage.includes("nombre") && apiErrorMessage.includes("ya existe")) {
+          // Validar si el nombre es el mismo que el original para evitar error de duplicidad
+          if (error.response.data.message.includes("categoría de producto") && error.response.data.message.includes("nombre") && error.response.data.message.includes("ya existe") && formData.nombre !== initialData.nombre) {
             fieldErrors.nombre = apiErrorMessage;
+          } else if (formData.nombre === initialData.nombre) {
+            // No hacer nada si el nombre no ha cambiado y la API retorna un error de duplicidad.
+          } else {
+            fieldErrors.nombre = "El nombre de la categoría ya existe.";
           }
+
           if (Object.keys(fieldErrors).length > 0) {
-              setFormErrors(prev => ({ ...prev, ...fieldErrors }));
-              apiErrorMessage = "Por favor, revisa los errores específicos en los campos.";
+            setFormErrors(prev => ({ ...prev, ...fieldErrors }));
+            apiErrorMessage = "Por favor, revisa los errores específicos en los campos.";
           }
         }
       }
