@@ -13,7 +13,7 @@ const UsuarioForm = ({
   isVerifyingEmail,
   requiresProfile,
   isCliente,
-  isUserAdmin // Para deshabilitar campos del rol Administrador
+  isUserAdmin
 }) => {
   const errors = formErrors || {};
 
@@ -26,6 +26,7 @@ const UsuarioForm = ({
           type="email"
           id="correo"
           name="correo"
+          autoComplete="email"
           value={formData.correo || ""}
           onChange={onInputChange}
           onBlur={onInputBlur}
@@ -65,6 +66,7 @@ const UsuarioForm = ({
               type="password"
               id="contrasena"
               name="contrasena"
+              autoComplete="new-password" // <-- CORRECCIÓN AÑADIDA
               value={formData.contrasena || ""}
               onChange={onInputChange}
               onBlur={onInputBlur}
@@ -79,6 +81,7 @@ const UsuarioForm = ({
               type="password"
               id="confirmarContrasena"
               name="confirmarContrasena"
+              autoComplete="new-password" // <-- CORRECCIÓN AÑADIDA
               value={formData.confirmarContrasena || ""}
               onChange={onInputChange}
               onBlur={onInputBlur}
@@ -121,8 +124,6 @@ const UsuarioForm = ({
               className={`usuarios-form-select ${errors.tipoDocumento ? "input-error" : ""}`}>
               <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
               <option value="Cédula de Extranjería">Cédula de Extranjería</option>
-              <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
-              <option value="Pasaporte">Pasaporte</option>
             </select>
             {errors.tipoDocumento && <span className="error-message">{errors.tipoDocumento}</span>}
           </div>
