@@ -437,7 +437,42 @@
                                   /* ej. 44 - 16 - (2*3) = 22 */
   }
   
+    .password-input-wrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
   
+    /* Hacemos que el input dentro del wrapper ocupe todo el ancho */
+    .password-input-wrapper .usuarios-form-input {
+      width: 100%;
+      padding-right: 40px;
+      /* Añade espacio para el botón */
+    }
+  
+    .password-toggle-button {
+      position: absolute;
+      right: 10px;
+      /* Posición del botón dentro del wrapper */
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      /* Color del ícono */
+    }
+  
+    .password-toggle-button:hover {
+      color: #333;
+      /* Color al pasar el mouse */
+    }
+    
   /* === ESTILOS RESPONSIVOS === */
   @media (max-width: 1024px) { /* Breakpoint para tablets */
     .usuarios-content {

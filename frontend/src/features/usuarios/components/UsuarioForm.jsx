@@ -1,7 +1,17 @@
 // src/features/usuarios/components/UsuarioForm.jsx
-import React from 'react';
+import React, { useState } from 'react'; // Importamos useState
 
 const RequiredAsterisk = () => <span className="required-asterisk">*</span>;
+
+// Componentes SVG para los íconos de ojo (para no usar librerías externas)
+const EyeIcon = ({ closed }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
+    {closed && <line x1="1" y1="1" x2="23" y2="23"></line>}
+  </svg>
+);
+
 
 const UsuarioForm = ({
   formData,
@@ -16,6 +26,11 @@ const UsuarioForm = ({
   isUserAdmin
 }) => {
   const errors = formErrors || {};
+  
+  // --- INICIO DE MODIFICACIÓN: Estado para visibilidad de contraseñas ---
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // --- FIN DE MODIFICACIÓN ---
 
   return (
     <div className="usuarios-form-grid-container">
@@ -60,40 +75,53 @@ const UsuarioForm = ({
 
       {!isEditing && (
         <>
+          {/* --- INICIO DE MODIFICACIÓN: Campo de contraseña con botón --- */}
           <div className="usuarios-form-grid-item">
             <label htmlFor="contrasena" className="usuarios-form-label">Contraseña <RequiredAsterisk /></label>
-            <input
-              type="password"
-              id="contrasena"
-              name="contrasena"
-              autoComplete="new-password" // <-- CORRECCIÓN AÑADIDA
-              value={formData.contrasena || ""}
-              onChange={onInputChange}
-              onBlur={onInputBlur}
-              required
-              className={`usuarios-form-input ${errors.contrasena ? "input-error" : ""}`}
-            />
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="contrasena"
+                name="contrasena"
+                autoComplete="new-password"
+                value={formData.contrasena || ""}
+                onChange={onInputChange}
+                onBlur={onInputBlur}
+                required
+                className={`usuarios-form-input ${errors.contrasena ? "input-error" : ""}`}
+              />
+              <button type="button" className="password-toggle-button" onClick={() => setShowPassword(!showPassword)}>
+                <EyeIcon closed={showPassword} />
+              </button>
+            </div>
             {errors.contrasena && <span className="error-message">{errors.contrasena}</span>}
           </div>
+
           <div className="usuarios-form-grid-item">
             <label htmlFor="confirmarContrasena" className="usuarios-form-label">Confirmar Contraseña <RequiredAsterisk /></label>
-            <input
-              type="password"
-              id="confirmarContrasena"
-              name="confirmarContrasena"
-              autoComplete="new-password" // <-- CORRECCIÓN AÑADIDA
-              value={formData.confirmarContrasena || ""}
-              onChange={onInputChange}
-              onBlur={onInputBlur}
-              required
-              className={`usuarios-form-input ${errors.confirmarContrasena ? "input-error" : ""}`}
-            />
+            <div className="password-input-wrapper">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmarContrasena"
+                name="confirmarContrasena"
+                autoComplete="new-password"
+                value={formData.confirmarContrasena || ""}
+                onChange={onInputChange}
+                onBlur={onInputBlur}
+                required
+                className={`usuarios-form-input ${errors.confirmarContrasena ? "input-error" : ""}`}
+              />
+              <button type="button" className="password-toggle-button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                <EyeIcon closed={showConfirmPassword} />
+              </button>
+            </div>
             {errors.confirmarContrasena && <span className="error-message">{errors.confirmarContrasena}</span>}
           </div>
+          {/* --- FIN DE MODIFICACIÓN --- */}
         </>
       )}
 
-      {/* --- Campos de Perfil (Renderizado Condicional) --- */}
+      {/* --- Campos de Perfil (Sin cambios) --- */}
       {requiresProfile && (
         <>
           <div className="usuarios-form-grid-item-full-width">
@@ -116,7 +144,8 @@ const UsuarioForm = ({
             />
             {errors.apellido && <span className="error-message">{errors.apellido}</span>}
           </div>
-
+          
+          {/* ... otros campos de perfil sin cambios ... */}
           <div className="usuarios-form-grid-item">
             <label htmlFor="tipoDocumento" className="usuarios-form-label">Tipo de Documento <RequiredAsterisk /></label>
             <select id="tipoDocumento" name="tipoDocumento" value={formData.tipoDocumento || ""}
@@ -124,6 +153,8 @@ const UsuarioForm = ({
               className={`usuarios-form-select ${errors.tipoDocumento ? "input-error" : ""}`}>
               <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
               <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+              <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
+              <option value="Pasaporte">Pasaporte</option>
             </select>
             {errors.tipoDocumento && <span className="error-message">{errors.tipoDocumento}</span>}
           </div>
