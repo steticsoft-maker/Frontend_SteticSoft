@@ -12,9 +12,10 @@ import {
 } from "../services/usuariosService";
 
 // Expresiones regulares para validación en el frontend (COINCIDEN CON EL BACKEND)
+const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/; // Solo letras y espacios
+const phoneRegex = /^\d+$/; // Solo números
+const alphanumericRegex = /^[a-zA-Z0-9]+$/; // Solo letras y números
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const phoneRegex = /^\d{7,15}$/;
-const docRegex = /^[a-zA-Z0-9]{5,20}$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 const useUsuarios = () => {
@@ -122,23 +123,56 @@ const useUsuarios = () => {
         case "nombre":
         case "apellido":
           if (requiresProfile && !value) error = `El ${name} es requerido.`;
+          else if (value && !nameRegex.test(value))
+            error = `El ${name} solo puede contener letras y espacios.`;
           else if (value && (value.length < 2 || value.length > 100))
             error = `Debe tener entre 2 y 100 caracteres.`;
           break;
         case "numeroDocumento":
-          if (requiresProfile && !value)
+          if (requiresProfile && !value) {
             error = "El número de documento es requerido.";
-          else if (value && !docRegex.test(value))
-            error = "Formato inválido (alfanumérico, 5-20 caracteres).";
+          } else if (value) {
+            const docType = currentData.tipoDocumento;
+            if (
+              docType === "Cédula de Ciudadanía" ||
+              docType === "Tarjeta de Identidad" ||
+              docType === "Cédula de Extranjería"
+            ) {
+              if (!phoneRegex.test(value)) {
+                error = "Para este tipo de documento, ingrese solo números.";
+              }
+            } else if (docType === "Pasaporte") {
+              if (!alphanumericRegex.test(value)) {
+                error = "Para Pasaporte, ingrese solo letras y números.";
+              }
+            }
+            if (!error && (value.length < 5 || value.length > 20)) {
+              error = "Debe tener entre 5 y 20 caracteres.";
+            }
+          }
           break;
         case "telefono":
           if (requiresProfile && !value) error = "El teléfono es requerido.";
           else if (value && !phoneRegex.test(value))
-            error = "Inválido (solo números, 7-15 dígitos).";
+            error = "El teléfono solo debe contener números.";
+          else if (value && (value.length < 7 || value.length > 15))
+            error = "Debe tener entre 7 y 15 dígitos.";
           break;
         case "fechaNacimiento":
-          if (requiresProfile && !value)
+          if (requiresProfile && !value) {
             error = "La fecha de nacimiento es requerida.";
+          } else if (value) {
+            const birthDate = new Date(value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+              age--;
+            }
+            if (age < 18) {
+              error = "El usuario debe ser mayor de 18 años.";
+            }
+          }
           break;
         case "direccion":
           if (selectedRole && selectedRole.tipoPerfil === "CLIENTE" && !value) {
