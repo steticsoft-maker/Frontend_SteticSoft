@@ -58,7 +58,6 @@ const useUsuarios = () => {
   const cargarDatos = useCallback(async () => {
     setIsLoadingPage(true);
     setErrorPage(null);
-    console.log("[DEBUG] Iniciando carga de datos de usuarios y roles...");
     try {
       const [usuariosData, rolesData] = await Promise.all([
         getUsuariosAPI(),
@@ -68,19 +67,15 @@ const useUsuarios = () => {
       setAvailableRoles(
         rolesData.filter((r) => r.nombre !== "Administrador") || []
       );
-      console.log("[DEBUG] Usuarios cargados:", usuariosData);
-      console.log("[DEBUG] Roles cargados:", rolesData);
+
     } catch (err) {
       setErrorPage(err.message || "No se pudieron cargar los datos.");
-      console.error("[DEBUG] Error al cargar datos:", err);
     } finally {
       setIsLoadingPage(false);
-      console.log("[DEBUG] Finalizó carga de datos.");
     }
   }, []);
 
   useEffect(() => {
-    console.log("[DEBUG] useEffect cargarDatos");
     cargarDatos();
   }, [cargarDatos]);
 
@@ -100,7 +95,6 @@ const useUsuarios = () => {
         selectedRole &&
         (selectedRole.tipoPerfil === "CLIENTE" ||
           selectedRole.tipoPerfil === "EMPLEADO");
-      console.log("[DEBUG] checkRequiresProfile:", roleId, result);
       return result;
     },
     [getRoleById]
@@ -209,13 +203,7 @@ const useUsuarios = () => {
         default:
           break;
       }
-      if (error) {
-        console.log(
-          `[DEBUG] Campo '${name}' | Valor: '${value}' | Error: ${error}`
-        );
-      } else {
-        console.log(`[DEBUG] Campo '${name}' validado correctamente.`);
-      }
+      if (error) { /* empty */ }
       return error;
     },
     [checkRequiresProfile, getRoleById]
@@ -242,7 +230,6 @@ const useUsuarios = () => {
         const error = validateField(field, data[field], data, formType);
         if (error) errors[field] = error;
       });
-      console.log("[DEBUG] Resultado de todas las validaciones:", errors);
       return errors;
     },
     [validateField]
@@ -262,7 +249,6 @@ const useUsuarios = () => {
     const isValid =
       Object.keys(combinedErrors).length === 0 && !isVerifyingEmail;
     setIsFormValid(isValid);
-    console.log(`[DEBUG] ¿Es el formulario válido?: ${isValid}`);
   }, [
     formData,
     runAllValidations,
@@ -277,7 +263,6 @@ const useUsuarios = () => {
     const { name, value, type, checked } = e.target;
     const val = type === "checkbox" ? checked : value;
     setFormData((prev) => ({ ...prev, [name]: val }));
-    console.log(`[DEBUG] handleInputChange: ${name} = ${val}`);
   }, []);
 
   const handleInputBlur = useCallback(
@@ -286,9 +271,6 @@ const useUsuarios = () => {
       const formType = formData.idUsuario ? "edit" : "create";
       const error = validateField(name, value, formData, formType);
       setFormErrors((prev) => ({ ...prev, [name]: error }));
-      console.log(
-        `[DEBUG] handleInputBlur: ${name} = ${value}, error: ${error}`
-      );
 
       if (name === "correo" && !error && value) {
         const originalEmail = isEditarModalOpen ? currentUsuario?.correo : null;
@@ -296,7 +278,6 @@ const useUsuarios = () => {
           setIsVerifyingEmail(true);
           try {
             const res = await verificarCorreoAPI(value);
-            console.log("[DEBUG] verificarCorreoAPI:", res);
             if (res.estaEnUso) {
               setFormErrors((prev) => ({
                 ...prev,
@@ -326,13 +307,11 @@ const useUsuarios = () => {
     setValidationMessage("");
     setFormData({});
     setFormErrors({});
-    console.log("[DEBUG] closeModal ejecutado");
   }, []);
 
   const handleOpenModal = useCallback(
     async (type, usuario = null) => {
       setFormErrors({});
-      console.log("[DEBUG] handleOpenModal:", type, usuario);
       if (type === "create") {
         const defaultRole =
           availableRoles.find((r) => r.nombre === "Cliente") ||
@@ -366,21 +345,18 @@ const useUsuarios = () => {
           });
           setIsEditarModalOpen(true);
           console.log(
-            "[DEBUG] handleOpenModal edit: usuario cargado",
             fullUserData
           );
         } catch (err) {
           setErrorPage(
             err.message || "No se pudieron cargar los datos del usuario."
           );
-          console.error("[DEBUG] handleOpenModal edit error:", err);
         } finally {
           setIsLoadingPage(false);
         }
       } else if (type === "delete" && usuario) {
         setUsuarioToDelete(usuario);
         setIsConfirmDeleteModalOpen(true);
-        console.log("[DEBUG] handleOpenModal delete: usuario", usuario);
       }
     },
     [availableRoles]
@@ -393,16 +369,9 @@ const useUsuarios = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       setFormErrors(validationErrors);
-      console.log(
-        "[DEBUG] Intento de envío bloqueado. Errores encontrados:",
-        validationErrors
-      );
       return;
     }
     if (!isFormValid) {
-      console.log(
-        "[DEBUG] Intento de envío bloqueado. El estado isFormValid es false."
-      );
       return;
     }
 
@@ -411,7 +380,6 @@ const useUsuarios = () => {
       const dataParaAPI = { ...formData };
       delete dataParaAPI.confirmarContrasena;
 
-      console.log("[DEBUG] Payload final enviado a la API:", dataParaAPI);
 
       const successMessage = formData.idUsuario
         ? `El usuario ${dataParaAPI.correo} ha sido actualizado.`
@@ -419,10 +387,8 @@ const useUsuarios = () => {
 
       if (formData.idUsuario) {
         await updateUsuarioAPI(formData.idUsuario, dataParaAPI);
-        console.log("[DEBUG] Usuario actualizado correctamente");
       } else {
         await createUsuarioAPI(dataParaAPI);
-        console.log("[DEBUG] Usuario creado correctamente");
       }
       await cargarDatos();
       closeModal();
@@ -433,15 +399,10 @@ const useUsuarios = () => {
         err.response?.data?.message ||
         err.message ||
         "Error al guardar el usuario.";
-      console.error(
-        "[DEBUG] Error recibido de la API:",
-        err.response?.data || err
-      );
       setValidationMessage(apiErrorMessage);
       setIsValidationModalOpen(true);
     } finally {
       setIsSubmitting(false);
-      console.log("[DEBUG] handleSaveUsuario finalizado");
     }
   }, [formData, isFormValid, runAllValidations, cargarDatos, closeModal]);
 
@@ -449,7 +410,6 @@ const useUsuarios = () => {
     if (!usuarioToDelete?.idUsuario) return;
     setIsSubmitting(true);
     console.log(
-      "[DEBUG] handleConfirmDeleteUsuario: eliminando usuario",
       usuarioToDelete
     );
     try {
@@ -460,22 +420,18 @@ const useUsuarios = () => {
         `El usuario "${usuarioToDelete.correo}" fue eliminado permanentemente.`
       );
       setIsValidationModalOpen(true);
-      console.log("[DEBUG] Usuario eliminado correctamente");
     } catch (err) {
       setValidationMessage(
         err.message || "Error al eliminar permanentemente el usuario."
       );
       setIsValidationModalOpen(true);
-      console.error("[DEBUG] Error al eliminar usuario:", err);
     } finally {
       setIsSubmitting(false);
-      console.log("[DEBUG] handleConfirmDeleteUsuario finalizado");
     }
   }, [usuarioToDelete, cargarDatos, closeModal]);
 
   const handleToggleEstadoUsuario = useCallback(
     async (usuarioToToggle) => {
-      console.log("[DEBUG] handleToggleEstadoUsuario:", usuarioToToggle);
       try {
         const nuevoEstado = !usuarioToToggle.estado;
         await toggleUsuarioEstadoAPI(usuarioToToggle.idUsuario, nuevoEstado);
@@ -486,13 +442,11 @@ const useUsuarios = () => {
           }.`
         );
         setIsValidationModalOpen(true);
-        console.log("[DEBUG] Estado de usuario cambiado correctamente");
       } catch (err) {
         setValidationMessage(
           err.message || "Error al cambiar el estado del usuario."
         );
         setIsValidationModalOpen(true);
-        console.error("[DEBUG] Error al cambiar estado de usuario:", err);
       }
     },
     [cargarDatos]
@@ -530,13 +484,11 @@ const useUsuarios = () => {
         );
       });
     }
-    console.log("[DEBUG] processedUsuarios:", filtered);
     return filtered;
   }, [usuarios, searchTerm, filterEstado]);
 
   useEffect(() => {
     setCurrentPage(1);
-    console.log("[DEBUG] Cambio de filtro o búsqueda, página actual a 1");
   }, [searchTerm, filterEstado]);
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -547,7 +499,6 @@ const useUsuarios = () => {
   );
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
-    console.log("[DEBUG] paginate: página actual", pageNumber);
   };
 
   // --- RETORNO DEL HOOK ---
