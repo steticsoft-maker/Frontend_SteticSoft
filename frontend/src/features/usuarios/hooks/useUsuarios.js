@@ -17,6 +17,7 @@ const phoneRegex = /^\d+$/; // Solo números
 const alphanumericRegex = /^[a-zA-Z0-9]+$/; // Solo letras y números
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
 const useUsuarios = () => {
   // --- Estados de la página y datos ---
@@ -177,6 +178,10 @@ const useUsuarios = () => {
         case "direccion":
           if (selectedRole && selectedRole.tipoPerfil === "CLIENTE" && !value) {
             error = "La dirección es requerida para clientes.";
+          } else if (value && !addressRegex.test(value)) {
+            error = "La dirección contiene caracteres no permitidos.";
+          } else if (value && (value.length < 5 || value.length > 255)) {
+            error = "La dirección debe tener entre 5 y 255 caracteres.";
           }
           break;
         default:
