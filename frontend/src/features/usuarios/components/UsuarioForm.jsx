@@ -153,8 +153,6 @@ const UsuarioForm = ({
               className={`usuarios-form-select ${errors.tipoDocumento ? "input-error" : ""}`}>
               <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
               <option value="Cédula de Extranjería">Cédula de Extranjería</option>
-              <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
-              <option value="Pasaporte">Pasaporte</option>
             </select>
             {errors.tipoDocumento && <span className="error-message">{errors.tipoDocumento}</span>}
           </div>
