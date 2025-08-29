@@ -20,14 +20,12 @@ function ListaVentasPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Carga inicial de ventas directamente desde el servicio al inicializar el estado
     const [ventas, setVentas] = useState(() => fetchVentas());
     
     const [busqueda, setBusqueda] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
 
-    // Estados de los Modales
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [showPdfModal, setShowPdfModal] = useState(false);
     const [showAnularConfirmModal, setShowAnularConfirmModal] = useState(false);
@@ -37,7 +35,6 @@ function ListaVentasPage() {
     const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
     const [validationMessage, setValidationMessage] = useState('');
 
-    // Efecto para agregar nueva venta (si viene de ProcesoVentaPage)
     useEffect(() => {
         if (location.state && location.state.nuevaVenta) {
             const { nuevaVenta } = location.state;
@@ -47,13 +44,11 @@ function ListaVentasPage() {
                 }
                 return prevVentas;
             });
-            // Limpiar el estado de la ubicación
             navigate(location.pathname, { replace: true, state: {} });
         }
     }, [location.state, navigate, location.pathname]);
 
     useEffect(() => {
-        // Persistir ventas cuando cambien
         if (ventas.length > 0) {
             localStorage.setItem('ventas_steticsoft_v2', JSON.stringify(ventas));
         } else {
@@ -107,12 +102,31 @@ function ListaVentasPage() {
         const updatedVentas = cambiarEstadoVenta(ventaId, nuevoEstado, ventas);
         setVentas(updatedVentas);
     };
+    
+    // Función para manejar el cambio en la barra de búsqueda
+    // Ahora permite caracteres especiales y filtra desde la primera letra
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setBusqueda(value);
+    };
+    
+    const filteredVentas = ventas.filter(venta => {
+        const busquedaTrim = busqueda.trim().toLowerCase();
+        
+        // Si el campo de búsqueda está vacío, muestra todas las ventas
+        if (busquedaTrim.length === 0) {
+            return true;
+        }
 
-    const filteredVentas = ventas.filter(venta =>
-        (venta.cliente && venta.cliente.toLowerCase().includes(busqueda.toLowerCase())) ||
-        (venta.id && venta.id.toString().includes(busqueda)) ||
-        (venta.fecha && venta.fecha.includes(busqueda))
-    );
+        // Búsqueda en todos los campos relevantes
+        return (
+            (venta.cliente && venta.cliente.toLowerCase().includes(busquedaTrim)) ||
+            (venta.id && venta.id.toString().includes(busquedaTrim)) ||
+            (venta.fecha && venta.fecha.toLowerCase().includes(busquedaTrim)) ||
+            (venta.documento && venta.documento.toString().includes(busquedaTrim)) ||
+            (venta.total && venta.total.toString().includes(busquedaTrim))
+        );
+    });
 
     const totalPages = Math.ceil(filteredVentas.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -129,9 +143,9 @@ function ListaVentasPage() {
                 <div className="barraBotonContainer">
                     <input
                         type="text"
-                        placeholder="Buscar venta (cliente, ID, fecha)..."
+                        placeholder="Buscar venta"
                         value={busqueda}
-                        onChange={(e) => setBusqueda(e.target.value)}
+                        onChange={handleSearchChange} // Usamos la nueva función
                         className="barraBusquedaVenta"
                     />
                     <button
@@ -148,7 +162,6 @@ function ListaVentasPage() {
                     onAnularVenta={handleOpenAnularConfirm}
                     onEstadoChange={handleEstadoChange}
                 />
-                {/* Paginación */}
                 <div className="paginacionVenta">
                     {Array.from({ length: totalPages }, (_, i) => (
                         <button

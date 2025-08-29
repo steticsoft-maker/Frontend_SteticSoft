@@ -64,20 +64,21 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
       if (!value || value.trim() === '') {
         errors[field] = `El campo es obligatorio.`;
         isValid = false;
-      }
-      // Las validaciones de espacios y caracteres especiales se manejan en handleFormChange,
-      // aquí solo validamos la longitud final para evitar duplicación.
-      else {
-        if (field === 'nombre') {
-          if (value.trim().length < 2 || value.trim().length > 100) {
-            errors[field] = "El nombre debe tener entre 2 y 100 caracteres.";
-            isValid = false;
-          }
-        } else if (field === 'descripcion') {
-          if (value.trim().length > 500) {
-            errors[field] = "La descripción no debe exceder los 500 caracteres.";
-            isValid = false;
-          }
+      } else {
+        const trimmedValue = value.trim();
+
+        // **Validación: mínimo 3 caracteres**
+        if (trimmedValue.length < 3) {
+          errors[field] = `El campo debe tener al menos 3 caracteres.`;
+          isValid = false;
+        } 
+        // Validaciones de longitud máxima
+        else if (field === 'nombre' && trimmedValue.length > 100) {
+          errors[field] = "El nombre no debe exceder los 100 caracteres.";
+          isValid = false;
+        } else if (field === 'descripcion' && trimmedValue.length > 500) {
+          errors[field] = "La descripción no debe exceder los 500 caracteres.";
+          isValid = false;
         }
       }
     });
