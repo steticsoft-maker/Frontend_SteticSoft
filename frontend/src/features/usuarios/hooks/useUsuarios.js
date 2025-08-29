@@ -309,58 +309,78 @@ const useUsuarios = () => {
     setFormErrors({});
   }, []);
 
-  const handleOpenModal = useCallback(
-    async (type, usuario = null) => {
-      setFormErrors({});
-      if (type === "create") {
-        const defaultRole =
-          availableRoles.find((r) => r.nombre === "Cliente") ||
-          availableRoles[0] ||
-          null;
-        setFormData({
-          idRol: defaultRole ? defaultRole.idRol : "",
-          tipoDocumento: "Cédula de Ciudadanía",
-          estado: true,
-          nombre: "",
-          apellido: "",
-          correo: "",
-          telefono: "",
-          numeroDocumento: "",
-          fechaNacimiento: "",
-          direccion: "",
-          contrasena: "",
-          confirmarContrasena: "",
-        });
-        setIsCrearModalOpen(true);
-      } else if (type === "edit" && usuario) {
-        try {
-          setIsLoadingPage(true);
-          const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
-          setCurrentUsuario(fullUserData);
-          setFormData({
-            ...fullUserData,
-            fechaNacimiento: fullUserData.fechaNacimiento
-              ? fullUserData.fechaNacimiento.split("T")[0]
-              : "",
-          });
-          setIsEditarModalOpen(true);
-          console.log(
-            fullUserData
-          );
-        } catch (err) {
-          setErrorPage(
-            err.message || "No se pudieron cargar los datos del usuario."
-          );
-        } finally {
-          setIsLoadingPage(false);
-        }
-      } else if (type === "delete" && usuario) {
-        setUsuarioToDelete(usuario);
-        setIsConfirmDeleteModalOpen(true);
+const handleOpenModal = useCallback(
+  async (type, usuario = null) => {
+    setFormErrors({});
+    if (type === "create") {
+      const defaultRole =
+        availableRoles.find((r) => r.nombre === "Cliente") ||
+        availableRoles[0] ||
+        null;
+      setFormData({
+        idRol: defaultRole ? defaultRole.idRol : "",
+        tipoDocumento: "Cédula de Ciudadanía",
+        estado: true,
+        nombre: "",
+        apellido: "",
+        correo: "",
+        telefono: "",
+        numeroDocumento: "",
+        fechaNacimiento: "",
+        direccion: "",
+        contrasena: "",
+        confirmarContrasena: "",
+      });
+      setIsCrearModalOpen(true);
+    } else if (type === "edit" && usuario) {
+      try {
+        setIsLoadingPage(true);
+        const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
+        setCurrentUsuario(fullUserData);
+
+        // --- INICIO DE LA CORRECCIÓN INTEGRADA ---
+        // 1. Extraemos el perfil anidado (clienteInfo o empleadoInfo)
+        const perfil =
+          fullUserData.clienteInfo || fullUserData.empleadoInfo || {};
+
+        // 2. Construimos el objeto formData con la estructura plana que el formulario espera
+        const initialFormData = {
+          // Datos del modelo Usuario
+          idUsuario: fullUserData.idUsuario,
+          correo: fullUserData.correo,
+          idRol: fullUserData.idRol,
+          estado: fullUserData.estado,
+          // Datos aplanados del modelo Cliente o Empleado
+          nombre: perfil.nombre || "",
+          apellido: perfil.apellido || "",
+          tipoDocumento: perfil.tipoDocumento || "Cédula de Ciudadanía",
+          numeroDocumento: perfil.numeroDocumento || "",
+          telefono: perfil.telefono || "",
+          direccion: perfil.direccion || "", // 'direccion' solo existe en Cliente
+          fechaNacimiento: perfil.fechaNacimiento
+            ? perfil.fechaNacimiento.split("T")[0]
+            : "",
+        };
+
+        setFormData(initialFormData);
+        // --- FIN DE LA CORRECCIÓN INTEGRADA ---
+
+        setIsEditarModalOpen(true);
+        console.log("Datos completos del usuario cargados:", fullUserData);
+      } catch (err) {
+        setErrorPage(
+          err.message || "No se pudieron cargar los datos del usuario."
+        );
+      } finally {
+        setIsLoadingPage(false);
       }
-    },
-    [availableRoles]
-  );
+    } else if (type === "delete" && usuario) {
+      setUsuarioToDelete(usuario);
+      setIsConfirmDeleteModalOpen(true);
+    }
+  },
+  [availableRoles]
+);
 
   // --- HANDLERS DE ACCIONES DE USUARIO ---
   const handleSaveUsuario = useCallback(async () => {
