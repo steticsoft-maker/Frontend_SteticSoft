@@ -308,8 +308,8 @@ const useUsuarios = () => {
     setFormData({});
     setFormErrors({});
   }, []);
-
-const handleOpenModal = useCallback(
+  
+  const handleOpenModal = useCallback(
   async (type, usuario = null) => {
     setFormErrors({});
     if (type === "create") {
@@ -338,33 +338,27 @@ const handleOpenModal = useCallback(
         const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
         setCurrentUsuario(fullUserData);
 
-        // --- INICIO DE LA CORRECCIÓN INTEGRADA ---
-        // 1. Extraemos el perfil anidado (clienteInfo o empleadoInfo)
+        // Lógica para aplanar los datos del perfil para el formulario de edición
         const perfil =
           fullUserData.clienteInfo || fullUserData.empleadoInfo || {};
 
-        // 2. Construimos el objeto formData con la estructura plana que el formulario espera
         const initialFormData = {
-          // Datos del modelo Usuario
           idUsuario: fullUserData.idUsuario,
           correo: fullUserData.correo,
           idRol: fullUserData.idRol,
           estado: fullUserData.estado,
-          // Datos aplanados del modelo Cliente o Empleado
           nombre: perfil.nombre || "",
           apellido: perfil.apellido || "",
           tipoDocumento: perfil.tipoDocumento || "Cédula de Ciudadanía",
           numeroDocumento: perfil.numeroDocumento || "",
           telefono: perfil.telefono || "",
-          direccion: perfil.direccion || "", // 'direccion' solo existe en Cliente
+          direccion: perfil.direccion || "",
           fechaNacimiento: perfil.fechaNacimiento
             ? perfil.fechaNacimiento.split("T")[0]
             : "",
         };
 
         setFormData(initialFormData);
-        // --- FIN DE LA CORRECCIÓN INTEGRADA ---
-
         setIsEditarModalOpen(true);
         console.log("Datos completos del usuario cargados:", fullUserData);
       } catch (err) {
@@ -374,13 +368,28 @@ const handleOpenModal = useCallback(
       } finally {
         setIsLoadingPage(false);
       }
+    } else if (type === "details" && usuario) {
+      // --- INICIO DE LA CORRECCIÓN INTEGRADA ---
+      try {
+        setIsSubmitting(true); // Usar 'isSubmitting' para el spinner del modal
+        const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
+        setCurrentUsuario(fullUserData);
+        setIsDetailsModalOpen(true);
+      } catch (err) {
+        setErrorPage(
+          err.message || "No se pudieron cargar los detalles del usuario."
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+      // --- FIN DE LA CORRECCIÓN INTEGRADA ---
     } else if (type === "delete" && usuario) {
       setUsuarioToDelete(usuario);
       setIsConfirmDeleteModalOpen(true);
     }
   },
   [availableRoles]
-);
+  );
 
   // --- HANDLERS DE ACCIONES DE USUARIO ---
   const handleSaveUsuario = useCallback(async () => {
