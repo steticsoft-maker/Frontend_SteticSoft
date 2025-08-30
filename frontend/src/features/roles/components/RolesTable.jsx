@@ -120,7 +120,6 @@ const RolesTable = ({
                     permissions: [],
                   });
                 }
-                // Aquí podríamos almacenar los permisos específicos si getPermissionsForModule no lo hiciera ya
               }
             });
             const modulosParaMostrar = Array.from(modulosConPermisos.entries());
@@ -137,16 +136,6 @@ const RolesTable = ({
                         const IconComponent =
                           moduloIconMap[moduloKey]?.icon ||
                           moduloIconMap.DEFAULT.icon;
-                        // Pasamos el nombre original del módulo (antes de toUpperCase) a getPermissionsForModule
-                        // Asumiendo que getPermissionsForModule espera el nombre tal cual viene en el permiso.
-                        // Si getPermissionsForModule también necesita comparar con moduloKey (MAYUS), se ajustaría allí.
-                        // La función getPermissionsForModule ya filtra por parts[1] === moduloNombre, así que necesita el original.
-                        // Para esto, es mejor que getPermissionsForModule reciba el nombre original del módulo.
-                        // Y que modulosConPermisos almacene la clave original para la lógica de permisos.
-                        // Vamos a simplificar: getPermissionsForModule usará el moduloKey (MAYUSCULAS) si los permisos
-                        // en la DB también tienen esa parte en mayúsculas. Si no, hay que ser consistente.
-                        // Por ahora, asumiré que la comparación en getPermissionsForModule con parts[1] debe ser insensible a mayúsculas o usar la clave original.
-                        // Para evitar romper getPermissionsForModule, le pasaremos moduloData.originalName
                         const acciones = getPermissionsForModule(
                           rol.permisos,
                           moduloData.originalName

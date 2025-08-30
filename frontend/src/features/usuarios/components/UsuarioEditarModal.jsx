@@ -1,107 +1,80 @@
 // src/features/usuarios/components/UsuarioEditarModal.jsx
-import React from "react"; // Removidos useState, useEffect
-import UsuarioForm from "./UsuarioForm";
-// getRolesAPI ya no se importa aquí, availableRoles viene del hook useUsuarios
+import React from 'react';
+import UsuarioForm from './UsuarioForm';
 
 const UsuarioEditarModal = ({
   isOpen,
   onClose,
-  onSubmit, // Esta será handleSaveUsuario del hook
-  initialData, // Sigue siendo necesario para determinar isUserAdminProtected
-  availableRoles, // Del hook
-  isLoading, // isSubmitting del hook
-  // Props del hook useUsuarios para el formulario
+  onSubmit,
+  availableRoles,
+  // Props que vienen del hook useUsuarios
   formData,
   formErrors,
   isFormValid,
   isVerifyingEmail,
+  isSubmitting,
+  isLoading, // Se puede usar para mostrar carga inicial de datos
   handleInputChange,
-  handleInputBlur
+  handleInputBlur,
+  checkRequiresProfile
 }) => {
-
-  // El estado local de formData, formErrors, availableRoles, isLoadingRoles ya no es necesario.
-  // El useEffect para cargar roles y setear formData se maneja en useUsuarios (handleOpenModal).
-
-  // Determinar si el usuario es el admin protegido basándose en el initialData.
-  // initialData es currentUsuario del hook cuando se abre el modal de edición.
-  const isUserAdminProtected = initialData?.rol?.nombre === "Administrador";
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isUserAdminProtected) {
-      onClose();
-      return;
+    if (isFormValid) {
+      onSubmit();
     }
-    // La validación ahora está centralizada en useUsuarios.
-    // El botón de submit se deshabilita si !isFormValid.
-    onSubmit();
   };
 
   if (!isOpen) return null;
-  // No necesitamos !initialData aquí porque handleOpenModal en useUsuarios
-  // ya se encarga de inicializar formData. Si initialData fuera null, formData estaría vacío
-  // y el formulario se mostraría vacío o con errores de campos requeridos.
+
+  const requiresProfile = checkRequiresProfile(formData.idRol);
+  const selectedRole = availableRoles.find(r => r.idRol === parseInt(formData.idRol, 10));
+  const isCliente = selectedRole?.tipoPerfil === 'CLIENTE';
+
+  // Verifica si el usuario a editar es el 'Administrador'
+  const isUserAdmin = formData.correo === 'admin@steticsoft.com'; // O una comprobación más robusta si la tienes
 
   return (
     <div className="usuarios-modalOverlay">
       <div className="usuarios-modalContent usuarios-modalContent-form">
-        <button type="button" className="modal-close-button-x" onClick={onClose}>
-          &times;
-        </button>
+        <button type="button" className="modal-close-button-x" onClick={onClose}>&times;</button>
         <h2>Editar Usuario</h2>
-        {isUserAdminProtected && (
-          <p className="usuarios-admin-protected-message">
-            El usuario 'Administrador' tiene campos y acciones restringidas.
-          </p>
-        )}
-        <form onSubmit={handleSubmit}>
-          {/* Ya no se necesita isLoadingRoles */}
-          <UsuarioForm
-            formData={formData} // Del hook
-            onInputChange={handleInputChange} // Del hook
-            onInputBlur={handleInputBlur}     // Del hook
-            availableRoles={availableRoles} // Del hook
-            isEditing={true}
-            isUserAdmin={isUserAdminProtected} // Determinado a partir de initialData (currentUsuario)
-            formErrors={formErrors} // Del hook
-            isVerifyingEmail={isVerifyingEmail} // Del hook
-          />
-          {/* {formErrors._general && ( // Errores generales podrían manejarse con el ValidationModal general
-            <p className="auth-form-error" style={{ textAlign: "center" }}>
-              {formErrors._general}
-            </p>
-          )} */}
-
-          {!isUserAdminProtected ? (
+        {isLoading ? (
+          <p>Cargando datos del usuario...</p>
+        ) : (
+          <form onSubmit={handleSubmit} noValidate>
+            <UsuarioForm
+              formData={formData}
+              formErrors={formErrors}
+              onInputChange={handleInputChange}
+              onInputBlur={handleInputBlur}
+              availableRoles={availableRoles}
+              isEditing={true} // <-- La principal diferencia
+              isVerifyingEmail={isVerifyingEmail}
+              requiresProfile={requiresProfile}
+              isCliente={isCliente}
+              isUserAdmin={isUserAdmin}
+            />
             <div className="usuarios-form-actions">
               <button
                 type="submit"
                 className="usuarios-form-buttonGuardar"
-                disabled={!isFormValid || isLoading || isVerifyingEmail}
+                disabled={!isFormValid || isSubmitting || isVerifyingEmail}
               >
-                {isLoading ? 'Actualizando...' : 'Actualizar Usuario'}
+                {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
               </button>
               <button
                 type="button"
                 className="usuarios-form-buttonCancelar"
                 onClick={onClose}
-                disabled={isLoading}
+                disabled={isSubmitting}
               >
                 Cancelar
               </button>
             </div>
-          ) : (
-            <div className="usuarios-form-actions">
-              <button
-                type="button"
-                className="usuarios-modalButton-cerrar"
-                onClick={onClose}
-              >
-                Cerrar
-              </button>
-            </div>
-          )}
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );

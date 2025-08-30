@@ -49,24 +49,42 @@ const useRoles = () => {
     [permisos]
   );
 
+  // INICIO DE MODIFICACIÓN: Lógica de carga de datos
   const cargarDatos = useCallback(async () => {
+    // 1. Condición de guarda: si el término de búsqueda es inválido, no hacemos nada.
+    // Solo limpiamos los roles para que la tabla no muestre datos viejos y salimos.
+    if (searchTerm && searchTerm.length > 0 && searchTerm.length < 3) {
+      setRoles([]); // Limpiar resultados para que el usuario no vea datos incorrectos
+      setIsLoading(false); // Detener el indicador de carga
+      setError(null); // Limpiar cualquier error previo
+      return; // Detener la ejecución aquí para no llamar a la API
+    }
+
     setIsLoading(true);
     setError(null);
     try {
+      // 2. Ahora, esta llamada solo se ejecuta con un término de búsqueda válido (vacío o >= 3 caracteres).
       const [rolesResponse, permisosResponse] = await Promise.all([
-        fetchRolesAPI(searchTerm),
+        fetchRolesAPI(searchTerm, filterEstado), // Pasamos también el filtro de estado
         getPermisosAPI(),
       ]);
       setRoles(rolesResponse.data || []);
       setPermisos(permisosResponse || []);
     } catch (err) {
-      setError(err.message || "Error al cargar los datos de roles o permisos.");
-      setRoles([]);
+      // 3. Mejoramos el manejo de errores para ser más específico.
+      const apiError =
+        err.response?.data?.message ||
+        err.message ||
+        "Error al cargar los datos.";
+      setError(apiError);
+      setRoles([]); // Limpiar en caso de error
       setPermisos([]);
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm]);
+    // 4. Se añade 'filterEstado' a las dependencias para que recargue al cambiar el filtro.
+  }, [searchTerm, filterEstado]);
+  // FIN DE MODIFICACIÓN
 
   useEffect(() => {
     cargarDatos();
@@ -150,7 +168,8 @@ const useRoles = () => {
         closeModal();
         await cargarDatos();
       } catch (err) {
-        const apiErrorMessage = err.response?.data?.message || err.response?.data?.error;
+        const apiErrorMessage =
+          err.response?.data?.message || err.response?.data?.error;
         setValidationMessage(
           apiErrorMessage || err.message || "Error al guardar el rol."
         );
@@ -228,9 +247,18 @@ const useRoles = () => {
       const lowerSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter((r) => {
         const nombreMatch = r.nombre?.toLowerCase().includes(lowerSearchTerm);
-        const descripcionMatch = r.descripcion?.toLowerCase().includes(lowerSearchTerm);
-        const permisosMatch = r.permisos?.some(p => p.nombre?.toLowerCase().includes(lowerSearchTerm));
-        const estadoString = typeof r.estado === 'boolean' ? (r.estado ? "activo" : "inactivo") : "";
+        const descripcionMatch = r.descripcion
+          ?.toLowerCase()
+          .includes(lowerSearchTerm);
+        const permisosMatch = r.permisos?.some((p) =>
+          p.nombre?.toLowerCase().includes(lowerSearchTerm)
+        );
+        const estadoString =
+          typeof r.estado === "boolean"
+            ? r.estado
+              ? "activo"
+              : "inactivo"
+            : "";
         const estadoMatch = estadoString.includes(lowerSearchTerm);
 
         return nombreMatch || descripcionMatch || permisosMatch || estadoMatch;

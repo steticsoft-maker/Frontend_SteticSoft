@@ -56,7 +56,6 @@ const RolForm = ({
             )}
           </div>
 
-          {/* --- INICIO DE CORRECCIÓN --- */}
           <div className="rol-campoContainer">
             <label htmlFor="tipoPerfilInput" className="rol-label">
               Tipo de Perfil: <span className="required-asterisk">*</span>
@@ -64,15 +63,12 @@ const RolForm = ({
             <select
               id="tipoPerfilInput"
               name="tipoPerfil"
-              // Lógica simplificada: usa el valor del formData o el default 'EMPLEADO'
               value={formData.tipoPerfil || 'EMPLEADO'}
               onChange={handleInputChange}
               className="rol-input"
-              // No se puede cambiar el tipo de perfil de los roles base (Admin, Empleado, Cliente) una vez creados.
               disabled={isRoleAdmin}
               required
             >
-              {/* No es necesaria una opción placeholder si siempre hay un valor seleccionado */}
               <option value="EMPLEADO">Empleado</option>
               <option value="CLIENTE">Cliente</option>
               <option value="NINGUNO">Ninguno (Solo Acceso al Sistema)</option>
@@ -81,11 +77,11 @@ const RolForm = ({
               <span className="error-message">{formErrors.tipoPerfil}</span>
             )}
           </div>
-          {/* --- FIN DE CORRECCIÓN --- */}
 
+          {/* INICIO DE MODIFICACIÓN */}
           <div className="rol-campoContainer">
             <label htmlFor="descripcionRolInput" className="rol-label">
-              Descripción del Rol:
+              Descripción del Rol: <span className="required-asterisk">*</span>
             </label>
             <textarea
               id="descripcionRolInput"
@@ -94,8 +90,14 @@ const RolForm = ({
               onChange={handleInputChange}
               className="rol-textarea"
               disabled={isRoleAdmin}
+              required
             />
+            {/* Mensaje de error para la descripción */}
+            {formErrors.descripcion && (
+              <span className="error-message">{formErrors.descripcion}</span>
+            )}
           </div>
+          {/* FIN DE MODIFICACIÓN */}
 
           {isEditing && !isRoleAdmin && (
             <div className="rol-campoContainer">

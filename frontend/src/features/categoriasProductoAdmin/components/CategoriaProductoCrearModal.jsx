@@ -1,3 +1,4 @@
+// src/features/productosAdmin/components/CategoriaProductoCrearModal.jsx
 import React, { useState, useEffect } from 'react';
 import CategoriaProductoForm from './CategoriaProductoForm';
 import '../css/CategoriasProducto.css';
@@ -22,36 +23,34 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   }, [isOpen]);
 
   const handleFormChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (formErrors?.[name]) {
-      setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
+    let error = '';
+    // 1. Prevenir el espacio al inicio
+    if (value.startsWith(' ')) {
+      error = "El campo no puede empezar con un espacio.";
+      setFormErrors(prev => ({ ...prev, [name]: error }));
+      return; // No actualizar el estado si hay un espacio al inicio
     }
+    // 2. Prevenir más de dos espacios seguidos
+    if (/\s{3,}/.test(value)) {
+      error = "No se permiten más de dos espacios seguidos.";
+      setFormErrors(prev => ({ ...prev, [name]: error }));
+      return; // No actualizar el estado si hay más de dos espacios
+    }
+
+    // 3. Prevenir caracteres especiales y emojis
+    const specialCharsOrEmojisRegex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/;
+    if (value.length > 0 && !specialCharsOrEmojisRegex.test(value)) {
+      error = "Solo se permiten letras, números y espacios.";
+      setFormErrors(prev => ({ ...prev, [name]: error }));
+      return; // No actualizar el estado si hay caracteres no válidos
+    }
+
+    // Si todas las validaciones pasan, actualizamos el estado
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
     if (generalError) {
       setGeneralError('');
     }
-    if (value?.trim() !== '') {
-      validateField(name, value);
-    } else {
-      setFormErrors(prevErr => ({ ...prevErr, [name]: '' }));
-    }
-  };
-
-  const validateField = (name, value) => {
-    let error = '';
-    const trimmedValue = (typeof value === 'string') ? value?.trim() : value;
-
-    switch (name) {
-      case 'nombre':
-        if (trimmedValue?.length > 0 && (trimmedValue.length < 2 || trimmedValue.length > 100)) error = "El nombre debe tener entre 2 y 100 caracteres.";
-        break;
-      case 'descripcion':
-        if (trimmedValue?.length > 0 && trimmedValue.length > 500) error = "La descripción no debe exceder los 500 caracteres.";
-        break;
-      default:
-        break;
-    }
-    setFormErrors(prevErr => ({ ...prevErr, [name]: error }));
-    return !error;
   };
 
   const validateAllFormFields = () => {
@@ -61,20 +60,30 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
 
     requiredFields.forEach(field => {
       const value = formData?.[field];
-      const trimmedValue = (typeof value === 'string') ? value?.trim() : value;
 
-      if (trimmedValue === '' || trimmedValue === null || trimmedValue === undefined) {
-        errors[field] = `El campo ${field} es obligatorio.`;
+      if (!value || value.trim() === '') {
+        errors[field] = `El campo es obligatorio.`;
         isValid = false;
-      }
-      
-      const fieldIsValid = validateField(field, value);
-      if (!fieldIsValid) {
-        isValid = false;
+      } else {
+        const trimmedValue = value.trim();
+
+        // **Validación: mínimo 3 caracteres**
+        if (trimmedValue.length < 3) {
+          errors[field] = `El campo debe tener al menos 3 caracteres.`;
+          isValid = false;
+        } 
+        // Validaciones de longitud máxima
+        else if (field === 'nombre' && trimmedValue.length > 100) {
+          errors[field] = "El nombre no debe exceder los 100 caracteres.";
+          isValid = false;
+        } else if (field === 'descripcion' && trimmedValue.length > 500) {
+          errors[field] = "La descripción no debe exceder los 500 caracteres.";
+          isValid = false;
+        }
       }
     });
 
-    setFormErrors(prevErrors => ({ ...prevErrors, ...errors }));
+    setFormErrors(errors);
     return isValid;
   };
 
@@ -109,7 +118,7 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
             setFormErrors(prev => ({ ...prev, ...fieldErrors }));
           }
           if (apiErrorMessage === "Ocurrió un error inesperado al guardar la categoría." && Object.keys(fieldErrors).length > 0) {
-              apiErrorMessage = "Por favor, revisa los errores específicos en los campos.";
+            apiErrorMessage = "Por favor, revisa los errores específicos en los campos.";
           }
         } else if (error.response.data.message) {
           apiErrorMessage = error.response.data.message;
@@ -117,8 +126,8 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
             fieldErrors.nombre = apiErrorMessage;
           }
           if (Object.keys(fieldErrors).length > 0) {
-              setFormErrors(prev => ({ ...prev, ...fieldErrors }));
-              apiErrorMessage = "Por favor, revisa los errores específicos en los campos.";
+            setFormErrors(prev => ({ ...prev, ...fieldErrors }));
+            apiErrorMessage = "Por favor, revisa los errores específicos en los campos.";
           }
         }
       }
