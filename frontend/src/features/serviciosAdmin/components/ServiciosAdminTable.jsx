@@ -29,7 +29,6 @@ const ServiciosAdminTable = ({
       <thead>
         <tr>
           <th>#</th>
-          <th>Imagen</th>
           <th>Nombre</th>
           <th>Precio</th>
           <th>Estado</th>
@@ -38,27 +37,9 @@ const ServiciosAdminTable = ({
       </thead>
       <tbody>
         {servicios.map((servicio, index) => {
-          // Construye la URL completa solo si la imagen no es una URL absoluta
-          const imageUrl = servicio.imagen?.startsWith('http')
-            ? servicio.imagen
-            : `${API_PUBLIC_URL}/${servicio.imagen}`;
-
           return (
             <tr key={servicio.idServicio}>
               <td data-label="#">{index + 1}</td>
-              <td data-label="Imagen:">
-                <div className="image-cell-container">
-                  {servicio.imagen ? (
-                    <img 
-                      src={imageUrl} 
-                      alt={`Imagen de ${servicio.nombre}`} 
-                      className="servicio-imagen-thumbnail"
-                    />
-                  ) : (
-                    <span className="image-placeholder">-</span>
-                  )}
-                </div>
-              </td>
               <td data-label="Nombre:">{servicio.nombre}</td>
               <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
               <td data-label="Estado:">
