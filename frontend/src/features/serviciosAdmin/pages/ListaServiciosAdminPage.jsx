@@ -129,8 +129,8 @@ function ListaServiciosAdminPage() {
             <input type="text" placeholder="Buscar por nombre o precio..." value={terminoBusqueda} onChange={(e) => setTerminoBusqueda(e.target.value)} />
             <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
               <option value="todos">Todos los estados</option>
-              <option value="activos">Activos</option>
-              <option value="inactivos">Inactivos</option>
+              <option value="true">Activos</option>
+              <option value="false">Inactivos</option>
             </select>
           </div>
           <button className="botonAgregarServicio" onClick={() => handleOpenModal("create")}>Agregar Servicio</button>

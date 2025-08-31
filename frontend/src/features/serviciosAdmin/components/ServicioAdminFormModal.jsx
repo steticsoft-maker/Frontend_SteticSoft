@@ -31,65 +31,81 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     }
   }, [isOpen, isEditMode, initialData]);
 
-  const validateField = (name, value) => {
-    let error = "";
-    switch (name) {
-      case 'nombre':
-        if (!value) error = "El nombre es obligatorio.";
-        else if (value.trim() !== value) error = "No debe tener espacios al inicio o al final.";
-        else if (!NAME_REGEX.test(value)) error = "No se permiten caracteres especiales.";
-        break;
-      case 'precio':
-        if (!String(value)) error = "El precio es obligatorio.";
-        else if (isNaN(value) || Number(value) < 0) error = "El precio debe ser un número válido y no negativo.";
-        break;
-      case 'categoriaServicioId':
-        if (!value) error = "Debe seleccionar una categoría.";
-        break;
-      default: break;
+  // --- Validaciones ---
+  const validarCaracteres = (name, value) => {
+    if (name === "nombre" && !NAME_REGEX.test(value)) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name]: "No se permiten caracteres especiales."
+      }));
+    } else {
+      setFormErrors(prev => ({ ...prev, [name]: null }));
     }
+  };
+
+  const validarObligatorioYEspacios = (name, value) => {
+    let error = "";
+    if (name === "nombre") {
+      if (!value) error = "El nombre es obligatorio.";
+      else if (value.trim() !== value) error = "No debe tener espacios al inicio o al final.";
+    }
+
+    if (name === "precio") {
+      if (!String(value)) error = "El precio es obligatorio.";
+      else if (isNaN(value) || Number(value) < 0) error = "El precio debe ser un número válido y no negativo.";
+    }
+
+    if (name === "categoriaServicioId") {
+      if (!value) error = "Debe seleccionar una categoría.";
+    }
+
+    setFormErrors(prev => ({ ...prev, [name]: error }));
     return error;
   };
-  
+
+  // --- Handlers ---
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors(prev => ({ ...prev, [name]: '' }));
+
+    // Validación inmediata de caracteres especiales
+    if (name === "nombre") {
+      validarCaracteres(name, value);
     }
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-    const trimmedValue = name === 'nombre' ? value.trim() : value;
+
+    // Trimear espacios al salir del campo
+    const trimmedValue = typeof value === "string" ? value.trim() : value;
     setFormData(prev => ({ ...prev, [name]: trimmedValue }));
 
-    const error = validateField(name, trimmedValue);
-    setFormErrors(prev => ({ ...prev, [name]: error }));
+    // Validaciones de obligatorio y espacios
+    validarObligatorioYEspacios(name, trimmedValue);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validar todos los campos
     const validationErrors = {};
     let firstErrorField = null;
 
+    // Validar todos los campos antes de enviar
     Object.keys(formData).forEach(name => {
-      const value = formData[name];
-      const error = validateField(name, value);
+      const value = typeof formData[name] === "string" ? formData[name].trim() : formData[name];
+      const error = validarObligatorioYEspacios(name, value);
       if (error) {
         validationErrors[name] = error;
         if (!firstErrorField) {
-            firstErrorField = name;
+          firstErrorField = name;
         }
       }
     });
 
-    setFormErrors(validationErrors);
-
     if (Object.keys(validationErrors).length > 0) {
       toast.error("Por favor, corrige los errores del formulario.");
+      setFormErrors(validationErrors);
       if (firstErrorField) {
         const element = document.querySelector(`[name=${firstErrorField}]`);
         element?.focus();
@@ -100,7 +116,7 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     setIsSubmitting(true);
     
     const dataToSend = {
-        nombre: formData.nombre,
+        nombre: formData.nombre.trim(),
         descripcion: formData.descripcion,
         precio: formData.precio,
         categoriaServicioId: formData.categoriaServicioId,
@@ -127,24 +143,50 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
             
             <div className="servicios-admin-form-group">
               <label>Nombre del Servicio <span className="required-asterisk">*</span></label>
-              <input name="nombre" value={formData.nombre || ''} onChange={handleChange} onBlur={handleBlur} className={`form-control ${formErrors.nombre ? 'is-invalid' : ''}`} />
+              <input 
+                name="nombre" 
+                value={formData.nombre || ''} 
+                onChange={handleChange} 
+                onBlur={handleBlur} 
+                className={`form-control ${formErrors.nombre ? 'is-invalid' : ''}`} 
+              />
               {formErrors.nombre && <span className="field-error-message">{formErrors.nombre}</span>}
             </div>
 
             <div className="servicios-admin-form-group">
               <label>Descripción</label>
-              <textarea name="descripcion" value={formData.descripcion || ''} onChange={handleChange} onBlur={handleBlur} className="form-control" />
+              <textarea 
+                name="descripcion" 
+                value={formData.descripcion || ''} 
+                onChange={handleChange} 
+                onBlur={handleBlur} 
+                className="form-control" 
+              />
             </div>
             
             <div className="servicios-admin-form-group">
               <label>Precio <span className="required-asterisk">*</span></label>
-              <input name="precio" type="number" step="any" value={formData.precio || ''} onChange={handleChange} onBlur={handleBlur} className={`form-control ${formErrors.precio ? 'is-invalid' : ''}`} />
+              <input 
+                name="precio" 
+                type="number" 
+                step="any" 
+                value={formData.precio || ''} 
+                onChange={handleChange} 
+                onBlur={handleBlur} 
+                className={`form-control ${formErrors.precio ? 'is-invalid' : ''}`} 
+              />
               {formErrors.precio && <span className="field-error-message">{formErrors.precio}</span>}
             </div>
             
             <div className="servicios-admin-form-group">
               <label>Categoría <span className="required-asterisk">*</span></label>
-              <select name="categoriaServicioId" value={formData.categoriaServicioId || ''} onChange={handleChange} onBlur={handleBlur} className={`form-control ${formErrors.categoriaServicioId ? 'is-invalid' : ''}`}>
+              <select 
+                name="categoriaServicioId" 
+                value={formData.categoriaServicioId || ''} 
+                onChange={handleChange} 
+                onBlur={handleBlur} 
+                className={`form-control ${formErrors.categoriaServicioId ? 'is-invalid' : ''}`}
+              >
                 <option value="">Seleccione una categoría...</option>
                 {(categorias || []).map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>

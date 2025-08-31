@@ -1,5 +1,6 @@
 // src/features/serviciosAdmin/components/ServicioAdminDetalleModal.jsx
 import React from 'react';
+import "../css/ServiciosAdmin.css";
 
 const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
   if (!isOpen || !servicio) return null;
@@ -14,36 +15,29 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
     }).format(numericValue);
   };
 
-  const getFullImageUrl = (relativePath) => {
-    if (!relativePath) return null;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-    return `${backendUrl}/${relativePath}`;
-  };
-
-  const imageUrl = getFullImageUrl(servicio.imagen);
-
   return (
-    // Se usan las clases CSS del módulo de servicios
     <div className="servicios-admin-modal-overlay" onClick={onClose}>
-      <div className="servicios-admin-modal-content" onClick={(e) => e.stopPropagation()}>
-        
-        <button className="modal-close-button" onClick={onClose}>&times;</button>
-        
+      <div
+        className="servicios-admin-modal-content"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          className="modal-close-button"
+          onClick={onClose}
+          aria-label="Cerrar modal"
+        >
+          &times;
+        </button>
+
         <h3>Detalles del Servicio</h3>
 
+        {/* Ahora usa la clase correcta definida en tu CSS */}
         <div className="servicio-details-list">
           <p><strong>Nombre:</strong> {servicio.nombre}</p>
           <p><strong>Descripción:</strong> {servicio.descripcion || 'No aplica'}</p>
           <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
           <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'No aplica'}</p>
           <p><strong>Estado:</strong> {servicio.estado ? 'Activo' : 'Inactivo'}</p>
-
-          {imageUrl && (
-            <div className="detalle-imagen-container">
-              <strong>Imagen:</strong>
-              <img src={imageUrl} alt={servicio.nombre} className="servicio-imagen-detalle" />
-            </div>
-          )}
         </div>
       </div>
     </div>

@@ -1,5 +1,7 @@
+// src/features/serviciosAdmin/components/ServiciosAdminTable.jsx
 import React from 'react';
 import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa';
+import "../css/ServiciosAdmin.css";
 
 const ServiciosAdminTable = ({
   servicios,
@@ -9,7 +11,7 @@ const ServiciosAdminTable = ({
   onToggleEstado,
   loadingId,
 }) => {
-  
+
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -19,10 +21,12 @@ const ServiciosAdminTable = ({
   };
 
   if (!servicios || servicios.length === 0) {
-    return <p style={{ textAlign: 'center', marginTop: '20px' }}>No hay servicios que coincidan con tu búsqueda.</p>;
+    return (
+      <p className="no-servicios-msg">
+        No hay servicios que coincidan con tu búsqueda.
+      </p>
+    );
   }
-
-  const API_PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL || '';
 
   return (
     <table className="servicios-admin-table">
@@ -36,33 +40,49 @@ const ServiciosAdminTable = ({
         </tr>
       </thead>
       <tbody>
-        {servicios.map((servicio, index) => {
-          return (
-            <tr key={servicio.idServicio}>
-              <td data-label="#">{index + 1}</td>
-              <td data-label="Nombre:">{servicio.nombre}</td>
-              <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
-              <td data-label="Estado:">
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    checked={servicio.estado}
-                    onChange={() => onToggleEstado(servicio)}
-                    disabled={loadingId === servicio.idServicio}
-                  />
-                  <span className="slider"></span>
-                </label>
-              </td>
-              <td data-label="Acciones:">
-                <div className="actions-cell">
-                  <button onClick={() => onView(servicio)}> <FaRegEye /> </button>
-                  <button onClick={() => onEdit(servicio)}> <FaEdit /> </button>
-                  <button onClick={() => onDeleteConfirm(servicio)}> <FaTrashAlt /> </button>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+        {servicios.map((servicio, index) => (
+          <tr key={servicio.idServicio}>
+            <td data-label="#">{index + 1}</td>
+            <td data-label="Nombre:">{servicio.nombre}</td>
+            <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
+            <td data-label="Estado:">
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={servicio.estado}
+                  onChange={() => onToggleEstado(servicio)}
+                  disabled={loadingId === servicio.idServicio}
+                />
+                <span className="slider"></span>
+              </label>
+            </td>
+            <td data-label="Acciones:">
+              <div className="actions-cell">
+                <button
+                  className="btn-ver"
+                  onClick={() => onView(servicio)}
+                  title="Ver Detalles"
+                >
+                  <FaRegEye />
+                </button>
+                <button
+                  className="btn-editar"
+                  onClick={() => onEdit(servicio)}
+                  title="Editar Servicio"
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  className="btn-eliminar"
+                  onClick={() => onDeleteConfirm(servicio)}
+                  title="Eliminar Servicio"
+                >
+                  <FaTrashAlt />
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

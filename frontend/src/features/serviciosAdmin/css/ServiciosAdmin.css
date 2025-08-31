@@ -1,19 +1,19 @@
 /* Estilos para el Módulo de Administración de Servicios */
 
 :root {
-  /* Nueva Paleta SteticSoft */
-  --color-background-page: #fefcff;
-  --color-primary-accent: #bfbcf6;
-  --color-primary-hover: #d3d3f6;
-  --color-secondary-button-bg: #ebe2f6;
-  --color-table-header-bg: #d3d3f6;
-  --color-table-row-alternate: #f9f0ec;
-  --color-input-focus-bg: #ebe2f6;
-  --color-border: #d3d3f6;
-  --color-text-dark: #333;
-  --color-text-on-primary: #fefcff;
-  --color-success: #2ecc71; /* Se mantiene para el switch */
-  --color-danger: #e74c3c; /* Se mantiene para errores */
+  /* Nueva Paleta de Marca */
+  --color-background-page: #F9F6F5; /* Fondo suave */
+  --color-primary-accent: #7B3F87;   /* Color principal */
+  --color-primary-hover: #915f9e;    /* Principal aclarado para hover */
+  --color-secondary-button-bg: #F2D6C9; /* Tono piel claro */
+  --color-table-header-bg: #D99AC5;  /* Color secundario */
+  --color-table-row-alternate: #fdf5f2; /* Tono piel claro muy sutil */
+  --color-input-focus-bg: #F2D6C9;   /* Tono piel claro */
+  --color-border: #D99AC5;           /* Color secundario */
+  --color-text-dark: #8B5E3C;        /* Tono piel oscuro */
+  --color-text-on-primary: #F9F6F5;  /* Fondo suave (para texto sobre primario) */
+  --color-success: #2ecc71;          /* Se mantiene para el switch */
+  --color-danger: #e74c3c;           /* Se mantiene para errores */
 }
 
 /* --- Layout Principal --- */
@@ -64,6 +64,7 @@
   background-color: var(--color-background-page);
   border-radius: 5px;
   font-size: 1rem;
+  color: var(--color-text-dark); /* Color de texto para inputs */
 }
 
 .servicios-admin-search-bar input:focus,
@@ -146,13 +147,6 @@
 
 .servicios-admin-table .actions-cell button:hover {
   background-color: var(--color-primary-hover);
-}
-
-.servicios-admin-table .table-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
-  object-fit: cover;
 }
 
 /* --- Switch de Estado --- */
@@ -246,12 +240,13 @@ input:checked + .slider:before { transform: translateX(16px); }
   background-color: var(--color-background-page);
   border-radius: 5px;
   font-size: 1rem;
+  color: var(--color-text-dark);
 }
 
 .servicios-admin-form-group .form-control:focus {
   background-color: var(--color-input-focus-bg);
   border-color: var(--color-primary-accent);
-  box-shadow: 0 0 0 2px rgba(191, 188, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(123, 63, 135, 0.3); /* Sombra de foco con el color principal */
   outline: none;
 }
 
@@ -276,7 +271,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 button.guardar {
-  background-color: var(--color-primary-accent);
+  background-color: var(--color-primary-accent); 
   color: var(--color-text-on-primary);
 }
 button.guardar:hover {
@@ -288,17 +283,7 @@ button.cancelar {
   color: var(--color-text-dark);
 }
 button.cancelar:hover {
-  background-color: #ddd4e4; /* Un poco más oscuro que el fondo del botón secundario */
-}
-
-.image-preview {
-  margin-top: 10px;
-}
-.image-preview img {
-  max-width: 100px;
-  max-height: 100px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
+  background-color: #e6c8ba; /* Un poco más oscuro que el fondo del botón secundario */
 }
 
 .required-asterisk {
@@ -319,6 +304,7 @@ button.cancelar:hover {
   flex-direction: column;
   gap: 12px;
   font-size: 1rem;
+  color: var(--color-text-dark);
 }
 
 .servicio-details-list p {
@@ -329,25 +315,6 @@ button.cancelar:hover {
 .servicio-details-list strong {
   color: var(--color-text-dark);
   margin-right: 8px;
-}
-
-.detalle-imagen-container {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid var(--color-border);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.servicio-imagen-detalle {
-  max-width: 100%;
-  height: auto;
-  max-height: 250px;
-  border-radius: 8px;
-  object-fit: contain;
-  align-self: center;
-  border: 1px solid var(--color-border);
 }
 
 .modal-close-button {
@@ -361,37 +328,6 @@ button.cancelar:hover {
   cursor: pointer;
   line-height: 1;
 }
-
-
-/* --- ESTILOS PARA LA CELDA DE LA IMAGEN --- */
-
-/* Contenedor para centrar el contenido (imagen o guion) */
-.image-cell-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 70px; /* Ancho fijo para la celda */
-  height: 70px; /* Alto fijo para la celda */
-  margin: auto; /* Centra el contenedor en la celda */
-  border: 1px solid #e0e0e0; /* Opcional: un borde suave */
-  border-radius: 8px; /* Opcional: esquinas redondeadas */
-  overflow: hidden; /* Evita que la imagen se salga del contenedor */
-}
-
-/* Estilo para la imagen en miniatura */
-.servicio-imagen-thumbnail {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
-}
-
-/* Estilo para el guion cuando no hay imagen */
-.image-placeholder {
-  font-size: 2.5rem; /* Hace el guion más grande */
-  color: #cccccc;   /* Un color gris claro */
-  font-weight: bold;
-}
-
 
 
 /* Mensaje de error debajo del campo */
@@ -450,3 +386,5 @@ button.cancelar:hover {
 .pagination-buttons button:hover:not(:disabled) {
   background-color: #f0f0f0;
 }
+
+
