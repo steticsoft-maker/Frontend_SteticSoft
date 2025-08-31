@@ -308,8 +308,7 @@ const useUsuarios = () => {
     setFormData({});
     setFormErrors({});
   }, []);
-  
-  const handleOpenModal = useCallback(
+const handleOpenModal = useCallback(
   async (type, usuario = null) => {
     setFormErrors({});
     if (type === "create") {
@@ -373,8 +372,8 @@ const useUsuarios = () => {
       try {
         setIsSubmitting(true); // Usar 'isSubmitting' para el spinner del modal
         const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
-        setCurrentUsuario(fullUserData);
         setIsDetailsModalOpen(true);
+        setCurrentUsuario(fullUserData);
       } catch (err) {
         setErrorPage(
           err.message || "No se pudieron cargar los detalles del usuario."
@@ -389,7 +388,7 @@ const useUsuarios = () => {
     }
   },
   [availableRoles]
-  );
+);
 
   // --- HANDLERS DE ACCIONES DE USUARIO ---
   const handleSaveUsuario = useCallback(async () => {
