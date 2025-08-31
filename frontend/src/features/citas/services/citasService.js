@@ -1,185 +1,142 @@
 // src/features/citas/services/citasService.js
+import apiClient from "../../../shared/services/apiClient";
 import moment from "moment";
-// fetchHorarios, fetchEmpleadosConHorarioConfigurado (from horariosService) and getClientesParaVenta (from ventasService) removed as they are unused.
+import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService";
 
-// ✅ CORRECCIÓN 1: Se importa la función correcta y asíncrona 'getServicios'
-import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService"; 
-
-const CITAS_STORAGE_KEY = "citas_steticsoft_v2";
-
-// Datos iniciales de ejemplo (si localStorage está vacío)
-const INITIAL_CITAS_EJEMPLO = [
-  // ... (tus datos de ejemplo se mantienen igual)
-];
-
-const persistCitas = (citas) => {
-  localStorage.setItem(CITAS_STORAGE_KEY, JSON.stringify(citas.map(c => ({
-    ...c,
-    start: moment(c.start).toISOString(),
-    end: moment(c.end).toISOString(),
-  }))));
-};
-
-export const fetchCitasAgendadas = () => {
-  const stored = localStorage.getItem(CITAS_STORAGE_KEY);
-  if (stored) {
-    try {
-      return JSON.parse(stored).map((cita) => ({
-        ...cita,
-        start: moment(cita.start).toDate(),
-        end: moment(cita.end).toDate(),
-      }));
-    } catch (e) {
-      console.error("Error parsing citas from localStorage", e);
-      localStorage.removeItem(CITAS_STORAGE_KEY);
-    }
-  }
-  const citasInicialesConFechasDate = INITIAL_CITAS_EJEMPLO.map(c => ({
-    ...c,
-    start: new Date(c.start),
-    end: new Date(c.end)
-  }));
-  persistCitas(citasInicialesConFechasDate);
-  return citasInicialesConFechasDate;
-};
-
-// ✅ CORRECCIÓN 2: Esta función ahora es ASÍNCRONA para poder llamar a la API
-export const fetchServiciosDisponiblesParaCitas = async () => {
-  let serviciosActivos = [];
+/**
+ * ✅ Obtener todas las citas desde la API
+ */
+export const fetchCitasAgendadas = async () => {
   try {
-    // Llama a la función de la API y espera la respuesta
-    const response = await getServicios({ estado: true }); // Pedimos solo los activos
-    const adminServicios = response?.data || [];
+    const response = await apiClient.get("/citas");
+    const citas = response.data?.data || [];
 
-    if (adminServicios && adminServicios.length > 0) {
-      // La API ya debería devolver solo los activos, pero un filtro extra no hace daño
-      serviciosActivos = adminServicios.filter(s => s.estado === true && s.duracionEstimadaMin);
-    }
-  } catch (e) {
-    console.warn("No se pudieron cargar servicios desde la API. Usando datos de fallback si es necesario.", e);
-  }
-
-  if (serviciosActivos.length > 0) {
-    return serviciosActivos.map(s => ({
-      ...s,
-      id: s.idServicio, // Aseguramos que el id se llame 'id' para consistencia
-      duracion_estimada: parseInt(s.duracionEstimadaMin) || 30,
-      precio: parseFloat(s.precio) || 0,
+    return citas.map(c => ({
+      ...c,
+      // El backend devuelve fecha + hora, aquí lo convertimos a objetos Date
+      start: moment(`${c.fecha} ${c.horaInicio}`).toDate(),
+      end: moment(`${c.fecha} ${c.horaFin}`).toDate(),
     }));
+  } catch (error) {
+    console.error("Error al obtener citas:", error);
+    return [];
   }
-  
-  console.warn("No hay servicios de admin activos con duración. Usando fallback de ejemplo para Citas.");
-  return [{ id: "sdefault", nombre: "Servicio Ejemplo (Fallback Citas)", precio: 40000, duracion_estimada: 45, estado: "Activo" }];
 };
 
-// El resto de tus funciones que dependen de datos locales se mantienen igual por ahora...
-// (El resto del código desde fetchEmpleadosDisponiblesParaCitas hacia abajo no necesita cambios inmediatos
-// para solucionar ESTE error en particular, pero saveCita sí debe ser adaptada).
+/**
+ * ✅ Guardar una nueva cita o editar una existente
+ */
+export const saveCita = async (citaData) => {
+  try {
+    // 🔹 Adaptar la estructura a lo que tu backend espera
+    const dataToSend = {
+      clienteId: citaData.cliente?.idCliente || citaData.clienteId,
+      empleadoId: citaData.empleadoId,
+      idServicios: citaData.servicioIds || [], // array de IDs de servicios
+      fecha: moment(citaData.start).format("YYYY-MM-DD"),
+      horaInicio: moment(citaData.start).format("HH:mm:ss"),
+      horaFin: moment(citaData.end).format("HH:mm:ss"),
+      estadoCitaId: citaData.estadoCitaId || 1, // Ejemplo: 1=Programada
+    };
 
-export const fetchEmpleadosDisponiblesParaCitas = () => {
-  // ... (código sin cambios)
-};
-
-// obtenerDiasDeSemanaEntre removed as it's unused
-  
-export const generarEventosDisponibles = () => {
-    // ... (código sin cambios)
-};
-
-// ✅ CORRECCIÓN 3: Esta función también debe ser ASÍNCRONA porque llama a una función async
-export const saveCita = async (citaData, existingCitasAgendadas) => {
-  if (!citaData.cliente?.trim()) throw new Error("El nombre del cliente es obligatorio.");
-  if (!citaData.empleadoId) throw new Error("Debe seleccionar un empleado.");
-  if (!citaData.servicio || citaData.servicio.length === 0) throw new Error("Debe seleccionar al menos un servicio.");
-  if (!citaData.start) throw new Error("La fecha y hora de inicio de la cita son obligatorias.");
-
-  // Ahora se usa 'await' porque la función es asíncrona
-  const serviciosDisponibles = await fetchServiciosDisponiblesParaCitas();
-  let duracionTotalMinutos = 0;
-  let precioTotalCalculado = 0;
-  
-  const serviciosSeleccionadosDetalle = citaData.servicio.map(nombreServicio => {
-    const servicioInfo = serviciosDisponibles.find(s => s.nombre === nombreServicio);
-    if (servicioInfo) {
-      duracionTotalMinutos += parseInt(servicioInfo.duracion_estimada) || 30;
-      precioTotalCalculado += parseFloat(servicioInfo.precio) || 0;
-      return {
-        id: servicioInfo.id,
-        nombre: servicioInfo.nombre,
-        precio: parseFloat(servicioInfo.precio) || 0,
-        duracion_estimada: parseInt(servicioInfo.duracion_estimada) || 30,
-      };
+    if (citaData.id) {
+      // Editar cita existente
+      const response = await apiClient.put(`/citas/${citaData.id}`, dataToSend);
+      return response.data.data;
+    } else {
+      // Crear nueva cita
+      const response = await apiClient.post("/citas", dataToSend);
+      return response.data.data;
     }
-    console.warn(`Servicio con nombre "${nombreServicio}" no encontrado durante el guardado de la cita.`);
-    return null;
-  }).filter(s => s !== null);
-
-  if (serviciosSeleccionadosDetalle.length !== citaData.servicio.length) {
-     throw new Error("Algunos servicios seleccionados no se pudieron procesar. Verifique la disponibilidad y reintente.");
+  } catch (error) {
+    console.error("Error al guardar cita:", error);
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
   }
-  if (serviciosSeleccionadosDetalle.length === 0) {
-     throw new Error("No se procesaron servicios válidos para la cita.");
-  }
-
-  const fechaInicioCita = moment(citaData.start);
-  const fechaFinCalculada = fechaInicioCita.clone().add(duracionTotalMinutos, "minutes").toDate();
-
-  const solapamiento = existingCitasAgendadas.some(
-    (cita) =>
-      cita.id !== citaData.id &&
-      parseInt(cita.empleadoId) === parseInt(citaData.empleadoId) &&
-      cita.estadoCita !== "Cancelada" &&
-      (
-        moment(fechaInicioCita).isBetween(moment(cita.start),moment(cita.end),undefined,"[)") ||
-        moment(fechaFinCalculada).isBetween(moment(cita.start),moment(cita.end),undefined,"(]") ||
-        (
-          moment(cita.start).isSameOrAfter(fechaInicioCita) && 
-          moment(cita.end).isSameOrBefore(moment(fechaFinCalculada))
-        )
-      )
-  );
-
-  if (solapamiento) {
-    throw new Error("El empleado ya tiene una cita agendada que se solapa con este horario.");
-  }
-  
-  const empleadoInfo = fetchEmpleadosDisponiblesParaCitas().find(e => e.id === parseInt(citaData.empleadoId));
-
-  const citaParaGuardar = {
-    id: citaData.id || Date.now(),
-    cliente: citaData.cliente.trim(),
-    empleadoId: parseInt(citaData.empleadoId),
-    empleado: empleadoInfo?.nombre || "Empleado Desconocido",
-    start: fechaInicioCita.toDate(),
-    end: fechaFinCalculada,
-    servicios: serviciosSeleccionadosDetalle,
-    precioTotal: precioTotalCalculado,
-    estadoCita: citaData.id ? (citaData.estadoCita || "Programada") : "Programada",
-    tipo: "cita",
-    title: `${citaData.cliente.trim()} - ${serviciosSeleccionadosDetalle.map(s => s.nombre).join(", ")} (${empleadoInfo?.nombre || 'N/A'})`,
-    notasCancelacion: citaData.id && citaData.estadoCita === "Cancelada" ? citaData.notasCancelacion : undefined,
-  };
-  
-  let nuevasCitas;
-  if (citaData.id) {
-    nuevasCitas = existingCitasAgendadas.map(c => c.id === citaData.id ? citaParaGuardar : c);
-  } else {
-    nuevasCitas = [...existingCitasAgendadas, citaParaGuardar];
-  }
-
-  persistCitas(nuevasCitas);
-  return citaParaGuardar;
 };
 
-
-export const deleteCitaById = () => { // citaId removed
-    // ... (código sin cambios)
+/**
+ * ✅ Eliminar cita por ID
+ */
+export const deleteCitaById = async (citaId) => {
+  try {
+    await apiClient.delete(`/citas/${citaId}`);
+    return true;
+  } catch (error) {
+    console.error("Error al eliminar cita:", error);
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
 };
-  
-export const cambiarEstadoCita = () => { // citaId, nuevoEstado removed
-    // ... (código sin cambios)
+
+/**
+ * ✅ Cambiar estado de una cita
+ */
+export const cambiarEstadoCita = async (citaId, nuevoEstadoId, motivo = "") => {
+  try {
+    const response = await apiClient.patch(`/citas/${citaId}/estado`, {
+      estadoCitaId: nuevoEstadoId, // ahora se manda ID en lugar de string
+      motivoCancelacion: motivo,
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error("Error al cambiar estado de cita:", error);
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
 };
 
-export const fetchClientesParaCitas = () => {
-    // ... (código sin cambios)
+/**
+ * ✅ Traer servicios disponibles desde la API
+ */
+export const fetchServiciosDisponiblesParaCitas = async () => {
+  try {
+    const response = await getServicios({ estado: true }); // Solo activos
+    const adminServicios = response?.data?.data || []; // 🔥 CORREGIDO
+
+    return adminServicios
+      .filter(s => s.estado === true && s.duracionEstimadaMin)
+      .map(s => ({
+        ...s,
+        id: s.idServicio, // backend lo manda como idServicio
+        nombre: s.nombre,
+        duracion_estimada: parseInt(s.duracionEstimadaMin) || 30,
+        precio: parseFloat(s.precio) || 0,
+      }));
+  } catch (error) {
+    console.error("Error al obtener servicios:", error);
+    return [];
+  }
+};
+
+/**
+ * ✅ Traer empleados disponibles para citas
+ */
+export const fetchEmpleadosDisponiblesParaCitas = async () => {
+  try {
+    const response = await apiClient.get("/empleados");
+    return response.data?.data || [];
+  } catch (error) {
+    console.error("Error al obtener empleados:", error);
+    return [];
+  }
+};
+
+/**
+ * ✅ Traer clientes disponibles para citas
+ */
+export const fetchClientesParaCitas = async () => {
+  try {
+    const response = await apiClient.get("/clientes");
+    return response.data?.data || [];
+  } catch (error) {
+    console.error("Error al obtener clientes:", error);
+    return [];
+  }
 };

@@ -41,7 +41,7 @@ return (
 
     {/* --- Columna 1 --- */}
     <div className="producto-admin-form-group">
-        <label htmlFor="tipoUso">Tipo de Uso</label>
+        <label htmlFor="tipoUso">Tipo de Uso: <span className="required-asterisk">*</span></label>
         <select id="tipoUso" name="tipoUso" value={formData.tipoUso} onChange={handleChange} required>
             <option value="">Selecciona tipo de uso</option>
             <option value="Interno">Interno</option>
@@ -52,7 +52,7 @@ return (
     
     {/* --- Columna 2 --- */}
     <div className="producto-admin-form-group">
-        <label htmlFor="vidaUtilDias">Vida Útil (días)</label>
+        <label htmlFor="vidaUtilDias">Vida Útil (días): <span className="required-asterisk">*</span></label>
         <input type="number" id="vidaUtilDias" name="vidaUtilDias" value={formData.vidaUtilDias} onChange={handleChange} min="0" />
         {formErrors.vidaUtilDias && <p className="error-message">{formErrors.vidaUtilDias}</p>}
     </div>
@@ -73,14 +73,15 @@ return (
 
     {/* --- Columna 1 --- */}
     <div className="producto-admin-form-group">
-      <label htmlFor="stockMinimo">Stock Mínimo:</label>
+      <label htmlFor="stockMinimo">Stock Mínimo: <span className="required-asterisk">*</span></label>
       <input type="number" id="stockMinimo" name="stockMinimo" value={formData.stockMinimo || ''} onChange={handleChange} min="0" />
       {formErrors.stockMinimo && <p className="error-message">{formErrors.stockMinimo}</p>}
     </div>
+    
 
     {/* --- Columna 2 --- */}
     <div className="producto-admin-form-group">
-      <label htmlFor="stockMaximo">Stock Máximo:</label>
+      <label htmlFor="stockMaximo">Stock Máximo: <span className="required-asterisk">*</span></label>
       <input type="number" id="stockMaximo" name="stockMaximo" value={formData.stockMaximo || ''} onChange={handleChange} min="0" />
       {formErrors.stockMaximo && <p className="error-message">{formErrors.stockMaximo}</p>}
     </div>

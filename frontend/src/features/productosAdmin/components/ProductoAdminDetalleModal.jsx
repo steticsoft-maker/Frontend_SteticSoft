@@ -23,6 +23,8 @@ const ProductoAdminDetalleModal = ({ isOpen, onClose, producto }) => {
           <p><strong>Precio:</strong> ${producto.precio ? producto.precio.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0.00'}</p>
           {/* CAMBIO: Mostrar 'producto.existencia' en lugar de 'producto.stock' */}
           <p><strong>Existencia (Stock):</strong> {producto.existencia}</p>
+          <p><strong>Stock Mínimo:</strong> {producto.stockMinimo ?? 'No definido'}</p>
+          <p><strong>Stock Máximo:</strong> {producto.stockMaximo ?? 'No definido'}</p>
           <p><strong>Descripción:</strong> {producto.descripcion || 'N/A'}</p>
           <p><strong>Estado:</strong> {producto.estado ? "Activo" : "Inactivo"}</p>
           

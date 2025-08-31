@@ -5,68 +5,64 @@ import moment from 'moment';
 
 const CitaForm = ({
   formData,
-  onInputChange,
   onServicioChange,
   onEmpleadoChange,
   empleadosDisponibles,
   serviciosDisponibles,
-  isSlotSelection, // true si se seleccionó un slot de un empleado específico en el calendario
-  // isLoadingClientes, // Para el campo cliente si se carga de forma asíncrona - REMOVED
-  clientesOptions // Opciones para el selector de clientes
+  isSlotSelection // true si se seleccionó un slot de un empleado específico en el calendario
 }) => {
-
+  // Opciones de servicios en formato compatible con react-select
   const servicioOptions = (serviciosDisponibles || []).map(s => ({
-    value: s.nombre, // Usar el nombre como valor para la selección
+    value: s.id, // usamos el ID como valor
     label: `${s.nombre} ($${(s.precio || 0).toLocaleString('es-CO')}, ${s.duracion_estimada || 30} min)`,
     duracion: s.duracion_estimada || 30,
     precio: s.precio || 0,
-    id: s.id // Guardar el ID del servicio original
+    id: s.id,
+    nombre: s.nombre
   }));
 
-  // Mapear los nombres de servicio en formData.servicio a los objetos option completos
-  const selectedServicioValues = servicioOptions.filter(opt => 
-    (formData.servicio || []).includes(opt.value)
+  // Preseleccionar los servicios que están en formData.servicioIds
+  const selectedServicioValues = servicioOptions.filter(opt =>
+    (formData.servicioIds || []).includes(opt.id)
   );
+
+  // Handler para cambio en servicios
+  const handleServicioChange = (selectedOptions) => {
+    const ids = selectedOptions ? selectedOptions.map(opt => opt.id) : [];
+    const nombres = selectedOptions ? selectedOptions.map(opt => opt.nombre) : [];
+
+    let duracionTotal = 0;
+    if (selectedOptions && formData.start) {
+      duracionTotal = selectedOptions.reduce((total, opt) => {
+        const duracionServicio = parseInt(opt.duracion);
+        return total + (isNaN(duracionServicio) ? 30 : duracionServicio);
+      }, 0);
+    }
+
+    onServicioChange({
+      servicioIds: ids,
+      servicioNombres: nombres,
+      end: formData.start ? moment(formData.start).add(duracionTotal, 'minutes').toDate() : null
+    });
+  };
 
   return (
     <>
-      <div className="form-group">
-        <label htmlFor="cliente">Cliente: <span className="required-asterisk">*</span></label>
-        {/* Podrías cambiar esto a un React-Select si tienes muchos clientes */}
-        <input
-          type="text"
-          id="cliente"
-          name="cliente"
-          value={formData.cliente || ""}
-          onChange={onInputChange}
-          placeholder="Nombre del cliente"
-          required
-          list="clientes-list" // Para datalist si no usas Select
-        />
-        {/* Si tienes una lista de clientes y no usas un Select component: */}
-        {clientesOptions && clientesOptions.length > 0 && (
-            <datalist id="clientes-list">
-                {clientesOptions.map(cliente => (
-                    <option key={cliente.id || cliente.value} value={cliente.value} />
-                ))}
-            </datalist>
-        )}
-      </div>
+      {/* Cliente se maneja en CitaFormModal con ItemSelectionModal */}
 
       <div className="form-group">
         <label htmlFor="empleado">Empleado: <span className="required-asterisk">*</span></label>
         <select
           id="empleado"
-          name="empleado" // El name debería ser 'empleadoId' si quieres guardar el ID directamente
-                         // o manejar la conversión en onEmpleadoChange
-          value={formData.empleadoId || ""} // El valor del select debe ser el ID del empleado
-          onChange={onEmpleadoChange} // Este handler debería setear empleadoId y opcionalmente el nombre
-          disabled={isSlotSelection} // Deshabilitar si se seleccionó un slot de empleado específico
+          name="empleadoId"
+          value={formData.empleadoId || ""} 
+          onChange={onEmpleadoChange}
+          disabled={isSlotSelection}
           required
         >
           <option value="">Seleccione un empleado</option>
           {(empleadosDisponibles || []).map((e) => (
-            <option key={e.id} value={e.id}>{e.nombre}</option> // Usar e.id como value
+            <option key={e.id} value={e.id}>{e.nombre}</option>
           ))}
         </select>
       </div>
@@ -77,8 +73,8 @@ const CitaForm = ({
           id="servicio"
           isMulti
           options={servicioOptions}
-          value={selectedServicioValues} // Pasar los objetos option completos
-          onChange={onServicioChange} // Este handler recibirá un array de objetos option
+          value={selectedServicioValues}
+          onChange={handleServicioChange}
           placeholder="Seleccione servicios..."
           closeMenuOnSelect={false}
           className="react-select-citas-container"

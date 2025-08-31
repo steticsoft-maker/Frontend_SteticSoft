@@ -89,6 +89,16 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     ) {
       errors.precio = "El precio debe ser un número positivo.";
     }
+    if (!formData.tipoUso || formData.tipoUso.trim() === "") {
+      errors.tipoUso = "Debes seleccionar un tipo de uso para el producto.";
+    }
+    if (
+      formData.vidaUtilDias === "" ||
+      isNaN(parseInt(formData.vidaUtilDias)) ||
+      parseInt(formData.vidaUtilDias) <= 0
+    ) {
+      errors.vidaUtilDias = "La vida útil debe ser un número mayor a cero.";
+    }
     if (
       formData.existencia === "" ||
       isNaN(parseInt(formData.existencia)) ||
