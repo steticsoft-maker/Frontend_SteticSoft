@@ -1,18 +1,18 @@
 // src/services/venta.service.js
-"use strict"; 
+"use strict";
 
-const db = require("../models");
+const db = require("../models/index.js");
 const { Op } = db.Sequelize;
 const {
   NotFoundError,
   ConflictError,
   CustomError,
   BadRequestError,
-} = require("../errors");
+} = require("../errors/index.js");
 const moment = require("moment-timezone");
 const { enviarCorreoVenta } = require("../utils/VentaEmailTemplate.js");
 const { formatDate } = require("../utils/dateHelpers.js");
-const { checkAndSendStockAlert } = require('../utils/stockAlertHelper.js'); // Import stock alert helper
+const { checkAndSendStockAlert } = require("../utils/stockAlertHelper.js"); // Import stock alert helper
 
 const TASA_IVA_POR_DEFECTO = 0.19;
 
@@ -40,7 +40,14 @@ const obtenerVentaCompletaPorIdInterno = async (
       {
         model: db.Producto,
         as: "productos",
-        attributes: ["idProducto", "nombre", "descripcion", "precio", "stockMinimo", "existencia"],
+        attributes: [
+          "idProducto",
+          "nombre",
+          "descripcion",
+          "precio",
+          "stockMinimo",
+          "existencia",
+        ],
         through: {
           model: db.ProductoXVenta,
           as: "detalleProductoVenta",
@@ -50,7 +57,13 @@ const obtenerVentaCompletaPorIdInterno = async (
       {
         model: db.Servicio,
         as: "servicios",
-        attributes: ["idServicio", "nombre", "descripcion", "precio", "duracionEstimadaMin"], // Corregido: duracionEstimadaMin
+        attributes: [
+          "idServicio",
+          "nombre",
+          "descripcion",
+          "precio",
+          "duracionEstimadaMin",
+        ], // Corregido: duracionEstimadaMin
         through: {
           model: db.VentaXServicio,
           as: "detalleServicioVenta",
@@ -174,7 +187,6 @@ const crearVenta = async (datosVenta) => {
     const totalCalculado = subtotalGeneral + ivaCalculado;
     const estadoVentaBooleano = typeof estado === "boolean" ? estado : true;
 
-
     nuevaVenta = await db.Venta.create(
       {
         fecha: fecha || new Date(),
@@ -202,7 +214,7 @@ const crearVenta = async (datosVenta) => {
       if (
         estadoVentaBooleano && // Venta general está activa
         (estadoProcesoVenta.nombreEstado === "Completado" || // Y el proceso está en un estado que descuenta stock
-          estadoProcesoVenta.nombreEstado === "En proceso") 
+          estadoProcesoVenta.nombreEstado === "En proceso")
       ) {
         await itemP.dbInstance.decrement("existencia", {
           by: itemP.cantidad,
@@ -227,13 +239,20 @@ const crearVenta = async (datosVenta) => {
     await transaction.commit();
 
     // Enviar alertas de stock después de confirmar la transacción
-    if (estadoVentaBooleano && (estadoProcesoVenta.nombreEstado === "Completado" || estadoProcesoVenta.nombreEstado === "En proceso")) {
-        for (const productoId of productosAfectadosParaAlerta) {
-            const productoActualizado = await db.Producto.findByPk(productoId);
-            if (productoActualizado) {
-                await checkAndSendStockAlert(productoActualizado, `tras venta ID ${nuevaVenta.idVenta}`);
-            }
+    if (
+      estadoVentaBooleano &&
+      (estadoProcesoVenta.nombreEstado === "Completado" ||
+        estadoProcesoVenta.nombreEstado === "En proceso")
+    ) {
+      for (const productoId of productosAfectadosParaAlerta) {
+        const productoActualizado = await db.Producto.findByPk(productoId);
+        if (productoActualizado) {
+          await checkAndSendStockAlert(
+            productoActualizado,
+            `tras venta ID ${nuevaVenta.idVenta}`
+          );
         }
+      }
     }
 
     const ventaCreadaConDetalles = await obtenerVentaCompletaPorIdInterno(
@@ -410,7 +429,9 @@ const actualizarEstadoProcesoVenta = async (idVenta, datosActualizar) => {
 
     const camposParaActualizar = {};
     if (estadoVentaId !== undefined) {
-      nuevoEstadoProcesoDB = await db.Estado.findByPk(estadoVentaId, { transaction });
+      nuevoEstadoProcesoDB = await db.Estado.findByPk(estadoVentaId, {
+        transaction,
+      });
       if (!nuevoEstadoProcesoDB) {
         await transaction.rollback();
         throw new BadRequestError(
@@ -419,7 +440,8 @@ const actualizarEstadoProcesoVenta = async (idVenta, datosActualizar) => {
       }
       camposParaActualizar.estadoVentaId = estadoVentaId;
     }
-    if (estado !== undefined) { // Si se está actualizando el estado booleano general
+    if (estado !== undefined) {
+      // Si se está actualizando el estado booleano general
       camposParaActualizar.estado = estado;
     }
 
@@ -428,24 +450,39 @@ const actualizarEstadoProcesoVenta = async (idVenta, datosActualizar) => {
       // Recargar para reflejar todos los cambios y asociaciones actualizadas para el correo y lógica de stock
       venta = await obtenerVentaCompletaPorIdInterno(idVenta, transaction);
     }
-    
+
     // Lógica de ajuste de inventario:
     // Se activa si el estado booleano general de la venta cambia Y
     // el estado del proceso de la venta es uno que implica movimiento de stock ("Completado", "En proceso").
     const nuevoEstadoBooleanoVenta = venta.estado; // Estado booleano DESPUÉS de la actualización
-    const estadoProcesoActualNombre = venta.estadoDetalle ? venta.estadoDetalle.nombreEstado : null;
+    const estadoProcesoActualNombre = venta.estadoDetalle
+      ? venta.estadoDetalle.nombreEstado
+      : null;
 
-    if (estadoOriginalBooleano !== nuevoEstadoBooleanoVenta && 
-        (estadoProcesoActualNombre === "Completado" || estadoProcesoActualNombre === "En proceso")) {
+    if (
+      estadoOriginalBooleano !== nuevoEstadoBooleanoVenta &&
+      (estadoProcesoActualNombre === "Completado" ||
+        estadoProcesoActualNombre === "En proceso")
+    ) {
       if (venta.productos && venta.productos.length > 0) {
         for (const pV of venta.productos) {
-          const pDB = await db.Producto.findByPk(pV.idProducto, { transaction });
+          const pDB = await db.Producto.findByPk(pV.idProducto, {
+            transaction,
+          });
           const cantVendida = pV.detalleProductoVenta.cantidad;
           if (pDB && cantVendida > 0) {
-            if (nuevoEstadoBooleanoVenta) { // Si se está HABILITANDO/REACTIVANDO la venta (estado ahora es true)
-              await pDB.decrement("existencia", { by: cantVendida, transaction });
-            } else { // Si se está ANULANDO la venta (estado ahora es false)
-              await pDB.increment("existencia", { by: cantVendida, transaction });
+            if (nuevoEstadoBooleanoVenta) {
+              // Si se está HABILITANDO/REACTIVANDO la venta (estado ahora es true)
+              await pDB.decrement("existencia", {
+                by: cantVendida,
+                transaction,
+              });
+            } else {
+              // Si se está ANULANDO la venta (estado ahora es false)
+              await pDB.increment("existencia", {
+                by: cantVendida,
+                transaction,
+              });
             }
             productosAfectadosParaAlerta.add(pDB.idProducto);
           }
@@ -456,15 +493,21 @@ const actualizarEstadoProcesoVenta = async (idVenta, datosActualizar) => {
     await transaction.commit();
 
     // Enviar alertas de stock después de confirmar la transacción
-    if (nuevoEstadoBooleanoVenta && (estadoProcesoActualNombre === "Completado" || estadoProcesoActualNombre === "En proceso")) {
-        for (const productoId of productosAfectadosParaAlerta) {
-            const productoActualizado = await db.Producto.findByPk(productoId);
-            if (productoActualizado) {
-                await checkAndSendStockAlert(productoActualizado, `tras actualizar estado de venta ID ${idVenta}`);
-            }
+    if (
+      nuevoEstadoBooleanoVenta &&
+      (estadoProcesoActualNombre === "Completado" ||
+        estadoProcesoActualNombre === "En proceso")
+    ) {
+      for (const productoId of productosAfectadosParaAlerta) {
+        const productoActualizado = await db.Producto.findByPk(productoId);
+        if (productoActualizado) {
+          await checkAndSendStockAlert(
+            productoActualizado,
+            `tras actualizar estado de venta ID ${idVenta}`
+          );
         }
+      }
     }
-
 
     if (
       venta &&
@@ -502,8 +545,7 @@ const actualizarEstadoProcesoVenta = async (idVenta, datosActualizar) => {
 
         await enviarCorreoVenta({
           correoCliente: venta.cliente.correo,
-          nombreCliente:
-            venta.cliente.nombre || "Cliente Estimado",
+          nombreCliente: venta.cliente.nombre || "Cliente Estimado",
           ventaInfo: {
             idVenta: venta.idVenta,
             accion: accionCorreo,
@@ -589,13 +631,18 @@ const eliminarVentaFisica = async (idVenta) => {
       throw new NotFoundError("Venta no encontrada para eliminar.");
     }
 
-    ventaOriginalEstabaActivaYProcesable = venta.estado && venta.estadoDetalle &&
-        (venta.estadoDetalle.nombreEstado === "Completado" || venta.estadoDetalle.nombreEstado === "En proceso");
+    ventaOriginalEstabaActivaYProcesable =
+      venta.estado &&
+      venta.estadoDetalle &&
+      (venta.estadoDetalle.nombreEstado === "Completado" ||
+        venta.estadoDetalle.nombreEstado === "En proceso");
 
     if (ventaOriginalEstabaActivaYProcesable) {
       if (venta.productos && venta.productos.length > 0) {
         for (const pV of venta.productos) {
-          const pDB = await db.Producto.findByPk(pV.idProducto, { transaction });
+          const pDB = await db.Producto.findByPk(pV.idProducto, {
+            transaction,
+          });
           const cantVendida = pV.detalleProductoVenta.cantidad;
           if (pDB && cantVendida > 0) {
             await pDB.increment("existencia", { by: cantVendida, transaction }); // Devuelve al stock
@@ -635,7 +682,7 @@ module.exports = {
   crearVenta,
   obtenerTodasLasVentas,
   obtenerVentaPorId,
-  actualizarEstadoProcesoVenta, 
+  actualizarEstadoProcesoVenta,
   anularVenta,
   habilitarVenta,
   eliminarVentaFisica,

@@ -11,67 +11,95 @@ const { NotFoundError, BadRequestError, CustomError } = require("../errors");
  * @returns {Promise<object>} La nueva novedad creada con sus empleados asociados.
  */
 const crearNovedad = async (datosNovedad, empleadosIds) => {
-  // Iniciamos una transacción para asegurar que ambas operaciones (crear novedad y asignar empleados)
-  // se completen exitosamente o ninguna lo haga.
   const t = await db.sequelize.transaction();
-
   try {
-    // 1. Validar que los empleados existan y estén activos
     if (empleadosIds && empleadosIds.length > 0) {
-      const usuarios = await db.Usuario.findAll({
-        where: { idUsuario: empleadosIds, estado: true },
+      // 1. Busca el ID del rol "Empleado"
+      const rolEmpleado = await db.Rol.findOne({ where: { nombre: 'Empleado' }, transaction: t });
+      if (!rolEmpleado) {
+        throw new CustomError("El rol 'Empleado' no está configurado en el sistema.", 500);
+      }
+
+      // 2. Valida que los IDs pertenezcan a usuarios activos Y con el rol de Empleado
+      const usuariosValidos = await db.Usuario.count({
+        where: {
+          idUsuario: empleadosIds,
+          estado: true,
+          idRol: rolEmpleado.idRol 
+        },
         transaction: t,
       });
-      if (usuarios.length !== empleadosIds.length) {
-        throw new BadRequestError("Uno o más de los empleados seleccionados no existen o no están activos.");
+
+      if (usuariosValidos !== empleadosIds.length) {
+        // Este es el error que estabas viendo. Ahora la validación es correcta.
+        throw new BadRequestError("Uno o más de los IDs proporcionados no corresponden a empleados válidos y activos.");
       }
     }
 
-    // 2. Crear la novedad principal dentro de la transacción
     const nuevaNovedad = await db.Novedad.create(datosNovedad, { transaction: t });
 
-    // 3. Asignar la novedad a los empleados usando el método de asociación de Sequelize
     if (empleadosIds && empleadosIds.length > 0) {
       await nuevaNovedad.setEmpleados(empleadosIds, { transaction: t });
     }
 
-    // 4. Si todo salió bien, confirmamos la transacción
     await t.commit();
-
-    // 5. Devolvemos la novedad creada, incluyendo los empleados asociados
     return await db.Novedad.findByPk(nuevaNovedad.idNovedad, {
       include: [{ model: db.Usuario, as: 'empleados', attributes: ['idUsuario', 'correo'] }],
     });
-
   } catch (error) {
-    // 6. Si algo falla, revertimos todos los cambios
     await t.rollback();
     console.error("Error al crear la novedad en el servicio:", error);
-    // Re-lanzamos el error para que el controlador lo maneje
     throw error;
   }
 };
 
-/**
- * Obtiene todas las novedades con filtros opcionales.
- */
+
+// --- FUNCIÓN DE OBTENER NOVEDADES (CORREGIDA) ---
 const obtenerTodasLasNovedades = async (opcionesDeFiltro = {}) => {
-  const { estado, empleadoId } = opcionesDeFiltro;
+  // Ahora también recibimos 'busqueda'
+  const { estado, empleadoId, busqueda } = opcionesDeFiltro;
   const whereClause = {};
+
   const includeOptions = {
     model: db.Usuario,
     as: 'empleados',
     attributes: ['idUsuario', 'correo'],
-    through: { attributes: [] } // No incluir datos de la tabla de unión
+    through: { attributes: [] },
+    include: [{
+      model: db.Empleado,
+      as: 'empleadoInfo',
+      attributes: ['nombre', 'apellido'],
+    }],
+    required: false // Usamos LEFT JOIN para no excluir novedades
   };
 
+  // Filtro por estado (se mantiene igual)
   if (estado === 'true' || estado === 'false') {
     whereClause.estado = estado === 'true';
   }
 
-  // Si se filtra por empleado, añadimos una condición al 'include'
+  // Filtro por empleadoId (se mantiene igual)
   if (empleadoId) {
     includeOptions.where = { idUsuario: empleadoId };
+    includeOptions.required = true; // Hacemos INNER JOIN si se filtra por empleado
+  }
+
+  // ✅ NUEVA LÓGICA DE BÚSQUEDA GENERAL
+  if (busqueda) {
+    const searchTerm = `%${busqueda}%`;
+
+    // Usamos Op.or para buscar en múltiples campos de la novedad y sus empleados
+    whereClause[Op.or] = [
+      // Campos de la tabla Novedad
+      { fechaInicio: { [Op.like]: searchTerm } },
+      { fechaFin: { [Op.like]: searchTerm } },
+      { horaInicio: { [Op.like]: searchTerm } },
+      { horaFin: { [Op.like]: searchTerm } },
+      // Campos de las tablas asociadas (Usuario y Empleado)
+      { '$empleados.correo$': { [Op.like]: searchTerm } },
+      { '$empleados.empleadoInfo.nombre$': { [Op.like]: searchTerm } },
+      { '$empleados.empleadoInfo.apellido$': { [Op.like]: searchTerm } },
+    ];
   }
 
   try {
@@ -111,14 +139,29 @@ const actualizarNovedad = async (idNovedad, datosActualizar, empleadosIds) => {
       throw new NotFoundError("Novedad no encontrada para actualizar.");
     }
 
-    // Actualiza los datos de la novedad (fechas, horas, etc.)
-    await novedad.update(datosActualizar, { transaction: t });
-
-    // Si se proporciona un array de empleados, sincroniza las asignaciones.
-    // .setEmpleados() elimina las asignaciones viejas y crea las nuevas.
-    if (empleadosIds) {
+    // ✅ NUEVA VALIDACIÓN: Se añade la misma lógica de validación que en 'crearNovedad'
+    if (empleadosIds) { // Solo se valida si se está enviando una nueva lista de empleados
+      const rolEmpleado = await db.Rol.findOne({ where: { nombre: 'Empleado' }, transaction: t });
+      if (!rolEmpleado) {
+        throw new CustomError("El rol 'Empleado' no está configurado en el sistema.", 500);
+      }
+      const usuariosValidos = await db.Usuario.count({
+        where: {
+          idUsuario: empleadosIds,
+          estado: true,
+          idRol: rolEmpleado.idRol
+        },
+        transaction: t
+      });
+      if (usuariosValidos !== empleadosIds.length) {
+        throw new BadRequestError("Uno o más de los IDs proporcionados para actualizar no corresponden a empleados válidos y activos.");
+      }
+      // Si la validación pasa, se sincronizan los empleados
       await novedad.setEmpleados(empleadosIds, { transaction: t });
     }
+    
+    // Se actualizan los demás datos de la novedad (fechas, horas, etc.)
+    await novedad.update(datosActualizar, { transaction: t });
 
     await t.commit();
     return await obtenerNovedadPorId(idNovedad); // Devuelve la novedad actualizada
@@ -129,6 +172,7 @@ const actualizarNovedad = async (idNovedad, datosActualizar, empleadosIds) => {
     throw error;
   }
 };
+
 
 /**
  * Cambia el estado de una novedad.

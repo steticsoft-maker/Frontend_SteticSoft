@@ -1,14 +1,14 @@
 // src/shared/src_api/services/compra.service.js
 
-const db = require("../models");
+const db = require("../models/index.js");
 const { Op } = db.Sequelize;
 const {
   NotFoundError,
   ConflictError,
   CustomError,
   BadRequestError,
-} = require("../errors");
-const { checkAndSendStockAlert } = require('../utils/stockAlertHelper.js');
+} = require("../errors/index.js");
+const { checkAndSendStockAlert } = require("../utils/stockAlertHelper.js");
 
 const TASA_IVA = 0.19;
 
@@ -16,13 +16,7 @@ const TASA_IVA = 0.19;
  * Crear una nueva compra y sus detalles.
  */
 const crearCompra = async (datosCompra) => {
-  const {
-    fecha,
-    proveedorId,
-    dashboardId,
-    productos,
-    estado,
-  } = datosCompra;
+  const { fecha, proveedorId, dashboardId, productos, estado } = datosCompra;
   let { total, iva } = datosCompra;
 
   const proveedor = await db.Proveedor.findOne({
@@ -54,7 +48,12 @@ const crearCompra = async (datosCompra) => {
       throw new BadRequestError(
         `Producto '${productoDB.nombre}' (ID: ${item.productoId}) no está activo.`
       );
-    productosValidados.push({ ...item, nombre: productoDB.nombre, stockMinimo: productoDB.stockMinimo, existenciaOriginal: productoDB.existencia });
+    productosValidados.push({
+      ...item,
+      nombre: productoDB.nombre,
+      stockMinimo: productoDB.stockMinimo,
+      existenciaOriginal: productoDB.existencia,
+    });
     subtotalCalculado += item.cantidad * item.valorUnitario;
   }
 
@@ -119,10 +118,15 @@ const crearCompra = async (datosCompra) => {
     await transaction.commit();
 
     for (const productoIdAfectado of productosAfectadosParaAlerta) {
-        const productoActualizado = await db.Producto.findByPk(productoIdAfectado);
-        if (productoActualizado) {
-            await checkAndSendStockAlert(productoActualizado, `tras compra ID ${nuevaCompra.idCompra}`);
-        }
+      const productoActualizado = await db.Producto.findByPk(
+        productoIdAfectado
+      );
+      if (productoActualizado) {
+        await checkAndSendStockAlert(
+          productoActualizado,
+          `tras compra ID ${nuevaCompra.idCompra}`
+        );
+      }
     }
 
     const compraCreadaJSON = nuevaCompra.toJSON();
@@ -138,7 +142,6 @@ const crearCompra = async (datosCompra) => {
     throw new CustomError(`Error al crear la compra: ${error.message}`, 500);
   }
 };
-
 
 const obtenerTodasLasCompras = async (opcionesDeFiltro = {}) => {
   try {
@@ -159,7 +162,13 @@ const obtenerTodasLasCompras = async (opcionesDeFiltro = {}) => {
           model: db.Producto,
           // CORRECCIÓN: Usar el alias correcto definido en el modelo Compra
           as: "productos", // Antes: 'productosComprados'
-          attributes: ["idProducto", "nombre", "precio", "stockMinimo", "existencia"],
+          attributes: [
+            "idProducto",
+            "nombre",
+            "precio",
+            "stockMinimo",
+            "existencia",
+          ],
           through: {
             // El alias de la tabla de unión se define en el modelo de la tabla de unión,
             // por lo que no es necesario aquí si no se necesita un alias específico en la consulta.
@@ -176,11 +185,14 @@ const obtenerTodasLasCompras = async (opcionesDeFiltro = {}) => {
     });
     return compras;
   } catch (error) {
-    console.error("Error al obtener todas las compras:", error.message, error.stack);
+    console.error(
+      "Error al obtener todas las compras:",
+      error.message,
+      error.stack
+    );
     throw new CustomError(`Error al obtener compras: ${error.message}`, 500);
   }
 };
-
 
 const obtenerCompraPorId = async (idCompra) => {
   try {
@@ -191,7 +203,13 @@ const obtenerCompraPorId = async (idCompra) => {
         {
           model: db.Producto,
           as: "productos", // CORRECCIÓN: Usar el alias correcto
-          attributes: ["idProducto", "nombre", "precio", "stockMinimo", "existencia"],
+          attributes: [
+            "idProducto",
+            "nombre",
+            "precio",
+            "stockMinimo",
+            "existencia",
+          ],
           through: {
             model: db.CompraXProducto,
             as: "detalleCompra", // Este alias se puede definir para la tabla de unión en la consulta
@@ -277,29 +295,35 @@ const actualizarCompra = async (idCompra, datosActualizar) => {
         camposParaActualizar.dashboardId = dashboardId;
       }
     }
-    
-    if (Object.keys(camposParaActualizar).length > 0) {
-        await compra.update(camposParaActualizar, { transaction });
-        if(camposParaActualizar.estado !== undefined) {
-            compra.estado = camposParaActualizar.estado;
-        }
-    }
 
+    if (Object.keys(camposParaActualizar).length > 0) {
+      await compra.update(camposParaActualizar, { transaction });
+      if (camposParaActualizar.estado !== undefined) {
+        compra.estado = camposParaActualizar.estado;
+      }
+    }
 
     if (
       datosActualizar.hasOwnProperty("estado") &&
       estadoOriginal !== compra.estado
     ) {
-      for (const productoComprado of compra.productos) { // Usar el alias correcto
+      for (const productoComprado of compra.productos) {
+        // Usar el alias correcto
         const productoDB = await db.Producto.findByPk(
           productoComprado.idProducto,
           { transaction }
         );
         const cantidadComprada = productoComprado.CompraXProducto.cantidad;
-        if (compra.estado) { 
-          await productoDB.increment("existencia", { by: cantidadComprada, transaction });
-        } else { 
-          await productoDB.decrement("existencia", { by: cantidadComprada, transaction });
+        if (compra.estado) {
+          await productoDB.increment("existencia", {
+            by: cantidadComprada,
+            transaction,
+          });
+        } else {
+          await productoDB.decrement("existencia", {
+            by: cantidadComprada,
+            transaction,
+          });
         }
         productosAfectadosParaAlerta.add(productoDB.idProducto);
       }
@@ -308,10 +332,13 @@ const actualizarCompra = async (idCompra, datosActualizar) => {
     await transaction.commit();
 
     for (const productoId of productosAfectadosParaAlerta) {
-        const productoActualizado = await db.Producto.findByPk(productoId);
-        if (productoActualizado) {
-            await checkAndSendStockAlert(productoActualizado, `tras actualizar estado de compra ID ${idCompra}`);
-        }
+      const productoActualizado = await db.Producto.findByPk(productoId);
+      if (productoActualizado) {
+        await checkAndSendStockAlert(
+          productoActualizado,
+          `tras actualizar estado de compra ID ${idCompra}`
+        );
+      }
     }
     return obtenerCompraPorId(idCompra);
   } catch (error) {
@@ -328,7 +355,6 @@ const actualizarCompra = async (idCompra, datosActualizar) => {
     );
   }
 };
-
 
 const eliminarCompraFisica = async (idCompra) => {
   const transaction = await db.sequelize.transaction();
@@ -357,11 +383,13 @@ const eliminarCompraFisica = async (idCompra) => {
       throw new NotFoundError("Compra no encontrada para eliminar.");
     }
     compraOriginalEstado = compra.estado;
-    productosOriginales = compra.productos.map(p => ({idProducto: p.idProducto, cantidad: p.CompraXProducto.cantidad}));
-
+    productosOriginales = compra.productos.map((p) => ({
+      idProducto: p.idProducto,
+      cantidad: p.CompraXProducto.cantidad,
+    }));
 
     if (
-      compraOriginalEstado && 
+      compraOriginalEstado &&
       productosOriginales &&
       productosOriginales.length > 0
     ) {
@@ -387,14 +415,17 @@ const eliminarCompraFisica = async (idCompra) => {
     });
 
     await transaction.commit();
-    
-    if(compraOriginalEstado){ 
-        for (const productoId of productosAfectadosParaAlerta) {
-            const productoActualizado = await db.Producto.findByPk(productoId);
-            if (productoActualizado) {
-                await checkAndSendStockAlert(productoActualizado, `tras eliminar compra ID ${idCompra} (stock revertido)`);
-            }
+
+    if (compraOriginalEstado) {
+      for (const productoId of productosAfectadosParaAlerta) {
+        const productoActualizado = await db.Producto.findByPk(productoId);
+        if (productoActualizado) {
+          await checkAndSendStockAlert(
+            productoActualizado,
+            `tras eliminar compra ID ${idCompra} (stock revertido)`
+          );
         }
+      }
     }
     return filasEliminadas;
   } catch (error) {
@@ -412,79 +443,92 @@ const eliminarCompraFisica = async (idCompra) => {
   }
 };
 
-
 const anularCompra = async (idCompra) => {
-    const transaction = await db.sequelize.transaction();
-    try {
-        const compra = await db.Compra.findByPk(idCompra, {
-            include: [{
-                model: db.Producto,
-                as: 'productos', // CORRECCIÓN: Usar el alias correcto
-                through: {
-                    model: db.CompraXProducto,
-                    as: 'detalleCompra', 
-                    attributes: ['cantidad']
-                }
-            }],
-            transaction
-        });
+  const transaction = await db.sequelize.transaction();
+  try {
+    const compra = await db.Compra.findByPk(idCompra, {
+      include: [
+        {
+          model: db.Producto,
+          as: "productos", // CORRECCIÓN: Usar el alias correcto
+          through: {
+            model: db.CompraXProducto,
+            as: "detalleCompra",
+            attributes: ["cantidad"],
+          },
+        },
+      ],
+      transaction,
+    });
 
-        if (!compra) {
-            throw new NotFoundError('La compra que intentas anular no fue encontrada.');
-        }
-
-        if (compra.estado === false) {
-            throw new ConflictError('Esta compra ya ha sido anulada previamente.');
-        }
-
-        const productosAfectadosParaAlerta = new Set();
-
-        for (const productoComprado of compra.productos) { // Usar el alias correcto
-            const cantidadRevertir = productoComprado.detalleCompra.cantidad;
-            const productoEnStock = await db.Producto.findByPk(productoComprado.idProducto, {
-                transaction,
-                lock: transaction.LOCK.UPDATE
-            });
-
-            if (productoEnStock) {
-                await productoEnStock.decrement("existencia", {
-                    by: cantidadRevertir,
-                    transaction,
-                });
-                productosAfectadosParaAlerta.add(productoEnStock.idProducto);
-            } else {
-                throw new Error(`El producto con ID ${productoComprado.idProducto} no fue encontrado durante la anulación.`);
-            }
-        }
-
-        compra.estado = false;
-        await compra.save({ transaction });
-
-        await transaction.commit();
-        
-        for (const productoId of productosAfectadosParaAlerta) {
-            const productoActualizado = await db.Producto.findByPk(productoId);
-            if (productoActualizado) {
-                await checkAndSendStockAlert(productoActualizado, `tras anulación de compra ID ${idCompra}`);
-            }
-        }
-
-        return compra;
-
-    } catch (error) {
-        await transaction.rollback();
-        if (error instanceof NotFoundError || error instanceof ConflictError) {
-            throw error;
-        }
-        console.error(`Error al anular la compra con ID ${idCompra}:`, error.message);
-        throw new CustomError(`Error al anular la compra: ${error.message}`, 500);
+    if (!compra) {
+      throw new NotFoundError(
+        "La compra que intentas anular no fue encontrada."
+      );
     }
+
+    if (compra.estado === false) {
+      throw new ConflictError("Esta compra ya ha sido anulada previamente.");
+    }
+
+    const productosAfectadosParaAlerta = new Set();
+
+    for (const productoComprado of compra.productos) {
+      // Usar el alias correcto
+      const cantidadRevertir = productoComprado.detalleCompra.cantidad;
+      const productoEnStock = await db.Producto.findByPk(
+        productoComprado.idProducto,
+        {
+          transaction,
+          lock: transaction.LOCK.UPDATE,
+        }
+      );
+
+      if (productoEnStock) {
+        await productoEnStock.decrement("existencia", {
+          by: cantidadRevertir,
+          transaction,
+        });
+        productosAfectadosParaAlerta.add(productoEnStock.idProducto);
+      } else {
+        throw new Error(
+          `El producto con ID ${productoComprado.idProducto} no fue encontrado durante la anulación.`
+        );
+      }
+    }
+
+    compra.estado = false;
+    await compra.save({ transaction });
+
+    await transaction.commit();
+
+    for (const productoId of productosAfectadosParaAlerta) {
+      const productoActualizado = await db.Producto.findByPk(productoId);
+      if (productoActualizado) {
+        await checkAndSendStockAlert(
+          productoActualizado,
+          `tras anulación de compra ID ${idCompra}`
+        );
+      }
+    }
+
+    return compra;
+  } catch (error) {
+    await transaction.rollback();
+    if (error instanceof NotFoundError || error instanceof ConflictError) {
+      throw error;
+    }
+    console.error(
+      `Error al anular la compra con ID ${idCompra}:`,
+      error.message
+    );
+    throw new CustomError(`Error al anular la compra: ${error.message}`, 500);
+  }
 };
 
 const habilitarCompra = async (idCompra) => {
-    return actualizarCompra(idCompra, { estado: true });
+  return actualizarCompra(idCompra, { estado: true });
 };
-
 
 module.exports = {
   crearCompra,

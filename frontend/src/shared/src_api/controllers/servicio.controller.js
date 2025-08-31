@@ -1,132 +1,91 @@
-const path = require("path");
-const db = require("../models");
-const { Op } = db.Sequelize;
-const {
-  NotFoundError,
-  ConflictError,
-  CustomError,
-  BadRequestError,
-} = require("../errors");
-
+// src/controllers/servicio.controller.js
 const servicioService = require("../services/servicio.service.js");
 
-/**
- * Crea un nuevo servicio.
- */
 const crearServicio = async (req, res, next) => {
   try {
-    const servicioData = { ...req.body };
-    if (req.file) {
-      servicioData.imagen = path.join('uploads', 'servicios', req.file.filename).replace(/\\/g, '/');
-    }
-
-    const nuevoServicio = await servicioService.crearServicio(servicioData);
+    const nuevo = await servicioService.crearServicio(req.body);
     res.status(201).json({
       success: true,
       message: "Servicio creado exitosamente.",
-      data: nuevoServicio,
+      data: nuevo,
     });
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * Obtiene una lista de todos los servicios con filtros y búsqueda.
- */
 const listarServicios = async (req, res, next) => {
   try {
-    const opcionesDeFiltro = {
-      busqueda: req.query.busqueda,
-      estado: req.query.estado,
-      categoriaServicioId: req.query.categoriaServicioId,
+    const filtros = {
+      busqueda: req.query.busqueda ?? undefined,
+      estado: req.query.estado ?? undefined,
+      // Soportamos ambos nombres por si el FE manda cualquiera:
+      idCategoriaServicio:
+        req.query.idCategoriaServicio ??
+        req.query.categoriaServicioId ??
+        undefined,
     };
 
-    const servicios = await servicioService.obtenerTodosLosServicios(
-      opcionesDeFiltro
-    );
-    
-    // El servicio ahora devuelve directamente el array de datos.
-    res.status(200).json({
-      success: true,
-      data: servicios,
-    });
+    const servicios = await servicioService.obtenerTodosLosServicios(filtros);
+    res.status(200).json({ success: true, data: servicios });
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * Obtiene un servicio específico por su ID.
- */
 const obtenerServicioPorId = async (req, res, next) => {
   try {
     const { idServicio } = req.params;
     const servicio = await servicioService.obtenerServicioPorId(
       Number(idServicio)
     );
-    res.status(200).json({
-      success: true,
-      data: servicio,
-    });
+    res.status(200).json({ success: true, data: servicio });
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * Actualiza un servicio existente por su ID.
- */
 const actualizarServicio = async (req, res, next) => {
   try {
     const { idServicio } = req.params;
-    const datosActualizar = { ...req.body };
-    if (req.file) {
-      datosActualizar.imagen = path.join('uploads', 'servicios', req.file.filename).replace(/\\/g, '/');
-    }
-    const servicioActualizado = await servicioService.actualizarServicio(
+    const actualizado = await servicioService.actualizarServicio(
       Number(idServicio),
-      datosActualizar
+      { ...req.body }
     );
     res.status(200).json({
       success: true,
       message: "Servicio actualizado exitosamente.",
-      data: servicioActualizado,
+      data: actualizado,
     });
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * Cambia el estado (activo/inactivo) de un servicio.
- */
 const cambiarEstadoServicio = async (req, res, next) => {
   try {
     const { idServicio } = req.params;
     const { estado } = req.body;
-    const servicioActualizado = await servicioService.cambiarEstadoServicio(
+    const actualizado = await servicioService.cambiarEstadoServicio(
       Number(idServicio),
       estado
     );
     res.status(200).json({
       success: true,
-      message: `Estado del servicio cambiado exitosamente.`,
-      data: servicioActualizado,
+      message: "Estado del servicio cambiado exitosamente.",
+      data: actualizado,
     });
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * Elimina físicamente un servicio por su ID.
- */
 const eliminarServicioFisico = async (req, res, next) => {
   try {
     const { idServicio } = req.params;
     await servicioService.eliminarServicioFisico(Number(idServicio));
-    res.status(204).send();
+    // Si prefieres devolver mensaje, cambia a 200 y envía JSON.
+    return res.status(204).send();
   } catch (error) {
     next(error);
   }
@@ -137,6 +96,6 @@ module.exports = {
   listarServicios,
   obtenerServicioPorId,
   actualizarServicio,
-  cambiarEstadoServicio, // Esta función es más genérica y puede reemplazar a anular/habilitar
+  cambiarEstadoServicio,
   eliminarServicioFisico,
 };

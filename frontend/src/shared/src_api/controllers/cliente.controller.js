@@ -1,7 +1,7 @@
 // src/controllers/cliente.controller.js
 // REVISADO: Controlador de Clientes revisado y aprobado. La implementación es correcta y sigue las mejores prácticas.
 const clienteService = require("../services/cliente.service.js");
-const db = require("../models"); // Importar db para acceder a Sequelize.Op
+const db = require("../models/index.js"); // Importar db para acceder a Sequelize.Op
 
 /**
  * Crea un nuevo cliente.
@@ -29,7 +29,10 @@ const listarClientes = async (req, res, next) => {
     const opcionesDeFiltro = {
       // Configuraciones de paginación
       limit: limit ? parseInt(limit, 10) : undefined,
-      offset: page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined,
+      offset:
+        page && limit
+          ? (parseInt(page, 10) - 1) * parseInt(limit, 10)
+          : undefined,
 
       where: {}, // Objeto donde se pueden añadir filtros de Sequelize
     };
@@ -53,9 +56,8 @@ const listarClientes = async (req, res, next) => {
         { numeroDocumento: { [db.Sequelize.Op.like]: `%${searchTerm}%` } },
       ];
     }
-    const { totalItems, clientes, currentPage, totalPages } = await clienteService.obtenerTodosLosClientes(
-      opcionesDeFiltro
-    );
+    const { totalItems, clientes, currentPage, totalPages } =
+      await clienteService.obtenerTodosLosClientes(opcionesDeFiltro);
 
     res.status(200).json({
       success: true,

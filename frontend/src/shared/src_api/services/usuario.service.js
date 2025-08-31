@@ -230,7 +230,6 @@ const crearUsuario = async (usuarioData) => {
         // Añadir dirección a los datos del perfil
         perfilData.direccion = direccion;
         await db.Cliente.create(perfilData, { transaction: t });
-
       } else if (rol.tipoPerfil === "EMPLEADO") {
         if (
           !nombre ||
@@ -382,13 +381,8 @@ const actualizarUsuario = async (idUsuario, datosActualizar) => {
       throw new NotFoundError("Usuario no encontrado para actualizar.");
     }
 
-    const {
-      contrasena,
-      correo,
-      idRol,
-      estado,
-      ...datosPerfil
-    } = datosActualizar;
+    const { contrasena, correo, idRol, estado, ...datosPerfil } =
+      datosActualizar;
 
     // Actualizar datos del usuario
     if (correo && correo !== usuario.correo) {
@@ -489,7 +483,9 @@ const eliminarUsuarioFisico = async (idUsuario) => {
     const usuario = await db.Usuario.findByPk(idUsuario, { transaction: t });
     if (!usuario) {
       await t.rollback();
-      throw new NotFoundError("Usuario no encontrado para eliminar físicamente.");
+      throw new NotFoundError(
+        "Usuario no encontrado para eliminar físicamente."
+      );
     }
 
     // La eliminación en cascada de la base de datos se encargará de los perfiles

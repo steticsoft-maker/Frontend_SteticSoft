@@ -1,240 +1,342 @@
-// src/validators/usuario.validators.js
+// src/shared/src_api/validators/usuario.validators.js
 const { body, param, query } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
-const db = require("../models");
+const db = require("../models/index.js");
 
+// --- Expresiones Regulares para Validación Estricta ---
 const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const numericOnlyRegex = /^\d+$/; // Para campos que solo deben ser números
+const alphanumericRegex = /^[a-zA-Z0-9]+$/; // Para campos alfanuméricos
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
+// --- Validador para CREAR Usuario ---
 const crearUsuarioValidators = [
-  // --- Validaciones para la entidad Usuario ---
   body("correo")
     .trim()
     .notEmpty()
-    .withMessage("La dirección de correo es obligatoria.")
+    .withMessage("El correo electrónico es obligatorio.")
     .isEmail()
-    .withMessage("Debe proporcionar una dirección de correo válida.")
+    .withMessage("El formato del correo no es válido.")
+    .matches(emailRegex)
+    .withMessage("El correo electrónico no tiene un formato válido.")
     .normalizeEmail()
     .custom(async (value) => {
-      const usuarioExistente = await db.Usuario.findOne({
-        where: { correo: value },
-      });
-      if (usuarioExistente) {
-        return Promise.reject("La dirección de correo ya está registrada.");
+      const usuario = await db.Usuario.findOne({ where: { correo: value } });
+      if (usuario) {
+        return Promise.reject("Este correo electrónico ya está registrado.");
       }
     }),
   body("contrasena")
     .notEmpty()
     .withMessage("La contraseña es obligatoria.")
     .isLength({ min: 8 })
-    .withMessage("La contraseña debe tener al menos 8 caracteres."),
+    .withMessage("La contraseña debe tener al menos 8 caracteres.")
+    .matches(passwordRegex)
+    .withMessage(
+      "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial."
+    ),
   body("idRol")
     .notEmpty()
-    .withMessage("El ID del rol es obligatorio.")
+    .withMessage("Debe seleccionar un rol.")
     .isInt({ gt: 0 })
-    .withMessage("El ID del rol debe ser un entero positivo."),
-  // ... (la validación custom de idRol se mantiene)
-
-  // --- Validaciones para el Perfil (Cliente/Empleado) ---
+    .withMessage("El ID del rol no es válido."),
+  body().custom(async (value, { req }) => {
+    if (!req.body.idRol) return true;
+    const rol = await db.Rol.findByPk(req.body.idRol);
+    if (
+      rol &&
+      (rol.tipoPerfil === "CLIENTE" || rol.tipoPerfil === "EMPLEADO")
+    ) {
+      const requiredFields = {
+        nombre: "El nombre es obligatorio.",
+        apellido: "El apellido es obligatorio.",
+        telefono: "El teléfono es obligatorio.",
+        tipoDocumento: "El tipo de documento es obligatorio.",
+        numeroDocumento: "El número de documento es obligatorio.",
+        fechaNacimiento: "La fecha de nacimiento es obligatoria.",
+      };
+      if (rol.tipoPerfil === "CLIENTE") {
+        requiredFields.direccion = "La dirección es obligatoria.";
+      }
+      for (const field in requiredFields) {
+        if (!req.body[field] || String(req.body[field]).trim() === "") {
+          throw new Error(requiredFields[field]);
+        }
+      }
+    }
+    return true;
+  }),
   body("nombre")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
-    .notEmpty()
-    .withMessage("El nombre es obligatorio para perfiles.")
-    .isLength({ min: 3, max: 50 })
-    .withMessage("El nombre debe tener entre 3 y 50 caracteres.")
     .matches(nameRegex)
-    .withMessage("El nombre solo puede contener letras y espacios."),
+    .withMessage("El nombre solo debe contener letras y espacios.")
+    .isLength({ min: 2, max: 100 }),
   body("apellido")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
-    .notEmpty()
-    .withMessage("El apellido es obligatorio para perfiles.")
-    .isLength({ min: 3, max: 50 })
-    .withMessage("El apellido debe tener entre 3 y 50 caracteres.")
     .matches(nameRegex)
-    .withMessage("El apellido solo puede contener letras y espacios."),
+    .withMessage("El apellido solo debe contener letras y espacios.")
+    .isLength({ min: 2, max: 100 }),
   body("telefono")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
-    .notEmpty()
-    .withMessage("El teléfono es obligatorio para perfiles.")
+    .matches(numericOnlyRegex)
+    .withMessage("El teléfono solo puede contener números.")
     .isLength({ min: 7, max: 15 })
-    .withMessage("El teléfono debe tener entre 7 y 15 dígitos.")
-    .isNumeric()
-    .withMessage("El teléfono solo puede contener números."),
-
+    .withMessage("El teléfono debe tener entre 7 y 15 dígitos."),
   body("tipoDocumento")
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage("El tipo de documento no puede estar vacío si se proporciona.")
-    .isString()
-    .withMessage("El tipo de documento debe ser texto.")
+    .optional({ checkFalsy: true })
     .isIn([
       "Cédula de Ciudadanía",
       "Cédula de Extranjería",
       "Pasaporte",
       "Tarjeta de Identidad",
-    ])
-    .withMessage("Tipo de documento no válido."),
-
+    ]),
   body("numeroDocumento")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
-    .notEmpty()
-    .withMessage(
-      "El número de documento no puede estar vacío si se proporciona."
-    )
-    .isString()
-    .withMessage("El número de documento debe ser texto.")
-    .isLength({ min: 5, max: 45 })
-    .withMessage("El número de documento debe tener entre 5 y 45 caracteres.")
-    .custom(async (value, { req }) => {
-      if (!value) return true;
-
-      const rol = await db.Rol.findByPk(req.body.idRol);
-      if (!rol) return true;
-
-      let profileModel;
-      if (rol.tipo_perfil === "CLIENTE") {
-        profileModel = db.Cliente;
-      } else if (rol.tipo_perfil === "EMPLEADO") {
-        profileModel = db.Empleado;
-      } else {
-        return true;
-      }
-
-      const perfilExistente = await profileModel.findOne({
-        where: { numero_documento: value },
-      });
-      if (perfilExistente) {
-        return Promise.reject(
-          `El número de documento ya está registrado para un ${rol.tipo_perfil.toLowerCase()}.`
-        );
+    .isLength({ min: 5, max: 20 })
+    .withMessage("El documento debe tener entre 5 y 20 caracteres.")
+    .custom((value, { req }) => {
+      const docType = req.body.tipoDocumento;
+      if (
+        docType === "Cédula de Ciudadanía" ||
+        docType === "Tarjeta de Identidad" ||
+        docType === "Cédula de Extranjería"
+      ) {
+        if (!numericOnlyRegex.test(value)) {
+          throw new Error("Para este tipo de documento, ingrese solo números.");
+        }
+      } else if (docType === "Pasaporte") {
+        if (!alphanumericRegex.test(value)) {
+          throw new Error("Para Pasaporte, ingrese solo letras y números.");
+        }
       }
       return true;
     }),
-
   body("fechaNacimiento")
-    .optional()
+    .optional({ checkFalsy: true })
+    .customSanitizer((value) => {
+      if (value && /^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+        const [day, month, year] = value.split("/");
+        return `${year}-${month}-${day}`;
+      }
+      return value;
+    })
     .isISO8601()
-    .withMessage(
-      "La fecha de nacimiento debe ser una fecha válida (YYYY-MM-DD)."
-    )
+    .withMessage("La fecha de nacimiento no es válida.")
+    .custom((value) => {
+      const birthDate = new Date(value);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      if (age < 18) {
+        throw new Error("El usuario debe ser mayor de 18 años.");
+      }
+      return true;
+    })
     .toDate(),
-
+  body("direccion")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ min: 5, max: 255 })
+    .withMessage("La dirección debe tener entre 5 y 255 caracteres.")
+    .matches(addressRegex)
+    .withMessage("La dirección contiene caracteres no permitidos."),
   handleValidationErrors,
 ];
 
+// --- Validador para ACTUALIZAR Usuario ---
 const actualizarUsuarioValidators = [
   param("idUsuario")
     .isInt({ gt: 0 })
-    .withMessage("El ID de usuario debe ser un entero positivo."),
+    .withMessage("El ID de usuario es inválido."),
   body("correo")
     .optional()
     .trim()
     .isEmail()
-    .withMessage("Debe proporcionar un correo electrónico válido si actualiza.")
     .normalizeEmail()
+    .matches(emailRegex)
     .custom(async (value, { req }) => {
-      const idUsuario = Number(req.params.idUsuario);
-      const usuarioExistente = await db.Usuario.findOne({
+      const usuario = await db.Usuario.findOne({
         where: {
           correo: value,
-          id_usuario: { [db.Sequelize.Op.ne]: idUsuario },
+          idUsuario: { [db.Sequelize.Op.ne]: req.params.idUsuario },
         },
       });
-      if (usuarioExistente) {
-        return Promise.reject(
-          "La dirección de correo ya está registrada por otro usuario."
-        );
+      if (usuario) {
+        return Promise.reject("Este correo ya está en uso por otro usuario.");
       }
     }),
-  body("contrasena")
-    .optional({ checkFalsy: true })
-    .isString()
-    .withMessage("La contraseña debe ser una cadena de texto.")
-    .isLength({ min: 8, max: 100 }) // MODIFICACIÓN: Añadido max y mensaje
-    .withMessage(
-      "La contraseña debe tener entre 8 y 100 caracteres si se actualiza."
-    ),
-  body("idRol")
-    .optional()
-    .isInt({ gt: 0 })
-    .withMessage("El ID del rol debe ser un entero positivo si se actualiza.")
-    .custom(async (value) => {
-      if (value) {
-        const rolExistente = await db.Rol.findOne({
-          where: { id_rol: value, estado: true },
-        });
-        if (!rolExistente) {
-          return Promise.reject(
-            "El rol especificado para la actualización no existe o no está activo."
+  body("idRol").optional().isInt({ gt: 0 }),
+  body("estado").optional().isBoolean(),
+  body().custom(async (value, { req }) => {
+    if (!req.body.idRol) return true;
+    const rol = await db.Rol.findByPk(req.body.idRol);
+    if (
+      rol &&
+      (rol.tipoPerfil === "CLIENTE" || rol.tipoPerfil === "EMPLEADO")
+    ) {
+      const requiredFields = [
+        "nombre",
+        "apellido",
+        "telefono",
+        "tipoDocumento",
+        "numeroDocumento",
+        "fechaNacimiento",
+      ];
+      if (rol.tipoPerfil === "CLIENTE") {
+        requiredFields.push("direccion");
+      }
+      for (const field of requiredFields) {
+        if (
+          req.body[field] !== undefined &&
+          String(req.body[field]).trim() === ""
+        ) {
+          throw new Error(
+            `El campo '${field}' no puede estar vacío si se proporciona.`
           );
         }
       }
-    }),
-  body("estado")
-    .optional()
-    .isBoolean()
-    .withMessage("El estado debe ser un valor booleano (true o false)."),
+    }
+    return true;
+  }),
+  body("nombre")
+    .optional({ checkFalsy: true })
+    .trim()
+    .matches(nameRegex)
+    .withMessage("El nombre solo debe contener letras y espacios.")
+    .isLength({ min: 2, max: 100 }),
+  body("apellido")
+    .optional({ checkFalsy: true })
+    .trim()
+    .matches(nameRegex)
+    .withMessage("El apellido solo debe contener letras y espacios.")
+    .isLength({ min: 2, max: 100 }),
+  body("telefono")
+    .optional({ checkFalsy: true })
+    .trim()
+    .matches(numericOnlyRegex)
+    .withMessage("El teléfono solo puede contener números.")
+    .isLength({ min: 7, max: 15 })
+    .withMessage("El teléfono debe tener entre 7 y 15 dígitos."),
+  body("tipoDocumento")
+    .optional({ checkFalsy: true })
+    .isIn([
+      "Cédula de Ciudadanía",
+      "Cédula de Extranjería",
+      "Pasaporte",
+      "Tarjeta de Identidad",
+    ]),
 
-  body("nombre").optional().trim().notEmpty().withMessage("El nombre no puede estar vacío si se actualiza.").isLength({ min: 2, max: 100 }),
-  body("apellido").optional().trim().notEmpty().withMessage("El apellido no puede estar vacío si se actualiza.").isLength({ min: 2, max: 100 }),
-  body("telefono").optional().trim().notEmpty().withMessage("El teléfono no puede estar vacío si se actualiza.").isLength({ min: 7, max: 20 }),
-  body("tipoDocumento").optional().trim().notEmpty().withMessage("El tipo de documento no puede estar vacío si se actualiza.").isIn(['Cédula de Ciudadanía', 'Cédula de Extranjería', 'Pasaporte', 'Tarjeta de Identidad']),
-  body("numeroDocumento").optional().trim().notEmpty().withMessage("El número de documento no puede estar vacío si se actualiza.").isLength({ min: 5, max: 45 })
+  // CORRECCIÓN CRÍTICA: Añadida validación de unicidad para numeroDocumento
+  body("numeroDocumento")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ min: 5, max: 20 })
+    .withMessage("El documento debe tener entre 5 y 20 caracteres.")
+    .custom((value, { req }) => {
+      const docType = req.body.tipoDocumento;
+      if (
+        docType === "Cédula de Ciudadanía" ||
+        docType === "Tarjeta de Identidad" ||
+        docType === "Cédula de Extranjería"
+      ) {
+        if (!numericOnlyRegex.test(value)) {
+          throw new Error("Para este tipo de documento, ingrese solo números.");
+        }
+      } else if (docType === "Pasaporte") {
+        if (!alphanumericRegex.test(value)) {
+          throw new Error("Para Pasaporte, ingrese solo letras y números.");
+        }
+      }
+      return true;
+    })
     .custom(async (value, { req }) => {
-        if (!value) return true;
-        const idUsuario = Number(req.params.idUsuario);
-        const usuario = await db.Usuario.findByPk(idUsuario, { include: [{ model: db.Rol, as: 'rol' }] });
-        if (!usuario || !usuario.rol) return true;
-
-        let profileModel;
-        let profileFk = 'id_usuario';
-        if (usuario.rol.tipo_perfil === "CLIENTE") {
-            profileModel = db.Cliente;
-        } else if (usuario.rol.tipo_perfil === "EMPLEADO") {
-            profileModel = db.Empleado;
-        } else {
-            return true;
-        }
-
-        const perfilAsociado = await profileModel.findOne({ where: { [profileFk]: idUsuario } });
-        if (perfilAsociado && perfilAsociado.numero_documento === value) return true;
-
-        const otroPerfilConDocumento = await profileModel.findOne({ where: { numero_documento: value } });
-        if (otroPerfilConDocumento) {
-            return Promise.reject(`El número de documento ya está registrado para otro ${usuario.rol.tipo_perfil.toLowerCase()}.`);
-        }
+      if (!value || !req.body.idRol) return true;
+      const rol = await db.Rol.findByPk(req.body.idRol);
+      if (
+        !rol ||
+        (rol.tipoPerfil !== "CLIENTE" && rol.tipoPerfil !== "EMPLEADO")
+      )
         return true;
-    }),
-  body("fechaNacimiento").optional().isISO8601().withMessage("La fecha de nacimiento debe ser una fecha válida (YYYY-MM-DD).").toDate(),
 
+      const model = rol.tipoPerfil === "CLIENTE" ? db.Cliente : db.Empleado;
+      const profile = await model.findOne({
+        where: {
+          numeroDocumento: value,
+          idUsuario: { [db.Sequelize.Op.ne]: req.params.idUsuario },
+        },
+      });
+      if (profile) {
+        return Promise.reject(
+          `Este número de documento ya está registrado para otro ${rol.tipoPerfil.toLowerCase()}.`
+        );
+      }
+    }),
+
+  body("fechaNacimiento")
+    .optional({ checkFalsy: true })
+    .customSanitizer((value) => {
+      if (value && /^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+        const [day, month, year] = value.split("/");
+        return `${year}-${month}-${day}`;
+      }
+      return value;
+    })
+    .isISO8601()
+    .withMessage("La fecha de nacimiento no es válida.")
+    .custom((value) => {
+      const birthDate = new Date(value);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      if (age < 18) {
+        throw new Error("El usuario debe ser mayor de 18 años.");
+      }
+      return true;
+    })
+    .toDate(),
+  body("direccion")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ min: 5, max: 255 })
+    .withMessage("La dirección debe tener entre 5 y 255 caracteres.")
+    .matches(addressRegex)
+    .withMessage("La dirección contiene caracteres no permitidos."),
   handleValidationErrors,
 ];
 
+// --- Otros Validadores (Sin cambios) ---
 const idUsuarioValidator = [
   param("idUsuario")
     .isInt({ gt: 0 })
     .withMessage("El ID de usuario debe ser un entero positivo."),
   handleValidationErrors,
 ];
-
 const cambiarEstadoUsuarioValidators = [
   param("idUsuario")
     .isInt({ gt: 0 })
     .withMessage("El ID de usuario debe ser un entero positivo."),
   body("estado")
     .exists({ checkFalsy: false })
-    .withMessage("El campo 'estado' es obligatorio en el cuerpo de la solicitud.")
+    .withMessage("El campo 'estado' es obligatorio.")
     .isBoolean()
-    .withMessage("El valor de 'estado' debe ser un booleano (true o false)."),
+    .withMessage("El valor de 'estado' debe ser un booleano."),
   handleValidationErrors,
 ];
-
 const verificarCorreoValidators = [
   query("correo")
     .trim()
