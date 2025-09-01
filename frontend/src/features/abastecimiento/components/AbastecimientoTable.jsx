@@ -12,6 +12,15 @@ const AbastecimientoTable = ({
   currentPage = 1,
   rowsPerPage = 10,
 }) => {
+  // Verificación de seguridad para asegurar que `entries` sea un array
+  if (!Array.isArray(entries)) {
+    return (
+      <p>
+        No hay datos disponibles para mostrar.
+      </p>
+    );
+  }
+
   return (
     <table className="tabla-abastecimiento">
       <thead>
@@ -20,7 +29,6 @@ const AbastecimientoTable = ({
           <th>Producto</th>
           <th>Categoría</th>
           <th>Cantidad</th>
-          <th>Empleado Asignado</th>
           <th>Fecha de Ingreso</th>
           <th>Vida Restante</th>
           <th>Estado</th>
@@ -41,9 +49,6 @@ const AbastecimientoTable = ({
                 {entry.producto?.categoria?.nombre || "N/A"}
               </td>
               <td data-label="Cantidad:">{entry.cantidad}</td>
-              <td data-label="Empleado:">
-                {entry.empleado?.nombre || "No asignado"}
-              </td>
               <td data-label="Fecha Ingreso:">
                 {new Date(entry.fechaIngreso).toLocaleDateString()}
               </td>
@@ -98,7 +103,7 @@ const AbastecimientoTable = ({
                 </div>
               </td>
             </tr>
-          ); // <-- Faltaba el paréntesis de cierre del return
+          );
         })}
       </tbody>
     </table>
