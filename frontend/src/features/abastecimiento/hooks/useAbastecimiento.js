@@ -6,7 +6,6 @@ import {
   updateAbastecimiento,
   deleteAbastecimiento,
   getProductosActivosUsoInterno,
-  getEmpleadosActivos,
 } from "../services/abastecimientoService";
 import { toast } from "react-toastify";
 
@@ -19,7 +18,6 @@ const useAbastecimiento = () => {
   const [filters, setFilters] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [productos, setProductos] = useState([]);
-  const [empleados, setEmpleados] = useState([]);
   const [dependenciasCargadas, setDependenciasCargadas] = useState(false);
 
   const rowsPerPage = 10;
@@ -47,12 +45,8 @@ const useAbastecimiento = () => {
   const fetchDependencias = useCallback(async () => {
     try {
       setLoading(true);
-      const [productosData, empleadosData] = await Promise.all([
-        getProductosActivosUsoInterno(),
-        getEmpleadosActivos(),
-      ]);
+      const productosData = await getProductosActivosUsoInterno();
       setProductos(productosData.data);
-      setEmpleados(empleadosData.data);
       setDependenciasCargadas(true);
     } catch (err) {
       console.error(
@@ -148,7 +142,6 @@ const useAbastecimiento = () => {
     rowsPerPage,
     isSubmitting,
     productos,
-    empleados,
     dependenciasCargadas,
     handleCreateAbastecimiento,
     handleUpdateAbastecimiento,

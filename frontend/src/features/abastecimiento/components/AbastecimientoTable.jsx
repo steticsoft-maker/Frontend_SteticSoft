@@ -29,7 +29,6 @@ const AbastecimientoTable = ({
           <th>Producto</th>
           <th>Categoría</th>
           <th>Cantidad</th>
-          <th>Empleado Asignado</th>
           <th>Fecha de Ingreso</th>
           <th>Vida Restante</th>
           <th>Estado</th>
@@ -50,9 +49,6 @@ const AbastecimientoTable = ({
                 {entry.producto?.categoria?.nombre || "N/A"}
               </td>
               <td data-label="Cantidad:">{entry.cantidad}</td>
-              <td data-label="Empleado:">
-                {entry.empleado?.nombre || "No asignado"}
-              </td>
               <td data-label="Fecha Ingreso:">
                 {new Date(entry.fechaIngreso).toLocaleDateString()}
               </td>
