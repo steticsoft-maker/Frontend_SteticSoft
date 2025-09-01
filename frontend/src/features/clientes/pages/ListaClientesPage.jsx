@@ -34,6 +34,11 @@ function ListaClientesPage() {
     handleSave,
     handleDelete,
     handleToggleEstado,
+    formData,
+    formErrors,
+    isSubmitting,
+    handleInputChange,
+    handleInputBlur,
   } = useClientes();
 
   return (
@@ -87,14 +92,23 @@ function ListaClientesPage() {
 
       <ClienteCrearModal
         isOpen={isCrearModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
-        onSubmit={handleSave}
+        onClose={closeModal}
+        formData={formData}
+        formErrors={formErrors}
+        handleInputChange={handleInputChange}
+        handleInputBlur={handleInputBlur}
+        handleSave={handleSave}
+        isSubmitting={isSubmitting}
       />
       <ClienteEditarModal
         isOpen={isEditarModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
-        onSubmit={handleSave}
-        initialData={currentCliente}
+        onClose={closeModal}
+        formData={formData}
+        formErrors={formErrors}
+        handleInputChange={handleInputChange}
+        handleInputBlur={handleInputBlur}
+        handleSave={handleSave}
+        isSubmitting={isSubmitting}
       />
       <ClienteDetalleModal
         isOpen={isDetailsModalOpen}
