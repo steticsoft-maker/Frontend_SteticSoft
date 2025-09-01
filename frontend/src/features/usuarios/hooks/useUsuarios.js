@@ -1,5 +1,3 @@
-// src/features/usuarios/hooks/useUsuarios.js
-
 // --- IMPORTS ---
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
@@ -67,7 +65,6 @@ const useUsuarios = () => {
       setAvailableRoles(
         rolesData.filter((r) => r.nombre !== "Administrador") || []
       );
-
     } catch (err) {
       setErrorPage(err.message || "No se pudieron cargar los datos.");
     } finally {
@@ -170,10 +167,9 @@ const useUsuarios = () => {
           if (requiresProfile && !value) {
             error = "La fecha de nacimiento es requerida.";
           } else if (value) {
-            // new Date() puede interpretar mal YYYY-MM-DD, así que añadimos T00:00:00 para evitar problemas de zona horaria.
             const birthDate = new Date(`${value}T00:00:00`);
             const today = new Date();
-            today.setHours(0, 0, 0, 0); // Normalizar a medianoche para una comparación justa
+            today.setHours(0, 0, 0, 0);
 
             if (isNaN(birthDate.getTime())) {
               error = "La fecha ingresada no es válida.";
@@ -203,7 +199,6 @@ const useUsuarios = () => {
         default:
           break;
       }
-      if (error) { /* empty */ }
       return error;
     },
     [checkRequiresProfile, getRoleById]
@@ -308,87 +303,92 @@ const useUsuarios = () => {
     setFormData({});
     setFormErrors({});
   }, []);
-const handleOpenModal = useCallback(
-  async (type, usuario = null) => {
-    setFormErrors({});
-    if (type === "create") {
-      const defaultRole =
-        availableRoles.find((r) => r.nombre === "Cliente") ||
-        availableRoles[0] ||
-        null;
-      setFormData({
-        idRol: defaultRole ? defaultRole.idRol : "",
-        tipoDocumento: "Cédula de Ciudadanía",
-        estado: true,
-        nombre: "",
-        apellido: "",
-        correo: "",
-        telefono: "",
-        numeroDocumento: "",
-        fechaNacimiento: "",
-        direccion: "",
-        contrasena: "",
-        confirmarContrasena: "",
-      });
-      setIsCrearModalOpen(true);
-    } else if (type === "edit" && usuario) {
-      try {
-        setIsLoadingPage(true);
-        const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
-        setCurrentUsuario(fullUserData);
 
-        // Lógica para aplanar los datos del perfil para el formulario de edición
-        const perfil =
-          fullUserData.clienteInfo || fullUserData.empleadoInfo || {};
+  const handleOpenModal = useCallback(
+    async (type, usuario = null) => {
+      setFormErrors({});
+      if (type === "create") {
+        const defaultRole =
+          availableRoles.find((r) => r.nombre === "Cliente") ||
+          availableRoles[0] ||
+          null;
+        setFormData({
+          idRol: defaultRole ? defaultRole.idRol : "",
+          tipoDocumento: "Cédula de Ciudadanía",
+          estado: true,
+          nombre: "",
+          apellido: "",
+          correo: "",
+          telefono: "",
+          numeroDocumento: "",
+          fechaNacimiento: "",
+          direccion: "",
+          contrasena: "",
+          confirmarContrasena: "",
+        });
+        setIsCrearModalOpen(true);
+      } else if (type === "edit" && usuario) {
+        try {
+          setIsLoadingPage(true);
+          const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
+          setCurrentUsuario(fullUserData);
 
-        const initialFormData = {
-          idUsuario: fullUserData.idUsuario,
-          correo: fullUserData.correo,
-          idRol: fullUserData.idRol,
-          estado: fullUserData.estado,
-          nombre: perfil.nombre || "",
-          apellido: perfil.apellido || "",
-          tipoDocumento: perfil.tipoDocumento || "Cédula de Ciudadanía",
-          numeroDocumento: perfil.numeroDocumento || "",
-          telefono: perfil.telefono || "",
-          direccion: perfil.direccion || "",
-          fechaNacimiento: perfil.fechaNacimiento
-            ? perfil.fechaNacimiento.split("T")[0]
-            : "",
-        };
+          const perfil =
+            fullUserData.clienteInfo || fullUserData.empleadoInfo || {};
 
-        setFormData(initialFormData);
-        setIsEditarModalOpen(true);
-        console.log("Datos completos del usuario cargados:", fullUserData);
-      } catch (err) {
-        setErrorPage(
-          err.message || "No se pudieron cargar los datos del usuario."
-        );
-      } finally {
-        setIsLoadingPage(false);
+          const initialFormData = {
+            idUsuario: fullUserData.idUsuario,
+            correo: fullUserData.correo,
+            idRol: fullUserData.idRol,
+            estado: fullUserData.estado,
+            nombre: perfil.nombre || "",
+            apellido: perfil.apellido || "",
+            tipoDocumento: perfil.tipoDocumento || "Cédula de Ciudadanía",
+            numeroDocumento: perfil.numeroDocumento || "",
+            telefono: perfil.telefono || "",
+            direccion: perfil.direccion || "",
+            fechaNacimiento: perfil.fechaNacimiento
+              ? perfil.fechaNacimiento.split("T")[0]
+              : "",
+          };
+
+          setFormData(initialFormData);
+          setIsEditarModalOpen(true);
+        } catch (err) {
+          setErrorPage(
+            err.message || "No se pudieron cargar los datos del usuario."
+          );
+        } finally {
+          setIsLoadingPage(false);
+        }
+      } else if (type === "details" && usuario) {
+        // --- INICIO DE LA CORRECCIÓN ---
+        // Se añade un indicador de carga mientras se obtienen los datos completos.
+        setIsSubmitting(true); 
+        try {
+          // Se llama a la API para obtener todos los detalles del usuario por su ID.
+          const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
+          // Se guardan los datos completos en el estado.
+          setCurrentUsuario(fullUserData);
+          // Ahora sí, se abre el modal.
+          setIsDetailsModalOpen(true);
+        } catch (err) {
+          setErrorPage(
+            err.message || "No se pudieron cargar los detalles del usuario."
+          );
+        } finally {
+          // Se desactiva el indicador de carga.
+          setIsSubmitting(false);
+        }
+        // --- FIN DE LA CORRECCIÓN ---
+      } else if (type === "delete" && usuario) {
+        setUsuarioToDelete(usuario);
+        setIsConfirmDeleteModalOpen(true);
       }
-    } else if (type === "details" && usuario) {
-      // --- INICIO DE LA CORRECCIÓN INTEGRADA ---
-      try {
-        setIsSubmitting(true); // Usar 'isSubmitting' para el spinner del modal
-        const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
-        setIsDetailsModalOpen(true);
-        setCurrentUsuario(fullUserData);
-      } catch (err) {
-        setErrorPage(
-          err.message || "No se pudieron cargar los detalles del usuario."
-        );
-      } finally {
-        setIsSubmitting(false);
-      }
-      // --- FIN DE LA CORRECCIÓN INTEGRADA ---
-    } else if (type === "delete" && usuario) {
-      setUsuarioToDelete(usuario);
-      setIsConfirmDeleteModalOpen(true);
-    }
-  },
-  [availableRoles]
-);
+    },
+    [availableRoles] // Dependencia para roles disponibles
+  );
+  
 
   // --- HANDLERS DE ACCIONES DE USUARIO ---
   const handleSaveUsuario = useCallback(async () => {
@@ -407,7 +407,6 @@ const handleOpenModal = useCallback(
     try {
       const dataParaAPI = { ...formData };
       delete dataParaAPI.confirmarContrasena;
-
 
       const successMessage = formData.idUsuario
         ? `El usuario ${dataParaAPI.correo} ha sido actualizado.`
@@ -437,9 +436,6 @@ const handleOpenModal = useCallback(
   const handleConfirmDeleteUsuario = useCallback(async () => {
     if (!usuarioToDelete?.idUsuario) return;
     setIsSubmitting(true);
-    console.log(
-      usuarioToDelete
-    );
     try {
       await eliminarUsuarioFisicoAPI(usuarioToDelete.idUsuario);
       closeModal();
@@ -533,6 +529,7 @@ const handleOpenModal = useCallback(
   return {
     usuarios: currentUsersForTable,
     totalUsuariosFiltrados: processedUsuarios.length,
+    currentUsuario, // Asegúrate de retornar currentUsuario para el modal de detalles
     availableRoles,
     isLoadingPage,
     errorPage,
