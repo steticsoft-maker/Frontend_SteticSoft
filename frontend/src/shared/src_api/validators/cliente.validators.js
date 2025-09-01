@@ -1,254 +1,218 @@
-// src/shared/src_api/validators/cliente.validators.js
+// src/validators/cliente.validators.js
 const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
-const db = require("../models/index.js");
+const db = require("../models");
 
+// --- Expresiones Regulares para Validación ---
 const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const numericOnlyRegex = /^\d+$/;
+const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-const crearClienteValidators = [
-  // --- Campos para el Perfil del Cliente ---
+// --- Validador para CREAR Cliente (POST /) ---
+const clienteCreateValidators = [
   body("nombre")
     .trim()
-    .notEmpty()
-    .withMessage("El nombre es obligatorio.")
-    .isLength({ min: 3, max: 50 })
-    .withMessage("El nombre debe tener entre 3 y 50 caracteres.")
-    .matches(nameRegex)
-    .withMessage("El nombre solo puede contener letras y espacios."),
+    .notEmpty().withMessage("El nombre es obligatorio.")
+    .isLength({ min: 3, max: 100 }).withMessage("El nombre debe tener entre 3 y 100 caracteres.")
+    .matches(nameRegex).withMessage("El nombre solo puede contener letras y espacios."),
+
   body("apellido")
     .trim()
-    .notEmpty()
-    .withMessage("El apellido es obligatorio.")
-    .isLength({ min: 3, max: 50 })
-    .withMessage("El apellido debe tener entre 3 y 50 caracteres.")
-    .matches(nameRegex)
-    .withMessage("El apellido solo puede contener letras y espacios."),
-  body("telefono")
-    .trim()
-    .notEmpty()
-    .withMessage("El teléfono es obligatorio.")
-    .isLength({ min: 7, max: 15 })
-    .withMessage("El teléfono debe tener entre 7 y 15 dígitos.")
-    .isNumeric()
-    .withMessage("El teléfono solo puede contener números."),
-  body("tipoDocumento")
-    .trim()
-    .notEmpty()
-    .withMessage("El tipo de documento es obligatorio."),
-  body("numeroDocumento")
-    .trim()
-    .notEmpty()
-    .withMessage("El número de documento es obligatorio.")
-    .isLength({ min: 5, max: 20 })
-    .withMessage("El número de documento debe tener entre 5 y 20 caracteres."),
-  body("fechaNacimiento")
-    .notEmpty()
-    .withMessage("La fecha de nacimiento es obligatoria.")
-    .isISO8601()
-    .withMessage("Formato de fecha no válido (YYYY-MM-DD).")
-    .toDate(),
-  body("direccion")
-    .trim()
-    .notEmpty()
-    .withMessage("La dirección es obligatoria.")
-    .isLength({ min: 5, max: 255 })
-    .withMessage("La dirección debe tener entre 5 y 255 caracteres."),
+    .notEmpty().withMessage("El apellido es obligatorio.")
+    .isLength({ min: 3, max: 100 }).withMessage("El apellido debe tener entre 3 y 100 caracteres.")
+    .matches(nameRegex).withMessage("El apellido solo puede contener letras y espacios."),
 
-  // --- Campos para la Cuenta de Usuario asociada ---
   body("correo")
     .trim()
-    .notEmpty()
-    .withMessage("El correo electrónico es obligatorio.")
-    .isEmail()
-    .withMessage("Debe ser un correo electrónico válido.")
-    .normalizeEmail(),
+    .notEmpty().withMessage("El correo electrónico es obligatorio.")
+    .isEmail().withMessage("El formato del correo no es válido.")
+    .normalizeEmail()
+    .custom(async (value) => {
+      // CORRECTO: Verifica que el correo no esté ya registrado en la tabla de Usuarios.
+      const usuario = await db.Usuario.findOne({ where: { correo: value } });
+      if (usuario) {
+        return Promise.reject("Este correo electrónico ya está registrado.");
+      }
+    }),
+
+  body("telefono")
+    .trim()
+    .notEmpty().withMessage("El teléfono es obligatorio.")
+    .isLength({ min: 7, max: 15 }).withMessage("El teléfono debe tener entre 7 y 15 dígitos.")
+    .matches(numericOnlyRegex).withMessage("El teléfono solo puede contener números."),
+
+  body("tipoDocumento")
+    .trim()
+    .notEmpty().withMessage("El tipo de documento es obligatorio.")
+    .isIn(["Cédula de Ciudadanía", "Cédula de Extranjería", "Pasaporte", "Tarjeta de Identidad"])
+    .withMessage("Tipo de documento no válido."),
+
+  body("numeroDocumento")
+    .trim()
+    .notEmpty().withMessage("El número de documento es obligatorio.")
+    .isLength({ min: 5, max: 20 }).withMessage("El número de documento debe tener entre 5 y 20 caracteres.")
+    .custom(async (value) => {
+      // CORRECTO: Verifica que el número de documento no esté ya registrado en la tabla de Clientes.
+      const cliente = await db.Cliente.findOne({ where: { numeroDocumento: value } });
+      if (cliente) {
+        return Promise.reject("Este número de documento ya está registrado.");
+      }
+    }),
+
+  body("fechaNacimiento")
+    .notEmpty().withMessage("La fecha de nacimiento es obligatoria.")
+    .isISO8601().withMessage("Formato de fecha no válido (debe ser YYYY-MM-DD).")
+    .toDate()
+    .custom((value) => {
+      const birthDate = new Date(value);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      if (age < 18) {
+        throw new Error("El cliente debe ser mayor de 18 años.");
+      }
+      return true;
+    }),
+
+  body("direccion")
+    .trim()
+    .notEmpty().withMessage("La dirección es obligatoria.")
+    .isLength({ min: 5, max: 255 }).withMessage("La dirección debe tener entre 5 y 255 caracteres.")
+    .matches(addressRegex).withMessage("La dirección contiene caracteres no permitidos."),
+
   body("contrasena")
-    .notEmpty()
-    .withMessage("La contraseña es obligatoria.")
-    .isLength({ min: 8 })
-    .withMessage("La contraseña debe tener al menos 8 caracteres."),
+    .notEmpty().withMessage("La contraseña es obligatoria.")
+    .isLength({ min: 8 }).withMessage("La contraseña debe tener al menos 8 caracteres.")
+    .matches(passwordRegex).withMessage("La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial."),
 
   handleValidationErrors,
 ];
 
-// Validador para actualizar un cliente
-const actualizarClienteValidators = [
-  param("idCliente")
-    .isInt({ gt: 0 })
-    .withMessage("El ID del cliente debe ser un entero positivo."),
+// --- Validador para ACTUALIZAR Cliente (PUT /:idCliente) ---
+const clienteUpdateValidators = [
+  param("idCliente").isInt({ gt: 0 }).withMessage("El ID del cliente es inválido."),
 
   body("nombre")
     .optional()
     .trim()
-    .notEmpty()
-    .withMessage("El nombre no puede ser vacío si se provee.")
-    .isLength({ min: 2, max: 50 }),
+    .isLength({ min: 3, max: 100 }).withMessage("El nombre debe tener entre 3 y 100 caracteres.")
+    .matches(nameRegex).withMessage("El nombre solo puede contener letras y espacios."),
+
   body("apellido")
     .optional()
     .trim()
-    .notEmpty()
-    .withMessage("El apellido no puede ser vacío si se provee.")
-    .isLength({ min: 2, max: 50 }),
-  body("telefono")
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage("El teléfono no puede ser vacío si se provee.")
-    .isLength({ min: 7, max: 20 }),
-  body("tipoDocumento")
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage("El tipo de documento no puede ser vacío si se provee.")
-    .isIn([
-      "Cédula de Ciudadanía",
-      "Cédula de Extranjería",
-      "Pasaporte",
-      "Tarjeta de Identidad",
-    ])
-    .withMessage("Tipo de documento no válido."),
-  body("numeroDocumento")
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage("El número de documento no puede ser vacío si se provee.")
-    .isLength({ min: 5, max: 45 })
-    .custom(async (value, { req }) => {
-      if (value) {
-        const idCliente = Number(req.params.idCliente);
-        const clienteExistente = await db.Cliente.findOne({
-          where: {
-            numeroDocumento: value,
-            idCliente: { [db.Sequelize.Op.ne]: idCliente },
-          },
-        });
-        if (clienteExistente) {
-          return Promise.reject(
-            "El número de documento ya está registrado para otro cliente."
-          );
-        }
-      }
-    }),
-  body("fechaNacimiento")
-    .optional()
-    .isISO8601()
-    .withMessage(
-      "La fecha de nacimiento debe ser una fecha válida (YYYY-MM-DD) si se provee."
-    )
-    .toDate(),
-  body("direccion")
-    .optional()
-    .trim()
-    .isString()
-    .withMessage("La dirección debe ser una cadena de texto.")
-    .isLength({ max: 255 })
-    .withMessage("La dirección no puede tener más de 255 caracteres."),
-  body("estadoCliente")
-    .optional()
-    .isBoolean()
-    .withMessage(
-      "El estado del perfil del cliente debe ser un valor booleano."
-    ),
+    .isLength({ min: 3, max: 100 }).withMessage("El apellido debe tener entre 3 y 100 caracteres.")
+    .matches(nameRegex).withMessage("El apellido solo puede contener letras y espacios."),
 
   body("correo")
-    .optional({ checkFalsy: true })
+    .optional()
     .trim()
-    .isEmail()
-    .withMessage("Debe ser un correo electrónico válido si se provee.")
+    .isEmail().withMessage("El formato del correo no es válido.")
     .normalizeEmail()
     .custom(async (value, { req }) => {
-      if (value) {
-        const idCliente = Number(req.params.idCliente);
-        const otroClienteConCorreo = await db.Cliente.findOne({
-          where: {
-            correo: value,
-            idCliente: { [db.Sequelize.Op.ne]: idCliente },
-          },
-        });
-        if (otroClienteConCorreo) {
-          return Promise.reject(
-            "El correo electrónico ya está registrado para otro perfil de cliente."
-          );
-        }
-        const clienteActual = await db.Cliente.findByPk(idCliente);
-        if (clienteActual && clienteActual.idUsuario) {
-          const otroUsuarioConCorreo = await db.Usuario.findOne({
-            where: {
-              correo: value,
-              idUsuario: { [db.Sequelize.Op.ne]: clienteActual.idUsuario },
-            },
-          });
-          if (otroUsuarioConCorreo) {
-            return Promise.reject(
-              "El correo electrónico ya está en uso por otra cuenta de usuario."
-            );
-          }
-        }
+      const idCliente = req.params.idCliente;
+      // Primero, obtenemos el cliente para encontrar su idUsuario asociado.
+      const clienteActual = await db.Cliente.findByPk(idCliente);
+      if (!clienteActual) {
+        // Si el cliente no existe, la validación de idCliente ya debería haber fallado, pero es una buena práctica manejarlo.
+        return Promise.reject("El cliente no existe.");
+      }
+      // CORRECTO: Busca si otro usuario (con un ID diferente) ya está usando este correo.
+      const usuario = await db.Usuario.findOne({
+        where: {
+          correo: value,
+          idUsuario: { [db.Sequelize.Op.ne]: clienteActual.idUsuario }, // Excluir el usuario actual
+        },
+      });
+      if (usuario) {
+        return Promise.reject("Este correo electrónico ya está en uso por otro usuario.");
       }
     }),
-  body("estadoUsuario")
+
+  body("telefono")
     .optional()
-    .isBoolean()
-    .withMessage(
-      "El estado de la cuenta de usuario debe ser un valor booleano."
-    ),
-  body("idUsuario")
-    .optional({ nullable: true })
-    .isInt({ gt: 0 })
-    .withMessage(
-      "El ID de usuario debe ser un entero positivo si se proporciona, o null para desvincular."
-    )
+    .trim()
+    .isLength({ min: 7, max: 15 }).withMessage("El teléfono debe tener entre 7 y 15 dígitos.")
+    .matches(numericOnlyRegex).withMessage("El teléfono solo puede contener números."),
+
+  body("tipoDocumento")
+    .optional()
+    .trim()
+    .isIn(["Cédula de Ciudadanía", "Cédula de Extranjería", "Pasaporte", "Tarjeta de Identidad"])
+    .withMessage("Tipo de documento no válido."),
+
+  body("numeroDocumento")
+    .optional()
+    .trim()
+    .isLength({ min: 5, max: 20 }).withMessage("El número de documento debe tener entre 5 y 20 caracteres.")
     .custom(async (value, { req }) => {
-      if (value) {
-        const idCliente = Number(req.params.idCliente);
-        const usuario = await db.Usuario.findByPk(value);
-        if (!usuario) {
-          return Promise.reject(
-            "El usuario especificado para la asociación no existe."
-          );
-        }
-        const otroClienteConEsteUsuario = await db.Cliente.findOne({
-          where: {
-            idUsuario: value,
-            idCliente: { [db.Sequelize.Op.ne]: idCliente },
-          },
-        });
-        if (otroClienteConEsteUsuario) {
-          return Promise.reject(
-            "El ID de usuario ya está asociado a otro cliente."
-          );
-        }
+      const idCliente = req.params.idCliente;
+      // CORRECTO: Busca si otro cliente (con un ID diferente) ya está usando este número de documento.
+      const cliente = await db.Cliente.findOne({
+        where: {
+          numeroDocumento: value,
+          idCliente: { [db.Sequelize.Op.ne]: idCliente }, // Excluir el cliente actual
+        },
+      });
+      if (cliente) {
+        return Promise.reject("Este número de documento ya está en uso por otro cliente.");
       }
     }),
-  handleValidationErrors,
-];
 
-const idClienteValidator = [
-  param("idCliente")
-    .isInt({ gt: 0 })
-    .withMessage("El ID del cliente debe ser un entero positivo."),
-  handleValidationErrors,
-];
+  body("fechaNacimiento")
+    .optional()
+    .isISO8601().withMessage("Formato de fecha no válido (debe ser YYYY-MM-DD).")
+    .toDate()
+    .custom((value) => {
+        const birthDate = new Date(value);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        if (age < 18) {
+          throw new Error("El cliente debe ser mayor de 18 años.");
+        }
+        return true;
+    }),
 
-const cambiarEstadoClienteValidators = [
-  param("idCliente")
-    .isInt({ gt: 0 })
-    .withMessage("El ID del cliente debe ser un entero positivo."),
+  body("direccion")
+    .optional()
+    .trim()
+    .isLength({ min: 5, max: 255 }).withMessage("La dirección debe tener entre 5 y 255 caracteres.")
+    .matches(addressRegex).withMessage("La dirección contiene caracteres no permitidos."),
+
   body("estado")
-    .exists({ checkFalsy: false })
-    .withMessage(
-      "El campo 'estado' es obligatorio en el cuerpo de la solicitud."
-    )
-    .isBoolean()
-    .withMessage("El valor de 'estado' debe ser un booleano (true o false)."),
+    .optional()
+    .isBoolean().withMessage("El estado debe ser un valor booleano (true o false)."),
+
+  handleValidationErrors,
+];
+
+// Validador genérico para rutas que solo usan el ID del cliente
+const idClienteValidator = [
+  param("idCliente").isInt({ gt: 0 }).withMessage("El ID del cliente debe ser un entero positivo."),
+  handleValidationErrors,
+];
+
+// Validador para el cambio de estado
+const cambiarEstadoClienteValidators = [
+  param("idCliente").isInt({ gt: 0 }).withMessage("El ID del cliente debe ser un entero positivo."),
+  body("estado").isBoolean().withMessage("El valor de 'estado' debe ser un booleano."),
   handleValidationErrors,
 ];
 
 module.exports = {
-  crearClienteValidators,
-  actualizarClienteValidators,
+  clienteCreateValidators,
+  clienteUpdateValidators,
   idClienteValidator,
   cambiarEstadoClienteValidators,
 };

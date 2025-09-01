@@ -2,74 +2,55 @@ const { body, param } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
-const db = require("../models/index.js");
+const db = require("../models");
 
 // --- Validador para CREAR un producto ---
 const crearProductoValidators = [
   body("nombre")
     .trim()
-    .notEmpty()
-    .withMessage("El nombre del producto es obligatorio.")
-    .isLength({ min: 3, max: 100 })
-    .withMessage("El nombre debe tener entre 3 y 100 caracteres.")
-    .matches(/^[\w\sáéíóúÁÉÍÓÚñÑ-]+$/)
-    .withMessage("El nombre contiene caracteres inválidos."),
+    .notEmpty().withMessage("El nombre del producto es obligatorio.")
+    .isLength({ min: 3, max: 100 }).withMessage("El nombre debe tener entre 3 y 100 caracteres.")
+    .matches(/^[\w\sáéíóúÁÉÍÓÚñÑ-]+$/).withMessage("El nombre contiene caracteres inválidos."),
 
   body("descripcion")
     .trim()
-    .notEmpty()
-    .withMessage("La descripción es obligatoria.")
-    .isLength({ max: 300 })
-    .withMessage("La descripción no puede superar los 300 caracteres."),
+    .notEmpty().withMessage("La descripción es obligatoria.")
+    .isLength({ max: 300 }).withMessage("La descripción no puede superar los 300 caracteres."),
 
-  body("tipoUso")
-    .notEmpty()
-    .withMessage("El tipo de uso es obligatorio.")
-    .isIn(["Interno", "Externo"])
-    .withMessage("El tipo de uso debe ser 'Interno' o 'Externo'."),
+    body("tipoUso")
+    .notEmpty().withMessage("El tipo de uso es obligatorio.")
+    .isIn(["Interno", "Externo"]).withMessage("El tipo de uso debe ser 'Interno' o 'Externo'."),
   body("precio")
     .trim()
-    .notEmpty()
-    .withMessage("El precio es obligatorio.")
+    .notEmpty().withMessage("El precio es obligatorio.")
     .toFloat()
-    .isFloat({ gt: 0 })
-    .withMessage("El precio debe ser un número mayor que cero."),
+    .isFloat({ gt: 0 }).withMessage("El precio debe ser un número mayor que cero."),
 
   body("vidaUtilDias")
-    .notEmpty()
-    .withMessage("La vida útil es obligatoria.")
+    .notEmpty().withMessage("La vida útil es obligatoria.")
     .toInt()
-    .isInt({ gt: 0 })
-    .withMessage("La vida útil debe ser un número entero mayor que cero."),
+    .isInt({ gt: 0 }).withMessage("La vida útil debe ser un número entero mayor que cero."),
 
   body("existencia")
     .trim()
-    .notEmpty()
-    .withMessage("La existencia es obligatoria.")
+    .notEmpty().withMessage("La existencia es obligatoria.")
     .toInt()
-    .isInt({ min: 0 })
-    .withMessage("La existencia debe ser un número entero no negativo."),
+    .isInt({ min: 0 }).withMessage("La existencia debe ser un número entero no negativo."),
 
   body("stockMinimo")
     .trim()
-    .notEmpty()
-    .withMessage("El stock mínimo es obligatorio.")
+    .notEmpty().withMessage("El stock mínimo es obligatorio.")
     .toInt()
-    .isInt({ min: 0 })
-    .withMessage("El stock mínimo debe ser un número entero no negativo."),
+    .isInt({ min: 0 }).withMessage("El stock mínimo debe ser un número entero no negativo."),
 
   body("stockMaximo")
     .trim()
-    .notEmpty()
-    .withMessage("El stock máximo es obligatorio.")
+    .notEmpty().withMessage("El stock máximo es obligatorio.")
     .toInt()
-    .isInt({ min: 0 })
-    .withMessage("El stock máximo debe ser un número entero no negativo.")
+    .isInt({ min: 0 }).withMessage("El stock máximo debe ser un número entero no negativo.")
     .custom((value, { req }) => {
       if (parseInt(value) < parseInt(req.body.stockMinimo)) {
-        throw new Error(
-          "El stock máximo no puede ser menor que el stock mínimo."
-        );
+        throw new Error("El stock máximo no puede ser menor que el stock mínimo.");
       }
       return true;
     }),
@@ -104,37 +85,43 @@ const actualizarProductoValidators = [
     .isLength({ min: 3, max: 100 })
     .matches(/^[\w\sáéíóúÁÉÍÓÚñÑ-]+$/),
 
-  body("descripcion").optional().trim().notEmpty().isLength({ max: 300 }),
+  body("descripcion")
+    .optional()
+    .trim()
+    .notEmpty()
+    .isLength({ max: 300 }),
 
   body("tipoUso")
     .optional()
-    .isIn(["Interno", "Externo"])
-    .withMessage("El tipo de uso debe ser 'Interno' o 'Externo'."),
+    .isIn(["Interno", "Externo"]).withMessage("El tipo de uso debe ser 'Interno' o 'Externo'."),
 
   body("vidaUtilDias")
     .optional()
     .toInt()
-    .isInt({ gt: 0 })
-    .withMessage("La vida útil debe ser un número entero mayor que cero."),
+    .isInt({ gt: 0 }).withMessage("La vida útil debe ser un número entero mayor que cero."),
 
-  body("precio").optional().toFloat().isFloat({ gt: 0 }),
+  body("precio")
+    .optional()
+    .toFloat()
+    .isFloat({ gt: 0 }),
 
-  body("existencia").optional().toInt().isInt({ min: 0 }),
+  body("existencia")
+    .optional()
+    .toInt()
+    .isInt({ min: 0 }),
 
-  body("stockMinimo").optional().toInt().isInt({ min: 0 }),
+  body("stockMinimo")
+    .optional()
+    .toInt()
+    .isInt({ min: 0 }),
 
   body("stockMaximo")
     .optional()
     .toInt()
     .isInt({ min: 0 })
     .custom((value, { req }) => {
-      if (
-        req.body.stockMinimo &&
-        parseInt(value) < parseInt(req.body.stockMinimo)
-      ) {
-        throw new Error(
-          "El stock máximo no puede ser menor que el stock mínimo."
-        );
+      if (req.body.stockMinimo && parseInt(value) < parseInt(req.body.stockMinimo)) {
+        throw new Error("El stock máximo no puede ser menor que el stock mínimo.");
       }
       return true;
     }),

@@ -1,6 +1,6 @@
 // src/models/Abastecimiento.model.js
 'use strict';
-
+ 
 module.exports = (sequelize, DataTypes) => {
   const Abastecimiento = sequelize.define(
     'Abastecimiento',
@@ -31,16 +31,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: DataTypes.NOW,
         field: 'fecha_ingreso'
-      },
-      idEmpleadoAsignado: { 
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        field: 'id_empleado_asignado', 
-        references: {
-          model: 'empleado',
-          key: 'id_empleado' 
-        },
-        onDelete: 'SET NULL'
       },
       estaAgotado: {
         type: DataTypes.BOOLEAN,
@@ -78,11 +68,6 @@ module.exports = (sequelize, DataTypes) => {
       as: 'producto'
     });
 
-    // Un Abastecimiento es responsabilidad de un Empleado.
-    Abastecimiento.belongsTo(models.Empleado, {
-      foreignKey: 'idEmpleadoAsignado',
-      as: 'empleado'
-    });
   };
 
   return Abastecimiento;
