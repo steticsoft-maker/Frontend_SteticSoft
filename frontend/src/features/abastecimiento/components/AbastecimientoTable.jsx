@@ -12,6 +12,15 @@ const AbastecimientoTable = ({
   currentPage = 1,
   rowsPerPage = 10,
 }) => {
+  // Verificación de seguridad para asegurar que `entries` sea un array
+  if (!Array.isArray(entries)) {
+    return (
+      <p>
+        No hay datos disponibles para mostrar.
+      </p>
+    );
+  }
+
   return (
     <table className="tabla-abastecimiento">
       <thead>
@@ -98,7 +107,7 @@ const AbastecimientoTable = ({
                 </div>
               </td>
             </tr>
-          ); // <-- Faltaba el paréntesis de cierre del return
+          );
         })}
       </tbody>
     </table>

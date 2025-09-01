@@ -1,7 +1,7 @@
 // src/features/abastecimiento/components/DepleteProductModal.jsx
 import React, { useState, useEffect } from "react";
 
-const DepleteProductModal = ({ isOpen, onClose, onConfirm, productName }) => {
+const DepleteProductModal = ({ isOpen, onClose, onConfirm, productName, isSubmitting }) => {
   const [reason, setReason] = useState("");
   const [error, setError] = useState("");
 
@@ -47,6 +47,7 @@ const DepleteProductModal = ({ isOpen, onClose, onConfirm, productName }) => {
               setError("");
             }}
             placeholder="Ej: Se terminó, dañado, etc."
+            disabled={isSubmitting}
           />
           {error && <p className="error-abastecimiento">{error}</p>}
         </div>
@@ -54,12 +55,14 @@ const DepleteProductModal = ({ isOpen, onClose, onConfirm, productName }) => {
           <button
             className="form-button-guardar-abastecimiento deplete-button-abastecimiento"
             onClick={handleConfirm}
+            disabled={isSubmitting}
           >
-            Confirmar Agotado
+            {isSubmitting ? "Confirmando..." : "Confirmar Agotado"}
           </button>
           <button
             className="form-button-cancelar-abastecimiento"
             onClick={onClose}
+            disabled={isSubmitting}
           >
             Cancelar
           </button>
