@@ -30,8 +30,6 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
         </button>
 
         <h3>Detalles del Servicio</h3>
-
-        {/* Ahora usa la clase correcta definida en tu CSS */}
         <div className="servicio-details-list">
           <p><strong>Nombre:</strong> {servicio.nombre}</p>
           <p><strong>Descripción:</strong> {servicio.descripcion || 'No aplica'}</p>
