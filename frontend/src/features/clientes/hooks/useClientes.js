@@ -5,7 +5,18 @@ import {
   saveCliente,
   deleteClienteById,
   toggleClienteEstado,
+  verificarCorreoClienteAPI,
+  getClienteById,
 } from "../services/clientesService";
+
+// --- CONSTANTES DE VALIDACIÓN ---
+const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const numericOnlyRegex = /^\d+$/;
+const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
 const useClientes = () => {
   const [clientes, setClientes] = useState([]);
@@ -28,6 +39,13 @@ const useClientes = () => {
   // Estados para paginación
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // O hacerlo configurable
+
+  // --- ESTADOS DEL FORMULARIO ---
+  const [formData, setFormData] = useState({});
+  const [formErrors, setFormErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadClientes = useCallback(async (term) => {
     setIsLoading(true);
@@ -72,46 +90,309 @@ const useClientes = () => {
     setIsValidationModalOpen(false);
     setCurrentCliente(null);
     setValidationMessage("");
+    setFormData({});
+    setFormErrors({});
   }, []);
 
-  const handleOpenModal = useCallback((type, cliente = null) => {
-    setCurrentCliente(cliente);
-    if (type === "create") setIsCrearModalOpen(true);
-    else if (type === "edit") setIsEditarModalOpen(true);
-    else if (type === "details") setIsDetailsModalOpen(true);
-    else if (type === "delete") setIsConfirmDeleteOpen(true);
+  // --- VALIDACIÓN DE FORMULARIO ---
+  const validateField = useCallback(
+    (name, value, currentData, formType = "create") => {
+      let error = "";
+
+      switch (name) {
+        case "correo":
+          if (!value) error = "El correo es obligatorio.";
+          else if (!emailRegex.test(value))
+            error = "Formato de correo inválido.";
+          break;
+        case "contrasena":
+          if (formType === "create" && !value)
+            error = "La contraseña es requerida.";
+          else if (formType === "create" && value && !passwordRegex.test(value))
+            error =
+              "Contraseña insegura (mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb).";
+          break;
+        case "confirmarContrasena":
+          if (formType === "create" && !value)
+            error = "Debe confirmar la contraseña.";
+          else if (formType === "create" && value !== currentData.contrasena)
+            error = "Las contraseñas no coinciden.";
+          break;
+        case "nombre":
+        case "apellido":
+          if (!value) error = `El ${name} es requerido.`;
+          else if (value && !nameRegex.test(value))
+            error = `El ${name} solo puede contener letras y espacios.`;
+          else if (value && (value.length < 2 || value.length > 100))
+            error = `Debe tener entre 2 y 100 caracteres.`;
+          break;
+        case "numeroDocumento":
+          if (!value) {
+            error = "El número de documento es requerido.";
+          } else {
+            const docType = currentData.tipoDocumento;
+            if (
+              docType === "Cédula de Ciudadanía" ||
+              docType === "Tarjeta de Identidad" ||
+              docType === "Cédula de Extranjería"
+            ) {
+              if (!numericOnlyRegex.test(value)) {
+                error = "Para este tipo de documento, ingrese solo números.";
+              }
+            } else if (docType === "Pasaporte") {
+              if (!alphanumericRegex.test(value)) {
+                error = "Para Pasaporte, ingrese solo letras y números.";
+              }
+            }
+            if (!error && (value.length < 5 || value.length > 20)) {
+              error = "Debe tener entre 5 y 20 caracteres.";
+            }
+          }
+          break;
+        case "telefono":
+          if (!value) error = "El teléfono es requerido.";
+          else if (value && !numericOnlyRegex.test(value))
+            error = "El teléfono solo debe contener números.";
+          else if (value && (value.length < 7 || value.length > 15))
+            error = "Debe tener entre 7 y 15 dígitos.";
+          break;
+        case "fechaNacimiento":
+          if (!value) {
+            error = "La fecha de nacimiento es requerida.";
+          } else if (value) {
+            const birthDate = new Date(`${value}T00:00:00`);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (isNaN(birthDate.getTime())) {
+              error = "La fecha ingresada no es válida.";
+            } else if (birthDate > today) {
+              error = "La fecha de nacimiento no puede ser una fecha futura.";
+            } else {
+              let age = today.getFullYear() - birthDate.getFullYear();
+              const m = today.getMonth() - birthDate.getMonth();
+              if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+              }
+              if (age < 18) {
+                error = "El cliente debe ser mayor de 18 años.";
+              }
+            }
+          }
+          break;
+        case "direccion":
+          if (!value) {
+            error = "La dirección es requerida para clientes.";
+          } else if (value && !addressRegex.test(value)) {
+            error = "La dirección contiene caracteres no permitidos.";
+          } else if (value && (value.length < 5 || value.length > 255)) {
+            error = "La dirección debe tener entre 5 y 255 caracteres.";
+          }
+          break;
+        default:
+          break;
+      }
+      return error;
+    },
+    []
+  );
+
+  const runAllValidations = useCallback(
+    (data, formType) => {
+      const errors = {};
+      const allFields = [
+        "correo",
+        "nombre",
+        "apellido",
+        "tipoDocumento",
+        "numeroDocumento",
+        "telefono",
+        "fechaNacimiento",
+        "direccion",
+      ];
+      if (formType === "create")
+        allFields.push("contrasena", "confirmarContrasena");
+
+      allFields.forEach((field) => {
+        const error = validateField(field, data[field], data, formType);
+        if (error) errors[field] = error;
+      });
+      return errors;
+    },
+    [validateField]
+  );
+
+  useEffect(() => {
+    if (!isCrearModalOpen && !isEditarModalOpen) return;
+    const formType = formData.idCliente ? "edit" : "create";
+    const validationErrors = runAllValidations(formData, formType);
+    const existingApiError =
+      formErrors.correo === "Este correo ya está registrado."
+        ? { correo: formErrors.correo }
+        : {};
+    const combinedErrors = { ...validationErrors, ...existingApiError };
+
+    setFormErrors(combinedErrors);
+    const isValid =
+      Object.keys(combinedErrors).length === 0 && !isVerifyingEmail;
+    setIsFormValid(isValid);
+  }, [
+    formData,
+    runAllValidations,
+    isCrearModalOpen,
+    isEditarModalOpen,
+    isVerifyingEmail,
+    formErrors.correo,
+  ]);
+
+  // --- HANDLERS DE FORMULARIO ---
+  const handleInputChange = useCallback((e) => {
+    const { name, value, type, checked } = e.target;
+    const val = type === "checkbox" ? checked : value;
+    setFormData((prev) => ({ ...prev, [name]: val }));
+  }, []);
+
+  const handleInputBlur = useCallback(
+    async (e) => {
+      const { name, value } = e.target;
+      const formType = formData.idCliente ? "edit" : "create";
+      const error = validateField(name, value, formData, formType);
+      setFormErrors((prev) => ({ ...prev, [name]: error }));
+
+      if (name === "correo" && !error && value) {
+        const originalEmail = isEditarModalOpen ? currentCliente?.correo : null;
+        if (value !== originalEmail) {
+          setIsVerifyingEmail(true);
+          try {
+            const res = await verificarCorreoClienteAPI(value);
+            if (res.estaEnUso) {
+              setFormErrors((prev) => ({
+                ...prev,
+                correo: "Este correo ya está registrado.",
+              }));
+            }
+          } catch (apiError) {
+            console.error("Error al verificar el correo:", apiError);
+          } finally {
+            setIsVerifyingEmail(false);
+          }
+        }
+      }
+    },
+    [formData, validateField, currentCliente, isEditarModalOpen]
+  );
+
+
+  const handleOpenModal = useCallback(async (type, cliente = null) => {
+    setFormErrors({});
+    if (type === "create") {
+      setFormData({
+        tipoDocumento: "Cédula de Ciudadanía",
+        estado: true,
+        nombre: "",
+        apellido: "",
+        correo: "",
+        telefono: "",
+        numeroDocumento: "",
+        fechaNacimiento: "",
+        direccion: "",
+        contrasena: "",
+        confirmarContrasena: "",
+      });
+      setIsCrearModalOpen(true);
+    } else if (type === "edit" && cliente) {
+      try {
+        setIsLoading(true);
+        const fullClientData = await getClienteById(cliente.idCliente);
+        setCurrentCliente(fullClientData);
+
+        const initialFormData = {
+          idCliente: fullClientData.idCliente,
+          correo: fullClientData.correo,
+          estado: fullClientData.estado,
+          nombre: fullClientData.nombre || "",
+          apellido: fullClientData.apellido || "",
+          tipoDocumento: fullClientData.tipoDocumento || "Cédula de Ciudadanía",
+          numeroDocumento: fullClientData.numeroDocumento || "",
+          telefono: fullClientData.telefono || "",
+          direccion: fullClientData.direccion || "",
+          fechaNacimiento: fullClientData.fechaNacimiento
+            ? fullClientData.fechaNacimiento.split("T")[0]
+            : "",
+        };
+
+        setFormData(initialFormData);
+        setIsEditarModalOpen(true);
+      } catch (err) {
+        setError(
+          err.message || "No se pudieron cargar los datos del cliente."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (type === "details" && cliente) {
+      setIsSubmitting(true);
+      try {
+        const fullClientData = await getClienteById(cliente.idCliente);
+        setCurrentCliente(fullClientData);
+        setIsDetailsModalOpen(true);
+      } catch (err) {
+        setError(
+          err.message || "No se pudieron cargar los detalles del cliente."
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else if (type === "delete" && cliente) {
+      setCurrentCliente(cliente);
+      setIsConfirmDeleteOpen(true);
+    }
   }, []);
 
   const handleSave = useCallback(
-    async (clienteData) => {
-      const isEditing = !!currentCliente?.idCliente;
-      const isCreating = !isEditing;
+    async () => {
+      const formType = formData.idCliente ? "edit" : "create";
+      const validationErrors = runAllValidations(formData, formType);
+
+      if (Object.keys(validationErrors).length > 0) {
+        setFormErrors(validationErrors);
+        return;
+      }
+      if (!isFormValid) {
+        return;
+      }
+
+      setIsSubmitting(true);
       try {
+        const dataParaAPI = { ...formData };
+        delete dataParaAPI.confirmarContrasena;
+
+        const successMessage = formData.idCliente
+          ? `El cliente ${dataParaAPI.correo} ha sido actualizado.`
+          : `El cliente ${dataParaAPI.correo} ha sido creado exitosamente.`;
+
         await saveCliente(
-          clienteData,
-          isCreating,
-          isEditing ? currentCliente.idCliente : null
+          dataParaAPI,
+          !formData.idCliente,
+          formData.idCliente
         );
+
         await loadClientes(searchTerm); // Recargar con el término de búsqueda actual
         closeModal();
-        setValidationMessage(
-          `Cliente ${isEditing ? "actualizado" : "creado"} exitosamente.`
-        );
+        setValidationMessage(successMessage);
         setIsValidationModalOpen(true);
       } catch (err) {
-        console.error("Error al guardar cliente:", err);
-        let errorMessage = "Ocurrió un error al guardar el cliente.";
-        if (err.message) errorMessage = err.message;
-        if (err.response?.data?.errors) {
-          errorMessage = `Errores de validación: ${err.response.data.errors.map((e) => e.msg).join(" | ")}`;
-        } else if (err.response?.data?.message) {
-          errorMessage = err.response.data.message;
-        }
-        setValidationMessage(errorMessage);
+        const apiErrorMessage =
+          err.response?.data?.message ||
+          err.message ||
+          "Error al guardar el cliente.";
+        setValidationMessage(apiErrorMessage);
         setIsValidationModalOpen(true);
+      } finally {
+        setIsSubmitting(false);
       }
     },
-    [currentCliente, loadClientes, closeModal, searchTerm]
+    [formData, isFormValid, runAllValidations, loadClientes, closeModal, searchTerm]
   );
 
   const handleDelete = useCallback(async () => {
@@ -160,12 +441,7 @@ const useClientes = () => {
   );
 
   // Lógica de paginación
-  // Como la búsqueda ya se hace en el backend, `processedClientes` es simplemente `clientes`.
-  // Si se quisiera añadir filtrado por estado en el frontend, se modificaría aquí.
   const processedClientes = useMemo(() => {
-    // Aquí se podría añadir más lógica de filtrado frontend si fuera necesario,
-    // por ejemplo, un filtro de estado que no esté soportado por el backend.
-    // Por ahora, como el backend ya filtra por `searchTerm`, `clientes` ya está "procesado" en ese aspecto.
     return clientes;
   }, [clientes]);
 
@@ -179,8 +455,6 @@ const useClientes = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Resetear a página 1 si el número total de páginas es menor que la actual
-  // (por ejemplo, después de una búsqueda que reduce mucho los resultados)
   useEffect(() => {
     if (totalClientesFiltrados > 0 && itemsPerPage > 0) {
       const totalPages = Math.ceil(totalClientesFiltrados / itemsPerPage);
@@ -192,8 +466,8 @@ const useClientes = () => {
 
 
   return {
-    clientes: currentClientesForTable, // Para la tabla
-    totalClientesFiltrados, // Para el componente de paginación y el título
+    clientes: currentClientesForTable,
+    totalClientesFiltrados,
     isLoading,
     error,
     currentCliente,
@@ -203,8 +477,8 @@ const useClientes = () => {
     isConfirmDeleteOpen,
     isValidationModalOpen,
     validationMessage,
-    inputValue, // Para el input de búsqueda
-    setInputValue, // Para actualizar el término de búsqueda inmediato
+    inputValue,
+    setInputValue,
     currentPage,
     itemsPerPage,
     paginate,
@@ -213,8 +487,13 @@ const useClientes = () => {
     handleSave,
     handleDelete,
     handleToggleEstado,
-    // Podrías también exponer `loadClientes` si necesitas llamarlo manualmente desde la página por alguna razón,
-    // aunque con los efectos actuales, debería ser automático.
+    formData,
+    formErrors,
+    isFormValid,
+    isSubmitting,
+    isVerifyingEmail,
+    handleInputChange,
+    handleInputBlur,
   };
 };
 
