@@ -33,6 +33,25 @@ export const fetchClientes = async (searchTerm = '') => { // Ahora acepta un sea
 };
 
 /**
+ * Verifica si un correo electrónico ya existe en el sistema para un cliente.
+ * @param {string} correo - El correo electrónico a verificar.
+ * @returns {Promise<object>} La respuesta de la API.
+ */
+export const verificarCorreoClienteAPI = async (correo) => {
+  try {
+    const response = await apiClient.get(
+      `/clientes/verificar-correo?correo=${encodeURIComponent(correo)}`
+    );
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error al verificar el correo.")
+    );
+  }
+};
+
+/**
  * Obtiene un cliente específico por su ID del backend.
  * Útil para pre-rellenar formularios de edición.
  * @param {number} clienteId - El ID del cliente a obtener.
