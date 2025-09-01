@@ -29,18 +29,6 @@ export const getProductosActivosUsoInterno = async () => {
 };
 
 /**
- * Obtiene la lista de empleados activos desde la API.
- */
-export const getEmpleadosActivos = async () => {
-  try {
-    const response = await apiClient.get("/empleados/activos");
-    return response.data.data;
-  } catch (error) {
-    throw error.response?.data || new Error("Error al obtener empleados.");
-  }
-};
-
-/**
  * Crea un nuevo registro de abastecimiento en el sistema.
  */
 export const createAbastecimiento = async (data) => {
