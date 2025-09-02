@@ -17,9 +17,8 @@ const AbastecimientoCrearModal = ({
   // --- FIN: Nuevas props ---
 }) => {
   const getInitialFormState = () => ({
-    productoId: null,
+    idproducto: null,
     productoNombre: "",
-    empleadoId: null,
     empleadoNombre: "",
     cantidad: "",
   });
