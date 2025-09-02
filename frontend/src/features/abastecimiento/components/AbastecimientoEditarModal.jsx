@@ -13,7 +13,7 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
         idAbastecimiento: initialData.idAbastecimiento,
         cantidad: initialData.cantidad?.toString() || "",
         productoNombre: initialData.producto?.nombre || "N/A",
-        empleadoNombre: initialData.empleado?.nombre || "N/A",
+        empleadoAsignado: initialData.empleadoAsignado || "",
       });
       setFormErrors({});
     }
@@ -34,6 +34,9 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
     ) {
       errors.cantidad = "La cantidad debe ser un número positivo.";
     }
+    if (!formData.empleadoAsignado.trim()) {
+      errors.empleadoAsignado = "Debe ingresar un empleado.";
+    }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -44,6 +47,7 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
     const dataToSubmit = {
       idAbastecimiento: formData.idAbastecimiento,
       cantidad: parseInt(formData.cantidad, 10),
+      empleadoAsignado: formData.empleadoAsignado,
     };
     onSubmit(dataToSubmit);
   };
@@ -64,7 +68,7 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =
           <AbastecimientoForm
             formData={formData}
             onInputChange={handleInputChange}
-            isEditing={true}
+            onSelectProduct={null}
             formErrors={formErrors}
           />
           <div className="form-actions-abastecimiento">

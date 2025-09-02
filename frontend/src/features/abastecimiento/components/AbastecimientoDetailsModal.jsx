@@ -29,7 +29,7 @@ const AbastecimientoDetailsModal = ({ isOpen, onClose, item }) => {
           </p>
           <p>
             <strong>Empleado Asignado:</strong>{" "}
-            {item.empleado?.nombre || "No asignado"}
+            {item.empleadoAsignado || "No asignado"}
           </p>
           <p>
             <strong>Fecha de Ingreso:</strong>{" "}

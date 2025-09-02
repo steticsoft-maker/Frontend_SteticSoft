@@ -5,8 +5,6 @@ const AbastecimientoForm = ({
   formData,
   onInputChange,
   onSelectProduct,
-  onSelectEmployee,
-  isEditing,
   formErrors,
 }) => {
   return (
@@ -19,8 +17,7 @@ const AbastecimientoForm = ({
           type="button"
           className="form-button-select-abastecimiento"
           onClick={onSelectProduct}
-          disabled={isEditing}
-          title={isEditing ? "El producto no se puede cambiar" : "Seleccionar Producto"}
+          disabled={!onSelectProduct}
         >
           {formData.productoNombre || "Seleccionar Producto"}
         </button>
@@ -30,20 +27,24 @@ const AbastecimientoForm = ({
       </div>
 
       <div className="form-group-abastecimiento">
-        <label className="form-label-abastecimiento">
+        <label
+          htmlFor="empleadoAsignado"
+          className="form-label-abastecimiento"
+        >
           Empleado Asignado: <span className="required-asterisk">*</span>
         </label>
-        <button
-          type="button"
-          className="form-button-select-abastecimiento"
-          onClick={onSelectEmployee}
-          disabled={isEditing}
-          title={isEditing ? "El empleado no se puede cambiar" : "Seleccionar Empleado"}
-        >
-          {formData.empleadoNombre || "Seleccionar Empleado"}
-        </button>
-        {formErrors?.empleadoId && (
-          <p className="error-abastecimiento">{formErrors.empleadoId}</p>
+        <input
+          id="empleadoAsignado"
+          className="form-input-abastecimiento"
+          type="text"
+          name="empleadoAsignado"
+          placeholder="Nombre del empleado"
+          value={formData.empleadoAsignado || ""}
+          onChange={onInputChange}
+          required
+        />
+        {formErrors?.empleadoAsignado && (
+          <p className="error-abastecimiento">{formErrors.empleadoAsignado}</p>
         )}
       </div>
 

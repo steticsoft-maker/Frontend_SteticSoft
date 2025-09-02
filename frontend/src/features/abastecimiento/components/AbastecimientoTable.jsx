@@ -28,6 +28,7 @@ const AbastecimientoTable = ({
           <th>#</th>
           <th>Producto</th>
           <th>Categoría</th>
+          <th>Asignado a</th>
           <th>Cantidad</th>
           <th>Fecha de Ingreso</th>
           <th>Vida Restante</th>
@@ -47,6 +48,9 @@ const AbastecimientoTable = ({
               <td data-label="Producto:">{entry.producto?.nombre || "N/A"}</td>
               <td data-label="Categoría:">
                 {entry.producto?.categoria?.nombre || "N/A"}
+              </td>
+              <td data-label="Asignado a:">
+                {entry.empleadoAsignado || "N/A"}
               </td>
               <td data-label="Cantidad:">{entry.cantidad}</td>
               <td data-label="Fecha Ingreso:">
