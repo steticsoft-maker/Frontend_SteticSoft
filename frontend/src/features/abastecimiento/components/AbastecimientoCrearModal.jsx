@@ -12,15 +12,13 @@ const AbastecimientoCrearModal = ({
   isSubmitting, // Para el estado de guardado del formulario
   // --- INICIO: Nuevas props ---
   productosInternos,
-  empleadosActivos,
   isLoadingProductos, // Para el estado de carga de las listas de productos/empleados
   // --- FIN: Nuevas props ---
 }) => {
   const getInitialFormState = () => ({
     productoId: null,
     productoNombre: "",
-    empleadoId: null,
-    empleadoNombre: "",
+    empleadoAsignado: "",
     cantidad: "",
   });
 
@@ -32,7 +30,6 @@ const AbastecimientoCrearModal = ({
   // const [empleados, setEmpleados] = useState([]); // Se reemplaza por empleadosActivos (prop)
 
   const [showProductSelectModal, setShowProductSelectModal] = useState(false);
-  const [showEmployeeSelectModal, setShowEmployeeSelectModal] = useState(false);
 
 
   useEffect(() => {
@@ -59,8 +56,8 @@ const AbastecimientoCrearModal = ({
     if (!formData.productoId) {
       errors.productoId = "Debe seleccionar un producto.";
     }
-    if (!formData.empleadoId) {
-      errors.empleadoId = "Debe seleccionar un empleado.";
+    if (!formData.empleadoAsignado.trim()) {
+      errors.empleadoAsignado = "Debe ingresar un empleado.";
     }
     if (
       !formData.cantidad ||
@@ -81,7 +78,7 @@ const AbastecimientoCrearModal = ({
     const dataToSubmit = {
       idProducto: formData.productoId,
       cantidad: Number(formData.cantidad),
-      empleadoAsignado: formData.empleadoId,
+      empleadoAsignado: formData.empleadoAsignado,
     };
     onSubmit(dataToSubmit);
   };
@@ -118,10 +115,6 @@ const AbastecimientoCrearModal = ({
               onSelectProduct={() =>
                 !isLoadingProductos && setShowProductSelectModal(true)
               } // No abrir si las dependencias están cargando
-              onSelectEmployee={() =>
-                !isLoadingProductos && setShowEmployeeSelectModal(true)
-              } // No abrir si las dependencias están cargando
-              isEditing={false}
               formErrors={formErrors}
             />
             <div className="form-actions-abastecimiento">
@@ -166,26 +159,6 @@ const AbastecimientoCrearModal = ({
         isLoading={isLoadingProductos} // Pasar estado de carga al modal de selección
       />
 
-      <ItemSelectionModal
-        isOpen={showEmployeeSelectModal}
-        onClose={() => setShowEmployeeSelectModal(false)}
-        title="Seleccionar Empleado"
-        // Usar empleadosActivos de las props
-        items={(empleadosActivos || []).map((emp) => ({
-          label: emp.empleadoInfo?.nombre || emp.correo,
-          value: emp.empleadoInfo?.idEmpleado || emp.idUsuario,
-        }))}
-        onSelectItem={(item) => {
-          setFormData((prev) => ({
-            ...prev,
-            empleadoId: item.value,
-            empleadoNombre: item.label,
-          }));
-          setShowEmployeeSelectModal(false);
-        }}
-        searchPlaceholder="Buscar empleado..."
-        isLoading={isLoadingProductos} // Pasar estado de carga al modal de selección
-      />
     </>
   );
 };
