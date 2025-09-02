@@ -1,6 +1,5 @@
-// src/features/dashboard/pages/DashboardPage.jsx
-import React, { useState } from 'react'; // useEffect removido
-import { Bar, Line } from 'react-chartjs-2';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,7 +14,7 @@ import {
   Filler
 } from 'chart.js';
 import ChartCard from '../components/ChartCard';
-import useDashboard from '../hooks/useDashboard'; // Importar el custom hook
+import useDashboard from '../hooks/useDashboard';
 import '../css/Dashboard.css';
 
 ChartJS.register(
@@ -31,48 +30,30 @@ ChartJS.register(
   Filler
 );
 
-// Estructura de datos segura por defecto para los gráficos ya no es necesaria aquí,
-// el hook la maneja internamente.
-
 function DashboardPage() {
-  // Usar el custom hook para obtener datos y estados
   const {
-    productDayData,
-    productWeekData,
-    productMonthData,
-    serviceDayData,
-    serviceWeekData,
-    serviceMonthData,
+    productChartData,
+    serviceChartData,
+    salesEvolutionData,
     ivaSubtotalData,
-    comboData,
-    stackedAreaData,
-    isLoading, // Estado de carga del hook
-    error,     // Estado de error del hook
+    incomeByCategoryData,
+    isLoading,
+    error,
+    fetchDashboardData,
   } = useDashboard();
 
-  // Estados locales para los selectores de período de tiempo (se mantienen en la página)
   const [productTimePeriod, setProductTimePeriod] = useState("day");
   const [serviceTimePeriod, setServiceTimePeriod] = useState("day");
+  const [subtotalTimePeriod, setSubtotalTimePeriod] = useState("day");
 
-  // El useEffect para simular la carga de datos se ha movido al hook useDashboard.
+  // useCallback para evitar recrear la función en cada render
+  const handleFetchDashboardData = useCallback(() => {
+    fetchDashboardData(productTimePeriod, serviceTimePeriod, subtotalTimePeriod);
+  }, [productTimePeriod, serviceTimePeriod, subtotalTimePeriod, fetchDashboardData]);
 
-  const getProductChartData = () => {
-    switch (productTimePeriod) {
-      case "day": return productDayData;
-      case "week": return productWeekData;
-      case "month": return productMonthData;
-      default: return productDayData;
-    }
-  };
-
-  const getServiceChartData = () => {
-    switch (serviceTimePeriod) {
-      case "day": return serviceDayData;
-      case "week": return serviceWeekData;
-      case "month": return serviceMonthData;
-      default: return serviceDayData;
-    }
-  };
+  useEffect(() => {
+    handleFetchDashboardData();
+  }, [handleFetchDashboardData]);
 
   const chartOptions = {
     responsive: true,
@@ -87,34 +68,15 @@ function DashboardPage() {
     },
     scales: {
       x: { grid: { display: false } },
-      y: { beginAtZero: true, grid: { drawBorder: false } }, 
+      y: { beginAtZero: true, grid: { drawBorder: false } },
     },
   };
 
-  const stackedAreaOptions = {
-    ...chartOptions,
-    scales: {
-      ...chartOptions.scales,
-      y: {
-        ...chartOptions.scales.y,
-        stacked: true, 
-      },
-    },
-  };
-
-  const productTimePeriodButtons = (
+  const timePeriodButtons = (period, setPeriod) => (
     <div className="time-period-buttons">
-      <button className={productTimePeriod === "day" ? "active" : ""} onClick={() => setProductTimePeriod("day")}>Día</button>
-      <button className={productTimePeriod === "week" ? "active" : ""} onClick={() => setProductTimePeriod("week")}>Semana</button>
-      <button className={productTimePeriod === "month" ? "active" : ""} onClick={() => setProductTimePeriod("month")}>Mes</button>
-    </div>
-  );
-
-  const serviceTimePeriodButtons = (
-    <div className="time-period-buttons">
-      <button className={serviceTimePeriod === "day" ? "active" : ""} onClick={() => setServiceTimePeriod("day")}>Día</button>
-      <button className={serviceTimePeriod === "week" ? "active" : ""} onClick={() => setServiceTimePeriod("week")}>Semana</button>
-      <button className={serviceTimePeriod === "month" ? "active" : ""} onClick={() => setServiceTimePeriod("month")}>Mes</button>
+      <button className={period === "day" ? "active" : ""} onClick={() => setPeriod("day")}>Día</button>
+      <button className={period === "week" ? "active" : ""} onClick={() => setPeriod("week")}>Semana</button>
+      <button className={period === "month" ? "active" : ""} onClick={() => setPeriod("month")}>Mes</button>
     </div>
   );
 
@@ -141,24 +103,24 @@ function DashboardPage() {
       <h1 className="dashboard-header">Dashboard de Administración</h1>
       <div className="charts-container">
         <div className="rowDashboard">
-          <ChartCard title="Producto Más Vendido" timePeriodComponent={productTimePeriodButtons}>
-            <Bar data={getProductChartData()} options={chartOptions} />
+          <ChartCard title="Producto Más Vendido" timePeriodComponent={timePeriodButtons(productTimePeriod, setProductTimePeriod)}>
+            {productChartData && <Bar data={productChartData} options={chartOptions} />}
           </ChartCard>
-          <ChartCard title="Servicio Más Vendido" timePeriodComponent={serviceTimePeriodButtons}>
-            <Bar data={getServiceChartData()} options={chartOptions} />
-          </ChartCard>
-        </div>
-        <div className="rowDashboard">
-          <ChartCard title="Ejemplo Combo (Bar/Line)">
-            <Bar data={comboData} options={chartOptions} />
-          </ChartCard>
-          <ChartCard title="Subtotal y IVA (Bar)">
-            <Bar data={ivaSubtotalData} options={chartOptions} />
+          <ChartCard title="Servicio Más Vendido" timePeriodComponent={timePeriodButtons(serviceTimePeriod, setServiceTimePeriod)}>
+            {serviceChartData && <Bar data={serviceChartData} options={chartOptions} />}
           </ChartCard>
         </div>
         <div className="rowDashboard">
-           <ChartCard title="Ejemplo Stacked Area">
-            <Line data={stackedAreaData} options={stackedAreaOptions} />
+          <ChartCard title="Evolución de Ventas Mensuales">
+            {salesEvolutionData && <Bar data={salesEvolutionData} options={chartOptions} />}
+          </ChartCard>
+          <ChartCard title="Subtotal y IVA" timePeriodComponent={timePeriodButtons(subtotalTimePeriod, setSubtotalTimePeriod)}>
+            {ivaSubtotalData && <Bar data={ivaSubtotalData} options={chartOptions} />}
+          </ChartCard>
+        </div>
+        <div className="rowDashboard">
+          <ChartCard title="Ingresos por Categoría">
+            {incomeByCategoryData && <Bar data={incomeByCategoryData} options={chartOptions} />}
           </ChartCard>
         </div>
       </div>
