@@ -1,5 +1,5 @@
 // src/validators/abastecimiento.validators.js
-const { body, param } = require("express-validator");
+import { body, param } from "express-validator";
  
 // Validador para IDs en parámetros de URL
 const idValidator = [
@@ -21,7 +21,7 @@ const toggleEstadoValidator = [
 
 // Validador para la creación de un abastecimiento
 const createAbastecimientoValidator = [
-  body("productoId")
+  body("idProducto")
     .isInt({ gt: 0 })
     .withMessage("El ID del producto debe ser un número entero positivo."),
   body("cantidad")
@@ -52,7 +52,7 @@ const agotarAbastecimientoValidators = [
     .isLength({ max: 500 }).withMessage('La razón de agotamiento no debe exceder los 500 caracteres.'),
  ];
 
-module.exports = {
+export default {
   idValidator,
   toggleEstadoValidator,
   createAbastecimientoValidator,

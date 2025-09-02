@@ -1,13 +1,8 @@
 // src/services/abastecimiento.service.js
-const db = require("../models");
-const { Op } = db.Sequelize;
-const {
-  NotFoundError,
-  ConflictError,
-  CustomError,
-  BadRequestError,
-} = require("../errors");
-const { checkAndSendStockAlert } = require('../utils/stockAlertHelper.js'); // Import stock alert helper
+import { Sequelize, Producto, sequelize, Abastecimiento } from "../models";
+const { Op } = Sequelize;
+import { NotFoundError, ConflictError, CustomError, BadRequestError } from "../errors";
+import { checkAndSendStockAlert } from '../utils/stockAlertHelper.js'; // Import stock alert helper
  
 /**
  * Crear un nuevo registro de abastecimiento (salida de producto para empleado)
@@ -18,14 +13,14 @@ const { checkAndSendStockAlert } = require('../utils/stockAlertHelper.js'); // I
  */
 const crearAbastecimiento = async (datosAbastecimiento) => {
   const {
-    productoId,
+    idProducto,
     cantidad,
     fechaIngreso,
     estado,
   } = datosAbastecimiento;
 
-  const producto = await db.Producto.findByPk(productoId);
-  if (!producto) throw new BadRequestError(`Producto con ID ${productoId} no encontrado.`);
+  const producto = await Producto.findByPk(idProducto);
+  if (!producto) throw new BadRequestError(`Producto con ID ${idProducto} no encontrado.`);
   if (!producto.estado) throw new BadRequestError(`Producto '${producto.nombre}' no está activo.`);
 
   console.log("### Objeto 'producto' completo que se está validando ###");
@@ -34,7 +29,7 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
 
   // --- INICIO DE NUEVA VALIDACIÓN ---
   if (producto.tipoUso?.toLowerCase() !== 'interno') {
-    throw new BadRequestError(`El producto '${producto.nombre}' (ID: ${productoId}) no es de tipo 'Interno' y no puede ser asignado mediante este módulo de abastecimiento.`);
+    throw new BadRequestError(`El producto '${producto.nombre}' (ID: ${idProducto}) no es de tipo 'Interno' y no puede ser asignado mediante este módulo de abastecimiento.`);
   }
   // --- FIN DE NUEVA VALIDACIÓN ---
 
@@ -42,10 +37,10 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
     throw new ConflictError(`No hay suficiente stock para '${producto.nombre}'. Solicitado: ${cantidad}, Disponible: ${producto.existencia}.`);
   }
 
-  const transaction = await db.sequelize.transaction();
+  const transaction = await sequelize.transaction();
   try {
-    const nuevoAbastecimiento = await db.Abastecimiento.create({
-        idProducto: productoId,
+    const nuevoAbastecimiento = await Abastecimiento.create({
+        idProducto: idProducto,
         cantidad: Number(cantidad),
         fechaIngreso: fechaIngreso || new Date(),
         estaAgotado: false,
@@ -55,7 +50,7 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
     await producto.decrement("existencia", { by: Number(cantidad), transaction });
     await transaction.commit();
 
-    const productoActualizado = await db.Producto.findByPk(productoId);
+    const productoActualizado = await Producto.findByPk(idProducto);
     if (productoActualizado) {
         await checkAndSendStockAlert(productoActualizado, `tras abastecimiento ID ${nuevoAbastecimiento.idAbastecimiento}`);
     }
@@ -74,11 +69,11 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
 
 const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
   try {
-    return await db.Abastecimiento.findAll({
+    return await Abastecimiento.findAll({
       where: opcionesDeFiltro,
       include: [
         {
-          model: db.Producto,
+          model: Producto,
           as: "producto", 
           attributes: ["idProducto", "nombre", "stockMinimo", "existencia"],
         },
@@ -99,9 +94,9 @@ const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
 
 const obtenerAbastecimientoPorId = async (idAbastecimiento) => {
   try {
-    const abastecimiento = await db.Abastecimiento.findByPk(idAbastecimiento, {
+    const abastecimiento = await Abastecimiento.findByPk(idAbastecimiento, {
       include: [
-        { model: db.Producto, as: "producto", attributes: ["idProducto", "nombre", "stockMinimo", "existencia"] },
+        { model: Producto, as: "producto", attributes: ["idProducto", "nombre", "stockMinimo", "existencia"] },
       ],
     });
     if (!abastecimiento)
@@ -129,10 +124,10 @@ const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
     cantidad,
   } = datosActualizar;
 
-  const transaction = await db.sequelize.transaction();
+  const transaction = await sequelize.transaction();
   let productoIdAfectado;
   try {
-    const abastecimiento = await db.Abastecimiento.findByPk(idAbastecimiento, {
+    const abastecimiento = await Abastecimiento.findByPk(idAbastecimiento, {
       transaction,
     });
     if (!abastecimiento) {
@@ -141,7 +136,7 @@ const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
     }
     productoIdAfectado = abastecimiento.idProducto;
 
-    const producto = await db.Producto.findByPk(abastecimiento.idProducto, {
+    const producto = await Producto.findByPk(abastecimiento.idProducto, {
       transaction,
     });
     if (!producto) {
@@ -164,8 +159,8 @@ const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
       camposAActualizar.fechaAgotamiento = null;
     }
     
-    const nuevoEstado = datosActualizar.hasOwnProperty("estado") ? estado : abastecimiento.estado;
-    const nuevaCantidad = datosActualizar.hasOwnProperty("cantidad") ? Number(cantidad) : abastecimiento.cantidad;
+    const nuevoEstado = Object.prototype.hasOwnProperty.call(datosActualizar, "estado") ? estado : abastecimiento.estado;
+    const nuevaCantidad = Object.prototype.hasOwnProperty.call(datosActualizar, "cantidad") ? Number(cantidad) : abastecimiento.cantidad;
 
     camposAActualizar.estado = nuevoEstado;
     camposAActualizar.cantidad = nuevaCantidad;
@@ -201,7 +196,7 @@ const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
     await transaction.commit();
 
     if (productoIdAfectado) {
-        const productoActualizadoPostCommit = await db.Producto.findByPk(productoIdAfectado);
+        const productoActualizadoPostCommit = await Producto.findByPk(productoIdAfectado);
         if (productoActualizadoPostCommit) {
            await checkAndSendStockAlert(productoActualizadoPostCommit, `tras actualizar abastecimiento ID ${idAbastecimiento}`);
         }
@@ -229,11 +224,11 @@ const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
 };
 
 const eliminarAbastecimientoFisico = async (idAbastecimiento) => {
-  const transaction = await db.sequelize.transaction();
+  const transaction = await sequelize.transaction();
   let productoIdAfectado;
   let productoOriginal;
   try {
-    const abastecimiento = await db.Abastecimiento.findByPk(idAbastecimiento, {
+    const abastecimiento = await Abastecimiento.findByPk(idAbastecimiento, {
       transaction,
     });
     if (!abastecimiento) {
@@ -244,7 +239,7 @@ const eliminarAbastecimientoFisico = async (idAbastecimiento) => {
 
 
     if (abastecimiento.estado) {
-      productoOriginal = await db.Producto.findByPk(abastecimiento.idProducto, {
+      productoOriginal = await Producto.findByPk(abastecimiento.idProducto, {
         transaction,
       });
       if (productoOriginal) {
@@ -259,14 +254,14 @@ const eliminarAbastecimientoFisico = async (idAbastecimiento) => {
       }
     }
 
-    const filasEliminadas = await db.Abastecimiento.destroy({
+    const filasEliminadas = await Abastecimiento.destroy({
       where: { idAbastecimiento },
       transaction,
     });
     await transaction.commit();
 
     if (productoIdAfectado && abastecimiento.estado && productoOriginal) {
-        const productoActualizadoPostCommit = await db.Producto.findByPk(productoIdAfectado);
+        const productoActualizadoPostCommit = await Producto.findByPk(productoIdAfectado);
         if (productoActualizadoPostCommit) {
            await checkAndSendStockAlert(productoActualizadoPostCommit, `tras eliminar abastecimiento ID ${idAbastecimiento} (stock revertido)`);
         }
@@ -288,7 +283,7 @@ const eliminarAbastecimientoFisico = async (idAbastecimiento) => {
 
 // Nueva función para marcar un abastecimiento como agotado
 const agotarAbastecimiento = async (idAbastecimiento, razonAgotamiento) => {
-  const abastecimiento = await db.Abastecimiento.findByPk(idAbastecimiento);
+  const abastecimiento = await Abastecimiento.findByPk(idAbastecimiento);
   if (!abastecimiento) {
     throw new NotFoundError(`Abastecimiento con ID ${idAbastecimiento} no encontrado.`);
   }
@@ -304,7 +299,8 @@ const agotarAbastecimiento = async (idAbastecimiento, razonAgotamiento) => {
   return abastecimiento;
 };
 
-module.exports = {
+
+export default {
   crearAbastecimiento,
   obtenerTodosLosAbastecimientos,
   obtenerAbastecimientoPorId,

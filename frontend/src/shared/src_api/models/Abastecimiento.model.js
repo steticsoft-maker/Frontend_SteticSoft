@@ -1,7 +1,7 @@
 // src/models/Abastecimiento.model.js
 'use strict';
- 
-module.exports = (sequelize, DataTypes) => {
+
+export default (sequelize, DataTypes) => {
   const Abastecimiento = sequelize.define(
     'Abastecimiento',
     {
