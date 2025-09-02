@@ -1,7 +1,7 @@
 // src/models/Abastecimiento.model.js
 'use strict';
-
-export default (sequelize, DataTypes) => {
+ 
+module.exports = (sequelize, DataTypes) => {
   const Abastecimiento = sequelize.define(
     'Abastecimiento',
     {
@@ -53,6 +53,11 @@ export default (sequelize, DataTypes) => {
         defaultValue: true,
         allowNull: false,
         field: 'estado'
+      },
+      empleadoAsignado: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        field: 'empleado_asignado'
       }
     },
     {
