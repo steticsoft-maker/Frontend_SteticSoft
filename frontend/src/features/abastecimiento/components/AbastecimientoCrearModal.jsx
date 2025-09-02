@@ -17,8 +17,9 @@ const AbastecimientoCrearModal = ({
   // --- FIN: Nuevas props ---
 }) => {
   const getInitialFormState = () => ({
-    idproducto: null,
+    productoId: null,
     productoNombre: "",
+    empleadoId: null,
     empleadoNombre: "",
     cantidad: "",
   });
@@ -33,23 +34,6 @@ const AbastecimientoCrearModal = ({
   const [showProductSelectModal, setShowProductSelectModal] = useState(false);
   const [showEmployeeSelectModal, setShowEmployeeSelectModal] = useState(false);
 
-  // const cargarDependencias = useCallback(async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const [prods, emps] = await Promise.all([
-  //       abastecimientoService.getProductosActivosUsoInterno(),
-  //       abastecimientoService.getEmpleadosActivos(),
-  //     ]);
-  //     setProductos(prods);
-  //     setEmpleados(emps);
-  //   } catch {
-  //     setFormErrors({
-  //       _general: "No se pudieron cargar los datos para el formulario.",
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -89,13 +73,17 @@ const AbastecimientoCrearModal = ({
     return Object.keys(errors).length === 0;
   };
 
+  // ¡CORRECCIÓN CLAVE!
   const handleSave = () => {
-    // MODIFICADO: llamar a validateForm antes de onSubmit
     if (!validateForm()) {
       return;
     }
-    const { productoNombre: _pn, empleadoNombre: _en, ...dataToSubmit } = formData; // Excluir nombres, solo enviar IDs
-    onSubmit(dataToSubmit); // dataToSubmit ya tiene productoId, empleadoId, cantidad
+    const dataToSubmit = {
+      idProducto: formData.productoId,
+      cantidad: Number(formData.cantidad),
+      empleadoAsignado: formData.empleadoId,
+    };
+    onSubmit(dataToSubmit);
   };
 
   if (!isOpen) return null;

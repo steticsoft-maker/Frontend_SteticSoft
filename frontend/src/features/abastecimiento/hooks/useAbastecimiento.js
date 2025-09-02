@@ -6,6 +6,7 @@ import {
   updateAbastecimiento,
   deleteAbastecimiento,
   getProductosActivosUsoInterno,
+  getEmpleadosActivos,
 } from "../services/abastecimientoService";
 import { toast } from "react-toastify";
 
@@ -18,7 +19,18 @@ const useAbastecimiento = () => {
   const [filters, setFilters] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [productos, setProductos] = useState([]);
+  const [empleados, setEmpleados] = useState([]); // Nuevo estado para empleados
   const [dependenciasCargadas, setDependenciasCargadas] = useState(false);
+
+  // --- NUEVOS ESTADOS PARA MANEJO DE MODALES ---
+  const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
+  const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  const [isDepleteModalOpen, setIsDepleteModalOpen] = useState(false);
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
+  const [currentEntry, setCurrentEntry] = useState(null);
 
   const rowsPerPage = 10;
 
@@ -45,8 +57,12 @@ const useAbastecimiento = () => {
   const fetchDependencias = useCallback(async () => {
     try {
       setLoading(true);
-      const productosData = await getProductosActivosUsoInterno();
+      const [productosData, empleadosData] = await Promise.all([
+        getProductosActivosUsoInterno(),
+        getEmpleadosActivos(),
+      ]);
       setProductos(productosData.data);
+      setEmpleados(empleadosData.data);
       setDependenciasCargadas(true);
     } catch (err) {
       console.error(
@@ -119,6 +135,41 @@ const useAbastecimiento = () => {
     }
   };
 
+  // --- NUEVAS FUNCIONES PARA MANEJO DE MODALES ---
+  const handleOpenModal = (modalType, entry = null) => {
+    setCurrentEntry(entry);
+    switch (modalType) {
+      case "create":
+        setIsCrearModalOpen(true);
+        break;
+      case "edit":
+        setIsEditarModalOpen(true);
+        break;
+      case "details":
+        setIsDetailsModalOpen(true);
+        break;
+      case "delete":
+        setIsConfirmDeleteOpen(true);
+        break;
+      case "deplete":
+        setIsDepleteModalOpen(true);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const closeModal = () => {
+    setIsCrearModalOpen(false);
+    setIsEditarModalOpen(false);
+    setIsDetailsModalOpen(false);
+    setIsConfirmDeleteOpen(false);
+    setIsDepleteModalOpen(false);
+    setIsValidationModalOpen(false);
+    setValidationMessage("");
+    setCurrentEntry(null);
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -142,10 +193,25 @@ const useAbastecimiento = () => {
     rowsPerPage,
     isSubmitting,
     productos,
+    empleados, // Retornar empleados también
     dependenciasCargadas,
+
+    // --- NUEVOS RETORNOS ---
+    isCrearModalOpen,
+    isEditarModalOpen,
+    isDetailsModalOpen,
+    isConfirmDeleteOpen,
+    isDepleteModalOpen,
+    isValidationModalOpen,
+    validationMessage,
+    currentEntry,
+
     handleCreateAbastecimiento,
     handleUpdateAbastecimiento,
     handleDeleteAbastecimiento,
+    handleOpenModal, // Retornar la función
+    closeModal, // Retornar la función
+
     handlePageChange,
     handleFilterChange,
     handleRefresh,

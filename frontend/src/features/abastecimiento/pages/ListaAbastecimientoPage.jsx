@@ -32,7 +32,7 @@ function ListaAbastecimientoPage() {
     filterEstado,
     setFilterEstado,
     closeModal,
-    handleOpenModal,
+    handleOpenModal, // <--- ¡Esta línea ya está aquí y es la que soluciona el problema!
     handleSubmitForm,
     handleDeleteConfirmed,
     handleDepleteConfirmed,
@@ -119,9 +119,6 @@ function ListaAbastecimientoPage() {
         </div>
       </div>
 
-      {/* Los modales ahora son hermanos de .abastecimiento-main-content */}
-      {/* y ya no usan Portals, por lo que su posicionamiento será relativo 
-          al viewport gracias a la clase .modal-abastecimiento-overlay */}
 
       <AbastecimientoCrearModal
         isOpen={isCrearModalOpen}
@@ -132,7 +129,7 @@ function ListaAbastecimientoPage() {
         productosInternos={productosInternos}
         empleadosActivos={empleadosActivos}
         isLoadingProductos={isLoadingModalDependencies} // Usar el estado de carga de dependencias del modal
-        // --- FIN: Pasar props al modal de creación ---
+      // --- FIN: Pasar props al modal de creación ---
       />
       <AbastecimientoEditarModal
         isOpen={isEditarModalOpen}
@@ -151,9 +148,8 @@ function ListaAbastecimientoPage() {
         onClose={closeModal}
         onConfirm={handleDeleteConfirmed}
         title="Confirmar Eliminación"
-        message={`¿Estás seguro de que deseas eliminar la entrada de "${
-          currentEntry?.producto?.nombre || "este registro"
-        }"?`}
+        message={`¿Estás seguro de que deseas eliminar la entrada de "${currentEntry?.producto?.nombre || "este registro"
+          }"?`}
         confirmText="Eliminar"
         cancelText="Cancelar"
         isSubmitting={isSubmitting}

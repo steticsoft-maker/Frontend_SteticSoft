@@ -64,6 +64,17 @@ export const deleteAbastecimiento = async (id) => {
   }
 };
 
+// **[NUEVA FUNCIÓN]** Obtiene la lista de empleados activos desde la API.
+export const getEmpleadosActivos = async () => {
+  try {
+    const response = await apiClient.get("/empleados/activos");
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener empleados activos:", error);
+    throw error.response?.data || new Error("Error al obtener empleados.");
+  }
+};
+
 /**
  * Calcula la vida útil restante de un producto.
  * @param {Object} entry El objeto de registro de abastecimiento.
