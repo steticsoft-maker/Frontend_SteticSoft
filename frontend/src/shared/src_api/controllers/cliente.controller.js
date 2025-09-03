@@ -1,7 +1,7 @@
 // src/controllers/cliente.controller.js
 const { validationResult } = require("express-validator");
 const clienteService = require("../services/cliente.service.js");
-const db = require("../models"); 
+const db = require("../models/index.js");
 
 /**
  * Crea un nuevo cliente.
@@ -35,11 +35,14 @@ const crearCliente = async (req, res, next) => {
  */
 const listarClientes = async (req, res, next) => {
   try {
-    const { page, limit, search, estado } = req.query; 
+    const { page, limit, search, estado } = req.query;
 
     const opcionesDeFiltro = {
       limit: limit ? parseInt(limit, 10) : undefined,
-      offset: page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined,
+      offset:
+        page && limit
+          ? (parseInt(page, 10) - 1) * parseInt(limit, 10)
+          : undefined,
       where: {},
     };
 
@@ -59,9 +62,8 @@ const listarClientes = async (req, res, next) => {
         { numeroDocumento: { [db.Sequelize.Op.like]: `%${searchTerm}%` } },
       ];
     }
-    const { totalItems, clientes, currentPage, totalPages } = await clienteService.obtenerTodosLosClientes(
-      opcionesDeFiltro
-    );
+    const { totalItems, clientes, currentPage, totalPages } =
+      await clienteService.obtenerTodosLosClientes(opcionesDeFiltro);
 
     res.status(200).json({
       success: true,
@@ -132,7 +134,7 @@ const actualizarCliente = async (req, res, next) => {
 const cambiarEstadoCliente = async (req, res, next) => {
   try {
     const { idCliente } = req.params;
-    const { estado } = req.body; 
+    const { estado } = req.body;
 
     const clienteActualizado = await clienteService.cambiarEstadoCliente(
       Number(idCliente),
@@ -193,7 +195,7 @@ const eliminarClienteFisico = async (req, res, next) => {
   try {
     const { idCliente } = req.params;
     await clienteService.eliminarClienteFisico(Number(idCliente));
-    res.status(204).send(); 
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

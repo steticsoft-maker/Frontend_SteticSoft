@@ -5,14 +5,14 @@ const {
   sequelize,
   Abastecimiento,
   CategoriaProducto,
-} = require("../models");
+} = require("../models/index.js");
 const { Op } = Sequelize;
 const {
   NotFoundError,
   ConflictError,
   CustomError,
   BadRequestError,
-} = require("../errors");
+} = require("../errors/index.js");
 const { checkAndSendStockAlert } = require("../utils/stockAlertHelper.js"); // Import stock alert helper
 
 /**
@@ -259,7 +259,11 @@ const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
         if (producto.existencia < Math.abs(diferenciaCantidadInventario)) {
           await transaction.rollback();
           throw new ConflictError(
-            `No hay suficiente existencia para ajustar el producto '${producto.nombre}'. Requerido: ${Math.abs(diferenciaCantidadInventario)}, Disponible: ${producto.existencia}.`
+            `No hay suficiente existencia para ajustar el producto '${
+              producto.nombre
+            }'. Requerido: ${Math.abs(
+              diferenciaCantidadInventario
+            )}, Disponible: ${producto.existencia}.`
           );
         }
         await producto.decrement("existencia", {
@@ -272,8 +276,9 @@ const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
     await transaction.commit();
 
     if (productoIdAfectado) {
-      const productoActualizadoPostCommit =
-        await Producto.findByPk(productoIdAfectado);
+      const productoActualizadoPostCommit = await Producto.findByPk(
+        productoIdAfectado
+      );
       if (productoActualizadoPostCommit) {
         await checkAndSendStockAlert(
           productoActualizadoPostCommit,
@@ -340,8 +345,9 @@ const eliminarAbastecimientoFisico = async (idAbastecimiento) => {
     await transaction.commit();
 
     if (productoIdAfectado && abastecimiento.estado && productoOriginal) {
-      const productoActualizadoPostCommit =
-        await Producto.findByPk(productoIdAfectado);
+      const productoActualizadoPostCommit = await Producto.findByPk(
+        productoIdAfectado
+      );
       if (productoActualizadoPostCommit) {
         await checkAndSendStockAlert(
           productoActualizadoPostCommit,
