@@ -73,4 +73,4 @@ const AbastecimientoDetailsModal = ({ isOpen, onClose, item }) => {
   );
 };
 
-export default AbastecimientoDetailsModal;upda
+export default AbastecimientoDetailsModal;
