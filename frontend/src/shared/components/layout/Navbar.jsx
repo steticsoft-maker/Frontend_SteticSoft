@@ -24,15 +24,16 @@ function Navbar() {
         </Link>
         <ul className="navbar-list">
           <li>
-            <Link to="/public/productos" className="navbar-link">
-              Productos
+            <Link to="/productos" className="navbar-link">
+            Productos
             </Link>
           </li>
           <li>
-            <Link to="/public/servicios" className="navbar-link">
-              Servicios
+            <Link to="/servicios" className="navbar-link">
+            Servicios
             </Link>
           </li>
+
 
           {!isAuthenticated ? (
             // Fragmento para usuarios no autenticados

@@ -8,7 +8,13 @@ const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onTogg
       <table>
         <thead>
           <tr>
-            <th>#</th><th>Nombre/Empresa</th><th>Tipo / N° Doc.</th><th>Teléfono</th><th>Email</th><th>Dirección</th><th>Estado</th><th>Acciones</th>
+            <th>#</th>
+            <th>Nombre/Empresa</th>
+            <th>Tipo / N° Doc.</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -29,8 +35,6 @@ const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onTogg
 
               <td data-label="Email:">{proveedor.correo}</td>
 
-              <td data-label="Dirección:">{proveedor.direccion}</td>
-
               <td data-label="Estado:">
                 <label className="switch">
                   <input
@@ -43,13 +47,25 @@ const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onTogg
               </td>
 
               <td data-label="Acciones:" className="proveedores-table-actions">
-                <button className="botonVerDetallesProveedor" onClick={() => onView(proveedor)} title="Ver Detalles">
+                <button
+                  className="botonVerDetallesProveedor"
+                  onClick={() => onView(proveedor)}
+                  title="Ver Detalles"
+                >
                   <FaEye />
                 </button>
-                <button className="botonEditarProveedor" onClick={() => onEdit(proveedor)} title="Editar">
+                <button
+                  className="botonEditarProveedor"
+                  onClick={() => onEdit(proveedor)}
+                  title="Editar"
+                >
                   <FaEdit />
                 </button>
-                <button className="botonEliminarProveedor" onClick={() => onDeleteConfirm(proveedor)} title="Eliminar">
+                <button
+                  className="botonEliminarProveedor"
+                  onClick={() => onDeleteConfirm(proveedor)}
+                  title="Eliminar"
+                >
                   <FaTrash />
                 </button>
               </td>

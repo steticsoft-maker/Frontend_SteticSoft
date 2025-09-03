@@ -84,15 +84,16 @@ function ListaProductosAdminPage() {
             if (productoData.idProducto) {
                 await productosAdminService.updateProducto(productoData.idProducto, productoData);
             } else {
-                await productosAdminService.createProducto(productoData);
+                const response = await productosAdminService.createProducto(productoData);
+                if (response?.errors) return response.errors; // 👈 devolvemos errores al modal
+                }
+                await cargarProductos();
+                closeModal();
+            } catch (err) {
+                setValidationMessage(err.message || "Error al guardar el producto.");
+                setIsValidationModalOpen(true);
             }
-            await cargarProductos(); // ✨ Cargamos todos los productos de nuevo después de guardar
-            closeModal();
-        } catch (err) {
-            setValidationMessage(err.message || "Error al guardar el producto.");
-            setIsValidationModalOpen(true);
-        }
-    };
+        };
 
     const handleDelete = async () => {
         if (currentProducto?.idProducto) {

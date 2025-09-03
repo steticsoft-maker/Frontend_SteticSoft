@@ -117,27 +117,47 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  const handleSubmitForm = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    // ✅ Mandamos objeto plano, el service arma el FormData
-    const dataToSubmit = {
-      nombre: formData.nombre,
-      descripcion: formData.descripcion || null,
-      existencia: Number(formData.existencia),
-      precio: Number(formData.precio),
-      stockMinimo: formData.stockMinimo ? Number(formData.stockMinimo) : null,
-      stockMaximo: formData.stockMaximo ? Number(formData.stockMaximo) : null,
-      idCategoriaProducto: formData.idCategoriaProducto,
-      estado: formData.estado,
-      tipoUso: formData.tipoUso, // Interno / Externo
-      vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : null,
-      imagen: formData.imagen,   // objeto File
-    };
-
-    onSubmit(dataToSubmit);
+  const dataToSubmit = {
+    nombre: formData.nombre,
+    descripcion: formData.descripcion || null,
+    existencia: Number(formData.existencia),
+    precio: Number(formData.precio),
+    stockMinimo: formData.stockMinimo ? Number(formData.stockMinimo) : null,
+    stockMaximo: formData.stockMaximo ? Number(formData.stockMaximo) : null,
+    idCategoriaProducto: formData.idCategoriaProducto,
+    estado: formData.estado,
+    tipoUso: formData.tipoUso,
+    vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : null,
+    imagen: formData.imagen,
   };
+
+  try {
+    const response = await onSubmit(dataToSubmit);
+
+    if (response?.errors) {
+      // 🔍 Mostrar errores específicos en el modal
+      const mensajes = Object.entries(response.errors)
+        .map(([campo, msgs]) => `${campo}: ${Array.isArray(msgs) ? msgs.join(", ") : msgs}`)
+        .join("\n");
+
+      setValidationMessage(mensajes);         // 👈 Mensaje para el modal
+      setIsValidationModalOpen(true);         // 👈 Abre el modal
+      return;
+    }
+
+    // Si todo salió bien, cerramos el modal
+    closeModal();
+  } catch (err) {
+    // ⚠️ Error inesperado (por ejemplo, fallo de red)
+    setValidationMessage(err.message || "Error al guardar el producto.");
+    setIsValidationModalOpen(true);
+  }
+};
+
 
   if (!isOpen) return null;
 
