@@ -2,6 +2,8 @@
 import React from 'react';
 import "../css/ServiciosAdmin.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
   if (!isOpen || !servicio) return null;
 
@@ -13,6 +15,12 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
       currency: 'COP',
       minimumFractionDigits: 0,
     }).format(numericValue);
+  };
+
+  const getFullImageUrl = (relativeUrl) => {
+    if (!relativeUrl) return '';
+    if (relativeUrl.startsWith('http')) return relativeUrl;
+    return `${API_URL}${relativeUrl}`;
   };
 
   return (
@@ -36,6 +44,17 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
           <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
           <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'No aplica'}</p>
           <p><strong>Estado:</strong> {servicio.estado ? 'Activo' : 'Inactivo'}</p>
+
+          {servicio.imagenUrl && (
+            <div className="servicio-detalle-imagen">
+              <strong>Imagen:</strong>
+              <img
+                src={getFullImageUrl(servicio.imagenUrl)}
+                alt={servicio.nombre}
+                className="servicio-detalle-preview"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

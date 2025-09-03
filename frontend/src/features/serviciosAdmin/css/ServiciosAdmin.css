@@ -387,4 +387,157 @@ button.cancelar:hover {
   background-color: #f0f0f0;
 }
 
+/* --- Nuevos Estilos para Imagen en Tabla --- */
+.service-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.service-thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.image-placeholder {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  color: #aaa;
+  font-size: 1.5rem;
+}
+
+
+/* --- Nuevos Estilos para Formulario con Imagen --- */
+.servicios-admin-form-grid-with-image {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.servicios-admin-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.servicios-admin-form-image-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.servicios-admin-form-image-section label {
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.image-upload-area {
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+.image-upload-area.dragging {
+  border-color: var(--color-primary-accent);
+  background-color: #f7f1f8;
+}
+
+.upload-placeholder svg {
+  font-size: 3rem;
+  color: var(--color-primary-accent);
+  margin-bottom: 10px;
+}
+
+.upload-placeholder p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--color-text-dark);
+}
+
+.upload-placeholder small {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.image-preview-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.remove-image-btn:hover {
+  background-color: var(--color-danger);
+}
+
+.servicio-detalle-imagen {
+  margin-top: 15px;
+}
+
+.servicio-detalle-imagen strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.servicio-detalle-preview {
+  max-width: 100%;
+  max-height: 250px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+
+@media (max-width: 768px) {
+  .servicios-admin-form-grid-with-image {
+    grid-template-columns: 1fr;
+  }
+  .servicios-admin-form-image-section {
+    grid-row: 1; /* Mover la imagen al principio en móvil */
+  }
+}
+
 
