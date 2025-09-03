@@ -1,56 +1,54 @@
 import apiClient from "../../../shared/services/apiClient";
 
-// Función para obtener la configuración de la cabecera con el token de autenticación
-const getAuthenticatedConfig = () => {
-  const token = localStorage.getItem("token");
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-};
+const DASHBOARD_API_URL = "/dashboard";
 
-// Función para obtener los datos de los productos más vendidos
-export const getProductosMasVendidos = async (periodo) => {
-  const response = await apiClient.get(
-    `/dashboard/productos-mas-vendidos?periodo=${periodo}`,
-    getAuthenticatedConfig()
-  );
-  return response.data;
-};
-
-// Función para obtener los datos de los servicios más vendidos
-export const getServiciosMasVendidos = async (periodo) => {
-  const response = await apiClient.get(
-    `/dashboard/servicios-mas-vendidos?periodo=${periodo}`,
-    getAuthenticatedConfig()
-  );
-  return response.data;
-};
-
-// Función para obtener los datos de la evolución de ventas mensuales
-export const getEvolucionVentas = async () => {
-  const response = await apiClient.get(
-    `/dashboard/evolucion-ventas`,
-    getAuthenticatedConfig()
-  );
-  return response.data;
-};
-
-// Función para obtener los datos de subtotal e IVA
-export const getSubtotalIva = async (periodo) => {
-  const response = await apiClient.get(
-    `/dashboard/subtotal-iva?periodo=${periodo}`,
-    getAuthenticatedConfig()
-  );
-  return response.data;
-};
-
-// Función para obtener los datos de ingresos por categoría
+/**
+ * Obtiene los ingresos totales agrupados por categoría.
+ * @returns {Promise<Object>}
+ */
 export const getIngresosPorCategoria = async () => {
   const response = await apiClient.get(
-    `/dashboard/ingresos-por-categoria`,
-    getAuthenticatedConfig()
+    `${DASHBOARD_API_URL}/ingresos-por-categoria`
   );
+  return response.data;
+};
+
+/**
+ * Obtiene el top 5 de servicios más vendidos.
+ * @returns {Promise<Array>}
+ */
+export const getServiciosMasVendidos = async () => {
+  const response = await apiClient.get(
+    `${DASHBOARD_API_URL}/servicios-mas-vendidos`
+  );
+  return response.data;
+};
+
+/**
+ * Obtiene el top 5 de productos más vendidos.
+ * @returns {Promise<Array>}
+ */
+export const getProductosMasVendidos = async () => {
+  const response = await apiClient.get(
+    `${DASHBOARD_API_URL}/productos-mas-vendidos`
+  );
+  return response.data;
+};
+
+/**
+ * Obtiene la evolución de ventas de los últimos 12 meses.
+ * @returns {Promise<Array>}
+ */
+export const getEvolucionVentas = async () => {
+  const response = await apiClient.get(`${DASHBOARD_API_URL}/evolucion-ventas`);
+  return response.data;
+};
+
+/**
+ * Obtiene la suma de subtotal e IVA de todas las ventas.
+ * @returns {Promise<Object>}
+ */
+export const getSubtotalIva = async () => {
+  const response = await apiClient.get(`${DASHBOARD_API_URL}/subtotal-iva`);
   return response.data;
 };
