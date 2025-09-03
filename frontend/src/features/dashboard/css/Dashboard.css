@@ -2,8 +2,13 @@
 
 /* Contenedor principal para el contenido específico de la página del dashboard. */
 .dashboard-main-content-page {
+  margin-left: 270px;
+  /* EMPUJA EL CONTENIDO A LA DERECHA DE LA NAVBAR */
+  padding: 30px;
+  /* Espaciado interno consistente con otros módulos */
+  box-sizing: border-box;
+  /* Asegura que el padding no afecte el layout */
   width: 100%;
-  /* Ocupa el ancho provisto por .admin-main-content-area. */
 }
 
 /* Estilo para el encabezado principal de la página del dashboard. */
@@ -96,6 +101,11 @@
 
 /* Gráficos en una columna para tablets o pantallas medianas. */
 @media (max-width: 992px) {
+  .dashboard-main-content-page {
+    margin-left: 0;
+    /* Se elimina el margen cuando la navbar se oculta o cambia */
+  }
+
   .chart {
     flex: 1 1 100%;
   }
@@ -103,6 +113,11 @@
 
 /* Ajustes adicionales para pantallas más pequeñas/móviles. */
 @media (max-width: 768px) {
+  .dashboard-main-content-page {
+    padding: 15px;
+    /* Menos padding en móviles */
+  }
+
   .dashboard-header {
     font-size: 1.6rem;
     margin-bottom: 20px;
