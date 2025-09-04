@@ -1,18 +1,31 @@
-// src/services/novedadesAdminService.js
-import apiClient from "../../../shared/services/apiClient"; // Asegúrate que la ruta a tu apiClient sea correcta
+// src/services/horariosService.js
+import apiClient from "../../../shared/services/apiClient"; // Asegúrate que la ruta sea correcta
+
+/**
+ * Helper para manejar errores de forma uniforme
+ */
+const handleError = (error, mensaje = "Error en la petición de novedades") => {
+  console.error(mensaje, error);
+  throw new Error(error.response?.data?.message || mensaje);
+};
 
 /**
  * Obtiene una lista de todas las novedades.
- * @param {object} params - Opciones para filtrar, ej: { estado: true, empleadoId: 5 }
+ * @param {object} params - Opciones para filtrar, ej: { estado: true, empleadoId: 5, busqueda: 'texto' }
  * @returns {Promise<Array>} Una promesa que resuelve a un array de novedades.
  */
 export const obtenerTodasLasNovedades = async (params = {}) => {
   try {
-    const response = await apiClient.get("/novedades", { params });
-    return response.data.data; 
+    // Normalización: convertir estado en boolean si viene definido
+    const query = { ...params };
+    if (query.estado !== undefined) {
+      query.estado = String(query.estado) === "true";
+    }
+
+    const response = await apiClient.get("/novedades", { params: query });
+    return response.data.data;
   } catch (error) {
-    console.error("Error al obtener las novedades:", error);
-    throw error;
+    handleError(error, "Error al obtener las novedades");
   }
 };
 
@@ -26,8 +39,7 @@ export const obtenerNovedadPorId = async (id) => {
     const response = await apiClient.get(`/novedades/${id}`);
     return response.data.data;
   } catch (error) {
-    console.error(`Error al obtener la novedad con ID ${id}:`, error);
-    throw error;
+    handleError(error, `Error al obtener la novedad con ID ${id}`);
   }
 };
 
@@ -38,16 +50,21 @@ export const obtenerNovedadPorId = async (id) => {
  * @param {string} novedadData.fechaFin - Fecha de fin en formato 'YYYY-MM-DD'.
  * @param {string} novedadData.horaInicio - Hora de inicio en formato 'HH:mm'.
  * @param {string} novedadData.horaFin - Hora de fin en formato 'HH:mm'.
+ * @param {object} novedadData.dias - Objeto JSON con los días aplicables.
  * @param {number[]} novedadData.empleadosIds - Un array con los IDs de los empleados.
  * @returns {Promise<object>} Una promesa que resuelve a la nueva novedad creada.
  */
 export const crearNovedad = async (novedadData) => {
   try {
+    // Asegurar que empleadosIds siempre sea array de números
+    if (novedadData.empleadosIds) {
+      novedadData.empleadosIds = novedadData.empleadosIds.map((id) => Number(id));
+    }
+
     const response = await apiClient.post("/novedades", novedadData);
     return response.data.data;
   } catch (error) {
-    console.error("Error al crear la novedad:", error);
-    throw error;
+    handleError(error, "Error al crear la novedad");
   }
 };
 
@@ -59,11 +76,14 @@ export const crearNovedad = async (novedadData) => {
  */
 export const actualizarNovedad = async (id, novedadData) => {
   try {
+    if (novedadData.empleadosIds) {
+      novedadData.empleadosIds = novedadData.empleadosIds.map((id) => Number(id));
+    }
+
     const response = await apiClient.patch(`/novedades/${id}`, novedadData);
     return response.data.data;
   } catch (error) {
-    console.error(`Error al actualizar la novedad con ID ${id}:`, error);
-    throw error;
+    handleError(error, `Error al actualizar la novedad con ID ${id}`);
   }
 };
 
@@ -78,8 +98,7 @@ export const cambiarEstadoNovedad = async (id, estado) => {
     const response = await apiClient.patch(`/novedades/${id}/estado`, { estado });
     return response.data.data;
   } catch (error) {
-    console.error(`Error al cambiar el estado de la novedad con ID ${id}:`, error);
-    throw error;
+    handleError(error, `Error al cambiar el estado de la novedad con ID ${id}`);
   }
 };
 
@@ -92,7 +111,6 @@ export const eliminarNovedad = async (id) => {
   try {
     await apiClient.delete(`/novedades/${id}`);
   } catch (error) {
-    console.error(`Error al eliminar la novedad con ID ${id}:`, error);
-    throw error;
+    handleError(error, `Error al eliminar la novedad con ID ${id}`);
   }
 };

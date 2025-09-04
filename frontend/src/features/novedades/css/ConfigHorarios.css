@@ -102,14 +102,20 @@
 }
 
 /* --- Tabla de Novedades --- */
-.table-responsive {
+/* ==========================================================================
+   Estilos para la Tabla de Novedades (Compatibles con prefijo novedades-table__)
+   ========================================================================== */
+
+/* Contenedor principal */
+.novedades-table__container {
   width: 100%;
   max-width: 1200px;
   margin: 25px auto 0 auto;
   overflow-x: auto;
 }
 
-.table {
+/* Tabla base */
+.novedades-table {
   width: 100%;
   border-collapse: collapse;
   background-color: var(--color-background-page);
@@ -118,35 +124,37 @@
   overflow: hidden;
 }
 
-.table th,
-.table td {
+.novedades-table th,
+.novedades-table td {
   padding: 14px 15px;
   text-align: left;
   vertical-align: middle;
   border: 1px solid var(--color-border);
 }
 
-.table th {
+.novedades-table th {
   background-color: var(--color-table-header-bg);
   color: var(--color-text-on-primary); /* Texto claro sobre fondo oscuro */
   font-weight: 600;
 }
 
-.table tbody tr:nth-child(even) {
+.novedades-table tbody tr:nth-child(even) {
   background-color: var(--color-table-row-alternate);
 }
 
-.table tbody tr:hover {
+.novedades-table tbody tr:hover {
   background-color: var(--color-table-row-hover);
 }
 
-.table .actions-cell {
+/* Celda de acciones */
+.novedades-table__actions {
   display: flex;
   justify-content: center;
   gap: 8px;
 }
 
-.table .action-button {
+/* Botones de acción */
+.novedades-table .action-button {
   padding: 6px 10px;
   font-size: 0.85rem;
   border: none;
@@ -157,8 +165,15 @@
   background-color: var(--color-primary-accent);
 }
 
-.table .action-button:hover {
+.novedades-table .action-button:hover {
   background-color: var(--color-primary-hover);
+}
+
+/* Nombre de empleado */
+.novedades-table__employee-name {
+  margin-bottom: 4px;
+  color: var(--color-text-dark);
+  font-weight: 500;
 }
 
 /* --- Switch de Estado --- */
