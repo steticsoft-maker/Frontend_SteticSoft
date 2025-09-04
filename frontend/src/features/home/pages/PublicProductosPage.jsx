@@ -1,3 +1,4 @@
+// src/features/home/pages/PublicProductosPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
 import Navbar from '../../../shared/components/layout/Navbar';
@@ -11,34 +12,24 @@ function PublicProductosPage() {
   const productosPageRef = useRef(null);
 
   useEffect(() => {
-    fetch("https://api-steticsoft-web-movil.onrender.com/api/productos/public")
+    fetch("/api/productos/public")
       .then(res => res.json())
       .then(data => {
-  console.log("Respuesta completa:", data);
-  const productos = Array.isArray(data.data) ? data.data : data.productos || [];
-  const productosAdaptados = productos.map(p => ({
-    id: p.id,
-    name: p.nombre,
-    image: p.imagenURL,
-    price: p.price,
-    description: p.description
-  }));
-  setProducts(productosAdaptados);
-})
-
+        console.log("Respuesta completa:", data);
+        const productos = Array.isArray(data.data) ? data.data : data.productos || [];
+        const productosAdaptados = productos.map(p => ({
+          id: p.id || p.idProducto,
+          name: p.nombre,
+          image: p.imagenURL,
+          price: p.price || p.precio,
+          description: p.description || p.descripcion
+        }));
+        setProducts(productosAdaptados);
+      })
       .catch(err => {
         console.error("Error al cargar productos públicos:", err);
       });
   }, []);
-
-  useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem('publicCart')) || [];
-    setCart(savedCart);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('publicCart', JSON.stringify(cart));
-  }, [cart]);
 
   useEffect(() => {
     if (productosPageRef.current) {
@@ -48,28 +39,26 @@ function PublicProductosPage() {
 
   const addToCart = (product) => {
     setCart(prevCart => {
-      const existingProduct = prevCart.find(item => item.id === product.id && item.type === 'product');
+      const existingProduct = prevCart.find(item => item.id === product.id);
       if (existingProduct) {
         return prevCart.map(item =>
-          item.id === product.id && item.type === 'product'
+          item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
-      return [...prevCart, { ...product, quantity: 1, type: 'product' }];
+      return [...prevCart, { ...product, quantity: 1 }];
     });
   };
 
   const handleOrder = () => {
     alert('Tu pedido ha sido registrado. ¡Gracias por comprar con nosotros!');
     setCart([]);
-    localStorage.removeItem('publicCart');
   };
 
   const getTotal = () => {
     return cart.reduce((total, item) => {
-      if (item.type === 'product') return total + item.price * item.quantity;
-      return total;
+      return total + (item.price || 0) * item.quantity;
     }, 0);
   };
 
@@ -79,9 +68,9 @@ function PublicProductosPage() {
 
       <div className="cart-icon" onClick={() => setShowCart(!showCart)}>
         <FaShoppingCart size={30} />
-        {cart.filter(item => item.type === 'product').length > 0 && (
+        {cart.length > 0 && (
           <span className="cart-count">
-            {cart.filter(item => item.type === 'product').reduce((acc, item) => acc + item.quantity, 0)}
+            {cart.reduce((acc, item) => acc + item.quantity, 0)}
           </span>
         )}
       </div>
@@ -89,14 +78,14 @@ function PublicProductosPage() {
       {showCart && (
         <div className="cart-modal">
           <h2>Carrito de Productos</h2>
-          {cart.filter(item => item.type === 'product').length === 0 ? (
+          {cart.length === 0 ? (
             <p>No hay productos en el carrito.</p>
           ) : (
             <>
               <ul>
-                {cart.filter(item => item.type === 'product').map((item) => (
+                {cart.map((item) => (
                   <li key={`cart-prod-${item.id}`}>
-                    {item.name} - {item.quantity} x ${item.price.toFixed(0)} = ${(item.price * item.quantity).toFixed(0)}
+                    {item.name} - {item.quantity} x ${item.price?.toFixed(0) || 0} = ${(item.price * item.quantity).toFixed(0)}
                   </li>
                 ))}
               </ul>

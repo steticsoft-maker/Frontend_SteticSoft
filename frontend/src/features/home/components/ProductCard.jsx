@@ -2,14 +2,18 @@
 import React from "react";
 
 function ProductCard({ product, onAddToCart }) {
+  if (!product) return null;
+
+  const { name, image, description, price } = product;
+
   return (
     <div className="productos-card">
       {/* Imagen del producto */}
-      {product.image && (
+      {image && (
         <div className="productos-image-wrapper">
           <img
-            src={product.image}
-            alt={product.name}
+            src={image}
+            alt={name}
             className="productos-image"
           />
         </div>
@@ -17,9 +21,13 @@ function ProductCard({ product, onAddToCart }) {
 
       {/* Contenido */}
       <div className="productos-content">
-        <h3 className="productos-name">{product.name}</h3>
-        <p className="productos-description">{product.description}</p>
-        <p className="productos-price">${product.price.toLocaleString()}</p>
+        <h3 className="productos-name">{name}</h3>
+        <p className="productos-description">{description || "Sin descripción"}</p>
+        <p className="productos-price">
+          {typeof price === "number"
+            ? `$${price.toLocaleString()}`
+            : "Precio no disponible"}
+        </p>
 
         <button
           onClick={() => onAddToCart(product)}

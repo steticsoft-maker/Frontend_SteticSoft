@@ -2,35 +2,49 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { getUsuariosAPI } from '../../usuarios/services/usuariosService';
 
+const DIAS_DE_LA_SEMANA_OPTIONS = [
+  { value: 'Lunes', label: 'Lunes' },
+  { value: 'Martes', label: 'Martes' },
+  { value: 'Miércoles', label: 'Miércoles' },
+  { value: 'Jueves', label: 'Jueves' },
+  { value: 'Viernes', label: 'Viernes' },
+  { value: 'Sábado', label: 'Sábado' },
+  { value: 'Domingo', label: 'Domingo' },
+];
+
+
 const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing }) => {
-  
-  // --- TODA LA LÓGICA DE ESTADO Y USEEFFECT SE MANTIENE IGUAL ---
   const [formData, setFormData] = useState({
     fechaInicio: '',
     fechaFin: '',
     horaInicio: '',
     horaFin: '',
   });
+  const [selectedDias, setSelectedDias] = useState([]);
   const [selectedEmpleados, setSelectedEmpleados] = useState([]);
   const [empleadoOptions, setEmpleadoOptions] = useState([]);
   const [error, setError] = useState('');
 
+  // Cargar empleados
   useEffect(() => {
     const cargarEmpleados = async () => {
       try {
         const usuarios = await getUsuariosAPI({ rol: 'Empleado', estado: true });
-        const options = usuarios.map(user => ({
+        const options = usuarios.map((user) => ({
           value: user.idUsuario,
-          label: user.empleadoInfo ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido} (${user.correo})` : user.correo,
+          label: user.empleadoInfo
+            ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido} (${user.correo})`
+            : user.correo,
         }));
         setEmpleadoOptions(options);
       } catch (err) {
-        console.error("Error al cargar empleados", err);
+        console.error('Error al cargar empleados:', err);
       }
     };
     cargarEmpleados();
   }, []);
 
+  // Prellenar datos si es edición
   useEffect(() => {
     if (isEditing && initialData) {
       setFormData({
@@ -39,75 +53,104 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
         horaInicio: initialData.horaInicio || '',
         horaFin: initialData.horaFin || '',
       });
-      const empleadosAsignados = initialData.empleados?.map(emp => ({
-        value: emp.idUsuario,
-        label: emp.correo,
+
+      const diasAsignados = initialData.dias?.map(dia => ({
+        value: dia,
+        label: dia,
       })) || [];
+      setSelectedDias(diasAsignados);
+
+      const empleadosAsignados =
+        initialData.empleados?.map((emp) => ({
+          value: emp.idUsuario,
+          label: emp.empleadoInfo
+            ? `${emp.empleadoInfo.nombre} ${emp.empleadoInfo.apellido} (${emp.correo})`
+            : emp.correo,
+        })) || [];
       setSelectedEmpleados(empleadosAsignados);
     }
   }, [isEditing, initialData]);
 
+  // Manejadores
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDiaChange = (selectedOptions) => {
+    setSelectedDias(selectedOptions || []);
   };
 
   const handleEmpleadoChange = (selectedOptions) => {
     setSelectedEmpleados(selectedOptions || []);
   };
 
+  // Validación y envío
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
 
-    if (!formData.fechaInicio || !formData.fechaFin || !formData.horaInicio || !formData.horaFin || selectedEmpleados.length === 0) {
-      setError("Todos los campos son obligatorios.");
+    if (
+      !formData.fechaInicio || !formData.fechaFin || !formData.horaInicio ||
+      !formData.horaFin || selectedDias.length === 0 || selectedEmpleados.length === 0
+    ) {
+      setError('⚠️ Todos los campos son obligatorios.');
       return;
     }
-    
     if (new Date(formData.fechaFin) < new Date(formData.fechaInicio)) {
-      setError("La fecha de fin no puede ser anterior a la fecha de inicio.");
+      setError('⚠️ La fecha de fin no puede ser anterior a la fecha de inicio.');
       return;
     }
-
     if (formData.horaFin <= formData.horaInicio) {
-      setError("La hora de fin debe ser posterior a la hora de inicio.");
+      setError('⚠️ La hora de fin debe ser posterior a la hora de inicio.');
       return;
     }
 
     const datosParaEnviar = {
       ...formData,
-      empleadosIds: selectedEmpleados.map(emp => emp.value),
+      dias: selectedDias.map(dia => dia.value),
+      empleadosIds: selectedEmpleados.map((emp) => emp.value),
     };
 
     onFormSubmit(datosParaEnviar);
   };
 
   return (
-    // ✅ Se usa la clase 'novedad-form' para el contenedor principal
     <form onSubmit={handleSubmit} className="novedad-form">
       {error && <p className="error-message">{error}</p>}
-
-      {/* ✅ Se envuelven los campos en un grid de 2 columnas */}
       <div className="form-grid">
+        {/* Inputs de fecha y hora */}
         <div className="form-group">
-          <label>Fecha de Inicio</label>
-          <input type="date" name="fechaInicio" value={formData.fechaInicio} onChange={handleChange} required />
+          <label htmlFor="fechaInicio">Fecha de Inicio</label>
+          <input type="date" id="fechaInicio" name="fechaInicio" value={formData.fechaInicio} onChange={handleChange} required />
         </div>
         <div className="form-group">
-          <label>Fecha de Fin</label>
-          <input type="date" name="fechaFin" value={formData.fechaFin} onChange={handleChange} required />
+          <label htmlFor="fechaFin">Fecha de Fin</label>
+          <input type="date" id="fechaFin" name="fechaFin" value={formData.fechaFin} onChange={handleChange} required />
         </div>
         <div className="form-group">
-          <label>Hora de Inicio</label>
-          <input type="time" name="horaInicio" value={formData.horaInicio} onChange={handleChange} required />
+          <label htmlFor="horaInicio">Hora de Inicio</label>
+          <input type="time" id="horaInicio" name="horaInicio" value={formData.horaInicio} onChange={handleChange} required />
         </div>
         <div className="form-group">
-          <label>Hora de Fin</label>
-          <input type="time" name="horaFin" value={formData.horaFin} onChange={handleChange} required />
+          <label htmlFor="horaFin">Hora de Fin</label>
+          <input type="time" id="horaFin" name="horaFin" value={formData.horaFin} onChange={handleChange} required />
         </div>
-        
-        {/* ✅ El selector ocupa el ancho completo del grid */}
+        <div className="form-group full-width">
+          <label>Días de la Semana Aplicables</label>
+          <Select
+            isMulti
+            name="dias"
+            options={DIAS_DE_LA_SEMANA_OPTIONS}
+            className="react-select-container"
+            classNamePrefix="react-select"
+            placeholder="Seleccione los días de la semana..."
+            value={selectedDias}
+            onChange={handleDiaChange}
+            isDisabled={isLoading}
+            noOptionsMessage={() => 'No hay días disponibles'}
+          />
+        </div>
         <div className="form-group full-width">
           <label>Asignar a Empleado(s)</label>
           <Select
@@ -121,15 +164,13 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
             onChange={handleEmpleadoChange}
             isLoading={!empleadoOptions.length}
             isDisabled={isLoading}
-            noOptionsMessage={() => 'No hay empleados para mostrar'}
+            noOptionsMessage={() => 'No hay empleados disponibles'}
           />
         </div>
       </div>
-      
-      {/* ✅ La sección de botones se mantiene igual */}
       <div className="form-actions">
         <button type="submit" disabled={isLoading} className="button-primary">
-          {isLoading ? 'Guardando...' : (isEditing ? 'Actualizar Novedad' : 'Crear Novedad')}
+          {isLoading ? 'Guardando...' : isEditing ? 'Actualizar Novedad' : 'Crear Novedad'}
         </button>
         <button type="button" onClick={onCancel} className="button-secondary" disabled={isLoading}>
           Cancelar
