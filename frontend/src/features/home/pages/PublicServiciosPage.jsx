@@ -13,19 +13,25 @@ function PublicServiciosPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  fetch("https://api-steticsoft-web-movil.onrender.com/api/servicios/public")
-    .then(res => res.json())
-    .then(data => {
-      console.log("Respuesta completa:", data); // 👈 Esto es clave
-      setServices(data.data); // ¿Es un array? ¿Tiene servicios activos?
-      setLoading(false);
-    })
-    .catch(err => {
-      console.error("Error al cargar servicios públicos:", err);
-      setLoading(false);
-    });
-}, []);
-
+    fetch("https://api-steticsoft-web-movil.onrender.com/api/servicios/public")
+      .then(res => res.json())
+      .then(data => {
+        console.log("Respuesta completa:", data);
+        if (Array.isArray(data.data)) {
+          const validServices = data.data.filter(service => service && service.id);
+          console.table(data.data); // 👈 Esto te muestra los servicios en formato tabla
+          setServices(validServices);
+        } else {
+          console.warn("La respuesta no contiene un array válido:", data.data);
+          setServices([]);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error al cargar servicios públicos:", err);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem('publicCart')) || [];
@@ -112,6 +118,8 @@ function PublicServiciosPage() {
       <div className="public-servicios-grid-wrapper">
         {loading ? (
           <p className="public-loading">Cargando servicios...</p>
+        ) : services.length === 0 ? (
+          <p className="public-no-services">No hay servicios disponibles en este momento.</p>
         ) : (
           <div className="public-servicios-grid">
             {services.map((service) => (

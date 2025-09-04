@@ -3,6 +3,10 @@ import React from 'react';
 // import '../css/ServiceCard.css'; // O estilos dentro de PublicServicios.css
 
 function ServiceCard({ service, onAddToCart }) {
+  if (!service) {
+  console.warn("ServiceCard recibió un servicio inválido:", service);
+  return null;
+}
   return (
     <div className="public-servicios-card"> {/* Usar prefijo */}
       {service.imagenURL && (
