@@ -35,7 +35,7 @@ const useDashboard = () => {
       };
     }
     const labels = apiData.map(item => item[nameKey]);
-    const data = apiData.map(item => item[valueKey]);
+    const data = apiData.map(item => Number(item[valueKey])); // ✅ Ensure data is numeric
     return {
       labels,
       datasets: [{
@@ -63,11 +63,11 @@ const useDashboard = () => {
         labels: evolucionVentas.map(item => item.mes),
         datasets: [{
           type: 'bar', label: 'Total de Ventas ($)',
-          data: evolucionVentas.map(item => item.totalVentas),
+          data: evolucionVentas.map(item => Number(item.totalVentas)), // ✅ Ensure data is numeric
           backgroundColor: 'rgba(54, 162, 235, 0.6)',
         }, {
           type: 'line', label: 'Nº de Transacciones',
-          data: evolucionVentas.map(item => item.transacciones),
+          data: evolucionVentas.map(item => Number(item.transacciones)), // ✅ Ensure data is numeric
           borderColor: 'rgba(255, 99, 132, 1)',
           fill: false,
         }],
@@ -76,7 +76,7 @@ const useDashboard = () => {
       setIvaSubtotalData({
         labels: ['Subtotal ($)', 'IVA ($)'],
         datasets: [{
-          data: [subtotalIva.subtotal, subtotalIva.iva],
+          data: [Number(subtotalIva.subtotal), Number(subtotalIva.iva)], // ✅ Ensure data is numeric
           backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 206, 86, 0.6)'],
         }],
       });
