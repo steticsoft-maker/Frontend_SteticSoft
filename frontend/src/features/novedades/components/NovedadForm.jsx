@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { getUsuariosAPI } from '../../usuarios/services/usuariosService';
 
-const DIAS_DE_LA_SEMANA = [
-  'Lunes',
-  'Martes',
-  'Miércoles',
-  'Jueves',
-  'Viernes',
-  'Sábado',
-  'Domingo'
+const DIAS_DE_LA_SEMANA_OPTIONS = [
+  { value: 'Lunes', label: 'Lunes' },
+  { value: 'Martes', label: 'Martes' },
+  { value: 'Miércoles', label: 'Miércoles' },
+  { value: 'Jueves', label: 'Jueves' },
+  { value: 'Viernes', label: 'Viernes' },
+  { value: 'Sábado', label: 'Sábado' },
+  { value: 'Domingo', label: 'Domingo' },
 ];
 
 
@@ -20,7 +20,7 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
     horaInicio: '',
     horaFin: '',
   });
-  const [diasSeleccionados, setDiasSeleccionados] = useState([]);
+  const [selectedDias, setSelectedDias] = useState([]);
   const [selectedEmpleados, setSelectedEmpleados] = useState([]);
   const [empleadoOptions, setEmpleadoOptions] = useState([]);
   const [error, setError] = useState('');
@@ -53,7 +53,13 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
         horaInicio: initialData.horaInicio || '',
         horaFin: initialData.horaFin || '',
       });
-      setDiasSeleccionados(initialData.dias || []);
+
+      const diasAsignados = initialData.dias?.map(dia => ({
+        value: dia,
+        label: dia,
+      })) || [];
+      setSelectedDias(diasAsignados);
+
       const empleadosAsignados =
         initialData.empleados?.map((emp) => ({
           value: emp.idUsuario,
@@ -71,14 +77,8 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ ASEGÚRATE DE QUE ESTA FUNCIÓN ESTÉ ASÍ
-  const handleDiaChange = (e) => {
-    const { value, checked } = e.target;
-    setDiasSeleccionados(prev =>
-      checked
-        ? [...prev, value] // Añade el string (ej: "lunes")
-        : prev.filter(dia => dia !== value) // Quita el string
-    );
+  const handleDiaChange = (selectedOptions) => {
+    setSelectedDias(selectedOptions || []);
   };
 
   const handleEmpleadoChange = (selectedOptions) => {
@@ -92,7 +92,7 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
 
     if (
       !formData.fechaInicio || !formData.fechaFin || !formData.horaInicio ||
-      !formData.horaFin || diasSeleccionados.length === 0 || selectedEmpleados.length === 0
+      !formData.horaFin || selectedDias.length === 0 || selectedEmpleados.length === 0
     ) {
       setError('⚠️ Todos los campos son obligatorios.');
       return;
@@ -106,10 +106,9 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
       return;
     }
 
-    // ✅ ASEGÚRATE DE QUE EL OBJETO SE CONSTRUYA ASÍ
     const datosParaEnviar = {
       ...formData,
-      dias: diasSeleccionados, // Envía el array de strings
+      dias: selectedDias.map(dia => dia.value),
       empleadosIds: selectedEmpleados.map((emp) => emp.value),
     };
 
@@ -139,20 +138,18 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
         </div>
         <div className="form-group full-width">
           <label>Días de la Semana Aplicables</label>
-          <div className="dias-checkbox-group">
-            {DIAS_DE_LA_SEMANA.map(dia => (
-              <label key={dia} className="checkbox-label">
-                <input
-                  type="checkbox"
-                  value={dia}
-                  checked={diasSeleccionados.includes(dia)}
-                  onChange={handleDiaChange}
-                />
-                {dia}
-              </label>
-            ))}
-
-          </div>
+          <Select
+            isMulti
+            name="dias"
+            options={DIAS_DE_LA_SEMANA_OPTIONS}
+            className="react-select-container"
+            classNamePrefix="react-select"
+            placeholder="Seleccione los días de la semana..."
+            value={selectedDias}
+            onChange={handleDiaChange}
+            isDisabled={isLoading}
+            noOptionsMessage={() => 'No hay días disponibles'}
+          />
         </div>
         <div className="form-group full-width">
           <label>Asignar a Empleado(s)</label>
