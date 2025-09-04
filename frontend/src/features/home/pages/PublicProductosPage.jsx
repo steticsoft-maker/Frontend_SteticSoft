@@ -12,17 +12,17 @@ function PublicProductosPage() {
   const productosPageRef = useRef(null);
 
   useEffect(() => {
-    fetch("https://api-steticsoft-web-movil.onrender.com/api/productos/public")
+    fetch("/api/productos/public")
       .then(res => res.json())
       .then(data => {
         console.log("Respuesta completa:", data);
         const productos = Array.isArray(data.data) ? data.data : data.productos || [];
         const productosAdaptados = productos.map(p => ({
-          id: p.id,
+          id: p.id || p.idProducto,
           name: p.nombre,
           image: p.imagenURL,
-          price: p.price,
-          description: p.description
+          price: p.price || p.precio,
+          description: p.description || p.descripcion
         }));
         setProducts(productosAdaptados);
       })

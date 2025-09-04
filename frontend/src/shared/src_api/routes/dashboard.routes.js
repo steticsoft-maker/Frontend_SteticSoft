@@ -1,23 +1,25 @@
-// src/routes/dashboard.routes.js
-const express = require("express");
-const router = express.Router();
-const {
-  getIngresosPorCategoria,
-  getServiciosMasVendidos,
-  getProductosMasVendidos,
-  getEvolucionVentas,
-  getSubtotalIva,
-} = require("../controllers/dashboard.controller.js");
+// Ubicación: src/shared/src_api/routes/dashboard.routes.js
+const { Router } = require("express");
+const dashboardController = require("../controllers/dashboard.controller");
+const { authMiddleware, checkPermission } = require("../middlewares");
 
-// Middleware de autenticación (si es necesario, descomentar y ajustar)
-// const { authRequired } = require('../middlewares/auth.middleware');
-// router.use(authRequired);
+const router = Router();
 
-// Definición de las rutas para el dashboard
-router.get("/ingresos-por-categoria", getIngresosPorCategoria);
-router.get("/servicios-mas-vendidos", getServiciosMasVendidos);
-router.get("/productos-mas-vendidos", getProductosMasVendidos);
-router.get("/evolucion-ventas", getEvolucionVentas);
-router.get("/subtotal-iva", getSubtotalIva);
+router.use(authMiddleware, checkPermission("MODULO_DASHBOARD_VER"));
+
+router.get(
+  "/ingresos-por-categoria",
+  dashboardController.getIngresosPorCategoria
+);
+router.get(
+  "/servicios-mas-vendidos",
+  dashboardController.getServiciosMasVendidos
+);
+router.get(
+  "/productos-mas-vendidos",
+  dashboardController.getProductosMasVendidos
+);
+router.get("/evolucion-ventas", dashboardController.getEvolucionVentas);
+router.get("/subtotal-iva", dashboardController.getSubtotalIva);
 
 module.exports = router;
