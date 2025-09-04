@@ -18,11 +18,11 @@ function PublicProductosPage() {
         console.log("Respuesta completa:", data);
         const productos = Array.isArray(data.data) ? data.data : data.productos || [];
         const productosAdaptados = productos.map(p => ({
-          id: p.id || p.idProducto,
+          id: p.id,
           name: p.nombre,
           image: p.imagenURL,
-          price: p.price || p.precio,
-          description: p.description || p.descripcion
+          price: p.price,
+          description: p.description
         }));
         setProducts(productosAdaptados);
       })
