@@ -13,6 +13,26 @@ const ProductoAdminForm = ({ formData, onFormChange, onFileChange, categoriasDis
     onFormChange(name, type === 'checkbox' ? checked : parsedValue);
   };
 
+  const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  const allowedTypes = ['image/jpeg', 'image/png'];
+
+  if (file && !allowedTypes.includes(file.type)) {
+    onFormChange('imagen', null); // Limpia el campo en el estado
+    e.target.value = null; // Limpia el input
+    onFormChange('imagenPreview', null); // Limpia la vista previa si la manejas así
+    onFormChange('formErrors', {
+      ...formErrors,
+      imagen: 'Formato no permitido. Solo se aceptan imágenes JPG o PNG.',
+    });
+    return;
+  }
+
+  // Si es válido, continúa con la lógica original
+  onFileChange(e);
+};
+
+
   // RUTA: src/features/productosAdmin/components/ProductoAdminForm.jsx
 
 return (
@@ -111,7 +131,13 @@ return (
 
     <div className="producto-admin-form-group full-width">
       <label htmlFor="imagen">Imagen del Producto:</label>
-      <input type="file" id="imagen" name="imagen" accept="image/*" onChange={onFileChange} />
+      <input
+      type="file"
+      id="imagen"
+      name="imagen"
+      accept=".jpg,.jpeg,.png"
+      onChange={handleFileChange}
+      />
       {/* Mostrar la imagen de vista previa si existe, de lo contrario, la imagen actual si es edición */}
       {(formData.imagenPreview || (isEditing && formData.imagen)) && (
         <img

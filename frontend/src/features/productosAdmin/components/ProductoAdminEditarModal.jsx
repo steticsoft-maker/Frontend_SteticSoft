@@ -140,13 +140,22 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
       break;
 
     case 'descripcion':
-  if (!value || value.trim() === '') {
-    error = 'La descripción es obligatoria.';
-  } else if (value.length > 300) {
-    error = 'La descripción no puede superar los 300 caracteres.';
-  }
-  break;
-
+      if (!value || value.trim() === '') {
+        error = 'La descripción es obligatoria.';
+      } else if (value.length > 300) {
+        error = 'La descripción no puede superar los 300 caracteres.';
+      }
+      break;
+      
+      case 'imagen':
+        const file = value?.target?.files?.[0];
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        if (!file) {
+          error = 'Debes seleccionar una imagen.';
+        } else if (!allowedTypes.includes(file.type)) {
+          error = 'Formato no permitido. Solo se aceptan imágenes JPG o PNG.';
+        }
+        break;
 
     default:
       break;
