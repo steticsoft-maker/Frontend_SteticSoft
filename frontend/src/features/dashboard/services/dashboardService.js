@@ -1,16 +1,24 @@
-import apiClient from "../../../shared/services/apiClient";
+// import apiClient from "../../../shared/services/apiClient";
+import {
+  ingresosPorCategoriaMock,
+  serviciosMasVendidosMock,
+  productosMasVendidosMock,
+  evolucionVentasMock,
+  subtotalIvaMock,
+} from '../mocks/dashboardMockData';
 
-const DASHBOARD_API_URL = "/dashboard";
+// const DASHBOARD_API_URL = "/dashboard";
 
 /**
  * Obtiene los ingresos totales agrupados por categoría.
  * @returns {Promise<Object>}
  */
 export const getIngresosPorCategoria = async () => {
-  const response = await apiClient.get(
-    `${DASHBOARD_API_URL}/ingresos-por-categoria`
-  );
-  return response.data;
+  // const response = await apiClient.get(
+  //   `${DASHBOARD_API_URL}/ingresos-por-categoria`
+  // );
+  // return response.data;
+  return Promise.resolve(ingresosPorCategoriaMock);
 };
 
 /**
@@ -18,10 +26,11 @@ export const getIngresosPorCategoria = async () => {
  * @returns {Promise<Array>}
  */
 export const getServiciosMasVendidos = async () => {
-  const response = await apiClient.get(
-    `${DASHBOARD_API_URL}/servicios-mas-vendidos`
-  );
-  return response.data;
+  // const response = await apiClient.get(
+  //   `${DASHBOARD_API_URL}/servicios-mas-vendidos`
+  // );
+  // return response.data;
+  return Promise.resolve(serviciosMasVendidosMock);
 };
 
 /**
@@ -29,10 +38,11 @@ export const getServiciosMasVendidos = async () => {
  * @returns {Promise<Array>}
  */
 export const getProductosMasVendidos = async () => {
-  const response = await apiClient.get(
-    `${DASHBOARD_API_URL}/productos-mas-vendidos`
-  );
-  return response.data;
+  // const response = await apiClient.get(
+  //   `${DASHBOARD_API_URL}/productos-mas-vendidos`
+  // );
+  // return response.data;
+  return Promise.resolve(productosMasVendidosMock);
 };
 
 /**
@@ -40,8 +50,9 @@ export const getProductosMasVendidos = async () => {
  * @returns {Promise<Array>}
  */
 export const getEvolucionVentas = async () => {
-  const response = await apiClient.get(`${DASHBOARD_API_URL}/evolucion-ventas`);
-  return response.data;
+  // const response = await apiClient.get(`${DASHBOARD_API_URL}/evolucion-ventas`);
+  // return response.data;
+  return Promise.resolve(evolucionVentasMock);
 };
 
 /**
@@ -49,6 +60,7 @@ export const getEvolucionVentas = async () => {
  * @returns {Promise<Object>}
  */
 export const getSubtotalIva = async () => {
-  const response = await apiClient.get(`${DASHBOARD_API_URL}/subtotal-iva`);
-  return response.data;
+  // const response = await apiClient.get(`${DASHBOARD_API_URL}/subtotal-iva`);
+  // return response.data;
+  return Promise.resolve(subtotalIvaMock);
 };
