@@ -82,7 +82,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
 
     case 'existencia':
       if (value === '' || isNaN(parseInt(value)) || parseInt(value) < 0) {
-        error = 'La existencia debe ser un número igual o mayor a cero.';
+        error = 'La existencia no puede ser negativa.';
       }
       break;
 
@@ -90,7 +90,10 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     case 'stockMaximo':
       const min = name === 'stockMinimo' ? Number(value) : Number(formData.stockMinimo);
       const max = name === 'stockMaximo' ? Number(value) : Number(formData.stockMaximo);
-      if (
+      
+      if (name === 'stockMinimo' && min < 0) {
+        error = 'El stock mínimo no puede ser negativo.';
+      } else if (       
         formData.stockMinimo !== '' &&
         formData.stockMaximo !== '' &&
         !isNaN(min) &&
@@ -100,6 +103,15 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
         error = 'El stock máximo no puede ser menor al mínimo.';
       }
       break;
+
+    case 'descripcion':
+  if (!value || value.trim() === '') {
+    error = 'La descripción es obligatoria.';
+  } else if (value.length > 300) {
+    error = 'La descripción no puede superar los 300 caracteres.';
+  }
+  break;
+
 
     default:
       break;
@@ -160,11 +172,11 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       errors.vidaUtilDias = "La vida útil debe ser un número mayor a cero.";
     }
     if (
-      formData.existencia === "" ||
+      formData.existencia === '' ||
       isNaN(parseInt(formData.existencia)) ||
       parseInt(formData.existencia) < 0
     ) {
-      errors.existencia = "La existencia debe ser un número igual o mayor a cero.";
+      errors.existencia = "La existencia no puede ser negativa.";
     }
     if (
       formData.stockMaximo &&

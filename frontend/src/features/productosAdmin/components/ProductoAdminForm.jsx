@@ -65,11 +65,27 @@ return (
     </div>
 
     {/* --- Columna 2 --- */}
-    <div className="producto-admin-form-group">
-      <label htmlFor="existencia">Existencia: <span className="required-asterisk">*</span></label>
-      <input type="number" id="existencia" name="existencia" value={formData.existencia || ''} onChange={handleChange} required min="0" />
-      {formErrors.existencia && <p className="error-message">{formErrors.existencia}</p>}
-    </div>
+    <div className="producto-admin-form-group"><label htmlFor="existencia">
+  Existencia: <span className="required-asterisk">*</span>
+  </label>
+  <input
+    type="number"
+    id="existencia"
+    name="existencia"
+    value={
+      formData.existencia === 0 || formData.existencia
+        ? formData.existencia
+        : ''
+    }
+    onChange={handleChange}
+    required
+    min="0"
+  />
+  {formErrors.existencia && (
+    <p className="error-message">{formErrors.existencia}</p>
+  )}
+</div>
+
 
     {/* --- Columna 1 --- */}
     <div className="producto-admin-form-group">
