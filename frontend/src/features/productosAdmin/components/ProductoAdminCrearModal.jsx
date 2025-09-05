@@ -43,11 +43,71 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
   }, [isOpen]);
 
   const handleFormChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-  };
+  setFormData((prev) => ({ ...prev, [name]: value }));
+
+  let error = '';
+
+  switch (name) {
+    case 'nombre':
+      if (!value.trim()) {
+        error = 'El nombre es obligatorio.';
+      } else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+        error = 'No se permiten símbolos especiales.';
+      }
+      break;
+
+    case 'idCategoriaProducto':
+      if (!value) {
+        error = 'Debe seleccionar una categoría.';
+      }
+      break;
+
+    case 'precio':
+      if (!value || isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
+        error = 'El precio debe ser un número positivo.';
+      }
+      break;
+
+    case 'tipoUso':
+      if (!value || value.trim() === '') {
+        error = 'Debes seleccionar un tipo de uso para el producto.';
+      }
+      break;
+
+    case 'vidaUtilDias':
+      if (value === '' || isNaN(parseInt(value)) || parseInt(value) <= 0) {
+        error = 'La vida útil debe ser un número mayor a cero.';
+      }
+      break;
+
+    case 'existencia':
+      if (value === '' || isNaN(parseInt(value)) || parseInt(value) < 0) {
+        error = 'La existencia debe ser un número igual o mayor a cero.';
+      }
+      break;
+
+    case 'stockMinimo':
+    case 'stockMaximo':
+      const min = name === 'stockMinimo' ? Number(value) : Number(formData.stockMinimo);
+      const max = name === 'stockMaximo' ? Number(value) : Number(formData.stockMaximo);
+      if (
+        formData.stockMinimo !== '' &&
+        formData.stockMaximo !== '' &&
+        !isNaN(min) &&
+        !isNaN(max) &&
+        max < min
+      ) {
+        error = 'El stock máximo no puede ser menor al mínimo.';
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  setFormErrors((prev) => ({ ...prev, [name]: error }));
+};
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

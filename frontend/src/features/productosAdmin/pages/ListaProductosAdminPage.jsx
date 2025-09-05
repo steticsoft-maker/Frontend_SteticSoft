@@ -156,7 +156,7 @@ function ListaProductosAdminPage() {
                 const sku = p.sku || "";
                 const precio = p.precio ? p.precio.toString() : "";
                 const stock = p.stock ? p.stock.toString() : "";
-                const categoria = p.categoria?.nombre || ""; // Asumiendo que categoria tiene una propiedad 'nombre'
+                const categoria = p.categoria?.nombre || "";
 
                 return (
                     nombre.toLowerCase().includes(term) ||

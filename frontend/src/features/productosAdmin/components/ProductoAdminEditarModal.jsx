@@ -82,11 +82,65 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
   }, [isOpen, initialData, onClose]);
 
   const handleFormChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-  };
+  setFormData((prev) => ({ ...prev, [name]: value }));
+
+  let error = '';
+
+  switch (name) {
+    case 'nombre':
+      if (!value.trim()) {
+        error = 'El nombre es obligatorio.';
+      } else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+        error = 'No se permiten símbolos especiales.';
+      }
+      break;
+
+    case 'idCategoriaProducto':
+      if (!value) {
+        error = 'Debe seleccionar una categoría.';
+      }
+      break;
+
+    case 'precio':
+      if (!value || isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
+        error = 'El precio debe ser un número positivo.';
+      }
+      break;
+
+    case 'existencia':
+      if (value === '' || isNaN(parseInt(value)) || parseInt(value) < 0) {
+        error = 'La existencia debe ser un número igual o mayor a cero.';
+      }
+      break;
+
+    case 'stockMinimo':
+    case 'stockMaximo':
+      const min = name === 'stockMinimo' ? Number(value) : Number(formData.stockMinimo);
+      const max = name === 'stockMaximo' ? Number(value) : Number(formData.stockMaximo);
+      if (
+        formData.stockMinimo !== '' &&
+        formData.stockMaximo !== '' &&
+        !isNaN(min) &&
+        !isNaN(max) &&
+        max < min
+      ) {
+        error = 'El stock máximo no puede ser menor que el stock mínimo.';
+      }
+      break;
+
+    case 'vidaUtilDias':
+      if (value !== '' && (isNaN(parseInt(value)) || parseInt(value) <= 0)) {
+        error = 'La vida útil debe ser un número mayor a cero.';
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  setFormErrors((prev) => ({ ...prev, [name]: error }));
+};
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -124,6 +178,11 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
   const validateForm = () => {
     const errors = {};
     if (!formData.nombre.trim()) errors.nombre = 'El nombre es obligatorio.';
+    if (!formData.nombre.trim()) {
+      errors.nombre = 'El nombre es obligatorio.';
+    } else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(formData.nombre)) {
+      errors.nombre = 'El nombre no debe contener símbolos especiales.';
+    }
     if (!formData.idCategoriaProducto) errors.idCategoriaProducto = 'Debe seleccionar una categoría.';
     if (!formData.precio || isNaN(parseFloat(formData.precio)) || parseFloat(formData.precio) <= 0) {
       errors.precio = 'El precio debe ser un número positivo.';
