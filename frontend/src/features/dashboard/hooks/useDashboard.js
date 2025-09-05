@@ -44,15 +44,18 @@ const useDashboard = () => {
     };
   };
 
-  const fetchDashboardData = useCallback(async () => {
+  const fetchDashboardData = useCallback(async (productTimePeriod, serviceTimePeriod, subtotalTimePeriod) => {
     setIsLoading(true);
     setError(null);
     try {
       const [
         productos, servicios, evolucionVentas, subtotalIva, ingresosCategoria,
       ] = await Promise.all([
-        getProductosMasVendidos(), getServiciosMasVendidos(), getEvolucionVentas(),
-        getSubtotalIva(), getIngresosPorCategoria(),
+        getProductosMasVendidos(productTimePeriod), 
+        getServiciosMasVendidos(serviceTimePeriod), 
+        getEvolucionVentas(),
+        getSubtotalIva(subtotalTimePeriod), 
+        getIngresosPorCategoria(),
       ]);
 
       setProductChartData(formatSimpleChartData(productos, 'Top 5 Productos', 'totalVendido', 'nombre'));
