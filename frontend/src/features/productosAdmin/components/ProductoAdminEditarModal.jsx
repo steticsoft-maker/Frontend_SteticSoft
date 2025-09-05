@@ -88,12 +88,14 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
 
   switch (name) {
     case 'nombre':
-      if (!value.trim()) {
-        error = 'El nombre es obligatorio.';
-      } else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
-        error = 'No se permiten símbolos especiales.';
-      }
-      break;
+  if (!value.trim()) {
+    error = 'El nombre es obligatorio.';
+  } else if (value.trim().length < 3) {
+    error = 'El nombre debe tener al menos 3 caracteres.';
+  } else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+    error = 'No se permiten símbolos especiales.';
+  }
+  break;
 
     case 'idCategoriaProducto':
       if (!value) {
@@ -117,14 +119,17 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
     case 'stockMaximo':
       const min = name === 'stockMinimo' ? Number(value) : Number(formData.stockMinimo);
       const max = name === 'stockMaximo' ? Number(value) : Number(formData.stockMaximo);
-      if (
+      
+      if (name === 'stockMinimo' && min < 0) {
+        error = 'El stock mínimo no puede ser negativo.';
+      } else if (       
         formData.stockMinimo !== '' &&
         formData.stockMaximo !== '' &&
         !isNaN(min) &&
         !isNaN(max) &&
         max < min
       ) {
-        error = 'El stock máximo no puede ser menor que el stock mínimo.';
+        error = 'El stock máximo no puede ser menor al mínimo.';
       }
       break;
 
@@ -133,6 +138,15 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
         error = 'La vida útil debe ser un número mayor a cero.';
       }
       break;
+
+    case 'descripcion':
+  if (!value || value.trim() === '') {
+    error = 'La descripción es obligatoria.';
+  } else if (value.length > 300) {
+    error = 'La descripción no puede superar los 300 caracteres.';
+  }
+  break;
+
 
     default:
       break;
@@ -177,12 +191,14 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.nombre.trim()) errors.nombre = 'El nombre es obligatorio.';
     if (!formData.nombre.trim()) {
-      errors.nombre = 'El nombre es obligatorio.';
-    } else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(formData.nombre)) {
-      errors.nombre = 'El nombre no debe contener símbolos especiales.';
-    }
+  errors.nombre = 'El nombre es obligatorio.';
+} else if (formData.nombre.trim().length < 3) {
+  errors.nombre = 'El nombre debe tener al menos 3 caracteres.';
+} else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(formData.nombre)) {
+  errors.nombre = 'El nombre no debe contener símbolos especiales.';
+}
+
     if (!formData.idCategoriaProducto) errors.idCategoriaProducto = 'Debe seleccionar una categoría.';
     if (!formData.precio || isNaN(parseFloat(formData.precio)) || parseFloat(formData.precio) <= 0) {
       errors.precio = 'El precio debe ser un número positivo.';
