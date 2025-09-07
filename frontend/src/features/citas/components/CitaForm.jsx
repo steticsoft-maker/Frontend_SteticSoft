@@ -1,101 +1,90 @@
 // src/features/citas/components/CitaForm.jsx
-import React from 'react';
-import Select from 'react-select';
-import moment from 'moment';
+import React, { useState } from 'react';
+import '../css/Citas.css'; // Estilos específicos para este formulario
 
-const CitaForm = ({
-  formData,
-  onServicioChange,
-  onEmpleadoChange,
-  empleadosDisponibles,
-  serviciosDisponibles,
-  isSlotSelection // true si se seleccionó un slot de un empleado específico en el calendario
-}) => {
-  // Opciones de servicios en formato compatible con react-select
-  const servicioOptions = (serviciosDisponibles || []).map(s => ({
-    value: s.id, // usamos el ID como valor
-    label: `${s.nombre} ($${(s.precio || 0).toLocaleString('es-CO')}, ${s.duracion_estimada || 30} min)`,
-    duracion: s.duracion_estimada || 30,
-    precio: s.precio || 0,
-    id: s.id,
-    nombre: s.nombre
-  }));
+const CitaForm = ({ onSubmit }) => {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    telefono: '',
+  });
+  const [errors, setErrors] = useState({});
 
-  // Preseleccionar los servicios que están en formData.servicioIds
-  const selectedServicioValues = servicioOptions.filter(opt =>
-    (formData.servicioIds || []).includes(opt.id)
-  );
-
-  // Handler para cambio en servicios
-  const handleServicioChange = (selectedOptions) => {
-    const ids = selectedOptions ? selectedOptions.map(opt => opt.id) : [];
-    const nombres = selectedOptions ? selectedOptions.map(opt => opt.nombre) : [];
-
-    let duracionTotal = 0;
-    if (selectedOptions && formData.start) {
-      duracionTotal = selectedOptions.reduce((total, opt) => {
-        const duracionServicio = parseInt(opt.duracion);
-        return total + (isNaN(duracionServicio) ? 30 : duracionServicio);
-      }, 0);
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.nombre) newErrors.nombre = 'El nombre es obligatorio.';
+    if (!formData.email) {
+      newErrors.email = 'El correo electrónico es obligatorio.';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'El formato del correo no es válido.';
     }
+    if (!formData.telefono) newErrors.telefono = 'El teléfono es obligatorio.';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    onServicioChange({
-      servicioIds: ids,
-      servicioNombres: nombres,
-      end: formData.start ? moment(formData.start).add(duracionTotal, 'minutes').toDate() : null
-    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBlur = () => {
+    // Validar en el evento onBlur para feedback en tiempo real
+    validate();
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      onSubmit(formData);
+    }
   };
 
   return (
-    <>
-      {/* Cliente se maneja en CitaFormModal con ItemSelectionModal */}
-
-      <div className="form-group">
-        <label htmlFor="empleado">Empleado: <span className="required-asterisk">*</span></label>
-        <select
-          id="empleado"
-          name="empleadoId"
-          value={formData.empleadoId || ""} 
-          onChange={onEmpleadoChange}
-          disabled={isSlotSelection}
+    <form className="booking-form" onSubmit={handleSubmit} noValidate>
+      <h4>Ingresa tus Datos</h4>
+      <div className="form-field">
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          value={formData.nombre}
+          onChange={handleChange}
+          onBlur={handleBlur}
           required
-        >
-          <option value="">Seleccione un empleado</option>
-          {(empleadosDisponibles || []).map((e) => (
-            <option key={e.id} value={e.id}>{e.nombre}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="servicio">Servicios: <span className="required-asterisk">*</span></label>
-        <Select
-          id="servicio"
-          isMulti
-          options={servicioOptions}
-          value={selectedServicioValues}
-          onChange={handleServicioChange}
-          placeholder="Seleccione servicios..."
-          closeMenuOnSelect={false}
-          className="react-select-citas-container"
-          classNamePrefix="react-select-citas"
-          noOptionsMessage={() => 'No hay servicios disponibles'}
         />
+        <label htmlFor="nombre" className={formData.nombre ? 'filled' : ''}>Nombre Completo</label>
+        {errors.nombre && <span className="error-message">{errors.nombre}</span>}
       </div>
-
-      <div className="form-group">
-        <label>Fecha y Hora Programada:</label>
-        <div className="horario-seleccionado">
-          {formData.start ? (
-            <>
-              <strong>Inicio:</strong> {moment(formData.start).format('dddd, D [de] MMMM, YYYY hh:mm A')}
-              <br />
-              <strong>Fin Estimado:</strong> {formData.end ? moment(formData.end).format('dddd, D [de] MMMM, YYYY hh:mm A') : 'Calculando...'}
-            </>
-          ) : "Seleccione un horario en el calendario o la fecha será asignada."}
-        </div>
+      <div className="form-field">
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          required
+        />
+        <label htmlFor="email" className={formData.email ? 'filled' : ''}>Correo Electrónico</label>
+        {errors.email && <span className="error-message">{errors.email}</span>}
       </div>
-    </>
+      <div className="form-field">
+        <input
+          type="tel"
+          id="telefono"
+          name="telefono"
+          value={formData.telefono}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          required
+        />
+        <label htmlFor="telefono" className={formData.telefono ? 'filled' : ''}>Teléfono</label>
+        {errors.telefono && <span className="error-message">{errors.telefono}</span>}
+      </div>
+      <button type="submit" className="submit-button">Confirmar Cita</button>
+    </form>
   );
 };
 

@@ -1,15 +1,17 @@
 // src/features/citas/components/CitaFormModal.jsx
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import moment from 'moment';
 import CitaForm from './CitaForm';
 import {
-  fetchServiciosDisponiblesParaCitas,
-  fetchEmpleadosDisponiblesParaCitas
+  // ✅ CORRECCIÓN: Nombres de funciones actualizados para coincidir con citasService.js
+  fetchServiciosDisponibles,
+  fetchEmpleadosPorNovedad, // Se usará cuando se tenga una novedad
+  buscarClientes,
 } from '../services/citasService';
-import { fetchClientes } from '../../clientes/services/clientesService';
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 
-const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePreseleccionado }) => {
+// El modal ahora necesita saber la novedad para buscar empleados
+const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePreseleccionado, novedadId }) => {
   const [formData, setFormData] = useState({});
   const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
   const [empleadosDisponibles, setEmpleadosDisponibles] = useState([]);
@@ -20,129 +22,113 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDependencies, setIsLoadingDependencies] = useState(false);
 
-  const resetFormState = () => {
-    setFormData({});
-    setError('');
-    setIsLoading(false);
-  };
-
-  // 🔹 Cargar dependencias al abrir modal
+  // Cargar dependencias (Servicios y Empleados si hay novedad)
   useEffect(() => {
     if (isOpen) {
       setIsLoadingDependencies(true);
       setError('');
 
-      Promise.all([
-        fetchServiciosDisponiblesParaCitas(),
-        fetchEmpleadosDisponiblesParaCitas(),
-        fetchClientes()
-      ]).then(([servicios, empleados, clientes]) => {
+      const promises = [
+        fetchServiciosDisponibles(),
+        // ✅ CORRECCIÓN: Solo buscamos empleados si tenemos una novedadId para la cita
+        novedadId ? fetchEmpleadosPorNovedad(novedadId) : Promise.resolve({ data: { data: [] } })
+      ];
+
+      Promise.all(promises).then(([serviciosRes, empleadosRes]) => {
+        const servicios = serviciosRes.data?.data || [];
+        const empleados = empleadosRes.data?.data || [];
+
         setServiciosDisponibles(servicios);
         setEmpleadosDisponibles(empleados);
-        setClientesList(clientes || []);
+        
+        // Inicializar formulario (lógica existente adaptada)
+        let idInit = initialSlotData?.id || null;
+        let clienteInit = clientePreseleccionado || initialSlotData?.cliente || null;
+        let empleadoIdInit = initialSlotData?.empleadoId || null;
+        let servicioIdsInit = initialSlotData?.servicios?.map(s => s.idServicio) || initialSlotData?.serviciosProgramados?.map(s => s.idServicio) || [];
+        let estadoCitaIdInit = initialSlotData?.idEstado || 1;
+        let startTimeInit = initialSlotData?.start || initialSlotData?.fechaHora || null;
+        let endTimeInit = initialSlotData?.end || null;
 
-        // Inicializar datos
-        let idInit = null;
-        let clienteInit = clientePreseleccionado || null;
-        let empleadoNombreInit = '';
-        let empleadoIdInit = null;
-        let servicioIdsInit = [];
-        let estadoCitaIdInit = 1; // Por defecto Programada
-        let startTimeInit = initialSlotData?.start || null;
-        let endTimeInit = null;
-
-        if (initialSlotData && initialSlotData.tipo === 'cita') {
-          idInit = initialSlotData.id;
-          clienteInit = initialSlotData.cliente;
-          empleadoIdInit = initialSlotData.empleadoId;
-          const emp = empleados.find(e => e.id === empleadoIdInit);
-          empleadoNombreInit = emp ? emp.nombre : (initialSlotData.empleado || '');
-          servicioIdsInit = initialSlotData.servicios?.map(s => s.id) || [];
-          estadoCitaIdInit = initialSlotData.estadoCitaId || 1;
-          startTimeInit = initialSlotData.start;
-          endTimeInit = initialSlotData.end;
-        } else if (initialSlotData && initialSlotData.resource?.empleadoId) {
-          const empEncontrado = empleados.find(e => e.id === initialSlotData.resource.empleadoId);
-          if (empEncontrado) {
-            empleadoNombreInit = empEncontrado.nombre;
-            empleadoIdInit = empEncontrado.id;
-          }
-          endTimeInit = startTimeInit ? moment(startTimeInit).add(30, 'minutes').toDate() : null;
-        } else if (startTimeInit) {
-          endTimeInit = moment(startTimeInit).add(30, 'minutes').toDate();
+        // Si no hay hora de fin, se calcula basado en los servicios iniciales
+        if (startTimeInit && !endTimeInit && servicioIdsInit.length > 0) {
+            const duracionTotal = servicios
+                .filter(s => servicioIdsInit.includes(s.idServicio))
+                .reduce((total, s) => total + (s.duracionEstimadaMin || 30), 0);
+            endTimeInit = moment(startTimeInit).add(duracionTotal, 'minutes').toDate();
         }
 
         setFormData({
           id: idInit,
-          cliente: clienteInit, // Objeto cliente para mostrar
+          cliente: clienteInit,
           clienteId: clienteInit?.idCliente || null,
-          empleado: empleadoNombreInit,
           empleadoId: empleadoIdInit,
           servicioIds: servicioIdsInit,
           start: startTimeInit,
           end: endTimeInit,
           estadoCitaId: estadoCitaIdInit,
+          novedadId: novedadId, // Guardamos la novedad
         });
-        setIsLoadingDependencies(false);
+
       }).catch(err => {
-        console.error("Error cargando dependencias para el formulario de cita:", err);
-        setError("Error al cargar datos necesarios: " + err.message);
+        console.error("Error cargando dependencias:", err);
+        setError("Error al cargar datos necesarios: " + (err.response?.data?.message || err.message));
+      }).finally(() => {
         setIsLoadingDependencies(false);
       });
-    } else {
-      resetFormState();
     }
-  }, [isOpen, initialSlotData, clientePreseleccionado]);
+  }, [isOpen, initialSlotData, clientePreseleccionado, novedadId]);
 
-  // 🔹 Clientes para modal
-  const todosLosClientesParaModal = useMemo(() => {
-    if (!Array.isArray(clientesList)) return [];
+  // Lógica para buscar clientes
+  const handleClienteSearch = (term) => {
+    if (term.length > 2) {
+        buscarClientes(term).then(res => {
+            setClientesList(res.data?.data || []);
+        });
+    }
+  };
+
+  const clientesParaModal = useMemo(() => {
     return clientesList.map(c => ({
       ...c,
       value: c.idCliente,
-      label: `${c.nombre} ${c.apellido}` || "Cliente sin nombre"
+      label: `${c.nombre} ${c.apellido || ''}`.trim()
     }));
   }, [clientesList]);
-
-  const handleEmpleadoChange = useCallback((e) => {
-    const selectedEmpleadoId = parseInt(e.target.value);
-    const empleadoSeleccionado = empleadosDisponibles.find(emp => emp.id === selectedEmpleadoId);
-    setFormData(prev => ({
-      ...prev,
-      empleadoId: selectedEmpleadoId || null,
-      empleado: empleadoSeleccionado?.nombre || ''
-    }));
-    if (error && selectedEmpleadoId) setError('');
-  }, [empleadosDisponibles, error]);
-
-  // 👇 Nuevo handler compatible con el CitaForm
-  const handleServicioChange = useCallback((serviciosData) => {
-    setFormData(prev => ({
-      ...prev,
-      servicioIds: serviciosData.servicioIds,
-      end: serviciosData.end || prev.end
-    }));
-    if (error && serviciosData.servicioIds.length > 0) setError('');
-  }, [error]);
-
+  
+  // Lógica de envío del formulario
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+    // Validaciones básicas del front-end
     if (!formData.clienteId) { setError("Debe seleccionar un cliente."); return; }
     if (!formData.empleadoId) { setError("Debe seleccionar un empleado."); return; }
     if (!formData.servicioIds || formData.servicioIds.length === 0) { setError("Debe seleccionar al menos un servicio."); return; }
-    if (!formData.start) { setError("No se ha definido una hora de inicio para la cita."); return; }
+    if (!formData.start) { setError("No se ha definido una hora de inicio."); return; }
 
     setError('');
     setIsLoading(true);
+
+    // ✅ CORRECCIÓN: Se prepara el objeto final para la API
+    const dataToSend = {
+      id: formData.id,
+      fechaHora: moment(formData.start).toISOString(),
+      clienteId: formData.clienteId,
+      usuarioId: formData.empleadoId,
+      servicios: formData.servicioIds,
+      estadoCitaId: formData.estadoCitaId,
+      novedadId: formData.novedadId
+    };
+
     try {
-      await onSubmit(formData); // ahora ya está listo con IDs
+      await onSubmit(dataToSend);
     } catch (submissionError) {
       setError(submissionError.message || "Error al guardar la cita.");
     } finally {
       setIsLoading(false);
     }
   };
-
+  
+  // El resto del componente JSX se mantiene mayormente igual
   if (!isOpen) return null;
 
   return (
@@ -157,20 +143,18 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
           <form onSubmit={handleSubmitForm}>
             <CitaForm
               formData={formData}
-              onServicioChange={handleServicioChange}
-              onEmpleadoChange={handleEmpleadoChange}
+              setFormData={setFormData} // Pasamos la función para que el hijo pueda actualizar
+              onEmpleadoChange={(e) => setFormData(prev => ({ ...prev, empleadoId: parseInt(e.target.value) }))}
               empleadosDisponibles={empleadosDisponibles}
               serviciosDisponibles={serviciosDisponibles}
-              isSlotSelection={!!(initialSlotData && initialSlotData.resource?.empleadoId && !initialSlotData.tipo)}
             />
 
-            {/* Campo Cliente con modal */}
             <div className="form-group">
               <label htmlFor="clienteSearch">Cliente <span className="required-asterisk">*</span>:</label>
               <input
                 type="text"
                 className="buscar-cliente-input"
-                value={formData?.cliente?.nombre ? `${formData.cliente.nombre} ${formData.cliente.apellido}` : ''}
+                value={formData?.cliente ? `${formData.cliente.nombre} ${formData.cliente.apellido || ''}`.trim() : ''}
                 onClick={() => setShowClienteSelectModal(true)}
                 placeholder="Seleccionar cliente"
                 readOnly
@@ -188,17 +172,17 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
         )}
       </div>
 
-      {/* Modal de selección de clientes */}
       <ItemSelectionModal
         isOpen={showClienteSelectModal}
         onClose={() => setShowClienteSelectModal(false)}
         title="Seleccionar Cliente"
-        items={todosLosClientesParaModal}
+        items={clientesParaModal}
+        onSearch={handleClienteSearch}
         onSelectItem={(selectedItem) => { 
           setFormData({ ...formData, cliente: selectedItem, clienteId: selectedItem.idCliente }); 
           setShowClienteSelectModal(false); 
         }}
-        searchPlaceholder="Buscar cliente..."
+        searchPlaceholder="Buscar cliente por nombre..."
       />
     </div>
   );

@@ -1,142 +1,101 @@
 // src/features/citas/services/citasService.js
 import apiClient from "../../../shared/services/apiClient";
-import moment from "moment";
-import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService";
+
+// --- SERVICIOS PARA GESTIÓN DE CITAS (TABLA) ---
 
 /**
- * ✅ Obtener todas las citas desde la API
+ * Obtiene todas las citas existentes para la tabla de gestión.
  */
-export const fetchCitasAgendadas = async () => {
-  try {
-    const response = await apiClient.get("/citas");
-    const citas = response.data?.data || [];
-
-    return citas.map(c => ({
-      ...c,
-      // El backend devuelve fecha + hora, aquí lo convertimos a objetos Date
-      start: moment(`${c.fecha} ${c.horaInicio}`).toDate(),
-      end: moment(`${c.fecha} ${c.horaFin}`).toDate(),
-    }));
-  } catch (error) {
-    console.error("Error al obtener citas:", error);
-    return [];
-  }
+export const fetchCitas = (filtros = {}) => {
+  return apiClient.get('/citas', { params: filtros });
 };
 
 /**
- * ✅ Guardar una nueva cita o editar una existente
+ * Obtiene los detalles completos de una sola cita.
  */
-export const saveCita = async (citaData) => {
-  try {
-    // 🔹 Adaptar la estructura a lo que tu backend espera
-    const dataToSend = {
-      clienteId: citaData.cliente?.idCliente || citaData.clienteId,
-      empleadoId: citaData.empleadoId,
-      idServicios: citaData.servicioIds || [], // array de IDs de servicios
-      fecha: moment(citaData.start).format("YYYY-MM-DD"),
-      horaInicio: moment(citaData.start).format("HH:mm:ss"),
-      horaFin: moment(citaData.end).format("HH:mm:ss"),
-      estadoCitaId: citaData.estadoCitaId || 1, // Ejemplo: 1=Programada
-    };
-
-    if (citaData.id) {
-      // Editar cita existente
-      const response = await apiClient.put(`/citas/${citaData.id}`, dataToSend);
-      return response.data.data;
-    } else {
-      // Crear nueva cita
-      const response = await apiClient.post("/citas", dataToSend);
-      return response.data.data;
-    }
-  } catch (error) {
-    console.error("Error al guardar cita:", error);
-    if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
-    }
-    throw error;
-  }
+export const fetchCitaPorId = (idCita) => {
+  return apiClient.get(`/citas/${idCita}`);
 };
 
 /**
- * ✅ Eliminar cita por ID
+ * ✅ FUNCIÓN AÑADIDA: Actualiza una cita existente.
+ * @param {number} idCita - El ID de la cita a actualizar.
+ * @param {object} datosActualizar - Objeto con los campos a modificar.
  */
-export const deleteCitaById = async (citaId) => {
-  try {
-    await apiClient.delete(`/citas/${citaId}`);
-    return true;
-  } catch (error) {
-    console.error("Error al eliminar cita:", error);
-    if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
-    }
-    throw error;
-  }
+export const actualizarCita = (idCita, datosActualizar) => {
+  // Usamos PUT, como se definió en el archivo de rutas del back-end.
+  return apiClient.put(`/citas/${idCita}`, datosActualizar);
 };
 
 /**
- * ✅ Cambiar estado de una cita
+ * Elimina una cita de forma permanente.
  */
-export const cambiarEstadoCita = async (citaId, nuevoEstadoId, motivo = "") => {
-  try {
-    const response = await apiClient.patch(`/citas/${citaId}/estado`, {
-      estadoCitaId: nuevoEstadoId, // ahora se manda ID en lugar de string
-      motivoCancelacion: motivo,
-    });
-    return response.data.data;
-  } catch (error) {
-    console.error("Error al cambiar estado de cita:", error);
-    if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
-    }
-    throw error;
-  }
+export const deleteCitaById = (idCita) => {
+  return apiClient.delete(`/citas/${idCita}`);
 };
 
 /**
- * ✅ Traer servicios disponibles desde la API
+ * Anula una cita (cambia su estado a inactivo).
  */
-export const fetchServiciosDisponiblesParaCitas = async () => {
-  try {
-    const response = await getServicios({ estado: true }); // Solo activos
-    const adminServicios = response?.data?.data || []; // 🔥 CORREGIDO
-
-    return adminServicios
-      .filter(s => s.estado === true && s.duracionEstimadaMin)
-      .map(s => ({
-        ...s,
-        id: s.idServicio, // backend lo manda como idServicio
-        nombre: s.nombre,
-        duracion_estimada: parseInt(s.duracionEstimadaMin) || 30,
-        precio: parseFloat(s.precio) || 0,
-      }));
-  } catch (error) {
-    console.error("Error al obtener servicios:", error);
-    return [];
-  }
+export const anularCita = (idCita) => {
+  return apiClient.patch(`/citas/${idCita}/anular`);
 };
 
 /**
- * ✅ Traer empleados disponibles para citas
+ * Reactiva una cita anulada.
  */
-export const fetchEmpleadosDisponiblesParaCitas = async () => {
-  try {
-    const response = await apiClient.get("/empleados");
-    return response.data?.data || [];
-  } catch (error) {
-    console.error("Error al obtener empleados:", error);
-    return [];
-  }
+export const habilitarCita = (idCita) => {
+    return apiClient.patch(`/citas/${idCita}/habilitar`);
+};
+
+
+// --- SERVICIOS PARA AGENDAR NUEVA CITA (PÁGINA DE AGENDAMIENTO) ---
+
+/**
+ * Crea una nueva cita.
+ */
+export const crearCita = (citaData) => {
+  return apiClient.post('/citas', citaData);
 };
 
 /**
- * ✅ Traer clientes disponibles para citas
+ * Obtiene las novedades activas disponibles para agendar.
  */
-export const fetchClientesParaCitas = async () => {
-  try {
-    const response = await apiClient.get("/clientes");
-    return response.data?.data || [];
-  } catch (error) {
-    console.error("Error al obtener clientes:", error);
-    return [];
-  }
+export const fetchNovedadesAgendables = () => {
+  return apiClient.get('/novedades/agendables');
+};
+
+/**
+ * Obtiene los días disponibles para una novedad en un mes y año específicos.
+ */
+export const fetchDiasDisponibles = (idNovedad, anio, mes) => {
+  return apiClient.get(`/novedades/${idNovedad}/dias-disponibles`, { params: { anio, mes } });
+};
+
+/**
+ * Obtiene las horas disponibles para una novedad en una fecha específica.
+ */
+export const fetchHorasDisponibles = (idNovedad, fecha) => {
+  return apiClient.get(`/novedades/${idNovedad}/horas-disponibles`, { params: { fecha } });
+};
+
+/**
+ * Obtiene los empleados asociados a una novedad específica.
+ */
+export const fetchEmpleadosPorNovedad = (idNovedad) => {
+    return apiClient.get(`/novedades/${idNovedad}/empleados`);
+};
+
+/**
+ * Obtiene todos los servicios que están activos.
+ */
+export const fetchServiciosDisponibles = () => {
+    return apiClient.get('/servicios/disponibles');
+};
+
+/**
+ * Busca clientes por un término de búsqueda.
+ */
+export const buscarClientes = (termino) => {
+    return apiClient.get('/clientes/buscar', { params: { termino } });
 };
