@@ -55,14 +55,13 @@ const nombresDeModelos = [
   "Venta",
   "Cita",
   "Servicio",
-  "ServicioXCita",
   "CompraXProducto",
   "ProductoXVenta",
   "VentaXServicio",
   "Abastecimiento",
-  "NovedadEmpleado", // Modelo de unión para Novedades y Empleados (Usuarios)
-  "Novedades",
+  "Novedad",
   "TokenRecuperacion",
+  "HistorialCambiosRol",
 ];
 
 // Inicia un bloque visual para la carga de modelos

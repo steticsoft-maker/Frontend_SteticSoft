@@ -63,22 +63,17 @@ const obtenerProductoPorId = async (req, res, next) => {
   }
 };
 
-/**
- * Actualiza (Edita) un producto existente por su ID.
- */
 const actualizarProducto = async (req, res, next) => {
   try {
     const { idProducto } = req.params;
     const datosActualizar = { ...req.body };
 
-    // ✅ Mapear idCategoriaProducto → categoriaProductoId
     if (datosActualizar.idCategoriaProducto && !datosActualizar.categoriaProductoId) {
       datosActualizar.categoriaProductoId = Number(datosActualizar.idCategoriaProducto);
     }
 
     if (req.file) {
       datosActualizar.imagen = `/uploads/productos/${req.file.filename}`;
-      // Opcional: Aquí podrías borrar la imagen anterior si lo deseas.
     }
 
     const productoActualizado = await productoService.actualizarProducto(
@@ -190,7 +185,9 @@ const listarProductosPublicos = async (req, res, next) => {
   try {
     console.log("🔍 Entrando a listarProductosPublicos");
 
-    const resultado = await productoService.obtenerTodosLosProductos();
+    const resultado = await productoService.obtenerTodosLosProductos({
+      tipoUso: "Externo",
+    });
     console.log("📥 Resultado crudo de productoService:", resultado);
 
     // 🛡️ Lógica defensiva para asegurar que trabajamos con un array

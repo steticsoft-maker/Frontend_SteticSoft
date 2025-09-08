@@ -1,12 +1,7 @@
 // src/services/abastecimiento.service.js
-const {
-  Sequelize,
-  Producto,
-  sequelize,
-  Abastecimiento,
-  CategoriaProducto,
-} = require("../models");
-const { Op } = Sequelize;
+const db = require("../models");
+const { Op } = db.Sequelize;
+const { Abastecimiento, Producto, CategoriaProducto, sequelize } = db;
 const {
   NotFoundError,
   ConflictError,
