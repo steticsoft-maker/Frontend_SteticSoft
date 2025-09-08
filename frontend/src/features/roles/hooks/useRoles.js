@@ -9,6 +9,7 @@ import {
   toggleRoleStatusAPI,
   getRoleDetailsAPI,
   getPermisosAPI,
+  getRoleHistoryAPI,
 } from "../services/rolesService";
 
 // Función auxiliar para procesar la lista de permisos y agruparla por módulo.
@@ -43,6 +44,9 @@ const useRoles = () => {
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEstado, setFilterEstado] = useState("todos");
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  const [roleHistory, setRoleHistory] = useState([]);
+  const [historyError, setHistoryError] = useState(null);
 
   const permisosAgrupados = useMemo(
     () => groupPermissionsByModule(permisos),
@@ -96,8 +100,11 @@ const useRoles = () => {
     setIsDetailsModalOpen(false);
     setIsDeleteModalOpen(false);
     setIsValidationModalOpen(false);
+    setIsHistoryModalOpen(false);
     setCurrentRole(null);
     setValidationMessage("");
+    setRoleHistory([]);
+    setHistoryError(null);
   }, []);
 
   const handleOpenModal = useCallback(async (type, role = null) => {
@@ -142,8 +149,25 @@ const useRoles = () => {
       setIsCrearModalOpen(true);
     } else if (type === "delete") {
       setIsDeleteModalOpen(true);
+    } else if (type === "history" && role?.idRol) {
+      handleOpenHistoryModal(role);
     }
   }, []);
+
+  const handleOpenHistoryModal = async (role) => {
+    setCurrentRole(role);
+    setIsHistoryModalOpen(true);
+    setIsSubmitting(true);
+    setHistoryError(null);
+    try {
+      const historyData = await getRoleHistoryAPI(role.idRol);
+      setRoleHistory(historyData);
+    } catch (err) {
+      setHistoryError(err.message || "No se pudo cargar el historial.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSaveRol = useCallback(
     async (roleData) => {
@@ -302,6 +326,9 @@ const useRoles = () => {
     setInputValue,
     filterEstado,
     setFilterEstado,
+    isHistoryModalOpen,
+    roleHistory,
+    historyError,
     closeModal,
     handleOpenModal,
     handleSaveRol,
