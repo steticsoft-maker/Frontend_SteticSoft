@@ -1,14 +1,19 @@
 // src/features/roles/components/HistorialRolModal.jsx
 import React from 'react';
 import Modal from '../../../shared/components/common/Modal';
-import Spinner from '../../../shared/components/common/Spinner'; // Importación corregida
+import Spinner from '../../../shared/components/common/Spinner';
 import { FaTimes, FaUserCircle } from 'react-icons/fa';
 import '../css/HistorialRolModal.css';
 
-const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, error }) => {
+const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, error, permisosDisponibles }) => {
   if (!isOpen) return null;
 
   const formatDate = (dateString) => {
+    // Función mejorada para evitar "Invalid Date"
+    if (!dateString) return 'Fecha no disponible';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+
     const options = {
       year: 'numeric',
       month: '2-digit',
@@ -16,11 +21,41 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
       hour: '2-digit',
       minute: '2-digit',
     };
-    return new Date(dateString).toLocaleString('es-ES', options);
+    return date.toLocaleString('es-ES', options);
   };
 
-  const renderValue = (value) => {
-    return value === null || value === '' ? <span className="value-na">N/A</span> : value;
+  const renderValue = (value, campo) => {
+    if (value === null || typeof value === 'undefined' || value === '') {
+      return <span className="value-na">N/A</span>;
+    }
+
+    if (campo === 'permisos') {
+      try {
+        const ids = JSON.parse(value);
+        if (Array.isArray(ids)) {
+          if (ids.length === 0) return <span className="value-na">Ninguno</span>;
+
+          const nombres = ids.map(id => {
+            const permiso = permisosDisponibles.find(p => p.idPermiso === id);
+            return permiso ? permiso.nombre.replace('MODULO_', '').replace('_GESTIONAR', '') : `ID ${id}`;
+          });
+
+          return (
+            <ul className="permission-list">
+              {nombres.map(nombre => <li key={nombre}>{nombre}</li>)}
+            </ul>
+          );
+        }
+      } catch {
+        // Fallback si no es JSON
+      }
+    }
+    
+    if (typeof value === 'boolean') {
+      return value ? <span className="status-active">Activo</span> : <span className="status-inactive">Inactivo</span>;
+    }
+
+    return value.toString();
   };
 
   return (
@@ -54,14 +89,16 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
               <tbody>
                 {history.map((record) => (
                   <tr key={record.idHistorial}>
+                    {/* --- CORRECCIONES CLAVE AQUÍ --- */}
                     <td data-label="Fecha">{formatDate(record.fechaCambio)}</td>
                     <td data-label="Usuario" className="user-info">
                       <FaUserCircle className="user-icon" />
-                      <span>{record.usuario?.nombreUsuario || 'Sistema'}</span>
+                      {/* El alias del usuario en el backend es 'usuarioModificador' */}
+                      <span>{record.usuarioModificador?.correo || 'Sistema'}</span>
                     </td>
                     <td data-label="Campo Modificado">{record.campoModificado}</td>
-                    <td data-label="Valor Anterior">{renderValue(record.valorAnterior)}</td>
-                    <td data-label="Valor Nuevo">{renderValue(record.valorNuevo)}</td>
+                    <td data-label="Valor Anterior">{renderValue(record.valorAnterior, record.campoModificado)}</td>
+                    <td data-label="Valor Nuevo">{renderValue(record.valorNuevo, record.campoModificado)}</td>
                   </tr>
                 ))}
               </tbody>
