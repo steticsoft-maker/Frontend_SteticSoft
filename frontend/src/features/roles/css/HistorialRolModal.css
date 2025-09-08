@@ -2,17 +2,21 @@
 
 /* Contenido principal del modal */
 .historial-modal-content {
-  background-color: var(--color-background-light, #ffffff);
-  padding: 20px 30px;
+background-color: var(--color-background-light, #ffffff);
+  padding: 90px 40px;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  width: 90%;
-  max-width: 1000px; /* Aumentado para más espacio */
+  width: 100%;
+  max-width: 1000px;
   position: relative;
-  max-height: 90vh; /* Aumentado para más visibilidad vertical */
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   border-top: 5px solid var(--color-admin-hover, #b660a3);
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Título del modal */
