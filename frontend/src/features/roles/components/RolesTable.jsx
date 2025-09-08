@@ -128,8 +128,7 @@ const RolesTable = ({
 
             return (
               <tr key={rol.idRol}>
-                <td data-label="#">{numeroFila}</td>{" "}
-                {/* Celda para el número de fila */}
+                <td data-label="#">{numeroFila}</td>
                 <td data-label="Nombre del Rol">{rol.nombre}</td>
                 <td data-label="Descripción">{rol.descripcion}</td>
                 <td data-label="Permisos por Módulo:" className="permisos-cell">
