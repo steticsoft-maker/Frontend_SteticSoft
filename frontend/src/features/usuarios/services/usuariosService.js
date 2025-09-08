@@ -4,9 +4,9 @@ import apiClient from "../../../shared/services/api"; // Ajusta la ruta a tu api
 /**
  * Obtiene la lista de todos los usuarios desde la API.
  */
-export const getUsuariosAPI = async () => {
+export const getUsuariosAPI = async (params) => {
   try {
-    const response = await apiClient.get("/usuarios");
+    const response = await apiClient.get("/usuarios", { params });
     // Asumiendo que el backend devuelve { success: true, data: [...] }
     return response.data.data; // Devolver directamente el array de usuarios
   } catch (error) {
