@@ -1,7 +1,6 @@
 // src/features/ventas/pages/ProcesoVentaPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import VentaForm from "../components/VentaForm";
 import ItemSelectionModal from "../components/ItemSelectionModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
@@ -284,7 +283,6 @@ function ProcesoVentaPage() {
 
   return (
     <div className="proceso-ventas-page">
-      <NavbarAdmin />
       <div className="proceso-ventas-main-content">
         <h1>Proceso de Agregar Venta</h1>
         <form onSubmit={(e) => e.preventDefault()}>

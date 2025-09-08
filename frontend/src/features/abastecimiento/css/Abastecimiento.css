@@ -198,7 +198,7 @@
 /* === ESTILOS RESPONSIVOS === */
 @media (max-width: 1024px) { /* Tablets y pantallas medianas */
   .abastecimiento-main-content {
-    margin-left: 0; /* Asumir que NavbarAdmin se oculta o es overlay */
+    margin-left: 0; /* Asumir que AdminSidebar se oculta o es overlay */
     padding: 20px;
   }
 }

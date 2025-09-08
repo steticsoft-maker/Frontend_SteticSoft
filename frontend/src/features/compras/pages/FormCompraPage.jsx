@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import CompraForm from '../components/CompraForm';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
@@ -152,7 +151,6 @@ function FormCompraPage() {
 
   return (
     <div className="agregar-compra-page-container"> 
-      <NavbarAdmin />
       <div className="agregar-compra-content"> 
         <div className="agregar-compra-form-wrapper">
           <h2 className="agregar-compra-title">Registrar Nueva Compra</h2>

@@ -1,7 +1,6 @@
 // src/features/proveedores/pages/ListaProveedoresPage.jsx
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import ProveedoresTable from "../components/ProveedoresTable";
 import ProveedorCrearModal from "../components/ProveedorCrearModal";
 import ProveedorEditarModal from "../components/ProveedorEditarModal";
@@ -205,7 +204,6 @@ const handleSave = async (proveedorData) => {
 
   return (
     <div className="proveedores-page-container">
-      <NavbarAdmin />
       <div className="proveedores-main-content">
         <div className="proveedores-content-wrapper">
           <h1>Gestión de Proveedores</h1>

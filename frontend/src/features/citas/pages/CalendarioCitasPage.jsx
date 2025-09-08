@@ -6,7 +6,6 @@ import moment from 'moment';
 import 'moment/locale/es';
 import Select from 'react-select';
 
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import { CitasTable, CitaDetalleModal } from '../components';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
@@ -279,7 +278,6 @@ function CalendarioCitasPage() {
 
   return (
     <div className="admin-layout">
-      <NavbarAdmin />
       <div className="main-content">
         <div className="citas-view-toggle">
           <h1>{viewMode === 'agendar' ? 'Agendar Nueva Cita' : 'Gestión de Citas'}</h1>

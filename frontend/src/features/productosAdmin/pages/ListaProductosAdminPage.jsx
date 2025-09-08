@@ -1,7 +1,6 @@
 // RUTA: src/features/productosAdmin/pages/ListaProductosAdminPage.jsx
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react'; // ✨ Se agrega useMemo
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ProductosAdminTable from '../components/ProductosAdminTable';
 import ProductoAdminCrearModal from '../components/ProductoAdminCrearModal';
 import ProductoAdminEditarModal from '../components/ProductoAdminEditarModal';
@@ -179,7 +178,6 @@ function ListaProductosAdminPage() {
 
     return (
         <div className="productos-admin-page-container">
-            <NavbarAdmin />
             <div className="productos-admin-main-content">
                 <div className="productos-admin-content-wrapper">
                     <h1>Gestión de Productos</h1>

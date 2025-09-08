@@ -12,7 +12,7 @@
 .main-content-clientes {
     flex: 1; 
     padding: 30px; 
-    margin-left: 270px; /* ASUMIENDO NavbarAdmin de 250px + 20px de espacio */
+    margin-left: 270px; /* ASUMIENDO AdminSidebar de 250px + 20px de espacio */
     overflow-y: auto;
     box-sizing: border-box;
 }

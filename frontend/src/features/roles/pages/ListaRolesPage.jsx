@@ -1,6 +1,5 @@
 // src/features/roles/pages/ListaRolesPage.jsx
 import React from "react";
-import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import RolesTable from "../components/RolesTable";
 import RolCrearModal from "../components/RolCrearModal";
 import RolEditarModal from "../components/RolEditarModal";
@@ -47,7 +46,6 @@ function ListaRolesPage() {
 
   return (
     <div className="rol-container">
-      <NavbarAdmin />
       <div className="rol-content">
         <h1>Gestión de Roles ({totalRolesFiltrados})</h1>
         <div className="rol-accionesTop">
