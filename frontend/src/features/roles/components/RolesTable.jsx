@@ -128,7 +128,7 @@ const RolesTable = ({
 
             return (
               <tr key={rol.idRol}>
-                <td data-label="#">{numeroFila}</td>{" "}
+                <td data-label="#">{numeroFila}</td>
                 <td data-label="Nombre del Rol">{rol.nombre}</td>
                 <td data-label="Descripción">{rol.descripcion}</td>
                 <td data-label="Permisos por Módulo:" className="permisos-cell">
@@ -192,14 +192,14 @@ const RolesTable = ({
                 <td data-label="Acciones">
                   <div className="rol-table-iconos">
                     <button
-                      className="rol-table-button"
+                      className="rol-table-button btn-view"
                       onClick={() => onView(rol)}
                       title="Ver Detalles"
                     >
                       <FaEye />
                     </button>
                     <button
-                      className="rol-table-button"
+                      className="rol-table-button btn-history"
                       onClick={() => onHistory(rol)}
                       title="Ver Historial de Cambios"
                     >
@@ -208,14 +208,14 @@ const RolesTable = ({
                     {rol.nombre !== "Administrador" && (
                       <>
                         <button
-                          className="rol-table-button"
+                          className="rol-table-button btn-edit"
                           onClick={() => onEdit(rol)}
                           title="Editar Rol"
                         >
                           <FaEdit />
                         </button>
                         <button
-                          className="rol-table-button rol-table-button-delete"
+                          className="rol-table-button rol-table-button-delete btn-delete"
                           onClick={() => onDeleteConfirm(rol)}
                           title="Eliminar Rol"
                         >
