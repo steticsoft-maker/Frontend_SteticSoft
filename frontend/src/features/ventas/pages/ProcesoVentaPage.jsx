@@ -236,14 +236,14 @@ function ProcesoVentaPage() {
       .map(item => ({
         idProducto: item.id,
         cantidad: item.cantidad,
-        valorUnitario: item.precio,
+        valorUnitario: parseFloat(item.precio),
       }));
 
     const serviciosParaEnviar = itemsTabla
       .filter(item => item.tipo === "servicio")
       .map(item => ({
         idServicio: item.id,
-        valorServicio: item.precio,
+        valorServicio: parseFloat(item.precio),
         idCita: null,
       }));
 

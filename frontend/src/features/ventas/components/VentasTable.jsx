@@ -16,7 +16,7 @@ const VentasTable = ({
   }
 
   return (
-    <table className="ventas-table"> {/* Clase del CSS original */}
+    <table className="ventas-table">
       <thead>
         <tr>
           <th>#</th>
@@ -30,46 +30,46 @@ const VentasTable = ({
       </thead>
       <tbody>
         {ventas.map((venta, index) => (
-          <tr key={venta.id}>
+          <tr key={venta.idVenta || venta.id || index}>
             <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-            <td>{venta.fecha}</td>
-            <td>{venta.cliente}</td>
+            <td>{new Date(venta.fecha).toLocaleDateString()}</td>
+            <td>{venta.cliente ? `${venta.cliente.nombre} ${venta.cliente.apellido}` : 'N/A'}</td>
             <td>{venta.documento || 'N/A'}</td>
-            <td>${venta.total ? venta.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0'}</td>
+            <td>${venta.total ? parseFloat(venta.total).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0'}</td>
             <td>
               <select
-                value={venta.estado}
-                onChange={(e) => onEstadoChange(venta.id, e.target.value)}
-                className={`estado-select estado-${(venta.estado || "").toLowerCase().replace(" ", "-")}`}
-                disabled={venta.estado === "Anulada"}
+                value={venta.idEstado}
+                onChange={(e) => onEstadoChange(venta.idVenta, e.target.value)}
+                className={`estado-select estado-${(venta.estado?.nombre || "").toLowerCase().replace(" ", "-")}`}
+                disabled={venta.estado?.nombre === "Anulada"}
               >
-                <option value="En proceso">En proceso</option>
-                <option value="Activa">Activa</option>
-                <option value="Completada">Completada</option> {/* Estado adicional común */}
-                <option value="Anulada" disabled={venta.estado !== "Anulada"}>Anulada</option>
+                <option value="1">Activa</option>
+                <option value="2">En proceso</option>
+                <option value="3">Completada</option>
+                <option value="4" disabled>Anulada</option>
               </select>
             </td>
             <td>
-              <div className="accionesTablaVentas"> {/* Clase del CSS original */}
+              <div className="accionesTablaVentas">
                 <button
-                  className="botonDetalleVenta" /* Clase del CSS original */
+                  className="botonDetalleVenta"
                   onClick={() => onShowDetails(venta)}
                   title="Ver detalles"
                 >
                   <FaEye />
                 </button>
                 <button
-                  className="botonPdfVenta" /* Clase del CSS original */
+                  className="botonPdfVenta"
                   onClick={() => onGenerarPDF(venta)}
                   title="Generar PDF"
                 >
                   <FaFilePdf />
                 </button>
                 <button
-                  className="botonAnularVenta" /* Clase del CSS original */
+                  className="botonAnularVenta"
                   onClick={() => onAnularVenta(venta)}
                   title="Anular venta"
-                  disabled={venta.estado === "Anulada"}
+                  disabled={venta.estado?.nombre === "Anulada"}
                 >
                   <FaBan />
                 </button>
