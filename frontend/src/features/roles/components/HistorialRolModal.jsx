@@ -1,7 +1,7 @@
 // src/features/roles/components/HistorialRolModal.jsx
 import React from 'react';
 import Modal from '../../../shared/components/common/Modal';
-import Spinner from '../../../shared/components/common/Spinner'; // Importar Spinner
+import Spinner from '../../../shared/components/common/Spinner'; // Importación corregida
 import { FaTimes, FaUserCircle } from 'react-icons/fa';
 import '../css/HistorialRolModal.css';
 
