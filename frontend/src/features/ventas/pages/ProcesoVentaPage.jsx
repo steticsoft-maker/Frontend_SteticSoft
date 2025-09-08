@@ -11,7 +11,6 @@ import {
   getProductosParaVenta,
   getServiciosParaVenta,
   saveNuevaVenta,
-  fetchVentas,
 } from "../services/ventasService";
 import { fetchClientes as getClientesParaVenta } from "../../clientes/services/clientesService";
 import "../css/ProcesoVentas.css";
@@ -38,6 +37,7 @@ function ProcesoVentaPage() {
 
   const [isLoadingClientes, setIsLoadingClientes] = useState(false);
   const [errorClientes, setErrorClientes] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [errorDatosCliente, setErrorDatosCliente] = useState("");
   const [errorItemsTabla, setErrorItemsTabla] = useState("");
@@ -47,10 +47,14 @@ function ProcesoVentaPage() {
 
   useEffect(() => {
     const loadInitialData = async () => {
-      const productos = await getProductosParaVenta();
-      const servicios = await getServiciosParaVenta();
-      setProductosDisponibles(productos);
-      setServiciosDisponibles(servicios);
+      try {
+        const productos = await getProductosParaVenta();
+        const servicios = await getServiciosParaVenta();
+        setProductosDisponibles(productos);
+        setServiciosDisponibles(servicios);
+      } catch (error) {
+        console.error("Error al cargar productos y/o servicios:", error);
+      }
     };
 
     loadInitialData();
@@ -59,19 +63,16 @@ function ProcesoVentaPage() {
   const handleDatosClienteChange = (e) => {
     const { name, value } = e.target;
     let finalValue = value;
-    
+
     if (name === "nombre") {
-      finalValue = value.replace(/[0-9]/g, '').replace(/\s{2,}/g, ' ');
-    } else if (name === "documento") {
-      finalValue = value.replace(/[^0-9]/g, '');
-    } else if (name === "telefono") {
-      // Modificación: Solo permite números en el campo de teléfono.
-      finalValue = value.replace(/[^0-9]/g, '');
+      finalValue = value.replace(/[0-9]/g, "").replace(/\s{2,}/g, " ");
+    } else if (name === "documento" || name === "telefono") {
+      finalValue = value.replace(/[^0-9]/g, "");
     } else {
-      finalValue = value.replace(/\s{2,}/g, ' ');
+      finalValue = value.replace(/\s{2,}/g, " ");
     }
-    
-    finalValue = finalValue.startsWith(' ') ? finalValue.trimStart() : finalValue;
+
+    finalValue = finalValue.startsWith(" ") ? finalValue.trimStart() : finalValue;
 
     setDatosCliente((prev) => ({ ...prev, [name]: finalValue }));
     if (errorDatosCliente) setErrorDatosCliente("");
@@ -160,50 +161,28 @@ function ProcesoVentaPage() {
         }
       }
     }
-    
+
     if (modoCliente === "nuevo") {
       const nombreValidacion = datosCliente.nombre.trim();
       const documentoValidacion = datosCliente.documento.trim();
       const telefonoValidacion = datosCliente.telefono.trim();
       const direccionValidacion = datosCliente.direccion.trim();
 
-      // Validación del nombre
-      if (!nombreValidacion) {
-        setErrorDatosCliente("El nombre es un campo requerido.");
-        isValid = false;
-      } else if (nombreValidacion.length <= 3) {
-        setErrorDatosCliente("El nombre debe tener más de 3 letras.");
-        isValid = false;
-      } else if (/\d/.test(nombreValidacion)) {
-        setErrorDatosCliente("El nombre no puede contener números.");
+      if (!nombreValidacion || nombreValidacion.length <= 3 || /\d/.test(nombreValidacion)) {
+        setErrorDatosCliente("El nombre es requerido, debe tener más de 3 letras y no puede contener números.");
         isValid = false;
       }
 
-      // Validación del documento
-      if (!documentoValidacion) {
-        setErrorDatosCliente("El documento es un campo requerido.");
-        isValid = false;
-      } else if (documentoValidacion.length < 7 || documentoValidacion.length > 10) {
-        setErrorDatosCliente("El documento debe tener entre 7 y 10 dígitos.");
-        isValid = false;
-      } else if (isNaN(documentoValidacion)) {
-        setErrorDatosCliente("El documento solo puede contener números.");
+      if (!documentoValidacion || documentoValidacion.length < 7 || documentoValidacion.length > 10 || isNaN(documentoValidacion)) {
+        setErrorDatosCliente("El documento es requerido y debe tener entre 7 y 10 dígitos.");
         isValid = false;
       }
       
-      // Validación del teléfono
-      if (!telefonoValidacion) {
-        setErrorDatosCliente("El teléfono es un campo requerido.");
-        isValid = false;
-      } else if (telefonoValidacion.length !== 10) {
-        setErrorDatosCliente("El teléfono debe tener 10 dígitos.");
-        isValid = false;
-      } else if (isNaN(telefonoValidacion)) {
-        setErrorDatosCliente("El teléfono solo puede contener números.");
+      if (!telefonoValidacion || telefonoValidacion.length !== 10 || isNaN(telefonoValidacion)) {
+        setErrorDatosCliente("El teléfono es requerido y debe tener 10 dígitos.");
         isValid = false;
       }
 
-      // Validación de la dirección
       if (!direccionValidacion) {
         setErrorDatosCliente("La dirección es un campo requerido.");
         isValid = false;
@@ -226,42 +205,43 @@ function ProcesoVentaPage() {
     setIsConfirmSaveModalOpen(true);
   };
 
-  const confirmGuardar = () => {
-    const ventaData = {
-      cliente: datosCliente.nombre,
-      documento: datosCliente.documento,
-      telefono: datosCliente.telefono,
-      direccion: datosCliente.direccion,
-      items: itemsTabla.map((item) => ({
-        id: item.id,
-        nombre: item.nombre,
-        cantidad: item.cantidad,
-        precio: item.precio,
-        total: item.precio * item.cantidad,
+  const confirmGuardar = async () => {
+    setIsConfirmSaveModalOpen(false);
+    setIsSaving(true);
+    
+    // Aquí es donde se prepara la data para el backend. 
+    // Es mejor no enviar 'subtotal', 'iva' y 'total' desde el frontend,
+    // ya que el backend debería calcularlos para evitar errores de manipulación.
+    // También es mejor manejar el estado de la venta y la fecha en el backend.
+    
+    // Estructura de datos más limpia para enviar a la API
+    const dataToSend = {
+      cliente: datosCliente,
+      items: itemsTabla.map(item => ({
         tipo: item.tipo,
+        id: item.id,
+        cantidad: item.cantidad,
       })),
-      subtotal,
-      iva,
-      total,
-      fecha: new Date().toISOString().slice(0, 10),
-      estado: "Activa",
     };
 
     try {
-      const ventasActuales = fetchVentas();
-      saveNuevaVenta(ventaData, ventasActuales);
+      await saveNuevaVenta(dataToSend);
 
       setValidationMessage("¡Venta guardada exitosamente! Redirigiendo...");
       setIsValidationModalOpen(true);
+      
       setTimeout(() => {
-        setIsConfirmSaveModalOpen(false);
         setIsValidationModalOpen(false);
         navigate("/admin/ventas");
       }, 2000);
+
     } catch (error) {
-      setValidationMessage(error.message);
+      console.error("Error al guardar la venta:", error);
+      const errorMessage = error.response?.data?.message || "Ocurrió un error inesperado al guardar la venta.";
+      setValidationMessage(errorMessage);
       setIsValidationModalOpen(true);
-      setIsConfirmSaveModalOpen(false);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -298,8 +278,9 @@ function ProcesoVentaPage() {
               type="button"
               className="guardar-venta-button"
               onClick={handleGuardarVenta}
+              disabled={isSaving}
             >
-              Guardar Venta
+              {isSaving ? "Guardando..." : "Guardar Venta"}
             </button>
             <button
               type="button"

@@ -1,6 +1,4 @@
-// src/features/ventas/pages/ListaVentasPage.jsx
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import VentasTable from '../components/VentasTable';
@@ -20,41 +18,65 @@ function ListaVentasPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [ventas, setVentas] = useState(() => fetchVentas());
-    
+    // Estados para la gestión de datos y UI
+    const [ventas, setVentas] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     const [busqueda, setBusqueda] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
 
+    // Estado del filtro
+    const [filtroEstado] = useState(1); // 1 = ID de estado 'Activa' o 'En proceso'
+
+    // Estados para modales
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [showPdfModal, setShowPdfModal] = useState(false);
     const [showAnularConfirmModal, setShowAnularConfirmModal] = useState(false);
     const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
+    // Datos seleccionados para modales
     const [selectedVenta, setSelectedVenta] = useState(null);
     const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
     const [validationMessage, setValidationMessage] = useState('');
 
+    /**
+     * Función para cargar las ventas desde la API.
+     * Ahora recibe un objeto de filtros.
+     */
+    const loadVentas = useCallback(async (filtros) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            // ✅ CAMBIO PRINCIPAL: Se pasa el filtro a fetchVentas
+            const data = await fetchVentas(filtros);
+            setVentas(data);
+        } catch (err) {
+            setError("No se pudieron cargar las ventas. Intenta de nuevo.");
+            console.error("Error al cargar ventas:", err);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    // Carga inicial de ventas al montar el componente
+    useEffect(() => {
+        // ✅ Carga inicial con el filtro de estado predeterminado
+        loadVentas({ idEstado: filtroEstado });
+    }, [loadVentas, filtroEstado]);
+
+    // Maneja la redirección después de guardar una nueva venta
     useEffect(() => {
         if (location.state && location.state.nuevaVenta) {
-            const { nuevaVenta } = location.state;
-            setVentas((prevVentas) => {
-                if (!prevVentas.find(v => v.id === nuevaVenta.id)) {
-                    return [...prevVentas, nuevaVenta];
-                }
-                return prevVentas;
-            });
+            // Recargar la lista de ventas para mostrar la nueva venta
+            loadVentas({ idEstado: filtroEstado });
+            // Limpiar el estado de navegación
             navigate(location.pathname, { replace: true, state: {} });
         }
-    }, [location.state, navigate, location.pathname]);
+    }, [location.state, navigate, location.pathname, loadVentas, filtroEstado]);
 
-    useEffect(() => {
-        if (ventas.length > 0) {
-            localStorage.setItem('ventas_steticsoft_v2', JSON.stringify(ventas));
-        } else {
-            localStorage.removeItem('ventas_steticsoft_v2');
-        }
-    }, [ventas]);
+    // --- Funciones de manejo de acciones ---
 
     const handleOpenDetails = (venta) => {
         setSelectedVenta(venta);
@@ -90,40 +112,56 @@ function ListaVentasPage() {
         setValidationMessage('');
     };
 
-    const handleConfirmAnular = () => {
+    // Nueva función asíncrona para anular la venta
+    const handleConfirmAnular = async () => {
         if (selectedVenta) {
-            const updatedVentas = anularVentaById(selectedVenta.id, ventas);
-            setVentas(updatedVentas);
-            handleCloseModals();
+            try {
+                await anularVentaById(selectedVenta.idVenta);
+                setValidationMessage("La venta se ha anulado exitosamente.");
+                // Recargar la lista para reflejar el cambio de estado
+                loadVentas({ idEstado: filtroEstado }); 
+            } catch (err) {
+                setValidationMessage("Error al anular la venta. Intenta de nuevo.");
+                console.error("Error al anular venta:", err);
+            } finally {
+                setIsValidationModalOpen(true);
+                handleCloseModals();
+            }
         }
     };
 
-    const handleEstadoChange = (ventaId, nuevoEstado) => {
-        const updatedVentas = cambiarEstadoVenta(ventaId, nuevoEstado, ventas);
-        setVentas(updatedVentas);
+    // Nueva función asíncrona para cambiar el estado de la venta
+    const handleEstadoChange = async (ventaId, nuevoIdEstado) => {
+        try {
+            await cambiarEstadoVenta(ventaId, nuevoIdEstado);
+            setValidationMessage(`El estado de la venta se ha cambiado.`);
+            // Recargar la lista para reflejar el actualización
+            loadVentas({ idEstado: filtroEstado }); 
+        } catch (err) {
+            setValidationMessage("Error al cambiar el estado de la venta. Intenta de nuevo.");
+            console.error("Error al cambiar estado:", err);
+        } finally {
+            setIsValidationModalOpen(true);
+        }
     };
     
-    // Función para manejar el cambio en la barra de búsqueda
-    // Ahora permite caracteres especiales y filtra desde la primera letra
+    // --- Lógica de filtrado y paginación ---
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setBusqueda(value);
+        setCurrentPage(1); // Reiniciar paginación al buscar
     };
     
     const filteredVentas = ventas.filter(venta => {
         const busquedaTrim = busqueda.trim().toLowerCase();
         
-        // Si el campo de búsqueda está vacío, muestra todas las ventas
-        if (busquedaTrim.length === 0) {
-            return true;
-        }
+        if (busquedaTrim.length === 0) return true;
 
-        // Búsqueda en todos los campos relevantes
         return (
-            (venta.cliente && venta.cliente.toLowerCase().includes(busquedaTrim)) ||
-            (venta.id && venta.id.toString().includes(busquedaTrim)) ||
+            (venta.cliente?.nombre && venta.cliente.nombre.toLowerCase().includes(busquedaTrim)) ||
+            (venta.cliente?.apellido && venta.cliente.apellido.toLowerCase().includes(busquedaTrim)) ||
+            (venta.idVenta && venta.idVenta.toString().includes(busquedaTrim)) ||
             (venta.fecha && venta.fecha.toLowerCase().includes(busquedaTrim)) ||
-            (venta.documento && venta.documento.toString().includes(busquedaTrim)) ||
             (venta.total && venta.total.toString().includes(busquedaTrim))
         );
     });
@@ -145,7 +183,7 @@ function ListaVentasPage() {
                         type="text"
                         placeholder="Buscar venta"
                         value={busqueda}
-                        onChange={handleSearchChange} // Usamos la nueva función
+                        onChange={handleSearchChange}
                         className="barraBusquedaVenta"
                     />
                     <button
@@ -155,26 +193,39 @@ function ListaVentasPage() {
                         Agregar Venta
                     </button>
                 </div>
-                <VentasTable
-                    ventas={currentVentasForTable}
-                    onShowDetails={handleOpenDetails}
-                    onGenerarPDF={handleOpenPdf}
-                    onAnularVenta={handleOpenAnularConfirm}
-                    onEstadoChange={handleEstadoChange}
-                />
-                <div className="paginacionVenta">
-                    {Array.from({ length: totalPages }, (_, i) => (
-                        <button
-                            key={i + 1}
-                            onClick={() => paginate(i + 1)}
-                            className={currentPage === i + 1 ? "active" : ""}
-                        >
-                            {i + 1}
-                        </button>
-                    ))}
-                </div>
+
+                {/* Mostrar estados de carga y error */}
+                {isLoading ? (
+                    <p style={{ textAlign: 'center', marginTop: '50px' }}>Cargando ventas...</p>
+                ) : error ? (
+                    <p className="error-message" style={{ textAlign: 'center', marginTop: '50px' }}>{error}</p>
+                ) : (
+                    <>
+                        <VentasTable
+                            ventas={currentVentasForTable}
+                            onShowDetails={handleOpenDetails}
+                            onGenerarPDF={handleOpenPdf}
+                            onAnularVenta={handleOpenAnularConfirm}
+                            onEstadoChange={handleEstadoChange}
+                            currentPage={currentPage}
+                            itemsPerPage={itemsPerPage}
+                        />
+                        <div className="paginacionVenta">
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <button
+                                    key={i + 1}
+                                    onClick={() => paginate(i + 1)}
+                                    className={currentPage === i + 1 ? "active" : ""}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
 
+            {/* Modales sin cambios */}
             <VentaDetalleModal
                 isOpen={showDetailsModal}
                 onClose={handleCloseModals}
@@ -184,14 +235,14 @@ function ListaVentasPage() {
                 isOpen={showPdfModal}
                 onClose={handleCloseModals}
                 pdfUrl={pdfBlobUrl}
-                title={`Detalle Venta #${selectedVenta?.id || ''}`}
+                title={`Detalle Venta #${selectedVenta?.idVenta || ''}`}
             />
             <ConfirmModal
                 isOpen={showAnularConfirmModal}
                 onClose={handleCloseModals}
                 onConfirm={handleConfirmAnular}
                 title="Confirmar Anulación"
-                message={`¿Está seguro de que desea anular la venta #${selectedVenta?.id || ''} para el cliente "${selectedVenta?.cliente || ''}"?`}
+                message={`¿Está seguro de que desea anular la venta #${selectedVenta?.idVenta || ''} para el cliente "${selectedVenta?.cliente?.nombre || ''} ${selectedVenta?.cliente?.apellido || ''}"?`}
             />
             <ValidationModal
                 isOpen={isValidationModalOpen}
