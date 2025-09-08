@@ -29,7 +29,12 @@ import { ConfigHorariosPage } from "./features/novedades"; //
 import { ListaComprasPage, FormCompraPage } from "./features/compras"; //
 import { ListaVentasPage, ProcesoVentaPage } from "./features/ventas"; //
 
+// ---- Páginas de Empleado ------
+import EmpleadoDashboard from './features/empleado/pages/EmpleadoDashboard';
+
 // --- Componentes de Layout ---
+import EmpleadoLayout from './shared/layouts/EmpleadoLayout';
+
 const PublicLayout = () => (
   <>
     <Navbar />
@@ -126,6 +131,16 @@ function AppRoutes() {
           <Route element={<PrivateRoute requiredPermission="MODULO_VENTAS_GESTIONAR" />}>
             <Route path="ventas" element={<ListaVentasPage />} />
             <Route path="ventas/proceso" element={<ProcesoVentaPage />} />
+          </Route>
+        </Route>
+
+        {/* --- RUTAS DE EMPLEADO --- */}
+        {/* Aquí usamos PrivateRoute asumiendo que puede verificar roles */}
+        <Route element={<PrivateRoute allowedRoles={['empleado']} />}>
+          <Route path="/empleado" element={<EmpleadoLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<EmpleadoDashboard />} />
+            {/* Aquí se podrían agregar más rutas anidadas para el empleado en el futuro */}
           </Route>
         </Route>
 
