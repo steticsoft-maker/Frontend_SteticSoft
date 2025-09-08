@@ -22,12 +22,10 @@ function LoginPage() {
 
       if (loginResult.success) {
         // Redirección basada en el rol
-        if (loginResult.role === "Administrador") {
+        if (loginResult.role === "Administrador" || loginResult.role === "Empleado") {
           navigate("/admin/dashboard");
         } else if (loginResult.role === "Cliente") {
           navigate("/");
-        } else if (loginResult.role === "Empleado") {
-          navigate("/empleado/dashboard");
         } else {
           navigate("/"); // Ruta por defecto
         }
