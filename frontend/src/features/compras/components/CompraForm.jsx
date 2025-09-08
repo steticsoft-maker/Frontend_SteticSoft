@@ -64,7 +64,7 @@ const CompraForm = ({
       setItems([...items, { 
         id: productoSeleccionado.idProducto,
         nombre: productoSeleccionado.nombre, 
-        categoria: productoSeleccionado.categoriaProducto?.nombre || 'General',
+        categoria: productoSeleccionado.categoria?.nombre || 'Sin categoría',
         precio: parseFloat(productoSeleccionado.precio),
         cantidad: 1, 
         total: parseFloat(productoSeleccionado.precio)
