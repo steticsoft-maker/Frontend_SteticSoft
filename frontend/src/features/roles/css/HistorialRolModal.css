@@ -5,31 +5,39 @@
   padding: 25px;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  width: 80%;
-  max-width: 900px;
+  width: 90%; /* Aumentado para dar más espacio */
+  max-width: 800px; /* Ancho máximo definido */
+  min-height: 400px; /* Altura mínima para más espacio vertical */
   position: relative;
-  max-height: 80vh;
+  max-height: 85vh; /* Aumentado para ocupar más pantalla */
   display: flex;
   flex-direction: column;
 }
 
-.historial-modal-content h2 {
-  color: #333;
-  margin-top: 0;
+.historial-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
-  text-align: center;
+  gap: 15px; /* Espacio entre el título y el botón */
+}
+
+.historial-modal-header h2 {
+  color: #333;
+  margin: 0; /* Resetea el margen */
   font-size: 1.5rem;
+  text-align: left; /* Alinea el título a la izquierda */
 }
 
 .historial-modal-close-button {
-  position: absolute;
-  top: 10px;
-  right: 15px;
+  /* Se elimina 'position: absolute' para que Flexbox lo controle */
   background: transparent;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
   color: #888;
+  padding: 0; /* Asegura que no tenga padding extra */
+  line-height: 1; /* Mejora la alineación vertical del ícono */
 }
 
 .historial-modal-close-button:hover {
@@ -37,21 +45,23 @@
 }
 
 .historial-table-container {
-  overflow-y: auto; /* Permite scroll si la tabla es muy alta */
+  overflow: auto; /* Permite scroll en ambas direcciones si es necesario */
 }
 
 .historial-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
+  table-layout: fixed; /* Clave para controlar anchos de columna */
 }
 
 .historial-table th,
 .historial-table td {
   border: 1px solid #ddd;
-  padding: 12px;
+  padding: 10px 14px; /* Ajuste de padding */
   text-align: left;
   vertical-align: middle;
+  word-wrap: break-word; /* Ajuste de texto para contenido largo */
 }
 
 .historial-table th {
@@ -59,6 +69,13 @@
   font-weight: 600;
   color: #333;
 }
+
+/* Definición de anchos de columna */
+.historial-table th:nth-child(1) { width: 20%; } /* Fecha del Cambio */
+.historial-table th:nth-child(2) { width: 15%; } /* Usuario */
+.historial-table th:nth-child(3) { width: 15%; } /* Campo Modificado */
+.historial-table th:nth-child(4) { width: 25%; } /* Valor Anterior */
+.historial-table th:nth-child(5) { width: 25%; } /* Valor Nuevo */
 
 .historial-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;

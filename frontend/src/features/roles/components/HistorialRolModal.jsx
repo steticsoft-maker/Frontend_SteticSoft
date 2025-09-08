@@ -1,6 +1,7 @@
 // src/features/roles/components/HistorialRolModal.jsx
 import React from 'react';
 import Modal from '../../../shared/components/common/Modal';
+import { Spinner } from '../../../shared/components/common/Spinner'; // Importación corregida
 import { FaTimes, FaUserCircle } from 'react-icons/fa';
 import '../css/HistorialRolModal.css';
 
@@ -10,14 +11,18 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="historial-modal-content">
-        <button onClick={onClose} className="historial-modal-close-button">
-          <FaTimes />
-        </button>
-        <h2>
-          Historial de Cambios para <strong>{roleName}</strong>
-        </h2>
+        <div className="historial-modal-header">
+          <h2>
+            Historial de Cambios para <strong>{roleName}</strong>
+          </h2>
+          <button onClick={onClose} className="historial-modal-close-button">
+            <FaTimes />
+          </button>
+        </div>
         {isLoading ? (
-          <p>Cargando historial...</p>
+          <div className="spinner-container">
+            <Spinner />
+          </div>
         ) : error ? (
           <p className="error-message">{error}</p>
         ) : history.length > 0 ? (
