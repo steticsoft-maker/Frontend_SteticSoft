@@ -9,7 +9,7 @@
     background-color: var(--color-background-admin-content, #f5f5f5);
 }
 
-.productos-admin-main-content { /* Contenido principal al lado del NavbarAdmin */
+.productos-admin-main-content { /* Contenido principal al lado del AdminSidebar */
     flex: 1;
     padding: 30px;
     margin-left: 270px; /* CRUCIAL: ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */

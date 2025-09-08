@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import VentasTable from '../components/VentasTable';
 import VentaDetalleModal from '../components/VentaDetalleModal';
 import PdfViewModal from '../../../shared/components/common/PdfViewModal';
@@ -175,7 +174,6 @@ function ListaVentasPage() {
 
     return (
         <div className="ventas-page-container">
-            <NavbarAdmin />
             <div className="ventasContent">
                 <h1>Gestión de Ventas</h1>
                 <div className="barraBotonContainer">

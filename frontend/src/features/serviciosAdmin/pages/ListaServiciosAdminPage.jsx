@@ -1,6 +1,5 @@
 // src/features/serviciosAdmin/pages/ListaServiciosAdminPage.jsx
 import React, { useState, useEffect, useCallback } from "react";
-import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -120,7 +119,6 @@ function ListaServiciosAdminPage() {
 
   return (
     <div className="servicios-admin-page-container">
-      <NavbarAdmin />
       <div className="servicios-content">
         <h1>Gestión de Servicios</h1>
         

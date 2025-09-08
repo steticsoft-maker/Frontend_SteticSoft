@@ -1,6 +1,5 @@
 // src/features/clientes/pages/ListaClientesPage.jsx
 import React from "react";
-import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import ClientesTable from "../components/ClientesTable";
 import ClienteCrearModal from "../components/ClienteCrearModal";
 import ClienteEditarModal from "../components/ClienteEditarModal";
@@ -43,7 +42,6 @@ function ListaClientesPage() {
 
   return (
     <div className="clientes-page-container">
-      <NavbarAdmin />
       <div className="main-content-clientes">
         <h1>Gestión de Clientes ({totalClientesFiltrados})</h1>
         <div className="containerAgregarbuscarClientes">

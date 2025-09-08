@@ -42,7 +42,7 @@
 .content-container {
   flex: 1;
   padding: 30px;
-  margin-left: 270px; /* Asegúrate que coincida con el ancho de tu NavbarAdmin */
+  margin-left: 270px; /* Asegúrate que coincida con el ancho de tu AdminSidebar */
 }
 
 .content-container h1 {

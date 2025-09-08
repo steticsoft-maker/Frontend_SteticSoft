@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import CategoriasProductoTable from "../components/CategoriasProductoTable";
 import CategoriaProductoCrearModal from "../components/CategoriaProductoCrearModal";
 import CategoriaProductoEditarModal from "../components/CategoriaProductoEditarModal";
@@ -185,7 +184,6 @@ function ListaCategoriasProductoPage() {
 
     return (
         <div className="categorias-producto-admin-page-container">
-            <NavbarAdmin />
             <div className="categorias-producto-admin-main-content">
                 <div className="categorias-producto-admin-content-wrapper">
                     <h1>Gestión Categorías de Productos</h1>
