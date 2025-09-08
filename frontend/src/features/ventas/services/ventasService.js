@@ -1,4 +1,4 @@
-// src/features/ventas/services/ventasService.js
+import apiClient from "../../../shared/services/api"; 
 // Importa el objeto completo que contiene las funciones de productos.
 import { productosAdminService } from '../../productosAdmin/services/productosAdminService';
 // Importa la función de servicios.
@@ -6,22 +6,21 @@ import { getServicios as fetchServiciosAdmin } from '../../serviciosAdmin/servic
 // Importa la función de clientes.
 import { fetchClientes as getClientesActivos } from '../../clientes/services/clientesService';
 
-const VENTAS_STORAGE_KEY = 'ventas_steticsoft_v2';
-
-const INITIAL_VENTAS = [
-    { id: 1, fecha: "2025-03-28", cliente: "Juan Pérez", documento: "123456789", telefono: "3001234567", direccion: "Calle 1", total: 50000, estado: "Activa", items: [{ nombre: "Producto A", cantidad: 2, precio: 10000, total: 20000 }, { nombre: "Servicio C", cantidad: 1, precio: 30000, total: 30000 }], subtotal: 42016.81, iva: 7983.19 },
-    { id: 2, fecha: "2025-03-29", cliente: "María Gómez", documento: "987654321", telefono: "3019876543", direccion: "Carrera 2", total: 120000, estado: "En proceso", items: [{ nombre: "Producto C", cantidad: 1, precio: 120000, total: 120000 }], subtotal: 100840.34, iva: 19159.66 },
-];
+const VENTAS_API_URL = '/ventas';
 
 // --- Funciones para el Proceso de Venta (Formulario) ---
 
+/**
+ * Obtiene la lista de clientes activos llamando a la API real.
+ * @returns {Promise<Array>} Una promesa que resuelve con un array de clientes.
+ */
 export const getClientesParaVenta = async () => {
     try {
         const response = await getClientesActivos();
         return response.data?.data || [];
     } catch (error) {
         console.error("Error al obtener clientes para la venta:", error);
-        return [];
+        throw error;
     }
 };
 
@@ -31,11 +30,13 @@ export const getClientesParaVenta = async () => {
  */
 export const getProductosParaVenta = async () => {
     try {
+        // Asumiendo que getProductos() de productosAdminService ya llama a la API.
         const productos = await productosAdminService.getProductos();
+        // Filtra los productos con estado activo (true).
         return productos.filter(p => p.estado === true);
     } catch (error) {
         console.error("Error al obtener productos para la venta:", error);
-        return [];
+        throw error;
     }
 };
 
@@ -52,64 +53,93 @@ export const getServiciosParaVenta = async () => {
         return serviciosActivos;
     } catch (error) {
         console.error("Error al obtener servicios para la venta:", error);
-        return [];
+        throw error;
     }
 };
 
-// --- Fin Funciones para Proceso de Venta ---
+// --- Funciones de CRUD para Ventas (Lista de Ventas) ---
 
-export const fetchVentas = () => {
-    const stored = localStorage.getItem(VENTAS_STORAGE_KEY);
-    if (stored) {
-        try {
-            return JSON.parse(stored).map(v => ({ ...v, id: v.id || Date.now() + Math.random() }));
-        } catch (e) {
-            console.error("Error parsing ventas from localStorage", e);
-            localStorage.removeItem(VENTAS_STORAGE_KEY);
+/**
+ * Obtiene la lista de todas las ventas desde la API, con filtros opcionales.
+ * @param {Object} filters - Objeto con los filtros a aplicar (e.g., { idEstado: 1 }).
+ * @returns {Promise<Array>} Una promesa que resuelve con un array de ventas.
+ */
+export const fetchVentas = async (filters = {}) => {
+    try {
+        const params = new URLSearchParams();
+        // ✅ Cambio clave: Usa 'idEstado' para construir los parámetros
+        if (filters.idEstado) {
+            params.append('idEstado', filters.idEstado);
         }
+        
+        const response = await apiClient.get(VENTAS_API_URL, { params });
+        return response.data?.data || [];
+    } catch (error) {
+        console.error("Error al obtener las ventas:", error);
+        throw error;
     }
-    persistVentas(INITIAL_VENTAS.map(v => ({ ...v, id: v.id || Date.now() + Math.random() })));
-    return INITIAL_VENTAS;
 };
 
-const persistVentas = (ventas) => {
-    localStorage.setItem(VENTAS_STORAGE_KEY, JSON.stringify(ventas));
+/**
+ * Obtiene una venta específica por su ID desde la API.
+ * @param {string|number} ventaId El ID de la venta.
+ * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta.
+ */
+export const getVentaById = async (ventaId) => {
+    try {
+        const response = await apiClient.get(`${VENTAS_API_URL}/${ventaId}`);
+        return response.data?.data;
+    } catch (error) {
+        console.error(`Error al obtener la venta con ID ${ventaId}:`, error);
+        throw error;
+    }
 };
 
-export const getVentaById = (ventaId) => {
-    const ventas = fetchVentas();
-    return ventas.find(v => v.id === parseInt(ventaId));
+/**
+ * Guarda una nueva venta en la API.
+ * @param {Object} ventaData Los datos de la nueva venta.
+ * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta creada.
+ */
+export const saveNuevaVenta = async (ventaData) => {
+    try {
+        // El backend debe manejar la generación del ID y la validación.
+        const response = await apiClient.post(VENTAS_API_URL, ventaData);
+        return response.data;
+    } catch (error) {
+        console.error("Error al guardar la nueva venta:", error);
+        throw error;
+    }
 };
 
-export const saveNuevaVenta = (ventaData, existingVentas) => {
-    if (!ventaData.cliente) throw new Error("El cliente es obligatorio.");
-    if (!ventaData.items || ventaData.items.length === 0) throw new Error("Debe agregar al menos un producto o servicio.");
-
-    const maxId = existingVentas.length > 0 ? Math.max(...existingVentas.map(v => v.id || 0)) : 0;
-    const newId = maxId + 1;
-
-    const ventaAGuardar = {
-        ...ventaData,
-        id: newId,
-        estado: ventaData.estado || "Activa",
-    };
-    const updatedVentas = [...existingVentas, ventaAGuardar];
-    persistVentas(updatedVentas);
-    return updatedVentas;
+/**
+ * Anula una venta específica actualizando su estado en la API.
+ * @param {string|number} ventaId El ID de la venta a anular.
+ * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta actualizada.
+ */
+export const anularVentaById = async (ventaId) => {
+    try {
+        // Asumiendo un endpoint para actualizar el estado.
+        const response = await apiClient.patch(`${VENTAS_API_URL}/${ventaId}/anular`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error al anular la venta con ID ${ventaId}:`, error);
+        throw error;
+    }
 };
 
-export const anularVentaById = (ventaId, existingVentas) => {
-    const updatedVentas = existingVentas.map(venta =>
-        venta.id === ventaId ? { ...venta, estado: "Anulada" } : venta
-    );
-    persistVentas(updatedVentas);
-    return updatedVentas;
-};
-
-export const cambiarEstadoVenta = (ventaId, nuevoEstado, existingVentas) => {
-    const updatedVentas = existingVentas.map(venta =>
-        venta.id === ventaId ? { ...venta, estado: nuevoEstado } : venta
-    );
-    persistVentas(updatedVentas);
-    return updatedVentas;
+/**
+ * Cambia el estado de una venta específica en la API.
+ * @param {string|number} ventaId El ID de la venta.
+ * @param {number} nuevoIdEstado El nuevo ID de estado (ej: 1, 2).
+ * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta actualizada.
+ */
+export const cambiarEstadoVenta = async (ventaId, nuevoIdEstado) => {
+    try {
+        // ✅ Cambio clave: Usa 'idEstado' en el cuerpo de la solicitud
+        const response = await apiClient.patch(`${VENTAS_API_URL}/${ventaId}`, { idEstado: nuevoIdEstado });
+        return response.data;
+    } catch (error) {
+        console.error(`Error al cambiar el estado de la venta con ID ${ventaId}:`, error);
+        throw error;
+    }
 };
