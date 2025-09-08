@@ -204,7 +204,7 @@ function ListaProductosAdminPage() {
                                     onChange={(e) => setFiltroEstado(e.target.value)}
                                     disabled={isLoading}
                                 >
-                                    <option value="todos">Todos</option>
+                                    <option value="todos">Todos los estados</option>
                                     <option value="activos">Activos</option>
                                     <option value="inactivos">Inactivos</option>
                                 </select>

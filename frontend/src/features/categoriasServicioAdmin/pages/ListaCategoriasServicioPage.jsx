@@ -191,7 +191,6 @@ const ListaCategoriasServicioPage = () => {
               }}
             />
             <div className="filtro-estado-grupo">
-              <label htmlFor="filtro-estado">Estado:</label>
                 <select
                   id="filtro-estado"
                   className="filtro-input"
@@ -201,7 +200,7 @@ const ListaCategoriasServicioPage = () => {
                     setCurrentPage(1);
                   }}
                 >
-                  <option value="todos">Todos</option>
+                  <option value="todos">Todos los estados</option>
                   <option value="activos">Activos</option>
                   <option value="inactivos">Inactivos</option>
                 </select>
