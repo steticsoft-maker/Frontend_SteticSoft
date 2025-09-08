@@ -3,53 +3,49 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet, Link, Navigate } from "react-router-dom";
 
 // Layouts
-import NavbarAdmin from "./shared/components/layout/NavbarAdmin"; //
-import Navbar from "./shared/components/layout/Navbar"; //
+import AdminSidebar from "./shared/components/layout/AdminSidebar";
+import Navbar from "./shared/components/layout/Navbar";
 
 // Contexto y Rutas Privadas
-import PrivateRoute from "./shared/components/auth/PrivateRoute"; //
+import PrivateRoute from "./shared/components/auth/PrivateRoute";
 
 // ---- Páginas Públicas ------
-import { LoginPage, RegisterPage } from "./features/auth"; //
-import { HomePage, PublicProductosPage, PublicServiciosPage, NovedadesPage } from './features/home'; //
+import { LoginPage, RegisterPage } from "./features/auth";
+import { HomePage, PublicProductosPage, PublicServiciosPage, NovedadesPage } from './features/home';
 
 // ---- Páginas de Administrador ------
-import { DashboardPage } from './features/dashboard'; //
-import { ListaRolesPage } from './features/roles'; //
-import { ListaUsuariosPage } from "./features/usuarios"; //
-import { ListaAbastecimientoPage } from './features/abastecimiento'; //
-import { ListaClientesPage } from "./features/clientes"; //
-import { ListaProveedoresPage } from "./features/proveedores"; //
-import { ListaCategoriasProductoPage } from './features/categoriasProductoAdmin'; //
-import { ListaProductosAdminPage } from "./features/productosAdmin"; //
-import { ListaServiciosAdminPage } from "./features/serviciosAdmin"; //
-import { ListaCategoriasServicioPage } from "./features/categoriasServicioAdmin"; //
-import { CalendarioCitasPage } from "./features/citas"; //
-import { ConfigHorariosPage } from "./features/novedades"; //
-import { ListaComprasPage, FormCompraPage } from "./features/compras"; //
-import { ListaVentasPage, ProcesoVentaPage } from "./features/ventas"; //
-
-// ---- Páginas de Empleado ------
-import EmpleadoDashboard from './features/empleado/pages/EmpleadoDashboard';
+import { DashboardPage } from './features/dashboard';
+import { ListaRolesPage } from './features/roles';
+import { ListaUsuariosPage } from "./features/usuarios";
+import { ListaAbastecimientoPage } from './features/abastecimiento';
+import { ListaClientesPage } from "./features/clientes";
+import { ListaProveedoresPage } from "./features/proveedores";
+import { ListaCategoriasProductoPage } from './features/categoriasProductoAdmin';
+import { ListaProductosAdminPage } from "./features/productosAdmin";
+import { ListaServiciosAdminPage } from "./features/serviciosAdmin";
+import { ListaCategoriasServicioPage } from "./features/categoriasServicioAdmin";
+import { CalendarioCitasPage } from "./features/citas";
+import { ConfigHorariosPage } from "./features/novedades";
+import { ListaComprasPage, FormCompraPage } from "./features/compras";
+import { ListaVentasPage, ProcesoVentaPage } from "./features/ventas";
 
 // --- Componentes de Layout ---
-import EmpleadoLayout from './shared/layouts/EmpleadoLayout';
 
 const PublicLayout = () => (
   <>
     <Navbar />
     <Outlet />
   </>
-); //
+);
 
 const AdminLayout = () => (
   <div className="admin-page-layout">
-    <NavbarAdmin />
+    <AdminSidebar />
     <main className="admin-main-content-area">
       <Outlet />
     </main>
   </div>
-); //
+);
 
 function AppRoutes() {
   return (
@@ -58,7 +54,6 @@ function AppRoutes() {
         {/* Rutas Públicas */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<HomePage />} />
-          {/* Corregí tus rutas públicas para que no apunten a /public y sean más directas */}
           <Route path="/productos" element={<PublicProductosPage />} />
           <Route path="/servicios" element={<PublicServiciosPage />} />
           <Route path="/novedades-publicas" element={<NovedadesPage />} />
@@ -68,11 +63,9 @@ function AppRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* --- ESTRUCTURA CORREGIDA DE RUTAS DE ADMINISTRADOR --- */}
+        {/* --- ESTRUCTURA UNIFICADA DE RUTAS DE ADMINISTRADOR --- */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
-          
-          {/* Grupo de rutas que usan PrivateRoute como contenedor */}
           
           <Route element={<PrivateRoute requiredPermission="MODULO_DASHBOARD_VER" />}>
             <Route path="dashboard" element={<DashboardPage />} />
@@ -98,7 +91,6 @@ function AppRoutes() {
             <Route path="proveedores" element={<ListaProveedoresPage />} />
           </Route>
 
-          {/* Hubo un typo en el nombre del permiso, lo corregí a 'MODULO_CATEGORIAS_PRODUCTOS_GESTIONAR' */}
           <Route element={<PrivateRoute requiredPermission="MODULO_CATEGORIAS_PRODUCTOS_GESTIONAR" />}>
             <Route path="categorias-producto" element={<ListaCategoriasProductoPage />} />
           </Route>
@@ -131,16 +123,6 @@ function AppRoutes() {
           <Route element={<PrivateRoute requiredPermission="MODULO_VENTAS_GESTIONAR" />}>
             <Route path="ventas" element={<ListaVentasPage />} />
             <Route path="ventas/proceso" element={<ProcesoVentaPage />} />
-          </Route>
-        </Route>
-
-        {/* --- RUTAS DE EMPLEADO --- */}
-        {/* Aquí usamos PrivateRoute asumiendo que puede verificar roles */}
-        <Route element={<PrivateRoute allowedRoles={['empleado']} />}>
-          <Route path="/empleado" element={<EmpleadoLayout />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<EmpleadoDashboard />} />
-            {/* Aquí se podrían agregar más rutas anidadas para el empleado en el futuro */}
           </Route>
         </Route>
 
