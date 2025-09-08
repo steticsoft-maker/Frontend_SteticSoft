@@ -21,6 +21,25 @@ export const getPermisosAPI = async () => {
 };
 
 /**
+ * Obtiene el historial de cambios de un rol específico.
+ * @param {string|number} roleId - El ID del rol.
+ */
+export const getRoleHistoryAPI = async (roleId) => {
+  try {
+    const response = await apiClient.get(`/roles/${roleId}/historial`);
+    return response.data?.data || [];
+  } catch (error) {
+    console.error(
+      `Error al obtener el historial del rol con ID ${roleId}:`,
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "No se pudo obtener el historial del rol."
+    );
+  }
+};
+
+/**
  * Obtiene la lista completa de roles desde la API, opcionalmente filtrada por un término de búsqueda.
  * @param {string} [searchTerm] - Término opcional para buscar roles.
  */

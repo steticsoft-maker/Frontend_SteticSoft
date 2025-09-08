@@ -6,6 +6,7 @@ import RolCrearModal from "../components/RolCrearModal";
 import RolEditarModal from "../components/RolEditarModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import RolDetailsModal from "../components/RolDetailsModal";
+import HistorialRolModal from "../components/HistorialRolModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination";
 import useRoles from "../hooks/useRoles";
@@ -31,6 +32,9 @@ function ListaRolesPage() {
     setInputValue,
     filterEstado,
     setFilterEstado,
+    isHistoryModalOpen,
+    roleHistory,
+    historyError,
     closeModal,
     handleOpenModal,
     handleSaveRol,
@@ -96,6 +100,7 @@ function ListaRolesPage() {
             onView={(role) => handleOpenModal("details", role)}
             onEdit={(role) => handleOpenModal("edit", role)}
             onDeleteConfirm={(role) => handleOpenModal("delete", role)}
+            onHistory={(role) => handleOpenModal("history", role)}
             onToggleAnular={handleToggleEstado}
             currentPage={currentPage}
             rowsPerPage={itemsPerPage}
@@ -151,6 +156,15 @@ function ListaRolesPage() {
         onClose={closeModal}
         title="Aviso de Roles"
         message={validationMessage}
+      />
+
+      <HistorialRolModal
+        isOpen={isHistoryModalOpen}
+        onClose={closeModal}
+        history={roleHistory}
+        roleName={currentRole?.nombre}
+        isLoading={isSubmitting}
+        error={historyError}
       />
     </div>
   );

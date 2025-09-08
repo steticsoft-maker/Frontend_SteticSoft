@@ -26,6 +26,7 @@ import {
   FaClipboardCheck,
   FaFolderOpen,
   FaWrench,
+  FaHistory,
 } from "react-icons/fa";
 import Tooltip from "../../../shared/components/common/Tooltip"; // Importar el componente Tooltip
 import "../css/RolesTableExtensions.css"; // CSS adicional para los íconos de permisos
@@ -68,6 +69,7 @@ const RolesTable = ({
   onEdit,
   onDeleteConfirm,
   onToggleAnular,
+  onHistory,
   currentPage = 1, // Valor por defecto para currentPage
   rowsPerPage = roles ? roles.length : 10, // Valor por defecto para rowsPerPage
 }) => {
@@ -196,6 +198,13 @@ const RolesTable = ({
                       title="Ver Detalles"
                     >
                       <FaEye />
+                    </button>
+                    <button
+                      className="rol-table-button"
+                      onClick={() => onHistory(rol)}
+                      title="Ver Historial de Cambios"
+                    >
+                      <FaHistory />
                     </button>
                     {rol.nombre !== "Administrador" && (
                       <>
