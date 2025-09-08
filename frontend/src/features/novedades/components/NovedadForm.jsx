@@ -33,7 +33,7 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
         const options = usuarios.map((user) => ({
           value: user.idUsuario,
           label: user.empleadoInfo
-            ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido} (${user.correo})`
+            ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}`
             : user.correo,
         }));
         setEmpleadoOptions(options);
@@ -64,7 +64,7 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
         initialData.empleados?.map((emp) => ({
           value: emp.idUsuario,
           label: emp.empleadoInfo
-            ? `${emp.empleadoInfo.nombre} ${emp.empleadoInfo.apellido} (${emp.correo})`
+            ? `${emp.empleadoInfo.nombre} ${emp.empleadoInfo.apellido}`
             : emp.correo,
         })) || [];
       setSelectedEmpleados(empleadosAsignados);
