@@ -2,7 +2,6 @@
 
 /* Contenido principal del modal */
 .historial-modal-content {
-<<<<<<< HEAD
   background-color: var(--color-background-light, #ffffff);
   padding: 20px 30px;
   border-radius: 12px;
@@ -11,23 +10,11 @@
   max-width: 1000px; /* Aumentado para más espacio */
   position: relative;
   max-height: 90vh; /* Aumentado para más visibilidad vertical */
-=======
-  background-color: #ffffff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  width: 90%; /* Aumentado para dar más espacio */
-  max-width: 800px; /* Ancho máximo definido */
-  min-height: 400px; /* Altura mínima para más espacio vertical */
-  position: relative;
-  max-height: 85vh; /* Aumentado para ocupar más pantalla */
->>>>>>> dadf6eae3b47785f776371b00ee384909b3ab127
   display: flex;
   flex-direction: column;
   border-top: 5px solid var(--color-admin-hover, #b660a3);
 }
 
-<<<<<<< HEAD
 /* Título del modal */
 .historial-modal-content h2 {
   color: var(--color-primary-darker, #6d0b58);
@@ -36,21 +23,6 @@
   text-align: center;
   font-size: 1.8rem;
   font-weight: 600;
-=======
-.historial-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 15px; /* Espacio entre el título y el botón */
-}
-
-.historial-modal-header h2 {
-  color: #333;
-  margin: 0; /* Resetea el margen */
-  font-size: 1.5rem;
-  text-align: left; /* Alinea el título a la izquierda */
->>>>>>> dadf6eae3b47785f776371b00ee384909b3ab127
 }
 
 .historial-modal-content h2 strong {
@@ -59,26 +31,16 @@
 
 /* Botón de cierre (X) */
 .historial-modal-close-button {
-<<<<<<< HEAD
   position: absolute;
   top: 15px;
   right: 15px;
-=======
-  /* Se elimina 'position: absolute' para que Flexbox lo controle */
->>>>>>> dadf6eae3b47785f776371b00ee384909b3ab127
   background: transparent;
   border: none;
   font-size: 2rem; /* Más grande y visible */
   cursor: pointer;
-<<<<<<< HEAD
   color: #aaa;
   transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
   line-height: 1;
-=======
-  color: #888;
-  padding: 0; /* Asegura que no tenga padding extra */
-  line-height: 1; /* Mejora la alineación vertical del ícono */
->>>>>>> dadf6eae3b47785f776371b00ee384909b3ab127
 }
 
 .historial-modal-close-button:hover {
@@ -107,43 +69,26 @@
 
 /* Contenedor de la tabla de historial */
 .historial-table-container {
-<<<<<<< HEAD
   overflow-y: auto; /* Permite scroll si la tabla es muy alta */
   flex-grow: 1; /* Ocupa el espacio disponible */
-=======
-  overflow: auto; /* Permite scroll en ambas direcciones si es necesario */
->>>>>>> dadf6eae3b47785f776371b00ee384909b3ab127
 }
 
 /* Tabla de historial */
 .historial-table {
   width: 100%;
   border-collapse: collapse;
-<<<<<<< HEAD
   margin-top: 10px;
-=======
-  margin-top: 15px;
-  table-layout: fixed; /* Clave para controlar anchos de columna */
->>>>>>> dadf6eae3b47785f776371b00ee384909b3ab127
 }
 
 /* Celdas y encabezados de la tabla */
 .historial-table th,
 .historial-table td {
-<<<<<<< HEAD
   padding: 14px 18px; /* Más padding para que respire */
   text-align: left;
   vertical-align: middle;
   border-bottom: 1px solid #e0e0e0;
   word-wrap: break-word; /* Asegura que el texto largo se ajuste */
   max-width: 250px; /* Evita que las celdas se hagan demasiado anchas */
-=======
-  border: 1px solid #ddd;
-  padding: 10px 14px; /* Ajuste de padding */
-  text-align: left;
-  vertical-align: middle;
-  word-wrap: break-word; /* Ajuste de texto para contenido largo */
->>>>>>> dadf6eae3b47785f776371b00ee384909b3ab127
 }
 
 /* Encabezados de la tabla */
@@ -157,9 +102,6 @@
   z-index: 1;
 }
 
-<<<<<<< HEAD
-/* Filas de la tabla */
-=======
 /* Definición de anchos de columna */
 .historial-table th:nth-child(1) { width: 20%; } /* Fecha del Cambio */
 .historial-table th:nth-child(2) { width: 15%; } /* Usuario */
@@ -167,7 +109,6 @@
 .historial-table th:nth-child(4) { width: 25%; } /* Valor Anterior */
 .historial-table th:nth-child(5) { width: 25%; } /* Valor Nuevo */
 
->>>>>>> dadf6eae3b47785f776371b00ee384909b3ab127
 .historial-table tbody tr:nth-child(even) {
   background-color: #fdfcff;
 }
