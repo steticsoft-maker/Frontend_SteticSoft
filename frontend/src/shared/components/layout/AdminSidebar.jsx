@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authHooks';
-import { menuItemsConfig } from '../../config/navigationConfig.js'; // Importar la configuración central
+import { menuItemsConfig } from '../../config/navigationConfig.jsx'; // Importar la configuración central
 import './AdminSidebar.css'; // Importar el CSS renombrado
 import { FaUserCircle, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 
