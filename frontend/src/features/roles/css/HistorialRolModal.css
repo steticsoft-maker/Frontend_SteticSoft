@@ -1,19 +1,21 @@
 /* src/features/roles/css/HistorialRolModal.css */
 
+/* --- Contenedor Principal del Modal --- */
 .historial-modal-content {
   background-color: #ffffff;
   padding: 25px 35px;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   width: 100%;
-  max-width: 900px;
+  max-width: 950px; /* Ancho ajustado para mayor comodidad */
   position: relative;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  border-top: 6px solid #b660a3;
+  border-top: 6px solid #b660a3; /* Borde superior distintivo */
 }
 
+/* --- Título del Modal --- */
 .historial-modal-content h2 {
   color: #6d0b58;
   margin-top: 0;
@@ -27,6 +29,7 @@
   color: #b660a3;
 }
 
+/* --- Botón de Cierre --- */
 .historial-modal-close-button {
   position: absolute;
   top: 15px;
@@ -44,6 +47,7 @@
   transform: scale(1.1);
 }
 
+/* --- Estados de Carga y Error --- */
 .historial-loading {
   display: flex;
   flex-direction: column;
@@ -54,16 +58,26 @@
   color: #555;
 }
 
+.historial-no-records {
+  text-align: center;
+  padding: 40px;
+  color: #777;
+  font-size: 1.1rem;
+}
+
+/* --- Contenedor de la Tabla --- */
 .historial-table-container {
-  overflow-y: auto;
+  overflow-y: auto; /* Scroll vertical si el contenido es muy largo */
   flex-grow: 1;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
 }
 
+/* --- Tabla Principal --- */
 .historial-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* Clave para que la tabla no se estire con contenido largo */
 }
 
 .historial-table th,
@@ -72,7 +86,7 @@
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid #e0e0e0;
-  word-break: break-word;
+  word-wrap: break-word; /* Clave para que el texto largo se divida */
 }
 
 .historial-table th {
@@ -93,61 +107,74 @@
   background-color: #f3d9ec;
 }
 
+/* --- Estilos para la Información del Usuario (Rol + Correo) --- */
 .user-info {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 500;
+  gap: 10px;
 }
 
 .user-icon {
   color: #b660a3;
-  font-size: 1.3em;
+  font-size: 1.8em;
+  flex-shrink: 0; /* Evita que el ícono se encoja */
 }
 
-.value-na {
-  color: #999;
-  font-style: italic;
+.user-details {
+  display: flex;
+  flex-direction: column; /* Apila el rol sobre el correo */
 }
 
-.status-active {
-    color: #28a745;
-    font-weight: bold;
+.user-role {
+  font-weight: 600;
+  color: #333;
 }
 
-.status-inactive {
-    color: #6c757d;
-    font-weight: bold;
+.user-email {
+  font-size: 0.85em;
+  color: #666;
 }
 
+/* --- Estilos para la Lista de Permisos (Píldoras) --- */
 .permission-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-wrap: wrap; /* Permite que las píldoras fluyan a la siguiente línea */
+  gap: 4px; /* Espacio uniforme entre píldoras */
 }
 
 .permission-list li {
   background-color: #e9ecef;
   border-radius: 4px;
   padding: 4px 8px;
-  margin-bottom: 4px;
   font-size: 0.85rem;
-  display: inline-block;
-  margin-right: 4px;
   white-space: nowrap;
 }
 
-.historial-no-records {
-  text-align: center;
-  padding: 40px;
-  color: #777;
-  font-size: 1.1rem;
+/* --- Estilos de Valores Especiales --- */
+.value-na {
+  color: #999;
+  font-style: italic;
 }
 
+.status-active {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-inactive {
+  color: #6c757d;
+  font-weight: bold;
+}
+
+/* --- Media Queries para Responsividad --- */
 @media (max-width: 768px) {
   .historial-table thead {
-    display: none;
+    display: none; /* Oculta la cabecera en móvil */
   }
+
   .historial-table tr {
     display: block;
     margin-bottom: 15px;
@@ -155,6 +182,7 @@
     border-radius: 8px;
     padding: 10px;
   }
+
   .historial-table td {
     display: block;
     text-align: right;
@@ -162,11 +190,13 @@
     position: relative;
     border-bottom: 1px dotted #eee;
   }
+
   .historial-table td:last-child {
     border-bottom: none;
   }
+
   .historial-table td::before {
-    content: attr(data-label);
+    content: attr(data-label); /* Usa el data-label como título de la fila */
     position: absolute;
     left: 10px;
     width: calc(50% - 20px);
@@ -174,11 +204,18 @@
     color: #6d0b58;
     text-align: left;
   }
+
   .user-info {
     justify-content: flex-end;
   }
+
+  .user-details {
+    align-items: flex-end; /* Alinea el texto a la derecha en móvil */
+  }
+
   .permission-list li {
-    display: block;
+    display: block; /* Muestra cada permiso en su propia línea */
     margin-bottom: 5px;
+    text-align: right;
   }
 }

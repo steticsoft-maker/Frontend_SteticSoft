@@ -61,19 +61,10 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="historial-modal-content">
-        <button onClick={onClose} className="historial-modal-close-button" title="Cerrar">
-          <FaTimes />
-        </button>
-        <h2>
-          Historial de Cambios para: <strong>{roleName}</strong>
-        </h2>
-        {isLoading ? (
-          <div className="historial-loading">
-            <Spinner />
-            <p>Cargando historial...</p>
-          </div>
-        ) : error ? (
-          <p className="error-message">{error}</p>
+        <button onClick={onClose} className="historial-modal-close-button" title="Cerrar"><FaTimes /></button>
+        <h2>Historial de Cambios para: <strong>{roleName}</strong></h2>
+        {isLoading ? ( <div className="historial-loading"><Spinner /><p>Cargando historial...</p></div>
+        ) : error ? ( <p className="error-message">{error}</p>
         ) : history.length > 0 ? (
           <div className="historial-table-container">
             <table className="historial-table">
@@ -89,12 +80,17 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
               <tbody>
                 {history.map((record) => (
                   <tr key={record.idHistorial}>
-                    {/* --- CORRECCIONES CLAVE AQUÍ --- */}
                     <td data-label="Fecha">{formatDate(record.fechaCambio)}</td>
                     <td data-label="Usuario" className="user-info">
                       <FaUserCircle className="user-icon" />
-                      {/* El alias del usuario en el backend es 'usuarioModificador' */}
-                      <span>{record.usuarioModificador?.correo || 'Sistema'}</span>
+                      <div className="user-details">
+                        <span className="user-role">
+                          {record.usuarioModificador?.rol?.nombre || 'Rol Desconocido'}
+                        </span>
+                        <span className="user-email">
+                          {record.usuarioModificador?.correo || 'Sistema'}
+                        </span>
+                      </div>
                     </td>
                     <td data-label="Campo Modificado">{record.campoModificado}</td>
                     <td data-label="Valor Anterior">{renderValue(record.valorAnterior, record.campoModificado)}</td>
@@ -105,9 +101,7 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
             </table>
           </div>
         ) : (
-          <div className="historial-no-records">
-            <p>Aún no hay cambios registrados para este rol.</p>
-          </div>
+          <div className="historial-no-records"><p>Aún no hay cambios registrados para este rol.</p></div>
         )}
       </div>
     </Modal>
