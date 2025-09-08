@@ -1,5 +1,4 @@
 // src/features/ventas/pages/ProcesoVentaPage.jsx
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
@@ -50,8 +49,20 @@ function ProcesoVentaPage() {
       try {
         const productos = await getProductosParaVenta();
         const servicios = await getServiciosParaVenta();
-        setProductosDisponibles(productos);
-        setServiciosDisponibles(servicios);
+
+        // Mapea los IDs de productos y servicios a una propiedad consistente 'id'
+        const productosConIdCorrecto = productos.map((p) => ({
+          ...p,
+          id: p.idProducto, // Asume que la propiedad es 'idProducto'
+        }));
+        
+        const serviciosConIdCorrecto = servicios.map((s) => ({
+          ...s,
+          id: s.idServicio, // Asume que la propiedad es 'idServicio'
+        }));
+        
+        setProductosDisponibles(productosConIdCorrecto);
+        setServiciosDisponibles(serviciosConIdCorrecto);
       } catch (error) {
         console.error("Error al cargar productos y/o servicios:", error);
       }
@@ -97,6 +108,7 @@ function ProcesoVentaPage() {
 
   const seleccionarClienteDesdeModal = (cliente) => {
     setDatosCliente({
+      id: cliente.idCliente,
       nombre: cliente.nombre,
       documento: cliente.numeroDocumento,
       telefono: cliente.telefono,
@@ -187,7 +199,7 @@ function ProcesoVentaPage() {
         setErrorDatosCliente("La dirección es un campo requerido.");
         isValid = false;
       }
-    } else if (modoCliente === "existente" && !datosCliente.nombre) {
+    } else if (modoCliente === "existente" && !datosCliente.id) {
       setErrorDatosCliente("Por favor selecciona un cliente existente de la lista.");
       isValid = false;
     } else if (!modoCliente) {
@@ -209,20 +221,40 @@ function ProcesoVentaPage() {
     setIsConfirmSaveModalOpen(false);
     setIsSaving(true);
     
-    // Aquí es donde se prepara la data para el backend. 
-    // Es mejor no enviar 'subtotal', 'iva' y 'total' desde el frontend,
-    // ya que el backend debería calcularlos para evitar errores de manipulación.
-    // También es mejor manejar el estado de la venta y la fecha en el backend.
-    
-    // Estructura de datos más limpia para enviar a la API
-    const dataToSend = {
-      cliente: datosCliente,
-      items: itemsTabla.map(item => ({
-        tipo: item.tipo,
-        id: item.id,
+    let clienteData;
+    if (modoCliente === 'existente') {
+      clienteData = { idCliente: datosCliente.id };
+    } else if (modoCliente === 'nuevo') {
+      clienteData = { cliente: datosCliente };
+    } else {
+      clienteData = {};
+    }
+
+    // Filtra y mapea los productos y servicios
+    const productosParaEnviar = itemsTabla
+      .filter(item => item.tipo === "producto")
+      .map(item => ({
+        idProducto: item.id,
         cantidad: item.cantidad,
-      })),
+        valorUnitario: item.precio,
+      }));
+
+    const serviciosParaEnviar = itemsTabla
+      .filter(item => item.tipo === "servicio")
+      .map(item => ({
+        idServicio: item.id,
+        valorServicio: item.precio,
+        idCita: null,
+      }));
+
+    const dataToSend = {
+      ...clienteData,
+      productos: productosParaEnviar,
+      servicios: serviciosParaEnviar,
+      idEstado: 1,
     };
+
+    console.log('Datos que se enviarán a la API:', dataToSend);
 
     try {
       await saveNuevaVenta(dataToSend);
