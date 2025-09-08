@@ -177,19 +177,33 @@
     justify-content: center;
 }
 
-/* Colores de botones de acción en la tabla (Ver/Editar) */
-.rol-table-iconos .rol-table-button:nth-child(1),
-.rol-table-iconos .rol-table-button:nth-child(2) {
+/* Estilos específicos para cada botón de acción por clase */
+/* Botón Ver y Editar */
+.rol-table-button.btn-view,
+.rol-table-button.btn-edit {
     background-color: #fc8de4;
+    /* Color original */
 }
 
-.rol-table-iconos .rol-table-button:nth-child(1):hover,
-.rol-table-iconos .rol-table-button:nth-child(2):hover {
+.rol-table-button.btn-view:hover,
+.rol-table-button.btn-edit:hover {
     background-color: #d66abf;
+    /* Color hover original */
 }
 
-/* Botón eliminar */
-.rol-table-button-delete {
+/* Botón Historial */
+.rol-table-button.btn-history {
+    background-color: #17a2b8;
+    /* Un color azul verdoso para diferenciar */
+}
+
+.rol-table-button.btn-history:hover {
+    background-color: #138496;
+    /* Un tono más oscuro para el hover */
+}
+
+/* Botón Eliminar */
+.rol-table-button.rol-table-button-delete {
     background-color: #b660a3;
 }
 

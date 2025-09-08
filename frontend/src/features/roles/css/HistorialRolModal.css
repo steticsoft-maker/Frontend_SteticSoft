@@ -1,73 +1,105 @@
 /* src/features/roles/css/HistorialRolModal.css */
 
+/* Contenido principal del modal */
 .historial-modal-content {
-  background-color: #ffffff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  width: 90%; /* Aumentado para dar más espacio */
-  max-width: 800px; /* Ancho máximo definido */
-  min-height: 400px; /* Altura mínima para más espacio vertical */
+  background-color: var(--color-background-light, #ffffff);
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 1000px; /* Aumentado para más espacio */
   position: relative;
-  max-height: 85vh; /* Aumentado para ocupar más pantalla */
+  max-height: 90vh; /* Aumentado para más visibilidad vertical */
   display: flex;
   flex-direction: column;
+  border-top: 5px solid var(--color-admin-hover, #b660a3);
 }
 
-.historial-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 15px; /* Espacio entre el título y el botón */
+/* Título del modal */
+.historial-modal-content h2 {
+  color: var(--color-primary-darker, #6d0b58);
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
-.historial-modal-header h2 {
-  color: #333;
-  margin: 0; /* Resetea el margen */
-  font-size: 1.5rem;
-  text-align: left; /* Alinea el título a la izquierda */
+.historial-modal-content h2 strong {
+  color: var(--color-admin-hover, #b660a3);
 }
 
+/* Botón de cierre (X) */
 .historial-modal-close-button {
-  /* Se elimina 'position: absolute' para que Flexbox lo controle */
+  position: absolute;
+  top: 15px;
+  right: 15px;
   background: transparent;
   border: none;
-  font-size: 1.5rem;
+  font-size: 2rem; /* Más grande y visible */
   cursor: pointer;
-  color: #888;
-  padding: 0; /* Asegura que no tenga padding extra */
-  line-height: 1; /* Mejora la alineación vertical del ícono */
+  color: #aaa;
+  transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  line-height: 1;
 }
 
 .historial-modal-close-button:hover {
-  color: #333;
+  color: var(--color-primary-darker, #6d0b58);
+  transform: scale(1.1);
 }
 
+/* Contenedor del spinner y mensaje de carga */
+.historial-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 15px;
+  color: #555;
+}
+
+/* Mensaje de error */
+.error-message {
+  color: var(--color-danger, #d9534f);
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1rem;
+}
+
+/* Contenedor de la tabla de historial */
 .historial-table-container {
-  overflow: auto; /* Permite scroll en ambas direcciones si es necesario */
+  overflow-y: auto; /* Permite scroll si la tabla es muy alta */
+  flex-grow: 1; /* Ocupa el espacio disponible */
 }
 
+/* Tabla de historial */
 .historial-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
-  table-layout: fixed; /* Clave para controlar anchos de columna */
+  margin-top: 10px;
 }
 
+/* Celdas y encabezados de la tabla */
 .historial-table th,
 .historial-table td {
-  border: 1px solid #ddd;
-  padding: 10px 14px; /* Ajuste de padding */
+  padding: 14px 18px; /* Más padding para que respire */
   text-align: left;
   vertical-align: middle;
-  word-wrap: break-word; /* Ajuste de texto para contenido largo */
+  border-bottom: 1px solid #e0e0e0;
+  word-wrap: break-word; /* Asegura que el texto largo se ajuste */
+  max-width: 250px; /* Evita que las celdas se hagan demasiado anchas */
 }
 
+/* Encabezados de la tabla */
 .historial-table th {
-  background-color: #f7f7f7;
+  background-color: var(--color-background-soft, #f8f9fa);
   font-weight: 600;
-  color: #333;
+  color: var(--color-primary-darker, #6d0b58);
+  font-size: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 /* Definición de anchos de columna */
@@ -78,24 +110,107 @@
 .historial-table th:nth-child(5) { width: 25%; } /* Valor Nuevo */
 
 .historial-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #fdfcff;
 }
 
 .historial-table tbody tr:hover {
-  background-color: #f1f1f1;
+  background-color: #f3d9ec;
 }
 
+/* Anchos de columna específicos */
+.historial-table .th-fecha { width: 18%; }
+.historial-table .th-usuario { width: 15%; }
+.historial-table .th-campo { width: 17%; }
+.historial-table .th-anterior { width: 25%; }
+.historial-table .th-nuevo { width: 25%; }
+
+
+/* Celda de información del usuario */
 .user-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .user-icon {
-  color: #007bff;
+  color: var(--color-admin-hover, #b660a3);
+  font-size: 1.5em;
 }
 
-.error-message {
-  color: #d9534f;
+/* Estilo para valores N/A */
+.value-na {
+  color: #999;
+  font-style: italic;
+}
+
+/* Mensaje de "No hay registros" */
+.historial-no-records {
   text-align: center;
+  padding: 40px;
+  color: #777;
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+/* --- Estilos Responsivos --- */
+@media (max-width: 768px) {
+  .historial-modal-content {
+    width: 95%;
+    padding: 15px;
+    max-height: 95vh;
+  }
+
+  .historial-modal-content h2 {
+    font-size: 1.5rem;
+  }
+
+  /* Transformar tabla a formato de tarjetas */
+  .historial-table thead {
+    display: none; /* Ocultar encabezados de tabla */
+  }
+
+  .historial-table tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+  }
+
+  .historial-table td {
+    display: block;
+    text-align: right; /* Alinear el valor a la derecha */
+    padding-left: 50%; /* Espacio para el label */
+    position: relative;
+    border-bottom: 1px dotted #eee;
+  }
+
+  .historial-table td:last-child {
+    border-bottom: none;
+  }
+
+  .historial-table td::before {
+    content: attr(data-label); /* Usar el data-label como pseudo-elemento */
+    position: absolute;
+    left: 15px;
+    width: calc(50% - 30px);
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-primary-darker, #6d0b58);
+  }
+
+  .user-info {
+    justify-content: flex-end; /* Alinear contenido a la derecha */
+  }
+
+  .historial-table .th-fecha,
+  .historial-table .th-usuario,
+  .historial-table .th-campo,
+  .historial-table .th-anterior,
+  .historial-table .th-nuevo {
+    width: auto; /* Resetear anchos */
+  }
 }
