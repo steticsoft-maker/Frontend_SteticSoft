@@ -50,15 +50,14 @@ function ProcesoVentaPage() {
         const productos = await getProductosParaVenta();
         const servicios = await getServiciosParaVenta();
 
-        // Mapea los IDs de productos y servicios a una propiedad consistente 'id'
         const productosConIdCorrecto = productos.map((p) => ({
           ...p,
-          id: p.idProducto, // Asume que la propiedad es 'idProducto'
+          id: p.idProducto,
         }));
         
         const serviciosConIdCorrecto = servicios.map((s) => ({
           ...s,
-          id: s.idServicio, // Asume que la propiedad es 'idServicio'
+          id: s.idServicio,
         }));
         
         setProductosDisponibles(productosConIdCorrecto);
@@ -223,27 +222,26 @@ function ProcesoVentaPage() {
     
     let clienteData;
     if (modoCliente === 'existente') {
-      clienteData = { idCliente: datosCliente.id };
+      clienteData = { idCliente: datosCliente.id, cliente: datosCliente };
     } else if (modoCliente === 'nuevo') {
       clienteData = { cliente: datosCliente };
     } else {
       clienteData = {};
     }
 
-    // Filtra y mapea los productos y servicios
     const productosParaEnviar = itemsTabla
       .filter(item => item.tipo === "producto")
       .map(item => ({
         idProducto: item.id,
         cantidad: item.cantidad,
-        valorUnitario: parseFloat(item.precio),
+        valorUnitario: item.precio,
       }));
 
     const serviciosParaEnviar = itemsTabla
       .filter(item => item.tipo === "servicio")
       .map(item => ({
         idServicio: item.id,
-        valorServicio: parseFloat(item.precio),
+        valorServicio: item.precio,
         idCita: null,
       }));
 
@@ -252,6 +250,7 @@ function ProcesoVentaPage() {
       productos: productosParaEnviar,
       servicios: serviciosParaEnviar,
       idEstado: 1,
+      total: total.toFixed(2),
     };
 
     console.log('Datos que se enviarán a la API:', dataToSend);

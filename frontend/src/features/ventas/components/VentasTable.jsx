@@ -8,8 +8,8 @@ const VentasTable = ({
   onGenerarPDF,
   onAnularVenta,
   onEstadoChange,
-  currentPage, // Para la enumeración correcta si usas paginación en la página
-  itemsPerPage // Para la enumeración correcta
+  currentPage,
+  itemsPerPage
 }) => {
   if (!ventas || ventas.length === 0) {
     return <p>No hay ventas para mostrar.</p>;
@@ -34,7 +34,7 @@ const VentasTable = ({
             <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
             <td>{new Date(venta.fecha).toLocaleDateString()}</td>
             <td>{venta.cliente ? `${venta.cliente.nombre} ${venta.cliente.apellido}` : 'N/A'}</td>
-            <td>{venta.documento || 'N/A'}</td>
+            <td>{venta.cliente?.numeroDocumento || 'N/A'}</td>
             <td>${venta.total ? parseFloat(venta.total).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0'}</td>
             <td>
               <select
