@@ -129,21 +129,49 @@
   padding: 14px 15px;
   text-align: left;
   vertical-align: middle;
+  /* MODIFICADO: Se restaura el borde original */
   border: 1px solid var(--color-border);
 }
 
 .novedades-table th {
   background-color: var(--color-table-header-bg);
-  color: var(--color-text-on-primary); /* Texto claro sobre fondo oscuro */
+  color: var(--color-text-on-primary);
   font-weight: 600;
 }
 
+/* MODIFICADO: Se restauran los colores originales de las filas */
 .novedades-table tbody tr:nth-child(even) {
   background-color: var(--color-table-row-alternate);
 }
 
 .novedades-table tbody tr:hover {
   background-color: var(--color-table-row-hover);
+}
+
+/* Celda de acciones */
+.novedades-table__actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Botones de acción */
+.novedades-table .action-button {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 5px;
+  color: var(--color-text-on-primary);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: var(--color-primary-accent);
+}
+
+/* Nombre de empleado */
+.novedades-table__employee-name {
+  margin-bottom: 4px;
+  color: var(--color-text-dark);
+  font-weight: 500;
 }
 
 /* Celda de acciones */
@@ -174,6 +202,55 @@
   margin-bottom: 4px;
   color: var(--color-text-dark);
   font-weight: 500;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--color-principal);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
 }
 
 /* Indicador de "+X más" para empleados */
