@@ -26,8 +26,8 @@ function ListaVentasPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
 
-    // Estado del filtro
-    const [filtroEstado] = useState(1); // 1 = ID de estado 'Activa' o 'En proceso'
+    // ✅ CAMBIO 1: El estado del filtro ahora es dinámico con su función 'set'
+    const [filtroEstado, setFiltroEstado] = useState('1'); // Inicia mostrando 'Activas' por defecto
 
     // Estados para modales
     const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -40,15 +40,15 @@ function ListaVentasPage() {
     const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
     const [validationMessage, setValidationMessage] = useState('');
 
-    /**
-     * Función para cargar las ventas desde la API.
-     * Ahora recibe un objeto de filtros.
-     */
-    const loadVentas = useCallback(async (filtros) => {
+    const loadVentas = useCallback(async () => {
         setIsLoading(true);
         setError(null);
         try {
-            // ✅ CAMBIO PRINCIPAL: Se pasa el filtro a fetchVentas
+            // Construye el objeto de filtros basado en el estado actual
+            const filtros = {};
+            if (filtroEstado) {
+                filtros.idEstado = filtroEstado;
+            }
             const data = await fetchVentas(filtros);
             setVentas(data);
         } catch (err) {
@@ -57,23 +57,20 @@ function ListaVentasPage() {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [filtroEstado]); // Depende del estado del filtro para volver a cargar
 
-    // Carga inicial de ventas al montar el componente
+    // ✅ CAMBIO 2: El useEffect ahora reacciona a los cambios en 'loadVentas'
     useEffect(() => {
-        // ✅ Carga inicial con el filtro de estado predeterminado
-        loadVentas({ idEstado: filtroEstado });
-    }, [loadVentas, filtroEstado]);
+        loadVentas();
+    }, [loadVentas]);
 
     // Maneja la redirección después de guardar una nueva venta
     useEffect(() => {
         if (location.state && location.state.nuevaVenta) {
-            // Recargar la lista de ventas para mostrar la nueva venta
-            loadVentas({ idEstado: filtroEstado });
-            // Limpiar el estado de navegación
+            loadVentas();
             navigate(location.pathname, { replace: true, state: {} });
         }
-    }, [location.state, navigate, location.pathname, loadVentas, filtroEstado]);
+    }, [location.state, navigate, location.pathname, loadVentas]);
 
     // --- Funciones de manejo de acciones ---
 
@@ -110,15 +107,13 @@ function ListaVentasPage() {
         setSelectedVenta(null);
         setValidationMessage('');
     };
-
-    // Nueva función asíncrona para anular la venta
+    
     const handleConfirmAnular = async () => {
         if (selectedVenta) {
             try {
                 await anularVentaById(selectedVenta.idVenta);
                 setValidationMessage("La venta se ha anulado exitosamente.");
-                // Recargar la lista para reflejar el cambio de estado
-                loadVentas({ idEstado: filtroEstado }); 
+                loadVentas(); 
             } catch (err) {
                 setValidationMessage("Error al anular la venta. Intenta de nuevo.");
                 console.error("Error al anular venta:", err);
@@ -129,13 +124,13 @@ function ListaVentasPage() {
         }
     };
 
-    // Nueva función asíncrona para cambiar el estado de la venta
     const handleEstadoChange = async (ventaId, nuevoIdEstado) => {
         try {
             await cambiarEstadoVenta(ventaId, nuevoIdEstado);
             setValidationMessage(`El estado de la venta se ha cambiado.`);
-            // Recargar la lista para reflejar el actualización
-            loadVentas({ idEstado: filtroEstado }); 
+            // ✅ CAMBIO 3: Simplemente recargamos las ventas. La lista se actualizará
+            //    y la venta "desaparecerá" si ya no cumple con el filtro actual.
+            loadVentas(); 
         } catch (err) {
             setValidationMessage("Error al cambiar el estado de la venta. Intenta de nuevo.");
             console.error("Error al cambiar estado:", err);
@@ -148,14 +143,12 @@ function ListaVentasPage() {
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setBusqueda(value);
-        setCurrentPage(1); // Reiniciar paginación al buscar
+        setCurrentPage(1);
     };
     
     const filteredVentas = ventas.filter(venta => {
         const busquedaTrim = busqueda.trim().toLowerCase();
-        
         if (busquedaTrim.length === 0) return true;
-
         return (
             (venta.cliente?.nombre && venta.cliente.nombre.toLowerCase().includes(busquedaTrim)) ||
             (venta.cliente?.apellido && venta.cliente.apellido.toLowerCase().includes(busquedaTrim)) ||
@@ -169,7 +162,6 @@ function ListaVentasPage() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentVentasForTable = filteredVentas.slice(indexOfFirstItem, indexOfLastItem);
-
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
@@ -191,8 +183,24 @@ function ListaVentasPage() {
                         Agregar Venta
                     </button>
                 </div>
+                
+                {/* ✅ CAMBIO 4: Se añade el menú desplegable para los filtros */}
+                <div className="filtros-container">
+                    <label htmlFor="filtro-estado">Filtrar por estado: </label>
+                    <select 
+                        id="filtro-estado"
+                        value={filtroEstado}
+                        onChange={(e) => setFiltroEstado(e.target.value)}
+                        className="filtro-estado-select"
+                    >
+                        <option value="">Todas</option>
+                        <option value="1">Activa</option>
+                        <option value="2">En proceso</option>
+                        <option value="3">Completada</option>
+                        <option value="4">Anulada</option>
+                    </select>
+                </div>
 
-                {/* Mostrar estados de carga y error */}
                 {isLoading ? (
                     <p style={{ textAlign: 'center', marginTop: '50px' }}>Cargando ventas...</p>
                 ) : error ? (

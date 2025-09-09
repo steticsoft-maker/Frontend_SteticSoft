@@ -1,3 +1,4 @@
+// src/features/productosAdmin/components/ProductoAdminCrearModal.jsx
 import React, { useState, useEffect } from "react";
 import ProductoAdminForm from "./ProductoAdminForm";
 import { productosAdminService } from "../services/productosAdminService";
@@ -14,21 +15,26 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     stockMinimo: "",
     stockMaximo: "",
     descripcion: "",
-    imagen: null,           // Objeto File
-    imagenPreview: null,    // Vista previa
+    imagen: null, // Objeto File
+    imagenPreview: null, // Vista previa
     estado: true,
-    tipoUso: "Externo",     // ✅ valor válido por defecto
+    tipoUso: "Externo", // ✅ valor por defecto válido
     vidaUtilDias: "",
   });
 
   const [formData, setFormData] = useState(getInitialFormState());
   const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
   const [formErrors, setFormErrors] = useState({});
+  const [validationMessage, setValidationMessage] = useState("");
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setFormData(getInitialFormState());
       setFormErrors({});
+      setValidationMessage("");
+      setIsValidationModalOpen(false);
+
       const fetchCategorias = async () => {
         try {
           const categorias = await productosAdminService.getActiveCategorias();
@@ -43,92 +49,79 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
   }, [isOpen]);
 
   const handleFormChange = (name, value) => {
-  setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-  let error = '';
-
-  switch (name) {
-    case 'nombre':
-      if (!value.trim()) {
-        error = 'El nombre es obligatorio.';
-      } else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
-        error = 'No se permiten símbolos especiales.';
-      }
-      break;
-
-    case 'idCategoriaProducto':
-      if (!value) {
-        error = 'Debe seleccionar una categoría.';
-      }
-      break;
-
-    case 'precio':
-      if (!value || isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
-        error = 'El precio debe ser un número positivo.';
-      }
-      break;
-
-    case 'tipoUso':
-      if (!value || value.trim() === '') {
-        error = 'Debes seleccionar un tipo de uso para el producto.';
-      }
-      break;
-
-    case 'vidaUtilDias':
-      if (value === '' || isNaN(parseInt(value)) || parseInt(value) <= 0) {
-        error = 'La vida útil debe ser un número mayor a cero.';
-      }
-      break;
-
-    case 'existencia':
-      if (value === '' || isNaN(parseInt(value)) || parseInt(value) < 0) {
-        error = 'La existencia no puede ser negativa.';
-      }
-      break;
-
-    case 'stockMinimo':
-    case 'stockMaximo':
-      const min = name === 'stockMinimo' ? Number(value) : Number(formData.stockMinimo);
-      const max = name === 'stockMaximo' ? Number(value) : Number(formData.stockMaximo);
-      
-      if (name === 'stockMinimo' && min < 0) {
-        error = 'El stock mínimo no puede ser negativo.';
-      } else if (       
-        formData.stockMinimo !== '' &&
-        formData.stockMaximo !== '' &&
-        !isNaN(min) &&
-        !isNaN(max) &&
-        max < min
-      ) {
-        error = 'El stock máximo no puede ser menor al mínimo.';
-      }
-      break;
-
-    case 'descripcion':
-      if (!value || value.trim() === '') {
-        error = 'La descripción es obligatoria.';
-      } else if (value.length > 300) {
-        error = 'La descripción no puede superar los 300 caracteres.';
-      }
-      break;
-      
-    case 'imagen':
-      const file = value?.target?.files?.[0];
-      const allowedTypes = ['image/jpeg', 'image/png'];
-      if (!file) {
-        error = 'Debes seleccionar una imagen.';
-      } else if (!allowedTypes.includes(file.type)) {
-        error = 'Formato no permitido. Solo se aceptan imágenes JPG o PNG.';
-      }
-      break;
-
-    default:
-      break;
-  }
-
-  setFormErrors((prev) => ({ ...prev, [name]: error }));
-};
-
+    let error = "";
+    switch (name) {
+      case "nombre":
+        if (!value.trim()) {
+          error = "El nombre es obligatorio.";
+        } else if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+          error = "No se permiten símbolos especiales.";
+        }
+        break;
+      case "idCategoriaProducto":
+        if (!value) error = "Debe seleccionar una categoría.";
+        break;
+      case "precio":
+        if (!value || isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
+          error = "El precio debe ser un número positivo.";
+        }
+        break;
+      case "tipoUso":
+        if (!value || value.trim() === "") {
+          error = "Debes seleccionar un tipo de uso para el producto.";
+        }
+        break;
+      case "vidaUtilDias":
+        if (value === "" || isNaN(parseInt(value)) || parseInt(value) <= 0) {
+          error = "La vida útil debe ser un número mayor a cero.";
+        }
+        break;
+      case "existencia":
+        if (value === "" || isNaN(parseInt(value)) || parseInt(value) < 0) {
+          error = "La existencia no puede ser negativa.";
+        }
+        break;
+      case "stockMinimo":
+      case "stockMaximo":
+        const min =
+          name === "stockMinimo" ? Number(value) : Number(formData.stockMinimo);
+        const max =
+          name === "stockMaximo" ? Number(value) : Number(formData.stockMaximo);
+        if (name === "stockMinimo" && min < 0) {
+          error = "El stock mínimo no puede ser negativo.";
+        } else if (
+          formData.stockMinimo !== "" &&
+          formData.stockMaximo !== "" &&
+          !isNaN(min) &&
+          !isNaN(max) &&
+          max < min
+        ) {
+          error = "El stock máximo no puede ser menor al mínimo.";
+        }
+        break;
+      case "descripcion":
+        if (!value || value.trim() === "") {
+          error = "La descripción es obligatoria.";
+        } else if (value.length > 300) {
+          error = "La descripción no puede superar los 300 caracteres.";
+        }
+        break;
+      case "imagen":
+        const file = value?.target?.files?.[0];
+        const allowedTypes = ["image/jpeg", "image/png"];
+        if (!file) {
+          error = "Debes seleccionar una imagen.";
+        } else if (!allowedTypes.includes(file.type)) {
+          error = "Formato no permitido. Solo se aceptan imágenes JPG o PNG.";
+        }
+        break;
+      default:
+        break;
+    }
+    setFormErrors((prev) => ({ ...prev, [name]: error }));
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -148,7 +141,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          imagen: file, // ✅ objeto File real
+          imagen: file,
           imagenPreview: reader.result,
         }));
       };
@@ -181,7 +174,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       errors.vidaUtilDias = "La vida útil debe ser un número mayor a cero.";
     }
     if (
-      formData.existencia === '' ||
+      formData.existencia === "" ||
       isNaN(parseInt(formData.existencia)) ||
       parseInt(formData.existencia) < 0
     ) {
@@ -199,46 +192,43 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
   };
 
   const handleSubmitForm = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  const dataToSubmit = {
-    nombre: formData.nombre,
-    descripcion: formData.descripcion || null,
-    existencia: Number(formData.existencia),
-    precio: Number(formData.precio),
-    stockMinimo: formData.stockMinimo ? Number(formData.stockMinimo) : null,
-    stockMaximo: formData.stockMaximo ? Number(formData.stockMaximo) : null,
-    idCategoriaProducto: formData.idCategoriaProducto,
-    estado: formData.estado,
-    tipoUso: formData.tipoUso,
-    vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : null,
-    imagen: formData.imagen,
-  };
+    // ✅ Objeto plano (NO FormData aquí)
+    const dataToSubmit = {
+      nombre: formData.nombre,
+      descripcion: formData.descripcion || "",
+      existencia: formData.existencia ? Number(formData.existencia) : 0,
+      precio: formData.precio ? Number(formData.precio) : 0,
+      stockMinimo: formData.stockMinimo ? Number(formData.stockMinimo) : 0,
+      stockMaximo: formData.stockMaximo ? Number(formData.stockMaximo) : 0,
+      idCategoriaProducto: formData.idCategoriaProducto,
+      estado: formData.estado,
+      tipoUso: formData.tipoUso,
+      vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : 0,
+      imagen: formData.imagen, // 👈 archivo real
+    };
 
-  try {
-    const response = await onSubmit(dataToSubmit);
-
-    if (response?.errors) {
-      // 🔍 Mostrar errores específicos en el modal
-      const mensajes = Object.entries(response.errors)
-        .map(([campo, msgs]) => `${campo}: ${Array.isArray(msgs) ? msgs.join(", ") : msgs}`)
-        .join("\n");
-
-      setValidationMessage(mensajes);         // 👈 Mensaje para el modal
-      setIsValidationModalOpen(true);         // 👈 Abre el modal
-      return;
+    try {
+      const response = await onSubmit(dataToSubmit);
+      if (response?.errors) {
+        const mensajes = Object.entries(response.errors)
+          .map(
+            ([campo, msgs]) =>
+              `${campo}: ${Array.isArray(msgs) ? msgs.join(", ") : msgs}`
+          )
+          .join("\n");
+        setValidationMessage(mensajes);
+        setIsValidationModalOpen(true);
+        return;
+      }
+      onClose();
+    } catch (err) {
+      setValidationMessage(err.message || "Error al guardar el producto.");
+      setIsValidationModalOpen(true);
     }
-
-    // Si todo salió bien, cerramos el modal
-    closeModal();
-  } catch (err) {
-    // ⚠️ Error inesperado (por ejemplo, fallo de red)
-    setValidationMessage(err.message || "Error al guardar el producto.");
-    setIsValidationModalOpen(true);
-  }
-};
-
+  };
 
   if (!isOpen) return null;
 
@@ -268,6 +258,17 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
             </button>
           </div>
         </form>
+
+        {isValidationModalOpen && (
+          <div className="validationModal">
+            <div className="validationModal-content">
+              <p>{validationMessage}</p>
+              <button onClick={() => setIsValidationModalOpen(false)}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
