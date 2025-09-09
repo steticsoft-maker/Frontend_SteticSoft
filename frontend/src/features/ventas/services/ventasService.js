@@ -1,4 +1,4 @@
-import apiClient from "../../../shared/services/api"; 
+import apiClient from "../../../shared/services/api";
 // Importa el objeto completo que contiene las funciones de productos.
 import { productosAdminService } from '../../productosAdmin/services/productosAdminService';
 // Importa la función de servicios.
@@ -71,7 +71,7 @@ export const fetchVentas = async (filters = {}) => {
         if (filters.idEstado) {
             params.append('idEstado', filters.idEstado);
         }
-        
+
         const response = await apiClient.get(VENTAS_API_URL, { params });
         return response.data?.data || [];
     } catch (error) {
@@ -135,8 +135,11 @@ export const anularVentaById = async (ventaId) => {
  */
 export const cambiarEstadoVenta = async (ventaId, nuevoIdEstado) => {
     try {
-        // ✅ Cambio clave: Usa 'idEstado' en el cuerpo de la solicitud
-        const response = await apiClient.patch(`${VENTAS_API_URL}/${ventaId}`, { idEstado: nuevoIdEstado });
+        // ✅ URL y método CORRECTOS
+        const url = `${VENTAS_API_URL}/${ventaId}/estado-proceso`;
+        const payload = { idEstado: nuevoIdEstado };
+
+        const response = await apiClient.put(url, payload);
         return response.data;
     } catch (error) {
         console.error(`Error al cambiar el estado de la venta con ID ${ventaId}:`, error);
