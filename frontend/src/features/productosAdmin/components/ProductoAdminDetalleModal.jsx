@@ -1,12 +1,44 @@
 // src/features/productosAdmin/components/ProductoAdminDetalleModal.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-// ⚡ Importamos la URL del backend desde variables de entorno
 const API_URL = import.meta.env.VITE_API_URL;
-// 🚨 Quitamos el "/api" para acceder a los estáticos (uploads)
-const API_BASE = API_URL.replace('/api', '');
 
 const ProductoAdminDetalleModal = ({ isOpen, onClose, producto }) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+
+  useEffect(() => {
+    if (isOpen && producto) {
+      setImageError(false);
+      const url = getImageUrl(producto.imagen);
+      setImageUrl(url);
+      console.log("🌐 URL de imagen:", url);
+    }
+  }, [isOpen, producto]);
+
+  // 🔑 Función simplificada para construir URL de imagen
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    
+    // Si ya es una URL completa (http o https)
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // 🚨 SOLUCIÓN OPCIÓN 5: Para rutas relativas, simplemente concatenar con API_URL
+    return `${API_URL}${imagePath}`;
+  };
+
+  const handleImageError = (e) => {
+    console.error("❌ Error cargando la imagen:", e.target.src);
+    setImageError(true);
+  };
+
+  const handleImageLoad = (e) => {
+    console.log("✅ Imagen cargada correctamente:", e.target.src);
+    setImageError(false);
+  };
+
   if (!isOpen || !producto) return null;
 
   return (
@@ -26,15 +58,58 @@ const ProductoAdminDetalleModal = ({ isOpen, onClose, producto }) => {
           <p><strong>Descripción:</strong> {producto.descripcion || 'N/A'}</p>
           <p><strong>Estado:</strong> {producto.estado ? "Activo" : "Inactivo"}</p>
           
-          {/* ✅ CAMBIO CLAVE: Construir la URL completa de la imagen */}
-          {producto.imagen && ( 
+          {/* ✅ Imagen con URL completa */}
+          {imageUrl ? ( 
             <div className="detalle-imagen-container"> 
               <p><strong>Imagen:</strong></p>
               <img 
-                src={`${API_BASE}${producto.imagen}`} 
+                src={imageUrl} 
                 alt={producto.nombre} 
                 className="producto-admin-detalle-imagen" 
+                onError={handleImageError}
+                onLoad={handleImageLoad}
               />
+              {imageError && (
+                <div style={{ color: 'red', marginTop: '10px' }}>
+                  <p>❌ Error al cargar la imagen</p>
+                  <p>URL intentada: {imageUrl}</p>
+                  <button 
+                    onClick={() => window.open(imageUrl, '_blank')}
+                    style={{ marginTop: '5px', padding: '5px 10px' }}
+                  >
+                    Abrir imagen en nueva pestaña
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p><strong>Imagen:</strong> No disponible</p>
+          )}
+
+          {/* Información de debug para desarrolladores */}
+          {process.env.NODE_ENV === 'development' && (
+            <div style={{ 
+              marginTop: '20px', 
+              padding: '10px', 
+              backgroundColor: '#f5f5f5', 
+              borderRadius: '5px',
+              fontSize: '12px'
+            }}>
+              <p><strong>Debug Info:</strong></p>
+              <p>API_URL: {API_URL}</p>
+              <p>producto.imagen: {producto.imagen}</p>
+              <p>URL completa: {imageUrl}</p>
+              <button 
+                onClick={() => {
+                  const debugInfo = `API_URL: ${API_URL}\nproducto.imagen: ${producto.imagen}\nURL completa: ${imageUrl}`;
+                  console.log('📋 Debug info:', debugInfo);
+                  navigator.clipboard.writeText(debugInfo);
+                  alert('Info de debug copiada al portapapeles');
+                }}
+                style={{ marginTop: '5px', padding: '2px 5px' }}
+              >
+                Copiar info debug
+              </button>
             </div>
           )}
         </div>
