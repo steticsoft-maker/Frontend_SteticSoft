@@ -43,7 +43,7 @@ const NovedadesTable = ({
                   <td className="text-center">{index + 1}</td>
                   <td>
                     {empleados.length > 0 ? (
-                      empleados.map((user, idx) => (
+                      empleados.map((user) => (
                         <div key={user.idUsuario} className="novedades-table__employee-name">
                           {user.empleadoInfo
                             ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}`
@@ -82,29 +82,19 @@ const NovedadesTable = ({
                       <span className="slider"></span>
                     </label>
                   </td>
-                  <td className="novedades-table__actions">
-                    <button
-                      onClick={() => onView(novedad)}
-                      className="action-button"
-                      aria-label={`Ver detalles de ${novedad.idNovedad}`}
-                    >
+                <td className="text-center">
+                  <div className="actions-container">
+                    <button onClick={() => onView(novedad)} className="action-button" title="Ver Detalles">
                       <FaRegEye />
                     </button>
-                    <button
-                      onClick={() => onEdit(novedad)}
-                      className="action-button"
-                      aria-label={`Editar ${novedad.idNovedad}`}
-                    >
+                    <button onClick={() => onEdit(novedad)} className="action-button" title="Editar">
                       <FaEdit />
                     </button>
-                    <button
-                      onClick={() => onDeleteConfirm(novedad)}
-                      className="action-button"
-                      aria-label={`Eliminar ${novedad.idNovedad}`}
-                    >
+                    <button onClick={() => onDeleteConfirm(novedad)} className="action-button" title="Eliminar">
                       <FaTrashAlt />
                     </button>
-                  </td>
+                  </div>
+                </td>
                 </tr>
               );
             })

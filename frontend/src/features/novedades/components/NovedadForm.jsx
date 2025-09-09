@@ -137,8 +137,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
           />
           {errors.fechaInicio && <span className="form-error-message">{errors.fechaInicio.message}</span>}
         </div>
-
-        {/* Fecha de Fin */}
         <div className="form-group">
           <label htmlFor="fechaFin">Fecha de Fin</label>
           <Controller
@@ -169,8 +167,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
           />
           {errors.fechaFin && <span className="form-error-message">{errors.fechaFin.message}</span>}
         </div>
-
-        {/* Hora de Inicio */}
         <div className="form-group">
           <label htmlFor="horaInicio">Hora de Inicio</label>
           <Controller
@@ -194,8 +190,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
           />
           {errors.horaInicio && <span className="form-error-message">{errors.horaInicio.message}</span>}
         </div>
-
-        {/* Hora de Fin */}
         <div className="form-group">
           <label htmlFor="horaFin">Hora de Fin</label>
           <Controller
@@ -223,8 +217,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
           />
           {errors.horaFin && <span className="form-error-message">{errors.horaFin.message}</span>}
         </div>
-
-        {/* Días de la Semana */}
         <div className="form-group full-width">
           <label>Días de la Semana Aplicables</label>
           <Controller
@@ -245,8 +237,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
           />
           {errors.dias && <span className="form-error-message">{errors.dias.message}</span>}
         </div>
-
-        {/* Empleados */}
         <div className="form-group full-width">
           <label>Asignar a Empleado(s)</label>
           <Controller

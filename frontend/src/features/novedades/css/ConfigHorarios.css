@@ -287,11 +287,14 @@ input:checked + .slider:before {
 
 /* Píldora individual para cada día */
 .dia-pill {
-  font-size: 0.8rem;
-  padding: 0.3em 0.6em;
-  color: var(--color-text-dark);
-  font-weight: 500;
+  color: #fff;
+  padding: 4px 10px;
   border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  display: inline-block;
+  margin: 2px;
 }
 
 /* Colores específicos para cada día */
@@ -302,7 +305,6 @@ input:checked + .slider:before {
 .dia-pill-viernes { background-color: var(--color-dia-viernes); }
 .dia-pill-sabado { background-color: var(--color-dia-sabado); }
 .dia-pill-domingo { background-color: var(--color-dia-domingo); }
-
 
 /* Badge de estado (Activo/Inactivo) */
 .status-badge {
@@ -582,4 +584,12 @@ input:checked + .slider:before {
   .search-bar, .filter-select, .add-button { width: 100%; }
   .novedad-form .form-grid { grid-template-columns: 1fr; }
   .novedad-form .form-group.full-width { grid-column: 1; }
+}
+
+
+.actions-container {
+  display: flex;
+  justify-content: center; /* Centra los botones horizontalmente */
+  align-items: center;    /* Centra los botones verticalmente */
+  gap: 8px;
 }
