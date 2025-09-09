@@ -1,9 +1,7 @@
-// novedades/components/NovedadesTable.jsx
-
-import React from "react";
-import { FaRegEye, FaEdit, FaTrashAlt } from "react-icons/fa";
-import { Badge } from "react-bootstrap";
-import "../css/ConfigHorarios.css";
+import React from 'react';
+import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { Badge } from 'react-bootstrap';
+import '../css/ConfigHorarios.css';
 
 const NovedadesTable = ({
   novedades,
@@ -13,16 +11,14 @@ const NovedadesTable = ({
   onToggleEstado,
 }) => {
   const formatTime = (timeString) =>
-    timeString ? timeString.slice(0, 5) : "N/A";
+    timeString ? timeString.slice(0, 5) : 'N/A';
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Intl.DateTimeFormat("es-CO", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      timeZone: "America/Bogota",
-    }).format(new Date(dateString));
+  const getDiaPillClass = (dia) => {
+    const diaNormalizado = dia
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+    return `dia-pill dia-pill-${diaNormalizado}`;
   };
 
   return (
@@ -30,12 +26,11 @@ const NovedadesTable = ({
       <table className="novedades-table table">
         <thead>
           <tr>
-            <th>#</th>
+            <th className="text-center">#</th>
             <th>Encargado(s)</th>
             <th>Días Aplicables</th>
-            <th>Rango de Fechas</th>
             <th>Horario</th>
-            <th>Estado</th>
+            <th className="text-center">Estado</th>
             <th className="text-center">Acciones</th>
           </tr>
         </thead>
@@ -45,18 +40,15 @@ const NovedadesTable = ({
               const empleados = novedad.empleados || [];
               return (
                 <tr key={novedad.idNovedad}>
-                  <td>{index + 1}</td>
+                  <td className="text-center">{index + 1}</td>
                   <td>
-                    {/* MODIFICADO: Se elimina el div para evitar la línea extra */}
                     {empleados.length > 0 ? (
                       empleados.map((user, idx) => (
-                        <React.Fragment key={user.idUsuario}>
+                        <div key={user.idUsuario} className="novedades-table__employee-name">
                           {user.empleadoInfo
                             ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}`
                             : user.correo}
-                          {/* Agrega un salto de línea si no es el último empleado */}
-                          {idx < empleados.length - 1 && <br />}
-                        </React.Fragment>
+                        </div>
                       ))
                     ) : (
                       <span className="text-muted">Sin asignar</span>
@@ -67,9 +59,8 @@ const NovedadesTable = ({
                       {(novedad.dias || []).map((dia) => (
                         <Badge
                           pill
-                          bg="secondary"
                           key={dia}
-                          className="dia-pill"
+                          className={getDiaPillClass(dia)}
                         >
                           {dia.substring(0, 3)}
                         </Badge>
@@ -77,16 +68,11 @@ const NovedadesTable = ({
                     </div>
                   </td>
                   <td>
-                    {`${formatDate(novedad.fechaInicio)} al ${formatDate(
-                      novedad.fechaFin
-                    )}`}
-                  </td>
-                  <td>
                     {`${formatTime(novedad.horaInicio)} - ${formatTime(
                       novedad.horaFin
                     )}`}
                   </td>
-                  <td>
+                  <td className="text-center">
                     <label className="toggle-switch">
                       <input
                         type="checkbox"
@@ -97,22 +83,24 @@ const NovedadesTable = ({
                     </label>
                   </td>
                   <td className="novedades-table__actions">
-                    {/* MODIFICADO: Se quitan los OverlayTrigger */}
                     <button
                       onClick={() => onView(novedad)}
                       className="action-button"
+                      aria-label={`Ver detalles de ${novedad.idNovedad}`}
                     >
                       <FaRegEye />
                     </button>
                     <button
                       onClick={() => onEdit(novedad)}
                       className="action-button"
+                      aria-label={`Editar ${novedad.idNovedad}`}
                     >
                       <FaEdit />
                     </button>
                     <button
                       onClick={() => onDeleteConfirm(novedad)}
                       className="action-button"
+                      aria-label={`Eliminar ${novedad.idNovedad}`}
                     >
                       <FaTrashAlt />
                     </button>
@@ -122,7 +110,7 @@ const NovedadesTable = ({
             })
           ) : (
             <tr>
-              <td colSpan="7" className="text-center">
+              <td colSpan="6" className="text-center">
                 No hay novedades para mostrar.
               </td>
             </tr>

@@ -150,7 +150,7 @@ function ConfigHorariosPage() {
             <input
               className="search-bar"
               type="text"
-              placeholder="Buscar por encargado, fecha, hora..."
+              placeholder="Buscar por encargado, días..."
               value={search}
               onChange={handleSearchChange}
             />
@@ -165,7 +165,7 @@ function ConfigHorariosPage() {
             </select>
           </div>
           <button className="add-button" onClick={() => openModal("form")}>
-            + Agregar Novedad
+            &#43; Agregar Novedad
           </button>
         </div>
 
