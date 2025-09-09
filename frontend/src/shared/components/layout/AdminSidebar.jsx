@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/authHooks';
-import { menuItemsConfig } from '../../config/navigationConfig.jsx'; // Importar la configuración central
-import './AdminSidebar.css'; // Importar el CSS renombrado
-import { FaUserCircle, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
+import React, { useState, useMemo, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/authHooks";
+import { menuItemsConfig } from "../../config/navigationConfig.jsx"; // Importar la configuración central
+import "./AdminSidebar.css"; // Importar el CSS renombrado
+import { FaUserCircle, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
@@ -13,32 +13,37 @@ const AdminSidebar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // El núcleo de la lógica de permisos: robusta y centralizada.
-  const hasPermission = useCallback((requiredPermission) => {
-    // Si no se requiere permiso, el acceso es concedido.
-    if (!requiredPermission) {
-      return true;
-    }
-    // El rol "Administrador" tiene acceso total, sin importar los permisos individuales.
-    if (user?.rol?.nombre === 'Administrador') {
-      return true;
-    }
-    // Para otros roles, verificar si el permiso está en la lista de permisos del usuario.
-    return permissions && permissions.includes(requiredPermission);
-  }, [user, permissions]);
+  const hasPermission = useCallback(
+    (requiredPermission) => {
+      // Si no se requiere permiso, el acceso es concedido.
+      if (!requiredPermission) {
+        return true;
+      }
+      // El rol "Administrador" tiene acceso total, sin importar los permisos individuales.
+      if (user?.rol?.nombre === "Administrador") {
+        return true;
+      }
+      // Para otros roles, verificar si el permiso está en la lista de permisos del usuario.
+      return permissions && permissions.includes(requiredPermission);
+    },
+    [user, permissions]
+  );
 
   // El núcleo de la lógica de renderizado: un menú filtrado y memoizado.
   const filteredMenu = useMemo(() => {
     // Primero, procesar los sub-ítems de cada menú desplegable.
-    const menuWithFilteredSubItems = menuItemsConfig.map(item => {
+    const menuWithFilteredSubItems = menuItemsConfig.map((item) => {
       if (item.subItems) {
-        const accessibleSubItems = item.subItems.filter(subItem => hasPermission(subItem.requiredPermission));
+        const accessibleSubItems = item.subItems.filter((subItem) =>
+          hasPermission(subItem.requiredPermission)
+        );
         return { ...item, subItems: accessibleSubItems };
       }
       return item;
     });
 
     // Después, filtrar el menú principal.
-    return menuWithFilteredSubItems.filter(item => {
+    return menuWithFilteredSubItems.filter((item) => {
       // Si es un menú desplegable, solo mostrarlo si tiene sub-ítems visibles.
       if (item.subItems) {
         return item.subItems.length > 0;
@@ -50,7 +55,7 @@ const AdminSidebar = () => {
 
   const toggleSubMenu = (key) => {
     // Permite que múltiples submenús estén abiertos a la vez.
-    setOpenSubMenus(prev => ({ ...prev, [key]: !prev[key] }));
+    setOpenSubMenus((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const toggleMobileMenu = () => {
@@ -65,45 +70,65 @@ const AdminSidebar = () => {
 
   const handleLogoutClick = async () => {
     await logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
     <>
-      <button className="mobile-menu-toggle" onClick={toggleMobileMenu} aria-label="Toggle navigation">
+      <button
+        className="mobile-menu-toggle"
+        onClick={toggleMobileMenu}
+        aria-label="Toggle navigation"
+      >
         {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
       </button>
-      <aside className={`admin-sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
-        <div className="sidebar-header">
-          <div className="user-section">
-            <FaUserCircle className="user-icon" />
-            <div className="user-info">
-              <p className="user-name">{user?.nombre || 'Usuario'}</p>
-              <p className="user-role">{user?.rol?.nombre || 'Rol'}</p>
-            </div>
-          </div>
+      <aside className={`dashboard-sidebar ${isMobileMenuOpen ? "open" : ""}`}>
+        <div className="admin-section">
+          <FaUserCircle className="admin-icon" />
+          {/* Mostramos el nombre y rol del usuario si están disponibles */}
+          <p className="admin-label">{user?.nombre || "Usuario"}</p>
+          <p
+            className="admin-label"
+            style={{ fontSize: "0.9em", fontWeight: "normal" }}
+          >
+            {user?.rol?.nombre || "Rol"}
+          </p>
         </div>
 
-        <nav className="sidebar-nav">
+        <nav className="dashboard-links">
           {filteredMenu.map((item) => (
-            <div key={item.label} className="menu-item">
+            <div key={item.label}>
               {item.subItems ? (
-                <button onClick={() => toggleSubMenu(item.subMenuKey)} className="nav-link has-submenu">
-                  {item.icon}
-                  <span className="nav-label">{item.label}</span>
+                <button
+                  onClick={() => toggleSubMenu(item.subMenuKey)}
+                  className="dashboard-link"
+                >
+                  <span className="dashboard-icon">{item.icon}</span>
+                  <span className="dashboard-link-label">{item.label}</span>
                 </button>
               ) : (
-                <Link to={item.path} className="nav-link" onClick={handleLinkClick}>
-                  {item.icon}
-                  <span className="nav-label">{item.label}</span>
+                <Link
+                  to={item.path}
+                  className="dashboard-link"
+                  onClick={handleLinkClick}
+                >
+                  <span className="dashboard-icon">{item.icon}</span>
+                  <span className="dashboard-link-label">{item.label}</span>
                 </Link>
               )}
               {item.subItems && openSubMenus[item.subMenuKey] && (
-                <div className="submenu">
+                <div className="nested-links">
                   {item.subItems.map((subItem) => (
-                    <Link to={subItem.path} key={subItem.label} className="submenu-link" onClick={handleLinkClick}>
-                      {subItem.icon}
-                      <span className="nav-label">{subItem.label}</span>
+                    <Link
+                      to={subItem.path}
+                      key={subItem.label}
+                      className="nested-link"
+                      onClick={handleLinkClick}
+                    >
+                      <span className="dashboard-icon">{subItem.icon}</span>
+                      <span className="dashboard-link-label">
+                        {subItem.label}
+                      </span>
                     </Link>
                   ))}
                 </div>
@@ -112,10 +137,16 @@ const AdminSidebar = () => {
           ))}
         </nav>
 
-        <div className="sidebar-footer">
-          <button onClick={handleLogoutClick} className="nav-link logout-button">
-            <FaSignOutAlt />
-            <span className="nav-label">Cerrar Sesión</span>
+        {/* Contenedor para empujar el botón de logout al final */}
+        <div style={{ marginTop: "auto" }}>
+          <button
+            onClick={handleLogoutClick}
+            className="dashboard-link logout-button"
+          >
+            <span className="dashboard-icon">
+              <FaSignOutAlt />
+            </span>
+            <span className="dashboard-link-label">Cerrar Sesión</span>
           </button>
         </div>
       </aside>
