@@ -46,14 +46,6 @@ const NovedadModal = ({ onClose, onSuccess, novedadToEdit, isEditing }) => {
       <div className="modal-content">
         <div className="modal-header">
           <h2>{isEditing ? 'Editar Novedad' : 'Crear Nueva Novedad'}</h2>
-          <button
-            type="button"
-            className="modal-close-btn"
-            onClick={onClose}
-            aria-label="Cerrar modal"
-          >
-            ✖
-          </button>
         </div>
 
         <div className="modal-body">
