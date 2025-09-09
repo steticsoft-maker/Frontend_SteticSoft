@@ -1,6 +1,5 @@
 // src/features/usuarios/pages/ListaUsuariosPage.jsx
 import React from "react";
-import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import UsuariosTable from "../components/UsuariosTable";
 import UsuarioCrearModal from "../components/UsuarioCrearModal";
 import UsuarioEditarModal from "../components/UsuarioEditarModal";
@@ -50,7 +49,6 @@ function ListaUsuariosPage() {
 
   return (
     <div className="usuarios-container">
-      <NavbarAdmin />
       <div className="usuarios-content">
         <h1>Gestión de Usuarios ({totalUsuariosFiltrados})</h1>
         <div className="usuarios-accionesTop">

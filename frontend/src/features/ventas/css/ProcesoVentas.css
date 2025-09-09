@@ -12,8 +12,8 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     margin: 20px;
     /* max-width: calc(90% - 270px); */ /* Considera eliminar o ajustar esta línea */
-    margin-left: 270px; /* AÑADIDO: 250px para NavbarAdmin + 20px de margen de página */
-                                 /* Ajusta este valor si el ancho del NavbarAdmin es diferente */
+    margin-left: 270px; /* AÑADIDO: 250px para AdminSidebar + 20px de margen de página */
+                                 /* Ajusta este valor si el ancho del AdminSidebar es diferente */
     box-sizing: border-box; /* Importante para que el padding no aumente el tamaño total + margen */
 }
 

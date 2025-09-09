@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import NavbarAdmin from "../../../shared/components/layout/NavbarAdmin";
 import NovedadesTable from "../components/NovedadesTable";
 import NovedadModal from "../components/NovedadModal";
 import NovedadDetalleModal from "../components/HorarioDetalleModal";
@@ -132,7 +131,6 @@ function ConfigHorariosPage() {
   if (error) {
     return (
       <div className="error-message">
-        <NavbarAdmin />
         <div className="content-container">
           <h1>Error en la Gestión de Novedades</h1>
           <p>{error}</p>
@@ -144,7 +142,6 @@ function ConfigHorariosPage() {
 
   return (
     <div className="page-container">
-      <NavbarAdmin />
       <div className="content-container">
         <h1>Gestión de Novedades de Horario</h1>
 

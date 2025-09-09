@@ -16,7 +16,7 @@
     justify-content: flex-start; 
     height: 100%;
     padding: 30px;
-    margin-left: 280px; /* Ajusta si tu NavbarAdmin tiene otro ancho */
+    margin-left: 280px; /* Ajusta si tu AdminSidebar tiene otro ancho */
     box-sizing: border-box;
     overflow-y: auto;
   }
@@ -440,7 +440,7 @@
   /* === ESTILOS RESPONSIVOS === */
   @media (max-width: 1024px) { /* Breakpoint para tablets */
     .usuarios-content {
-      margin-left: 0; /* Asumir que NavbarAdmin se oculta o es overlay */
+      margin-left: 0; /* Asumir que AdminSidebar se oculta o es overlay */
       padding: 20px;
     }
     /* Si el formulario en modal es muy ancho para tablets, podrías pasarlo a 1 columna aquí también */

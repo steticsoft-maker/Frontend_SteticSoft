@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import ComprasTable from '../components/ComprasTable';
 import CompraDetalleModal from '../components/CompraDetalleModal';
 import PdfViewModal from '../../../shared/components/common/PdfViewModal';
@@ -182,7 +181,6 @@ function ListaComprasPage() {
 
     return (
         <div className="lista-compras-container">
-            <NavbarAdmin />
             <div className="compras-content-wrapper">
                 <h1>Listado de Compras</h1>
                 

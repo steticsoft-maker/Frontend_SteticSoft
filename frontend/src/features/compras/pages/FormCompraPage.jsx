@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NavbarAdmin from '../../../shared/components/layout/NavbarAdmin';
 import CompraForm from '../components/CompraForm';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
@@ -27,14 +26,13 @@ function FormCompraPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // ✅ --- useEffect ACTUALIZADO con lógica robusta --- ✅
+  // ✅ --- useEffect con validación de productos y proveedores activos --- ✅
   useEffect(() => {
     const cargarDatosIniciales = async () => {
       setIsLoading(true);
       console.log("Iniciando carga de datos...");
 
       try {
-        // Usamos Promise.allSettled para que una promesa fallida no cancele a la otra
         const results = await Promise.allSettled([
           proveedoresService.getProveedores(),
           productosAdminService.getProductos()
@@ -45,10 +43,16 @@ function FormCompraPage() {
         if (proveedoresResult.status === 'fulfilled') {
           console.log('✅ Éxito al cargar proveedores. Datos:', proveedoresResult.value);
           const proveedoresData = proveedoresResult.value;
-          setProveedoresList(Array.isArray(proveedoresData) ? proveedoresData : []);
+
+          // 🔎 Filtrar solo los proveedores activos
+          const proveedoresActivos = Array.isArray(proveedoresData)
+            ? proveedoresData.filter(p => p.estado === true || p.activo === true)
+            : [];
+
+          setProveedoresList(proveedoresActivos);
         } else {
           console.error('❌ Error al cargar proveedores:', proveedoresResult.reason);
-          setProveedoresList([]); // En caso de error, establece una lista vacía
+          setProveedoresList([]);
         }
 
         // -- PRODUCTOS --
@@ -56,10 +60,16 @@ function FormCompraPage() {
         if (productosResult.status === 'fulfilled') {
           console.log('✅ Éxito al cargar productos. Datos:', productosResult.value);
           const productosData = productosResult.value;
-          setProductosList(Array.isArray(productosData) ? productosData : []);
+
+          // 🔎 Filtrar solo los productos activos
+          const productosActivos = Array.isArray(productosData)
+            ? productosData.filter(p => p.estado === true || p.activo === true)
+            : [];
+
+          setProductosList(productosActivos);
         } else {
           console.error('❌ Error al cargar productos:', productosResult.reason);
-          setProductosList([]); // En caso de error, establece una lista vacía
+          setProductosList([]);
         }
 
       } catch (error) {
@@ -106,11 +116,7 @@ function FormCompraPage() {
     setIsSubmitting(true);
 
     const compraData = {
-      // ✅ LA LÍNEA CORRECTA Y DEFINITIVA
-      // El backend espera 'proveedorId', no 'idProveedor'.
       proveedorId: proveedorSeleccionado.idProveedor,
-
-      // El resto de los datos se mantienen igual
       usuarioId: user.idUsuario,
       fecha: fechaCompra,
       total: total,
@@ -124,7 +130,6 @@ function FormCompraPage() {
     };
 
     try {
-      // La función del servicio recibe el objeto con el nombre de campo correcto
       await comprasService.createCompra(compraData);
       setValidationMessage("Compra guardada exitosamente. Redirigiendo...");
       setIsValidationModalOpen(true);
@@ -132,7 +137,6 @@ function FormCompraPage() {
         navigate("/admin/compras");
       }, 2000);
     } catch (error) {
-      // El mensaje de error que te aparece viene de esta línea
       setValidationMessage(error.response?.data?.errors[0]?.msg || error.message || 'Error al guardar la compra.');
       setIsValidationModalOpen(true);
       setIsSubmitting(false);
@@ -147,7 +151,6 @@ function FormCompraPage() {
 
   return (
     <div className="agregar-compra-page-container"> 
-      <NavbarAdmin />
       <div className="agregar-compra-content"> 
         <div className="agregar-compra-form-wrapper">
           <h2 className="agregar-compra-title">Registrar Nueva Compra</h2>
