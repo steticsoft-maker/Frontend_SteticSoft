@@ -92,9 +92,32 @@ function CalendarioCitasPage() {
   }, []);
 
   const cargarDatosAgendamiento = useCallback(() => {
-    fetchNovedadesAgendables().then(res => setNovedades(res.data?.data || [])).catch(console.error);
-    fetchServiciosDisponibles().then(res => setServicios(res.data?.data || [])).catch(console.error);
-  }, []);
+    // Cargar Novedades con manejo de errores
+    fetchNovedadesAgendables()
+      .then(res => {
+        setNovedades(res.data?.data || []);
+      })
+      .catch(error => {
+        console.error("Error detallado al cargar novedades:", error.response || error);
+        setValidationMessage(`No se pudieron cargar las novedades para agendar. Motivo: ${error.response?.data?.message || 'Error desconocido'}. Por favor, contacte a soporte.`);
+        setValidationTitle("Error de Carga");
+        setIsValidationModalOpen(true);
+        setNovedades([]); // Asegurarse de que el selector esté vacío si hay un error
+      });
+
+    // Cargar Servicios con manejo de errores
+    fetchServiciosDisponibles()
+      .then(res => {
+        setServicios(res.data?.data || []);
+      })
+      .catch(error => {
+        console.error("Error detallado al cargar servicios:", error.response || error);
+        setValidationMessage(`No se pudieron cargar los servicios disponibles. Motivo: ${error.response?.data?.message || 'Error desconocido'}.`);
+        setValidationTitle("Error de Carga");
+        setIsValidationModalOpen(true);
+        setServicios([]); // Asegurarse de que el selector esté vacío
+      });
+  }, [setNovedades, setServicios, setIsValidationModalOpen, setValidationMessage, setValidationTitle]);
 
   useEffect(() => {
     if (viewMode === 'agendar') {
@@ -106,7 +129,7 @@ function CalendarioCitasPage() {
 
   // --- Lógica de Efectos para el Formulario ---
   useEffect(() => {
-    if (selectedNovedad && viewMode === 'agendar') {
+    if (selectedNovedad && selectedNovedad.value && viewMode === 'agendar') {
       const anio = moment(currentMonth).year();
       const mes = moment(currentMonth).month() + 1;
       if (!editingCitaId) { // No resetees si estás editando
@@ -126,7 +149,7 @@ function CalendarioCitasPage() {
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedTime(null);
-    if (selectedNovedad) {
+  if (selectedNovedad && selectedNovedad.value) {
       const fechaStr = moment(date).format('YYYY-MM-DD');
       fetchHorasDisponibles(selectedNovedad.value, fechaStr)
         .then(res => setHorasDisponibles(res.data?.data || []))
@@ -348,7 +371,6 @@ function CalendarioCitasPage() {
         <input type="text" placeholder="Busca en la lista..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="citas-search-input" />
         <select value={estadoFiltro} onChange={(e) => setEstadoFiltro(e.target.value)} className="citas-filter-select">
           <option value="Todos">Todos los Estados</option>
-          {/* Opciones de filtro basadas en los estados disponibles */}
           {[...new Set(citas.map(c => c.estadoCita))].map(estado => (
             <option key={estado} value={estado}>{estado}</option>
           ))}
