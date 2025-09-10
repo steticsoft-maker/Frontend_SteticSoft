@@ -1,66 +1,49 @@
-// src/shared/src_api/middlewares/upload.middleware.js
-
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-/**
- * Función fábrica que crea una instancia de Multer configurada para una entidad específica.
- * @param {string} entityName - El nombre de la entidad (ej. 'productos', 'servicios'), que se usará para crear la carpeta.
- * @returns {multer} - Una instancia de Multer lista para ser usada como middleware.
- */
 const createUploader = (entityName) => {
-  // Construye la ruta de destino de forma segura.
-  // Ejemplo: /ruta/a/tu/proyecto/src_api/public/uploads/productos
-  const uploadPath = path.join(
-    __dirname,
-    "..",
-    "public",
-    "uploads",
-    entityName
-  );
+  // 🚨 CORRECCIÓN: Usar la carpeta 'public' en la raíz del proyecto
+  const uploadPath = path.join(process.cwd(), "public", "uploads", entityName);
 
-  // Se asegura de que el directorio de destino exista. Si no, lo crea recursivamente.
+  // Crear la carpeta si no existe
   if (!fs.existsSync(uploadPath)) {
     fs.mkdirSync(uploadPath, { recursive: true });
+    console.log(`📂 Carpeta creada: ${uploadPath}`);
+  } else {
+    console.log(`📂 Carpeta ya existe: ${uploadPath}`);
   }
 
-  // Configuración de almacenamiento: define dónde y cómo se guardarán los archivos.
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+      console.log(`➡️ Guardando archivo en: ${uploadPath}`);
       cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
-      // Genera un nombre de archivo único para evitar colisiones.
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
       const extension = path.extname(file.originalname);
-      cb(null, `${entityName}-${uniqueSuffix}${extension}`);
+      const filename = `${entityName}-${uniqueSuffix}${extension}`;
+      console.log(`📝 Nombre final del archivo: ${filename}`);
+      cb(null, filename);
     },
   });
 
-  // Filtro de archivos: define qué tipos de archivos son aceptados.
   const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
     if (allowedTypes.test(file.mimetype)) {
-      cb(null, true); // Aceptar el archivo
+      cb(null, true);
     } else {
-      cb(
-        new Error("Tipo de archivo no permitido. Solo se aceptan imágenes."),
-        false
-      ); // Rechazar el archivo
+      cb(new Error("Tipo de archivo no permitido. Solo se aceptan imágenes."), false);
     }
   };
 
-  // Retorna la instancia de Multer con toda la configuración.
   return multer({
     storage,
     fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 }, // Límite de 5MB por archivo
+    limits: { fileSize: 5 * 1024 * 1024 },
   });
 };
 
-// Se exportan middlewares específicos para cada caso de uso.
-// .single('imagen') indica que se esperará un solo archivo en el campo 'imagen' del FormData.
 module.exports = {
   uploadServicioImage: createUploader("servicios").single("imagen"),
   uploadProductoImage: createUploader("productos").single("imagen"),
