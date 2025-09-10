@@ -8,7 +8,8 @@ import ValidationModal from '../../../shared/components/common/ValidationModal';
 import {
     fetchVentas,
     anularVentaById,
-    cambiarEstadoVenta
+    cambiarEstadoVenta,
+    getVentaById // ✅ 1. IMPORTAR LA FUNCIÓN PARA OBTENER UNA VENTA
 } from '../services/ventasService';
 import { generarPDFVentaUtil } from '../utils/pdfGeneratorVentas';
 import '../css/Ventas.css';
@@ -17,7 +18,7 @@ function ListaVentasPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // El resto de tus estados se mantienen igual
+    // Estados para la gestión de datos y UI
     const [ventas, setVentas] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -58,9 +59,21 @@ function ListaVentasPage() {
         }
     }, [location.state, navigate, location.pathname, loadVentas]);
 
-    const handleOpenDetails = (venta) => {
-        setSelectedVenta(venta);
-        setShowDetailsModal(true);
+    // ✅ 2. FUNCIÓN CORREGIDA PARA BUSCAR LA VENTA COMPLETA
+    const handleOpenDetails = async (ventaResumida) => {
+        setIsLoading(true);
+        try {
+            // Llama a la API para obtener la información completa de la venta
+            const ventaCompleta = await getVentaById(ventaResumida.idVenta);
+            setSelectedVenta(ventaCompleta);
+            setShowDetailsModal(true);
+        } catch (err) {
+            console.error("Error al obtener el detalle de la venta:", err);
+            setValidationMessage("No se pudo cargar el detalle de la venta. Inténtalo de nuevo.");
+            setIsValidationModalOpen(true);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleOpenPdf = (venta) => {
@@ -93,16 +106,13 @@ function ListaVentasPage() {
         setValidationMessage('');
     };
     
-    // ✅ CORRECCIÓN CON VALIDACIÓN
     const handleConfirmAnular = async () => {
         if (selectedVenta) {
             setShowAnularConfirmModal(false); 
             try {
                 const response = await anularVentaById(selectedVenta.idVenta);
-                // Usamos encadenamiento opcional para evitar errores si la estructura de la respuesta cambia
                 const ventaAnulada = response?.data?.data;
 
-                // 🔥 VALIDACIÓN CLAVE: Solo actualizamos localmente si 'ventaAnulada' es un objeto válido
                 if (ventaAnulada && typeof ventaAnulada === 'object') {
                     setVentas(ventasActuales =>
                         ventasActuales.map(v =>
@@ -111,7 +121,6 @@ function ListaVentasPage() {
                     );
                     setValidationMessage("La venta se ha anulado exitosamente.");
                 } else {
-                    // Plan B: Si la API no devuelve la venta, recargamos toda la lista para asegurar consistencia.
                     setValidationMessage("Venta anulada. Actualizando lista...");
                     loadVentas();
                 }
@@ -125,13 +134,11 @@ function ListaVentasPage() {
         }
     };
 
-    // ✅ CORRECCIÓN CON VALIDACIÓN
     const handleEstadoChange = async (ventaId, nuevoIdEstado) => {
         try {
             const response = await cambiarEstadoVenta(ventaId, nuevoIdEstado);
             const ventaActualizada = response?.data?.data;
 
-            // 🔥 VALIDACIÓN CLAVE: Solo actualizamos localmente si 'ventaActualizada' es un objeto válido
             if (ventaActualizada && typeof ventaActualizada === 'object') {
                 setVentas(ventasActuales =>
                     ventasActuales.map(v =>
@@ -140,7 +147,7 @@ function ListaVentasPage() {
                 );
                 setValidationMessage(`El estado de la venta se ha cambiado.`);
             } else {
-                loadVentas(); // Plan B
+                loadVentas();
             }
         } catch (err) {
             setValidationMessage("Error al cambiar el estado de la venta. Intenta de nuevo.");
@@ -157,7 +164,7 @@ function ListaVentasPage() {
     };
     
     const filteredVentas = ventas.filter(venta => {
-        if (!venta) return false; // Filtra cualquier posible dato nulo o undefined
+        if (!venta) return false;
         const busquedaTrim = busqueda.trim().toLowerCase();
         if (!busquedaTrim) return true;
         return (
@@ -175,7 +182,6 @@ function ListaVentasPage() {
 
     return (
         <div className="ventas-page-container">
-            {/* El JSX de tu página se mantiene igual que en la versión anterior */}
             <div className="ventasContent">
                 <h1>Gestión de Ventas</h1>
                 <div className="barraBotonContainer">
@@ -209,6 +215,7 @@ function ListaVentasPage() {
                     </div>
                  </>)}
             </div>
+            
             {/* Modales */}
             <VentaDetalleModal isOpen={showDetailsModal} onClose={handleCloseModals} venta={selectedVenta} />
             <PdfViewModal isOpen={showPdfModal} onClose={handleCloseModals} pdfUrl={pdfBlobUrl} title={`Detalle Venta #${selectedVenta?.idVenta || ''}`} />

@@ -10,7 +10,7 @@ const VentasTable = ({
     currentPage,
     itemsPerPage
 }) => {
-    // ✅ ESCUDO DE PROTECCIÓN: Si 'ventas' no es un array, no intentes renderizar.
+    // Escudo de protección: Si 'ventas' no es un array, no se intenta renderizar.
     if (!Array.isArray(ventas) || ventas.length === 0) {
         return <p>No hay ventas para mostrar.</p>;
     }
@@ -36,7 +36,7 @@ const VentasTable = ({
                 </tr>
             </thead>
             <tbody>
-                {/* ✅ ESCUDO DE PROTECCIÓN: Filtra cualquier posible valor nulo o undefined en el array antes de mapear. */}
+                {/* Escudo de protección: Filtra cualquier posible valor nulo o undefined en el array. */}
                 {ventas.filter(venta => venta).map((venta, index) => {
                     const estadoActualNombre = venta.estadoDetalle?.nombreEstado || "";
                     
@@ -45,6 +45,7 @@ const VentasTable = ({
                             <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                             <td>{new Date(venta.fecha).toLocaleDateString('es-CO')}</td>
                             <td>{venta.cliente ? `${venta.cliente.nombre} ${venta.cliente.apellido || ''}`.trim() : 'N/A'}</td>
+                            {/* ✅ CORRECCIÓN: Usar 'numeroDocumento' como lo envía el backend. */}
                             <td>{venta.cliente?.numeroDocumento || 'N/A'}</td>
                             <td>${parseFloat(venta.total || 0).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</td>
                             <td>
