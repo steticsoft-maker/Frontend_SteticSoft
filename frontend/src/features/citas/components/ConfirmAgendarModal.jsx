@@ -44,18 +44,18 @@ const ConfirmAgendarModal = ({ isOpen, onClose, onConfirm, citaData }) => {
       contentLabel="Confirmar Cita"
       appElement={document.getElementById('root')}
     >
-      <div className="confirm-agendar-modal">
-        <h2 className="modal-title">Confirma los Datos de la Cita</h2>
-        <p className="modal-subtitle">Por favor, revisa que toda la información sea correcta antes de agendar.</p>
-
-        <div className="detalle-cita-resumen">
-          <div className="detalle-item">
-            <strong>Cliente:</strong>
-            <span>{cliente?.label || 'No seleccionado'}</span>
-          </div>
-          <div className="detalle-item">
-            <strong>Empleado:</strong>
-            <span>{empleado?.label || 'No seleccionado'}</span>
+        <div className="confirm-agendar-modal">
+            <h2 className="modal-title">Confirma los Datos de la Cita</h2>
+            <p className="modal-subtitle">Por favor, revisa que toda la información sea correcta antes de agendar.</p>
+        
+            <div className="detalle-cita-resumen">
+                <div className="detalle-item">
+                <strong>Cliente:</strong>
+                <span>{cliente?.label || 'No seleccionado'}</span>
+            </div>
+            <div className="detalle-item">
+                <strong>Empleado:</strong>
+                <span>{empleado?.label || 'No seleccionado'}</span>
           </div>
           <div className="detalle-item">
             <strong>Fecha y Hora:</strong>
@@ -84,9 +84,9 @@ const ConfirmAgendarModal = ({ isOpen, onClose, onConfirm, citaData }) => {
           <button onClick={onClose} className="btn-secondary">
             Cancelar y seguir editando
           </button>
-          <button onClick={onConfirm} className="btn-primary">
+            <button onClick={onConfirm} className="btn-primary">
             Confirmar y Agendar
-          button>
+           </button>
         </div>
       </div>
     </Modal>

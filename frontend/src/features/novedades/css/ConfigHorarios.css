@@ -287,7 +287,7 @@ input:checked + .slider:before {
 
 /* Píldora individual para cada día */
 .dia-pill {
-  color: #fff;
+  color: #000;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.8rem;
