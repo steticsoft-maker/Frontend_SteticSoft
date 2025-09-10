@@ -48,6 +48,13 @@ export const habilitarCita = (idCita) => {
     return apiClient.patch(`/citas/${idCita}/habilitar`);
 };
 
+/**
+ * ✅ FUNCIÓN AÑADIDA: Obtiene todos los estados de cita posibles.
+ */
+export const fetchEstadosCita = () => {
+  return apiClient.get('/estados-cita');
+};
+
 
 // --- SERVICIOS PARA AGENDAR NUEVA CITA (PÁGINA DE AGENDAMIENTO) ---
 
