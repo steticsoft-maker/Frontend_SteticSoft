@@ -13,12 +13,6 @@ const crearProducto = async (req, res, next) => {
       datosProducto.categoriaProductoId = Number(datosProducto.idCategoriaProducto);
     }
 
-    // Si se subió un archivo, multer nos deja la info en req.file
-    if (req.file) {
-      // Guardamos solo la ruta relativa
-      datosProducto.imagen = `/uploads/productos/${req.file.filename}`;
-    }
-
     const nuevoProducto = await productoService.crearProducto(datosProducto);
     res.status(201).json({
       success: true,
@@ -29,6 +23,7 @@ const crearProducto = async (req, res, next) => {
     next(error);
   }
 };
+
 
 /**
  * Obtiene una lista de todos los productos.
@@ -72,10 +67,6 @@ const actualizarProducto = async (req, res, next) => {
       datosActualizar.categoriaProductoId = Number(datosActualizar.idCategoriaProducto);
     }
 
-    if (req.file) {
-      datosActualizar.imagen = `/uploads/productos/${req.file.filename}`;
-    }
-
     const productoActualizado = await productoService.actualizarProducto(
       Number(idProducto),
       datosActualizar
@@ -89,6 +80,7 @@ const actualizarProducto = async (req, res, next) => {
     next(error);
   }
 };
+
 
 /**
  * Cambia el estado (activo/inactivo) de un producto.

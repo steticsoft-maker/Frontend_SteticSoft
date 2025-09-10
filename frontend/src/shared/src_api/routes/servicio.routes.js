@@ -11,8 +11,6 @@ const PERMISO_MODULO_SERVICIOS = "MODULO_SERVICIOS_GESTIONAR";
 
 // --- RUTAS DE LA API ---
 
-const { uploadServicioImage } = require("../middlewares/upload.middleware.js");
-
 // --- ✅ NUEVA RUTA PARA EL MÓDULO DE CITAS ---
 // Devuelve solo los servicios activos (estado=true) para ser usados en el agendamiento.
 // No necesita validador.
@@ -30,7 +28,6 @@ router.post(
   "/",
   authMiddleware,
   checkPermission(PERMISO_MODULO_SERVICIOS),
-  uploadServicioImage,
   servicioValidators.crearServicioValidators,
   servicioController.crearServicio
 );
@@ -59,7 +56,6 @@ router.put(
   "/:idServicio",
   authMiddleware,
   checkPermission(PERMISO_MODULO_SERVICIOS),
-  uploadServicioImage,
   servicioValidators.actualizarServicioValidators,
   servicioController.actualizarServicio
 );
