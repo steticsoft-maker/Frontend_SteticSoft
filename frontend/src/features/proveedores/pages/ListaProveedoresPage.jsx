@@ -68,7 +68,7 @@ function ListaProveedoresPage() {
         cancelButtonText: "Cancelar",
       }).then((result) => {
         if (result.isConfirmed) {
-          handleDelete(proveedor.idProveedor);
+          handleDelete(proveedor);
         }
       });
     } else if (type === "status" && proveedor) {
@@ -141,9 +141,9 @@ function ListaProveedoresPage() {
     }
   };
 
-  const handleDelete = async (idProveedor) => {
+  const handleDelete = async (proveedor) => {
     try {
-      await proveedoresService.deleteProveedor(idProveedor);
+      await proveedoresService.deleteProveedor(proveedor.idProveedor);
       MySwal.fire(
         "¡Eliminado!",
         "El proveedor ha sido eliminado.",

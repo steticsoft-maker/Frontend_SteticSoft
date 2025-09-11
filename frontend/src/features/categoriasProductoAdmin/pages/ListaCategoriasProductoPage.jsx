@@ -107,7 +107,7 @@ function ListaCategoriasProductoPage() {
                 cancelButtonText: "Cancelar",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    handleDelete(categoria.idCategoriaProducto);
+                    handleDelete(categoria);
                 }
             });
         }
@@ -139,13 +139,13 @@ function ListaCategoriasProductoPage() {
         }
     };
 
-    const handleDelete = async (idCategoria) => {
+    const handleDelete = async (categoria) => {
         try {
-            await deleteCategoriaProductoById(idCategoria);
+            await deleteCategoriaProductoById(categoria.idCategoriaProducto);
             await loadCategorias();
             MySwal.fire(
                 "¡Eliminada!",
-                "La categoría ha sido eliminada.",
+                `La categoría "${categoria.nombre}" ha sido eliminada.`,
                 "success"
             );
         } catch (error) {
@@ -155,16 +155,13 @@ function ListaCategoriasProductoPage() {
         }
     };
 
-    const handleToggleEstado = async (idCategoriaProducto) => {
+    const handleToggleEstado = async (categoria) => {
         try {
-            const categoriaToToggle = categorias.find(
-                (cat) => cat.idCategoriaProducto === idCategoriaProducto
-            );
-            if (!categoriaToToggle) {
+            if (!categoria) {
                 throw new Error("Categoría no encontrada para cambiar estado.");
             }
-            const nuevoEstado = !categoriaToToggle.estado;
-            await toggleCategoriaProductoEstado(idCategoriaProducto, nuevoEstado);
+            const nuevoEstado = !categoria.estado;
+            await toggleCategoriaProductoEstado(categoria.idCategoriaProducto, nuevoEstado);
             await loadCategorias();
             MySwal.fire({
                 toast: true,

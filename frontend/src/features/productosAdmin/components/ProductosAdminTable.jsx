@@ -49,8 +49,7 @@ const ProductosAdminTable = ({
                 <input
                   type="checkbox"
                   checked={producto.estado} // Asume que producto.estado es booleano (true/false)
-                  // CAMBIO CLAVE: Pasar producto.idProducto a onToggleEstado
-                  onChange={() => onToggleEstado(producto.idProducto)} 
+                  onChange={() => onToggleEstado(producto)}
                 />
                 <span className="slider round"></span>
               </label>
