@@ -101,19 +101,45 @@
     color: var(--color-text-dark);
 }
 
-.campo-cliente input {
-    padding: 8px;
-    font-size: 0.9rem;
+
+/* ================================================= */
+/* === UNIFICACIÓN DE ESTILOS PARA TODOS LOS INPUTS === */
+/* ================================================= */
+
+/* Se aplica el mismo estilo al input del formulario y al de búsqueda del modal */
+.campo-cliente input,
+.catalogo-emergente .search-bar input,
+.clientes-emergente .search-bar input {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 1rem;
+    color: var(--color-text-dark);
+    background-color: var(--color-form-bg);
     border: 1px solid var(--color-form-border);
-    border-radius: 4px;
+    border-radius: 5px;
     width: 100%;
     box-sizing: border-box;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Se aplica el mismo estilo de foco a ambos */
+.campo-cliente input:focus,
+.catalogo-emergente .search-bar input:focus,
+.clientes-emergente .search-bar input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
 }
 
 .campo-cliente input:disabled {
     background-color: #e9e9e9;
     cursor: not-allowed;
 }
+
+/* ================================================= */
+/* =========== FIN DE LA SECCIÓN MODIFICADA =========== */
+/* ================================================= */
+
 
 .catalogo-button {
     background-color: var(--color-secondary);
@@ -201,6 +227,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .catalogo-emergente ul li,
@@ -301,6 +329,10 @@
     background-color: var(--color-primary-hover);
 }
 
+.search-bar {
+    margin-bottom: 15px;
+}
+
 /* Responsividad */
 @media (max-width: 768px) {
     .proceso-ventas-page {
@@ -335,52 +367,4 @@
     .campo-cliente {
         flex: 1 1 100%;
     }
-}
-
-.catalogo-emergente {
-    padding: 20px;
-}
-
-.search-bar {
-    margin-bottom: 15px;
-}
-
-.search-bar input {
-    width: 90%;
-    padding: 10px;
-    border: 1px solid var(--color-form-border);
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-.catalogo-emergente ul {
-    max-height: 300px;
-    overflow-y: auto;
-    list-style: none;
-    padding: 0;
-}
-
-.catalogo-emergente li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--color-form-border);
-}
-
-.catalogo-emergente li:last-child {
-    border-bottom: none;
-}
-
-.catalogo-emergente button {
-    background-color: var(--color-primary);
-    color: var(--color-text-light);
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.catalogo-emergente button:hover {
-    background-color: var(--color-primary-hover);
 }
