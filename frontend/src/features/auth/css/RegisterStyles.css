@@ -61,7 +61,7 @@
       /* Alinea el texto del label a la izquierda */
       font-size: 0.9rem;
       /* Tamaño de fuente para el label */
-      color: #333;
+      color: var(--color-text-dark);
       /* Color del texto del label */
       margin-bottom: 5px;
       /* Espacio entre el label y el input debajo */

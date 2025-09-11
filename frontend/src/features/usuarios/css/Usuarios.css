@@ -1,10 +1,11 @@
+@import "../../shared/styles/_variables.css";
 /* src/features/usuarios/css/Usuarios.css */
 
 /* === ESTILOS GENERALES DE LA PÁGINA DE USUARIOS === */
 .usuarios-container {
     display: flex;
     height: 100vh;
-    background-color: transparent;
+    background-color: var(--color-background-light);
     font-family: 'Roboto', sans-serif;
   }
   

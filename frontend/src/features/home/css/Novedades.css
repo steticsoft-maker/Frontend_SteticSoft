@@ -2,7 +2,7 @@
 .novedades-page-container { /* Antes .novedades-page */
     font-family: var(--font-family-sans-serif); /* Usar variable */
     padding: 20px;
-    background-color: var(--color-background-warm); /* Usar variable */
+    background-color: var(--color-background-light); /* Usar variable */
     min-height: 100vh; /* Asegurar que ocupe toda la altura */
     margin-top: 60px; /* Espacio para el Navbar fijo */
   }
@@ -19,7 +19,7 @@
   
   .novedades-title {
     font-size: 2rem; /* Ajustar tamaño */
-    color: #d2691e; /* Considera var(--color-accent) o similar */
+    color: var(--color-primary); /* Considera var(--color-accent) o similar */
     margin-bottom: 25px;
   }
   
@@ -41,7 +41,7 @@
     padding: 12px; /* Aumentar padding */
     border-radius: 5px;
     font-size: 1rem;
-    border: 1px solid #ddd; /* Considera var(--color-border-light) */
+    border: 1px solid var(--color-form-border); /* Considera var(--color-border-light) */
   }
   
   /* Reutilizar botones comunes o definir específicos para novedades */
@@ -55,23 +55,23 @@
   }
   
   .novedades-primary-button {
-    background-color: var(--color-secondary); /* Usar variable */
+    background-color: var(--color-primary); /* Usar variable */
     color: var(--color-text-light);
   }
   
   .novedades-primary-button:hover {
-    background-color: #d2691e; /* Define var(--color-secondary-dark) */
+    background-color: var(--color-primary-hover); /* Define var(--color-secondary-dark) */
   }
   
   .novedades-secondary-button {
     background-color: transparent;
-    color: var(--color-secondary);
-    border: 1px solid var(--color-secondary);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
     margin-top: 10px;
   }
   
   .novedades-secondary-button:hover {
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     color: var(--color-text-light);
   }
   

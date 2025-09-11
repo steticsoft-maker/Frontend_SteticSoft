@@ -1,26 +1,12 @@
-/* Estilos para el Módulo de Administración de Servicios */
+@import "../../shared/styles/_variables.css";
 
-:root {
-  /* Nueva Paleta de Marca */
-  --color-background-page: #F9F6F5; /* Fondo suave */
-  --color-primary-accent: #7B3F87;   /* Color principal */
-  --color-primary-hover: #915f9e;    /* Principal aclarado para hover */
-  --color-secondary-button-bg: #F2D6C9; /* Tono piel claro */
-  --color-table-header-bg: #D99AC5;  /* Color secundario */
-  --color-table-row-alternate: #fdf5f2; /* Tono piel claro muy sutil */
-  --color-input-focus-bg: #F2D6C9;   /* Tono piel claro */
-  --color-border: #D99AC5;           /* Color secundario */
-  --color-text-dark: #8B5E3C;        /* Tono piel oscuro */
-  --color-text-on-primary: #F9F6F5;  /* Fondo suave (para texto sobre primario) */
-  --color-success: #2ecc71;          /* Se mantiene para el switch */
-  --color-danger: #e74c3c;           /* Se mantiene para errores */
-}
+/* Estilos para el Módulo de Administración de Servicios */
 
 /* --- Layout Principal --- */
 .servicios-admin-page-container {
   display: flex;
   min-height: 100vh;
-  background-color: var(--color-background-page);
+  background-color: var(--color-background-light);
   font-family: 'Roboto', sans-serif;
 }
 
@@ -69,14 +55,14 @@
 
 .servicios-admin-search-bar input:focus,
 .servicios-admin-search-bar select:focus {
-  background-color: var(--color-input-focus-bg);
-  border-color: var(--color-primary-accent);
+  background-color: var(--color-form-focus-bg);
+  border-color: var(--color-primary);
   outline: none;
 }
 
 .botonAgregarServicio {
-  background-color: var(--color-primary-accent);
-  color: var(--color-text-on-primary);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -98,7 +84,7 @@
   max-width: 1200px;
   margin: 25px auto 0 auto;
   border-collapse: collapse; 
-  background-color: var(--color-background-page);
+  background-color: var(--color-background-light);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
   overflow: hidden;
@@ -109,11 +95,11 @@
   padding: 14px 15px;
   text-align: center;
   vertical-align: middle;
-  border: 1px solid var(--color-border); 
+  border: 1px solid var(--color-form-border);
 }
 
 .servicios-admin-table th {
-  background-color: var(--color-table-header-bg);
+  background-color: var(--color-table-header);
   color: var(--color-text-dark);
   font-weight: 600;
 }
@@ -121,11 +107,11 @@
 .servicios-admin-table td:nth-child(2) { text-align: left; }
 
 .servicios-admin-table tbody tr:nth-child(even) {
-  background-color: var(--color-table-row-alternate);
+  background-color: var(--color-table-row-even);
 }
 
 .servicios-admin-table tbody tr:hover {
-  background-color: var(--color-input-focus-bg);
+  background-color: var(--color-form-focus-bg);
 }
 
 .servicios-admin-table .actions-cell {
@@ -139,10 +125,10 @@
   font-size: 0.85rem;
   border: none;
   border-radius: 5px;
-  color: var(--color-text-on-primary);
+  color: var(--color-text-light);
   cursor: pointer;
   transition: background-color 0.3s ease;
-  background-color: var(--color-primary-accent);
+  background-color: var(--color-primary);
 }
 
 .servicios-admin-table .actions-cell button:hover {
@@ -197,7 +183,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 .servicios-admin-modal-content {
-  background-color: var(--color-background-page);
+  background-color: var(--color-background-light);
   padding: 25px 30px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.25);
@@ -236,17 +222,17 @@ input:checked + .slider:before { transform: translateX(16px); }
 .servicios-admin-form-group .form-control {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-background-page);
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
   border-radius: 5px;
   font-size: 1rem;
   color: var(--color-text-dark);
 }
 
 .servicios-admin-form-group .form-control:focus {
-  background-color: var(--color-input-focus-bg);
-  border-color: var(--color-primary-accent);
-  box-shadow: 0 0 0 2px rgba(123, 63, 135, 0.3); /* Sombra de foco con el color principal */
+  background-color: var(--color-form-focus-bg);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.3); /* Sombra de foco con el color principal */
   outline: none;
 }
 
@@ -256,7 +242,7 @@ input:checked + .slider:before { transform: translateX(16px); }
   gap: 15px;
   margin-top: 25px;
   padding-top: 20px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-form-border);
 }
 
 .servicios-admin-form-actions button {
@@ -271,19 +257,19 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 button.guardar {
-  background-color: var(--color-primary-accent); 
-  color: var(--color-text-on-primary);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
 }
 button.guardar:hover {
   background-color: var(--color-primary-hover);
 }
 
 button.cancelar {
-  background-color: var(--color-secondary-button-bg);
-  color: var(--color-text-dark);
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-text);
 }
 button.cancelar:hover {
-  background-color: #e6c8ba; /* Un poco más oscuro que el fondo del botón secundario */
+  background-color: var(--color-secondary-hover);
 }
 
 .required-asterisk {
@@ -400,7 +386,7 @@ button.cancelar:hover {
   height: 60px;
   object-fit: cover;
   border-radius: 8px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-form-border);
 }
 
 .image-placeholder {
@@ -442,7 +428,7 @@ button.cancelar:hover {
 }
 
 .image-upload-area {
-  border: 2px dashed var(--color-border);
+  border: 2px dashed var(--color-form-border);
   border-radius: 8px;
   padding: 15px;
   text-align: center;
@@ -457,13 +443,13 @@ button.cancelar:hover {
 }
 
 .image-upload-area.dragging {
-  border-color: var(--color-primary-accent);
-  background-color: #f7f1f8;
+  border-color: var(--color-primary);
+  background-color: var(--color-table-row-even);
 }
 
 .upload-placeholder svg {
   font-size: 3rem;
-  color: var(--color-primary-accent);
+  color: var(--color-primary);
   margin-bottom: 10px;
 }
 

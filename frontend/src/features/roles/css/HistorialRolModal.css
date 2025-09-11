@@ -1,8 +1,9 @@
+@import "../../shared/styles/_variables.css";
 /* src/features/roles/css/HistorialRolModal.css */
 
 /* --- Contenedor Principal del Modal (MODIFICADO) --- */
 .historial-modal-content {
-  background-color: #ffffff;
+  background-color: var(--color-background-light);
   padding: 25px 35px;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
@@ -12,12 +13,12 @@
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  border-top: 6px solid #b660a3; /* Borde superior distintivo */
+  border-top: 6px solid var(--color-primary); /* Borde superior distintivo */
 }
 
 /* --- Título del Modal --- */
 .historial-modal-content h2 {
-  color: #6d0b58;
+  color: var(--color-text-dark);
   margin-top: 0;
   margin-bottom: 25px;
   text-align: center;
@@ -26,7 +27,7 @@
 }
 
 .historial-modal-content h2 strong {
-  color: #b660a3;
+  color: var(--color-primary);
 }
 
 /* --- Botón de Cierre --- */
@@ -38,12 +39,12 @@
   border: none;
   font-size: 1.8rem;
   cursor: pointer;
-  color: #aaa;
+  color: var(--color-text-dark);
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .historial-modal-close-button:hover {
-  color: #6d0b58;
+  color: var(--color-primary);
   transform: scale(1.1);
 }
 
@@ -55,13 +56,13 @@
   justify-content: center;
   padding: 40px;
   gap: 15px;
-  color: #555;
+  color: var(--color-text-dark);
 }
 
 .historial-no-records {
   text-align: center;
   padding: 40px;
-  color: #777;
+  color: var(--color-text-dark);
   font-size: 1.1rem;
 }
 
@@ -69,7 +70,7 @@
 .historial-table-container {
   overflow-y: auto; /* Scroll vertical si el contenido es muy largo */
   flex-grow: 1;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-form-border);
   border-radius: 8px;
 }
 
@@ -85,14 +86,14 @@
   padding: 12px 15px;
   text-align: left;
   vertical-align: top; /* Alinear contenido arriba para mejor lectura en celdas largas */
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--color-form-border);
   word-wrap: break-word; /* Clave para que el texto largo se divida */
 }
 
 .historial-table th {
-  background-color: #f8f9fa;
+  background-color: var(--color-table-header);
   font-weight: 600;
-  color: #6d0b58;
+  color: var(--color-text-dark);
   font-size: 0.9rem;
   position: sticky;
   top: 0;
@@ -113,7 +114,7 @@
 }
 
 .historial-table tbody tr:hover {
-  background-color: #f3d9ec;
+  background-color: var(--color-admin-hover);
 }
 
 /* --- Estilos para la Información del Usuario (Rol + Correo) --- */
@@ -124,7 +125,7 @@
 }
 
 .user-icon {
-  color: #b660a3;
+  color: var(--color-primary);
   font-size: 1.8em;
   flex-shrink: 0; /* Evita que el ícono se encoja */
 }
@@ -136,12 +137,12 @@
 
 .user-role {
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-dark);
 }
 
 .user-email {
   font-size: 0.85em;
-  color: #666;
+  color: var(--color-text-dark);
 }
 
 /* --- Estilos para la Lista de Permisos (Píldoras) --- */
@@ -155,17 +156,17 @@
 }
 
 .permission-list li {
-  background-color: #e9ecef;
+  background-color: var(--color-secondary);
   border-radius: 12px; /* Más redondeado */
   padding: 5px 10px;
   font-size: 0.85rem;
   white-space: nowrap;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--color-form-border);
 }
 
 /* --- Estilos de Valores Especiales --- */
 .value-na {
-  color: #999;
+  color: var(--color-text-dark);
   font-style: italic;
 }
 
@@ -188,7 +189,7 @@
   .historial-table tr {
     display: block;
     margin-bottom: 15px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-form-border);
     border-radius: 8px;
     padding: 10px;
   }
@@ -198,7 +199,7 @@
     text-align: right;
     padding-left: 50%;
     position: relative;
-    border-bottom: 1px dotted #eee;
+    border-bottom: 1px dotted var(--color-form-border);
   }
 
   .historial-table td:last-child {
@@ -211,7 +212,7 @@
     left: 10px;
     width: calc(50% - 20px);
     font-weight: 600;
-    color: #6d0b58;
+    color: var(--color-primary);
     text-align: left;
   }
 

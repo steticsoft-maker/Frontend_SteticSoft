@@ -1,3 +1,5 @@
+@import "../../shared/styles/_variables.css";
+
 /* src/features/compras/css/FormCompra.css */
 
 .agregar-compra-page-container {
@@ -5,7 +7,7 @@
     min-height: 100vh;
     width: 100%;
     font-family: 'Roboto', sans-serif;
-    background-color: var(--color-background-admin-content, #f5f5f5);
+    background-color: var(--color-background-light);
 }
 
 .agregar-compra-content {
@@ -22,7 +24,7 @@
 .agregar-compra-form-wrapper {
     width: 100%;
     max-width: 900px; /* Ancho del formulario */
-    background-color: var(--color-background-light, #fff);
+    background-color: var(--color-background-light);
     padding: 30px 40px; /* Padding interno generoso */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -33,7 +35,7 @@
     font-size: 1.8rem;
     font-weight: 600; /* Menos bold que h1 */
     margin-bottom: 30px;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-primary);
 }
 
 .form-group {
@@ -43,7 +45,7 @@
 .form-group label {
     display: block;
     font-weight: 600;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-primary);
     font-size: 0.95rem;
     margin-bottom: 8px;
 }
@@ -56,10 +58,10 @@
 .form-group select {
     width: 100%; 
     padding: 10px 12px; 
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
-    background-color: var(--color-background-input, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     font-size: 1rem;
     box-sizing: border-box; 
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -72,8 +74,9 @@
 .form-group input[type="date"]:focus,
 .form-group select:focus {
     outline: none;
-    border-color: var(--color-admin-hover, #b660a3); 
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
 }
 
 .required-asterisk { /* Tu clase para asterisco */
@@ -83,8 +86,8 @@
 
 /* Botón "Agregar Producto a la Compra" */
 .btn-agregar-producto-compra {
-    background-color: var(--color-admin-action-view, #fc8de4); /* Rosa claro */
-    color: var(--color-text-dark, black); /* Texto oscuro para contraste */
+    background-color: var(--color-secondary); /* Rosa claro */
+    color: var(--color-secondary-text); /* Texto oscuro para contraste */
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -96,7 +99,7 @@
     transition: background-color 0.2s ease;
 }
 .btn-agregar-producto-compra:hover {
-    background-color: var(--color-admin-action-view-hover, #d66abf);
+    background-color: var(--color-secondary-hover);
 }
 
 /* Tabla de ítems en el formulario de compra */
@@ -105,7 +108,7 @@
     margin-top: 20px;
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    background: var(--color-background-light);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra más sutil */
     border-radius: 8px;
     overflow: hidden; /* Para que el radius funcione en la tabla */
@@ -116,15 +119,15 @@
 }
 .agregar-compra-table th,
 .agregar-compra-table td {
-    border: 1px solid var(--color-border-light, #ddd); 
+    border: 1px solid var(--color-form-border);
     padding: 10px 12px; /* Padding consistente */
     text-align: center;
     font-size: 0.9rem; 
     vertical-align: middle;
 }
 .agregar-compra-table th {
-    background-color: var(--color-admin-primary-lighter, #f1f1f1); /* Encabezado de tabla más sutil */
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-table-header); /* Encabezado de tabla más sutil */
+    color: var(--color-text-dark);
     font-weight: 600;
 }
 .agregar-compra-table td input.input-text-readonly {
@@ -139,19 +142,19 @@
     width: 70px; /* Ancho para cantidad y precio */
     padding: 6px 8px;
     text-align: center;
-    border: 1px solid var(--color-border-light, #ccc);
+    border: 1px solid var(--color-form-border);
     border-radius: 4px;
 }
 .btn-icono-eliminar-producto-compra {
-    background-color: var(--color-admin-action-delete, #b660a3);
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     padding: 6px 10px;
     border-radius: 4px;
     cursor: pointer;
 }
 .btn-icono-eliminar-producto-compra:hover {
-    background-color: var(--color-admin-action-delete-hover, #6d0b58);
+    background-color: var(--color-primary-hover);
 }
 
 /* Totales de la compra */
@@ -160,14 +163,14 @@
     font-size: 1rem; /* Un poco más pequeño para diferenciar */
     margin-top: 20px;
     padding: 15px 0;
-    border-top: 1px solid var(--color-border-light, #eee);
+    border-top: 1px solid var(--color-form-border);
 }
 .agregar-compra-totales p {
     margin: 6px 0; 
-    color: var(--color-text-dark, #333);
+    color: var(--color-text-dark);
 }
 .agregar-compra-totales p strong {
-    color: var(--color-primary-darker, #000); /* Total en negro o color principal oscuro */
+    color: var(--color-primary); /* Total en negro o color principal oscuro */
     font-size: 1.1rem; /* Destacar el total final */
 }
 
@@ -190,11 +193,11 @@
     min-width: 150px; /* Ancho mínimo */
 }
 .btn-guardar-agregar-compra {
-    background-color: var(--color-admin-hover, #b660a3); /* Color Guardar */
-    color: white;
+    background-color: var(--color-primary); /* Color Guardar */
+    color: var(--color-text-light);
 }
 .btn-guardar-agregar-compra:hover {
-    background-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary-hover);
 }
 .btnCancelarAgregarCompra {
     background-color: #95a5a6; /* Color Cancelar (gris) */
