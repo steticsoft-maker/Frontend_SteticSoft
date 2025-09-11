@@ -84,7 +84,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
         }
         break;
       case "stockMinimo":
-      case "stockMaximo":
+      case "stockMaximo": {
         const min =
           name === "stockMinimo" ? Number(value) : Number(formData.stockMinimo);
         const max =
@@ -101,6 +101,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
           error = "El stock máximo no puede ser menor al mínimo.";
         }
         break;
+      }
       case "descripcion":
         if (!value || value.trim() === "") {
           error = "La descripción es obligatoria.";
@@ -108,7 +109,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
           error = "La descripción no puede superar los 300 caracteres.";
         }
         break;
-      case "imagen":
+      case "imagen": {
         const file = value?.target?.files?.[0];
         const allowedTypes = ["image/jpeg", "image/png"];
         if (!file) {
@@ -117,6 +118,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
           error = "Formato no permitido. Solo se aceptan imágenes JPG o PNG.";
         }
         break;
+      }
       default:
         break;
     }
@@ -206,7 +208,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       idCategoriaProducto: formData.idCategoriaProducto,
       estado: formData.estado,
       tipoUso: formData.tipoUso,
-      vidaUtilDias: formData.vidaUtilDias ? Number(formData.vidaUtilDias) : 0,
+      vidaUtilDias: Number(formData.vidaUtilDias),
       imagen: formData.imagen, // 👈 archivo real
     };
 
