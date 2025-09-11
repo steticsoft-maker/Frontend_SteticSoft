@@ -6,6 +6,7 @@ import { es } from 'date-fns/locale/es';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getUsuariosAPI } from '../../usuarios/services/usuariosService';
 import { format, parseISO } from 'date-fns';
+import { Badge } from 'react-bootstrap';
 
 registerLocale('es', es);
 
@@ -18,6 +19,37 @@ const DIAS_DE_LA_SEMANA_OPTIONS = [
   { value: 'Sábado', label: 'Sábado' },
   { value: 'Domingo', label: 'Domingo' },
 ];
+
+const getDiaPillClass = (dia) => {
+  const diaNormalizado = dia
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  return `dia-pill dia-pill-${diaNormalizado}`;
+};
+
+const DiaPill = ({ children, ...props }) => {
+  return (
+    <Badge
+      pill
+      className={getDiaPillClass(props.data.value)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        margin: '2px',
+      }}
+    >
+      {children}
+      <span
+        onClick={props.removeProps.onClick}
+        className="dia-pill-remove"
+        title="Eliminar"
+      >
+        &times;
+      </span>
+    </Badge>
+  );
+};
 
 const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing }) => {
   const {
@@ -39,7 +71,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
 
   const [empleadoOptions, setEmpleadoOptions] = useState([]);
 
-  // Cargar empleados
   useEffect(() => {
     const cargarEmpleados = async () => {
       try {
@@ -58,7 +89,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
     cargarEmpleados();
   }, []);
 
-  // Pre-llenar formulario si es edición
   useEffect(() => {
     if (isEditing && initialData) {
       const horaInicioDate = initialData.horaInicio
@@ -90,7 +120,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
       setValue('empleados', empleadosAsignados);
     }
   }, [isEditing, initialData, setValue]);
-
 
   const onSubmit = (data) => {
     const datosParaEnviar = {
@@ -231,6 +260,9 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
                 classNamePrefix="react-select"
                 placeholder="Seleccione los días..."
                 noOptionsMessage={() => 'No hay más opciones'}
+                components={{
+                  MultiValue: DiaPill,
+                }}
               />
             )}
           />

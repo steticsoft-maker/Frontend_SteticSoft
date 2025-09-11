@@ -1,8 +1,18 @@
 import React from 'react';
+import { Badge } from 'react-bootstrap'; // <-- 1. IMPORTAR BADGE
 import '../css/ConfigHorarios.css';
 
 const HorarioDetalleModal = ({ novedad, onClose }) => {
   if (!novedad) return null;
+
+  // 2. AÑADIR LA FUNCIÓN PARA GENERAR LAS CLASES DE COLOR
+  const getDiaPillClass = (dia) => {
+    const diaNormalizado = dia
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+    return `dia-pill dia-pill-${diaNormalizado}`;
+  };
 
   const formatTime = (timeString) =>
     timeString ? timeString.slice(0, 5) : 'N/A';
@@ -20,7 +30,6 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
     });
   };
 
-  // Cierra si se hace clic fuera del modal
   const handleOverlayClick = (e) => {
     if (e.target.classList.contains('modal-overlay')) {
       onClose();
@@ -36,7 +45,7 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
     >
       <div
         className="modal-content"
-        onClick={(e) => e.stopPropagation()} // evita cierre al hacer clic dentro
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
           <h2>Detalles de la Novedad</h2>
@@ -52,24 +61,33 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
         <div className="modal-body">
           <div className="detail-section">
             <div className="detail-item">
-              <strong>Rango de Fechas:</strong>{' '}
+              <strong>Rango de Fechas:</strong>
               <span>
                 {`${formatDate(novedad.fechaInicio)} - ${formatDate(
                   novedad.fechaFin
                 )}`}
               </span>
             </div>
+            
+            {/* --- 3. SECCIÓN MODIFICADA --- */}
             <div className="detail-item">
-              <strong>Días Aplicables:</strong>{' '}
-              <span>
-                {novedad.dias
-                  ?.map(dia => dia.charAt(0).toUpperCase() + dia.slice(1))
-                  .join(', ')}
-              </span>
+              <strong>Días Aplicables:</strong>
+              <div className="dias-pills-container-modal">
+                {novedad.dias?.map((dia) => (
+                  <Badge
+                    pill
+                    key={dia}
+                    className={getDiaPillClass(dia)}
+                  >
+                    {/* Mostramos el nombre completo del día para mayor claridad */}
+                    {dia.charAt(0).toUpperCase() + dia.slice(1)}
+                  </Badge>
+                ))}
+              </div>
             </div>
 
             <div className="detail-item">
-              <strong>Horario:</strong>{' '}
+              <strong>Horario:</strong>
               <span>
                 {`${formatTime(novedad.horaInicio)} - ${formatTime(
                   novedad.horaFin
@@ -78,7 +96,7 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
             </div>
 
             <div className="detail-item">
-              <strong>Estado:</strong>{' '}
+              <strong>Estado:</strong>
               <span
                 className={novedad.estado ? 'status-active' : 'status-inactive'}
               >
