@@ -1,8 +1,4 @@
-// src/features/serviciosAdmin/components/ServicioAdminDetalleModal.jsx
 import React from 'react';
-import "../css/ServiciosAdmin.css";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
   if (!isOpen || !servicio) return null;
@@ -17,48 +13,48 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
     }).format(numericValue);
   };
 
-  const getFullImageUrl = (relativeUrl) => {
-    if (!relativeUrl) return '';
-    if (relativeUrl.startsWith('http')) return relativeUrl;
-    return `${API_URL}${relativeUrl}`;
-  };
+  // La URL de Cloudinary es absoluta y viene en el campo 'imagen'. No se necesita lógica extra.
+  const imageUrl = servicio.imagen || '';
 
   return (
-    <div className="servicios-admin-modal-overlay" onClick={onClose}>
-      <div
-        className="servicios-admin-modal-content"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          className="modal-close-button"
-          onClick={onClose}
-          aria-label="Cerrar modal"
+    <>
+      <div className="servicios-admin-modal-overlay" onClick={onClose}>
+        <div
+          className="servicios-admin-modal-content"
+          onClick={(e) => e.stopPropagation()}
         >
-          &times;
-        </button>
+          <button
+            className="modal-close-button"
+            onClick={onClose}
+            aria-label="Cerrar modal"
+          >
+            &times;
+          </button>
 
-        <h3>Detalles del Servicio</h3>
-        <div className="servicio-details-list">
-          <p><strong>Nombre:</strong> {servicio.nombre}</p>
-          <p><strong>Descripción:</strong> {servicio.descripcion || 'No aplica'}</p>
-          <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
-          <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'No aplica'}</p>
-          <p><strong>Estado:</strong> {servicio.estado ? 'Activo' : 'Inactivo'}</p>
+          <h3>Detalles del Servicio</h3>
+          <div className="servicio-details-list">
+            <p><strong>Nombre:</strong> {servicio.nombre}</p>
+            <p><strong>Descripción:</strong> {servicio.descripcion || 'No aplica'}</p>
+            <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
+            <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'No aplica'}</p>
 
-          {servicio.imagenUrl && (
-            <div className="servicio-detalle-imagen">
-              <strong>Imagen:</strong>
-              <img
-                src={getFullImageUrl(servicio.imagenUrl)}
-                alt={servicio.nombre}
-                className="servicio-detalle-preview"
-              />
-            </div>
-          )}
+            {/* Se utiliza la URL directa de 'imageUrl' (que viene de servicio.imagen) */}
+            {imageUrl && (
+              <div className="servicio-detalle-imagen">
+                <strong>Imagen:</strong>
+                <img
+                  src={imageUrl}
+                  alt={servicio.nombre}
+                  className="servicio-detalle-preview"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default ServicioAdminDetalleModal;
+

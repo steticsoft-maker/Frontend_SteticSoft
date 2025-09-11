@@ -1,6 +1,6 @@
 // src/features/serviciosAdmin/components/ServiciosAdminTable.jsx
 import React from 'react';
-import { FaRegEye, FaEdit, FaTrashAlt, FaImage } from 'react-icons/fa';
+import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa'; // Se quita FaImage porque ya no se usa
 import '../css/ServiciosAdmin.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -13,10 +13,6 @@ const ServiciosAdminTable = ({
   onToggleEstado,
   loadingId,
 }) => {
-  const getFullImageUrl = (relativeUrl) => {
-    if (!relativeUrl) return '';
-    return `${API_URL}${relativeUrl}`;
-  };
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('es-CO', {
@@ -39,8 +35,8 @@ const ServiciosAdminTable = ({
       <thead>
         <tr>
           <th>#</th>
-          <th>Imagen</th>
           <th>Nombre</th>
+          <th>Descripción</th>
           <th>Precio</th>
           <th>Estado</th>
           <th>Acciones</th>
@@ -50,23 +46,10 @@ const ServiciosAdminTable = ({
         {servicios.map((servicio, index) => (
           <tr key={servicio.idServicio}>
             <td data-label="#">{index + 1}</td>
-            <td data-label="Imagen:">
-              <div className="service-image-container">
-                {servicio.imagenUrl ? (
-                  <img 
-                    src={getFullImageUrl(servicio.imagenUrl)} 
-                    alt={servicio.nombre} 
-                    className="service-thumbnail"
-                  />
-                ) : (
-                  <div className="image-placeholder">
-                    <FaImage />
-                  </div>
-                )}
-              </div>
-            </td>
             <td data-label="Nombre:">{servicio.nombre}</td>
+            <td data-label="Descripción:">{servicio.descripcion}</td>
             <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
+
             <td data-label="Estado:">
               <label className="switch">
                 <input

@@ -1,11 +1,10 @@
-// src/features/serviciosAdmin/pages/ListaServiciosAdminPage.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Componentes y Servicios...
+// Componentes y Servicios
 import ServiciosAdminTable from "../components/ServiciosAdminTable";
 import ServicioAdminFormModal from "../components/ServicioAdminFormModal";
 import ServicioAdminDetalleModal from "../components/ServicioAdminDetalleModal";
@@ -18,8 +17,6 @@ import {
   getActiveCategoriasForSelect,
 } from "../services/serviciosAdminService";
 
-import "../css/ServiciosAdmin.css";
-
 const MySwal = withReactContent(Swal);
 
 function ListaServiciosAdminPage() {
@@ -28,7 +25,7 @@ function ListaServiciosAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [modalState, setModalState] = useState({ type: null, data: null });
-  const [loadingId, setLoadingId] = useState(null);
+  const [loadingId, setLoadingId] = useState(null); // Para deshabilitar botones de acciones específicas
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,25 +39,27 @@ function ListaServiciosAdminPage() {
         estado: filtroEstado === 'todos' ? undefined : filtroEstado,
         busqueda: terminoBusqueda.trim() || undefined,
       };
+      // Carga de servicios y categorías en paralelo para mayor eficiencia
       const [serviciosResponse, categoriasData] = await Promise.all([
         getServicios(filtrosApi),
         getActiveCategoriasForSelect(),
       ]);
       setServicios(Array.isArray(serviciosResponse?.data?.data) ? serviciosResponse.data.data : []);
       setCategorias(categoriasData);
-    } catch {
-      setError("Error al cargar los datos. Intente de nuevo.");
+    } catch{
+      setError("Error al cargar los datos. Por favor, intente de nuevo más tarde.");
       setServicios([]);
     } finally {
       setLoading(false);
     }
   }, [filtroEstado, terminoBusqueda]);
 
+  // Efecto para recargar datos cuando cambian los filtros (con debounce)
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      setCurrentPage(1);
+      setCurrentPage(1); // Resetear a la primera página con cada nuevo filtro
       cargarDatos();
-    }, 500);
+    }, 500); // Espera 500ms después de que el usuario deja de escribir
     return () => clearTimeout(debounceTimer);
   }, [terminoBusqueda, filtroEstado, cargarDatos]);
 
@@ -68,7 +67,7 @@ function ListaServiciosAdminPage() {
     if (type === 'delete' && servicio) {
         MySwal.fire({
             title: '¿Estás seguro?',
-            text: `¿Deseas eliminar el servicio "${servicio.nombre}"?`,
+            text: `¿Deseas eliminar el servicio "${servicio.nombre}"? Esta acción no se puede deshacer.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -84,6 +83,7 @@ function ListaServiciosAdminPage() {
         setModalState({ type, data: servicio });
     }
   };
+
   const handleCloseModal = () => setModalState({ type: null, data: null });
 
   const handleSave = async (servicioData) => {
@@ -96,11 +96,11 @@ function ListaServiciosAdminPage() {
         toast.success('Servicio creado exitosamente!');
       }
       handleCloseModal();
-      cargarDatos();
+      cargarDatos(); // Recargar datos para mostrar los cambios
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al guardar el servicio.";
+      const errorMsg = err.message || "Error al guardar el servicio.";
       toast.error(errorMsg);
-      throw err;
+      throw err; // Re-lanza el error para que el modal sepa que la sumisión falló
     }
   };
 
@@ -109,10 +109,10 @@ function ListaServiciosAdminPage() {
     setLoadingId(servicio.idServicio);
     try {
       await deleteServicio(servicio.idServicio);
-      toast.success('Servicio eliminado exitosamente!');
-      cargarDatos();
+      toast.success(`Servicio "${servicio.nombre}" eliminado.`);
+      cargarDatos(); // Recargar datos
     } catch (err) {
-      toast.error(err.response?.data?.message || "Error al eliminar el servicio.");
+      toast.error(err.message || "Error al eliminar el servicio.");
     } finally {
       setLoadingId(null);
     }
@@ -122,88 +122,105 @@ function ListaServiciosAdminPage() {
     setLoadingId(servicio.idServicio);
     try {
       await cambiarEstadoServicio(servicio.idServicio, !servicio.estado);
-      toast.success(`Estado del servicio cambiado.`);
+      toast.success(`Estado de "${servicio.nombre}" cambiado.`);
+      // Actualización optimista para una UI más fluida
       setServicios(prev => 
         prev.map(s => s.idServicio === servicio.idServicio ? { ...s, estado: !s.estado } : s)
       );
     } catch (err) {
-      toast.error(err.response?.data?.message || "Error al cambiar el estado.");
+      toast.error(err.message || "Error al cambiar el estado.");
+      // Opcional: podrías recargar los datos aquí para revertir el cambio visual en caso de error
+      // cargarDatos();
     } finally {
       setLoadingId(null);
     }
   };
 
+  // Lógica de paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = servicios.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(servicios.length / itemsPerPage);
 
   return (
-    <div className="servicios-admin-page-container">
-      <div className="servicios-content">
-        <h1>Gestión de Servicios</h1>
-        
-        <div className="servicios-admin-controls">
-          <div className="servicios-admin-search-bar">
-            <input type="text" placeholder="Buscar por nombre o precio..." value={terminoBusqueda} onChange={(e) => setTerminoBusqueda(e.target.value)} />
-            <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
-              <option value="todos">Todos los estados</option>
-              <option value="true">Activos</option>
-              <option value="false">Inactivos</option>
-            </select>
+    <>
+      <div className="servicios-admin-page-container">
+        <div className="servicios-content">
+          <h1>Gestión de Servicios</h1>
+          
+          <div className="servicios-admin-controls">
+            <div className="servicios-admin-search-bar">
+              <input type="text" placeholder="Buscar por nombre o precio..." value={terminoBusqueda} onChange={(e) => setTerminoBusqueda(e.target.value)} />
+              <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
+                <option value="todos">Todos los estados</option>
+                <option value="true">Activos</option>
+                <option value="false">Inactivos</option>
+              </select>
+            </div>
+            <button className="botonAgregarServicio" onClick={() => handleOpenModal("create")}>Agregar Servicio</button>
           </div>
-          <button className="botonAgregarServicio" onClick={() => handleOpenModal("create")}>Agregar Servicio</button>
+
+          {error && <p className="error-message">{error}</p>}
+
+          {loading ? (
+            <p style={{ textAlign: 'center', padding: '2rem' }}>Cargando...</p>
+          ) : (
+            <>
+              <ServiciosAdminTable
+                servicios={currentItems}
+                onView={(servicio) => handleOpenModal("details", servicio)}
+                onEdit={(servicio) => handleOpenModal("edit", servicio)}
+                onDeleteConfirm={(servicio) => handleOpenModal("delete", servicio)}
+                onToggleEstado={handleToggleEstado}
+                loadingId={loadingId}
+              />
+              
+              {servicios.length > itemsPerPage && (
+                <div className="pagination-controls">
+                  <select 
+                    value={itemsPerPage} 
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option value={5}>Mostrar 5</option>
+                    <option value={10}>Mostrar 10</option>
+                    <option value={15}>Mostrar 15</option>
+                  </select>
+                  <span>
+                    Página <strong>{currentPage}</strong> de <strong>{totalPages}</strong>
+                  </span>
+                  <div className="pagination-buttons">
+                    <button onClick={() => setCurrentPage(c => Math.max(1, c - 1))} disabled={currentPage === 1}>
+                      Anterior
+                    </button>
+                    <button onClick={() => setCurrentPage(c => Math.min(totalPages, c + 1))} disabled={currentPage === totalPages}>
+                      Siguiente
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
-        {error && <p className="error-message">{error}</p>}
-
-        {loading ? (
-          <p style={{ textAlign: 'center' }}>Cargando...</p>
-        ) : (
-          <>
-            <ServiciosAdminTable
-              servicios={currentItems}
-              onView={(servicio) => handleOpenModal("details", servicio)}
-              onEdit={(servicio) => handleOpenModal("edit", servicio)}
-              onDeleteConfirm={(servicio) => handleOpenModal("delete", servicio)}
-              onToggleEstado={handleToggleEstado}
-              loadingId={loadingId}
-            />
-            
-            {/* --- LÍNEA CORREGIDA FINALMENTE --- */}
-            {servicios.length > 5 && (
-              <div className="pagination-controls">
-                <select 
-                  value={itemsPerPage} 
-                  onChange={(e) => {
-                    setItemsPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                >
-                  <option value={5}>Mostrar 5</option>
-                  <option value={10}>Mostrar 10</option>
-                </select>
-                <span>
-                  Página <strong>{currentPage}</strong> de <strong>{totalPages}</strong>
-                </span>
-                <div className="pagination-buttons">
-                  <button onClick={() => setCurrentPage(c => c - 1)} disabled={currentPage === 1}>
-                    Anterior
-                  </button>
-                  <button onClick={() => setCurrentPage(c => c + 1)} disabled={currentPage === totalPages}>
-                    Siguiente
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
-        )}
+        {/* Modales */}
+        <ServicioAdminFormModal 
+          isOpen={modalState.type === 'create' || modalState.type === 'edit'} 
+          onClose={handleCloseModal} 
+          onSubmit={handleSave} 
+          initialData={modalState.data} 
+          isEditMode={modalState.type === "edit"} 
+          categorias={categorias} 
+        />
+        <ServicioAdminDetalleModal 
+          isOpen={modalState.type === 'details'} 
+          onClose={handleCloseModal} 
+          servicio={modalState.data} 
+        />
       </div>
-
-      {/* Modales */}
-      <ServicioAdminFormModal isOpen={modalState.type === 'create' || modalState.type === 'edit'} onClose={handleCloseModal} onSubmit={handleSave} initialData={modalState.data} isEditMode={modalState.type === "edit"} categorias={categorias} />
-      <ServicioAdminDetalleModal isOpen={modalState.type === 'details'} onClose={handleCloseModal} servicio={modalState.data} />
-    </div>
+    </>
   );
 }
 

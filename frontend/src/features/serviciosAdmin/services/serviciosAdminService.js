@@ -1,4 +1,3 @@
-// src/features/serviciosAdmin/services/serviciosAdminService.js
 import apiClient from "../../../shared/services/apiClient";
 import { getCategoriasServicio } from "../../categoriasServicioAdmin/services/categoriasServicioService";
 
@@ -12,28 +11,28 @@ import { getCategoriasServicio } from "../../categoriasServicioAdmin/services/ca
 export const getServicios = async (filtros = {}) => {
   try {
     const response = await apiClient.get("/servicios", { params: filtros });
-    // CORRECCIÓN CLAVE: Retorna la respuesta completa de la API.
     return response;
   } catch (error) {
     console.error("Error al obtener servicios:", error);
-    // Devuelve un objeto con datos vacíos en caso de error.
     return { data: { data: [] } };
   }
 };
 
 /**
  * Crea un nuevo servicio en la API usando FormData.
- * @param {FormData} formData - El objeto FormData que contiene los datos del servicio y el archivo de imagen.
+ * @param {object} servicioData - Objeto con los datos del servicio. La propiedad 'imagen' debe ser un objeto File si existe.
  * @returns {Promise<object>} La respuesta de la API.
  */
 export const createServicio = async (servicioData) => {
   try {
     const formData = new FormData();
+    // Construye el FormData a partir de los datos del servicio.
     for (const key in servicioData) {
       if (servicioData[key] !== null && servicioData[key] !== undefined) {
         formData.append(key, servicioData[key]);
       }
     }
+
     const response = await apiClient.post("/servicios", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
@@ -44,14 +43,36 @@ export const createServicio = async (servicioData) => {
   }
 };
 
+/**
+ * Actualiza un servicio existente. Maneja inteligentemente la actualización de la imagen.
+ * @param {number|string} id - El ID del servicio a actualizar.
+ * @param {object} servicioData - Datos a actualizar. La propiedad 'imagen' puede ser:
+ * - Un objeto File: para subir una nueva imagen.
+ * - null: para eliminar la imagen existente.
+ * - undefined o una string (URL): para no cambiar la imagen existente.
+ * @returns {Promise<object>} La respuesta de la API.
+ */
 export const updateServicio = async (id, servicioData) => {
   try {
     const formData = new FormData();
+
+    // Itera sobre los datos y los añade al FormData, manejando la imagen de forma especial.
     for (const key in servicioData) {
-      if (servicioData[key] !== null && servicioData[key] !== undefined) {
+      if (key === 'imagen') {
+        if (servicioData.imagen instanceof File) {
+          // Si es un archivo nuevo, lo añade para subirlo.
+          formData.append('imagen', servicioData.imagen);
+        } else if (servicioData.imagen === null) {
+          // Si es null, añade un string vacío como señal para que el backend la elimine.
+          formData.append('imagen', '');
+        }
+        // Si es una URL (string) o undefined, no hace nada, conservando la imagen existente.
+      } else if (servicioData[key] !== null && servicioData[key] !== undefined) {
         formData.append(key, servicioData[key]);
       }
     }
+    
+    // IMPORTANTE: Se usa apiClient.put para la actualización.
     const response = await apiClient.put(`/servicios/${id}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
@@ -61,6 +82,7 @@ export const updateServicio = async (id, servicioData) => {
     throw error.response?.data || new Error("Error al actualizar el servicio.");
   }
 };
+
 /**
  * Elimina un servicio de la API por su ID.
  * @param {number|string} id - ID del servicio a eliminar.
@@ -68,7 +90,6 @@ export const updateServicio = async (id, servicioData) => {
  */
 export const deleteServicio = async (id) => {
   try {
-    // La ruta para eliminar un servicio es la misma que la del PUT o GET
     await apiClient.delete(`/servicios/${id}`);
   } catch (error) {
     console.error(`Error al eliminar el servicio ${id}:`, error);
@@ -102,8 +123,8 @@ export const cambiarEstadoServicio = async (id, nuevoEstado) => {
  */
 export const getActiveCategoriasForSelect = async () => {
   try {
-    const response = await getCategoriasServicio(true);
-    // CORRECCIÓN: Accede a response.data.data para obtener el array.
+    // Asume que getCategoriasServicio(true) filtra por activas.
+    const response = await getCategoriasServicio({ estado: true }); 
     const categoriasArray = response?.data?.data;
 
     if (!Array.isArray(categoriasArray)) {
@@ -115,7 +136,7 @@ export const getActiveCategoriasForSelect = async () => {
     }
 
     return categoriasArray.map((cat) => ({
-      value: cat.idCategoriaServicio, // ¡ESTA ES LA LÍNEA CRÍTICA!
+      value: cat.idCategoriaServicio,
       label: cat.nombre,
     }));
   } catch (error) {
