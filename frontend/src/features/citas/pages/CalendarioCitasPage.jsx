@@ -1,5 +1,7 @@
 // src/features/citas/pages/CalendarioCitasPage.jsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
@@ -8,9 +10,6 @@ import Select from 'react-select';
 
 // ✅ IMPORTACIONES ACTUALIZADAS
 import { CitasTable, CitaDetalleModal } from '../components';
-import ConfirmModal from '../../../shared/components/common/ConfirmModal';
-import ValidationModal from '../../../shared/components/common/ValidationModal';
-import ConfirmAgendarModal from '../components/ConfirmAgendarModal'; // ✅ Nuevo modal
 import {
   fetchCitas,
   crearCita,
@@ -28,14 +27,13 @@ import '../css/Citas.css';
 
 moment.locale('es');
 
+const MySwal = withReactContent(Swal);
+
 function CalendarioCitasPage() {
   // --- Estados de UI y Modales ---
   const [viewMode, setViewMode] = useState('lista'); // 'lista' o 'agendar'
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  const [isConfirmAgendarOpen, setIsConfirmAgendarOpen] = useState(false); // ✅ Nuevo estado
 
   // --- Estados de Datos ---
   const [citas, setCitas] = useState([]);
@@ -59,9 +57,6 @@ function CalendarioCitasPage() {
 
   // --- Estados para Operaciones ---
   const [citaParaOperacion, setCitaParaOperacion] = useState(null);
-  const [citaParaConfirmar, setCitaParaConfirmar] = useState(null); // ✅ Nuevo estado
-  const [validationMessage, setValidationMessage] = useState('');
-  const [validationTitle, setValidationTitle] = useState('Aviso');
 
   // --- Carga de Datos ---
   const cargarDatosPrincipales = useCallback(async () => {
@@ -83,41 +78,27 @@ function CalendarioCitasPage() {
       setCitas(normalizadas);
       setEstadosCita(estadosRes.data?.data || []);
     } catch (error) {
-      setValidationMessage("No se pudieron cargar los datos: " + (error.response?.data?.message || error.message));
-      setValidationTitle("Error de Carga");
-      setIsValidationModalOpen(true);
+      MySwal.fire("Error de Carga", "No se pudieron cargar los datos: " + (error.response?.data?.message || error.message), "error");
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   const cargarDatosAgendamiento = useCallback(() => {
-    // Cargar Novedades con manejo de errores
     fetchNovedadesAgendables()
-      .then(res => {
-        setNovedades(res.data?.data || []);
-      })
+      .then(res => setNovedades(res.data?.data || []))
       .catch(error => {
-        console.error("Error detallado al cargar novedades:", error.response || error);
-        setValidationMessage(`No se pudieron cargar las novedades para agendar. Motivo: ${error.response?.data?.message || 'Error desconocido'}. Por favor, contacte a soporte.`);
-        setValidationTitle("Error de Carga");
-        setIsValidationModalOpen(true);
-        setNovedades([]); // Asegurarse de que el selector esté vacío si hay un error
+        MySwal.fire("Error de Carga", `No se pudieron cargar las novedades para agendar. Motivo: ${error.response?.data?.message || 'Error desconocido'}. Por favor, contacte a soporte.`, "error");
+        setNovedades([]);
       });
 
-    // Cargar Servicios con manejo de errores
     fetchServiciosDisponibles()
-      .then(res => {
-        setServicios(res.data?.data || []);
-      })
+      .then(res => setServicios(res.data?.data || []))
       .catch(error => {
-        console.error("Error detallado al cargar servicios:", error.response || error);
-        setValidationMessage(`No se pudieron cargar los servicios disponibles. Motivo: ${error.response?.data?.message || 'Error desconocido'}.`);
-        setValidationTitle("Error de Carga");
-        setIsValidationModalOpen(true);
-        setServicios([]); // Asegurarse de que el selector esté vacío
+        MySwal.fire("Error de Carga", `No se pudieron cargar los servicios disponibles. Motivo: ${error.response?.data?.message || 'Error desconocido'}.`, "error");
+        setServicios([]);
       });
-  }, [setNovedades, setServicios, setIsValidationModalOpen, setValidationMessage, setValidationTitle]);
+  }, []);
 
   useEffect(() => {
     if (viewMode === 'agendar') {
@@ -149,7 +130,7 @@ function CalendarioCitasPage() {
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedTime(null);
-  if (selectedNovedad && selectedNovedad.value) {
+    if (selectedNovedad && selectedNovedad.value) {
       const fechaStr = moment(date).format('YYYY-MM-DD');
       fetchHorasDisponibles(selectedNovedad.value, fechaStr)
         .then(res => setHorasDisponibles(res.data?.data || []))
@@ -166,9 +147,7 @@ function CalendarioCitasPage() {
   // --- Lógica de Submisión y Modales ---
   const handleAgendarSubmit = () => {
     if (!selectedNovedad || !selectedDate || !selectedTime || !selectedEmpleado || selectedServicios.length === 0 || !selectedCliente) {
-      setValidationMessage('Todos los campos son obligatorios.');
-      setValidationTitle('Campos Incompletos');
-      setIsValidationModalOpen(true);
+      MySwal.fire('Campos Incompletos', 'Todos los campos son obligatorios.', 'warning');
       return;
     }
     
@@ -178,21 +157,39 @@ function CalendarioCitasPage() {
         return sum + price;
     }, 0);
 
-    setCitaParaConfirmar({
+    const citaParaConfirmar = {
       cliente: selectedCliente,
       empleado: selectedEmpleado,
       servicios: selectedServicios,
       fecha: selectedDate,
       hora: selectedTime,
       precioTotal,
+    };
+
+    MySwal.fire({
+      title: 'Confirmar Cita',
+      html: `
+        <p><strong>Cliente:</strong> ${citaParaConfirmar.cliente.label}</p>
+        <p><strong>Empleado:</strong> ${citaParaConfirmar.empleado.label}</p>
+        <p><strong>Fecha:</strong> ${moment(citaParaConfirmar.fecha).format('LL')}</p>
+        <p><strong>Hora:</strong> ${moment(citaParaConfirmar.hora, 'HH:mm:ss').format('hh:mm A')}</p>
+        <p><strong>Servicios:</strong> ${citaParaConfirmar.servicios.map(s => s.label.split('(')[0].trim()).join(', ')}</p>
+        <hr/>
+        <p><strong>Precio Total:</strong> $${citaParaConfirmar.precioTotal.toLocaleString('es-CO')}</p>
+      `,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar Agendamiento',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.isConfirmed) {
+        handleConfirmarAgendamiento();
+      }
     });
-    setIsConfirmAgendarOpen(true);
   };
 
   const handleConfirmarAgendamiento = async () => {
-    setIsConfirmAgendarOpen(false);
     setIsLoading(true);
-
     const fechaHoraISO = moment(`${moment(selectedDate).format('YYYY-MM-DD')}T${selectedTime}`).toISOString();
     
     const citaPayload = {
@@ -201,67 +198,73 @@ function CalendarioCitasPage() {
       usuarioId: selectedEmpleado.value,
       servicios: selectedServicios.map(s => s.value),
       fechaHora: fechaHoraISO,
-      estadoCitaId: 1, // '1' = Pendiente/Programada por defecto
+      estadoCitaId: 1,
     };
 
     try {
       if (editingCitaId) {
         await actualizarCita(editingCitaId, citaPayload);
-        setValidationMessage('¡Cita actualizada exitosamente!');
-        setValidationTitle('Éxito');
+        MySwal.fire('¡Éxito!', '¡Cita actualizada exitosamente!', 'success');
       } else {
         await crearCita(citaPayload);
-        setValidationMessage('¡Cita agendada exitosamente!');
-        setValidationTitle('Éxito');
+        MySwal.fire('¡Éxito!', '¡Cita agendada exitosamente!', 'success');
       }
       resetFormulario();
       setViewMode('lista');
     } catch (error) {
-      setValidationMessage(error.response?.data?.message || 'Ocurrió un error.');
-      setValidationTitle(editingCitaId ? 'Error al Actualizar' : 'Error al Agendar');
+      MySwal.fire(editingCitaId ? 'Error al Actualizar' : 'Error al Agendar', error.response?.data?.message || 'Ocurrió un error.', 'error');
     } finally {
       setIsLoading(false);
-      setIsValidationModalOpen(true);
     }
   };
 
   // --- Handlers de Acciones de la Tabla ---
   const handleOpenDeleteConfirm = (citaId) => {
     const cita = citas.find(c => c.id === citaId);
-    setCitaParaOperacion(cita);
-    setIsConfirmDeleteOpen(true);
+    MySwal.fire({
+      title: '¿Estás seguro?',
+      text: `Deseas eliminar la cita para "${cita?.clienteNombre}"? Esta acción es irreversible.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, ¡eliminar!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleConfirmDeleteCita(citaId);
+      }
+    });
   };
   
-  const handleConfirmDeleteCita = async () => {
-    if (citaParaOperacion?.id) {
+  const handleConfirmDeleteCita = async (citaId) => {
       try {
-        await deleteCitaById(citaParaOperacion.id);
+        await deleteCitaById(citaId);
         cargarDatosPrincipales();
-        setValidationMessage("Cita eliminada exitosamente.");
-        setValidationTitle("Éxito");
+        MySwal.fire('¡Eliminada!', 'La cita ha sido eliminada.', 'success');
       } catch (error) {
-        setValidationMessage(error.response?.data?.message || "No se pudo eliminar la cita.");
-        setValidationTitle("Error al Eliminar");
-      } finally {
-        setIsConfirmDeleteOpen(false);
-        setIsValidationModalOpen(true);
+        MySwal.fire("Error al Eliminar", error.response?.data?.message || "No se pudo eliminar la cita.", "error");
       }
-    }
   };
 
   const handleStatusChange = async (citaId, newStatusId) => {
     setIsLoading(true);
     try {
         await actualizarCita(citaId, { estadoCitaId: newStatusId });
-        setValidationMessage("Estado de la cita actualizado.");
-        setValidationTitle("Éxito");
-        cargarDatosPrincipales(); // Recarga para reflejar el cambio
+        MySwal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Estado de la cita actualizado.',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+        cargarDatosPrincipales();
     } catch (error) {
-        setValidationMessage(error.response?.data?.message || "No se pudo actualizar el estado.");
-        setValidationTitle("Error de Actualización");
+        MySwal.fire("Error de Actualización", error.response?.data?.message || "No se pudo actualizar el estado.", "error");
     } finally {
         setIsLoading(false);
-        setIsValidationModalOpen(true);
     }
   };
 
@@ -405,25 +408,6 @@ function CalendarioCitasPage() {
         isOpen={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
         cita={citaParaOperacion}
-      />
-      <ConfirmModal
-        isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
-        onConfirm={handleConfirmDeleteCita} 
-        title="Confirmar Eliminación"
-        message={`¿Está seguro de eliminar la cita para "${citaParaOperacion?.clienteNombre}"? Esta acción es irreversible.`}
-      />
-      <ConfirmAgendarModal
-        isOpen={isConfirmAgendarOpen}
-        onClose={() => setIsConfirmAgendarOpen(false)}
-        onConfirm={handleConfirmarAgendamiento}
-        citaData={citaParaConfirmar}
-      />
-      <ValidationModal
-        isOpen={isValidationModalOpen}
-        onClose={() => setIsValidationModalOpen(false)}
-        title={validationTitle}
-        message={validationMessage}
       />
     </div>
   );
