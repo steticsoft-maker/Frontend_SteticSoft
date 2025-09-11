@@ -4,7 +4,6 @@ import UsuariosTable from "../components/UsuariosTable";
 import UsuarioCrearModal from "../components/UsuarioCrearModal";
 import UsuarioEditarModal from "../components/UsuarioEditarModal";
 import UsuarioDetalleModal from "../components/UsuarioDetalleModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination";
 import useUsuarios from "../hooks/useUsuarios";
@@ -22,7 +21,6 @@ function ListaUsuariosPage() {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isConfirmDeleteModalOpen,
     isValidationModalOpen,
     validationMessage,
     inputValue,
@@ -35,7 +33,6 @@ function ListaUsuariosPage() {
     closeModal,
     handleOpenModal,
     handleSaveUsuario,
-    handleConfirmDeleteUsuario,
     handleToggleEstadoUsuario,
     formData,
     formErrors,
@@ -136,16 +133,6 @@ function ListaUsuariosPage() {
         isOpen={isDetailsModalOpen}
         onClose={closeModal}
         usuario={currentUsuario}
-      />
-      <ConfirmModal
-        isOpen={isConfirmDeleteModalOpen}
-        onClose={closeModal}
-        onConfirm={handleConfirmDeleteUsuario}
-        title="Confirmar Eliminación Permanente"
-        message={`¿Estás seguro de que deseas eliminar permanentemente al usuario "${formData?.correo || currentUsuario?.correo || ""}"? Esta acción no se puede deshacer.`}
-        confirmText="Eliminar Permanentemente"
-        cancelText="Cancelar"
-        isLoading={isSubmitting}
       />
       <ValidationModal
         isOpen={isValidationModalOpen}
