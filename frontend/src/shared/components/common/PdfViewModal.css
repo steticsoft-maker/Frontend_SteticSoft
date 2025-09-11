@@ -1,52 +1,84 @@
-/* .modal-overlay y .modal-content pueden ser tus clases genéricas de modal */
+/* Contenedor principal del modal PDF */
 .pdf-view-modal-content {
-    /* Centrado absoluto sobre el overlay */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    /* Dimensiones */
-    width: 80%;
-    max-width: 900px;
-    height: 90vh; /* Aumentado para más espacio vertical */
-
-    /* Estilos internos */
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 8px; /* Aseguramos el borde redondeado */
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 900px;
+  height: 90vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: var(--color-background-light);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--color-primary-hover);
+  animation: fadeIn 0.3s ease-in-out;
 }
 
+/* Header del modal */
 .pdf-view-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: var(--color-background-modal-header, #f0f0f0);
-    /* Define esta variable */
-    border-bottom: 1px solid var(--color-border-light, #ddd);
-    border-top-left-radius: 8px;
-    /* Hereda el radio del modal-content */
-    border-top-right-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background-color: var(--color-primary);
+  border-bottom: 2px solid var(--color-primary-hover);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  color: var(--color-text-light);
 }
 
+/* Título */
 .pdf-view-modal-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: var(--color-text-dark);
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
+  color: var(--color-text-light);
 }
 
+/* Botón cerrar */
 .pdf-view-modal-close-button {
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: var(--color-text-muted, #777);
-    padding: 0 5px;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: var(--color-text-light);
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .pdf-view-modal-close-button:hover {
-    color: var(--color-text-dark); }
+  color: var(--color-secondary);
+  transform: scale(1.2);
+}
+
+/* Contenido PDF */
+.pdf-view-body {
+  flex: 1;
+  background-color: var(--color-background);
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pdf-view-body iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Animación entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
