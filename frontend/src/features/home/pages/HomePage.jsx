@@ -16,21 +16,22 @@ function HomePage() {
         <HeroSection />
 
         {/* Beneficios */}
-        <section className="home-features-content">
-          <InfoCard title="Estilo Profesional">
-            Disfruta de cortes, tintes, peinados y más con atención
-            personalizada.
-          </InfoCard>
-          <InfoCard title="Calidad en Cada Servicio">
-            Nos enfocamos en resaltar tu imagen con técnicas modernas y
-            productos de alta calidad.
-          </InfoCard>
-          <InfoCard title="Agendamiento Rápido">
-            Reserva tu cita en línea de forma fácil desde cualquier dispositivo.
-          </InfoCard>
+        <section className="home-features-wrapper">
+          <div className="home-features-content">
+            <InfoCard title="Estilo Profesional">
+              Disfruta de cortes, tintes, peinados y más con atención
+              personalizada.
+            </InfoCard>
+            <InfoCard title="Calidad en Cada Servicio">
+              Nos enfocamos en resaltar tu imagen con técnicas modernas y
+              productos de alta calidad.
+            </InfoCard>
+            <InfoCard title="Agendamiento Rápido">
+              Reserva tu cita en línea de forma fácil desde cualquier
+              dispositivo.
+            </InfoCard>
+          </div>
         </section>
-
-        
       </div>
       <Footer />
     </div>

@@ -1,149 +1,147 @@
 /* src/features/home/css/Home.css */
 
-/* EXISTENTE */
+/* ===== CONTENEDOR GENERAL ===== */
 .home-page-container {
-    padding: 20px;
-    margin-top: 80px;
+  padding: 0;
+  margin-top: 80px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--color-background-light);
+  color: var(--color-text-dark);
 }
 
-.home-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.home-header h1 {
-    font-size: 2.5rem;
-    color: var(--color-primary);
-}
-
-.home-header p {
-    font-size: 1.2rem;
-    color: var(--color-text-dark);
-}
-
-.home-features-content {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.home-card {
-    background-color: var(--color-secondary);
-    border-radius: 10px;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-    width: 30%;
-    min-width: 250px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.home-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-}
-
-.home-card h2 {
-    color: var(--color-primary);
-    margin-bottom: 10px;
-}
-
-.home-card p {
-    color: var(--color-text-dark);
-}
-
-/* NUEVO: Hero mejorado */
+/* ===== HERO PRINCIPAL ===== */
+/* ===== HERO PRINCIPAL ===== */
 .home-hero {
-    position: relative;
-    background: url("/logo.png") center/contain no-repeat; 
-    background-color: var(--color-background-light); /* Fondo blanco detrás del logo */
-    height: 90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: relative;
+  background: url("/logo.png") center/800px no-repeat;
+  background-color: var(--color-background-light);
+  height: 75vh; /* un poco más alto para darle espacio al logo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
 .hero-overlay {
-    background: rgba(154, 122, 159, 0.55);
-    padding: 40px;
-    text-align: center;
-    color: white;
-    border-radius: 12px;
+  background: rgba(154, 122, 159, 0.45); /* Más suave */
+  padding: 50px;
+  text-align: center;
+  color: white;
+  border-radius: 16px;
+  max-width: 700px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
 .hero-title {
-    font-size: 3rem;
-    font-weight: bold;
-}
-
-.hero-subtitle {
-    font-size: 1.5rem;
-    margin: 15px 0;
-}
-
-.hero-button {
-    margin-top: 20px;
-    padding: 12px 24px;
-    background: var(--color-primary);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.hero-button:hover {
-    background: var(--color-primary-hover);
-}
-
-/* NUEVO: Servicios destacados */
-.home-services {
-    margin-top: 40px;
-    text-align: center;
-}
-
-.services-grid {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.public-servicios-image {
-  width: 100%;
-  height: 220px; /* puedes ajustar 200–250px según lo que prefieras */
-  object-fit: cover; /* recorta sin deformar */
-  border-radius: 10px;
+  color: rgb(233, 228, 228);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 2.8rem;
+  font-weight: bold;
   margin-bottom: 15px;
 }
 
+.hero-subtitle {
+  color: rgb(233, 228, 228);
+  font-weight: 400;
+  font-size: 1.3rem;
+  margin: 10px 0 20px;
+  font-family: 'Lora', serif;
+}
+
+/* ===== FEATURES / BENEFICIOS ===== */
+.home-features-content {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px; /* Más separación entre cards */
+  margin: 60px auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.home-card {
+  background-color: #fdfdfd; /* Más blanco */
+  border: 2px solid var(--color-primary);
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  text-align: center;
+  width: 30%;
+  min-width: 260px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.home-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+.home-card h2 {
+  color: var(--color-primary);
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+}
+
+.home-card p {
+  color: var(--color-text-dark);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* ===== SERVICIOS DESTACADOS (opcional futuro) ===== */
+.home-services {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.home-services h2 {
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+.services-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* Imágenes */
+.public-servicios-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+/* ===== FOOTER ===== */
 .footer {
   background-color: var(--color-primary);
   color: var(--color-text-light);
-  padding: 40px 20px 20px;
-  margin-top: 50px;
+  padding: 50px 20px 30px;
+  margin-top: 70px;
 }
 
 .footer-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 40px;
   max-width: 1200px;
   margin: auto;
 }
 
-.footer h2, .footer h3 {
-  color: var(--color-text-light); /* Color corporativo */
-  margin-bottom: 10px;
+.footer h2,
+.footer h3 {
+  color: var(--color-text-light);
+  margin-bottom: 12px;
 }
 
-.footer p, .footer a {
+.footer p,
+.footer a {
   color: var(--color-text-light);
   font-size: 0.95rem;
   text-decoration: none;
@@ -160,7 +158,7 @@
 }
 
 .footer-links li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .footer-social .social-icons {
@@ -181,8 +179,17 @@
 .footer-bottom {
   text-align: center;
   border-top: 1px solid var(--color-primary-hover);
-  margin-top: 20px;
+  margin-top: 25px;
   padding-top: 15px;
   font-size: 0.85rem;
   color: var(--color-text-light);
+}
+
+.home-features-wrapper {
+  background-color: var(--color-background-light);
+  border-radius: 15px;
+  padding: 40px 20px;
+  margin: 50px auto;
+  max-width: 1200px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }

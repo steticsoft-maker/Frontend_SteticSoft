@@ -11,10 +11,6 @@ const HeroSection = () => (
       <p className="hero-subtitle">
         Transformamos tu estilo, cuidamos tu imagen
       </p>
-      <button className="hero-button">
-  <FaCut className="mr-2" /> Agendar Cita
-</button>
-
     </div>
   </header>
 );
