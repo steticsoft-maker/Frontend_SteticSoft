@@ -7,9 +7,6 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 // Creación de la instancia de Axios con la configuración base.
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 // --- Interceptor de Petición (Request) ---
