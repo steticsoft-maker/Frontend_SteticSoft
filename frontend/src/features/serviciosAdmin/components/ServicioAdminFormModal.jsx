@@ -184,17 +184,17 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     
     setIsSubmitting(true);
     
-    const dataToSend = new FormData();
-    dataToSend.append('nombre', formData.nombre.trim());
-    dataToSend.append('descripcion', formData.descripcion);
-    dataToSend.append('precio', formData.precio);
-    dataToSend.append('idCategoriaServicio', formData.idCategoriaServicio);
+    const dataToSend = {
+      nombre: formData.nombre.trim(),
+      descripcion: formData.descripcion,
+      precio: formData.precio,
+      idCategoriaServicio: formData.idCategoriaServicio,
+    };
     
     if (imageFile) {
-      dataToSend.append('imagen', imageFile);
+      dataToSend.imagen = imageFile;
     } else if (!imagePreview && isEditMode) {
-      // Si no hay preview y estamos editando, significa que el usuario eliminó la imagen
-      dataToSend.append('imagenUrl', ''); // Indicamos que se debe eliminar
+      dataToSend.imagenUrl = '';
     }
     
     try {

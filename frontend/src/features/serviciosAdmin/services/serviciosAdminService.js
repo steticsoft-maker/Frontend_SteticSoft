@@ -26,38 +26,39 @@ export const getServicios = async (filtros = {}) => {
  * @param {FormData} formData - El objeto FormData que contiene los datos del servicio y el archivo de imagen.
  * @returns {Promise<object>} La respuesta de la API.
  */
-export const createServicio = async (formData) => {
+export const createServicio = async (servicioData) => {
   try {
+    const formData = new FormData();
+    for (const key in servicioData) {
+      if (servicioData[key] !== null && servicioData[key] !== undefined) {
+        formData.append(key, servicioData[key]);
+      }
+    }
     const response = await apiClient.post("/servicios", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   } catch (error) {
-    console.error("Error al crear el servicio:", error);
-    throw error.response?.data || new Error(error.message);
+    console.error("Error al crear el servicio:", error.response?.data || error.message);
+    throw error.response?.data || new Error("Error al crear el servicio.");
   }
 };
 
-
-/**
- * Actualiza un servicio existente en la API usando FormData.
- * @param {number|string} id - ID del servicio a actualizar.
- * @param {FormData} formData - El objeto FormData con los datos a actualizar.
- * @returns {Promise<object>} La respuesta de la API.
- */
-export const updateServicio = async (id, formData) => {
+export const updateServicio = async (id, servicioData) => {
   try {
+    const formData = new FormData();
+    for (const key in servicioData) {
+      if (servicioData[key] !== null && servicioData[key] !== undefined) {
+        formData.append(key, servicioData[key]);
+      }
+    }
     const response = await apiClient.put(`/servicios/${id}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   } catch (error) {
-    console.error(`Error al actualizar el servicio ${id}:`, error);
-    throw error.response?.data || new Error(error.message);
+    console.error(`Error al actualizar el servicio ${id}:`, error.response?.data || error.message);
+    throw error.response?.data || new Error("Error al actualizar el servicio.");
   }
 };
 /**
