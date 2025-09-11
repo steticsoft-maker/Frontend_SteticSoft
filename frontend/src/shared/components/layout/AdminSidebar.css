@@ -96,7 +96,7 @@
 .nested-link {
   padding: 10px 15px;
   font-size: 0.9rem;
-  color: #ffffff; /* << --- CAMBIO: Color de texto de nested-link a blanco --- */
+  color: #000000; /* << --- CAMBIO: Color de texto de nested-link a blanco --- */
 }
 
 /* .nested-link:hover ya hereda el color #ffffff del selector .dashboard-link:hover, .nested-link:hover */
