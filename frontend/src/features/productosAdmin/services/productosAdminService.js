@@ -38,10 +38,8 @@ const createProducto = async (productoData) => {
       }
     }
 
-    // Enviamos el formData. Axios se encarga de poner el 'Content-Type' correcto ('multipart/form-data').
-    const response = await apiClient.post("/productos", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    // Enviamos el formData. Dejamos que Axios ponga el 'Content-Type' correcto ('multipart/form-data' con su boundary).
+    const response = await apiClient.post("/productos", formData);
     return response.data;
   } catch (error) {
     // AÑADIDO PARA DEBUG: Muestra los errores de validación específicos en la consola.
@@ -69,9 +67,7 @@ const updateProducto = async (id, productoData) => {
       }
     }
 
-    const response = await apiClient.put(`/productos/${id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const response = await apiClient.put(`/productos/${id}`, formData);
     return response.data;
   } catch (error) {
     if (error.response?.data?.errors) {
