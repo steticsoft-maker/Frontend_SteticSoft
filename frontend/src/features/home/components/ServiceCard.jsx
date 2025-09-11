@@ -1,28 +1,43 @@
 // src/features/home/components/ServiceCard.jsx
 import React from 'react';
-// import '../css/ServiceCard.css'; // O estilos dentro de PublicServicios.css
 
 function ServiceCard({ service, onAddToCart }) {
   if (!service) {
-  console.warn("ServiceCard recibió un servicio inválido:", service);
-  return null;
-}
+    console.warn("ServiceCard recibió un servicio inválido:", service);
+    return null;
+  }
+
+  const { name, description, price, image } = service;
+
   return (
-    <div className="public-servicios-card"> {/* Usar prefijo */}
-      {service.imagenURL && (
-        <img
-          src={service.imagenURL}
-          alt={service.nombre}
-          className="public-servicios-image"
-        />
+    <div className="public-servicios-card">
+      {/* Imagen del servicio */}
+      {image && (
+        <div className="public-servicios-image-wrapper">
+          <img
+            src={image}
+            alt={name}
+            className="public-servicios-image"
+          />
+        </div>
       )}
-      <h3>{service.nombre}</h3>
-      <p>{service.description || service.categoria || ''}</p>
-      <p className="public-servicios-price">${service.price.toFixed(2)}</p>
-      <button onClick={() => onAddToCart(service)} className="public-add-button-servicio"> {/* Clase específica */}
+
+      <h3>{name}</h3>
+      <p>{description || "Sin descripción"}</p>
+      <p className="public-servicios-price">
+        {typeof price === "number"
+          ? `$${price.toLocaleString()}`
+          : "Precio no disponible"}
+      </p>
+
+      <button
+        onClick={() => onAddToCart(service)}
+        className="public-add-button-servicio"
+      >
         Agregar
       </button>
     </div>
   );
 }
+
 export default ServiceCard;
