@@ -25,7 +25,7 @@ const CategoriasProductoTable = ({ categorias, onView, onEdit, onDeleteConfirm, 
                 <input
                   type="checkbox"
                   checked={categoria.estado}
-                  onChange={() => onToggleEstado(categoria.idCategoriaProducto)}
+                  onChange={() => onToggleEstado(categoria)}
                 />
                 <span className="slider round"></span>
               </label>
