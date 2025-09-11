@@ -1,5 +1,5 @@
 /* src/index.css */
-@import './shared/styles/_variables.css';
+@import "@/shared/styles/_variables.css";
 
 html {
   box-sizing: border-box;

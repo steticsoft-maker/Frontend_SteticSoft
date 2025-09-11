@@ -1,4 +1,4 @@
-@import "../../shared/styles/_variables.css";
+@import "@/shared/styles/_variables.css";
 /* src/features/auth/css/Auth.css */
 /* Asegúrate de que _variables.css esté importado globalmente */
 
