@@ -109,7 +109,8 @@ const ProductoAdminForm = ({
           name="vidaUtilDias"
           value={formData.vidaUtilDias || ""}
           onChange={handleChange}
-          min="0"
+          min="1"
+          required
         />
         {formErrors.vidaUtilDias && (
           <p className="error-message">{formErrors.vidaUtilDias}</p>
