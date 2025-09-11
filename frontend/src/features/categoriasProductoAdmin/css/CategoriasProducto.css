@@ -1,3 +1,4 @@
+@import "@/shared/styles/_variables.css";
 /* src/features/categoriasProductoAdmin/css/CategoriasProducto.css */ 
 
 /* === ESTILOS GENERALES DE PÁGINA === */
@@ -6,7 +7,7 @@
     min-height: 100vh;
     width: 100%;
     font-family: 'Roboto', sans-serif; /* O tu variable global --font-family-roboto */
-    background-color: var(--color-background-admin-content, #f5f5f5);
+    background-color: var(--color-background-light);
 }
 
 .categorias-producto-admin-main-content { /* Clase de tu ListaCategoriasProductoPage.jsx */
@@ -35,7 +36,7 @@
 
 .categorias-producto-admin-content-wrapper h1 { /* Título de la página */
     /* text-align: center; */ /* ✅ CAMBIO: El título se centrará con flexbox en la barra de acciones */
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-text-dark);
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 1.8rem;
@@ -76,15 +77,16 @@
     width: 100%; 
     /* min-width: 250px; */ /* Ya lo definimos en el padre flex-grow */
     font-size: 1rem;
-    border: 1px solid var(--color-border-light, #c287b5); 
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
-    background-color: var(--color-background-light, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     box-sizing: border-box;
 }
 .categorias-producto-admin-search-bar input:focus {
-    border-color: var(--color-admin-hover, #b660a3); 
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
@@ -97,31 +99,32 @@
 
 .filtro-estado-grupo label {
     font-weight: 600;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-primary);
     font-size: 0.95rem;
 }
 
 .filtro-input { /* Asumiendo que el select tiene esta clase, o puedes usar select directamente */
     padding: 10px 12px;
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem;
-    background-color: var(--color-background-input, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     cursor: pointer;
     box-sizing: border-box;
     -webkit-appearance: none; /* Quitar estilo nativo en WebKit */
     -moz-appearance: none; /* Quitar estilo nativo en Firefox */
     appearance: none; /* Quitar estilo nativo */
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%236d0b58" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Flecha personalizada */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%239a7a9f" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Flecha personalizada */
     background-repeat: no-repeat;
     background-position: right 8px center;
     padding-right: 30px; /* Espacio para la flecha */
 }
 
 .filtro-input:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
@@ -129,8 +132,8 @@
 .categorias-producto-admin-add-button { /* Tu clase en ListaCategoriasProductoPage.jsx */
     padding: 10px 20px; 
     font-size: 1rem; 
-    background-color: var(--color-admin-hover, #b660a3); 
-    color: var(--color-text-light, white); 
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -141,7 +144,7 @@
     box-sizing: border-box;
 }
 .categorias-producto-admin-add-button:hover {
-    background-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary-hover);
 }
 
 /* === ESTILOS DE TABLA === */
@@ -150,24 +153,24 @@
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    background-color: #ffffff;
+    background-color: var(--color-table-row-odd);
     border-radius: 8px;
     overflow: hidden; 
     font-size: 0.95rem;
 }
 .tablaCategoriaProductos th {
     background-color: var(--color-table-header);
-    color: var(--color-text-dark, black); 
+    color: var(--color-text-dark);
     padding: 12px 15px; 
     text-align: center; 
     font-weight: 600; 
     font-size: 1rem; 
-    border: 1px solid var(--color-admin-primary-border, #e978d0); 
+    border: 1px solid var(--color-table-header);
 }
 .tablaCategoriaProductos td {
     padding: 12px 15px; 
-    border: 1px solid var(--color-admin-primary-border, #e978d0); 
-    color: var(--color-text-dark, #333); 
+    border: 1px solid var(--color-table-header);
+    color: var(--color-text-dark);
     font-size: 0.9rem; 
     text-align: left; 
     vertical-align: middle;
@@ -223,17 +226,17 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 /* Colores consistentes */
 .table-action-button-categoria:nth-child(1), /* Ver */
 .table-action-button-categoria:nth-child(2)   /* Editar */
-{ background-color: var(--color-admin-action-view, #fc8de4); }
+{ background-color: var(--color-secondary); color: var(--color-secondary-text); }
 
 .table-action-button-categoria:nth-child(1):hover,
 .table-action-button-categoria:nth-child(2):hover
-{ background-color: var(--color-admin-action-view-hover, #d66abf); }
+{ background-color: var(--color-secondary-hover); }
 
 .table-action-button-categoria:nth-child(3) { /* Eliminar */
-    background-color: var(--color-admin-action-delete, #b660a3);
+    background-color: var(--color-primary);
 }
 .table-action-button-categoria:nth-child(3):hover {
-    background-color: var(--color-admin-action-delete-hover, #6d0b58); /* Era #c0392b, unificando */
+    background-color: var(--color-primary-hover); /* Era #c0392b, unificando */
 }
 
 
@@ -267,7 +270,7 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 /* Tus clases para el contenido del modal */
 .modal-content-categoria-detalles,
 .modal-content-categoria-form {
-    background: var(--color-background-light, #fff); 
+    background: var(--color-background-light);
     padding: 25px 30px; 
     border-radius: 10px; /* Más redondeado */
     width: 100%;
@@ -297,7 +300,7 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 
 .modal-title { /* Tu clase para el título <h2> dentro de los modales */
     /* text-align: center; */ /* Centra el título si lo prefieres así */
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-text-dark);
     margin: 0; /* Elimina márgenes predeterminados para control total por flexbox */
     font-size: 1.6rem;
     line-height: 1.3;
@@ -309,7 +312,7 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
     background: none;
     border: none;
     font-size: 2.2rem; /* Tamaño más grande para la 'X' */
-    color: var(--color-admin-hover, #b660a3); /* Color rosa */
+    color: var(--color-primary); /* Color rosa */
     cursor: pointer;
     position: absolute; /* Posición absoluta con respecto al modal-content-categoria-form */
     top: 10px; /* Distancia desde arriba */
@@ -321,7 +324,7 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 }
 
 .modal-close-button:hover {
-    color: var(--color-primary-darker, #6d0b58); /* Color rosa más oscuro al pasar el ratón */
+    color: var(--color-primary-hover); /* Color rosa más oscuro al pasar el ratón */
 }
 
 
@@ -332,26 +335,26 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 .modal-content-categoria-detalles .details-section p {
     margin-bottom: 12px; 
     line-height: 1.6; 
-    color: var(--color-text-dark, #333);
+    color: var(--color-text-dark);
     font-size: 1rem; 
 }
 .modal-content-categoria-detalles .details-section p strong { 
-    color: var(--color-primary-darker, #6d0b58); 
+    color: var(--color-primary);
     margin-right: 8px; 
     font-weight: 600; 
     min-width: 120px; 
     display: inline-block; 
 }
 .close-button-categoria-detalles { /* Tu botón "Cerrar" en detalles */
-    background-color: var(--color-admin-hover, #b660a3); 
-    color: white; 
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     display: block; width: auto; min-width: 120px;
     margin: 25px auto 0; 
     padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; 
     font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
 }
 .close-button-categoria-detalles:hover {
-    background-color: var(--color-primary-darker, #6d0b58); 
+    background-color: var(--color-primary-hover);
 }
 
 /* === ESTILOS PARA MODAL DE FORMULARIO (Crear/Editar) === */
@@ -367,7 +370,7 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 }
 .form-label-categoria { /* Tu clase para las etiquetas */
     font-weight: 600;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-primary);
     font-size: 0.95rem;
     text-align: left;
 }
@@ -376,19 +379,20 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 .form-select-categoria { /* Tus clases para los campos */
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem;
     box-sizing: border-box;
-    background-color: var(--color-background-input, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .form-input-categoria:focus,
 .form-textarea-categoria:focus,
 .form-select-categoria:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 .form-textarea-categoria {
@@ -424,7 +428,7 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
     gap: 15px;
     margin-top: 25px;
     padding-top: 20px;
-    border-top: 1px solid var(--color-border-light, #eee);
+    border-top: 1px solid var(--color-form-border);
     width: 100%;
 }
 .form-button-guardar-categoria, 
@@ -441,11 +445,11 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
     text-align: center;
 }
 .form-button-guardar-categoria { /* Botón Guardar/Actualizar */
-    background-color: var(--color-admin-hover, #b660a3);
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
 }
 .form-button-guardar-categoria:hover {
-    background-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary-hover);
 }
 .form-button-cancelar-categoria { /* Botón Cancelar */
     background-color: #95a5a6; 
@@ -502,9 +506,9 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
         display: block; width: 100%;
     }
     .tablaCategoriaProductos tr {
-        margin-bottom: 15px; border: 1px solid var(--color-admin-primary-border, #e978d0); 
+        margin-bottom: 15px; border: 1px solid var(--color-table-header);
         border-radius: 8px; padding: 10px;
-        background-color: #ffffff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        background-color: var(--color-background-light); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .tablaCategoriaProductos td {
         text-align: right; padding-left: 50% !important; 
@@ -516,7 +520,7 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
         content: attr(data-label); /* Asegúrate que tus <td> tengan data-label */
         position: absolute; left: 10px; width: calc(50% - 20px); 
         padding-right: 10px; white-space: nowrap;
-        font-weight: bold; color: var(--color-primary-darker, #6d0b58); text-align: left;
+        font-weight: bold; color: var(--color-primary); text-align: left;
     }
     /* Específico para la celda de acciones en móvil */
     .tablaCategoriaProductos td.categorias-producto-table-actions { /* Si usas esta clase en el TD */

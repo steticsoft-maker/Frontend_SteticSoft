@@ -1,3 +1,4 @@
+@import "@/shared/styles/_variables.css";
 /* src/features/clientes/css/Clientes.css */
 
 /* === ESTILOS GENERALES DE PÁGINA === */
@@ -6,7 +7,7 @@
     min-height: 100vh;
     width: 100%;
     font-family: 'Roboto', sans-serif;
-    background-color: var(--color-background-admin-content, #f5f5f5);
+    background-color: var(--color-background-light);
 }
 
 .main-content-clientes {
@@ -19,7 +20,7 @@
 
 .main-content-clientes h1 {
     text-align: center;
-    color: #6d0b58;
+    color: var(--color-text-dark);
     margin-bottom: 25px;
     font-size: 1.8rem;
 }
@@ -47,25 +48,26 @@
 .barraBusquedaClientesInput {
     padding: 10px 12px; 
     font-size: 1rem;
-    border: 1px solid #c287b5; 
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
-    background-color: white;
-    color: #333;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     flex-grow: 1; 
     min-width: 250px; 
     box-sizing: border-box;
 }
 .barraBusquedaClientesInput:focus {
-    border-color: #b660a3; 
-    box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 5px rgba(154, 122, 159, 0.5);
     outline: none;
 }
 
 .buttonAgregarcliente {
     padding: 10px 20px; 
     font-size: 1rem; 
-    background-color: #b660a3; 
-    color: white; 
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -73,7 +75,7 @@
     flex-shrink: 0; 
 }
 .buttonAgregarcliente:hover {
-    background-color: #6d0b58;
+    background-color: var(--color-primary-hover);
 }
 
 /* === ESTILOS DE TABLA === */
@@ -83,24 +85,24 @@
     margin: 25px auto; 
     border-collapse: collapse;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    background-color: #ffffff;
+    background-color: var(--color-table-row-odd);
     border-radius: 8px;
     overflow: hidden; 
     font-size: 0.95rem; 
 }
 .tablaClientes th {
-    background-color: #e978d0; 
-    color: black; 
+    background-color: var(--color-table-header);
+    color: var(--color-text-dark);
     padding: 12px 15px; 
     text-align: center; 
     font-weight: 600; 
     font-size: 1rem; 
-    border: 1px solid #e978d0; 
+    border: 1px solid var(--color-table-header);
 }
 .tablaClientes td {
     padding: 12px 15px; 
-    border: 1px solid #e978d0; 
-    color: #333; 
+    border: 1px solid var(--color-table-header);
+    color: var(--color-text-dark);
     font-size: 0.9rem; 
     text-align: left; 
     vertical-align: middle;
@@ -109,20 +111,20 @@
 .tablaClientes td:nth-child(3), .tablaClientes td:nth-child(5) { text-align: left; }
 .tablaClientes td:nth-child(4), .tablaClientes td:nth-child(6), 
 .tablaClientes td:nth-child(7) { text-align: center; }
-.tablaClientes tbody tr:nth-child(even) { background-color: #f8eaf5; }
-.tablaClientes tbody tr:hover { background-color: #f3d9ec; }
+.tablaClientes tbody tr:nth-child(even) { background-color: var(--color-table-row-even); }
+.tablaClientes tbody tr:hover { background-color: var(--color-admin-hover); }
 .clientes-table-actions { 
     display: flex; justify-content: center; align-items: center; gap: 8px;
 }
 .iconsTablaclientes { 
     padding: 8px 10px; font-size: 0.9rem; border: none; border-radius: 5px;
-    color: white; background-color: #fc8de4; cursor: pointer;
+    color: var(--color-secondary-text); background-color: var(--color-secondary); cursor: pointer;
     transition: background-color 0.3s ease; display: inline-flex;
     align-items: center; justify-content: center;
 }
-.iconsTablaclientes:hover { background-color: #d66abf; }
-.delete-button-elimnarCliente { background-color: #b660a3; }
-.delete-button-elimnarCliente:hover { background-color: #6d0b58; }
+.iconsTablaclientes:hover { background-color: var(--color-secondary-hover); }
+.delete-button-elimnarCliente { background-color: var(--color-primary); color: var(--color-text-light); }
+.delete-button-elimnarCliente:hover { background-color: var(--color-primary-hover); }
 
 /* === ESTILOS DEL COMPONENTE SWITCH === */
 .switch {

@@ -1,3 +1,4 @@
+@import "@/shared/styles/_variables.css";
 /* src/features/auth/css/Auth.css */
 /* Asegúrate de que _variables.css esté importado globalmente */
 
@@ -10,7 +11,7 @@
     width: 100%;
     min-height: 100vh;
     padding: 20px;
-    background-color: rgb(245, 245, 245);
+    background-color: var(--color-background-light);
     /* Considera var(--color-background-page) */
 }
 
@@ -31,7 +32,7 @@
     width: 100px;
     height: 100px;
     margin: 0 auto 20px;
-    border: 3px solid var(--color-secondary);
+    border: 3px solid var(--color-primary);
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -57,19 +58,20 @@
     box-sizing: border-box;
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-form-border);
     /* Considera var(--color-border-light) */
     border-radius: 10px;
     font-size: 1rem;
     color: var(--color-text-dark);
-    background-color: #f9f9f9;
+    background-color: var(--color-form-bg);
     /* Considera var(--color-background-input) */
     transition: border-color 0.3s ease;
 }
 
 .auth-form-input:focus {
-    border-color: var(--color-secondary);
-    box-shadow: 0 0 0 2px rgba(255, 127, 80, 0.2);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.2);
     /* Considera var(--color-secondary-focus-shadow) */
     outline: none;
 }
@@ -85,13 +87,13 @@
 .auth-form-checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: var(--color-secondary);
+    accent-color: var(--color-primary);
     cursor: pointer;
 }
 
 .auth-form-checkbox label {
     font-size: 0.95rem;
-    color: #555;
+    color: var(--color-text-dark);
     /* Considera var(--color-text-muted) */
     text-align: left;
     cursor: pointer;
@@ -107,13 +109,13 @@
     font-size: 1.1rem;
     font-weight: 500;
     color: var(--color-text-light);
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .auth-primary-button:hover {
-    background-color: #e67347;
+    background-color: var(--color-primary-hover);
     /* Define var(--color-secondary-dark) */
     transform: translateY(-2px);
 }
@@ -126,11 +128,11 @@
 
 .auth-secondary-button {
     padding: 10px 20px;
-    border: 1px solid var(--color-secondary);
+    border: 1px solid var(--color-primary);
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 500;
-    color: var(--color-secondary);
+    color: var(--color-primary);
     background-color: transparent;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -138,7 +140,7 @@
 
 .auth-secondary-button:hover {
     color: var(--color-text-light);
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
 }
 
 /* === Estilos Base para Contenedores de Acciones y Mensajes === */

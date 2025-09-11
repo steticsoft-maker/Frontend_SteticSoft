@@ -1,3 +1,4 @@
+@import "@/shared/styles/_variables.css";
 /* src/features/proveedores/css/Proveedores.css */
 
 /* === ESTILOS GENERALES DE PÁGINA === */
@@ -6,7 +7,7 @@
     min-height: 100vh;
     width: 100%;
     font-family: 'Roboto', sans-serif;
-    background-color: var(--color-background-admin-content, #f5f5f5);
+    background-color: var(--color-background-light);
 }
 
 .proveedores-main-content {
@@ -29,7 +30,7 @@
 
 .proveedores-content-wrapper h1 { /* Título de la página "Gestión de Proveedores" */
     text-align: center;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-text-dark);
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 1.8rem;
@@ -65,15 +66,16 @@
     width: 100%; 
     min-width: 250px;
     font-size: 1rem;
-    border: 1px solid var(--color-border-light, #c287b5); 
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
-    background-color: var(--color-background-light, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     box-sizing: border-box;
 }
 .proveedores-search-bar input:focus {
-    border-color: var(--color-admin-hover, #b660a3); 
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
@@ -85,11 +87,11 @@
 /* Estilos para el select del filtro de estado (con la clase "filtro-input") */
 .filtro-input {
     padding: 9px 10px; /* Consistente con el select de Usuarios y Compras */
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem; /* Consistente con el select de Usuarios y Compras */
-    background-color: var(--color-background-light, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     min-width: 150px; /* Asegura un ancho mínimo */
     height: 41px; /* Para que coincida con la altura del input de búsqueda y el botón */
     box-sizing: border-box;
@@ -98,7 +100,7 @@
     -webkit-appearance: none; /* Elimina la apariencia por defecto del sistema */
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236d0b58%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E'); /* Icono de flecha SVG personalizado */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E'); /* Icono de flecha SVG personalizado */
     background-repeat: no-repeat;
     background-position: right 8px top 50%;
     background-size: .65em auto;
@@ -106,16 +108,17 @@
 }
 
 .filtro-input:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
 .proveedores-add-button { 
     padding: 10px 20px; 
     font-size: 1rem; 
-    background-color: var(--color-admin-hover, #b660a3); 
-    color: var(--color-text-light, white); 
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -129,7 +132,7 @@
     justify-content: center;
 }
 .proveedores-add-button:hover {
-    background-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary-hover);
 }
 
 /* === ESTILOS DE TABLA === */
@@ -141,24 +144,24 @@
     width: 100%; 
     margin-top: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    background-color: var(--color-background-light, #fff); 
+    background-color: var(--color-table-row-odd);
     border-radius: 8px;
     overflow: hidden; 
     font-size: 0.95rem;
 }
 .tablaProveedores th {
     background-color: var(--color-table-header);
-    color: var(--color-text-dark, black); 
+    color: var(--color-text-dark);
     padding: 12px 15px; 
     text-align: center; 
     font-weight: 600; 
     font-size: 1rem; 
-    border: 1px solid var(--color-admin-primary-border, #e978d0); 
+    border: 1px solid var(--color-table-header);
 }
 .tablaProveedores td {
     padding: 12px 15px; 
-    border: 1px solid var(--color-admin-primary-border, #e978d0); 
-    color: var(--color-text-dark, #333); 
+    border: 1px solid var(--color-table-header);
+    color: var(--color-text-dark);
     font-size: 0.9rem; 
     text-align: left; 
     vertical-align: middle;
@@ -201,17 +204,18 @@ input:checked+.slider:before { transform: translateX(16px); }
 }
 .proveedores-table-actions .botonVerDetallesProveedor, 
 .proveedores-table-actions .botonEditarProveedor { 
-    background-color: var(--color-admin-action-view, #fc8de4); 
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
 }
 .proveedores-table-actions .botonVerDetallesProveedor:hover, 
 .proveedores-table-actions .botonEditarProveedor:hover { 
-    background-color: var(--color-admin-action-view-hover, #d66abf); 
+    background-color: var(--color-secondary-hover);
 }
 .proveedores-table-actions .botonEliminarProveedor { 
-    background-color: var(--color-admin-action-delete, #b660a3);
+    background-color: var(--color-primary);
 }
 .proveedores-table-actions .botonEliminarProveedor:hover {
-    background-color: var(--color-admin-action-delete-hover, #6d0b58);
+    background-color: var(--color-primary-hover);
 }
 
 /* === ESTILOS DE MODAL === */
@@ -223,7 +227,7 @@ input:checked+.slider:before { transform: translateX(16px); }
 }
 
 .modal-content-Proveedores { /* Contenido del modal base */
-    background: var(--color-background-light, #fff); 
+    background: var(--color-background-light);
     padding: 25px 30px; 
     border-radius: 10px;
     width: 100%;
@@ -245,7 +249,7 @@ input:checked+.slider:before { transform: translateX(16px); }
 .proveedores-modal-title /* Aseguramos que el título del modal también tenga este estilo */
 {
     text-align: center;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-text-dark);
     margin-top: 0;
     margin-bottom: 25px; 
     font-size: 1.6rem;
@@ -256,7 +260,7 @@ input:checked+.slider:before { transform: translateX(16px); }
     text-align: left;    
     margin-bottom: 12px; 
     line-height: 1.6;    
-    color: var(--color-text-dark, #333);
+    color: var(--color-text-dark);
     font-size: 1rem; 
 }
 .modal-content-Proveedores.detalle-modal p strong { 
@@ -271,15 +275,15 @@ input:checked+.slider:before { transform: translateX(16px); }
     margin-bottom: 15px; /* Aumentado un poco */
     font-size: 1.1rem;
     font-weight: 600; /* Un poco más de peso */
-    color: var(--color-primary-darker, #6d0b58); /* Color consistente con título */
+    color: var(--color-primary); /* Color consistente con título */
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--color-border-light, #e0e0e0);
+    border-bottom: 1px solid var(--color-form-border);
     text-align: left; 
 }
 .botonCerrarModalVerDetallesProveedores, /* Tu clase original */
 .proveedores-detalle-modal-button-cerrar { /* Nueva clase sugerida si la usaste */
-    background-color: var(--color-admin-action-view, #fc8de4); /* Rosa Claro consistente */
-    color: var(--color-text-dark, black); /* Texto oscuro para contraste con rosa claro */
+    background-color: var(--color-secondary); /* Rosa Claro consistente */
+    color: var(--color-secondary-text); /* Texto oscuro para contraste con rosa claro */
     display: block; width: auto; min-width: 120px;
     margin: 30px auto 10px; 
     padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; 
@@ -287,7 +291,7 @@ input:checked+.slider:before { transform: translateX(16px); }
 }
 .botonCerrarModalVerDetallesProveedores:hover,
 .proveedores-detalle-modal-button-cerrar:hover {
-    background-color: var(--color-admin-action-view-hover, #d66abf); 
+    background-color: var(--color-secondary-hover);
 }
 
 /* === ESTILOS PARA MODAL DE FORMULARIO (Crear/Editar) === */
@@ -311,7 +315,7 @@ input:checked+.slider:before { transform: translateX(16px); }
 
 .proveedores-form-group label {
     font-weight: 600;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-primary);
     font-size: 0.95rem;
     text-align: left;
 }
@@ -323,20 +327,21 @@ input:checked+.slider:before { transform: translateX(16px); }
 .proveedores-form-group select {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem;
     box-sizing: border-box; /* Clave para que padding no afecte altura */
     height: 42px; /* Altura unificada */
-    background-color: var(--color-background-input, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .proveedores-form-group input:focus,
 .proveedores-form-group select:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 .required-asterisk { 
@@ -352,11 +357,11 @@ input:checked+.slider:before { transform: translateX(16px); }
 
 .documento-container .select-tipo-documento {
     width: 30%;
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-right: none;
     border-radius: 5px 0 0 5px;
     padding: 10px;
-    background-color: var(--color-background-input-addon, #e9ecef);
+    background-color: var(--color-form-focus-bg);
     font-size: 1rem;
     cursor: pointer;
     height: 42px;
@@ -365,7 +370,7 @@ input:checked+.slider:before { transform: translateX(16px); }
 
 .documento-container .input-documento {
     width: 70%;
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-left: none;
     border-radius: 0 5px 5px 0;
     padding: 10px 12px;
@@ -377,8 +382,8 @@ input:checked+.slider:before { transform: translateX(16px); }
 .documento-container .input-documento:focus {
     /* El focus se aplica al input, no al contenedor */
     outline: none;
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
 }
 
 /* --- AJUSTES PARA SEPARADOR VISUAL --- */
@@ -397,15 +402,15 @@ input:checked+.slider:before { transform: translateX(16px); }
     top: -8px; /* Ajuste para alinear con el alto del campo de arriba */
     bottom: 0;
     width: 1px;
-    background-color: var(--color-border-light, #e0e0e0);
+    background-color: var(--color-form-border);
 }
 .form-section-title-container h4 {
     margin: 0;
     font-weight: 600;
     font-size: 1.1em;
-    color: var(--color-primary-darker, #6d0b58); /* Color del título */
+    color: var(--color-primary); /* Color del título */
     padding-bottom: 5px;
-    border-bottom: 1px solid var(--color-border-light, #e0e0e0);
+    border-bottom: 1px solid var(--color-form-border);
 }
 
 .proveedores-form-actions { 
@@ -431,10 +436,10 @@ input:checked+.slider:before { transform: translateX(16px); }
     color: white; 
 }
 .proveedores-form-button-guardar { 
-    background-color: var(--color-admin-hover, #b660a3);
+    background-color: var(--color-primary);
 }
 .proveedores-form-button-guardar:hover {
-    background-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary-hover);
 }
 .proveedores-form-button-cancelar { 
     background-color: #95a5a6; 
@@ -474,7 +479,7 @@ input.is-invalid, .input-documento.is-invalid {
     bottom: 28%; /* Ajusta según el tamaño del formulario */
     left: 50%;
     width: 1px;
-    background-color: var(--color-border-light, #e0e0e0);
+    background-color: var(--color-form-border);
     transform: translateX(-0.5px);
     z-index: 1;
 }
@@ -503,7 +508,7 @@ input.is-invalid, .input-documento.is-invalid {
     margin: 0;
     font-weight: 600;
     font-size: 1.1em;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-primary);
     padding-bottom: 4px;
     border-bottom: none; /* Quitamos la línea horizontal */
 }
@@ -591,10 +596,10 @@ input.is-invalid, .input-documento.is-invalid {
 
     .tablaProveedores tr {
         margin-bottom: 15px;
-        border: 1px solid var(--color-admin-primary-border, #e978d0);
+        border: 1px solid var(--color-table-header);
         border-radius: 8px;
         padding: 10px;
-        background-color: #ffffff !important; /* Forzar fondo blanco para cada tarjeta */
+        background-color: var(--color-background-light) !important; /* Forzar fondo blanco para cada tarjeta */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     
@@ -607,7 +612,7 @@ input.is-invalid, .input-documento.is-invalid {
         padding-left: 50% !important; /* Espacio para la etiqueta */
         position: relative;
         border: none;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--color-form-border);
         font-size: 0.9rem;
         padding-top: 10px;
         padding-bottom: 10px;
@@ -628,7 +633,7 @@ input.is-invalid, .input-documento.is-invalid {
         padding-right: 10px;
         white-space: nowrap;
         font-weight: bold;
-        color: var(--color-primary-darker, #6d0b58);
+        color: var(--color-primary);
         text-align: left;
     }
 
@@ -689,9 +694,9 @@ input.is-invalid, .input-documento.is-invalid {
 }
 
 .pagination-button {
-  background-color: var(--color-admin-primary-lighter, #e978d0);
+  background-color: var(--color-secondary);
   border: none;
-  color: white;
+  color: var(--color-secondary-text);
   padding: 8px 14px;
   border-radius: 5px;
   font-size: 0.95rem;
@@ -700,7 +705,7 @@ input.is-invalid, .input-documento.is-invalid {
 }
 
 .pagination-button:hover {
-  background-color: var(--color-primary-darker, #6d0b58);
+  background-color: var(--color-secondary-hover);
 }
 
 .pagination-button:disabled {
@@ -709,6 +714,7 @@ input.is-invalid, .input-documento.is-invalid {
 }
 
 .pagination-button.active {
-  background-color: var(--color-primary-darker, #6d0b58);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
   font-weight: bold;
 }
