@@ -1,0 +1,94 @@
+/* src/shared/components/common/CenteredPdfModal.css */
+
+.centered-pdf-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.centered-pdf-modal-content {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+
+  /* Desktop styles */
+  width: 90%;
+  height: 90vh;
+  max-width: 1200px; /* Optional: prevent it from becoming too wide on very large screens */
+}
+
+.centered-pdf-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.centered-pdf-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #343a40;
+}
+
+.centered-pdf-modal-close-button {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1;
+  color: #000;
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 0;
+}
+
+.centered-pdf-modal-close-button:hover {
+  opacity: 0.75;
+  color: #000;
+}
+
+.centered-pdf-modal-body {
+  flex-grow: 1;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.centered-pdf-modal-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+  .centered-pdf-modal-content {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    border-radius: 0;
+  }
+
+  .centered-pdf-modal-header {
+    border-radius: 0;
+  }
+
+  .centered-pdf-modal-body {
+    border-radius: 0;
+  }
+}

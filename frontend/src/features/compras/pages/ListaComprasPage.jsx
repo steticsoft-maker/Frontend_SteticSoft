@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import ComprasTable from '../components/ComprasTable';
 import CompraDetalleModal from '../components/CompraDetalleModal';
-import PdfViewModal from '../../../shared/components/common/PdfViewModal';
+import CenteredPdfModal from '../../../shared/components/common/CenteredPdfModal';
 import { comprasService } from '../services/comprasService';
 import { generarPDFCompraUtil } from '../utils/pdfGeneratorCompras.js';
 import '../css/Compras.css';
@@ -234,7 +234,7 @@ function ListaComprasPage() {
 
             {/* --- Modales (SIN CAMBIOS) --- */}
             {isDetalleModalOpen && <CompraDetalleModal compra={selectedCompra} onClose={handleCloseModals} />}
-            <PdfViewModal isOpen={isPdfModalOpen} onClose={handleCloseModals} pdfUrl={pdfDataUri} title={`Detalle Compra #${selectedCompra?.idCompra || ''}`} />
+            <CenteredPdfModal isOpen={isPdfModalOpen} onClose={handleCloseModals} pdfUrl={pdfDataUri} title={`Detalle Compra #${selectedCompra?.idCompra || ''}`} />
         </div>
     );
 }
