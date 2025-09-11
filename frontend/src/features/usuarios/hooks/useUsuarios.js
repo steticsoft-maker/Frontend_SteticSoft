@@ -1,5 +1,7 @@
 // --- IMPORTS ---
 import { useState, useEffect, useCallback, useMemo } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import {
   getUsuariosAPI,
   createUsuarioAPI,
@@ -20,6 +22,8 @@ const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
+const MySwal = withReactContent(Swal);
+
 const useUsuarios = () => {
   // --- ESTADOS PRINCIPALES ---
   const [usuarios, setUsuarios] = useState([]);
@@ -32,11 +36,8 @@ const useUsuarios = () => {
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
-    useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
-  const [usuarioToDelete, setUsuarioToDelete] = useState(null);
 
   // --- ESTADOS DEL FORMULARIO ---
   const [formData, setFormData] = useState({});
@@ -295,14 +296,34 @@ const useUsuarios = () => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
     setIsDetailsModalOpen(false);
-    setIsConfirmDeleteModalOpen(false);
     setIsValidationModalOpen(false);
     setCurrentUsuario(null);
-    setUsuarioToDelete(null);
     setValidationMessage("");
     setFormData({});
     setFormErrors({});
   }, []);
+
+  const handleConfirmDeleteUsuario = useCallback(async (usuarioToDelete) => {
+    if (!usuarioToDelete?.idUsuario) return;
+    setIsSubmitting(true);
+    try {
+      await eliminarUsuarioFisicoAPI(usuarioToDelete.idUsuario);
+      await cargarDatos();
+      MySwal.fire(
+        "¡Eliminado!",
+        `El usuario "${usuarioToDelete.correo}" ha sido eliminado permanentemente.`,
+        "success"
+      );
+    } catch (err) {
+      MySwal.fire(
+        "Error",
+        err.message || "Error al eliminar permanentemente el usuario.",
+        "error"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [cargarDatos]);
 
   const handleOpenModal = useCallback(
     async (type, usuario = null) => {
@@ -382,13 +403,24 @@ const useUsuarios = () => {
         }
         // --- FIN DE LA CORRECCIÓN ---
       } else if (type === "delete" && usuario) {
-        setUsuarioToDelete(usuario);
-        setIsConfirmDeleteModalOpen(true);
+        MySwal.fire({
+          title: "¿Estás seguro?",
+          html: `Deseas eliminar permanentemente al usuario "<strong>${usuario.correo}</strong>"? <br/>¡Esta acción no se puede deshacer!`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Sí, ¡eliminar permanentemente!",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleConfirmDeleteUsuario(usuario);
+          }
+        });
       }
     },
-    [availableRoles] // Dependencia para roles disponibles
+    [availableRoles, handleConfirmDeleteUsuario] // Dependencia para roles disponibles
   );
-  
 
   // --- HANDLERS DE ACCIONES DE USUARIO ---
   const handleSaveUsuario = useCallback(async () => {
@@ -432,27 +464,6 @@ const useUsuarios = () => {
       setIsSubmitting(false);
     }
   }, [formData, isFormValid, runAllValidations, cargarDatos, closeModal]);
-
-  const handleConfirmDeleteUsuario = useCallback(async () => {
-    if (!usuarioToDelete?.idUsuario) return;
-    setIsSubmitting(true);
-    try {
-      await eliminarUsuarioFisicoAPI(usuarioToDelete.idUsuario);
-      closeModal();
-      await cargarDatos();
-      setValidationMessage(
-        `El usuario "${usuarioToDelete.correo}" fue eliminado permanentemente.`
-      );
-      setIsValidationModalOpen(true);
-    } catch (err) {
-      setValidationMessage(
-        err.message || "Error al eliminar permanentemente el usuario."
-      );
-      setIsValidationModalOpen(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [usuarioToDelete, cargarDatos, closeModal]);
 
   const handleToggleEstadoUsuario = useCallback(
     async (usuarioToToggle) => {
@@ -536,7 +547,6 @@ const useUsuarios = () => {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isConfirmDeleteModalOpen,
     isValidationModalOpen,
     validationMessage,
     formData,
@@ -547,7 +557,6 @@ const useUsuarios = () => {
     handleInputChange,
     handleInputBlur,
     handleSaveUsuario,
-    handleConfirmDeleteUsuario,
     handleToggleEstadoUsuario,
     closeModal,
     handleOpenModal,
