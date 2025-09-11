@@ -1,14 +1,23 @@
 /* .modal-overlay y .modal-content pueden ser tus clases genéricas de modal */
 .pdf-view-modal-content {
+    /* Centrado absoluto sobre el overlay */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* Dimensiones */
     width: 80%;
     max-width: 900px;
-    height: 80vh;
+    height: 90vh; /* Aumentado para más espacio vertical */
+
+    /* Estilos internos */
     padding: 0;
-    /* El padding se maneja en el header y el iframe */
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Para que el iframe no desborde el border-radius */
+    border-radius: 8px; /* Aseguramos el borde redondeado */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
 }
 
 .pdf-view-modal-header {
