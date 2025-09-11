@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import AbastecimientoForm from './AbastecimientoForm';
 import { fetchEmpleados, updateAbastecimiento } from '../hooks/useAbastecimiento';
@@ -15,7 +14,6 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSaveSuccess, initialData
 
     useEffect(() => {
         if (isOpen && initialData) {
-            // Cargar datos iniciales en el formulario
             setFormData({
                 idAbastecimiento: initialData.idAbastecimiento,
                 fechaIngreso: initialData.fechaIngreso,
@@ -24,7 +22,6 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSaveSuccess, initialData
                 cantidad: initialData.cantidad,
                 estado: initialData.estado,
             });
-            // Cargar lista de empleados para el selector
             const loadEmpleados = async () => {
                 try {
                     const empleadosData = await fetchEmpleados();
@@ -35,19 +32,24 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSaveSuccess, initialData
                 }
             };
             loadEmpleados();
-            // Limpiar errores
             setFormErrors({});
             setGeneralError('');
         }
     }, [isOpen, initialData]);
 
+    const empleadosParaSeleccion = empleados.map(emp => ({
+        ...emp,
+        displayName: `Empleado (${emp.correo})`
+    }));
+
     const handleEmpleadoSelect = (empleado) => {
-        setFormData(prev => ({ ...prev, empleado }));
+        const empleadoConRol = { ...empleado, rol: { nombre: 'Empleado' } };
+        setFormData(prev => ({ ...prev, empleado: empleadoConRol }));
         setIsEmpleadoModalOpen(false);
     };
 
     const handleCantidadChange = (_, cantidad) => {
-        setFormData(prev => ({ ...prev, cantidad: Math.max(1, Number(cantidad)) }));
+        setFormData(prev => ({ ...prev, cantidad: Math.max(1, Number(cantidad) || 1) }));
     };
 
     const handleEstadoChange = (e) => {
@@ -64,13 +66,13 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSaveSuccess, initialData
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setGeneralError("");
         if (!validateForm()) {
             setGeneralError("Por favor, corrija los errores.");
             return;
         }
 
         try {
-            setGeneralError('');
             const dataToUpdate = {
                 idUsuario: formData.empleado.id_usuario,
                 cantidad: formData.cantidad,
@@ -118,11 +120,11 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSaveSuccess, initialData
                     isOpen={isEmpleadoModalOpen}
                     onClose={() => setIsEmpleadoModalOpen(false)}
                     onSelectItem={handleEmpleadoSelect}
-                    items={empleados}
-                    title="Seleccionar Emplazado"
-                    searchPlaceholder="Buscar empleado por nombre..."
+                    items={empleadosParaSeleccion}
+                    title="Seleccionar Empleado"
+                    searchPlaceholder="Buscar empleado por correo..."
                     itemKey="id_usuario"
-                    itemName="nombre"
+                    itemName="displayName"
                 />
             )}
         </>

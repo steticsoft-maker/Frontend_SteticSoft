@@ -220,7 +220,7 @@ function ListaAbastecimientoPage() {
                 onClose={handleCloseAllModals}
                 onConfirm={handleDelete}
                 title="Confirmar Eliminación"
-                message={`¿Está seguro de que desea eliminar el registro de abastecimiento para "${currentAbastecimiento?.usuario?.nombre || ''}"? Esta acción no se puede deshacer.`}
+                message={`¿Está seguro de eliminar el registro para ${abastecimientos?.usuario?.rol?.nombre || 'el empleado'} (${abastecimientos?.usuario?.correo || ''})?`}
             />
             <ValidationModal
                 isOpen={isValidationModalOpen}

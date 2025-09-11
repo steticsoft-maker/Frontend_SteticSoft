@@ -8,12 +8,18 @@ const AbastecimientoForm = ({
     onProductoSelect,
     onRemoveProducto,
     onCantidadChange,
-    onEstadoChange, // <-- Nuevo
+    onEstadoChange,
     isEditing = false
 }) => {
     const fechaActual = new Date().toLocaleDateString('es-CO', {
         year: 'numeric', month: 'long', day: 'numeric'
     });
+
+    const formatEmpleadoDisplay = (empleado) => {
+        if (!empleado) return 'Seleccionar un empleado';
+        // Muestra: "Rol (correo@ejemplo.com)"
+        return `${empleado.rol?.nombre || 'Empleado'} (${empleado.correo})`;
+    };
 
     return (
         <form className="abastecimiento-form-grid" noValidate>
@@ -36,7 +42,8 @@ const AbastecimientoForm = ({
                     className="form-button-select-abastecimiento"
                     onClick={onEmpleadoSelect}
                 >
-                    {formData.empleado ? formData.empleado.nombre : 'Seleccionar un empleado'}
+                    {/* CAMBIO CLAVE: Llama a la función de formato */}
+                    {formatEmpleadoDisplay(formData.empleado)}
                 </button>
                 {formErrors.empleado && <p className="error-abastecimiento">{formErrors.empleado}</p>}
             </div>
@@ -60,10 +67,11 @@ const AbastecimientoForm = ({
                         <input
                             type="number"
                             min="1"
-                            value={formData.cantidad}
+                            value={formData.cantidad || ''}
                             onChange={(e) => onCantidadChange(null, e.target.value)}
                             className="form-input-abastecimiento"
                         />
+                         {formErrors.cantidad && <p className="error-abastecimiento">{formErrors.cantidad}</p>}
                     </div>
                      <div className="form-group-abastecimiento" style={{ flexDirection: 'row', alignItems: 'center' }}>
                          <label htmlFor="estado" className="form-label-abastecimiento" style={{ marginBottom: 0, marginRight: '10px' }}>Estado:</label>

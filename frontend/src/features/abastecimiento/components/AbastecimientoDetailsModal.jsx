@@ -23,7 +23,10 @@ const AbastecimientoDetalleModal = ({ isOpen, onClose, abastecimiento }) => {
                 
                 <div className="abastecimiento-details-text">
                     <p><strong>ID Registro:</strong> {abastecimiento.idAbastecimiento}</p>
-                    <p><strong>Empleado:</strong> {abastecimiento.usuario?.nombre || 'No disponible'}</p>
+                    <p>
+    <strong>Empleado:</strong> 
+    {`${abastecimiento.usuario?.rol?.nombre || 'Empleado'} (${abastecimiento.usuario?.correo || 'N/A'})`}
+</p>
                     <p><strong>Producto:</strong> {abastecimiento.producto?.nombre || 'No disponible'}</p>
                     <p><strong>Cantidad Asignada:</strong> {abastecimiento.cantidad}</p>
                     <p><strong>Fecha de Asignación:</strong> {formatDate(abastecimiento.fechaIngreso)}</p>

@@ -33,7 +33,9 @@ const AbastecimientoTable = ({
                 {abastecimientos.map((item, index) => (
                     <tr key={item.idAbastecimiento} className={item.estaAgotado ? 'depleted-row' : ''}>
                         <td data-label="#">{startIndex + index + 1}</td>
-                        <td data-label="Empleado">{item.usuario?.nombre || 'N/A'}</td>
+                        <td data-label="Empleado">
+    {`${item.usuario?.rol?.nombre || 'Empleado'} (${item.usuario?.correo || 'N/A'})`}
+</td>
                         <td data-label="Producto(s)">
                             {item.producto?.nombre || 'N/A'}
                             {item.estaAgotado && (

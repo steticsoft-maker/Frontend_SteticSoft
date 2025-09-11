@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import AbastecimientoForm from './AbastecimientoForm';
-// Asumimos que existen estos componentes y hooks
-// import { fetchProductos } from '../../productos/hooks/useProductos'; 
 import { fetchEmpleados, createAbastecimiento } from '../hooks/useAbastecimiento';
+// import { fetchProductos } from '../../productos/hooks/useProductos'; // Descomentar cuando tengas este servicio
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 import '../css/Abastecimiento.css';
 
@@ -24,18 +22,16 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
     const [empleados, setEmpleados] = useState([]);
     const [productosDisponibles, setProductosDisponibles] = useState([]);
 
-    // Cargar datos necesarios (empleados y productos) al abrir el modal
     const loadRequiredData = useCallback(async () => {
         try {
-            // Cargar empleados
+            setGeneralError('');
             const empleadosData = await fetchEmpleados();
             setEmpleados(empleadosData || []);
 
-            // Cargar productos (aquí necesitarías tu propia función fetchProductos)
+            // **Temporalmente, usaremos datos de ejemplo para productos**
+            // Reemplaza esto con tu llamada real a la API para traer productos de tipo "Interno"
             // const productosData = await fetchProductos({ tipoUso: 'interno', estado: true });
             // setProductosDisponibles(productosData.data || []);
-
-            // **Temporalmente, usaremos datos de ejemplo para productos**
             setProductosDisponibles([
                 { idProducto: 1, nombre: 'Limpia Vidrios (Interno)', existencia: 50 },
                 { idProducto: 2, nombre: 'Desinfectante (Interno)', existencia: 30 },
@@ -51,16 +47,21 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
     useEffect(() => {
         if (isOpen) {
             loadRequiredData();
-            // Resetear estado al abrir
             setFormData(getInitialFormState());
             setFormErrors({});
             setGeneralError('');
         }
     }, [isOpen, loadRequiredData]);
 
+    const empleadosParaSeleccion = empleados.map(emp => ({
+        ...emp,
+        displayName: `Empleado (${emp.correo})`
+    }));
 
     const handleEmpleadoSelect = (empleado) => {
-        setFormData(prev => ({ ...prev, empleado }));
+        // Necesitamos agregar el objeto 'rol' para consistencia con lo que viene del backend
+        const empleadoConRol = { ...empleado, rol: { nombre: 'Empleado' } };
+        setFormData(prev => ({ ...prev, empleado: empleadoConRol }));
         setIsEmpleadoModalOpen(false);
         if (formErrors.empleado) setFormErrors(prev => ({ ...prev, empleado: '' }));
     };
@@ -86,7 +87,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
     };
 
     const handleCantidadChange = (idProducto, cantidad) => {
-        const cant = Math.max(1, Number(cantidad)); // Asegurar que la cantidad sea al menos 1
+        const cant = Math.max(1, Number(cantidad) || 1); // Asegurar que la cantidad sea al menos 1
         setFormData(prev => ({
             ...prev,
             productos: prev.productos.map(p => 
@@ -103,15 +104,17 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
         if (formData.productos.length === 0) {
             errors.productos = 'Debe seleccionar al menos un producto.';
         } else {
-            // Validar que cada producto tenga una cantidad válida y no exceda la existencia
+            let productoError = null;
             formData.productos.forEach(p => {
+                if (productoError) return;
                 if (!p.cantidad || p.cantidad <= 0) {
-                    errors.productos = `El producto "${p.nombre}" debe tener una cantidad válida.`;
+                    productoError = `El producto "${p.nombre}" debe tener una cantidad válida.`;
                 }
                 if (p.cantidad > p.existencia) {
-                    errors.productos = `Stock insuficiente para "${p.nombre}". Solicitado: ${p.cantidad}, Disponible: ${p.existencia}.`;
+                    productoError = `Stock insuficiente para "${p.nombre}". Solicitado: ${p.cantidad}, Disponible: ${p.existencia}.`;
                 }
             });
+            if(productoError) errors.productos = productoError;
         }
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
@@ -119,14 +122,13 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setGeneralError("");
         if (!validateForm()) {
             setGeneralError("Por favor, corrija los errores en el formulario.");
             return;
         }
 
         try {
-            setGeneralError('');
-            // Se crea una promesa por cada producto a registrar
             const promesasCreacion = formData.productos.map(producto => {
                 const dataParaAPI = {
                     idUsuario: formData.empleado.id_usuario,
@@ -136,18 +138,16 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
                 return createAbastecimiento(dataParaAPI);
             });
 
-            // Esperar a que todas las promesas se resuelvan
             await Promise.all(promesasCreacion);
             
-            onSaveSuccess(); // Notificar al padre que todo fue exitoso
-            onClose(); // Cerrar el modal
+            onSaveSuccess();
+            onClose();
 
         } catch (error) {
             console.error("Error al crear abastecimiento(s):", error);
             setGeneralError(error.response?.data?.message || 'Ocurrió un error al guardar.');
         }
     };
-
 
     if (!isOpen) return null;
 
@@ -177,17 +177,16 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
                 </div>
             </div>
 
-            {/* Modales de selección */}
             {isEmpleadoModalOpen && (
                 <ItemSelectionModal
                     isOpen={isEmpleadoModalOpen}
                     onClose={() => setIsEmpleadoModalOpen(false)}
                     onSelectItem={handleEmpleadoSelect}
-                    items={empleados}
+                    items={empleadosParaSeleccion}
                     title="Seleccionar Empleado"
-                    searchPlaceholder="Buscar empleado por nombre..."
+                    searchPlaceholder="Buscar empleado por correo..."
                     itemKey="id_usuario"
-                    itemName="nombre"
+                    itemName="displayName"
                 />
             )}
             {isProductoModalOpen && (
