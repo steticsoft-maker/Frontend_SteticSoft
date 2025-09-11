@@ -3,576 +3,543 @@
 
 /* === ESTILOS GENERALES DE LA PÁGINA DE USUARIOS === */
 .usuarios-container {
-    display: flex;
-    height: 100vh;
-    background-color: var(--color-background-light);
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  .usuarios-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; 
-    height: 100%;
-    padding: 30px;
-    margin-left: 280px; /* Ajusta si tu AdminSidebar tiene otro ancho */
-    box-sizing: border-box;
-    overflow-y: auto;
-  }
-  
-  .usuarios-content h1 {
-    margin-bottom: 20px;
-    color: #6d0b58;
-    text-align: center;
-    font-weight: 600;
-    font-size: 2rem;
-  }
-  
-  /* === SECCIÓN DE ACCIONES SUPERIORES === */
-  .usuarios-accionesTop {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-  }
-  
-  .usuarios-filtro-estado {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Espacio entre el span y el select */
-  }
+  display: flex;
+  height: 100vh;
+  background-color: var(--color-background-light);
+  font-family: var(--font-family-roboto);
+}
 
-  .usuarios-filtro-estado span {
-    font-size: 0.95rem; /* Tamaño de la etiqueta "Filtrar por estado:" */
-    color: #333;
-  }
+.usuarios-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding: 30px;
+  margin-left: 280px; /* Ajusta si tu AdminSidebar tiene otro ancho */
+  box-sizing: border-box;
+  overflow-y: auto;
+}
 
-  .usuarios-filtro-estado select {
-    padding: 9px 10px;
-    border: 1px solid var(--color-border-light, #c287b5); /* Usando variable si está definida, sino fallback */
-    border-radius: 5px;
-    font-size: 1rem;
-    background-color: var(--color-background-light, #fff);
-    color: var(--color-text-dark, #333);
-    min-width: 150px;
-    height: 41px; /* Para alinear altura con otros inputs/botones si es necesario */
-    box-sizing: border-box;
-    cursor: pointer;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Transiciones suaves */
-  }
+.usuarios-content h1 {
+  margin-bottom: 20px;
+  color: var(--color-primary);
+  text-align: center;
+  font-weight: 600;
+  font-size: 2rem;
+}
 
-  .usuarios-filtro-estado select:focus {
-    border-color: var(--color-admin-hover, #b660a3); /* Usando variable si está definida, sino fallback */
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); /* Sombra al enfocar */
-    outline: none;
-  }
+/* === SECCIÓN DE ACCIONES SUPERIORES === */
+.usuarios-accionesTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
 
-  .usuarios-filtro-estado select:disabled {
-    background-color: var(--color-disabled-bg, #f0f0f0); /* Color de fondo para deshabilitado */
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
+.usuarios-filtro-estado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-  .usuarios-barraBusqueda {
-    flex-grow: 1;
-    min-width: 250px;
-    padding: 10px 15px;
-    border: 1px solid #c287b5;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #333;
-    background-color: white;
-    box-sizing: border-box;
-  }
-  
-  .usuarios-botonAgregar {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    flex-shrink: 0;
-    font-size: 1rem;
-    color: white;
-    background-color: #b660a3;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .usuarios-botonAgregar:hover {
-    background-color: #6d0b58;
-  }
-  
-  /* === ESTILOS PARA LA TABLA DE USUARIOS === */
-  .usuarios-table {
-    width: 100%;
-    max-width: 1200px;
-    margin-top: 20px;
-    border-collapse: collapse;
-    border-radius: 8px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    box-sizing: border-box;
-  }
-  
-  .usuarios-table th {
-    padding: 15px;
-    border-bottom: 2px solid #d1a0c7;
-    color: black;
-    background-color: #e978d0;
-    text-align: center; /* Centrado como en tu original */
-    font-weight: bold;
-    font-size: 1rem;
-  }
-  
-  .usuarios-table td {
-    padding: 15px;
-    border: 1px solid #f0d9eb; /* Borde más suave */
-    color: black;
-    font-size: 1rem;
-    text-align: left;
-    vertical-align: middle;
-  }
-  
-  .usuarios-table tbody tr:nth-child(even) {
-    background-color: #fdf7fc; /* Más claro aún para diferenciación sutil */
-  }
-  
-  .usuarios-table tbody tr:hover {
-    background-color: #f3d9ec;
-  }
-  
-  .usuarios-table-iconos {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .usuarios-table-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 12px;
-    margin: 0;
-    border: none;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
-  }
-  
-  /* Colores específicos para botones de acción en la tabla (mantenidos como en tu original) */
-  .usuarios-table-button:nth-child(1) { /* Ver o primer botón de acción */
-    background-color: #fc8de4; 
-  }
-  .usuarios-table-button:nth-child(1):hover {
-    background-color: #d66abf;
-  }
-  .usuarios-table-button:nth-child(2) { /* Editar o segundo botón de acción */
-    background-color: #fc8de4; 
-  }
-  .usuarios-table-button:nth-child(2):hover {
-    background-color: #d66abf;
-  }
-  .usuarios-table-button-delete { /* Botón específico para eliminar */
-    background-color: #b660a3; 
-  }
-  .usuarios-table-button-delete:hover {
-    background-color: #c0392b;
-  }
-  
-  
-  /* === ESTILOS PARA MODALES === */
-  .usuarios-modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparente */
-    overflow-y: auto;
-  }
-  
-  .usuarios-modalContent {
-    position: relative;
-    width: 100%;
-    max-width: 500px; /* Ancho base, -form lo sobrescribirá */
-    margin: auto;
-    padding: 25px 30px;
-    border-radius: 10px;
-    background-color: white;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    max-height: 90vh;
-    overflow-y: auto;
-    box-sizing: border-box;
-  }
-  
-  .usuarios-modalContent h2,
-  .usuarios-modalContent h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #6d0b58;
-    text-align: center;
-    font-weight: 600;
-  }
-  .usuarios-modalContent h3 {
-    font-size: 1.25rem;
-  }
-  
-  /* Modal para Formularios (Crear/Editar) */
-  .usuarios-modalContent-form {
-    max-width: 750px; /* Más ancho para formularios de dos columnas */
-  }
-  
-  .usuarios-modalContent-form form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Espacio entre el grid del formulario y los botones de acción */
-  }
-  
-  /* --- INICIO: Estilos para Grid de Formulario (NUEVO) --- */
-  .usuarios-form-grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual ancho */
-    gap: 15px 20px; /* Espacio vertical y horizontal entre items del grid */
-  }
-  
-  .usuarios-form-grid-item {
-    display: flex;
-    flex-direction: column; /* Label encima del input/select */
-  }
-  
-  .usuarios-form-grid-item-full-width {
-    grid-column: span 2; /* Para items que deban ocupar ambas columnas */
-  }
-  /* --- FIN: Estilos para Grid de Formulario --- */
-  
-  /* Estilos para elementos de formulario dentro de modales (ya los tenías bien definidos) */
-  .usuarios-form-group { /* Esta clase puede ser usada como .usuarios-form-grid-item si prefieres */
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* Espacio entre label e input si están en el mismo group */
-  }
-  
-  .usuarios-form-label {
-    margin-bottom: 5px; /* Espacio entre label y el input debajo */
-    color: #6d0b58;
-    text-align: left;
-    font-weight: 500; /* Un poco menos bold que el 600 original */
-    font-size: 0.9rem;
-  }
-  
-  .required-asterisk { /* Ya definido arriba, pero lo dejo para referencia de sección */
-    color: red;
-    margin-left: 2px;
-  }
-  
-  .usuarios-form-input,
-  .usuarios-form-select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #c287b5;
-    border-radius: 5px;
-    font-size: 0.95rem; /* Unificado */
-    color: #333;
-    background-color: #fff;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .usuarios-form-input:focus,
-  .usuarios-form-select:focus {
-    border-color: #b660a3;
-    box-shadow: 0 0 0 3px rgba(182, 96, 163, 0.25);
-    outline: none;
-  }
-  
-  .usuarios-form-select {
-    cursor: pointer;
-    height: 40px; /* Aproximadamente la altura de un input con padding 10px */
-  }
-  
-  /* Mensaje de Administrador Protegido */
-  .usuarios-admin-protected-message {
-    padding: 10px 15px;
+.usuarios-filtro-estado span {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+}
+
+.usuarios-filtro-estado select {
+  padding: 9px 10px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: var(--color-background-light);
+  color: var(--color-text-dark);
+  min-width: 150px;
+  height: 41px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.usuarios-filtro-estado select:focus {
+  border-color: var(--color-admin-hover);
+  box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.3);
+  outline: none;
+}
+
+.usuarios-filtro-estado select:disabled {
+  background-color: var(--color-disabled-bg, #f0f0f0);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.usuarios-barraBusqueda {
+  flex-grow: 1;
+  min-width: 250px;
+  padding: 10px 15px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 5px;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  background-color: var(--color-form-bg);
+  box-sizing: border-box;
+}
+
+/* botón principal agregar */
+.usuarios-botonAgregar {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  flex-shrink: 0;
+  font-size: 1rem;
+  color: var(--color-text-light);
+  background-color: var(--color-primary);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.08s ease;
+}
+.usuarios-botonAgregar:active { transform: translateY(1px); }
+.usuarios-botonAgregar:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* === ESTILOS PARA LA TABLA DE USUARIOS === */
+.usuarios-table {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 8px;
+  background-color: var(--color-background-light);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.usuarios-table th {
+  padding: 15px;
+  border-bottom: 2px solid var(--color-form-border);
+  color: var(--color-text-dark);
+  background-color: var(--color-table-header);
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.usuarios-table td {
+  padding: 15px;
+  border: 1px solid var(--color-form-border);
+  color: var(--color-text-dark);
+  font-size: 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.usuarios-table tbody tr:nth-child(odd) {
+  background-color: var(--color-table-row-odd);
+}
+.usuarios-table tbody tr:nth-child(even) {
+  background-color: var(--color-table-row-even);
+}
+.usuarios-table tbody tr:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+/* iconos y botones dentro de la tabla */
+.usuarios-table-iconos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.usuarios-table-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  margin: 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: background-color 0.22s ease, opacity 0.2s ease, transform 0.06s;
+}
+.usuarios-table-button:active { transform: translateY(1px); }
+
+/* colores para botones (usar variables con fallback) */
+.usuarios-table-button:nth-child(1),
+.usuarios-table-button:nth-child(2) {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+.usuarios-table-button:nth-child(1):hover,
+.usuarios-table-button:nth-child(2):hover {
+  background-color: var(--color-primary-hover);
+}
+.usuarios-table-button-delete {
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-text, var(--color-text-dark));
+}
+.usuarios-table-button-delete:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+/* Badge / estado pequeño en la tabla (ejemplo) */
+.usuarios-status-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--color-text-dark);
+  background-color: var(--color-background-warm, var(--color-table-row-odd));
+}
+
+/* === ESTILOS PARA MODALES (completos) === */
+.usuarios-modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.45);
+  overflow-y: auto;
+}
+
+/* modal base */
+.usuarios-modalContent {
+  position: relative;
+  width: 100%;
+  max-width: 920px;
+  margin: auto;
+  padding: 18px;
+  border-radius: 12px;
+  background-color: var(--color-background-light);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* modal header (título + close) */
+.usuarios-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-form-border);
+  margin-bottom: 12px;
+}
+.usuarios-modal-header h2,
+.usuarios-modal-header h3 {
+  margin: 0;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+.usuarios-modal-close-button {
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  padding: 6px;
+  line-height: 1;
+  border-radius: 6px;
+  transition: background-color 0.18s ease, transform 0.08s;
+}
+.usuarios-modal-close-button:hover {
+  background-color: var(--color-form-focus-bg);
+  transform: scale(1.04);
+}
+
+/* modal body scrollable */
+.usuarios-modal-body {
+  overflow-y: auto;
+  padding-right: 6px; /* evita salto por scrollbar */
+}
+
+/* short helpers for detail/confirm forms inside modal */
+.usuarios-modalContent-details,
+.usuarios-modalContent-form,
+.usuarios-modalContent-confirm,
+.usuarios-modalContent-validation {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* detalles */
+.usuarios-modalContent-details {
+  max-width: 700px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+}
+.usuarios-modalContent-details p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  color: var(--color-text-dark);
+  text-align: left;
+}
+.usuarios-modalContent-details strong {
+  color: var(--color-primary);
+  margin-right: 8px;
+}
+
+/* confirmación / validación */
+.usuarios-modalContent-confirm { max-width: 500px; text-align: center; margin: 0 auto; }
+.usuarios-modalContent-confirm h3 { color: var(--color-danger, #e74c3c); margin-bottom: 12px; }
+.usuarios-modalContent-validation h3 { color: var(--color-secondary-hover, #e68bd2); }
+
+/* formulario dentro del modal */
+.usuarios-modalContent-form {
+  max-width: 820px;
+  margin: 0 auto;
+  padding-bottom: 8px;
+}
+
+/* --- grid del formulario --- */
+.usuarios-form-grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 20px;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+.usuarios-form-grid-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.usuarios-form-grid-item-full-width {
+  grid-column: span 2;
+}
+
+/* form groups */
+.usuarios-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.usuarios-form-label {
+  margin-bottom: 5px;
+  color: var(--color-text-dark);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.required-asterisk {
+  color: red;
+  margin-left: 2px;
+}
+
+/* inputs */
+.usuarios-form-input,
+.usuarios-form-select,
+.usuarios-form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  background-color: var(--color-form-bg);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+  box-sizing: border-box;
+}
+.usuarios-form-textarea { min-height: 120px; resize: vertical; }
+.usuarios-form-input::placeholder,
+.usuarios-form-textarea::placeholder { color: rgba(0,0,0,0.45); }
+
+/* focus */
+.usuarios-form-input:focus,
+.usuarios-form-select:focus,
+.usuarios-form-textarea:focus {
+  border-color: var(--color-admin-hover);
+  box-shadow: 0 0 0 6px rgba(154,122,159,0.08);
+  outline: none;
+}
+
+/* mensajes admin protegido */
+.usuarios-admin-protected-message {
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--color-border-warning, #ffeeba);
+  border-radius: 6px;
+  color: var(--color-danger, #721c24);
+  background-color: var(--color-background-warning-light, #f8d7da);
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+/* acciones del formulario en modal (botones) */
+.usuarios-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,0.04);
+  flex-wrap: wrap;
+}
+
+.usuarios-form-buttonGuardar,
+.usuarios-form-buttonCancelar,
+.usuarios-modalButton-cerrar {
+  min-width: 120px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.06s;
+}
+
+/* guardar */
+.usuarios-form-buttonGuardar {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+.usuarios-form-buttonGuardar:hover { background-color: var(--color-primary-hover); }
+
+/* cancelar / cerrar */
+.usuarios-form-buttonCancelar {
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-text, var(--color-text-dark));
+}
+.usuarios-form-buttonCancelar:hover { background-color: var(--color-secondary-hover); }
+
+.usuarios-modalButton-cerrar {
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-text, var(--color-text-dark));
+}
+.usuarios-modalButton-cerrar:hover { background-color: var(--color-secondary-hover); }
+
+/* === ERRORES / AYUDAS / SWITCH === */
+.input-error {
+  border-color: var(--color-danger, #e74c3c) !important;
+  background-color: rgba(231,76,60, 0.04);
+}
+.error-message {
+  color: var(--color-danger, #e74c3c);
+  font-size: 0.85rem;
+  margin-top: 6px;
+  text-align: left;
+}
+
+/* switch (estado) */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+  align-self: flex-start;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 22px;
+}
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--color-text-light);
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--color-primary); }
+input:focus + .slider { box-shadow: 0 0 0 3px rgba(154,122,159,0.12); }
+input:checked + .slider:before { transform: translateX(22px); }
+
+/* helpers */
+.text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text-center { text-align: center; }
+
+/* === RESPONSIVE === */
+@media (max-width: 1024px) {
+  .usuarios-content { margin-left: 0; padding: 20px; }
+  .usuarios-modalContent { max-width: 820px; padding: 16px; }
+}
+
+@media (max-width: 768px) {
+  .usuarios-content { padding: 15px; margin-left: 0; }
+  .usuarios-accionesTop { flex-direction: column; gap: 15px; }
+  .usuarios-barraBusqueda, .usuarios-botonAgregar { width: 100%; }
+
+  /* tabla -> tarjetas */
+  .usuarios-table thead { display: none; }
+  .usuarios-table, .usuarios-table tbody, .usuarios-table tr, .usuarios-table td { display: block; width: 100%; }
+  .usuarios-table tr {
     margin-bottom: 15px;
-    border: 1px solid var(--color-border-warning, #ffeeba);
-    border-radius: 5px;
-    color: var(--color-danger, #721c24);
-    background-color: var(--color-background-warning-light, #f8d7da);
-    text-align: center;
+    border: 1px solid var(--color-form-border);
+    border-radius: 8px;
+    background-color: var(--color-background-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+  .usuarios-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    border: none;
+    padding: 8px;
     font-size: 0.9rem;
   }
-  
-  /* Modal de Detalles, Confirmación, Validación (contenidos específicos) */
-  .usuarios-modalContent-details { max-width: 500px; }
-  .usuarios-modalContent-details p { margin-bottom: 12px; line-height: 1.6; color: #333; text-align: left;}
-  .usuarios-modalContent-details strong { color: #6d0b58; margin-right: 8px; }
-  
-  .usuarios-modalContent-confirm { max-width: 450px; text-align: center; }
-  .usuarios-modalContent-confirm h3 { color: #e74c3c; }
-  .usuarios-modalContent-confirm p { margin-bottom: 25px; }
-  
-  .usuarios-modalContent-validation { max-width: 450px; text-align: center; }
-  .usuarios-modalContent-validation h3 { color: #e68bd2; }
-  
-  
-  /* Acciones del Formulario Modal (Botones Guardar/Cancelar) */
-  .usuarios-form-actions {
-    display: flex;
-    justify-content: flex-end; /* Alinea botones a la derecha */
-    gap: 15px;
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-  }
-  
-  .usuarios-form-buttonGuardar,
-  .usuarios-form-buttonCancelar,
-  .usuarios-modalButton-cerrar {
-    min-width: 120px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
-  }
-  .usuarios-form-buttonGuardar:hover,
-  .usuarios-form-buttonCancelar:hover,
-  .usuarios-modalButton-cerrar:hover {
-    transform: translateY(-1px);
-  }
-  
-  .usuarios-form-buttonGuardar {
-    background-color: #b660a3;
-    color: white;
-  }
-  .usuarios-form-buttonGuardar:hover {
-    background-color: #8c4a7e; /* Más oscuro */
-  }
-  
-  .usuarios-form-buttonCancelar {
-    background-color: #95a5a6;
-    color: white;
-  }
-  .usuarios-form-buttonCancelar:hover {
-    background-color: #7f8c8d;
-  }
-  
-  .usuarios-modalButton-cerrar { /* Para modales de detalle o admin protegido */
-    background-color: #7f8c8d; /* Un color más neutro o el que prefieras */
-    color: white;
-  }
-  .usuarios-modalButton-cerrar:hover {
-    background-color: #6c7a7b;
-  }
-  
-  /* === ESTILOS DE AYUDA (Errores, Switch) === */
-  .input-error {
-    border-color: red !important;
-    background-color: #fff0f0;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 0.8rem;
-    margin-top: 4px;
+  .usuarios-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: calc(50% - 20px);
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+    color: var(--color-primary);
     text-align: left;
   }
-  
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 44px; /* Ajustado para ser un poco más pequeño */
-    height: 22px;
-    align-self: flex-start; /* Para que no se estire en un contenedor flex */
-  }
-  .switch input { 
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 22px; /* height del slider */
-  }
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 16px; /* Más pequeño que el slider */
-    width: 16px;
-    left: 3px;   /* Espacio desde el borde */
-    bottom: 3px; /* Espacio desde el borde */
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-  }
-  input:checked + .slider {
-    background-color: #4CAF50; /* O var(--color-success) o var(--color-secondary) */
-  }
-  input:focus + .slider { /* Efecto de foco */
-    box-shadow: 0 0 1px #4CAF50; /* O el color que uses para :checked */
-  }
-  input:checked + .slider:before {
-    transform: translateX(22px); /* width del slider - width del círculo - 2*left_del_círculo */
-                                  /* ej. 44 - 16 - (2*3) = 22 */
-  }
-    
-  /* === ESTILOS RESPONSIVOS === */
-  @media (max-width: 1024px) { /* Breakpoint para tablets */
-    .usuarios-content {
-      margin-left: 0; /* Asumir que AdminSidebar se oculta o es overlay */
-      padding: 20px;
-    }
-    /* Si el formulario en modal es muy ancho para tablets, podrías pasarlo a 1 columna aquí también */
-    /* .usuarios-form-grid-container {
-      grid-template-columns: 1fr;
-    } */
-  }
-  
-  @media (max-width: 768px) { /* Breakpoint para móviles */
-    .usuarios-content {
-      padding: 15px;
-      margin-left: 0; /* Asegurar que no haya margen cuando el sidebar está colapsado/superpuesto */
-    }
-  
-    .usuarios-accionesTop {
-      flex-direction: column;
-      gap: 15px;
-    }
-    .usuarios-barraBusqueda,
-    .usuarios-botonAgregar {
-      width: 100%;
-    }
+  .usuarios-table td[data-label="Acciones:"] { text-align: center; padding-left: 0; }
+  .usuarios-table td[data-label="Acciones:"]::before { content: ""; }
+  .usuarios-table-iconos { justify-content: center; }
 
-  .usuarios-filtro-estado {
-    /* Ajustes para que el filtro se vea bien en móviles también */
-    width: 100%;
-    display: flex;
-    justify-content: center; /* O flex-start / flex-end según preferencia */
-    /* align-items: center; ya está en los estilos base de .usuarios-filtro-estado */
-    /* gap: 10px; ya está en los estilos base de .usuarios-filtro-estado */
+  /* modales responsivos */
+  .usuarios-modalContent,
+  .usuarios-modalContent-form,
+  .usuarios-modalContent-details,
+  .usuarios-modalContent-confirm,
+  .usuarios-modalContent-validation {
+    width: 95%;
+    max-width: 95%;
+    max-height: 90vh;
+    padding: 14px;
   }
-  /* Los estilos para .usuarios-filtro-estado select y select:focus
-     ya están definidos globalmente, no es necesario repetirlos aquí
-     a menos que haya una diferencia específica para móviles.
-     Dado que se buscaba coincidir con Abastecimiento y esos estilos ya son globales,
-     se pueden omitir aquí. */
-  
-    /* Tabla Responsiva (ya estaba bien definida) */
-    .usuarios-table thead { display: none; }
-    .usuarios-table, .usuarios-table tbody, .usuarios-table tr, .usuarios-table td {
-      display: block;
-      width: 100%;
-    }
-    .usuarios-table tr {
-      margin-bottom: 15px;
-      border: 1px solid #e978d0;
-      border-radius: 8px;
-      /* padding: 10px; REMOVED - El padding debe estar en los TD para el formato tarjeta */
-      background-color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-    .usuarios-table td {
-      text-align: right;
-      padding-left: 50%; /* Espacio para el data-label */
-      /* padding-top y padding-bottom ya están definidos más abajo, se mantienen */
-      position: relative;
-      border: none;
-      padding-top: 8px;
-      padding-bottom: 8px;
-      font-size: 0.9rem;
-    }
-    .usuarios-table td::before {
-      content: attr(data-label);
-      position: absolute;
-      left: 10px;
-      width: calc(50% - 20px);
-      padding-right: 10px;
-      white-space: nowrap;
-      font-weight: bold;
-      color: #6d0b58;
-      text-align: left;
-    }
-    .usuarios-table td[data-label="Acciones:"] {
-      text-align: center;
-      padding-left: 0;
-    }
-    .usuarios-table td[data-label="Acciones:"]::before {
-      content: ""; 
-    }
-    .usuarios-table-iconos {
-      justify-content: center;
-    }
-  
-    /* Modales Responsivos */
-    .usuarios-modalContent,
-    .usuarios-modalContent-form,
-    .usuarios-modalContent-details,
-    .usuarios-modalContent-confirm,
-    .usuarios-modalContent-validation {
-      width: 95%;
-      max-width: 95%;
-      max-height: 90vh;
-      padding: 20px 15px;
-    }
-  
-    .usuarios-modalContent-form form {
-      gap: 15px;
-    }
-    
-    /* Formulario de modal pasa a una columna en móviles */
-    .usuarios-form-grid-container {
-      grid-template-columns: 1fr; /* Una columna */
-      gap: 10px 0; /* Solo gap vertical */
-    }
-    .usuarios-form-grid-item-full-width {
-      grid-column: span 1; /* Ya no es necesario span 2 */
-    }
-    .usuarios-form-group-estado { /* Para el switch de estado */
-      grid-column: span 1;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center; /* Alinear label y switch */
-    }
-    .usuarios-form-group-estado .usuarios-form-label {
-        margin-bottom: 0; /* No necesita margen inferior si está en línea */
-    }
-  
-    .usuarios-form-label { font-size: 0.85rem; }
-    .usuarios-form-input,
-    .usuarios-form-select {
-      font-size: 0.9rem;
-      padding: 8px 10px;
-    }
-  
-    .usuarios-form-actions {
-      flex-direction: column;
-      gap: 10px;
-    }
-    .usuarios-form-actions .usuarios-form-buttonGuardar,
-    .usuarios-form-actions .usuarios-form-buttonCancelar,
-    .usuarios-modalButton-cerrar {
-      width: 100%;
-    }
-  }
+  .usuarios-modal-body { padding-right: 0; }
+
+  .usuarios-form-grid-container { grid-template-columns: 1fr; gap: 10px 0; }
+  .usuarios-form-grid-item-full-width { grid-column: span 1; }
+  .usuarios-form-group-estado { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .usuarios-form-label { font-size: 0.88rem; }
+  .usuarios-form-input, .usuarios-form-select, .usuarios-form-textarea { font-size: 0.95rem; padding: 8px 10px; }
+
+  .usuarios-form-actions { flex-direction: column; gap: 10px; }
+  .usuarios-form-actions .usuarios-form-buttonGuardar,
+  .usuarios-form-actions .usuarios-form-buttonCancelar,
+  .usuarios-modalButton-cerrar { width: 100%; }
+}
