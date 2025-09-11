@@ -65,6 +65,7 @@ function ListaVentasPage() {
             const ventaCompleta = await getVentaById(ventaResumida.idVenta);
             setSelectedVenta(ventaCompleta);
             setShowDetailsModal(true);
+        // eslint-disable-next-line no-unused-vars
         } catch (err) {
             MySwal.fire("Error", "No se pudo cargar el detalle de la venta. Inténtalo de nuevo.", "error");
         } finally {
@@ -116,6 +117,7 @@ function ListaVentasPage() {
             await anularVentaById(ventaId);
             MySwal.fire('¡Anulada!', 'La venta ha sido anulada exitosamente.', 'success');
             loadVentas();
+        // eslint-disable-next-line no-unused-vars
         } catch (err) {
             MySwal.fire("Error", "Error al anular la venta. Intenta de nuevo.", "error");
         }
@@ -134,6 +136,7 @@ function ListaVentasPage() {
                 timerProgressBar: true
             });
             loadVentas();
+        // eslint-disable-next-line no-unused-vars
         } catch (err) {
             MySwal.fire("Error", "Error al cambiar el estado de la venta. Intenta de nuevo.", "error");
             loadVentas(); 
