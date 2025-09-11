@@ -78,7 +78,7 @@ const ComprasTable = ({ compras, onDetalle, onAnular, onGenerarPDF, startIndex }
                     <FontAwesomeIcon icon={faFilePdf} />
                   </button>
                   {compra.estado && (
-                    <button onClick={() => onAnular(compra.idCompra)} className="botonEliminarProveedor" title="Anular Compra">
+                    <button onClick={() => onAnular(compra)} className="botonEliminarProveedor" title="Anular Compra">
                       <FontAwesomeIcon icon={faBan} />
                     </button>
                   )}

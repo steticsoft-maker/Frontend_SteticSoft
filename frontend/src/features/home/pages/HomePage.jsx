@@ -30,48 +30,7 @@ function HomePage() {
           </InfoCard>
         </section>
 
-        {/* Servicios destacados */}
-        <section className="home-services">
-          <h2>Servicios Destacados</h2>
-          <div className="services-grid">
-            <ServiceCard
-              service={{
-                id: 1,
-                nombre: "Corte de Cabello",
-                price: 25000,
-                imagenURL:
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVCCAkoYWSBkkkIdy9W1HojjtbkXPjHvcqYg&s",
-                description: "Corte moderno y a tu estilo",
-                className: "public-servicios-image",
-              }}
-              onAddToCart={() => {}}
-            />
-            <ServiceCard
-              service={{
-                id: 2,
-                nombre: "Manicure",
-                price: 18000,
-                imagenURL:
-                  "https://i.pinimg.com/736x/79/87/91/79879102fd5991a55410821624644d81.jpg",
-                description: "Manicure profesional para lucir impecable",
-                className: "public-servicios-image",
-              }}
-              onAddToCart={() => {}}
-            />
-            <ServiceCard
-              service={{
-                id: 3,
-                nombre: "Tintura",
-                price: 40000,
-                imagenURL:
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9YJi1YIYWz2t7TPLunKIAiChTPXjfSjWr1A&s",
-                description: "Colores vibrantes y duraderos",
-                className: "public-servicios-image",
-              }}
-              onAddToCart={() => {}}
-            />
-          </div>
-        </section>
+        
       </div>
       <Footer />
     </div>
