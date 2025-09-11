@@ -3,18 +3,6 @@
 === PALETA DE COLORES Y ESTILOS GLOBALES PARA CITAS ===
 ============================================================
 */
-:root {
-  /* --- Paleta de Colores de la Marca --- */
-  --color-principal: #7B3F87;      /* Morado intenso: Títulos, botones principales, cabeceras */
-  --color-secundario: #D99AC5;      /* Rosa suave: Hover, acentos sutiles */
-  --tono-piel-claro: #F2D6C9;      /* Beige rosado: Fondos de inputs activos, hover de filas */
-  --tono-piel-medio: #CFA18D;      /* Terracota suave: Bordes, botones secundarios */
-  --tono-piel-oscuro: #8B5E3C;     /* Marrón cálido: Texto principal oscuro */
-  --fondo-suave: #F9F6F5;          /* Blanco roto: Fondo general de la página y modales */
-  --accento-dorado: #F4B942;       /* Dorado suave: Mensajes de éxito, switch activo */
-  --color-blanco-puro: #FFFFFF;     /* Blanco: Para contraste en filas de tablas */
-  --color-danger: #e74c3c;
-}
 
 /*
 ============================================================
@@ -93,11 +81,11 @@
 .calendar-container .custom-calendar { border: none; width: 100%; max-width: 100%; }
 .calendar-container .react-calendar__tile { display: flex; align-items: center; justify-content: center; height: clamp(35px, 8vw, 45px); border-radius: 50%; border: 2px solid transparent; transition: all 0.2s ease; }
 .calendar-container .dia-disponible { background-color: #fceef5 !important; color: #c44a9a !important; font-weight: bold; }
-.calendar-container .react-calendar__tile--active { background-color: var(--color-primary, #eb0985) !important; color: white !important; }
+.calendar-container .react-calendar__tile--active { background-color: var(--color-primary) !important; color: var(--color-text-light) !important; }
 .slots-pills-container { display: flex; flex-wrap: wrap; gap: 10px; }
 .time-slot-pill { padding: 8px 18px; border: 1px solid #ddd; border-radius: 20px; background-color: #fff; cursor: pointer; font-weight: 500; transition: all 0.2s ease; }
-.time-slot-pill.selected { background-color: var(--color-primary, #eb0985); color: white; border-color: var(--color-primary, #eb0985); }
-.btn-agendar-final { background-color: var(--color-primary, #eb0985); color: white; border: none; border-radius: 8px; padding: 14px; cursor: pointer; font-size: 1.05rem; font-weight: 600; margin-top: auto; transition: background-color 0.2s ease; }
+.time-slot-pill.selected { background-color: var(--color-primary); color: var(--color-text-light); border-color: var(--color-primary); }
+.btn-agendar-final { background-color: var(--color-primary); color: var(--color-text-light); border: none; border-radius: 8px; padding: 14px; cursor: pointer; font-size: 1.05rem; font-weight: 600; margin-top: auto; transition: background-color 0.2s ease; }
 
 /*
 ============================================================
@@ -157,15 +145,15 @@
 }
 
 .citas-table-content th {
-  background-color: #f8f9fa;
-  color: #333;
+  background-color: var(--color-table-header);
+  color: var(--color-text-dark);
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.8rem;
 }
 
 .citas-table-content tbody tr:hover {
-  background-color: #f8eaf5;
+  background-color: var(--color-secondary-hover);
 }
 
 .cita-estado-badge {
@@ -342,8 +330,8 @@
 }
 
 .citas-table-content th {
-  background-color: var(--color-table-header-bg);
-  color: var(--color-text-on-primary);
+  background-color: var(--color-table-header);
+  color: var(--color-text-light);
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.8rem;
@@ -351,12 +339,12 @@
 }
 
 .citas-table-content tbody tr {
-  background-color: var(--color-table-row-alternate);
+  background-color: var(--color-table-row-odd);
   transition: background-color 0.2s ease;
 }
 
 .citas-table-content tbody tr:hover {
-  background-color: var(--color-table-row-hover);
+  background-color: var(--color-secondary-hover);
 }
 
 .cita-estado-badge {

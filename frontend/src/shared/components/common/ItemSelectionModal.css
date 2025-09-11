@@ -52,8 +52,8 @@
   }
   .item-selection-modal-search-input:focus {
     outline: none;
-    border-color: var(--color-primary, #eb0985);
-    box-shadow: 0 0 0 2px rgba(235, 9, 133, 0.2);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.2);
   }
   
   
@@ -90,7 +90,7 @@
   
   .selection-modal-item button:hover {
     background-color: var(--color-background-hover-light, #e9ecef);
-    color: var(--color-primary, #eb0985);
+    color: var(--color-primary);
   }
   
   .selection-modal-empty-state {

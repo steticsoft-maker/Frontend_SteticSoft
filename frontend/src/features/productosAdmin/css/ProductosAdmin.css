@@ -142,7 +142,7 @@
     font-size: 0.95rem;
 }
 .tablaProductosAdministrador th {
-    background-color: var(--color-admin-primary-lighter, #e978d0);
+    background-color: var(--color-table-header);
     color: var(--color-text-dark, black);
     padding: 12px 15px;
     text-align: center;
@@ -166,8 +166,8 @@
 .tablaProductosAdministrador td:nth-child(7)  /* Acciones */
 { text-align: center; }
 
-.tablaProductosAdministrador tbody tr:nth-child(even) { background-color: var(--color-table-row-even, #f8eaf5); }
-.tablaProductosAdministrador tbody tr:hover { background-color: var(--color-table-row-hover, #f3d9ec); }
+.tablaProductosAdministrador tbody tr:nth-child(even) { background-color: var(--color-table-row-even); }
+.tablaProductosAdministrador tbody tr:hover { background-color: var(--color-secondary-hover); }
 
 /* Estilos para imagen en la tabla */
 .tablaProductosAdministrador img {

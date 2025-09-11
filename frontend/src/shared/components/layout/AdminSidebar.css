@@ -26,7 +26,7 @@
 }
 
 .admin-icon {
-  color: var(--color-admin-icon, rgb(71, 6, 71));
+  color: var(--color-primary);
   font-size: 4rem;
   margin-bottom: 5px;
 }

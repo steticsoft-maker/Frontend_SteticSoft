@@ -481,7 +481,7 @@
     font-size: 1rem;
 }
 .proveedor-details-list p strong {
-    color: #eb0985; /* Rosa principal */
+    color: var(--color-primary); /* Rosa principal */
     margin-right: 8px;
     font-weight: 600;
     min-width: 150px;

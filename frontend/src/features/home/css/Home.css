@@ -30,7 +30,7 @@
 }
 
 .home-card {
-    background-color: #e9d5e2;
+    background-color: var(--color-secondary);
     border-radius: 10px;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -58,7 +58,7 @@
 .home-hero {
     position: relative;
     background: url("/logo.png") center/contain no-repeat; 
-    background-color: #444040; /* Fondo blanco detrás del logo */
+    background-color: var(--color-background-light); /* Fondo blanco detrás del logo */
     height: 90vh;
     display: flex;
     align-items: center;
@@ -67,7 +67,7 @@
 
 
 .hero-overlay {
-    background: rgba(0,0,0,0.55);
+    background: rgba(154, 122, 159, 0.55);
     padding: 40px;
     text-align: center;
     color: white;
@@ -87,7 +87,7 @@
 .hero-button {
     margin-top: 20px;
     padding: 12px 24px;
-    background: #e91e63;
+    background: var(--color-primary);
     color: white;
     border: none;
     border-radius: 25px;
@@ -97,7 +97,7 @@
 }
 
 .hero-button:hover {
-    background: #c2185b;
+    background: var(--color-primary-hover);
 }
 
 /* NUEVO: Servicios destacados */
@@ -123,8 +123,8 @@
 }
 
 .footer {
-  background-color: #111;
-  color: #fff;
+  background-color: var(--color-admin-primary);
+  color: var(--color-text-light);
   padding: 40px 20px 20px;
   margin-top: 50px;
 }
@@ -139,18 +139,18 @@
 }
 
 .footer h2, .footer h3 {
-  color: #eb0985; /* Color corporativo */
+  color: var(--color-text-light); /* Color corporativo */
   margin-bottom: 10px;
 }
 
 .footer p, .footer a {
-  color: #ddd;
+  color: var(--color-text-light);
   font-size: 0.95rem;
   text-decoration: none;
 }
 
 .footer a:hover {
-  color: #fff;
+  color: var(--color-admin-hover);
   text-decoration: underline;
 }
 
@@ -170,19 +170,19 @@
 }
 
 .footer-social .social-icons a {
-  color: #eb0985;
+  color: var(--color-text-light);
   transition: color 0.3s;
 }
 
 .footer-social .social-icons a:hover {
-  color: #fff;
+  color: var(--color-admin-hover);
 }
 
 .footer-bottom {
   text-align: center;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--color-primary-hover);
   margin-top: 20px;
   padding-top: 15px;
   font-size: 0.85rem;
-  color: #aaa;
+  color: var(--color-text-light);
 }

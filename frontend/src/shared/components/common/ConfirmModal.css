@@ -64,7 +64,7 @@
 
 /* Botón de confirmación genérico (NO para eliminar, sino para confirmaciones generales si se usa así) */
 .shared-modal-button-confirm {
-    background-color: var(--color-primary, #eb0985); 
+    background-color: var(--color-primary);
 }
 
 .shared-modal-button-confirm:hover {

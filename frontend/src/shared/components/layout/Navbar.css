@@ -82,5 +82,5 @@
 }
 
 .logout-button:hover {
-    background-color: #d2691e;
+    background-color: var(--color-secondary-hover);
     /* Considera var(--color-secondary-dark) o similar */ }
