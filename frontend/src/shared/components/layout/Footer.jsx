@@ -27,8 +27,8 @@ function Footer() {
         <div className="footer-contact">
           <h3>Contacto</h3>
           <p>📍 Medellín, Colombia</p>
-          <p>📞 301 246 0508</p>
-          <p>📧 juangomezlon@gmail.com</p>
+          <p>📞 123 456 7891</p>
+          <p>📧 lafuentedelpeluquero@gmail.com</p>
         </div>
 
         {/* Redes Sociales */}
