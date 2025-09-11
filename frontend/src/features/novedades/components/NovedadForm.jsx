@@ -111,7 +111,6 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="novedad-form">
       <div className="form-grid">
-        {/* Fecha de Inicio */}
         <div className="form-group">
           <label htmlFor="fechaInicio">Fecha de Inicio</label>
           <Controller
