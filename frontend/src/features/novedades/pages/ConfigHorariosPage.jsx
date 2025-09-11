@@ -25,7 +25,6 @@ function ConfigHorariosPage() {
   const [filtroEstado, setFiltroEstado] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  // MODIFICADO: El valor inicial ahora es 5
   const [rowsPerPage, setRowsPerPage] = useState(5); 
   
   const [currentNovedad, setCurrentNovedad] = useState(null);
@@ -98,12 +97,11 @@ function ConfigHorariosPage() {
   const handleSuccess = () => { closeModal(); cargarNovedades(); };
   const handleDeleteConfirm = async (novedad) => { if (!novedad) return; try { await eliminarNovedad(novedad.idNovedad); toast.success("Novedad eliminada con éxito."); handleSuccess(); } catch (err) { toast.error(`Error al eliminar: ${err.message}`); closeModal(); } };
   
-  // MODIFICADO: Se cambia el handler del switch para que no abra un modal de confirmación
   const handleToggleEstado = async (novedad) => {
     try {
         await cambiarEstadoNovedad(novedad.idNovedad, !novedad.estado);
         toast.success("Estado de la novedad cambiado con éxito.");
-        cargarNovedades(); // Recarga las novedades para reflejar el cambio
+        cargarNovedades();
     } catch (err) {
         toast.error(`Error al cambiar estado: ${err.message}`);
     }
@@ -149,33 +147,31 @@ function ConfigHorariosPage() {
               onView={novedad => openModal('details', novedad)}
               onEdit={novedad => openModal('form', novedad)}
               onDeleteConfirm={novedad => openModal('confirmDelete', novedad)}
-              // Se pasa el nuevo handler directo
               onToggleEstado={handleToggleEstado} 
             />
-            
-          {totalPages > 1 && (
-            // Se envuelve la paginación en un nuevo contenedor para darle estilos
-            <div className="pagination-wrapper">
-              <div className="pagination-container">
-                <div className="rows-per-page-container">
+            {novedades.length > 0 && (
+              <div className="pagination-wrapper">
+                <div className="pagination-container">
                   <label htmlFor="rows-per-page">Filas:</label>
                   <select id="rows-per-page" value={rowsPerPage} onChange={handleRowsPerPageChange}>
                     <option value={5}>5</option>
                     <option value={10}>10</option>
+                    <option value={15}>15</option>
+                    <option value={20}>20</option>
                   </select>
-                </div>
-                <div className="pagination-controls">
-                  <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
-                    Anterior
-                  </button>
-                  <span>Página {currentPage} de {totalPages}</span>
-                  <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
-                    Siguiente
-                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
+                    <button
+                      key={pageNumber}
+                      className={`page-number ${currentPage === pageNumber ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  ))}
+                  
                 </div>
               </div>
-            </div>
-          )}
+            )}
           </>
         )}
       </div>

@@ -5,7 +5,18 @@
    Estilos para el Módulo de Novedades (Horarios)
    Actualizado con la nueva paleta de colores de la marca.
    ========================================================================== */
+:root {
+  /* ...otras variables de color que ya tengas... */
 
+  /* Asegúrate de que estas variables existan y tengan un color asignado */
+  --color-dia-lunes: #e0f2fe;     /* Celeste */
+  --color-dia-martes: #d1fae5;    /* Verde menta */
+  --color-dia-miercoles: #fef3c7; /* Amarillo pálido */
+  --color-dia-jueves: #fee2e2;    /* Rojo pálido */
+  --color-dia-viernes: #e5e7eb;   /* Gris claro */
+  --color-dia-sabado: #fae8ff;    /* Lavanda */
+  --color-dia-domingo: #ffedd5;   /* Naranja pálido */
+}
 /* --- Layout Principal --- */
 .page-container {
   display: flex;
@@ -137,16 +148,22 @@
   gap: 8px;
 }
 
-/* Botones de acción */
 .novedades-table .action-button {
   padding: 6px 10px;
   font-size: 0.85rem;
   border: none;
   border-radius: 5px;
-  color: var(--color-text-light);
+  color: var(--color-text-on-primary); /* Color del icono */
   cursor: pointer;
   transition: background-color 0.3s ease;
-  background-color: var(--color-primary);
+  
+  /* CAMBIO CLAVE: Usa el color primario para el fondo */
+  background-color: var(--color-primary); 
+}
+
+.novedades-table .action-button:hover {
+  /* CAMBIO CLAVE: El hover también usará un color más cercano al primario */
+  background-color: var(--color-primary-hover); 
 }
 
 /* Nombre de empleado */
@@ -161,22 +178,6 @@
   display: flex;
   justify-content: center;
   gap: 8px;
-}
-
-/* Botones de acción */
-.novedades-table .action-button {
-  padding: 6px 10px;
-  font-size: 0.85rem;
-  border: none;
-  border-radius: 5px;
-  color: var(--color-text-on-primary);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  background-color: var(--color-primary-accent);
-}
-
-.novedades-table .action-button:hover {
-  background-color: var(--color-primary-hover);
 }
 
 /* Nombre de empleado */
@@ -282,62 +283,62 @@ input:checked + .slider:before {
 
 
 /* --- Paginación --- */
-/* Nuevo contenedor para alinear la paginación con la tabla */
+/* Contenedor que alinea la paginación con el ancho de la tabla */
 .pagination-wrapper {
   width: 100%;
-  max-width: 1200px; /* Mismo ancho máximo que la tabla */
-  margin: 0 auto;      /* Centra el contenedor */
-  padding: 0;         /* Elimina padding extra si lo hubiera */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
 }
 
+/* Contenedor principal y único para todos los controles */
 .pagination-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  margin-top: 15px; /* Espacio respecto a la tabla */
-  border: 1px solid var(--color-form-border);
-  border-radius: 0 0 8px 8px; /* Redondea solo las esquinas inferiores */
-  background-color: var(--color-background-light); /* Fondo blanco para contraste */
-  border-top: none; /* Se quita el borde superior para que se una visualmente a la tabla */
+  justify-content: center;
+  align-items: center;  /* <-- Alineará verticalmente TODOS los hijos */
+  gap: 8px;             /* <-- Espacio uniforme entre cada elemento */
+  padding: 20px 0;
+  margin-top: 15px;
+  font-size: 0.9rem;
 }
 
-.rows-per-page-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.rows-per-page-container select {
-  padding: 8px 12px;
-  border-radius: 6px;
+/* Estilos para el selector de filas, ahora un hijo directo */
+.pagination-container select {
+  padding: 6px 10px;
+  border-radius: 5px;
   border: 1px solid var(--color-form-border);
   cursor: pointer;
-}
-
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.pagination-controls button {
-  padding: 8px 16px;
-  border: 1px solid var(--color-form-border);
   background-color: var(--color-background-light);
+  margin-right: 15px; /* <-- Espacio extra para separar los grupos */
+}
+
+/* Estilo para los botones numéricos de página */
+.pagination-container .page-number {
+  padding: 6px 12px;
+  min-width: 34px;
+  text-align: center;
+  border: 1px solid transparent;
+  background-color: transparent;
   color: var(--color-text-dark);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 5px;
   transition: background-color 0.2s;
+  font-size: 0.9rem;
 }
 
-.pagination-controls button:hover:not(:disabled) {
+/* Efecto hover para el botón de página */
+.pagination-container .page-number:hover:not(.active) {
   background-color: var(--color-form-focus-bg);
+  border-color: var(--color-form-border);
 }
 
-.pagination-controls button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+/* Estilo para el botón de la página activa */
+.pagination-container .page-number.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-color: var(--color-primary);
+  font-weight: 500;
+  cursor: default;
 }
 /* --- Estilos para Modales (Formulario y Detalles) --- */
 .modal-overlay {
@@ -373,6 +374,136 @@ input:checked + .slider:before {
 }
 .modal-close-button:hover {
     opacity: 1;
+}
+
+/* ==========================================================================
+   Estilos para el Modal de Detalles de Novedad
+   ========================================================================== */
+
+/* --- Encabezado del Modal --- */
+.modal-header {
+  color: var(--color-text-light);         /* Texto claro para contraste */
+  padding: 15px 25px;
+  border-bottom: none;
+  border-top-left-radius: 8px;  /* Redondea las esquinas superiores */
+  border-top-right-radius: 8px;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: inherit; /* Hereda el color del texto del padre (.modal-header) */
+}
+
+/* Ajuste al botón de cierre para que sea visible */
+.modal-close-btn { /* Nombre de clase corregido para coincidir con tu JSX */
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--color-text-light); /* Texto claro */
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  opacity: 1;
+}
+
+/* --- Cuerpo y Secciones del Modal --- */
+.modal-body {
+  padding: 25px;
+}
+
+.detail-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border, #e5e7eb); /* Línea divisora sutil */
+}
+
+/* Elimina la línea divisora del último elemento para un acabado limpio */
+.detail-section:last-of-type {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.detail-section h3 {
+  color: var(--color-primary); /* Título de sección con color principal */
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.detail-item {
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+/* Resalta las etiquetas de cada detalle */
+.detail-item strong {
+  color: var(--color-text-dark);
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+/* --- Indicadores de Estado (Activo/Inactivo) --- */
+.status-active,
+.status-inactive {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #fff; /* Texto blanco para ambos por legibilidad */
+}
+
+.status-active {
+  background-color: var(--color-success, #28a745); /* Verde para 'Activo' */
+}
+
+.status-inactive {
+  background-color: var(--color-secondary, #6c757d); /* Gris para 'Inactivo' */
+}
+
+
+/* --- Lista de Empleados --- */
+.employee-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.employee-item {
+  background-color: var(--color-background-page, #f9fafb); /* Fondo muy sutil */
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.2s ease;
+}
+
+.employee-item:last-child {
+  margin-bottom: 0;
+}
+
+.employee-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.employee-name-detail {
+  font-weight: 600;
+  color: var(--color-primary); /* Nombre del empleado con color principal */
+  margin-bottom: 8px;
+}
+
+.employee-contact-info {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary, #6b7280); /* Color de texto secundario */
+  line-height: 1.5;
+}
+
+.employee-contact-info strong {
+  color: var(--color-text-dark);
 }
 
 /* --- Formulario de Novedades (dentro del modal) --- */
@@ -515,7 +646,6 @@ input:checked + .slider:before {
 .novedad-form .form-actions {
   display: flex; justify-content: center; gap: 15px;
   margin-top: 25px; padding-top: 20px;
-  border-top: 1px solid var(--color-form-border);
 }
 
 .novedad-form .button-primary {
