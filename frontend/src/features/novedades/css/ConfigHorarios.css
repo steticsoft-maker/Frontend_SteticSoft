@@ -3,48 +3,11 @@
    Actualizado con la nueva paleta de colores de la marca.
    ========================================================================== */
 
-:root {
-  /* --- Paleta de Colores de la Marca --- */
-  --color-principal: #7B3F87;         /* Morado intenso: Títulos, botones principales, cabeceras */
-  --color-secundario: #D99AC5;       /* Rosa suave: Hover, acentos sutiles */
-  --tono-piel-claro: #F2D6C9;      /* Beige rosado: Fondos de inputs activos, hover de filas */
-  --tono-piel-medio: #CFA18D;      /* Terracota suave: Bordes, botones secundarios */
-  --tono-piel-oscuro: #8B5E3C;     /* Marrón cálido: Texto principal oscuro */
-  --fondo-suave: #F9F6F5;          /* Blanco roto: Fondo general de la página y modales */
-  --accento-dorado: #F4B942;        /* Dorado suave: Mensajes de éxito, switch activo */
-  --color-blanco-puro: #FFFFFF;      /* Blanco: Para contraste en filas de tablas */
-
-  /* --- Mapeo a Variables de la UI --- */
-  --color-background-page: var(--fondo-suave);
-  --color-primary-accent: var(--color-principal);
-  --color-primary-hover: var(--color-secundario);
-  --color-secondary-button-bg: var(--tono-piel-medio);
-  --color-secondary-button-hover: var(--tono-piel-claro);
-  --color-table-header-bg: var(--color-principal);
-  --color-table-row-alternate: var(--color-blanco-puro);
-  --color-table-row-hover: var(--tono-piel-claro);
-  --color-input-focus-bg: var(--tono-piel-claro);
-  --color-border: var(--tono-piel-medio);
-  --color-text-dark: var(--tono-piel-oscuro);
-  --color-text-on-primary: var(--fondo-suave);
-  --color-success: var(--accento-dorado);
-  --color-danger: #e74c3c; /* Se mantiene el rojo por convención de UX para errores */
-
-  /* --- Colores para Píldoras de Días --- */
-  --color-dia-lunes: #a7c7e7;
-  --color-dia-martes: #b2e2b2;
-  --color-dia-miercoles: #ffd1a7;
-  --color-dia-jueves: #d8b8e8;
-  --color-dia-viernes: #f5c4c4;
-  --color-dia-sabado: #fdfd96;
-  --color-dia-domingo: #c9c9c9;
-}
-
 /* --- Layout Principal --- */
 .page-container {
   display: flex;
   min-height: 100vh;
-  background-color: var(--color-background-page);
+  background-color: var(--color-background-light);
   font-family: 'Roboto', sans-serif;
 }
 
@@ -56,7 +19,7 @@
 
 .content-container h1 {
   text-align: center;
-  color: var(--color-principal); /* Usando el color principal para títulos */
+  color: var(--color-primary); /* Usando el color principal para títulos */
   margin-bottom: 25px;
   font-size: 1.8rem;
 }
@@ -85,8 +48,8 @@
   flex-grow: 1;
   padding: 10px 12px;
   min-width: 200px;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-background-page);
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
   border-radius: 5px;
   font-size: 1rem;
   height: 41.5px; /* Altura consistente */
@@ -95,14 +58,14 @@
 
 .search-bar:focus,
 .filter-select:focus {
-  background-color: var(--color-input-focus-bg);
-  border-color: var(--color-primary-accent);
+  background-color: var(--color-form-focus-bg);
+  border-color: var(--color-primary);
   outline: none;
 }
 
 .add-button {
-  background-color: var(--color-primary-accent);
-  color: var(--color-text-on-primary);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -150,18 +113,18 @@
 }
 
 .novedades-table th {
-  background-color: var(--color-table-header-bg);
-  color: var(--color-text-on-primary);
+  background-color: var(--color-table-header);
+  color: var(--color-text-light);
   font-weight: 600;
 }
 
 /* MODIFICADO: Se restauran los colores originales de las filas */
 .novedades-table tbody tr:nth-child(even) {
-  background-color: var(--color-table-row-alternate);
+  background-color: var(--color-table-row-even);
 }
 
 .novedades-table tbody tr:hover {
-  background-color: var(--color-table-row-hover);
+  background-color: var(--color-secondary-hover);
 }
 
 /* Celda de acciones */
@@ -177,10 +140,10 @@
   font-size: 0.85rem;
   border: none;
   border-radius: 5px;
-  color: var(--color-text-on-primary);
+  color: var(--color-text-light);
   cursor: pointer;
   transition: background-color 0.3s ease;
-  background-color: var(--color-primary-accent);
+  background-color: var(--color-primary);
 }
 
 /* Nombre de empleado */
@@ -260,7 +223,7 @@
 }
 
 input:checked + .slider {
-  background-color: var(--color-principal);
+  background-color: var(--color-primary);
 }
 
 input:checked + .slider:before {
@@ -330,9 +293,9 @@ input:checked + .slider:before {
   align-items: center;
   padding: 16px;
   margin-top: 15px; /* Espacio respecto a la tabla */
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-form-border);
   border-radius: 0 0 8px 8px; /* Redondea solo las esquinas inferiores */
-  background-color: var(--color-blanco-puro); /* Fondo blanco para contraste */
+  background-color: var(--color-background-light); /* Fondo blanco para contraste */
   border-top: none; /* Se quita el borde superior para que se una visualmente a la tabla */
 }
 
@@ -345,7 +308,7 @@ input:checked + .slider:before {
 .rows-per-page-container select {
   padding: 8px 12px;
   border-radius: 6px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-form-border);
   cursor: pointer;
 }
 
@@ -357,8 +320,8 @@ input:checked + .slider:before {
 
 .pagination-controls button {
   padding: 8px 16px;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-blanco-puro);
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
   color: var(--color-text-dark);
   cursor: pointer;
   border-radius: 6px;
@@ -366,7 +329,7 @@ input:checked + .slider:before {
 }
 
 .pagination-controls button:hover:not(:disabled) {
-  background-color: var(--color-input-focus-bg);
+  background-color: var(--color-form-focus-bg);
 }
 
 .pagination-controls button:disabled {
@@ -382,7 +345,7 @@ input:checked + .slider:before {
 }
 
 .modal-content {
-  background-color: var(--color-background-page);
+  background-color: var(--color-background-light);
   padding: 25px 30px; border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.25);
   width: 100%; max-width: 700px; max-height: 90vh;
@@ -392,7 +355,7 @@ input:checked + .slider:before {
 .modal-header {
   display: flex; justify-content: space-between; align-items: center;
   margin-bottom: 25px; padding-bottom: 15px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-form-border);
 }
 
 .modal-header h2 {
@@ -431,16 +394,16 @@ input:checked + .slider:before {
 .novedad-form .form-group input,
 .novedad-form .react-select-container .react-select__control {
   width: 100%; padding: 10px 12px;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-background-page);
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
   border-radius: 5px; font-size: 1rem;
 }
 
 .novedad-form .form-group input:focus,
 .novedad-form .react-select-container .react-select__control--is-focused {
-  background-color: var(--color-input-focus-bg);
-  border-color: var(--color-primary-accent);
-  box-shadow: 0 0 0 2px rgba(123, 63, 135, 0.4);
+  background-color: var(--color-form-focus-bg);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.4);
   outline: none;
 }
 
@@ -452,17 +415,17 @@ input:checked + .slider:before {
 .react-datepicker__input-container input {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-background-page);
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
   border-radius: 5px;
   font-size: 1rem;
   box-sizing: border-box; /* Asegura consistencia en el tamaño */
 }
 
 .react-datepicker__input-container input:focus {
-  background-color: var(--color-input-focus-bg);
-  border-color: var(--color-primary-accent);
-  box-shadow: 0 0 0 2px rgba(123, 63, 135, 0.4);
+  background-color: var(--color-form-focus-bg);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.4);
   outline: none;
 }
 
@@ -472,14 +435,14 @@ input:checked + .slider:before {
 
 .react-datepicker {
   font-family: 'Roboto', sans-serif;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-form-border);
   border-radius: 8px;
-  background-color: var(--color-background-page);
+  background-color: var(--color-background-light);
   box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
 .react-datepicker__header {
-  background-color: var(--color-primary-accent);
+  background-color: var(--color-primary);
   border-bottom: none;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -489,7 +452,7 @@ input:checked + .slider:before {
 .react-datepicker__current-month,
 .react-datepicker-time__header,
 .react-datepicker-year-header {
-  color: var(--color-text-on-primary);
+  color: var(--color-text-light);
   font-weight: 600;
   font-size: 1.1rem;
 }
@@ -501,21 +464,21 @@ input:checked + .slider:before {
 }
 
 .react-datepicker__day:hover {
-  background-color: var(--color-table-row-hover);
+  background-color: var(--color-secondary-hover);
   border-radius: 50%;
 }
 
 .react-datepicker__day--selected,
 .react-datepicker__day--in-selecting-range,
 .react-datepicker__day--in-range {
-  background-color: var(--color-primary-accent);
-  color: var(--color-text-on-primary);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
   border-radius: 50%;
 }
 
 .react-datepicker__day--keyboard-selected {
   background-color: var(--color-primary-hover);
-  color: var(--color-text-on-primary);
+  color: var(--color-text-light);
   border-radius: 50%;
 }
 
@@ -524,47 +487,47 @@ input:checked + .slider:before {
 }
 
 .react-datepicker__navigation-icon::before {
-  border-color: var(--color-text-on-primary);
+  border-color: var(--color-text-light);
 }
 
 .react-datepicker__year-read-view--down-arrow,
 .react-datepicker__month-read-view--down-arrow,
 .react-datepicker__month-year-read-view--down-arrow {
-    border-color: var(--color-text-on-primary);
+    border-color: var(--color-text-light);
 }
 
 .react-datepicker__year-dropdown,
 .react-datepicker__month-dropdown,
 .react-datepicker__month-year-dropdown {
-    background-color: var(--color-background-page);
-    border: 1px solid var(--color-border);
+    background-color: var(--color-background-light);
+    border: 1px solid var(--color-form-border);
 }
 
 .react-datepicker__year-option:hover,
 .react-datepicker__month-option:hover {
-    background-color: var(--color-table-row-hover);
+    background-color: var(--color-secondary-hover);
 }
 
 
 .novedad-form .form-actions {
   display: flex; justify-content: center; gap: 15px;
   margin-top: 25px; padding-top: 20px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-form-border);
 }
 
 .novedad-form .button-primary {
-  background-color: var(--color-primary-accent); color: var(--color-text-on-primary);
+  background-color: var(--color-primary); color: var(--color-text-light);
   padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
   transition: background-color 0.3s ease; font-size: 1rem; font-weight: 500;
 }
 .novedad-form .button-primary:hover { background-color: var(--color-primary-hover); }
 
 .novedad-form .button-secondary {
-  background-color: var(--color-secondary-button-bg); color: var(--color-text-dark);
+  background-color: var(--color-secondary); color: var(--color-text-dark);
   padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
   transition: background-color 0.3s ease; font-size: 1rem; font-weight: 500;
 }
-.novedad-form .button-secondary:hover { background-color: var(--color-secondary-button-hover); }
+.novedad-form .button-secondary:hover { background-color: var(--color-secondary-hover); }
 
 /* Otros */
 .error-message {

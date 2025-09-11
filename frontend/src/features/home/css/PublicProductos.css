@@ -11,7 +11,7 @@
   font-size: 2.5rem;
   margin-top: 150px;
   margin-bottom: 40px;
-  color: #eb0985;
+  color: var(--color-primary);
   text-align: center;
 }
 
@@ -79,7 +79,7 @@
 .productos-price {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #eb0985;
+  color: var(--color-primary);
   margin-bottom: 15px;
 }
 
@@ -96,12 +96,12 @@
 }
 
 .primary-button {
-  background-color: #eb0985;
+  background-color: var(--color-primary);
   color: white;
 }
 
 .primary-button:hover {
-  background-color: #bd096c;
+  background-color: var(--color-primary-hover);
 }
 
 .add-button {
@@ -125,7 +125,7 @@
 }
 
 .cart-count {
-  background-color: #eb0985;
+  background-color: var(--color-primary);
   color: white;
   border-radius: 50%;
   padding: 3px 8px;

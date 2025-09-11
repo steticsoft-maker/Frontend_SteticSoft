@@ -7,7 +7,6 @@
     --color-text-on-warning: white; 
     --color-background-warning-light: #fff3e0;
     --color-text-warning-dark: #e65100;
-    --color-primary: #eb0985;
 }
 */
 
@@ -112,7 +111,7 @@
     font-size: 0.95rem;
   }
   .tabla-abastecimiento th {
-    background-color: var(--color-admin-primary-lighter, #e978d0);
+    background-color: var(--color-table-header);
     color: var(--color-text-dark, black);
     padding: 12px 15px;
     text-align: center;
@@ -137,10 +136,10 @@
   }
   
   .tabla-abastecimiento tbody tr:nth-child(even) {
-    background-color: var(--color-table-row-even, #f8eaf5);
+    background-color: var(--color-table-row-even);
   }
   .tabla-abastecimiento tbody tr:hover {
-    background-color: var(--color-table-row-hover, #f3d9ec);
+    background-color: var(--color-secondary-hover);
   }
   
   .tabla-abastecimiento tbody tr.depleted-row {
@@ -494,7 +493,7 @@
   }
   
   .abastecimiento-details-text p strong {
-    color: var(--color-primary, #eb0985);
+    color: var(--color-primary);
     margin-right: 8px;
     font-weight: 600;
     min-width: 180px;

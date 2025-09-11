@@ -1,22 +1,46 @@
 /* src/shared/styles/_variables.css */
 :root {
-    /* Paleta SteticSoft (Ejemplos - ajusta a tus colores reales) */
-    --color-primary: #eb0985;
-    /* Rosa principal de SteticSoft */
-    --color-secondary: #ff7f50;
-    /* Coral cálido de botones */
-    --color-admin-primary: #fc8de4;
-    /* Rosa de NavbarAdmin */
-    --color-admin-hover: #b660a3;
-    /* Hover de NavbarAdmin */
-    --color-text-dark: #333333;
+    /* Paleta de colores nueva */
+    --color-primary: #9a7a9f;
+    /* Botones primarios: Fondo */
+    --color-primary-hover: #c7a7c7;
+    /* Botones primarios: Hover */
+    --color-secondary: #e2cde1;
+    /* Botones secundarios: Fondo */
+    --color-secondary-hover: #c7a7c7;
+    /* Botones secundarios: Hover */
+    --color-secondary-text: #1d1d1d;
+    /* Botones secundarios: Texto */
+
+    --color-admin-primary: #c7a7c7;
+    /* Menú lateral / barra superior */
+    --color-admin-hover: #e2cde1;
+    /* Hover o selección en el menú */
+
+    --color-text-dark: #1d1d1d;
+    /* Texto general y de tablas */
     --color-text-light: #ffffff;
-    --color-background-light: #ffffff;
-    --color-background-warm: #fff5e6;
-    /* Fondo cálido de Home */
-    --color-background-admin-sidebar: #fc8de4;
-    /* Degradado de NavbarAdmin */
-    --color-background-admin-content: #f5f5f5;
+    /* Texto de botones primarios */
+
+    --color-background-light: #fefcff;
+    /* Fondo principal de la página */
+    --color-background-warm: #fefcff;
+    /* Fondo principal de la página */
+    --color-background-admin-sidebar: #c7a7c7;
+    /* Menú lateral / barra superior */
+    --color-background-admin-content: #fefcff;
+    /* Fondo del contenido de administración */
+
+    /* Colores para tablas */
+    --color-table-header: #c7a7c7;
+    --color-table-row-odd: #ffffff;
+    --color-table-row-even: #f9f0f7;
+
+    /* Colores para campos de formulario */
+    --color-form-border: #c7a7c7;
+    --color-form-focus-bg: #e2cde1;
+    --color-form-bg: #ffffff;
+
 
     /* Fuentes */
     --font-family-sans-serif: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -25,4 +49,5 @@
 
     /* Tamaños base */
     --font-size-base: 16px;
-    --line-height-base: 1.5; }
+    --line-height-base: 1.5;
+}
