@@ -4,7 +4,6 @@ import UsuariosTable from "../components/UsuariosTable";
 import UsuarioCrearModal from "../components/UsuarioCrearModal";
 import UsuarioEditarModal from "../components/UsuarioEditarModal";
 import UsuarioDetalleModal from "../components/UsuarioDetalleModal";
-import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination";
 import useUsuarios from "../hooks/useUsuarios";
 import "../css/Usuarios.css";
@@ -21,8 +20,6 @@ function ListaUsuariosPage() {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isValidationModalOpen,
-    validationMessage,
     inputValue,
     setInputValue,
     filterEstado,
@@ -133,12 +130,6 @@ function ListaUsuariosPage() {
         isOpen={isDetailsModalOpen}
         onClose={closeModal}
         usuario={currentUsuario}
-      />
-      <ValidationModal
-        isOpen={isValidationModalOpen}
-        onClose={closeModal}
-        message={validationMessage}
-        title="Aviso de Usuarios"
       />
     </div>
   );
