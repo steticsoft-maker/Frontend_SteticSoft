@@ -86,9 +86,10 @@ function ListaVentasPage() {
     };
 
     const handleOpenAnularConfirm = (venta) => {
+        const clienteNombre = venta.cliente ? `${venta.cliente.nombre || ''} ${venta.cliente.apellido || ''}`.trim() : 'N/A';
         MySwal.fire({
             title: '¿Estás seguro?',
-            text: `¿Deseas anular la venta #${venta.idVenta}? Esta acción no se puede deshacer.`,
+            html: `¿Deseas anular la venta <strong>#${venta.idVenta}</strong> para el cliente <strong>${clienteNombre}</strong>? <br/>Esta acción no se puede deshacer.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
