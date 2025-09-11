@@ -74,11 +74,14 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     if (name === "nombre") {
       if (!value) error = "El nombre es obligatorio.";
       else if (value.trim() !== value) error = "No debe tener espacios al inicio o al final.";
+      else if (value.length < 3 || value.length > 100) error = "El nombre debe tener entre 3 y 100 caracteres.";
     }
 
     if (name === "precio") {
+      const priceRegex = /^\d+(\.\d{1,2})?$/;
       if (!String(value)) error = "El precio es obligatorio.";
       else if (isNaN(value) || Number(value) < 0) error = "El precio debe ser un número válido y no negativo.";
+      else if (!priceRegex.test(String(value))) error = "El precio debe tener como máximo dos decimales.";
     }
 
     if (name === "idCategoriaServicio") {
@@ -187,8 +190,8 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     const dataToSend = {
       nombre: formData.nombre.trim(),
       descripcion: formData.descripcion,
-      precio: formData.precio,
-      idCategoriaServicio: formData.idCategoriaServicio,
+      precio: parseFloat(formData.precio).toFixed(2),
+      idCategoriaServicio: parseInt(formData.idCategoriaServicio, 10),
     };
     
     if (imageFile) {
