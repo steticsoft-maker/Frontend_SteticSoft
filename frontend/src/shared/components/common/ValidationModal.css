@@ -7,7 +7,7 @@
 }
 
 .validation-modal-content .shared-modal-button-primary {
-    background-color: var(--color-primary, #eb0985);
+    background-color: var(--color-primary);
     color: var(--color-text-light, #fff);
 }
 

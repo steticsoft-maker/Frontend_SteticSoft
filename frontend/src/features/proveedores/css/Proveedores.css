@@ -147,7 +147,7 @@
     font-size: 0.95rem;
 }
 .tablaProveedores th {
-    background-color: var(--color-admin-primary-lighter, #e978d0); 
+    background-color: var(--color-table-header);
     color: var(--color-text-dark, black); 
     padding: 12px 15px; 
     text-align: center; 
@@ -168,8 +168,8 @@
 .tablaProveedores td:nth-child(8)  /* Acciones */
 { text-align: center; }
 
-.tablaProveedores tbody tr:nth-child(even) { background-color: var(--color-table-row-even, #f8eaf5); }
-.tablaProveedores tbody tr:hover { background-color: var(--color-table-row-hover, #f3d9ec); }
+.tablaProveedores tbody tr:nth-child(even) { background-color: var(--color-table-row-even); }
+.tablaProveedores tbody tr:hover { background-color: var(--color-secondary-hover); }
 
 /* === ESTILOS DEL COMPONENTE SWITCH === */
 .switch { position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;}
@@ -260,7 +260,7 @@ input:checked+.slider:before { transform: translateX(16px); }
     font-size: 1rem; 
 }
 .modal-content-Proveedores.detalle-modal p strong { 
-    color: var(--color-primary, #eb0985); /* Color ROSA para etiquetas */
+    color: var(--color-primary); /* Color ROSA para etiquetas */
     margin-right: 8px;    
     font-weight: 600;    
     min-width: 180px;    /* Ajusta este valor para alinear los ":" */
