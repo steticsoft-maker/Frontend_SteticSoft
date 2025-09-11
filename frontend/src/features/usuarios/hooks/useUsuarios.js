@@ -36,8 +36,6 @@ const useUsuarios = () => {
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  const [validationMessage, setValidationMessage] = useState("");
 
   // --- ESTADOS DEL FORMULARIO ---
   const [formData, setFormData] = useState({});
@@ -296,9 +294,7 @@ const useUsuarios = () => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
     setIsDetailsModalOpen(false);
-    setIsValidationModalOpen(false);
     setCurrentUsuario(null);
-    setValidationMessage("");
     setFormData({});
     setFormErrors({});
   }, []);
@@ -451,15 +447,24 @@ const useUsuarios = () => {
       }
       await cargarDatos();
       closeModal();
-      setValidationMessage(successMessage);
-      setIsValidationModalOpen(true);
+      MySwal.fire({
+        title: "¡Éxito!",
+        text: successMessage,
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
     } catch (err) {
       const apiErrorMessage =
         err.response?.data?.message ||
         err.message ||
         "Error al guardar el usuario.";
-      setValidationMessage(apiErrorMessage);
-      setIsValidationModalOpen(true);
+      closeModal(); // Cerrar modal también en caso de error
+      MySwal.fire({
+        title: "Error",
+        text: apiErrorMessage,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -471,17 +476,24 @@ const useUsuarios = () => {
         const nuevoEstado = !usuarioToToggle.estado;
         await toggleUsuarioEstadoAPI(usuarioToToggle.idUsuario, nuevoEstado);
         await cargarDatos();
-        setValidationMessage(
-          `El estado de "${usuarioToToggle.correo}" se cambió a ${
-            nuevoEstado ? "Activo" : "Inactivo"
-          }.`
-        );
-        setIsValidationModalOpen(true);
+        MySwal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: `El estado de "${
+            usuarioToToggle.correo
+          }" se cambió a ${nuevoEstado ? "Activo" : "Inactivo"}.`,
+          showConfirmButton: false,
+          timer: 3500,
+          timerProgressBar: true,
+        });
       } catch (err) {
-        setValidationMessage(
-          err.message || "Error al cambiar el estado del usuario."
-        );
-        setIsValidationModalOpen(true);
+        MySwal.fire({
+          title: "Error",
+          text: err.message || "Error al cambiar el estado del usuario.",
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
       }
     },
     [cargarDatos]
@@ -547,8 +559,6 @@ const useUsuarios = () => {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isValidationModalOpen,
-    validationMessage,
     formData,
     formErrors,
     isFormValid,
