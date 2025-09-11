@@ -116,10 +116,21 @@ function ListaComprasPage() {
     };
 
     // --- Lógica de modales y acciones (SIN CAMBIOS) ---
-    const handleOpenDetalle = (compra) => {
-        //...
-        setSelectedCompra(compra);
-        setIsDetalleModalOpen(true);
+    const handleOpenDetalle = async (compraResumen) => {
+        setIsLoading(true);
+        try {
+            const compraCompletaResponse = await comprasService.getCompraById(compraResumen.idCompra);
+            const compraCompleta = compraCompletaResponse.data;
+            if (!compraCompleta) {
+                throw new Error("No se pudieron obtener los detalles completos de la compra.");
+            }
+            setSelectedCompra(compraCompleta);
+            setIsDetalleModalOpen(true);
+        } catch (err) {
+            MySwal.fire("Error", err.message || "No se pudo cargar el detalle de la compra.", "error");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleOpenAnular = (compra) => {
