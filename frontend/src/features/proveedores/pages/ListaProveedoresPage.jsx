@@ -1,14 +1,16 @@
 // src/features/proveedores/pages/ListaProveedoresPage.jsx
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import ProveedoresTable from "../components/ProveedoresTable";
 import ProveedorCrearModal from "../components/ProveedorCrearModal";
 import ProveedorEditarModal from "../components/ProveedorEditarModal";
 import ProveedorDetalleModal from "../components/ProveedorDetalleModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
-import ValidationModal from "../../../shared/components/common/ValidationModal";
 import { proveedoresService } from "../services/proveedoresService";
 import "../css/Proveedores.css";
+
+const MySwal = withReactContent(Swal);
 
 function ListaProveedoresPage() {
   const [proveedores, setProveedores] = useState([]);
@@ -20,11 +22,7 @@ function ListaProveedoresPage() {
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [currentProveedor, setCurrentProveedor] = useState(null);
-  const [validationMessage, setValidationMessage] = useState("");
-  const [modalAction, setModalAction] = useState(null);
 
   const cargarProveedores = useCallback(async () => {
     setIsLoading(true);
@@ -47,106 +45,142 @@ function ListaProveedoresPage() {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
     setIsDetailsModalOpen(false);
-    setIsConfirmDeleteOpen(false);
-    setIsValidationModalOpen(false);
     setCurrentProveedor(null);
-    setValidationMessage("");
-    setModalAction(null);
   };
 
   const handleOpenModal = (type, proveedor = null) => {
     setCurrentProveedor(proveedor);
-    if (type === "ver") setIsDetailsModalOpen(true);
-    else if (type === "delete") { setModalAction('delete'); setIsConfirmDeleteOpen(true); }
-    else if (type === "status") { setModalAction('status'); setIsConfirmDeleteOpen(true); }
-    else if (type === "create") setIsCrearModalOpen(true);
-    else if (type === "edit" && proveedor) setIsEditarModalOpen(true);
-  };
-
-// ...código existente...
-
-const handleSave = async (proveedorData) => {
-  const idProveedorLimpio = parseInt(proveedorData.idProveedor, 10);
-  const datosLimpiosParaEnviar = {
-    nombre: proveedorData.nombre, tipo: proveedorData.tipo, telefono: proveedorData.telefono,
-    correo: proveedorData.correo, direccion: proveedorData.direccion, tipoDocumento: proveedorData.tipoDocumento,
-    numeroDocumento: proveedorData.numeroDocumento, nitEmpresa: proveedorData.nitEmpresa,
-    nombrePersonaEncargada: proveedorData.nombrePersonaEncargada,
-    telefonoPersonaEncargada: proveedorData.telefonoPersonaEncargada, emailPersonaEncargada: proveedorData.emailPersonaEncargada,
-    estado: proveedorData.estado,
-  };
-  const onSaveSuccess = async () => {
-    closeModal();
-    await cargarProveedores();
-    setIsValidationModalOpen(true);
-  };
-  try {
-    if (idProveedorLimpio) {
-      await proveedoresService.updateProveedor(idProveedorLimpio, datosLimpiosParaEnviar);
-      setValidationMessage("Proveedor actualizado exitosamente.");
-    } else {
-      await proveedoresService.createProveedor(datosLimpiosParaEnviar);
-      setValidationMessage("Proveedor creado exitosamente.");
+    if (type === "ver") {
+      setIsDetailsModalOpen(true);
+    } else if (type === "create") {
+      setIsCrearModalOpen(true);
+    } else if (type === "edit" && proveedor) {
+      setIsEditarModalOpen(true);
+    } else if (type === "delete" && proveedor) {
+      MySwal.fire({
+        title: "¿Estás seguro?",
+        text: `Deseas eliminar al proveedor "${proveedor.nombre}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, ¡eliminar!",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleDelete(proveedor.idProveedor);
+        }
+      });
+    } else if (type === "status" && proveedor) {
+      MySwal.fire({
+        title: "Confirmar cambio de estado",
+        text: `¿Estás seguro de que deseas ${
+          proveedor.estado ? "desactivar" : "activar"
+        } al proveedor "${proveedor.nombre}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Sí, ¡${
+          proveedor.estado ? "desactivar" : "activar"
+        }!`,
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleToggleEstado(proveedor);
+        }
+      });
     }
-    await onSaveSuccess();
-  } catch (err) {
-  // Imprime el error completo para depuración
-  console.log("ERROR AL GUARDAR PROVEEDOR:", err);
+  };
 
-  let userFriendlyMessage = "Ocurrió un error inesperado.";
+  const handleSave = async (proveedorData) => {
+    const idProveedorLimpio = parseInt(proveedorData.idProveedor, 10);
+    const datosLimpiosParaEnviar = {
+      nombre: proveedorData.nombre,
+      tipo: proveedorData.tipo,
+      telefono: proveedorData.telefono,
+      correo: proveedorData.correo,
+      direccion: proveedorData.direccion,
+      tipoDocumento: proveedorData.tipoDocumento,
+      numeroDocumento: proveedorData.numeroDocumento,
+      nitEmpresa: proveedorData.nitEmpresa,
+      nombrePersonaEncargada: proveedorData.nombrePersonaEncargada,
+      telefonoPersonaEncargada: proveedorData.telefonoPersonaEncargada,
+      emailPersonaEncargada: proveedorData.emailPersonaEncargada,
+      estado: proveedorData.estado,
+    };
 
-  // Intenta acceder a la data de error en diferentes rutas posibles
-  const errorData =
-    err?.response?.data ||
-    err?.data ||
-    err ||
-    {};
-
-  if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
-    userFriendlyMessage = errorData.errors.map(e => e.msg).join('\n');
-  } else if (errorData.message) {
-    userFriendlyMessage = errorData.message;
-  }
-  setValidationMessage(userFriendlyMessage);
-  setIsValidationModalOpen(true);
-}
-};
-// ...código existente...
-
-  const handleDelete = async () => {
-    if (currentProveedor?.idProveedor) {
-      setIsConfirmDeleteOpen(false);
-      try {
-        await proveedoresService.deleteProveedor(currentProveedor.idProveedor);
-        setValidationMessage("Proveedor eliminado exitosamente.");
-        await cargarProveedores();
-      } catch (err) {
-        const errorMessage = err.response?.data?.message || "Ocurrió un error inesperado al intentar eliminar.";
-        setValidationMessage(errorMessage);
-      } finally {
-        setIsValidationModalOpen(true);
+    try {
+      if (idProveedorLimpio) {
+        await proveedoresService.updateProveedor(
+          idProveedorLimpio,
+          datosLimpiosParaEnviar
+        );
+        MySwal.fire("¡Éxito!", "Proveedor actualizado exitosamente.", "success");
+      } else {
+        await proveedoresService.createProveedor(datosLimpiosParaEnviar);
+        MySwal.fire("¡Éxito!", "Proveedor creado exitosamente.", "success");
       }
-    }
-  };
+      closeModal();
+      await cargarProveedores();
+    } catch (err) {
+      const errorData = err?.response?.data || err?.data || err || {};
+      let userFriendlyMessage =
+        "Ocurrió un error inesperado.";
 
-  const handleToggleEstado = async () => {
-    if (currentProveedor) {
-      try {
-        await proveedoresService.toggleEstado(currentProveedor.idProveedor, !currentProveedor.estado);
-        setValidationMessage("Estado del proveedor cambiado exitosamente.");
-        await cargarProveedores();
-      } catch (err) {
-        setValidationMessage(err.response?.data?.message || "Error al cambiar el estado.");
-      } finally {
-        closeModal();
-        setIsValidationModalOpen(true);
+      if (
+        errorData.errors &&
+        Array.isArray(errorData.errors) &&
+        errorData.errors.length > 0
+      ) {
+        userFriendlyMessage = errorData.errors.map((e) => e.msg).join("\n");
+      } else if (errorData.message) {
+        userFriendlyMessage = errorData.message;
       }
+      MySwal.fire("Error", userFriendlyMessage, "error");
     }
   };
 
-  const handleConfirmAction = () => {
-    if (modalAction === 'delete') handleDelete();
-    else if (modalAction === 'status') handleToggleEstado();
+  const handleDelete = async (idProveedor) => {
+    try {
+      await proveedoresService.deleteProveedor(idProveedor);
+      MySwal.fire(
+        "¡Eliminado!",
+        "El proveedor ha sido eliminado.",
+        "success"
+      );
+      await cargarProveedores();
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "Ocurrió un error inesperado al intentar eliminar.";
+      MySwal.fire("Error", errorMessage, "error");
+    }
+  };
+
+  const handleToggleEstado = async (proveedorToToggle) => {
+    try {
+      await proveedoresService.toggleEstado(
+        proveedorToToggle.idProveedor,
+        !proveedorToToggle.estado
+      );
+      MySwal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Estado del proveedor cambiado exitosamente.",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+      await cargarProveedores();
+    } catch (err) {
+      MySwal.fire(
+        "Error",
+        err.response?.data?.message || "Error al cambiar el estado.",
+        "error"
+      );
+    }
   };
 
   const filteredProveedores = useMemo(() => {
@@ -193,13 +227,6 @@ const handleSave = async (proveedorData) => {
     if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
       setPaginaActual(nuevaPagina);
     }
-  };
-
-  const getConfirmModalMessage = () => {
-    if (!currentProveedor) return '';
-    if (modalAction === 'delete') return `¿Estás seguro de que deseas eliminar al proveedor "${currentProveedor.nombre}"?`;
-    if (modalAction === 'status') return `¿Estás seguro de que deseas ${currentProveedor.estado ? 'desactivar' : 'activar'} al proveedor "${currentProveedor.nombre}"?`;
-    return '';
   };
 
   return (
@@ -287,8 +314,6 @@ const handleSave = async (proveedorData) => {
       <ProveedorCrearModal isOpen={isCrearModalOpen} onClose={closeModal} onSubmit={handleSave} />
       <ProveedorEditarModal isOpen={isEditarModalOpen} onClose={closeModal} onSubmit={handleSave} initialData={currentProveedor} />
       <ProveedorDetalleModal isOpen={isDetailsModalOpen} onClose={closeModal} proveedor={currentProveedor} />
-      <ConfirmModal isOpen={isConfirmDeleteOpen} onClose={closeModal} onConfirm={handleConfirmAction} title="Confirmar Acción" message={getConfirmModalMessage()} />
-      <ValidationModal isOpen={isValidationModalOpen} onClose={closeModal} title="Aviso de Proveedores" message={validationMessage} />
     </div>
   );
 }

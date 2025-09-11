@@ -3,10 +3,8 @@ import React from "react";
 import RolesTable from "../components/RolesTable";
 import RolCrearModal from "../components/RolCrearModal";
 import RolEditarModal from "../components/RolEditarModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import RolDetailsModal from "../components/RolDetailsModal";
 import HistorialRolModal from "../components/HistorialRolModal";
-import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination";
 import useRoles from "../hooks/useRoles";
 import "../css/Rol.css";
@@ -24,9 +22,6 @@ function ListaRolesPage() {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isDeleteModalOpen,
-    isValidationModalOpen,
-    validationMessage,
     inputValue,
     setInputValue,
     filterEstado,
@@ -37,7 +32,6 @@ function ListaRolesPage() {
     closeModal,
     handleOpenModal,
     handleSaveRol,
-    handleDeleteRol,
     handleToggleEstado,
     currentPage,
     itemsPerPage,
@@ -136,24 +130,6 @@ function ListaRolesPage() {
         onClose={closeModal}
         role={currentRole}
         isLoading={isSubmitting}
-      />
-      <ConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={closeModal}
-        onConfirm={handleDeleteRol}
-        title="Confirmar Eliminación de Rol"
-        message={`¿Estás seguro de que deseas eliminar el rol "${
-          currentRole?.nombre || ""
-        }"? Esta acción no se puede deshacer.`}
-        confirmText="Eliminar"
-        cancelText="Cancelar"
-        isLoading={isSubmitting}
-      />
-      <ValidationModal
-        isOpen={isValidationModalOpen}
-        onClose={closeModal}
-        title="Aviso de Roles"
-        message={validationMessage}
       />
 
       <HistorialRolModal

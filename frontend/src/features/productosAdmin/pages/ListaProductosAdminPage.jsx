@@ -1,15 +1,17 @@
 // RUTA: src/features/productosAdmin/pages/ListaProductosAdminPage.jsx
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react'; // ✨ Se agrega useMemo
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import ProductosAdminTable from '../components/ProductosAdminTable';
 import ProductoAdminCrearModal from '../components/ProductoAdminCrearModal';
 import ProductoAdminEditarModal from '../components/ProductoAdminEditarModal';
 import ProductoAdminDetalleModal from '../components/ProductoAdminDetalleModal';
-import ConfirmModal from '../../../shared/components/common/ConfirmModal';
-import ValidationModal from '../../../shared/components/common/ValidationModal';
 import Pagination from "../../../shared/components/common/Pagination";
 import { productosAdminService } from '../services/productosAdminService';
 import '../css/ProductosAdmin.css';
+
+const MySwal = withReactContent(Swal);
 
 function ListaProductosAdminPage() {
     const [productos, setProductos] = useState([]);
@@ -25,15 +27,8 @@ function ListaProductosAdminPage() {
     const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
     const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-    const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
     const [currentProducto, setCurrentProducto] = useState(null);
-    const [validationMessage, setValidationMessage] = useState('');
-
-    // ✨ NUEVO: Estados para confirmación de cambio de estado
-    const [isConfirmEstadoOpen, setIsConfirmEstadoOpen] = useState(false);
-    const [productoEstadoActual, setProductoEstadoActual] = useState(null);
 
     const cargarProductos = useCallback(async () => { // ✨ Eliminamos searchTerm de los parámetros porque el filtrado ahora es local
         setIsLoading(true);
@@ -62,78 +57,101 @@ function ListaProductosAdminPage() {
         setIsCrearModalOpen(false);
         setIsEditarModalOpen(false);
         setIsDetailsModalOpen(false);
-        setIsConfirmDeleteOpen(false);
-        setIsValidationModalOpen(false);
-        setIsConfirmEstadoOpen(false); // ✨ Cierra el modal de confirmación de estado
         setCurrentProducto(null);
-        setProductoEstadoActual(null); // ✨ Limpia el producto de estado
-        setValidationMessage('');
     };
 
     const handleOpenModal = (type, producto = null) => {
         setCurrentProducto(producto);
-        if (type === 'details') setIsDetailsModalOpen(true);
-        else if (type === 'delete') setIsConfirmDeleteOpen(true);
-        else if (type === 'create') setIsCrearModalOpen(true);
-        else if (type === 'edit') setIsEditarModalOpen(true);
+        if (type === 'details') {
+            setIsDetailsModalOpen(true);
+        } else if (type === 'create') {
+            setIsCrearModalOpen(true);
+        } else if (type === 'edit') {
+            setIsEditarModalOpen(true);
+        } else if (type === 'delete' && producto) {
+            handleDelete(producto);
+        }
     };
 
     const handleSave = async (productoData) => {
         try {
             if (productoData.idProducto) {
                 await productosAdminService.updateProducto(productoData.idProducto, productoData);
+                 MySwal.fire("¡Éxito!", "Producto actualizado exitosamente.", "success");
             } else {
                 const response = await productosAdminService.createProducto(productoData);
-                if (response?.errors) return response.errors; // 👈 devolvemos errores al modal
+                if (response?.errors) {
+                    // Si hay errores de validación, los mostramos
+                    const errorMessages = response.errors.map(e => e.msg).join('<br>');
+                    MySwal.fire("Error de validación", errorMessages, "error");
+                    return response.errors;
                 }
-                await cargarProductos();
-                closeModal();
-            } catch (err) {
-                setValidationMessage(err.message || "Error al guardar el producto.");
-                setIsValidationModalOpen(true);
+                 MySwal.fire("¡Éxito!", "Producto creado exitosamente.", "success");
             }
-        };
-
-    const handleDelete = async () => {
-        if (currentProducto?.idProducto) {
-            try {
-                await productosAdminService.deleteProducto(currentProducto.idProducto);
-                await cargarProductos(); // ✨ Cargamos todos los productos de nuevo después de eliminar
-                closeModal();
-            } catch (err) {
-                setValidationMessage(err.message || "Error al eliminar el producto.");
-                setIsValidationModalOpen(true);
-            }
-        }
-    };
-
-    // ✨ NUEVO: Solicitar confirmación antes de cambiar estado
-    const handleSolicitarToggleEstado = (productoId) => {
-        const producto = productos.find(p => p.idProducto === productoId);
-        if (producto) {
-            setProductoEstadoActual(producto);
-            setIsConfirmEstadoOpen(true);
-        }
-    };
-
-    // ✨ NUEVO: Confirmar y ejecutar el cambio de estado
-    const handleConfirmToggleEstado = async () => {
-        if (!productoEstadoActual) return;
-        try {
-            await productosAdminService.toggleEstado(
-                productoEstadoActual.idProducto,
-                !productoEstadoActual.estado
-            );
             await cargarProductos();
-            setValidationMessage("Estado del producto actualizado exitosamente.");
-            setIsValidationModalOpen(true);
+            closeModal();
         } catch (err) {
-            setValidationMessage(err.message || "Error al cambiar el estado.");
-            setIsValidationModalOpen(true);
-        } finally {
-            setIsConfirmEstadoOpen(false);
-            setProductoEstadoActual(null);
+            MySwal.fire("Error", err.message || "Error al guardar el producto.", "error");
         }
+    };
+
+    const handleDelete = (producto) => {
+        MySwal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas eliminar el producto "${producto.nombre}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, ¡eliminar!',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await productosAdminService.deleteProducto(producto.idProducto);
+                    await cargarProductos();
+                    MySwal.fire(
+                        '¡Eliminado!',
+                        'El producto ha sido eliminado.',
+                        'success'
+                    );
+                } catch (err) {
+                    MySwal.fire("Error", err.message || "Error al eliminar el producto.", "error");
+                }
+            }
+        });
+    };
+
+    const handleToggleEstado = (producto) => {
+        MySwal.fire({
+            title: 'Confirmar Acción',
+            text: `¿Estás seguro de que deseas ${producto.estado ? 'desactivar' : 'activar'} el producto "${producto.nombre}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: `Sí, ${producto.estado ? 'desactivar' : 'activar'}`,
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await productosAdminService.toggleEstado(
+                        producto.idProducto,
+                        !producto.estado
+                    );
+                    await cargarProductos();
+                    MySwal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Estado actualizado',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                } catch (err) {
+                    MySwal.fire("Error", err.message || "Error al cambiar el estado.", "error");
+                }
+            }
+        });
     };
 
     // ✨ Implementación del filtro y búsqueda usando useMemo, similar al de proveedores
@@ -224,8 +242,8 @@ function ListaProductosAdminPage() {
                                 productos={productosPaginados} // ✨ La tabla recibe los productos paginados y filtrados
                                 onView={(prod) => handleOpenModal('details', prod)}
                                 onEdit={(prod) => handleOpenModal('edit', prod)}
-                                onDeleteConfirm={(prod) => handleOpenModal('delete', prod)}
-                                onToggleEstado={handleSolicitarToggleEstado} // ✨ Cambiado para usar confirmación
+                                onDeleteConfirm={handleDelete}
+                                onToggleEstado={handleToggleEstado}
                             />
                             <Pagination
                                 itemsPerPage={itemsPerPage}
@@ -253,31 +271,6 @@ function ListaProductosAdminPage() {
                 isOpen={isDetailsModalOpen}
                 onClose={closeModal}
                 producto={currentProducto}
-            />
-            <ConfirmModal
-                isOpen={isConfirmDeleteOpen}
-                onClose={closeModal}
-                onConfirm={handleDelete}
-                title="Confirmar Eliminación"
-                message={`¿Está seguro de que desea eliminar el producto "${currentProducto?.nombre || ''}"?`}
-            />
-            {/* ✨ NUEVO: Modal de confirmación de cambio de estado */}
-            <ConfirmModal
-                isOpen={isConfirmEstadoOpen}
-                onClose={closeModal}
-                onConfirm={handleConfirmToggleEstado}
-                title="Confirmar Acción"
-                message={
-                    productoEstadoActual
-                        ? `¿Está seguro de que desea ${productoEstadoActual.estado ? "desactivar" : "activar"} el producto "${productoEstadoActual.nombre}"?`
-                        : ""
-                }
-            />
-            <ValidationModal
-                isOpen={isValidationModalOpen}
-                onClose={closeModal}
-                title="Aviso de Productos"
-                message={validationMessage}
             />
         </div>
     );

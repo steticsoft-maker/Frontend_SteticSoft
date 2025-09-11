@@ -1,9 +1,10 @@
 // Ubicación: src/features/categoriasServicioAdmin/pages/ListaCategoriasServicioPage.jsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import CategoriasTabla from '../components/CategoriasServicioTable';
 import CategoriaForm from '../components/CategoriaServicioForm.jsx';
 import CategoriaServicioDetalleModal from '../components/CategoriaServicioDetalleModal';
-import ConfirmModal from '../../../shared//components/common/ConfirmModal';
 
 // --- Estilos ---
 import '../css/CategoriasServicio.css';
@@ -14,6 +15,8 @@ import {
   deleteCategoriaServicio,
   cambiarEstadoCategoriaServicio,
 } from '../services/categoriasServicioService.js';
+
+const MySwal = withReactContent(Swal);
 
 const ListaCategoriasServicioPage = () => {
   // --- Estados del componente ---
@@ -33,12 +36,7 @@ const ListaCategoriasServicioPage = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [categoriaActual, setCategoriaActual] = useState(null);
-
-  // --- NUEVOS ESTADOS para confirmación de cambio de estado ---
-  const [isConfirmEstadoModalOpen, setIsConfirmEstadoModalOpen] = useState(false);
-  const [categoriaEstadoActual, setCategoriaEstadoActual] = useState(null);
 
   // --- Lógica de carga de datos ---
   const cargarCategorias = useCallback(async () => {
@@ -119,58 +117,113 @@ const ListaCategoriasServicioPage = () => {
   };
 
   const handleFormSubmit = async (formData) => {
-    if (isEditMode) {
-      await updateCategoriaServicio(categoriaActual.idCategoriaServicio, formData);
-    } else {
-      await createCategoriaServicio(formData);
+    setLoadingId(isEditMode ? categoriaActual.idCategoriaServicio : "create");
+    try {
+      if (isEditMode) {
+        await updateCategoriaServicio(
+          categoriaActual.idCategoriaServicio,
+          formData
+        );
+      } else {
+        await createCategoriaServicio(formData);
+      }
+      MySwal.fire({
+        title: "¡Éxito!",
+        text: `Categoría ${
+          isEditMode ? "actualizada" : "creada"
+        } exitosamente.`,
+        icon: "success",
+      });
+      setIsFormModalOpen(false);
+      cargarCategorias();
+    } catch (err) {
+      MySwal.fire({
+        title: "Error",
+        text:
+          err?.response?.data?.message ||
+          `Error al ${isEditMode ? "actualizar" : "crear"} la categoría.`,
+        icon: "error",
+      });
+    } finally {
+      setLoadingId(null);
     }
-    setIsFormModalOpen(false);
-    cargarCategorias();
   };
 
   const handleEliminarCategoria = (categoria) => {
-    setCategoriaActual(categoria);
-    setIsConfirmModalOpen(true);
+    MySwal.fire({
+      title: "¿Estás seguro?",
+      html: `Deseas eliminar la categoría <strong>"${categoria.nombre}"</strong>? <br/>¡Esta acción no se puede deshacer!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, ¡eliminar!",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setLoadingId(categoria.idCategoriaServicio);
+        try {
+          await deleteCategoriaServicio(categoria.idCategoriaServicio);
+          MySwal.fire(
+            "¡Eliminada!",
+            "La categoría ha sido eliminada.",
+            "success"
+          );
+          cargarCategorias();
+        } catch (err) {
+          MySwal.fire(
+            "Error",
+            err?.response?.data?.message || "Error al eliminar la categoría.",
+            "error"
+          );
+        } finally {
+          setLoadingId(null);
+        }
+      }
+    });
   };
 
-  const handleConfirmarEliminacion = async () => {
-    if (!categoriaActual) return;
-    setLoadingId(categoriaActual.idCategoriaServicio);
-    try {
-      await deleteCategoriaServicio(categoriaActual.idCategoriaServicio);
-      cargarCategorias();
-    } catch (err) {
-      setError(err?.response?.data?.message || 'Error al eliminar la categoría.');
-    } finally {
-      setLoadingId(null);
-      setIsConfirmModalOpen(false);
-      setCategoriaActual(null);
-    }
-  };
-
-  // --- NUEVO: Manejador para solicitar confirmación de cambio de estado ---
   const handleSolicitarCambioEstadoCategoria = (categoria) => {
-    setCategoriaEstadoActual(categoria);
-    setIsConfirmEstadoModalOpen(true);
-  };
-
-  // --- NUEVO: Manejador para confirmar el cambio de estado ---
-  const handleConfirmarCambioEstadoCategoria = async () => {
-    if (!categoriaEstadoActual) return;
-    setLoadingId(categoriaEstadoActual.idCategoriaServicio);
-    try {
-      await cambiarEstadoCategoriaServicio(
-        categoriaEstadoActual.idCategoriaServicio,
-        !categoriaEstadoActual.estado
-      );
-      cargarCategorias();
-    } catch (err) {
-      setError(err?.response?.data?.message || 'Error al cambiar estado.');
-    } finally {
-      setLoadingId(null);
-      setIsConfirmEstadoModalOpen(false);
-      setCategoriaEstadoActual(null);
-    }
+    MySwal.fire({
+      title: "Confirmar Acción",
+      html: `¿Estás seguro de que deseas ${
+        categoria.estado ? "desactivar" : "activar"
+      } la categoría <strong>"${categoria.nombre}"</strong>?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: `Sí, ${
+        categoria.estado ? "desactivar" : "activar"
+      }`,
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setLoadingId(categoria.idCategoriaServicio);
+        try {
+          await cambiarEstadoCategoriaServicio(
+            categoria.idCategoriaServicio,
+            !categoria.estado
+          );
+          MySwal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Estado cambiado exitosamente",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+          });
+          cargarCategorias();
+        } catch (err) {
+          MySwal.fire(
+            "Error",
+            err?.response?.data?.message || "Error al cambiar estado.",
+            "error"
+          );
+        } finally {
+          setLoadingId(null);
+        }
+      }
+    });
   };
 
   return (
@@ -268,33 +321,6 @@ const ListaCategoriasServicioPage = () => {
         onClose={() => setIsDetailModalOpen(false)}
         categoria={categoriaActual}
       />
-      <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        onClose={() => setIsConfirmModalOpen(false)}
-        onConfirm={handleConfirmarEliminacion}
-        title="Confirmar Eliminación"
-        isConfirming={loadingId !== null}
-      >
-        <p>
-          ¿Estás seguro de que deseas eliminar la categoría
-          <strong> "{categoriaActual?.nombre}"</strong>?
-        </p>
-        <p style={{color: 'red', fontSize: '0.9rem'}}>Esta acción no se puede deshacer.</p>
-      </ConfirmModal>
-
-      {/* --- NUEVO: Modal de confirmación de cambio de estado --- */}
-      <ConfirmModal
-        isOpen={isConfirmEstadoModalOpen}
-        onClose={() => setIsConfirmEstadoModalOpen(false)}
-        onConfirm={handleConfirmarCambioEstadoCategoria}
-        title="Confirmar Acción"
-        isConfirming={loadingId !== null}
-      >
-        <p>
-          ¿Estás seguro de que deseas {categoriaEstadoActual?.estado ? 'desactivar' : 'activar'} la categoría
-          <strong> "{categoriaEstadoActual?.nombre}"</strong>?
-        </p>
-      </ConfirmModal>
     </div>
   );
 };

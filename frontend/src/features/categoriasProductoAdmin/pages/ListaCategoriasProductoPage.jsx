@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import CategoriasProductoTable from "../components/CategoriasProductoTable";
 import CategoriaProductoCrearModal from "../components/CategoriaProductoCrearModal";
 import CategoriaProductoEditarModal from "../components/CategoriaProductoEditarModal";
 import CategoriaProductoDetalleModal from "../components/CategoriaProductoDetalleModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
-import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination";
 import {
     fetchCategoriasProducto,
@@ -13,6 +13,8 @@ import {
     toggleCategoriaProductoEstado,
 } from "../services/categoriasProductoService";
 import "../css/CategoriasProducto.css";
+
+const MySwal = withReactContent(Swal);
 
 function ListaCategoriasProductoPage() {
     const [categorias, setCategorias] = useState([]);
@@ -27,10 +29,7 @@ function ListaCategoriasProductoPage() {
     const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
     const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-    const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
     const [currentCategoria, setCurrentCategoria] = useState(null);
-    const [validationMessage, setValidationMessage] = useState("");
 
     const loadCategorias = useCallback(async () => {
         try {
@@ -92,93 +91,95 @@ function ListaCategoriasProductoPage() {
         setCurrentCategoria(categoria);
         if (type === "details") {
             setIsDetailsModalOpen(true);
-        } else if (type === "delete") {
-            setIsConfirmDeleteOpen(true);
         } else if (type === "create") {
             setIsCrearModalOpen(true);
-        } else if (type === "edit") {
-            if (categoria) {
-                setIsEditarModalOpen(true);
-            } else {
-                console.error("Intento de abrir modal de edición sin datos de categoría de producto.");
-            }
+        } else if (type === "edit" && categoria) {
+            setIsEditarModalOpen(true);
+        } else if (type === "delete" && categoria) {
+            MySwal.fire({
+                title: "¿Estás seguro?",
+                text: `¿Deseas eliminar la categoría "${categoria.nombre}"?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, ¡eliminar!",
+                cancelButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    handleDelete(categoria.idCategoriaProducto);
+                }
+            });
         }
     };
 
-    const handleCrearModalClose = () => {
+    const closeModal = () => {
         setIsCrearModalOpen(false);
-        loadCategorias();
-    };
-
-    const handleEditarModalClose = () => {
         setIsEditarModalOpen(false);
-        setCurrentCategoria(null);
-        loadCategorias();
-    };
-
-    const closeOtherModals = () => {
         setIsDetailsModalOpen(false);
-        setIsConfirmDeleteOpen(false);
-        setIsValidationModalOpen(false);
-        setValidationMessage("");
-        if (!isCrearModalOpen && !isEditarModalOpen) {
-            setCurrentCategoria(null);
-        }
-        loadCategorias();
+        setCurrentCategoria(null);
     };
 
     const handleSave = async (categoriaData) => {
         try {
             const isEditing = !!categoriaData.idCategoriaProducto;
             await saveCategoriaProducto(categoriaData);
-
-            if (isEditing) {
-                handleEditarModalClose();
-            } else {
-                handleCrearModalClose();
-            }
-            setValidationMessage(`Categoría ${isEditing ? "actualizada" : "creada"} exitosamente.`);
-            setIsValidationModalOpen(true);
+            closeModal();
+            await loadCategorias();
+            MySwal.fire({
+                title: "¡Éxito!",
+                text: `Categoría ${isEditing ? "actualizada" : "creada"} exitosamente.`,
+                icon: "success",
+            });
         } catch (error) {
-            console.error("Error al guardar categoría:", error);
-            const errorMessage = error.response?.data?.message || "Error al guardar la categoría. Por favor, revise los datos.";
-            setValidationMessage(errorMessage);
-            setIsValidationModalOpen(true);
+            const errorMessage =
+                error.response?.data?.message ||
+                "Error al guardar la categoría. Por favor, revise los datos.";
+            MySwal.fire("Error", errorMessage, "error");
         }
     };
 
-    const handleDelete = async () => {
-        if (currentCategoria && currentCategoria.idCategoriaProducto) {
-            try {
-                await deleteCategoriaProductoById(currentCategoria.idCategoriaProducto);
-                closeOtherModals();
-                setValidationMessage("Categoría eliminada exitosamente.");
-                setIsValidationModalOpen(true);
-            } catch (error) {
-                console.error("Error al eliminar categoría:", error);
-                const errorMessage = error.response?.data?.message || "Error al eliminar la categoría.";
-                setValidationMessage(errorMessage);
-                setIsValidationModalOpen(true);
-            }
+    const handleDelete = async (idCategoria) => {
+        try {
+            await deleteCategoriaProductoById(idCategoria);
+            await loadCategorias();
+            MySwal.fire(
+                "¡Eliminada!",
+                "La categoría ha sido eliminada.",
+                "success"
+            );
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.message || "Error al eliminar la categoría.";
+            MySwal.fire("Error", errorMessage, "error");
         }
     };
 
     const handleToggleEstado = async (idCategoriaProducto) => {
         try {
-            const categoriaToToggle = categorias.find(cat => cat.idCategoriaProducto === idCategoriaProducto);
+            const categoriaToToggle = categorias.find(
+                (cat) => cat.idCategoriaProducto === idCategoriaProducto
+            );
             if (!categoriaToToggle) {
                 throw new Error("Categoría no encontrada para cambiar estado.");
             }
-            await toggleCategoriaProductoEstado(idCategoriaProducto, !categoriaToToggle.estado);
-
-            setValidationMessage("Estado de la categoría actualizado exitosamente.");
-            setIsValidationModalOpen(true);
-            loadCategorias();
+            const nuevoEstado = !categoriaToToggle.estado;
+            await toggleCategoriaProductoEstado(idCategoriaProducto, nuevoEstado);
+            await loadCategorias();
+            MySwal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: `Estado cambiado a ${nuevoEstado ? "Activo" : "Inactivo"}`,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
         } catch (error) {
-            console.error("Error al cambiar estado de categoría:", error);
-            const errorMessage = error.response?.data?.message || "Error al cambiar el estado de la categoría.";
-            setValidationMessage(errorMessage);
-            setIsValidationModalOpen(true);
+            const errorMessage =
+                error.response?.data?.message ||
+                "Error al cambiar el estado de la categoría.";
+            MySwal.fire("Error", errorMessage, "error");
         }
     };
 
@@ -248,32 +249,19 @@ function ListaCategoriasProductoPage() {
 
             <CategoriaProductoCrearModal
                 isOpen={isCrearModalOpen}
-                onClose={handleCrearModalClose}
+                onClose={closeModal}
                 onSubmit={handleSave}
             />
             <CategoriaProductoEditarModal
                 isOpen={isEditarModalOpen}
-                onClose={handleEditarModalClose}
+                onClose={closeModal}
                 onSubmit={handleSave}
                 initialData={currentCategoria}
             />
             <CategoriaProductoDetalleModal
                 isOpen={isDetailsModalOpen}
-                onClose={closeOtherModals}
+                onClose={closeModal}
                 categoria={currentCategoria}
-            />
-            <ConfirmModal
-                isOpen={isConfirmDeleteOpen}
-                onClose={closeOtherModals}
-                onConfirm={handleDelete}
-                title="Confirmar Eliminación"
-                message={`¿Está seguro de que desea eliminar la categoría "${currentCategoria?.nombre || ""}"?`}
-            />
-            <ValidationModal
-                isOpen={isValidationModalOpen}
-                onClose={closeOtherModals}
-                title="Aviso de Categorías de Producto"
-                message={validationMessage}
             />
         </div>
     );

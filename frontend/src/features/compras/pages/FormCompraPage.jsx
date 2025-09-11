@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import CompraForm from '../components/CompraForm';
-import ValidationModal from '../../../shared/components/common/ValidationModal';
-import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import { comprasService } from '../services/comprasService';
 import { proveedoresService } from '../../proveedores/services/proveedoresService';
 import { productosAdminService } from '../../productosAdmin/services/productosAdminService';
 import { useAuth } from '../../../shared/contexts/authHooks';
 import '../css/FormCompra.css';
+
+const MySwal = withReactContent(Swal);
 
 function FormCompraPage() {
   const navigate = useNavigate();
@@ -20,9 +22,6 @@ function FormCompraPage() {
   const [proveedoresList, setProveedoresList] = useState([]);
   const [productosList, setProductosList] = useState([]);
   
-  const [validationMessage, setValidationMessage] = useState('');
-  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  const [isConfirmSaveModalOpen, setIsConfirmSaveModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -93,26 +92,34 @@ function FormCompraPage() {
 
   const handleGuardar = () => {
     if (!proveedorSeleccionado) {
-      setValidationMessage("Debe seleccionar un proveedor válido de la lista.");
-      setIsValidationModalOpen(true);
+      MySwal.fire("Error de validación", "Debe seleccionar un proveedor válido de la lista.", "error");
       return;
     }
     if (itemsCompra.length === 0) {
-      setValidationMessage("Debe agregar al menos un producto a la compra.");
-      setIsValidationModalOpen(true);
+      MySwal.fire("Error de validación", "Debe agregar al menos un producto a la compra.", "error");
       return;
     }
     const hasInvalidItems = itemsCompra.some(item => !item.id || item.cantidad <= 0 || item.precio < 0);
     if (hasInvalidItems) {
-      setValidationMessage("Revise los productos. Todos deben tener cantidad y precio válidos.");
-      setIsValidationModalOpen(true);
+      MySwal.fire("Error de validación", "Revise los productos. Todos deben tener cantidad y precio válidos.", "error");
       return;
     }
-    setIsConfirmSaveModalOpen(true);
+
+    MySwal.fire({
+        title: 'Confirmar Compra',
+        text: '¿Está seguro de que desea guardar esta compra?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if(result.isConfirmed) {
+            confirmSave();
+        }
+    });
   };
 
   const confirmSave = async () => {
-    setIsConfirmSaveModalOpen(false);
     setIsSubmitting(true);
 
     const compraData = {
@@ -131,22 +138,19 @@ function FormCompraPage() {
 
     try {
       await comprasService.createCompra(compraData);
-      setValidationMessage("Compra guardada exitosamente. Redirigiendo...");
-      setIsValidationModalOpen(true);
-      setTimeout(() => {
+      MySwal.fire({
+          title: '¡Éxito!',
+          text: 'Compra guardada exitosamente. Redirigiendo...',
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false
+      }).then(() => {
         navigate("/admin/compras");
-      }, 2000);
+      });
     } catch (error) {
-      setValidationMessage(error.response?.data?.errors[0]?.msg || error.message || 'Error al guardar la compra.');
-      setIsValidationModalOpen(true);
+      MySwal.fire("Error", error.response?.data?.errors[0]?.msg || error.message || 'Error al guardar la compra.', "error");
       setIsSubmitting(false);
     }
-  };
-
-  const handleCloseModals = () => {
-    setIsValidationModalOpen(false);
-    setValidationMessage('');
-    setIsConfirmSaveModalOpen(false);
   };
 
   return (
@@ -181,20 +185,6 @@ function FormCompraPage() {
           </div>
         </div>
       </div>
-
-      <ValidationModal
-        isOpen={isValidationModalOpen}
-        onClose={handleCloseModals}
-        title="Aviso de Compra"
-        message={validationMessage}
-      />
-      <ConfirmModal
-        isOpen={isConfirmSaveModalOpen}
-        onClose={() => setIsConfirmSaveModalOpen(false)}
-        onConfirm={confirmSave}
-        title="Confirmar Compra"
-        message="¿Está seguro de que desea guardar esta compra?"
-      />
     </div>
   );
 }

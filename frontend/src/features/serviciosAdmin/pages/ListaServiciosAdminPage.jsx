@@ -1,5 +1,7 @@
 // src/features/serviciosAdmin/pages/ListaServiciosAdminPage.jsx
 import React, { useState, useEffect, useCallback } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -7,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import ServiciosAdminTable from "../components/ServiciosAdminTable";
 import ServicioAdminFormModal from "../components/ServicioAdminFormModal";
 import ServicioAdminDetalleModal from "../components/ServicioAdminDetalleModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import {
   getServicios,
   createServicio,
@@ -18,6 +19,8 @@ import {
 } from "../services/serviciosAdminService";
 
 import "../css/ServiciosAdmin.css";
+
+const MySwal = withReactContent(Swal);
 
 function ListaServiciosAdminPage() {
   const [servicios, setServicios] = useState([]);
@@ -61,7 +64,26 @@ function ListaServiciosAdminPage() {
     return () => clearTimeout(debounceTimer);
   }, [terminoBusqueda, filtroEstado, cargarDatos]);
 
-  const handleOpenModal = (type, servicio = null) => setModalState({ type, data: servicio });
+  const handleOpenModal = (type, servicio = null) => {
+    if (type === 'delete' && servicio) {
+        MySwal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas eliminar el servicio "${servicio.nombre}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, ¡eliminar!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleDelete(servicio);
+            }
+        });
+    } else {
+        setModalState({ type, data: servicio });
+    }
+  };
   const handleCloseModal = () => setModalState({ type: null, data: null });
 
   const handleSave = async (servicioData) => {
@@ -82,13 +104,12 @@ function ListaServiciosAdminPage() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!modalState.data) return;
-    setLoadingId(modalState.data.idServicio);
+  const handleDelete = async (servicio) => {
+    if (!servicio) return;
+    setLoadingId(servicio.idServicio);
     try {
-      await deleteServicio(modalState.data.idServicio);
+      await deleteServicio(servicio.idServicio);
       toast.success('Servicio eliminado exitosamente!');
-      handleCloseModal();
       cargarDatos();
     } catch (err) {
       toast.error(err.response?.data?.message || "Error al eliminar el servicio.");
@@ -182,7 +203,6 @@ function ListaServiciosAdminPage() {
       {/* Modales */}
       <ServicioAdminFormModal isOpen={modalState.type === 'create' || modalState.type === 'edit'} onClose={handleCloseModal} onSubmit={handleSave} initialData={modalState.data} isEditMode={modalState.type === "edit"} categorias={categorias} />
       <ServicioAdminDetalleModal isOpen={modalState.type === 'details'} onClose={handleCloseModal} servicio={modalState.data} />
-      <ConfirmModal isOpen={modalState.type === 'delete'} onClose={handleCloseModal} onConfirm={handleDelete} title="Confirmar Eliminación" message={`¿Estás seguro de eliminar el servicio "${modalState.data?.nombre}"?`} isConfirming={loadingId === modalState.data?.idServicio} />
     </div>
   );
 }

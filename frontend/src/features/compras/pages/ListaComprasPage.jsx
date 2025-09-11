@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import ComprasTable from '../components/ComprasTable';
 import CompraDetalleModal from '../components/CompraDetalleModal';
 import PdfViewModal from '../../../shared/components/common/PdfViewModal';
-import ConfirmModal from '../../../shared/components/common/ConfirmModal';
-import ValidationModal from '../../../shared/components/common/ValidationModal';
 import { comprasService } from '../services/comprasService';
 import { generarPDFCompraUtil } from '../utils/pdfGeneratorCompras.js';
 import '../css/Compras.css';
@@ -34,6 +34,7 @@ const Paginacion = ({ currentPage, totalPages, onPageChange }) => {
     );
 };
 
+const MySwal = withReactContent(Swal);
 
 function ListaComprasPage() {
     const navigate = useNavigate();
@@ -48,10 +49,7 @@ function ListaComprasPage() {
 
     // ... (estados de modales sin cambios)
     const [isDetalleModalOpen, setIsDetalleModalOpen] = useState(false);
-    const [isAnularModalOpen, setIsAnularModalOpen] = useState(false);
-    const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
     const [selectedCompra, setSelectedCompra] = useState(null);
-    const [validationMessage, setValidationMessage] = useState('');
     const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
     const [pdfDataUri, setPdfDataUri] = useState('');
 
@@ -124,15 +122,24 @@ function ListaComprasPage() {
         setIsDetalleModalOpen(true);
     };
 
-    const handleOpenAnular = (compraId) => {
-        //...
-        const compraParaAnular = compras.find(c => c.idCompra === compraId);
-        setSelectedCompra(compraParaAnular);
-        setIsAnularModalOpen(true);
+    const handleOpenAnular = (compra) => {
+        MySwal.fire({
+            title: '¿Estás seguro?',
+            text: `Deseas anular la compra N° ${compra.idCompra}? Esta acción no se puede deshacer y el stock de los productos será revertido.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, ¡anular!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleConfirmAnular(compra.idCompra);
+            }
+        });
     };
     
     const generateAndShowPdf = async (compraResumen) => {
-        //...
         if (!compraResumen) return;
         try {
             const compraCompletaResponse = await comprasService.getCompraById(compraResumen.idCompra);
@@ -147,35 +154,24 @@ function ListaComprasPage() {
                 throw new Error("La utilidad de PDF no pudo generar el archivo.");
             }
         } catch (err) {
-            console.error("Error al generar PDF:", err);
-            setValidationMessage(err.message || "No se pudo generar el PDF.");
-            setIsValidationModalOpen(true);
+            MySwal.fire("Error", err.message || "No se pudo generar el PDF.", "error");
         }
     };
     
     const handleCloseModals = () => {
-        //...
         setIsDetalleModalOpen(false);
-        setIsAnularModalOpen(false);
-        setIsValidationModalOpen(false);
         setIsPdfModalOpen(false);
         setSelectedCompra(null);
-        setValidationMessage('');
         setPdfDataUri('');
     };
 
-    const handleConfirmAnular = async () => {
-        //...
-        if (!selectedCompra) return;
+    const handleConfirmAnular = async (compraId) => {
         try {
-            await comprasService.anularCompra(selectedCompra.idCompra);
-            setValidationMessage('¡Compra anulada exitosamente! El stock ha sido revertido.');
+            await comprasService.anularCompra(compraId);
+            MySwal.fire('¡Anulada!', 'La compra ha sido anulada y el stock revertido.', 'success');
             await fetchCompras();
         } catch (err) {
-            setValidationMessage(err.response?.data?.message || 'Error al anular la compra.');
-        } finally {
-            setIsValidationModalOpen(true);
-            setIsAnularModalOpen(false);
+            MySwal.fire("Error", err.response?.data?.message || 'Error al anular la compra.', "error");
         }
     };
 
@@ -239,8 +235,6 @@ function ListaComprasPage() {
             {/* --- Modales (SIN CAMBIOS) --- */}
             {isDetalleModalOpen && <CompraDetalleModal compra={selectedCompra} onClose={handleCloseModals} />}
             <PdfViewModal isOpen={isPdfModalOpen} onClose={handleCloseModals} pdfUrl={pdfDataUri} title={`Detalle Compra #${selectedCompra?.idCompra || ''}`} />
-            <ConfirmModal isOpen={isAnularModalOpen} onClose={handleCloseModals} onConfirm={handleConfirmAnular} title="Confirmar Anulación" message={`¿Estás seguro de que deseas anular la compra N° ${selectedCompra?.idCompra}? Esta acción no se puede deshacer y el stock de los productos será revertido.`} confirmText="Sí, Anular" cancelText="No, Cancelar" />
-            <ValidationModal isOpen={isValidationModalOpen} onClose={handleCloseModals} title="Aviso" message={validationMessage} />
         </div>
     );
 }
