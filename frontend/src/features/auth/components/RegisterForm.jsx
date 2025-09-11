@@ -1,5 +1,6 @@
 // src/features/auth/components/RegisterForm.jsx
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "../css/Auth.css"; // Estilos comunes
 import "../css/RegisterStyles.css"; // Estilos específicos del registro
 
@@ -229,9 +230,14 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
           <p className="auth-form-success">{successMessage}</p>
         )}
 
-        <button type="submit" className="auth-primary-button" disabled={isLoading}>
-          {isLoading ? "Registrando..." : "Registrarse"}
-        </button>
+        <div className="auth-form-actions">
+          <button type="submit" className="auth-primary-button" disabled={isLoading}>
+            {isLoading ? "Registrando..." : "Registrarse"}
+          </button>
+          <Link to="/" className="auth-secondary-button">
+            Regresar
+          </Link>
+        </div>
       </div>
     </form>
   );

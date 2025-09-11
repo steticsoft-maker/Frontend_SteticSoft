@@ -1,5 +1,6 @@
 // src/features/auth/components/LoginForm.jsx
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "../css/Auth.css";
 import "../css/LoginStyles.css"; // Asegúrate que esta sea la importación correcta
 
@@ -74,9 +75,14 @@ function LoginForm({ onSubmit, error }) {
 
       {error && <p className="auth-form-error">{error}</p>}
 
-      <button type="submit" className="auth-primary-button">
-        Entrar
-      </button>
+      <div className="auth-form-actions">
+        <button type="submit" className="auth-primary-button">
+          Entrar
+        </button>
+        <Link to="/" className="auth-secondary-button">
+          Regresar
+        </Link>
+      </div>
     </form>
   );
 }
