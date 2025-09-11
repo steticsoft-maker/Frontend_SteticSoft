@@ -1,10 +1,10 @@
 // src/features/ventas/pages/ProcesoVentaPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import VentaForm from "../components/VentaForm";
 import ItemSelectionModal from "../components/ItemSelectionModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
-import ValidationModal from "../../../shared/components/common/ValidationModal";
 import {
     getProductosParaVenta,
     getServiciosParaVenta,
@@ -12,6 +12,8 @@ import {
 } from "../services/ventasService";
 import { fetchClientes as getClientesParaVenta } from "../../clientes/services/clientesService";
 import "../css/ProcesoVentas.css";
+
+const MySwal = withReactContent(Swal);
 
 function ProcesoVentaPage() {
     const navigate = useNavigate();
@@ -39,9 +41,6 @@ function ProcesoVentaPage() {
 
     const [errorDatosCliente, setErrorDatosCliente] = useState("");
     const [errorItemsTabla, setErrorItemsTabla] = useState("");
-    const [isConfirmSaveModalOpen, setIsConfirmSaveModalOpen] = useState(false);
-    const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-    const [validationMessage, setValidationMessage] = useState("");
 
     useEffect(() => {
         const loadInitialData = async () => {
@@ -210,26 +209,33 @@ function ProcesoVentaPage() {
 
     const handleGuardarVenta = () => {
         if (!validarFormulario()) {
+            // The validation function will now show the alerts
             return;
         }
-        setIsConfirmSaveModalOpen(true);
+        MySwal.fire({
+            title: 'Confirmar Guardar Venta',
+            text: '¿Está seguro de que desea guardar esta venta?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                confirmGuardar();
+            }
+        });
     };
 
-    // ✅ FUNCIÓN CORREGIDA Y OPTIMIZADA
     const confirmGuardar = async () => {
-        setIsConfirmSaveModalOpen(false);
         setIsSaving(true);
         
         let clienteData;
         if (modoCliente === 'existente') {
             clienteData = { idCliente: datosCliente.id };
         } else if (modoCliente === 'nuevo') {
-            // Esta lógica asume que tu backend puede manejar la creación de un cliente
-            // si no se proporciona un idCliente. Ajusta si es necesario.
             clienteData = { cliente: datosCliente };
         }
 
-        // Se envía solo la información esencial: IDs y cantidades.
         const productosParaEnviar = itemsTabla
             .filter(item => item.tipo === "producto")
             .map(item => ({
@@ -243,42 +249,30 @@ function ProcesoVentaPage() {
                 idServicio: item.id,
             }));
 
-        // El objeto de datos es ahora más limpio y seguro.
-        // El backend se encargará de los cálculos de precios y totales.
         const dataToSend = {
             ...clienteData,
             productos: productosParaEnviar,
             servicios: serviciosParaEnviar,
-            idEstado: 1, // Por defecto, una nueva venta inicia como 'Activa'.
+            idEstado: 1,
         };
-
-        console.log('Datos optimizados que se enviarán a la API:', dataToSend);
 
         try {
             await saveNuevaVenta(dataToSend);
-
-            setValidationMessage("¡Venta guardada exitosamente! Redirigiendo...");
-            setIsValidationModalOpen(true);
-            
-            setTimeout(() => {
-                setIsValidationModalOpen(false);
-                // Navega de vuelta a la lista y envía un estado para forzar la recarga de datos.
+            MySwal.fire({
+                title: '¡Éxito!',
+                text: '¡Venta guardada exitosamente! Redirigiendo...',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
                 navigate("/admin/ventas", { state: { nuevaVenta: true } });
-            }, 2000);
-
+            });
         } catch (error) {
-            console.error("Error al guardar la venta:", error);
             const errorMessage = error.response?.data?.message || "Ocurrió un error inesperado al guardar la venta.";
-            setValidationMessage(errorMessage);
-            setIsValidationModalOpen(true);
+            MySwal.fire('Error', errorMessage, 'error');
         } finally {
             setIsSaving(false);
         }
-    };
-
-    const handleCloseValidationModal = () => {
-        setIsValidationModalOpen(false);
-        setValidationMessage("");
     };
 
     return (
@@ -350,19 +344,6 @@ function ProcesoVentaPage() {
                 onSelectItem={(servicio) => agregarItemDesdeModal(servicio, "servicio")}
                 searchPlaceholder="Buscar servicio"
                 displayFields={["nombre", "precio"]}
-            />
-            <ConfirmModal
-                isOpen={isConfirmSaveModalOpen}
-                onClose={() => setIsConfirmSaveModalOpen(false)}
-                onConfirm={confirmGuardar}
-                title="Confirmar Guardar Venta"
-                message="¿Está seguro de que desea guardar esta venta?"
-            />
-            <ValidationModal
-                isOpen={isValidationModalOpen}
-                onClose={handleCloseValidationModal}
-                title="Aviso de Venta"
-                message={validationMessage}
             />
         </div>
     );

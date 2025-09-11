@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import VentasTable from '../components/VentasTable';
 import VentaDetalleModal from '../components/VentaDetalleModal';
 import PdfViewModal from '../../../shared/components/common/PdfViewModal';
-import ConfirmModal from '../../../shared/components/common/ConfirmModal';
-import ValidationModal from '../../../shared/components/common/ValidationModal';
 import {
     fetchVentas,
     anularVentaById,
@@ -13,6 +13,8 @@ import {
 } from '../services/ventasService';
 import { generarPDFVentaUtil } from '../utils/pdfGeneratorVentas';
 import '../css/Ventas.css';
+
+const MySwal = withReactContent(Swal);
 
 function ListaVentasPage() {
     const navigate = useNavigate();
@@ -28,11 +30,8 @@ function ListaVentasPage() {
     const [filtroEstado, setFiltroEstado] = useState('1'); 
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [showPdfModal, setShowPdfModal] = useState(false);
-    const [showAnularConfirmModal, setShowAnularConfirmModal] = useState(false);
-    const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
     const [selectedVenta, setSelectedVenta] = useState(null);
     const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
-    const [validationMessage, setValidationMessage] = useState('');
 
     const loadVentas = useCallback(async () => {
         setIsLoading(true);
@@ -63,14 +62,11 @@ function ListaVentasPage() {
     const handleOpenDetails = async (ventaResumida) => {
         setIsLoading(true);
         try {
-            // Llama a la API para obtener la información completa de la venta
             const ventaCompleta = await getVentaById(ventaResumida.idVenta);
             setSelectedVenta(ventaCompleta);
             setShowDetailsModal(true);
         } catch (err) {
-            console.error("Error al obtener el detalle de la venta:", err);
-            setValidationMessage("No se pudo cargar el detalle de la venta. Inténtalo de nuevo.");
-            setIsValidationModalOpen(true);
+            MySwal.fire("Error", "No se pudo cargar el detalle de la venta. Inténtalo de nuevo.", "error");
         } finally {
             setIsLoading(false);
         }
@@ -85,14 +81,25 @@ function ListaVentasPage() {
             setSelectedVenta(venta);
             setShowPdfModal(true);
         } catch (e) {
-            setValidationMessage("Error al generar el PDF: " + e.message);
-            setIsValidationModalOpen(true);
+            MySwal.fire("Error", "Error al generar el PDF: " + e.message, "error");
         }
     };
 
     const handleOpenAnularConfirm = (venta) => {
-        setSelectedVenta(venta);
-        setShowAnularConfirmModal(true);
+        MySwal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas anular la venta #${venta.idVenta}? Esta acción no se puede deshacer.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, ¡anular!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleConfirmAnular(venta.idVenta);
+            }
+        });
     };
 
     const handleCloseModals = () => {
@@ -100,61 +107,35 @@ function ListaVentasPage() {
         setShowPdfModal(false);
         if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
         setPdfBlobUrl(null);
-        setShowAnularConfirmModal(false);
-        setIsValidationModalOpen(false);
         setSelectedVenta(null);
-        setValidationMessage('');
     };
     
-    const handleConfirmAnular = async () => {
-        if (selectedVenta) {
-            setShowAnularConfirmModal(false); 
-            try {
-                const response = await anularVentaById(selectedVenta.idVenta);
-                const ventaAnulada = response?.data?.data;
-
-                if (ventaAnulada && typeof ventaAnulada === 'object') {
-                    setVentas(ventasActuales =>
-                        ventasActuales.map(v =>
-                            v.idVenta === selectedVenta.idVenta ? ventaAnulada : v
-                        )
-                    );
-                    setValidationMessage("La venta se ha anulado exitosamente.");
-                } else {
-                    setValidationMessage("Venta anulada. Actualizando lista...");
-                    loadVentas();
-                }
-            } catch (err) {
-                setValidationMessage("Error al anular la venta. Intenta de nuevo.");
-                console.error("Error al anular venta:", err);
-            } finally {
-                setIsValidationModalOpen(true);
-                setSelectedVenta(null);
-            }
+    const handleConfirmAnular = async (ventaId) => {
+        try {
+            await anularVentaById(ventaId);
+            MySwal.fire('¡Anulada!', 'La venta ha sido anulada exitosamente.', 'success');
+            loadVentas();
+        } catch (err) {
+            MySwal.fire("Error", "Error al anular la venta. Intenta de nuevo.", "error");
         }
     };
 
     const handleEstadoChange = async (ventaId, nuevoIdEstado) => {
         try {
-            const response = await cambiarEstadoVenta(ventaId, nuevoIdEstado);
-            const ventaActualizada = response?.data?.data;
-
-            if (ventaActualizada && typeof ventaActualizada === 'object') {
-                setVentas(ventasActuales =>
-                    ventasActuales.map(v =>
-                        v.idVenta === ventaId ? ventaActualizada : v
-                    )
-                );
-                setValidationMessage(`El estado de la venta se ha cambiado.`);
-            } else {
-                loadVentas();
-            }
+            await cambiarEstadoVenta(ventaId, nuevoIdEstado);
+            MySwal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'El estado de la venta ha sido cambiado.',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            loadVentas();
         } catch (err) {
-            setValidationMessage("Error al cambiar el estado de la venta. Intenta de nuevo.");
-            console.error("Error al cambiar estado:", err);
+            MySwal.fire("Error", "Error al cambiar el estado de la venta. Intenta de nuevo.", "error");
             loadVentas(); 
-        } finally {
-            setIsValidationModalOpen(true);
         }
     };
     
@@ -219,8 +200,6 @@ function ListaVentasPage() {
             {/* Modales */}
             <VentaDetalleModal isOpen={showDetailsModal} onClose={handleCloseModals} venta={selectedVenta} />
             <PdfViewModal isOpen={showPdfModal} onClose={handleCloseModals} pdfUrl={pdfBlobUrl} title={`Detalle Venta #${selectedVenta?.idVenta || ''}`} />
-            <ConfirmModal isOpen={showAnularConfirmModal} onClose={handleCloseModals} onConfirm={handleConfirmAnular} title="Confirmar Anulación" message={`¿Está seguro de que desea anular la venta #${selectedVenta?.idVenta || ''} para el cliente "${selectedVenta?.cliente?.nombre || ''} ${selectedVenta?.cliente?.apellido || ''}"?`} />
-            <ValidationModal isOpen={isValidationModalOpen} onClose={handleCloseModals} title="Aviso de Ventas" message={validationMessage} />
         </div>
     );
 }

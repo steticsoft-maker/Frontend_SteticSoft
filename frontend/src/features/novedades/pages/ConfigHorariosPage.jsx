@@ -1,10 +1,11 @@
 // src/features/novedades/pages/ConfigHorariosPage.jsx
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import NavbarAdmin from "../../../shared/components/layout/Navbar";
 import NovedadesTable from "../components/NovedadesTable";
 import NovedadModal from '../components/NovedadModal';
 import NovedadDetalleModal from "../components/HorarioDetalleModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import { 
   obtenerTodasLasNovedades, 
   eliminarNovedad, 
@@ -12,6 +13,8 @@ import {
 } from "../services/horariosService";
 import { toast } from 'react-toastify';
 import "../css/ConfigHorarios.css";
+
+const MySwal = withReactContent(Swal);
 
 function ConfigHorariosPage() {
   const [novedades, setNovedades] = useState([]);
@@ -70,10 +73,30 @@ function ConfigHorariosPage() {
     setCurrentPage(1);
   };
   
-  const openModal = (type, novedad = null) => { setModalType(type); setCurrentNovedad(novedad); };
+  const openModal = (type, novedad = null) => {
+    if (type === 'confirmDelete') {
+        MySwal.fire({
+            title: '¿Estás seguro?',
+            text: '¿Deseas eliminar esta novedad?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, ¡eliminar!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleDeleteConfirm(novedad);
+            }
+        });
+    } else {
+        setModalType(type);
+        setCurrentNovedad(novedad);
+    }
+  };
   const closeModal = () => { setModalType(null); setCurrentNovedad(null); };
   const handleSuccess = () => { closeModal(); cargarNovedades(); };
-  const handleDeleteConfirm = async () => { if (!currentNovedad) return; try { await eliminarNovedad(currentNovedad.idNovedad); toast.success("Novedad eliminada con éxito."); handleSuccess(); } catch (err) { toast.error(`Error al eliminar: ${err.message}`); closeModal(); } };
+  const handleDeleteConfirm = async (novedad) => { if (!novedad) return; try { await eliminarNovedad(novedad.idNovedad); toast.success("Novedad eliminada con éxito."); handleSuccess(); } catch (err) { toast.error(`Error al eliminar: ${err.message}`); closeModal(); } };
   
   // MODIFICADO: Se cambia el handler del switch para que no abra un modal de confirmación
   const handleToggleEstado = async (novedad) => {
@@ -159,7 +182,6 @@ function ConfigHorariosPage() {
       
       {modalType === 'form' && <NovedadModal onClose={closeModal} onSuccess={handleSuccess} novedadToEdit={currentNovedad} isEditing={!!currentNovedad} />}
       {modalType === 'details' && <NovedadDetalleModal novedad={currentNovedad} onClose={closeModal} />}
-      {modalType === 'confirmDelete' && <ConfirmModal isOpen={true} onClose={closeModal} onConfirm={handleDeleteConfirm} title="Confirmar Eliminación" message="¿Está seguro de eliminar esta novedad?" />}
 
     </div>
   );
