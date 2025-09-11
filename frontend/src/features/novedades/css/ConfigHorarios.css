@@ -282,6 +282,34 @@ input:checked + .slider:before {
 }
 
 
+/* ==========================================================================
+   Estilos para Píldoras de Días en el Formulario (React-Select)
+   ========================================================================== */
+.react-select__multi-value {
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Botón para eliminar la píldora (la 'x') */
+.dia-pill-remove {
+  background: none;
+  border: none;
+  color: #000;
+  opacity: 0.5;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  line-height: 1;
+  margin-left: 6px;
+  padding: 0 2px;
+  transition: opacity 0.2s ease;
+}
+
+.dia-pill-remove:hover {
+  opacity: 1;
+}
+
 /* --- Paginación --- */
 /* Contenedor que alinea la paginación con el ancho de la tabla */
 .pagination-wrapper {
@@ -436,8 +464,17 @@ input:checked + .slider:before {
 }
 
 .detail-item {
-  margin-bottom: 12px;
-  font-size: 1rem;
+  display: flex;
+  align-items: center; /* Centra verticalmente la etiqueta con el contenido */
+  flex-wrap: wrap;     /* Permite que el contenido pase a la siguiente línea si no cabe */
+  gap: 8px;            /* Espacio entre la etiqueta y el contenido */
+}
+
+/* --- Contenedor para las píldoras de días dentro del modal --- */
+.dias-pills-container-modal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px; /* Espacio entre cada píldora */
 }
 
 /* Resalta las etiquetas de cada detalle */
