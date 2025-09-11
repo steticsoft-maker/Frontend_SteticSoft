@@ -1,5 +1,7 @@
 // frontend/src/features/clientes/hooks/useClientes.js
 import { useState, useEffect, useCallback, useMemo } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import {
   fetchClientes,
   saveCliente,
@@ -18,6 +20,8 @@ const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
+const MySwal = withReactContent(Swal);
+
 const useClientes = () => {
   const [clientes, setClientes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,9 +32,6 @@ const useClientes = () => {
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  const [validationMessage, setValidationMessage] = useState("");
 
   // Estados para búsqueda y filtrado
   const [inputValue, setInputValue] = useState(""); // Para el input de búsqueda inmediato
@@ -61,7 +62,8 @@ const useClientes = () => {
       }
     } catch (err) {
       setError(
-        err.message || "Error al cargar los clientes. Inténtalo de nuevo más tarde."
+        err.message ||
+          "Error al cargar los clientes. Inténtalo de nuevo más tarde."
       );
       setClientes([]);
     } finally {
@@ -86,10 +88,7 @@ const useClientes = () => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
     setIsDetailsModalOpen(false);
-    setIsConfirmDeleteOpen(false);
-    setIsValidationModalOpen(false);
     setCurrentCliente(null);
-    setValidationMessage("");
     setFormData({});
     setFormErrors({});
   }, []);
@@ -108,14 +107,21 @@ const useClientes = () => {
         case "contrasena":
           if (formType === "create" && !value)
             error = "La contraseña es requerida.";
-          else if (formType === "create" && value && !passwordRegex.test(value))
+          else if (
+            formType === "create" &&
+            value &&
+            !passwordRegex.test(value)
+          )
             error =
               "Contraseña insegura (mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb).";
           break;
         case "confirmarContrasena":
           if (formType === "create" && !value)
             error = "Debe confirmar la contraseña.";
-          else if (formType === "create" && value !== currentData.contrasena)
+          else if (
+            formType === "create" &&
+            value !== currentData.contrasena
+          )
             error = "Las contraseñas no coinciden.";
           break;
         case "nombre":
@@ -137,7 +143,8 @@ const useClientes = () => {
               docType === "Cédula de Extranjería"
             ) {
               if (!numericOnlyRegex.test(value)) {
-                error = "Para este tipo de documento, ingrese solo números.";
+                error =
+                  "Para este tipo de documento, ingrese solo números.";
               }
             } else if (docType === "Pasaporte") {
               if (!alphanumericRegex.test(value)) {
@@ -167,11 +174,15 @@ const useClientes = () => {
             if (isNaN(birthDate.getTime())) {
               error = "La fecha ingresada no es válida.";
             } else if (birthDate > today) {
-              error = "La fecha de nacimiento no puede ser una fecha futura.";
+              error =
+                "La fecha de nacimiento no puede ser una fecha futura.";
             } else {
               let age = today.getFullYear() - birthDate.getFullYear();
               const m = today.getMonth() - birthDate.getMonth();
-              if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+              if (
+                m < 0 ||
+                (m === 0 && today.getDate() < birthDate.getDate())
+              ) {
                 age--;
               }
               if (age < 18) {
@@ -260,7 +271,9 @@ const useClientes = () => {
       setFormErrors((prev) => ({ ...prev, [name]: error }));
 
       if (name === "correo" && !error && value) {
-        const originalEmail = isEditarModalOpen ? currentCliente?.correo : null;
+        const originalEmail = isEditarModalOpen
+          ? currentCliente?.correo
+          : null;
         if (value !== originalEmail) {
           setIsVerifyingEmail(true);
           try {
@@ -281,7 +294,6 @@ const useClientes = () => {
     },
     [formData, validateField, currentCliente, isEditarModalOpen]
   );
-
 
   const handleOpenModal = useCallback(async (type, cliente = null) => {
     setFormErrors({});
@@ -312,7 +324,8 @@ const useClientes = () => {
           estado: fullClientData.estado,
           nombre: fullClientData.nombre || "",
           apellido: fullClientData.apellido || "",
-          tipoDocumento: fullClientData.tipoDocumento || "Cédula de Ciudadanía",
+          tipoDocumento:
+            fullClientData.tipoDocumento || "Cédula de Ciudadanía",
           numeroDocumento: fullClientData.numeroDocumento || "",
           telefono: fullClientData.telefono || "",
           direccion: fullClientData.direccion || "",
@@ -344,97 +357,122 @@ const useClientes = () => {
         setIsSubmitting(false);
       }
     } else if (type === "delete" && cliente) {
-      setCurrentCliente(cliente);
-      setIsConfirmDeleteOpen(true);
+      handleDelete(cliente);
     }
   }, []);
 
-  const handleSave = useCallback(
-    async () => {
-      const formType = formData.idCliente ? "edit" : "create";
-      const validationErrors = runAllValidations(formData, formType);
+  const handleSave = useCallback(async () => {
+    const formType = formData.idCliente ? "edit" : "create";
+    const validationErrors = runAllValidations(formData, formType);
 
-      if (Object.keys(validationErrors).length > 0) {
-        setFormErrors(validationErrors);
-        return;
-      }
-      if (!isFormValid) {
-        return;
-      }
-
-      setIsSubmitting(true);
-      try {
-        const dataParaAPI = { ...formData };
-        delete dataParaAPI.confirmarContrasena;
-
-        const successMessage = formData.idCliente
-          ? `El cliente ${dataParaAPI.correo} ha sido actualizado.`
-          : `El cliente ${dataParaAPI.correo} ha sido creado exitosamente.`;
-
-        await saveCliente(
-          dataParaAPI,
-          !formData.idCliente,
-          formData.idCliente
-        );
-
-        await loadClientes(searchTerm); // Recargar con el término de búsqueda actual
-        closeModal();
-        setValidationMessage(successMessage);
-        setIsValidationModalOpen(true);
-      } catch (err) {
-        const apiErrorMessage =
-          err.response?.data?.message ||
-          err.message ||
-          "Error al guardar el cliente.";
-        setValidationMessage(apiErrorMessage);
-        setIsValidationModalOpen(true);
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [formData, isFormValid, runAllValidations, loadClientes, closeModal, searchTerm]
-  );
-
-  const handleDelete = useCallback(async () => {
-    if (currentCliente?.idCliente) {
-      try {
-        await deleteClienteById(currentCliente.idCliente);
-        await loadClientes(searchTerm);
-        closeModal();
-        setValidationMessage("Cliente eliminado exitosamente.");
-        setIsValidationModalOpen(true);
-      } catch (err) {
-        setValidationMessage(
-          err.message || "Ocurrió un error al eliminar el cliente."
-        );
-        setIsValidationModalOpen(true);
-      }
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors);
+      return;
     }
-  }, [currentCliente, loadClientes, closeModal, searchTerm]);
+    if (!isFormValid) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const dataParaAPI = { ...formData };
+      delete dataParaAPI.confirmarContrasena;
+
+      const successMessage = formData.idCliente
+        ? `El cliente ${dataParaAPI.correo} ha sido actualizado.`
+        : `El cliente ${dataParaAPI.correo} ha sido creado exitosamente.`;
+
+      await saveCliente(
+        dataParaAPI,
+        !formData.idCliente,
+        formData.idCliente
+      );
+
+      await loadClientes(searchTerm); // Recargar con el término de búsqueda actual
+      closeModal();
+      MySwal.fire("¡Éxito!", successMessage, "success");
+    } catch (err) {
+      const apiErrorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Error al guardar el cliente.";
+      MySwal.fire("Error", apiErrorMessage, "error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [
+    formData,
+    isFormValid,
+    runAllValidations,
+    loadClientes,
+    closeModal,
+    searchTerm,
+  ]);
+
+  const handleDelete = useCallback(
+    (cliente) => {
+      MySwal.fire({
+        title: "¿Estás seguro?",
+        text: `¿Deseas eliminar al cliente "${cliente.nombre} ${cliente.apellido}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, ¡eliminar!",
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await deleteClienteById(cliente.idCliente);
+            await loadClientes(searchTerm);
+            MySwal.fire(
+              "¡Eliminado!",
+              "El cliente ha sido eliminado.",
+              "success"
+            );
+          } catch (err) {
+            MySwal.fire(
+              "Error",
+              err.message || "Ocurrió un error al eliminar el cliente.",
+              "error"
+            );
+          }
+        }
+      });
+    },
+    [loadClientes, searchTerm]
+  );
 
   const handleToggleEstado = useCallback(
     async (clienteId) => {
       const clienteToToggle = clientes.find((c) => c.idCliente === clienteId);
       if (!clienteToToggle) {
-        setValidationMessage("Cliente no encontrado para cambiar estado.");
-        setIsValidationModalOpen(true);
+        MySwal.fire(
+          "Error",
+          "Cliente no encontrado para cambiar estado.",
+          "error"
+        );
         return;
       }
       const nuevoEstado = !clienteToToggle.estado;
       try {
         await toggleClienteEstado(clienteId, nuevoEstado);
         await loadClientes(searchTerm);
-        setValidationMessage(
-          `Estado del cliente cambiado a ${
-            nuevoEstado ? "Activo" : "Inactivo"
-          } exitosamente.`
-        );
-        setIsValidationModalOpen(true);
+        MySwal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: `Estado cambiado a ${nuevoEstado ? "Activo" : "Inactivo"}`,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
       } catch (err) {
-        setValidationMessage(
-          err.message || "Ocurrió un error al cambiar el estado del cliente."
+        MySwal.fire(
+          "Error",
+          err.message || "Ocurrió un error al cambiar el estado del cliente.",
+          "error"
         );
-        setIsValidationModalOpen(true);
       }
     },
     [clientes, loadClientes, searchTerm]
@@ -464,7 +502,6 @@ const useClientes = () => {
     }
   }, [totalClientesFiltrados, itemsPerPage, currentPage]);
 
-
   return {
     clientes: currentClientesForTable,
     totalClientesFiltrados,
@@ -474,9 +511,6 @@ const useClientes = () => {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isConfirmDeleteOpen,
-    isValidationModalOpen,
-    validationMessage,
     inputValue,
     setInputValue,
     currentPage,

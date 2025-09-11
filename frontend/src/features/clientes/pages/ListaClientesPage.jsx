@@ -4,8 +4,6 @@ import ClientesTable from "../components/ClientesTable";
 import ClienteCrearModal from "../components/ClienteCrearModal";
 import ClienteEditarModal from "../components/ClienteEditarModal";
 import ClienteDetalleModal from "../components/ClienteDetalleModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
-import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination"; // Importar Pagination
 import useClientes from "../hooks/useClientes"; // Importar el custom hook
 import "../css/Clientes.css";
@@ -20,9 +18,6 @@ function ListaClientesPage() {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isConfirmDeleteOpen,
-    isValidationModalOpen,
-    validationMessage,
     inputValue,
     setInputValue,
     currentPage,
@@ -112,27 +107,6 @@ function ListaClientesPage() {
         isOpen={isDetailsModalOpen}
         onClose={closeModal} // Usar closeModal del hook
         cliente={currentCliente}
-      />
-      <ConfirmModal
-        isOpen={isConfirmDeleteOpen}
-        onClose={closeModal} // Usar closeModal del hook
-        onConfirm={handleDelete}
-        title="Confirmar Eliminación de Cliente"
-        message={`¿Estás seguro de que deseas eliminar al cliente "${
-          currentCliente
-            ? `${currentCliente.nombre} ${currentCliente.apellido}`
-            : ""
-        }"?`}
-        confirmText="Eliminar"
-        cancelText="Cancelar"
-        // Podrías añadir un isLoading al ConfirmModal si handleDelete es largo,
-        // pero por ahora el hook useClientes no expone un isSubmitting específico para delete.
-      />
-      <ValidationModal
-        isOpen={isValidationModalOpen}
-        onClose={closeModal} // Usar closeModal del hook
-        title="Aviso de Clientes"
-        message={validationMessage}
       />
     </div>
   );

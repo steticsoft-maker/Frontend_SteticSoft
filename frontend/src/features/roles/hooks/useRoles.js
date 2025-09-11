@@ -1,6 +1,8 @@
 // src/features/roles/hooks/useRoles.js
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import {
   fetchRolesAPI,
   createRoleAPI,
@@ -28,6 +30,8 @@ const groupPermissionsByModule = (permissions) => {
   }, {});
 };
 
+const MySwal = withReactContent(Swal);
+
 const useRoles = () => {
   const [roles, setRoles] = useState([]);
   const [permisos, setPermisos] = useState([]);
@@ -38,9 +42,6 @@ const useRoles = () => {
   const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
   const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  const [validationMessage, setValidationMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEstado, setFilterEstado] = useState("todos");
@@ -98,61 +99,106 @@ const useRoles = () => {
     setIsCrearModalOpen(false);
     setIsEditarModalOpen(false);
     setIsDetailsModalOpen(false);
-    setIsDeleteModalOpen(false);
-    setIsValidationModalOpen(false);
     setIsHistoryModalOpen(false);
     setCurrentRole(null);
-    setValidationMessage("");
     setRoleHistory([]);
     setHistoryError(null);
   }, []);
 
-  const handleOpenModal = useCallback(async (type, role = null) => {
-    if (
-      role?.nombre === "Administrador" &&
-      (type === "edit" || type === "delete")
-    ) {
-      setValidationMessage(
-        `El rol 'Administrador' no puede ser ${
-          type === "edit" ? "editado" : "eliminado"
-        }.`
-      );
-      setIsValidationModalOpen(true);
+  const handleDeleteRol = useCallback(async () => {
+    if (!currentRole?.idRol) return;
+    if (currentRole.nombre === "Administrador") {
+      MySwal.fire({
+        title: "Acción no permitida",
+        text: "El rol 'Administrador' no puede ser eliminado.",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
+      closeModal();
       return;
     }
-
-    setCurrentRole(role);
-
-    if (type === "details" && role?.idRol) {
-      setIsSubmitting(true);
-      try {
-        const roleDetails = await getRoleDetailsAPI(role.idRol);
-        setCurrentRole(roleDetails);
-        setIsDetailsModalOpen(true);
-      } catch (err) {
-        setValidationMessage(
-          err.message || "No se pudieron cargar los detalles del rol."
-        );
-        setIsValidationModalOpen(true);
-        setCurrentRole(null);
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else if (type === "edit" && role?.idRol) {
-      setIsEditarModalOpen(true);
-    } else if (type === "create") {
-      // --- LÓGICA CORRECTA ---
-      // Simplemente abre el modal de creación.
-      // El modal (RolCrearModal) es responsable de gestionar su propio estado de formulario.
-      // No es necesario setear un `formData` aquí.
-      setCurrentRole(null);
-      setIsCrearModalOpen(true);
-    } else if (type === "delete") {
-      setIsDeleteModalOpen(true);
-    } else if (type === "history" && role?.idRol) {
-      handleOpenHistoryModal(role);
+    setIsSubmitting(true);
+    try {
+      await deleteRoleAPI(currentRole.idRol);
+      MySwal.fire({
+        title: "¡Eliminado!",
+        text: "El rol ha sido eliminado exitosamente.",
+        icon: "success",
+      });
+      closeModal();
+      await cargarDatos();
+    } catch (err) {
+      MySwal.fire({
+        title: "Error",
+        text: err.message || "Error al eliminar el rol.",
+        icon: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-  }, []);
+  }, [currentRole, cargarDatos, closeModal]);
+
+  const handleOpenModal = useCallback(
+    async (type, role = null) => {
+      if (
+        role?.nombre === "Administrador" &&
+        (type === "edit" || type === "delete")
+      ) {
+        MySwal.fire({
+          title: "Acción no permitida",
+          text: `El rol 'Administrador' no puede ser ${
+            type === "edit" ? "editado" : "eliminado"
+          }.`,
+          icon: "warning",
+        });
+        return;
+      }
+
+      setCurrentRole(role);
+
+      if (type === "details" && role?.idRol) {
+        setIsSubmitting(true);
+        try {
+          const roleDetails = await getRoleDetailsAPI(role.idRol);
+          setCurrentRole(roleDetails);
+          setIsDetailsModalOpen(true);
+        } catch (err) {
+          MySwal.fire({
+            title: "Error",
+            text:
+              err.message || "No se pudieron cargar los detalles del rol.",
+            icon: "error",
+          });
+          setCurrentRole(null);
+        } finally {
+          setIsSubmitting(false);
+        }
+      } else if (type === "edit" && role?.idRol) {
+        setIsEditarModalOpen(true);
+      } else if (type === "create") {
+        setCurrentRole(null);
+        setIsCrearModalOpen(true);
+      } else if (type === "delete") {
+        MySwal.fire({
+          title: "¿Estás seguro?",
+          text: `¿Deseas eliminar el rol "${role.nombre}"? No podrás revertir esto.`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Sí, ¡eliminar!",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleDeleteRol();
+          }
+        });
+      } else if (type === "history" && role?.idRol) {
+        handleOpenHistoryModal(role);
+      }
+    },
+    [handleDeleteRol]
+  );
 
   const handleOpenHistoryModal = async (role) => {
     setCurrentRole(role);
@@ -178,26 +224,29 @@ const useRoles = () => {
           const { id, ...dataToUpdate } = roleData;
           response = await updateRoleAPI(id, dataToUpdate);
         } else {
-          // El objeto `roleData` que viene del modal de creación debe tener todos los campos necesarios.
           response = await createRoleAPI(roleData);
         }
 
-        setValidationMessage(
-          response.message ||
+        MySwal.fire({
+          title: "¡Éxito!",
+          text:
+            response.message ||
             (roleData.id
               ? "Rol actualizado exitosamente."
-              : "Rol creado exitosamente.")
-        );
-        setIsValidationModalOpen(true);
+              : "Rol creado exitosamente."),
+          icon: "success",
+        });
+
         closeModal();
         await cargarDatos();
       } catch (err) {
         const apiErrorMessage =
           err.response?.data?.message || err.response?.data?.error;
-        setValidationMessage(
-          apiErrorMessage || err.message || "Error al guardar el rol."
-        );
-        setIsValidationModalOpen(true);
+        MySwal.fire({
+          title: "Error",
+          text: apiErrorMessage || err.message || "Error al guardar el rol.",
+          icon: "error",
+        });
       } finally {
         setIsSubmitting(false);
       }
@@ -205,46 +254,37 @@ const useRoles = () => {
     [cargarDatos, closeModal]
   );
 
-  const handleDeleteRol = useCallback(async () => {
-    if (!currentRole?.idRol) return;
-    if (currentRole.nombre === "Administrador") {
-      setValidationMessage("El rol 'Administrador' no puede ser eliminado.");
-      setIsValidationModalOpen(true);
-      closeModal();
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      await deleteRoleAPI(currentRole.idRol);
-      setValidationMessage("Rol eliminado exitosamente.");
-      setIsValidationModalOpen(true);
-      closeModal();
-      await cargarDatos();
-    } catch (err) {
-      setValidationMessage(err.message || "Error al eliminar el rol.");
-      setIsValidationModalOpen(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [currentRole, cargarDatos, closeModal]);
-
   const handleToggleEstado = useCallback(
     async (roleToToggle) => {
       if (roleToToggle.nombre === "Administrador") {
-        setValidationMessage(
-          "El estado del rol 'Administrador' no se puede cambiar."
-        );
-        setIsValidationModalOpen(true);
+        MySwal.fire({
+          title: "Acción no permitida",
+          text: "El estado del rol 'Administrador' no se puede cambiar.",
+          icon: "warning",
+        });
         return;
       }
       try {
-        await toggleRoleStatusAPI(roleToToggle.idRol, !roleToToggle.estado);
+        const nuevoEstado = !roleToToggle.estado;
+        await toggleRoleStatusAPI(roleToToggle.idRol, nuevoEstado);
         await cargarDatos();
+        MySwal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: `El estado se cambió a ${
+            nuevoEstado ? "Activo" : "Inactivo"
+          }`,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
       } catch (err) {
-        setValidationMessage(
-          err.message || "Error al cambiar el estado del rol."
-        );
-        setIsValidationModalOpen(true);
+        MySwal.fire({
+          title: "Error",
+          text: err.message || "Error al cambiar el estado del rol.",
+          icon: "error",
+        });
       }
     },
     [cargarDatos]
@@ -319,9 +359,6 @@ const useRoles = () => {
     isCrearModalOpen,
     isEditarModalOpen,
     isDetailsModalOpen,
-    isDeleteModalOpen,
-    isValidationModalOpen,
-    validationMessage,
     inputValue,
     setInputValue,
     filterEstado,
@@ -332,7 +369,6 @@ const useRoles = () => {
     closeModal,
     handleOpenModal,
     handleSaveRol,
-    handleDeleteRol,
     handleToggleEstado,
     currentPage,
     itemsPerPage,
