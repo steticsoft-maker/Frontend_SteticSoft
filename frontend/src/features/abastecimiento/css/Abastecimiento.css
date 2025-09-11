@@ -1,3 +1,4 @@
+@import "../../shared/styles/_variables.css";
 /* src/features/abastecimiento/css/Abastecimiento.css */
 
 /* Define estas variables en tu _variables.css si no existen */
@@ -16,7 +17,7 @@
     min-height: 100vh;
     width: 100%;
     font-family: var(--font-family-roboto, "Roboto", sans-serif);
-    background-color: var(--color-background-admin-content, #f5f5f5);
+    background-color: var(--color-background-light);
   }
   
   .abastecimiento-main-content {
@@ -39,7 +40,7 @@
   
   .abastecimiento-content-wrapper h1 {
     text-align: center;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-text-dark);
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 1.8rem;
@@ -66,23 +67,24 @@
     width: 100%;
     min-width: 250px;
     font-size: 1rem;
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
-    background-color: var(--color-background-light, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     box-sizing: border-box;
   }
   .abastecimiento-search-bar input:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
   }
   
   .abastecimiento-add-button {
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: var(--color-admin-hover, #b660a3);
-    color: var(--color-text-light, white);
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -96,7 +98,7 @@
     justify-content: center;
   }
   .abastecimiento-add-button:hover {
-    background-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary-hover);
   }
   
   /* === ESTILOS DE TABLA === */
@@ -105,24 +107,24 @@
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: var(--color-background-light, #fff);
+    background-color: var(--color-table-row-odd);
     border-radius: 8px;
     overflow: hidden;
     font-size: 0.95rem;
   }
   .tabla-abastecimiento th {
     background-color: var(--color-table-header);
-    color: var(--color-text-dark, black);
+    color: var(--color-text-dark);
     padding: 12px 15px;
     text-align: center;
     font-weight: 600;
     font-size: 1rem;
-    border: 1px solid var(--color-admin-primary-border, #e978d0);
+    border: 1px solid var(--color-table-header);
   }
   .tabla-abastecimiento td {
     padding: 12px 15px;
-    border: 1px solid var(--color-admin-primary-border, #e978d0);
-    color: var(--color-text-dark, #333);
+    border: 1px solid var(--color-table-header);
+    color: var(--color-text-dark);
     font-size: 0.9rem;
     text-align: left;
     vertical-align: middle;
@@ -178,12 +180,13 @@
   }
   .table-icons-abastecimiento.view-button,
   .table-icons-abastecimiento.edit-button {
-    background-color: var(--color-admin-action-view, #fc8de4);
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
   }
   
   .table-icons-abastecimiento.view-button:hover,
   .table-icons-abastecimiento.edit-button:hover {
-    background-color: var(--color-admin-action-view-hover, #d66abf);
+    background-color: var(--color-secondary-hover);
   }
   
   .deplete-button-abastecimiento {
@@ -210,18 +213,19 @@
 
 .abastecimiento-filtro-estado select {
   padding: 9px 10px; /* Ajustar padding para que coincida con altura de input y botón */
-  border: 1px solid var(--color-border-light, #c287b5);
+  border: 1px solid var(--color-form-border);
   border-radius: 5px;
   font-size: 1rem;
-  background-color: var(--color-background-light, #fff);
-  color: var(--color-text-dark, #333);
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
   min-width: 150px;
   height: 41px; /* Para alinear con botón e input */
   box-sizing: border-box;
 }
 .abastecimiento-filtro-estado select:focus {
-  border-color: var(--color-admin-hover, #b660a3);
-  box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+  border-color: var(--color-primary);
+  background-color: var(--color-form-focus-bg);
+  box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
   outline: none;
 }
 
@@ -266,10 +270,10 @@
   .tabla-abastecimiento tr {
     display: block;
     margin-bottom: 15px;
-    border: 1px solid var(--color-admin-primary-border, #e978d0);
+    border: 1px solid var(--color-table-header);
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    background-color: var(--color-background-light, #fff);
+    background-color: var(--color-background-light);
   }
 
   .tabla-abastecimiento tbody tr.depleted-row {
@@ -281,7 +285,7 @@
     text-align: right;
     padding-left: 50%; /* Espacio para el label */
     position: relative;
-    border-bottom: 1px dotted var(--color-border-light, #eee);
+    border-bottom: 1px dotted var(--color-form-border);
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 0.85rem; /* Un poco más pequeño para móviles */
@@ -300,7 +304,7 @@
     white-space: nowrap;
     text-align: left;
     font-weight: bold;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-primary);
     font-size: 0.85rem;
   }
 
@@ -324,7 +328,7 @@
   }
 
     .modal-abastecimiento-content {
-      background: var(--color-background-light, #fff);
+      background: var(--color-background-light);
       padding: 25px 30px;
       border-radius: 10px;
       width: 100%;
@@ -430,7 +434,7 @@
   
   .modal-abastecimiento-content {
     position: relative; /* Añadido */
-    background: var(--color-background-light, #fff); /* 'white' en especificación, mantenemos variable por ahora */
+    background: var(--color-background-light); /* 'white' en especificación, mantenemos variable por ahora */
     padding: 25px 30px; /* '30px' en especificación, mantenemos actual por ahora */
     border-radius: 10px; /* '8px' en especificación, mantenemos actual por ahora */
     width: 100%; /* Mantenido, aunque no en especificación explícita */
@@ -471,7 +475,7 @@
   .modal-abastecimiento-content h2,
   .modal-abastecimiento-content h3 {
     text-align: center;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-text-dark);
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 1.6rem;
@@ -488,7 +492,7 @@
     text-align: left;
     margin-bottom: 12px;
     line-height: 1.6;
-    color: var(--color-text-dark, #333);
+    color: var(--color-text-dark);
     font-size: 1rem;
   }
   
@@ -505,8 +509,8 @@
     font-weight: bold;
   }
   .modal-abastecimiento-button-cerrar {
-    background-color: var(--color-admin-action-view, #fc8de4);
-    color: var(--color-text-on-warning, white);
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
     display: block;
     width: auto;
     min-width: 120px;
@@ -520,7 +524,7 @@
     transition: background-color 0.3s ease;
   }
   .modal-abastecimiento-button-cerrar:hover {
-    background-color: var(--color-admin-action-view-hover, #d66abf);
+    background-color: var(--color-secondary-hover);
   }
   
   /* === FORMULARIO MODAL === */
@@ -536,7 +540,7 @@
   }
   .form-label-abastecimiento {
     font-weight: 600;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-primary);
     font-size: 0.95rem;
     text-align: left;
   }
@@ -544,19 +548,20 @@
   .form-button-select-abastecimiento {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem;
     box-sizing: border-box;
-    background-color: var(--color-background-input, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     text-align: left;
   }
   .form-input-abastecimiento:focus,
   .form-button-select-abastecimiento:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
   }
   .form-button-select-abastecimiento {
@@ -564,8 +569,8 @@
     background-color: var(--color-background-input-addon, #f0f0f0);
   }
   .form-button-select-abastecimiento:hover:not(:disabled) {
-    border-color: var(--color-admin-hover, #b660a3);
-    background-color: var(--color-background-input-addon-hover, #e2e6ea);
+    border-color: var(--color-primary-hover);
+    background-color: var(--color-form-focus-bg);
   }
   .form-button-select-abastecimiento:disabled {
     background-color: #e9ecef;
@@ -591,7 +596,7 @@
     gap: 15px;
     margin-top: 25px;
     padding-top: 20px;
-    border-top: 1px solid var(--color-border-light, #eee);
+    border-top: 1px solid var(--color-form-border);
     width: 100%;
   }
   .form-button-guardar-abastecimiento,
@@ -605,13 +610,13 @@
     transition: background-color 0.3s ease;
     min-width: 120px;
     text-align: center;
-    color: white;
+    color: var(--color-text-light);
   }
   .form-button-guardar-abastecimiento {
-    background-color: var(--color-admin-hover, #b660a3);
+    background-color: var(--color-primary);
   }
   .form-button-guardar-abastecimiento:hover {
-    background-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary-hover);
   }
   .form-button-guardar-abastecimiento:disabled {
     background-color: #cccccc;

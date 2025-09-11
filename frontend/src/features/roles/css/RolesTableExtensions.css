@@ -22,7 +22,7 @@
 
 .permission-icon-wrapper:hover,
 .permission-icon-wrapper:focus { /* Añadir foco para accesibilidad */
-  background-color: #e9ecef; /* Un color de fondo suave de Bootstrap */
+  background-color: var(--color-secondary); /* Un color de fondo suave de Bootstrap */
   outline: none; /* Quitar el outline por defecto si se maneja el foco de otra forma */
 }
 
@@ -68,6 +68,6 @@
 }
 
 .rol-permission-table-icon {
-  color: #e74c3c; /* Un rojo estándar, similar al de botones de peligro */
+  color: var(--color-primary); /* Un rojo estándar, similar al de botones de peligro */
   /* También podría ser var(--color-danger) si está definido globalmente */
 }

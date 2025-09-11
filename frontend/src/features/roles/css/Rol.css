@@ -1,8 +1,9 @@
+@import "../../shared/styles/_variables.css";
 /* Contenedor principal */
 .rol-container {
     display: flex;
     height: 100vh;
-    background-color: transparent;
+    background-color: var(--color-background-light);
     font-family: 'Roboto', sans-serif;
 }
 
@@ -28,7 +29,7 @@
 /* Título principal */
 .rol-content h1 {
     text-align: center;
-    color: #6d0b58;
+    color: var(--color-text-dark);
     margin-bottom: 20px;
 }
 
@@ -83,20 +84,20 @@
 /* Barra de búsqueda */
 .rol-barraBusqueda {
     padding: 10px 15px;
-    border: 1px solid #c287b5;
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem;
     flex-grow: 1;
     min-width: 200px;
-    background-color: white;
-    color: #333;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     box-sizing: border-box;
 }
 
 /* Botón Agregar Rol */
 .rol-botonAgregar {
-    background-color: #b660a3;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -107,7 +108,7 @@
 }
 
 .rol-botonAgregar:hover {
-    background-color: #6d0b58;
+    background-color: var(--color-primary-hover);
 }
 
 /* Tabla de Roles */
@@ -117,7 +118,7 @@
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
+    background-color: var(--color-table-row-odd);
     box-sizing: border-box;
     border-radius: 8px;
     overflow: hidden;
@@ -125,33 +126,33 @@
 
 /* Encabezados de tabla */
 .rol-table th {
-    background-color: #e978d0;
-    color: black;
+    background-color: var(--color-table-header);
+    color: var(--color-text-dark);
     font-weight: bold;
     text-align: center;
     padding: 14px;
     font-size: 1rem;
-    border: 1px solid #e978d0;
+    border: 1px solid var(--color-table-header);
 }
 
 /* Celdas de tabla */
 .rol-table td {
-    border: 1px solid #e978d0;
+    border: 1px solid var(--color-table-header);
     text-align: left;
     padding: 14px;
     vertical-align: middle;
     font-size: 1rem;
-    color: black;
+    color: var(--color-text-dark);
 }
 
 /* Fondos de filas pares */
 .rol-table tbody tr:nth-child(even) {
-    background-color: #f8eaf5;
+    background-color: var(--color-table-row-even);
 }
 
 /* Fondo al pasar el mouse */
 .rol-table tbody tr:hover {
-    background-color: #f3d9ec;
+    background-color: var(--color-admin-hover);
 }
 
 /* Iconos en la tabla */
@@ -169,7 +170,7 @@
     font-size: 0.9rem;
     border: none;
     border-radius: 5px;
-    color: white;
+    color: var(--color-text-light);
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
     display: inline-flex;
@@ -181,13 +182,14 @@
 /* Botón Ver y Editar */
 .rol-table-button.btn-view,
 .rol-table-button.btn-edit {
-    background-color: #fc8de4;
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
     /* Color original */
 }
 
 .rol-table-button.btn-view:hover,
 .rol-table-button.btn-edit:hover {
-    background-color: #d66abf;
+    background-color: var(--color-secondary-hover);
     /* Color hover original */
 }
 
@@ -204,11 +206,11 @@
 
 /* Botón Eliminar */
 .rol-table-button.rol-table-button-delete {
-    background-color: #b660a3;
+    background-color: var(--color-primary);
 }
 
 .rol-table-button-delete:hover {
-    background-color: #6d0b58;
+    background-color: var(--color-primary-hover);
 }
 
 /* Switch de estado */
@@ -276,7 +278,7 @@ input:checked+.slider:before {
 
 /* Contenido del modal (base) */
 .rol-modalContent {
-    background-color: white;
+    background-color: var(--color-background-light);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -298,7 +300,7 @@ input:checked+.slider:before {
 .rol-modalContent-details h2,
 .rol-modalContent-details h3 {
     text-align: center;
-    color: #6d0b58;
+    color: var(--color-text-dark);
     margin-top: 0;
     margin-bottom: 20px;
 }
@@ -306,12 +308,12 @@ input:checked+.slider:before {
 .rol-modalContent-details p {
     margin-bottom: 10px;
     line-height: 1.6;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 /* Texto fuerte en detalles */
 .rol-modalContent-details strong {
-    color: #6d0b58;
+    color: var(--color-primary);
     margin-right: 5px;
 }
 
@@ -329,7 +331,7 @@ input:checked+.slider:before {
 .rol-modalContent-details .rol-listaModulosDetalle li {
     padding: 4px 0;
     font-size: 0.9rem;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 /* Botón cerrar en detalles */
@@ -337,8 +339,8 @@ input:checked+.slider:before {
     display: block;
     width: 100%;
     padding: 10px 20px;
-    background-color: #b660a3;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -349,7 +351,7 @@ input:checked+.slider:before {
 }
 
 .rol-modalContent-details .rol-modalButton-cerrar:hover {
-    background-color: #6d0b58;
+    background-color: var(--color-primary-hover);
 }
 
 /* Contenido del modal de Formulario */
@@ -360,7 +362,7 @@ input:checked+.slider:before {
 /* Título en formulario */
 .rol-modalContent-form h2 {
     text-align: center;
-    color: #6d0b58;
+    color: var(--color-text-dark);
     margin-top: 0;
     margin-bottom: 20px;
 }
@@ -390,7 +392,7 @@ input:checked+.slider:before {
 /* Mensaje de admin */
 .rol-modalContent-form .rol-admin-message {
     text-align: center;
-    color: #e74c3c;
+    color: var(--color-danger, #e74c3c);
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -406,9 +408,9 @@ input:checked+.slider:before {
 .rol-modalContent-form .rol-seccionInformacionRol {
     margin-top: 0;
     padding: 20px;
-    border: 1px solid #c287b5;
+    border: 1px solid var(--color-form-border);
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--color-background-light);
     box-sizing: border-box;
 }
 
@@ -430,7 +432,7 @@ input:checked+.slider:before {
 .rol-modalContent-form .rol-label {
     display: block;
     font-weight: 600;
-    color: #6d0b58;
+    color: var(--color-primary);
     text-align: left;
     margin-bottom: 0;
     padding: 0;
@@ -443,21 +445,22 @@ input:checked+.slider:before {
 .rol-modalContent-form .rol-select {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #c287b5;
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem;
     box-sizing: border-box;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background-color: #fff;
-    color: #333;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
 }
 
 /* Estilos de enfoque */
 .rol-modalContent-form .rol-input:focus,
 .rol-modalContent-form .rol-textarea:focus,
 .rol-modalContent-form .rol-select:focus {
-    border-color: #b660a3;
-    box-shadow: 0 0 5px rgba(182, 96, 163, 0.5);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 5px rgba(154, 122, 159, 0.5);
     outline: none;
 }
 
@@ -470,8 +473,8 @@ input:checked+.slider:before {
 /* Estilos de placeholder */
 .rol-modalContent-form .rol-input::placeholder,
 .rol-modalContent-form .rol-textarea::placeholder {
-    color: #7f8c8d;
-    opacity: 1;
+    color: var(--color-text-dark);
+    opacity: 0.7;
 }
 
 /* Select específico */
@@ -598,7 +601,7 @@ input:checked+.slider:before {
 /* Título en confirmación */
 .rol-modalContent-confirm h3 {
     text-align: center;
-    color: #e74c3c;
+    color: var(--color-danger, #e74c3c);
     margin-top: 0;
     margin-bottom: 15px;
 }
@@ -607,12 +610,12 @@ input:checked+.slider:before {
 .rol-modalContent-confirm p {
     margin-bottom: 20px;
     line-height: 1.6;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 /* Texto fuerte en confirmación */
 .rol-modalContent-confirm strong {
-    color: #6d0b58;
+    color: var(--color-primary);
 }
 
 /* Contenido del modal de Validación */
@@ -625,7 +628,7 @@ input:checked+.slider:before {
 /* Título en validación */
 .rol-modalContent-validation h3 {
     text-align: center;
-    color: #e68bd2;
+    color: var(--color-primary);
     margin-top: 0;
     margin-bottom: 15px;
 }
@@ -634,7 +637,7 @@ input:checked+.slider:before {
 .rol-modalContent-validation p {
     margin-bottom: 20px;
     line-height: 1.6;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 /* Botón "Seleccionar Módulos" */
@@ -643,8 +646,8 @@ input:checked+.slider:before {
     margin: 20px auto;
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: #b660a3;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -653,16 +656,16 @@ input:checked+.slider:before {
 
 /* Hover en botón "Seleccionar Módulos" */
 .rol-modalContent-form .rol-botonSeleccionarPermisos:hover {
-    background-color: #6d0b58;
+    background-color: var(--color-primary-hover);
 }
 
 /* Sección Seleccionar Modulos */
 .rol-modalContent-form .rol-seccionSeleccionarModulos {
     margin-top: 20px;
     padding: 20px;
-    border: 1px solid #c287b5;
+    border: 1px solid var(--color-form-border);
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--color-background-light);
     box-sizing: border-box;
 }
 
@@ -688,18 +691,18 @@ input:checked+.slider:before {
 .rol-modalContent-form .rol-moduloItem {
     display: flex;
     align-items: center;
-    background-color: #f8eaf5;
+    background-color: var(--color-table-row-even);
     padding: 10px 15px;
     border-radius: 5px;
-    border: 1px solid #c287b5;
+    border: 1px solid var(--color-form-border);
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 /* Hover en item módulo */
 .rol-modalContent-form .rol-moduloItem:hover {
-    background-color: #f3d9ec;
-    border-color: #d66abf;
+    background-color: var(--color-admin-hover);
+    border-color: var(--color-primary-hover);
 }
 
 /* Checkbox de módulo */
@@ -711,28 +714,29 @@ input:checked+.slider:before {
 .rol-modalContent-form .rol-moduloItem label {
     cursor: pointer;
     flex-grow: 1;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 /* Estilo de label módulo seleccionado */
 .rol-modalContent-form .rol-moduloItem input[type="checkbox"]:checked+label {
     font-weight: bold;
-    color: #6d0b58;
+    color: var(--color-primary);
 }
 
 /* Sección Módulos Seleccionados */
 .rol-modalContent-form .rol-seccionModulosSeleccionados {
     margin-top: 20px;
     padding: 20px;
-    border: 1px solid #c287b5;
+    border: 1px solid var(--color-form-border);
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--color-background-light);
     box-sizing: border-box;
 }
 
 /* Mensaje sin módulos seleccionados */
 .rol-modalContent-form .rol-seccionModulosSeleccionados p {
-    color: #7f8c8d;
+    color: var(--color-text-dark);
+    opacity: 0.7;
     font-style: italic;
     text-align: center;
 }
@@ -750,7 +754,7 @@ input:checked+.slider:before {
 .rol-modalContent-form .rol-listaModulosSeleccionados li {
     padding: 6px 0;
     font-size: 0.9rem;
-    color: #333;
+    color: var(--color-text-dark);
     break-inside: avoid-column;
 }
 
@@ -761,7 +765,7 @@ input:checked+.slider:before {
     gap: 15px;
     margin-top: 20px;
     padding-top: 15px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--color-form-border);
     width: 100%;
 }
 
@@ -781,22 +785,22 @@ input:checked+.slider:before {
 
 /* Botón Guardar */
 .rol-form-actions .rol-form-buttonGuardar {
-    background-color: #b660a3;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
 }
 
 .rol-form-actions .rol-form-buttonGuardar:hover {
-    background-color: #6d0b58;
+    background-color: var(--color-primary-hover);
 }
 
 /* Botón Cancelar */
 .rol-form-actions .rol-form-buttonCancelar {
-    background-color: #95a5a6;
-    color: white;
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
 }
 
 .rol-form-actions .rol-form-buttonCancelar:hover {
-    background-color: #7f8c8d;
+    background-color: var(--color-secondary-hover);
 }
 
 /* Botón Eliminar en confirmación */
@@ -813,8 +817,8 @@ input:checked+.slider:before {
     display: block;
     width: 100%;
     padding: 10px 20px;
-    background-color: #b660a3;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -825,7 +829,7 @@ input:checked+.slider:before {
 }
 
 .rol-modalButton-cerrar:hover {
-    background-color: #6d0b58;
+    background-color: var(--color-primary-hover);
 }
 
 /* Responsive Styles */
@@ -878,11 +882,11 @@ input:checked+.slider:before {
         display: block;
         margin-bottom: 15px;
         /* Espacio entre tarjetas */
-        border: 1px solid #e978d0;
+        border: 1px solid var(--color-table-header);
         /* Borde para cada tarjeta */
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
+        background-color: var(--color-background-light);
         /* Fondo blanco para las tarjetas */
     }
 
@@ -893,7 +897,7 @@ input:checked+.slider:before {
         padding-left: 50%;
         /* Espacio para el label */
         position: relative;
-        border-bottom: 1px dotted #f3d9ec;
+        border-bottom: 1px dotted var(--color-table-row-even);
         /* Separador visual entre campos */
         padding-top: 12px;
         /* Ajuste de padding vertical */
@@ -919,7 +923,7 @@ input:checked+.slider:before {
         text-align: left;
         /* Alinear el texto del label a la izquierda */
         font-weight: bold;
-        color: #6d0b58;
+        color: var(--color-primary);
         /* Color del label */
         font-size: 0.8rem;
         /* Ajustar tamaño de fuente del label si es necesario */

@@ -71,10 +71,10 @@
 /* Estilo base para los botones de período de tiempo. */
 .time-period-buttons button {
   padding: 6px 12px;
-  border: 1px solid var(--color-border-light, #bdc3c7);
+  border: 1px solid var(--color-form-border);
   border-radius: 4px;
-  background-color: var(--color-background-button-secondary, #ecf0f1);
-  color: var(--color-text-dark);
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-text);
   cursor: pointer;
   font-size: 0.85rem;
   transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -82,16 +82,16 @@
 
 /* Estilo para el botón de período de tiempo que está activo/seleccionado. */
 .time-period-buttons button.active {
-  background-color: var(--color-admin-hover);
+  background-color: var(--color-primary);
   color: var(--color-text-light);
-  border-color: var(--color-admin-hover);
+  border-color: var(--color-primary);
   font-weight: bold;
 }
 
 /* Estilo para los botones de período de tiempo al pasar el mouse (no activos). */
 .time-period-buttons button:not(.active):hover {
-  background-color: #e0e0e0;
-  border-color: #c0c0c0;
+  background-color: var(--color-secondary-hover);
+  border-color: var(--color-secondary-hover);
 }
 
 /* --- Media Queries para Responsividad del Dashboard --- */

@@ -1,3 +1,5 @@
+@import "../../shared/styles/_variables.css";
+
 /* src/features/compras/css/Compras.css */
 
 /* === ESTILOS GENERALES DE PÁGINA === */
@@ -6,7 +8,7 @@
     min-height: 100vh;
     width: 100%;
     font-family: 'Roboto', sans-serif;
-    background-color: var(--color-background-admin-content, #f5f5f5);
+    background-color: var(--color-background-light);
 }
 
 .compras-content-wrapper {
@@ -22,7 +24,7 @@
 
 .compras-content-wrapper h1 {
     text-align: center;
-    color: var(--color-primary-darker, #6d0b58);
+    color: var(--color-text-dark);
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 1.8rem;
@@ -59,16 +61,17 @@
     width: 100%; 
     min-width: 250px;
     font-size: 1rem;
-    border: 1px solid var(--color-border-light, #c287b5); 
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
-    background-color: var(--color-background-light, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     box-sizing: border-box;
 }
 
 .proveedores-search-bar input:focus {
-    border-color: var(--color-admin-hover, #b660a3); 
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); 
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
@@ -80,11 +83,11 @@
 
 .filtro-input {
     padding: 9px 10px; /* Consistente con el select de Usuarios */
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem; /* Consistente con el select de Usuarios */
-    background-color: var(--color-background-light, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     min-width: 150px; /* Asegura un ancho mínimo */
     height: 41px; /* Para que coincida con la altura del input de búsqueda y el botón */
     box-sizing: border-box;
@@ -93,7 +96,7 @@
     -webkit-appearance: none; /* Elimina la apariencia por defecto del sistema */
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236d0b58%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E'); /* Icono de flecha SVG */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E'); /* Icono de flecha SVG */
     background-repeat: no-repeat;
     background-position: right 8px top 50%;
     background-size: .65em auto;
@@ -101,16 +104,17 @@
 }
 
 .filtro-input:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
 .proveedores-add-button { 
     padding: 10px 20px; 
     font-size: 1rem; 
-    background-color: var(--color-admin-hover, #b660a3); 
-    color: var(--color-text-light, white); 
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -124,7 +128,7 @@
     justify-content: center;
 }
 .proveedores-add-button:hover {
-    background-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary-hover);
 }
 
 
@@ -135,33 +139,33 @@
     border-collapse: collapse;
     margin-top: 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
+    background-color: var(--color-table-row-odd);
     border-radius: 8px;
     overflow: hidden;
     font-size: 0.95rem;
 }
 
 .tabla-compras th {
-    background-color: var(--color-admin-primary-lighter, #e978d0);
-    color: var(--color-text-dark, black);
+    background-color: var(--color-table-header);
+    color: var(--color-text-dark);
     padding: 12px 15px;
-    border-bottom: 2px solid var(--color-admin-hover, #d66abf);
+    border-bottom: 2px solid var(--color-primary-hover);
     font-weight: 600;
 }
 
 .tabla-compras td {
     padding: 12px 15px;
-    border-bottom: 1px solid var(--color-border-light, #f0f0f0);
-    color: var(--color-text-dark, #333);
+    border-bottom: 1px solid var(--color-form-border);
+    color: var(--color-text-dark);
     vertical-align: middle;
 }
 
 .tabla-compras tbody tr:nth-child(even) {
-    background-color: var(--color-table-row-even, #f8eaf5);
+    background-color: var(--color-table-row-even);
 }
 
 .tabla-compras tbody tr:hover {
-    background-color: var(--color-table-row-hover, #f3d9ec);
+    background-color: var(--color-admin-hover);
 }
 
 .text-center { text-align: center; }
@@ -181,7 +185,7 @@
     cursor: pointer;
     font-weight: 500;
     font-size: 0.9em;
-    color: white;
+    color: var(--color-text-light);
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
@@ -190,10 +194,11 @@
 }
 
 .btn-detalle {
-    background-color: var(--color-admin-action-view, #fc8de4);
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
 }
 .btn-detalle:hover {
-    background-color: var(--color-admin-action-view-hover, #d66abf);
+    background-color: var(--color-secondary-hover);
 }
 
 .btn-anular {
@@ -242,7 +247,7 @@
 
 /* Contenido del modal */
 .modal-content {
-    background: #fff;
+    background: var(--color-background-light);
     padding: 25px 30px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -270,8 +275,8 @@
 }
 
 .details-section h3, .permissions-section h3 {
-  color: var(--color-primary-darker, #6d0b58);
-  border-bottom: 2px solid var(--color-admin-primary-lighter, #e978d0);
+  color: var(--color-primary);
+  border-bottom: 2px solid var(--color-table-header);
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
   font-size: 1.1rem;
@@ -282,7 +287,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.7rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-form-border);
   font-size: 0.95rem;
 }
 
@@ -306,15 +311,15 @@
 
 .detalle-productos-simple th, .detalle-productos-simple td {
   padding: 10px 8px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-form-border);
   text-align: left;
 }
 
 .detalle-productos-simple th {
   font-weight: 600;
   font-size: 0.9em;
-  color: #555;
-  background-color: #f9f9f9;
+  color: var(--color-text-dark);
+  background-color: var(--color-table-row-even);
 }
 
 .detalle-productos-simple .text-center { text-align: center; }
@@ -324,7 +329,7 @@
 .compra-totales-detalle {
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-form-border);
 }
 
 .total-row {
@@ -336,14 +341,14 @@
 
 .total-row.total-final {
   font-size: 1.15rem;
-  color: var(--color-primary-darker, #6d0b58);
+  color: var(--color-primary);
   margin-top: 0.5rem;
 }
 
 .modal-footer {
   text-align: right;
   padding-top: 1.5rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-form-border);
 }
 
 .btn-pdf {
@@ -377,7 +382,7 @@
     }
     .tabla-compras tr {
         margin-bottom: 15px;
-        border: 1px solid var(--color-border-light, #ddd);
+        border: 1px solid var(--color-form-border);
         border-radius: 8px;
         padding: 10px;
     }
@@ -386,7 +391,7 @@
         padding-left: 50% !important;
         position: relative;
         border: none;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--color-form-border);
     }
     .tabla-compras td:last-child { border-bottom: none; }
     .tabla-compras td::before {
@@ -397,7 +402,7 @@
         padding-right: 10px;
         font-weight: bold;
         text-align: left;
-        color: var(--color-primary-darker, #6d0b58);
+        color: var(--color-primary);
     }
     .acciones-compras {
         justify-content: flex-end;
@@ -417,11 +422,11 @@
 /* Estilos para el select de estado en la tabla */
 .estado-select {
     padding: 9px 10px; /* Consistente con el select de Usuarios */
-    border: 1px solid var(--color-border-light, #c287b5);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem; /* Consistente con el select de Usuarios */
-    background-color: var(--color-background-light, #fff);
-    color: var(--color-text-dark, #333);
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
     min-width: 150px; /* Añadido para consistencia */
     height: 41px; /* Añadido para que coincida con la altura del botón y el input */
     box-sizing: border-box;
@@ -430,7 +435,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236d0b58%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right 8px top 50%;
     background-size: .65em auto;
@@ -439,8 +444,9 @@
 }
 
 .estado-select:focus {
-    border-color: var(--color-admin-hover, #b660a3);
-    box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25);
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
@@ -493,9 +499,9 @@
     margin-bottom: 15px;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #6d0b58;
+    color: var(--color-primary);
     padding-bottom: 8px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--color-form-border);
     text-align: left;
 }
 
@@ -539,10 +545,10 @@
 
 .paginacion .page-link {
     padding: 8px 14px;
-    border: 1px solid var(--color-admin-hover, #b660a3);
+    border: 1px solid var(--color-primary);
     border-radius: 6px;
-    background-color: #ffffff;
-    color: #b660a3;
+    background-color: var(--color-form-bg);
+    color: var(--color-primary);
     font-weight: 500;
     font-size: 0.95rem;
     cursor: pointer;
@@ -550,9 +556,9 @@
 }
 
 .paginacion .page-item.active .page-link {
-    background-color: var(--color-primary-darker, #6d0b58);
-    color: #fff;
-    border-color: var(--color-primary-darker, #6d0b58);
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border-color: var(--color-primary);
     pointer-events: none;
 }
 
@@ -565,7 +571,7 @@
 }
 
 .paginacion .page-link:hover:not(:disabled):not(.active) {
-    background-color: var(--color-admin-primary-lighter, #e978d0);
-    color: #fff;
-    border-color: var(--color-admin-hover, #d66abf);
+    background-color: var(--color-primary-hover);
+    color: var(--color-text-light);
+    border-color: var(--color-primary-hover);
 }

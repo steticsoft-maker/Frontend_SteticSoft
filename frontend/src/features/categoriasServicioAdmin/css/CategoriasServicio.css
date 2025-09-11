@@ -1,27 +1,11 @@
-:root {
-  --color-background-admin-content: #f5f5f5;
-  --color-primary-darker: #6d0b58;
-  --color-admin-hover: #b660a3;
-  --color-border-light: #c287b5;
-  --color-background-light: #fff;
-  --color-text-dark: #333;
-  --color-admin-primary-lighter: #e978d0;
-  --color-admin-primary-border: #e978d0;
-  --color-table-row-even: #f8eaf5;
-  --color-table-row-hover: #f3d9ec;
-  --color-admin-action-edit: #fc8de4;
-  --color-admin-action-edit-hover: #d66abf;
-  --color-admin-action-delete: #b660a3;
-  --color-admin-action-delete-hover: #6d0b58;
-  --color-danger: red;
-}
+@import "../../shared/styles/_variables.css";
 
 /* Contenedor general de la página */
 .Categoria-container {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background-color: var(--color-background-admin-content);
+  background-color: var(--color-background-light);
   font-family: 'Roboto', sans-serif;
 }
 .Categoria-content {
@@ -44,7 +28,7 @@
 
 .Categoria-content h1 {
   text-align: center;
-  color: var(--color-primary-darker);
+  color: var(--color-text-dark);
   margin-top: 0;
   margin-bottom: 25px;
   font-size: 1.8rem;
@@ -72,11 +56,11 @@
 
 /* --- Estilo unificado para input y select --- */
 .filtro-input {
-  border: 1px solid var(--color-border-light);
+  border: 1px solid var(--color-form-border);
   border-radius: 6px;
   padding: 0.6rem 0.8rem;
   font-size: 1rem;
-  background-color: #fff;
+  background-color: var(--color-form-bg);
   transition: border-color 0.2s;
   height: 41px; /* Altura fija para alinear con el botón */
   box-sizing: border-box;
@@ -84,7 +68,8 @@
 
 .filtro-input:focus {
   outline: none;
-  border-color: var(--color-admin-hover);
+  border-color: var(--color-primary-hover);
+  background-color: var(--color-form-focus-bg);
 }
 
 /* --- Estilo específico para la barra de búsqueda --- */
@@ -103,15 +88,15 @@ input.filtro-input {
 .filtro-estado-grupo label {
   white-space: nowrap;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-dark);
 }
 
 /* --- CORRECCIÓN: Se elimina bloque redundante .BusquedaBotonCategoria --- */
 /* Las reglas anteriores en .filtros-wrapper ya manejan este layout de forma más limpia. */
 
 .botonAgregarCategoria {
-  background-color: var(--color-admin-hover);
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -125,7 +110,7 @@ input.filtro-input {
 }
 
 .botonAgregarCategoria:hover {
-  background-color: var(--color-primary-darker);
+  background-color: var(--color-primary-hover);
 }
 
 /* --- Estilos de la Tabla --- */
@@ -134,17 +119,17 @@ input.filtro-input {
   border-collapse: collapse;
   margin-top: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  background-color: var(--color-table-row-odd);
   border-radius: 8px;
   overflow: hidden;
   font-size: 0.95rem;
 }
 /* ... (el resto de los estilos de la tabla y acciones se mantienen igual) ... */
-.tablaCategoria th { background-color: var(--color-table-header); color: var(--color-text-dark); font-weight: 600; text-align: center; padding: 12px 15px; font-size: 1rem; border: 1px solid var(--color-admin-primary-border); }
-.tablaCategoria td { border: 1px solid var(--color-admin-primary-border); text-align: left; padding: 12px 15px; vertical-align: middle; font-size: 0.95rem; color: var(--color-text-dark); }
+.tablaCategoria th { background-color: var(--color-table-header); color: var(--color-text-dark); font-weight: 600; text-align: center; padding: 12px 15px; font-size: 1rem; border: 1px solid var(--color-table-header); }
+.tablaCategoria td { border: 1px solid var(--color-table-header); text-align: left; padding: 12px 15px; vertical-align: middle; font-size: 0.95rem; color: var(--color-text-dark); }
 .tablaCategoria td:nth-child(1), .tablaCategoria td:nth-child(4), .tablaCategoria td:nth-child(5) { text-align: center; }
 .tablaCategoria tbody tr:nth-child(even) { background-color: var(--color-table-row-even); }
-.tablaCategoria tbody tr:hover { background-color: var(--color-secondary-hover); }
+.tablaCategoria tbody tr:hover { background-color: var(--color-admin-hover); }
 .switch { position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;}
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -152,11 +137,11 @@ input.filtro-input {
 input:checked + .slider { background-color: #2ecc71; }
 input:checked + .slider:before { transform: translateX(16px); }
 .categorias-servicio-actions { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; }
-.categorias-servicio-actions button { padding: 6px 10px; font-size: 0.85rem; border: none; border-radius: 5px; color: white; cursor: pointer; transition: background-color 0.3s ease; }
-.botonEditarCategoria, .botonVerDetallesCategoria { background-color: var(--color-admin-action-edit); }
-.botonEditarCategoria:hover, .botonVerDetallesCategoria:hover { background-color: var(--color-admin-action-edit-hover); }
-.botonEliminarCategoria { background-color: var(--color-admin-action-delete); }
-.botonEliminarCategoria:hover { background-color: var(--color-admin-action-delete-hover); }
+.categorias-servicio-actions button { padding: 6px 10px; font-size: 0.85rem; border: none; border-radius: 5px; color: var(--color-text-light); cursor: pointer; transition: background-color 0.3s ease; }
+.botonEditarCategoria, .botonVerDetallesCategoria { background-color: var(--color-secondary); color: var(--color-secondary-text); }
+.botonEditarCategoria:hover, .botonVerDetallesCategoria:hover { background-color: var(--color-secondary-hover); }
+.botonEliminarCategoria { background-color: var(--color-primary); }
+.botonEliminarCategoria:hover { background-color: var(--color-primary-hover); }
 
 /* --- NUEVO: Estilos para la Paginación --- */
 .pagination-container {
@@ -168,7 +153,7 @@ input:checked + .slider:before { transform: translateX(16px); }
   gap: 30px; /* Añade un espacio entre el dropdown y los botones */
   margin-top: 24px;
   padding: 16px 0;
-  border-top: 1px solid var(--color-border-light);
+  border-top: 1px solid var(--color-form-border);
 }
 
 .rows-per-page-container {
@@ -181,8 +166,8 @@ input:checked + .slider:before { transform: translateX(16px); }
 .rows-per-page-container select {
   padding: 8px;
   border-radius: 5px;
-  border: 1px solid var(--color-border-light);
-  background-color: #fff;
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-form-bg);
 }
 
 .pagination-controls {
@@ -195,22 +180,22 @@ input:checked + .slider:before { transform: translateX(16px); }
 
 .pagination-controls button {
   padding: 8px 14px;
-  border: 1px solid var(--color-border-light);
-  background-color: white;
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-form-bg);
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .pagination-controls button:hover:not(:disabled) {
-  background-color: var(--color-table-row-hover);
-  border-color: var(--color-admin-hover);
+  background-color: var(--color-admin-hover);
+  border-color: var(--color-primary-hover);
 }
 
 .pagination-controls button.active {
-  background-color: var(--color-admin-hover);
-  color: white;
-  border-color: var(--color-admin-hover);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-color: var(--color-primary);
   font-weight: bold;
 }
 
@@ -223,27 +208,27 @@ input:checked + .slider:before { transform: translateX(16px); }
 .modal-Categoria { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1050; padding: 15px; box-sizing: border-box; }
 .modal-content-Categoria { background-color: var(--color-background-light); padding: 25px 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.25); width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; box-sizing: border-box; text-align: left; position: relative; }
 .modal-content-Categoria.formulario { max-width: 550px; }
-.modal-content-Categoria h3 { text-align: center; color: var(--color-primary-darker); margin-top: 0; margin-bottom: 25px; font-size: 1.6rem; }
+.modal-content-Categoria h3 { text-align: center; color: var(--color-primary); margin-top: 0; margin-bottom: 25px; font-size: 1.6rem; }
 .modal-body-content { margin: 20px 0; line-height: 1.6; }
 .modal-body-content p { margin: 0 0 10px; }
 .modal-content-Categoria.detalle .detalle-item { margin-bottom: 15px; }
-.modal-content-Categoria.detalle .detalle-item strong { display: block; font-weight: 600; color: var(--color-primary-darker); font-size: 0.9rem; margin-bottom: 4px; }
+.modal-content-Categoria.detalle .detalle-item strong { display: block; font-weight: 600; color: var(--color-primary); font-size: 0.9rem; margin-bottom: 4px; }
 .modal-content-Categoria.detalle .detalle-item p { margin: 0; font-size: 1rem; }
-.estado-label { padding: 3px 8px; border-radius: 4px; color: white; font-size: 0.9rem; font-weight: bold; }
+.estado-label { padding: 3px 8px; border-radius: 4px; color: var(--color-text-light); font-size: 0.9rem; font-weight: bold; }
 .estado-label.inactivo { background-color: #6c757d; }
 .modal-Categoria-form-grid { display: flex; flex-direction: column; gap: 18px; }
 .camposAgregarCategoria { display: flex; flex-direction: column; gap: 8px; }
-.camposAgregarCategoria label { font-weight: 600; color: var(--color-primary-darker); font-size: 0.95rem; text-align: left; }
-.campoAgregarCategoria { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-light); border-radius: 5px; font-size: 1rem; box-sizing: border-box; color: var(--color-text-dark); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
-.campoAgregarCategoria:focus { border-color: var(--color-admin-hover); box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); outline: none; }
+.camposAgregarCategoria label { font-weight: 600; color: var(--color-primary); font-size: 0.95rem; text-align: left; }
+.campoAgregarCategoria { width: 100%; padding: 10px 12px; border: 1px solid var(--color-form-border); border-radius: 5px; font-size: 1rem; box-sizing: border-box; color: var(--color-text-dark); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.campoAgregarCategoria:focus { border-color: var(--color-primary-hover); background-color: var(--color-form-focus-bg); box-shadow: 0 0 0 0.2rem rgba(182, 96, 163, 0.25); outline: none; }
 textarea.campoAgregarCategoria { min-height: 80px; resize: vertical; }
 .requiredCategoria { color: var(--color-danger); margin-left: 2px; }
 .input-error { border-color: var(--color-danger) !important; background-color: #fff0f0; }
 .error { color: var(--color-danger); font-size: 0.85rem; margin-top: 5px; }
-.containerBotonesAgregarCategoria { display: flex; justify-content: center; gap: 15px; margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; width: 100%; }
+.containerBotonesAgregarCategoria { display: flex; justify-content: center; gap: 15px; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--color-form-border); width: 100%; }
 .containerBotonesAgregarCategoria button { padding: 10px 20px; font-size: 1rem; font-weight: 500; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; text-align: center; min-width: 120px; }
-.modal-close-button { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; font-weight: 300; line-height: 1; color: #888; cursor: pointer; padding: 0; transition: color 0.2s ease; }
-.modal-close-button:hover { color: #000; }
+.modal-close-button { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; font-weight: 300; line-height: 1; color: var(--color-text-dark); cursor: pointer; padding: 0; transition: color 0.2s ease; }
+.modal-close-button:hover { color: var(--color-primary); }
 
 /* === ESTILOS RESPONSIVOS === */
 @media (max-width: 992px) {
@@ -260,10 +245,10 @@ textarea.campoAgregarCategoria { min-height: 80px; resize: vertical; }
   .filtros-wrapper { width: 100%; flex-direction: column; }
   .tablaCategoria thead { display: none; }
   .tablaCategoria, .tablaCategoria tbody, .tablaCategoria tr, .tablaCategoria td { display: block; width: 100%; }
-  .tablaCategoria tr { margin-bottom: 1rem; border: 1px solid var(--color-admin-primary-border); border-radius: 8px; padding: 0.5rem; }
-  .tablaCategoria td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 0.75rem 0.5rem !important; position: relative; border: none; border-bottom: 1px solid #f0f0f0; }
+  .tablaCategoria tr { margin-bottom: 1rem; border: 1px solid var(--color-table-header); border-radius: 8px; padding: 0.5rem; }
+  .tablaCategoria td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 0.75rem 0.5rem !important; position: relative; border: none; border-bottom: 1px solid var(--color-form-border); }
   .tablaCategoria td:last-child { border-bottom: none; }
-  .tablaCategoria td::before { content: attr(data-label); font-weight: bold; color: var(--color-primary-darker); text-align: left; margin-right: 1rem; }
+  .tablaCategoria td::before { content: attr(data-label); font-weight: bold; color: var(--color-primary); text-align: left; margin-right: 1rem; }
   .tablaCategoria td.no-data-cell { display: block; justify-content: center; text-align: center; padding: 2rem 1rem !important; }
   .tablaCategoria td.no-data-cell::before { display: none; }
   .modal-content-Categoria { width: 95vw; }
