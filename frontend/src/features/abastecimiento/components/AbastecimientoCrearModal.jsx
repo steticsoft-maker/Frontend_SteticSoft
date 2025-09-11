@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import AbastecimientoForm from './AbastecimientoForm';
 import { fetchEmpleados, createAbastecimiento } from '../hooks/useAbastecimiento';
-// import { fetchProductos } from '../../productos/hooks/useProductos'; // Descomentar cuando tengas este servicio
+import { fetchProductosConFiltros } from '../services/productosService'; 
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 import '../css/Abastecimiento.css';
 
@@ -9,7 +9,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
     
     const getInitialFormState = () => ({
         empleado: null,
-        productos: [], // Array de objetos { ...producto, cantidad: 1 }
+        productos: [],
     });
 
     const [formData, setFormData] = useState(getInitialFormState());
@@ -25,18 +25,21 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
     const loadRequiredData = useCallback(async () => {
         try {
             setGeneralError('');
-            const empleadosData = await fetchEmpleados();
-            setEmpleados(empleadosData || []);
+            // Se inician ambas peticiones a la API en paralelo para mayor eficiencia
+            const empleadosPromise = fetchEmpleados();
+            const productosPromise = fetchProductosConFiltros({ 
+                tipoUso: 'interno', 
+                estado: true 
+            });
 
-            // **Temporalmente, usaremos datos de ejemplo para productos**
-            // Reemplaza esto con tu llamada real a la API para traer productos de tipo "Interno"
-            // const productosData = await fetchProductos({ tipoUso: 'interno', estado: true });
-            // setProductosDisponibles(productosData.data || []);
-            setProductosDisponibles([
-                { idProducto: 1, nombre: 'Limpia Vidrios (Interno)', existencia: 50 },
-                { idProducto: 2, nombre: 'Desinfectante (Interno)', existencia: 30 },
-                { idProducto: 3, nombre: 'Jabón de Manos (Interno)', existencia: 100 },
+            // Esperar a que ambas promesas se resuelvan
+            const [empleadosData, productosData] = await Promise.all([
+                empleadosPromise,
+                productosPromise,
             ]);
+
+            setEmpleados(empleadosData || []);
+            setProductosDisponibles(productosData || []);
 
         } catch (error) {
             setGeneralError('No se pudieron cargar los datos necesarios.');
@@ -55,13 +58,13 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
 
     const empleadosParaSeleccion = empleados.map(emp => ({
         ...emp,
-        displayName: `Empleado (${emp.correo})`
+        displayName: `${emp.rol?.nombre || 'Empleado'} (${emp.correo})`
     }));
 
+console.log("Datos que se envían al modal:", empleadosParaSeleccion);
+
     const handleEmpleadoSelect = (empleado) => {
-        // Necesitamos agregar el objeto 'rol' para consistencia con lo que viene del backend
-        const empleadoConRol = { ...empleado, rol: { nombre: 'Empleado' } };
-        setFormData(prev => ({ ...prev, empleado: empleadoConRol }));
+        setFormData(prev => ({ ...prev, empleado: empleado }));
         setIsEmpleadoModalOpen(false);
         if (formErrors.empleado) setFormErrors(prev => ({ ...prev, empleado: '' }));
     };
@@ -69,7 +72,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
     const handleProductoSelect = (producto) => {
         setFormData(prev => {
             const yaExiste = prev.productos.some(p => p.idProducto === producto.idProducto);
-            if (yaExiste) return prev; // No añadir duplicados
+            if (yaExiste) return prev;
             return {
                 ...prev,
                 productos: [...prev.productos, { ...producto, cantidad: 1 }]
@@ -87,7 +90,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
     };
 
     const handleCantidadChange = (idProducto, cantidad) => {
-        const cant = Math.max(1, Number(cantidad) || 1); // Asegurar que la cantidad sea al menos 1
+        const cant = Math.max(1, Number(cantidad) || 1);
         setFormData(prev => ({
             ...prev,
             productos: prev.productos.map(p => 
