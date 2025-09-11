@@ -9,7 +9,7 @@ import {
     fetchVentas,
     anularVentaById,
     cambiarEstadoVenta,
-    getVentaById // ✅ 1. IMPORTAR LA FUNCIÓN PARA OBTENER UNA VENTA
+    getVentaById
 } from '../services/ventasService';
 import { generarPDFVentaUtil } from '../utils/pdfGeneratorVentas';
 import '../css/Ventas.css';
@@ -26,8 +26,9 @@ function ListaVentasPage() {
     const [error, setError] = useState(null);
     const [busqueda, setBusqueda] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
-    const [filtroEstado, setFiltroEstado] = useState('1'); 
+    // ✅ CAMBIO 1: Se ajusta la cantidad de registros por página a 10
+    const [itemsPerPage] = useState(10);
+    const [filtroEstado, setFiltroEstado] = useState('1');
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [showPdfModal, setShowPdfModal] = useState(false);
     const [selectedVenta, setSelectedVenta] = useState(null);
@@ -58,7 +59,6 @@ function ListaVentasPage() {
         }
     }, [location.state, navigate, location.pathname, loadVentas]);
 
-    // ✅ 2. FUNCIÓN CORREGIDA PARA BUSCAR LA VENTA COMPLETA
     const handleOpenDetails = async (ventaResumida) => {
         setIsLoading(true);
         try {
@@ -169,35 +169,52 @@ function ListaVentasPage() {
         <div className="ventas-page-container">
             <div className="ventasContent">
                 <h1>Gestión de Ventas</h1>
-                <div className="barraBotonContainer">
-                    <input type="text" placeholder="Buscar venta" value={busqueda} onChange={handleSearchChange} className="barraBusquedaVenta" />
-                    <button className="botonAgregarVenta" onClick={() => navigate('/admin/ventas/proceso')}>Agregar Venta</button>
+
+                <div className="gestion-filtros">
+                    <div className="filtros-top">
+                        <input type="text" placeholder="Buscar venta" value={busqueda} onChange={handleSearchChange} className="barraBusquedaVenta" />
+                        <button className="botonAgregarVenta" onClick={() => navigate('/admin/ventas/proceso')}>Agregar Venta</button>
+                    </div>
+
+                    <div className="filtros-bottom">
+                        <label htmlFor="filtro-estado">Filtrar por estado:</label>
+                        <select id="filtro-estado" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} className="filtro-estado-select">
+                            <option value="">Todas</option>
+                            <option value="1">Activa</option>
+                            <option value="2">En proceso</option>
+                            <option value="3">Completada</option>
+                            <option value="4">Anulada</option>
+                        </select>
+                    </div>
                 </div>
-                <div className="filtros-container">
-                    <label htmlFor="filtro-estado">Filtrar por estado: </label>
-                    <select id="filtro-estado" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} className="filtro-estado-select">
-                        <option value="">Todas</option>
-                        <option value="1">Activa</option>
-                        <option value="2">En proceso</option>
-                        <option value="3">Completada</option>
-                        <option value="4">Anulada</option>
-                    </select>
-                </div>
+
                 {isLoading ? (<p style={{ textAlign: 'center', marginTop: '50px' }}>Cargando ventas...</p>) : 
                  error ? (<p className="error-message" style={{ textAlign: 'center', marginTop: '50px' }}>{error}</p>) : 
                  (<>
-                    <VentasTable
-                        ventas={currentVentasForTable}
-                        onShowDetails={handleOpenDetails}
-                        onGenerarPDF={handleOpenPdf}
-                        onAnularVenta={handleOpenAnularConfirm}
-                        onEstadoChange={handleEstadoChange}
-                        currentPage={currentPage}
-                        itemsPerPage={itemsPerPage}
-                    />
-                    <div className="paginacionVenta">
-                        {Array.from({ length: totalPages }, (_, i) => (<button key={i + 1} onClick={() => paginate(i + 1)} className={currentPage === i + 1 ? "active" : ""}>{i + 1}</button>))}
-                    </div>
+                     <VentasTable
+                         ventas={currentVentasForTable}
+                         onShowDetails={handleOpenDetails}
+                         onGenerarPDF={handleOpenPdf}
+                         onAnularVenta={handleOpenAnularConfirm}
+                         onEstadoChange={handleEstadoChange}
+                         currentPage={currentPage}
+                         itemsPerPage={itemsPerPage}
+                     />
+                    
+                    {/* ✅ CAMBIO 2: La paginación solo se muestra si hay más de una página (más de 10 registros) */}
+                    {totalPages > 1 && (
+                        <div className="paginacionVenta">
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <button 
+                                    key={i + 1} 
+                                    onClick={() => paginate(i + 1)} 
+                                    className={currentPage === i + 1 ? "active" : ""}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                  </>)}
             </div>
             
