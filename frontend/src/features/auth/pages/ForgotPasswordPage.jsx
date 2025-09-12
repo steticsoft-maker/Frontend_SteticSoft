@@ -1,7 +1,7 @@
 // src/features/auth/pages/ForgotPasswordPage.jsx
 import React, { useState }from "react";
 import ForgotPasswordForm from "../components/ForgotPasswordForm";
-import authService from "../services/authService";
+import * as authService from "../services/authService";
 import "../css/Auth.css";
 import Stetic2 from "/Stetic2.svg";
 
