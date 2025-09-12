@@ -1,6 +1,12 @@
 // src/shared/services/apiClient.js
 import axios from "axios";
 
+// NOTA IMPORTANTE:
+// La carpeta `frontend/src/shared/src_api` es una copia espejo del código del backend
+// y se mantiene únicamente con fines de análisis y referencia.
+// NO DEBE HABER ninguna importación o conexión de código a dicha carpeta.
+// Todo el acceso a la API debe realizarse a través de este cliente (`apiClient`).
+
 // Lee la URL base de la API desde las variables de entorno de Vite.
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 

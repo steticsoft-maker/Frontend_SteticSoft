@@ -88,7 +88,11 @@ export const resetearContrasenaAPI = async (
   nuevaContrasena,
   confirmarNuevaContrasena
 ) => {
-  const datosParaAPI = { token, nuevaContrasena, confirmarNuevaContrasena };
+  const datosParaAPI = {
+    token,
+    contrasena: nuevaContrasena,
+    confirmarContrasena: confirmarNuevaContrasena,
+  };
   try {
     // Petición POST al backend con los datos necesarios para el reseteo.
     const response = await apiClient.post(
