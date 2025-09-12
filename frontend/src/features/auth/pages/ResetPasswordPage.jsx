@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import ResetPasswordForm from "../components/ResetPasswordForm";
-import authService from "../services/authService";
+import * as authService from "../services/authService";
 import "../css/Auth.css";
 import Stetic2 from "/Stetic2.svg";
 
