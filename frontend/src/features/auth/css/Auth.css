@@ -168,4 +168,38 @@
     color: green;
     /* Define var(--color-success) */
     text-align: center;
-    width: 100%; }
+    width: 100%;
+}
+
+.auth-secondary-button {
+    padding: 10px 20px;
+    border: 1px solid var(--color-primary);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    background-color: transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.auth-secondary-button:hover {
+    color: var(--color-text-light);
+    background-color: var(--color-primary);
+}
+
+.auth-form-link {
+    text-align: right;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.auth-form-link a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.auth-form-link a:hover {
+    text-decoration: underline;
+}
