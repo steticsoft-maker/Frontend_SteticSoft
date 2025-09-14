@@ -271,10 +271,10 @@ function ListaComprasPage() {
         <div className="lista-compras-container">
             <div className="compras-content-wrapper">
                 <h1>Listado de Compras</h1>
-                <div className="proveedores-content-wrapper">
-                    <div className="proveedores-actions-bar">
-                        <div className="proveedores-filters">
-                            <div className="proveedores-search-bar">
+                <div className="compras-content-wrapper">
+                    <div className="compras-actions-bar">
+                        <div className="compras-filters">
+                            <div className="compras-search-bar">
                                 <input
                                     type="text"
                                     placeholder="Busca por cualquier campo..."
@@ -282,10 +282,10 @@ function ListaComprasPage() {
                                     onChange={(e) => setBusqueda(e.target.value)}
                                 />
                             </div>
-                            <div className="filtro-estado-grupo">
+                            <div className="compras-filtro-estado-grupo">
                                 <select
                                     id="filtro-estado"
-                                    className="filtro-input"
+                                    className="compras-filtro-input"
                                     value={filtroEstado}
                                     onChange={(e) => setFiltroEstado(e.target.value)}
                                 >
@@ -296,7 +296,7 @@ function ListaComprasPage() {
                             </div>
                         </div>
                         <button
-                            className="proveedores-add-button"
+                            className="compras-add-button"
                             onClick={() => navigate('/admin/compras/agregar')}
                         >
                             Agregar Compra

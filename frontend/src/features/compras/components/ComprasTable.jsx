@@ -17,7 +17,7 @@ const formatFechaSinTimezone = (fechaString) => {
 const ComprasTable = ({ compras, onDetalle, onAnular, onGenerarPDF, startIndex }) => {
   if (!compras || compras.length === 0) {
     return (
-      <table className="tablaProveedores">
+      <table className="tablaCompras">
         <thead>
           <tr>
             <th>#</th>
@@ -38,7 +38,7 @@ const ComprasTable = ({ compras, onDetalle, onAnular, onGenerarPDF, startIndex }
   }
 
   return (
-    <div className="tablaProveedores">
+    <div className="tablaCompras">
       <table>
         <thead>
           <tr>
@@ -70,15 +70,15 @@ const ComprasTable = ({ compras, onDetalle, onAnular, onGenerarPDF, startIndex }
                     {estadoNombre}
                   </span>
                 </td>
-                <td data-label="Acciones:" className="proveedores-table-actions">
-                  <button onClick={() => onDetalle(compra)} className="botonVerDetallesProveedor" title="Ver Detalles">
+                <td data-label="Acciones:" className="compras-table-actions">
+                  <button onClick={() => onDetalle(compra)} className="botonVerDetallesCompra" title="Ver Detalles">
                     <FontAwesomeIcon icon={faEye} />
                   </button>
-                  <button onClick={() => onGenerarPDF(compra)} className="botonEditarProveedor" title="Descargar PDF">
+                  <button onClick={() => onGenerarPDF(compra)} className="botonGenerarPDFCompra" title="Descargar PDF">
                     <FontAwesomeIcon icon={faFilePdf} />
                   </button>
                   {compra.estado && (
-                    <button onClick={() => onAnular(compra)} className="botonEliminarProveedor" title="Anular Compra">
+                    <button onClick={() => onAnular(compra)} className="botonAnularCompra" title="Anular Compra">
                       <FontAwesomeIcon icon={faBan} />
                     </button>
                   )}
