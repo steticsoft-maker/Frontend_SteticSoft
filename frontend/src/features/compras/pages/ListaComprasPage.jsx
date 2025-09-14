@@ -11,8 +11,68 @@ import { comprasService } from '../services/comprasService';
 import { generarPDFCompraUtil } from '../utils/pdfGeneratorCompras.js';
 import '../css/Compras.css';
 
+/**
+ * Normaliza una fecha de entrada a un objeto con múltiples formatos de string.
+ */
+const normalizeDateMultiFormat = (input) => {
+    try {
+        if (!input) return {};
+
+        let date;
+
+        if (input instanceof Date) {
+            date = input;
+        } else if (typeof input === 'number') {
+            date = new Date(input);
+        } else {
+            const str = String(input).trim();
+            let match;
+
+            match = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+            if (match) {
+                date = new Date(match[1], match[2] - 1, match[3]);
+            } else {
+                match = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+                if (match) {
+                    date = new Date(match[3], match[2] - 1, match[1]);
+                } else {
+                    match = str.match(/^(\d{2})(\d{2})(\d{4})$/);
+                    if (match) {
+                        date = new Date(match[3], match[2] - 1, match[1]);
+                    } else {
+                        match = str.match(/^(\d{4})(\d{2})(\d{2})$/);
+                        if (match) {
+                            date = new Date(match[1], match[2] - 1, match[3]);
+                        } else {
+                            date = new Date(str);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!date || isNaN(date.getTime())) {
+            return {};
+        }
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        return {
+            slash: `${day}/${month}/${year}`,
+            dash: `${day}-${month}-${year}`,
+            iso: `${year}-${month}-${day}`,
+            compact: `${day}${month}${year}`,
+            isoCompact: `${year}${month}${day}`,
+        };
+    } catch (error) {
+        console.error("Error parsing date:", error);
+        return {};
+    }
+};
+
 const Paginacion = ({ currentPage, totalPages, onPageChange }) => {
-    // ... (componente de paginación sin cambios)
     if (totalPages <= 1) return null;
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
     return (
@@ -42,20 +102,17 @@ function ListaComprasPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [busqueda, setBusqueda] = useState('');
-    const [filtroEstado, setFiltroEstado] = useState('todos'); // ✨ 1. Se añade el estado para el filtro
+    const [filtroEstado, setFiltroEstado] = useState('todos');
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10); 
 
-    // ... (estados de modales sin cambios)
     const [isDetalleModalOpen, setIsDetalleModalOpen] = useState(false);
     const [selectedCompra, setSelectedCompra] = useState(null);
     const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
     const [pdfDataUri, setPdfDataUri] = useState('');
 
-
     const fetchCompras = useCallback(async () => {
-        // ... (lógica de fetch sin cambios)
         setIsLoading(true);
         setError(null);
         try {
@@ -72,7 +129,6 @@ function ListaComprasPage() {
         fetchCompras();
     }, [fetchCompras]);
 
-    // ✨ 2. Se mejora el useEffect para resetear la página cuando cambia cualquier filtro
     useEffect(() => {
         setCurrentPage(1);
     }, [busqueda, filtroEstado]);
@@ -80,50 +136,75 @@ function ListaComprasPage() {
     const comprasFiltradas = useMemo(() => {
         let dataFiltrada = [...compras];
 
-        // Primero, filtrar por estado
         if (filtroEstado !== 'todos') {
-            const esCompletado = filtroEstado === 'completadas'; // El estado en la data es booleano
+            const esCompletado = filtroEstado === 'completadas';
             dataFiltrada = dataFiltrada.filter(compra => compra.estado === esCompletado);
         }
 
-        // Luego, filtrar por búsqueda
-        const termino = busqueda.toLowerCase();
-        if (termino) {
-            dataFiltrada = dataFiltrada.filter(compra => {
+        const termino = busqueda.trim();
+        if (!termino) return dataFiltrada;
+
+        const terminoLower = termino.toLowerCase();
+        const terminoDigits = termino.replace(/\D/g, '');
+
+        return dataFiltrada.filter(compra => {
+            try {
                 const estadoTexto = compra.estado ? 'completado' : 'anulada';
-                return (
+
+                // 🔹 Normalización de total (acepta punto, coma, miles)
+                const totalRaw = compra.total != null ? String(compra.total) : '';
+                const totalNormalized = totalRaw.replace(/[.,\s]/g, ''); // solo dígitos
+                const terminoNormalized = termino.replace(/[.,\s]/g, ''); // normalizar búsqueda
+
+                if (
                     (compra.idCompra?.toString() || '').includes(termino) ||
-                    (compra.proveedor?.nombre?.toLowerCase() || '').includes(termino) ||
-                    (new Date(compra.fecha).toLocaleDateString('es-CO')).includes(termino) ||
-                    (compra.total?.toString() || '').replace('.', ',').includes(termino) ||
-                    estadoTexto.includes(termino)
-                );
-            });
-        }
-        
-        return dataFiltrada;
+                    (compra.proveedor?.nombre?.toLowerCase() || '').includes(terminoLower) ||
+                    estadoTexto.includes(terminoLower) ||
+                    (totalRaw && (
+                        totalRaw.includes(termino) ||
+                        totalRaw.replace('.', ',').includes(termino) ||
+                        totalRaw.replace(',', '.').includes(termino) ||
+                        totalNormalized.includes(terminoNormalized)
+                    ))
+                ) {
+                    return true;
+                }
 
-    }, [compras, busqueda, filtroEstado]); // Se añade 'filtroEstado' a las dependencias
+                // 🔹 Búsqueda en fecha
+                const fechaFormats = normalizeDateMultiFormat(compra.fecha);
+                if (Object.keys(fechaFormats).length > 0) {
+                    if (fechaFormats.slash.includes(termino) || fechaFormats.dash.includes(termino)) {
+                        return true;
+                    }
+                    if (terminoDigits && (
+                        fechaFormats.compact.includes(terminoDigits) ||
+                        fechaFormats.isoCompact.includes(terminoDigits)
+                    )) {
+                        return true;
+                    }
+                }
 
-    
+                return false;
+            } catch (error) {
+                console.error("Error during filtering:", error);
+                return false;
+            }
+        });
+    }, [compras, busqueda, filtroEstado]);
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const comprasPaginadas = comprasFiltradas.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(comprasFiltradas.length / itemsPerPage);
 
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
+    const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
-    // --- Lógica de modales y acciones (SIN CAMBIOS) ---
     const handleOpenDetalle = async (compraResumen) => {
         setIsLoading(true);
         try {
             const compraCompletaResponse = await comprasService.getCompraById(compraResumen.idCompra);
             const compraCompleta = compraCompletaResponse.data;
-            if (!compraCompleta) {
-                throw new Error("No se pudieron obtener los detalles completos de la compra.");
-            }
+            if (!compraCompleta) throw new Error("No se pudieron obtener los detalles completos de la compra.");
             setSelectedCompra(compraCompleta);
             setIsDetalleModalOpen(true);
         } catch (err) {
@@ -149,7 +230,7 @@ function ListaComprasPage() {
             }
         });
     };
-    
+
     const generateAndShowPdf = async (compraResumen) => {
         if (!compraResumen) return;
         try {
@@ -168,7 +249,7 @@ function ListaComprasPage() {
             MySwal.fire("Error", err.message || "No se pudo generar el PDF.", "error");
         }
     };
-    
+
     const handleCloseModals = () => {
         setIsDetalleModalOpen(false);
         setIsPdfModalOpen(false);
@@ -190,10 +271,8 @@ function ListaComprasPage() {
         <div className="lista-compras-container">
             <div className="compras-content-wrapper">
                 <h1>Listado de Compras</h1>
-                
                 <div className="proveedores-content-wrapper">
                     <div className="proveedores-actions-bar">
-                        {/* ✨ 3. Se añade el HTML del filtro de estado */}
                         <div className="proveedores-filters">
                             <div className="proveedores-search-bar">
                                 <input
@@ -223,8 +302,11 @@ function ListaComprasPage() {
                             Agregar Compra
                         </button>
                     </div>
-
-                    {isLoading ? <p>Cargando compras...</p> : error ? <p className="error-message">{error}</p> : (
+                    {isLoading ? (
+                        <p>Cargando compras...</p>
+                    ) : error ? (
+                        <p className="error-message">{error}</p>
+                    ) : (
                         <>
                             <ComprasTable
                                 compras={comprasPaginadas}
@@ -242,10 +324,15 @@ function ListaComprasPage() {
                     )}
                 </div>
             </div>
-
-            {/* --- Modales (SIN CAMBIOS) --- */}
-            {isDetalleModalOpen && <CompraDetalleModal compra={selectedCompra} onClose={handleCloseModals} />}
-            <PdfViewModal isOpen={isPdfModalOpen} onClose={handleCloseModals} pdfUrl={pdfDataUri} title={`Detalle Compra #${selectedCompra?.idCompra || ''}`} />
+            {isDetalleModalOpen && (
+                <CompraDetalleModal compra={selectedCompra} onClose={handleCloseModals} />
+            )}
+            <PdfViewModal
+                isOpen={isPdfModalOpen}
+                onClose={handleCloseModals}
+                pdfUrl={pdfDataUri}
+                title={`Detalle Compra #${selectedCompra?.idCompra || ''}`}
+            />
         </div>
     );
 }

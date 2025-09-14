@@ -10,6 +10,29 @@ const formatFechaSinTimezone = (fechaString) => {
   return `${day}/${month}/${year}`;
 };
 
+// ✅ Función auxiliar para obtener etiqueta y valor de documento/NIT
+const getDocumentoProveedor = (proveedor) => {
+  if (!proveedor) return { etiqueta: "Documento", valor: "N/A" };
+  if (!proveedor.estado)
+    return { etiqueta: "Documento", valor: "Proveedor inactivo" };
+
+  if (proveedor.tipo === "Natural") {
+    return {
+      etiqueta: "Documento del proveedor",
+      valor: `${proveedor.tipoDocumento || ""} ${
+        proveedor.numeroDocumento || "N/A"
+      }`,
+    };
+  } else if (proveedor.tipo === "Juridico") {
+    return {
+      etiqueta: "NIT de la empresa",
+      valor: proveedor.nitEmpresa || "N/A",
+    };
+  }
+
+  return { etiqueta: "Documento", valor: "N/A" };
+};
+
 export const generarPDFCompraUtil = (compra) => {
   if (!compra) {
     console.error("Se intentó generar un PDF sin datos de la compra.");
@@ -40,6 +63,10 @@ export const generarPDFCompraUtil = (compra) => {
   doc.text(`Proveedor: ${compra.proveedor?.nombre || "N/A"}`, 105, 45);
   doc.text(`Estado: ${compra.estado ? "Activa" : "Anulada"}`, 105, 52);
 
+  // ✅ NUEVO: Documento o NIT según el tipo
+  const { etiqueta, valor } = getDocumentoProveedor(compra.proveedor);
+  doc.text(`${etiqueta}: ${valor}`, 15, 59);
+
   // === TABLA ===
   const tableColumn = ["Producto", "Cantidad", "Valor Unitario", "Subtotal"];
   const tableRows = (compra.productos || []).map((p) => {
@@ -50,15 +77,21 @@ export const generarPDFCompraUtil = (compra) => {
     return [
       p.nombre,
       cantidad,
-      `$${Number(valorUnitario).toLocaleString("es-CO")}`,
-      `$${Number(subtotalItem).toLocaleString("es-CO")}`,
+      `$${Number(valorUnitario).toLocaleString("es-CO", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      })}`,
+      `$${Number(subtotalItem).toLocaleString("es-CO", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      })}`,
     ];
   });
 
   autoTable(doc, {
     head: [tableColumn],
     body: tableRows.length > 0 ? tableRows : [["-", "-", "-", "-"]],
-    startY: 65,
+    startY: 70, // 👈 ajustado porque agregamos Documento/NIT
     theme: "grid",
     headStyles: {
       fillColor: [154, 122, 159], // morado corporativo
@@ -90,29 +123,50 @@ export const generarPDFCompraUtil = (compra) => {
   doc.setFontSize(11);
   doc.setTextColor(40);
   doc.text(`Subtotal:`, 150, finalY + 12, { align: "right" });
-  doc.text(`$${Number(subtotal).toLocaleString("es-CO")}`, 195, finalY + 12, {
-    align: "right",
-  });
+  doc.text(
+    `$${Number(subtotal).toLocaleString("es-CO", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}`,
+    195,
+    finalY + 12,
+    { align: "right" }
+  );
 
   doc.text(`IVA (19%):`, 150, finalY + 19, { align: "right" });
-  doc.text(`$${Number(compra.iva).toLocaleString("es-CO")}`, 195, finalY + 19, {
-    align: "right",
-  });
+  doc.text(
+    `$${Number(compra.iva).toLocaleString("es-CO", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}`,
+    195,
+    finalY + 19,
+    { align: "right" }
+  );
 
   doc.setFont("helvetica", "bold");
   doc.setTextColor(74, 42, 90);
   doc.text(`Total Compra:`, 150, finalY + 26, { align: "right" });
-  doc.text(`$${Number(compra.total).toLocaleString("es-CO")}`, 195, finalY + 26, {
-    align: "right",
-  });
+  doc.text(
+    `$${Number(compra.total).toLocaleString("es-CO", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}`,
+    195,
+    finalY + 26,
+    { align: "right" }
+  );
 
   // === FOOTER ===
   const pageHeight = doc.internal.pageSize.getHeight();
   doc.setFontSize(9);
   doc.setTextColor(150);
-  doc.text("SteticSoft - Reporte generado automáticamente", 105, pageHeight - 10, {
-    align: "center",
-  });
+  doc.text(
+    "SteticSoft - Reporte generado automáticamente",
+    105,
+    pageHeight - 10,
+    { align: "center" }
+  );
 
   return doc.output("datauristring");
 };

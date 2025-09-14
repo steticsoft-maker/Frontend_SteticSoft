@@ -319,7 +319,7 @@
   font-weight: 600;
   font-size: 0.9em;
   color: var(--color-text-dark);
-  background-color: var(--color-table-row-even);
+  background-color: #c585cf;
 }
 
 .detalle-productos-simple .text-center { text-align: center; }

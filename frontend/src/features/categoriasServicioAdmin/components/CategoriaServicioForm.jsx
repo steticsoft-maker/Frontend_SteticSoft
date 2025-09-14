@@ -72,10 +72,11 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) =
     }
 
     if (name === 'descripcion' && !error) {
-        if (trimmedValue.length > 255) {
-          error = 'La descripción no puede exceder los 255 caracteres.';
-        }
-    }
+  if (trimmedValue.length > 200) {
+    error = 'La descripción no puede exceder los 200 caracteres.';
+  }
+}
+
 
     setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
     return !error;
