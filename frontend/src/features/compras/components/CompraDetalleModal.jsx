@@ -21,12 +21,12 @@ const CompraDetalleModal = ({ compra, onClose }) => {
   const subtotal = total - iva;
 
   return (
-    <div className="modal-Proveedores" onClick={onClose}>
+    <div className="modal-Compras" onClick={onClose}>
       <div
-        className="modal-content-Proveedores detalle-modal"
+        className="modal-content-Compras detalle-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="proveedores-modal-title">Detalle de la Compra</h3>
+        <h3 className="compras-modal-title">Detalle de la Compra</h3>
 
         <div className="proveedor-details-list">
           <p>
@@ -71,7 +71,7 @@ const CompraDetalleModal = ({ compra, onClose }) => {
           </p>
         </div>
 
-        <h4 className="modal-subtitle-proveedores">Productos y Totales</h4>
+        <h4 className="modal-subtitle-compras">Productos y Totales</h4>
         <table className="detalle-productos-simple">
           <thead>
             <tr>
@@ -131,9 +131,9 @@ const CompraDetalleModal = ({ compra, onClose }) => {
           </div>
         </div>
 
-        <div className="proveedores-form-actions">
+        <div className="compras-form-actions">
           <button
-            className="proveedores-detalle-modal-button-cerrar"
+            className="compras-detalle-modal-button-cerrar"
             onClick={onClose}
           >
             Cerrar

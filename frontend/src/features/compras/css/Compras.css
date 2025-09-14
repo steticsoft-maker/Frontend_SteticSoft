@@ -2,7 +2,9 @@
 
 /* src/features/compras/css/Compras.css */
 
-/* === ESTILOS GENERALES DE PÁGINA === */
+/* ======================================================== */
+/* ============= ESTILOS GENERALES DE PÁGINA ============= */
+/* ======================================================== */
 .lista-compras-container {
     display: flex;
     min-height: 100vh;
@@ -17,6 +19,10 @@
     margin-left: 270px;
     overflow-y: auto;
     box-sizing: border-box;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -30,8 +36,11 @@
     font-size: 1.8rem;
 }
 
-/* === BARRA DE ACCIONES SUPERIOR === */
-.proveedores-actions-bar { 
+
+/* ======================================================== */
+/* ============= BARRA DE ACCIONES SUPERIORES ============= */
+/* ======================================================== */
+.compras-actions-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -39,24 +48,22 @@
     gap: 20px;
     flex-wrap: wrap; 
     width: 100%;
-    max-width: 1200px; 
     box-sizing: border-box;
 }
 
-.proveedores-filters {
-    display: flex; /* Convierte este contenedor en un flex container */
-    gap: 20px; /* Espacio entre la barra de búsqueda y el filtro */
-    flex-grow: 1; /* Permite que este contenedor crezca y ocupe el espacio disponible */
-    align-items: center; /* Alinea verticalmente los elementos dentro */
-    flex-wrap: wrap; /* Permite que los elementos internos se envuelvan en pantallas pequeñas */
+.compras-filters {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.proveedores-search-bar { 
+.compras-search-bar {
     flex-grow: 1;
     display: flex;
 }
-
-.proveedores-search-bar input { 
+.compras-search-bar input {
     padding: 10px 12px; 
     width: 100%; 
     min-width: 250px;
@@ -67,50 +74,47 @@
     color: var(--color-text-dark);
     box-sizing: border-box;
 }
-
-.proveedores-search-bar input:focus {
+.compras-search-bar input:focus {
     border-color: var(--color-primary);
     background-color: var(--color-form-focus-bg);
     box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
-.filtro-estado-grupo {
-    flex-shrink: 0; /* Evita que este grupo se encoja cuando hay poco espacio */
-    /* Si necesitas alinear elementos dentro de este div (por ejemplo, un label y el select),
-       puedes añadir 'display: flex; align-items: center; gap: Xpx;' aquí */
+.compras-filtro-estado-grupo {
+    flex-shrink: 0;
 }
 
-.filtro-input {
-    padding: 9px 10px; /* Consistente con el select de Usuarios */
+.compras-filtro-input {
+    padding: 9px 10px;
     border: 1px solid var(--color-form-border);
     border-radius: 5px;
-    font-size: 1rem; /* Consistente con el select de Usuarios */
+    font-size: 1rem;
     background-color: var(--color-form-bg);
     color: var(--color-text-dark);
-    min-width: 150px; /* Asegura un ancho mínimo */
-    height: 41px; /* Para que coincida con la altura del input de búsqueda y el botón */
+    min-width: 150px;
+    height: 41px;
     box-sizing: border-box;
     cursor: pointer;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    -webkit-appearance: none; /* Elimina la apariencia por defecto del sistema */
+    -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E'); /* Icono de flecha SVG */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right 8px top 50%;
     background-size: .65em auto;
-    padding-right: 25px; /* Espacio para el icono de flecha */
+    padding-right: 25px;
 }
 
-.filtro-input:focus {
+.compras-filtro-input:focus {
     border-color: var(--color-primary);
     background-color: var(--color-form-focus-bg);
     box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
     outline: none;
 }
 
-.proveedores-add-button { 
+.compras-add-button {
     padding: 10px 20px; 
     font-size: 1rem; 
     background-color: var(--color-primary);
@@ -127,374 +131,153 @@
     align-items: center;
     justify-content: center;
 }
-.proveedores-add-button:hover {
+.compras-add-button:hover {
     background-color: var(--color-primary-hover);
 }
 
 
-/* === ESTILOS DE TABLA === */
-.tabla-compras {
+/* ======================================================== */
+/* ================== ESTILOS DE TABLA ================== */
+/* ======================================================== */
+.tablaCompras table {
     width: 100%;
-    max-width: 1200px;
     border-collapse: collapse;
-    margin-top: 0;
+}
+.tablaCompras {
+    width: 100%;
+    margin-top: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: var(--color-table-row-odd);
     border-radius: 8px;
     overflow: hidden;
     font-size: 0.95rem;
 }
-
-.tabla-compras th {
+.tablaCompras th {
     background-color: var(--color-table-header);
     color: var(--color-text-dark);
     padding: 12px 15px;
-    border-bottom: 2px solid var(--color-primary-hover);
+    text-align: center;
     font-weight: 600;
+    font-size: 1rem;
+    border: 1px solid var(--color-table-header);
 }
-
-.tabla-compras td {
+.tablaCompras td {
     padding: 12px 15px;
-    border-bottom: 1px solid var(--color-form-border);
+    border: 1px solid var(--color-table-header);
     color: var(--color-text-dark);
+    font-size: 0.9rem;
+    text-align: left;
     vertical-align: middle;
 }
+.tablaCompras td.text-center { text-align: center; }
+.tablaCompras td.text-right { text-align: right; }
 
-.tabla-compras tbody tr:nth-child(even) {
-    background-color: var(--color-table-row-even);
-}
-
-.tabla-compras tbody tr:hover {
-    background-color: var(--color-admin-hover);
-}
-
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-
-.acciones-compras {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-accion {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.9em;
-    color: var(--color-text-light);
-    transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.btn-accion:hover {
-    transform: translateY(-1px);
-}
-
-.btn-detalle {
-    background-color: var(--color-secondary);
-    color: var(--color-secondary-text);
-}
-.btn-detalle:hover {
-    background-color: var(--color-secondary-hover);
-}
-
-.btn-anular {
-    background-color: var(--color-danger, #dc3545);
-}
-.btn-anular:hover {
-    background-color: #c82333;
-}
+.tablaCompras tbody tr:nth-child(even) { background-color: var(--color-table-row-even); }
+.tablaCompras tbody tr:hover { background-color: var(--color-secondary-hover); }
 
 .estado {
     padding: 4px 12px;
     border-radius: 12px;
-    font-weight: bold;
-    color: white;
+    font-weight: 500;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     font-size: 0.9em;
     display: inline-block;
+    color: #333;
+}
+.estado.completado {
+    background-color: #d4edda;
+}
+.estado.anulada {
+    background-color: #e9ecef;
 }
 
-.estado.activo {
-    background-color: #28a745;
-}
-
-.estado.anulado {
-    background-color: #6c757d;
-    text-decoration: line-through;
-}
-
-/* === ESTILOS PARA MODALES === */
-
-/* NUEVO: Overlay para centrar el modal en toda la pantalla */
-.modal-overlay {
-    position: fixed; /* Clave para sacarlo del flujo normal */
-    top: 0;
-    left: 0;
-    width: 100vw; /* Ocupa todo el ancho de la ventana */
-    height: 100vh; /* Ocupa todo el alto de la ventana */
-    background-color: rgba(0, 0, 0, 0.6);
+/* ======================================================== */
+/* ============= BOTONES DE ACCIÓN EN TABLA ============= */
+/* ======================================================== */
+.compras-table-actions {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Asegura que esté por encima de todo */
-    padding: 20px;
-    box-sizing: border-box;
+    gap: 10px;
+}
+.compras-table-actions button {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+.compras-table-actions .botonVerDetallesCompra,
+.compras-table-actions .botonGenerarPDFCompra {
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
+}
+.compras-table-actions .botonVerDetallesCompra:hover,
+.compras-table-actions .botonGenerarPDFCompra:hover {
+    background-color: var(--color-secondary-hover);
+}
+.compras-table-actions .botonAnularCompra {
+    background-color: var(--color-danger);
+}
+.compras-table-actions .botonAnularCompra:hover {
+    background-color: #c82333;
 }
 
-/* Contenido del modal */
-.modal-content {
+
+/* ======================================================== */
+/* ================== ESTILOS DE MODAL ================== */
+/* ======================================================== */
+.modal-Compras {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1050; padding: 20px; box-sizing: border-box; overflow-y: auto;
+}
+
+.modal-content-Compras {
     background: var(--color-background-light);
     padding: 25px 30px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    max-height: 90vh;
-    overflow-y: auto;
     width: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+    max-height: 90vh; overflow-y: auto; box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+.modal-content-Compras.detalle-modal {
+    max-width: 550px;
+    text-align: left;
 }
 
-/* Reutilizamos clases de rol para consistencia */
-.rol-details-modal-content {
-  max-width: 800px;
-  width: 90%;
-}
-
-.rol-details-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr; 
-  gap: 2rem 3rem;
-  padding: 1rem 0;
-}
-
-.details-section, .permissions-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.details-section h3, .permissions-section h3 {
-  color: var(--color-primary);
-  border-bottom: 2px solid var(--color-table-header);
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-}
-
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid var(--color-form-border);
-  font-size: 0.95rem;
-}
-
-.info-label {
-  font-weight: 600;
-  color: #555;
-  margin-right: 10px;
-}
-
-.info-value {
-  color: #333;
-  text-align: right;
-}
-
-/* Tabla simple para productos en el detalle */
-.detalle-productos-simple {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-}
-
-.detalle-productos-simple th, .detalle-productos-simple td {
-  padding: 10px 8px;
-  border-bottom: 1px solid var(--color-form-border);
-  text-align: left;
-}
-
-.detalle-productos-simple th {
-  font-weight: 600;
-  font-size: 0.9em;
-  color: var(--color-text-dark);
-  background-color: #c585cf;
-}
-
-.detalle-productos-simple .text-center { text-align: center; }
-.detalle-productos-simple .text-right { text-align: right; }
-
-/* Sección de totales dentro del modal */
-.compra-totales-detalle {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-form-border);
-}
-
-.total-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-  font-size: 0.95rem;
-}
-
-.total-row.total-final {
-  font-size: 1.15rem;
-  color: var(--color-primary);
-  margin-top: 0.5rem;
-}
-
-.modal-footer {
-  text-align: right;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-form-border);
-}
-
-.btn-pdf {
-    background-color: #cb2c31;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-}
-
-.btn-pdf:hover {
-    background-color: #a52327;
-}
-
-
-/* === ESTILOS RESPONSIVOS === */
-@media (max-width: 768px) {
-    .compras-content-wrapper { margin-left: 0; padding: 15px; }
-
-    .rol-details-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .tabla-compras thead { display: none; }
-    .tabla-compras, .tabla-compras tbody, .tabla-compras tr, .tabla-compras td {
-        display: block; width: 100%;
-    }
-    .tabla-compras tr {
-        margin-bottom: 15px;
-        border: 1px solid var(--color-form-border);
-        border-radius: 8px;
-        padding: 10px;
-    }
-    .tabla-compras td {
-        text-align: right;
-        padding-left: 50% !important;
-        position: relative;
-        border: none;
-        border-bottom: 1px solid var(--color-form-border);
-    }
-    .tabla-compras td:last-child { border-bottom: none; }
-    .tabla-compras td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: calc(50% - 20px);
-        padding-right: 10px;
-        font-weight: bold;
-        text-align: left;
-        color: var(--color-primary);
-    }
-    .acciones-compras {
-        justify-content: flex-end;
-    }
-}
-
-/* === ESTILOS ADICIONALES PARA ACCIONES DE TABLA === */
-
-/* Estilo para el botón de PDF en la tabla */
-.btn-pdf-tabla {
-    background-color: #5bc0de; /* Un color cian o azul claro para información */
-}
-.btn-pdf-tabla:hover {
-    background-color: #31b0d5;
-}
-
-/* Estilos para el select de estado en la tabla */
-.estado-select {
-    padding: 9px 10px; /* Consistente con el select de Usuarios */
-    border: 1px solid var(--color-form-border);
-    border-radius: 5px;
-    font-size: 1rem; /* Consistente con el select de Usuarios */
-    background-color: var(--color-form-bg);
+.compras-modal-title {
+    text-align: center;
     color: var(--color-text-dark);
-    min-width: 150px; /* Añadido para consistencia */
-    height: 41px; /* Añadido para que coincida con la altura del botón y el input */
-    box-sizing: border-box;
-    cursor: pointer;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
-    background-repeat: no-repeat;
-    background-position: right 8px top 50%;
-    background-size: .65em auto;
-    padding-right: 25px;
-    flex-shrink: 0; /* Evita que el select se encoja cuando hay poco espacio */
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.6rem;
 }
 
-.estado-select:focus {
-    border-color: var(--color-primary);
-    background-color: var(--color-form-focus-bg);
-    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
-    outline: none;
-}
-
-/* Colores para cada estado en el select */
-.estado-select.estado-pendiente {
-    background-color: #fff3cd; /* Amarillo claro */
-    color: #664d03;
-    border-color: #ffc107;
-}
-
-.estado-select.estado-completado {
-    background-color: #d1e7dd; /* Verde claro */
-    color: #0f5132;
-    border-color: #28a745;
-}
-
-/* ... (todos tus estilos anteriores de Compras.css) ... */
-
-/* ✅ CAMBIO: Texto del estado en negro y fondos más pálidos para contraste */
-.estado.completado,
-.estado.anulada {
-    color: #333; /* Texto negro/gris oscuro */
-    font-weight: 500;
-}
-.estado.completado {
-    background-color: #d4edda; /* Verde pálido */
-}
-.estado.anulada {
-    background-color: #e9ecef; /* Gris claro */
-}
-
-/* ✅ CAMBIO: Estilos para el nuevo modal de detalle (reutilizados de proveedores) */
-.proveedor-details-list p {
+.modal-content-Compras.detalle-modal p {
     text-align: left;
     margin-bottom: 12px;
     line-height: 1.6;
-    color: #333;
+    color: var(--color-text-dark);
     font-size: 1rem;
 }
-.proveedor-details-list p strong {
-    color: var(--color-primary); /* Rosa principal */
+.modal-content-Compras.detalle-modal p strong {
+    color: var(--color-primary);
     margin-right: 8px;
     font-weight: 600;
-    min-width: 150px;
+    min-width: 180px;
     display: inline-block;
 }
-
-.modal-subtitle-proveedores {
+.modal-subtitle-compras {
     margin-top: 20px;
     margin-bottom: 15px;
     font-size: 1.1rem;
@@ -505,24 +288,135 @@
     text-align: left;
 }
 
-.btn-pdf {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background-color: #d32f2f; /* Rojo para PDF */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s;
+.compras-detalle-modal-button-cerrar {
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
+    display: block; width: auto; min-width: 120px;
+    margin: 30px auto 10px;
+    padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer;
+    font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
 }
-.btn-pdf:hover {
-    background-color: #b71c1c;
+.compras-detalle-modal-button-cerrar:hover {
+    background-color: var(--color-secondary-hover);
 }
 
-/* === ESTILOS DE PAGINACIÓN === */
+.compras-form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    width: 100%;
+}
+
+
+/* ======================================================== */
+/* ============= ESTILOS RESPONSIVE ============= */
+/* ======================================================== */
+
+@media (max-width: 992px) {
+    .compras-content-wrapper {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .compras-content-wrapper {
+        padding: 15px;
+    }
+
+    .compras-content-wrapper h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .compras-actions-bar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .compras-search-bar input,
+    .compras-add-button {
+        width: 100%;
+    }
+
+    .compras-add-button {
+        height: auto;
+        padding: 12px 20px;
+    }
+
+    /* === Transformación de la Tabla a Tarjetas === */
+    .tablaCompras thead {
+        display: none;
+    }
+
+    .tablaCompras,
+    .tablaCompras tbody,
+    .tablaCompras tr,
+    .tablaCompras td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .tablaCompras tr {
+        margin-bottom: 15px;
+        border: 1px solid var(--color-table-header);
+        border-radius: 8px;
+        padding: 10px;
+        background-color: var(--color-background-light) !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .tablaCompras tbody tr:hover {
+        background-color: #ffffff !important;
+    }
+
+    .tablaCompras td {
+        text-align: right;
+        padding-left: 50% !important;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid var(--color-form-border);
+        font-size: 0.9rem;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .tablaCompras td:last-child {
+        border-bottom: none;
+    }
+
+    .tablaCompras td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: var(--color-primary);
+        text-align: left;
+    }
+
+    .compras-table-actions {
+        padding: 10px 0 0 0 !important;
+        justify-content: center;
+    }
+
+    .compras-table-actions::before {
+        display: none;
+    }
+}
+
+
+/* ======================================================== */
+/* ================== ESTILOS DE PAGINACIÓN ================== */
+/* ======================================================== */
+
 .paginacion-container {
     margin-top: 20px;
     display: flex;
@@ -574,4 +468,51 @@
     background-color: var(--color-primary-hover);
     color: var(--color-text-light);
     border-color: var(--color-primary-hover);
+}
+
+/* ======================================================== */
+/* ============= ESTILOS DE DETALLE DE COMPRA ============= */
+/* ======================================================== */
+
+/* Tabla simple para productos en el detalle */
+.detalle-productos-simple {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.detalle-productos-simple th, .detalle-productos-simple td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--color-form-border);
+  text-align: left;
+}
+
+.detalle-productos-simple th {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: var(--color-text-dark);
+  background-color: #c585cf;
+}
+
+.detalle-productos-simple .text-center { text-align: center; }
+.detalle-productos-simple .text-right { text-align: right; }
+
+/* Sección de totales dentro del modal */
+.compra-totales-detalle {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-form-border);
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 0.95rem;
+}
+
+.total-row.total-final {
+  font-size: 1.15rem;
+  color: var(--color-primary);
+  margin-top: 0.5rem;
 }
