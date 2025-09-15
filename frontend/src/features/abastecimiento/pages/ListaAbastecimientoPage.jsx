@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import useDebounce from "../../../shared/hooks/useDebounce";
 
 // Importación de todos nuestros componentes
 import AbastecimientoTable from "../components/AbastecimientoTable";
@@ -37,6 +38,7 @@ function ListaAbastecimientoPage() {
     const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
     const [validationMessage, setValidationMessage] = useState("");
     const [currentAbastecimiento, setCurrentAbastecimiento] = useState(null);
+    const debouncedBusqueda = useDebounce(busqueda, 500);
 
     // La función para cargar datos no cambia
     const loadAbastecimientos = useCallback(async () => {
@@ -44,7 +46,7 @@ function ListaAbastecimientoPage() {
             setLoading(true);
             setError(null);
             const estadoParam = filtroEstado === 'todos' ? undefined : filtroEstado === 'activos';
-            const params = { page: currentPage, limit: itemsPerPage, search: busqueda, estado: estadoParam };
+            const params = { page: currentPage, limit: itemsPerPage, search: debouncedBusqueda, estado: estadoParam };
             
             const result = await fetchAbastecimientos(params);
             setAbastecimientos(Array.isArray(result.data) ? result.data : []);
@@ -56,7 +58,7 @@ function ListaAbastecimientoPage() {
         } finally {
             setLoading(false);
         }
-    }, [currentPage, itemsPerPage, busqueda, filtroEstado]);
+    }, [currentPage, itemsPerPage, debouncedBusqueda, filtroEstado]);
 
     useEffect(() => {
         loadAbastecimientos();
@@ -220,7 +222,7 @@ function ListaAbastecimientoPage() {
                 onClose={handleCloseAllModals}
                 onConfirm={handleDelete}
                 title="Confirmar Eliminación"
-                message={`¿Está seguro de eliminar el registro para ${abastecimientos?.usuario?.rol?.nombre || 'el empleado'} (${abastecimientos?.usuario?.correo || ''})?`}
+                message={`¿Está seguro de eliminar el registro para ${currentAbastecimiento?.usuario?.rol?.nombre || 'el empleado'} (${currentAbastecimiento?.usuario?.correo || ''})?`}
             />
             <ValidationModal
                 isOpen={isValidationModalOpen}
