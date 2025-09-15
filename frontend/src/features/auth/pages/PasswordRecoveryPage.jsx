@@ -51,9 +51,14 @@ function PasswordRecoveryPage() {
         navigate("/login");
       });
     } catch (err) {
-      if (err.message.includes("inválido")) {
-        setError("El código ingresado es incorrecto o ha expirado. Vuelve a intentarlo.");
-      } else {
+      if (err.message && err.message.includes("inválido")) {
+        setError("Código de recuperación inválido, expirado o correo incorrecto.");
+      } else if (err.errors) {
+        // Handle validation errors from express-validator
+        const errorMessages = Object.values(err.errors).map(e => e.msg).join(' ');
+        setError(errorMessages);
+      }
+      else {
         setError(err.message || "Ocurrió un error al restablecer la contraseña.");
       }
     } finally {
