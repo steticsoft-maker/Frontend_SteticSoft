@@ -231,12 +231,78 @@ const eliminarNovedadFisica = async (idNovedad) => {
 };
 
 const obtenerDiasDisponibles = async (idNovedad, anio, mes) => {
-    // ... (Tu lógica existente es correcta)
+  // 1. Busca la novedad por su ID para obtener sus reglas (fechas y días)
+  const novedad = await db.Novedad.findByPk(idNovedad);
+  if (!novedad) {
+    throw new NotFoundError("Novedad no encontrada.");
+  }
+
+  const inicioDelMes = moment.tz({ year: anio, month: mes - 1 }, "America/Bogota").startOf('month');
+  const finDelMes = moment.tz({ year: anio, month: mes - 1 }, "America/Bogota").endOf('month');
+
+  // ✅ LÍNEAS AÑADIDAS: Convertimos las fechas de la novedad a objetos moment en la misma zona horaria.
+  const fechaInicioNovedad = moment.tz(novedad.fechaInicio, "America/Bogota").startOf('day');
+  const fechaFinNovedad = moment.tz(novedad.fechaFin, "America/Bogota").endOf('day');
+
+  const diasValidos = [];
+  
+  moment.locale('es'); // Establecer el idioma a español
+
+  let diaActual = inicioDelMes.clone();
+  while (diaActual.isSameOrBefore(finDelMes)) {
+    
+    // ✅ LÍNEAS MODIFICADAS: Comparamos usando los nuevos objetos moment.
+    const esDespuesDeInicioNovedad = diaActual.isSameOrAfter(fechaInicioNovedad);
+    const esAntesDeFinNovedad = diaActual.isSameOrBefore(fechaFinNovedad);
+    
+    const diaDeLaSemana = diaActual.format('dddd');
+    const diaDeLaSemanaCapitalizado = diaDeLaSemana.charAt(0).toUpperCase() + diaDeLaSemana.slice(1);
+    const esDiaPermitido = novedad.dias.includes(diaDeLaSemanaCapitalizado);
+
+    if (esDespuesDeInicioNovedad && esAntesDeFinNovedad && esDiaPermitido) {
+      diasValidos.push(diaActual.format('YYYY-MM-DD'));
+    }
+
+    diaActual.add(1, 'days');
+  }
+
+  moment.locale('en'); // Revertir al idioma original para no afectar otras partes
+
+  return diasValidos;
 };
 
+
 const obtenerHorasDisponibles = async (idNovedad, fecha) => {
-    // ... (Tu lógica existente es correcta)
+  // 1. Busca la novedad para obtener sus reglas de horario
+  const novedad = await db.Novedad.findByPk(idNovedad);
+  if (!novedad) {
+    throw new NotFoundError("Novedad no encontrada.");
+  }
+  const citasDelDia = await db.Cita.findAll({
+    where: {
+      fecha: fecha,
+    },
+    attributes: ['horaInicio'], // Solo necesitamos la hora de inicio de cada cita
+  });
+  // Creamos un Set para una búsqueda más rápida de las horas ocupadas
+  const horasOcupadas = new Set(citasDelDia.map(cita => cita.horaInicio));
+  const horariosPosibles = [];
+  const formatoHora = 'HH:mm:ss';
+  const intervaloMinutos = 60;
+
+  let horaActual = moment(novedad.horaInicio, formatoHora);
+  const horaFin = moment(novedad.horaFin, formatoHora);
+
+  while (horaActual.isBefore(horaFin)) {
+    horariosPosibles.push(horaActual.format(formatoHora));
+    horaActual.add(intervaloMinutos, 'minutes');
+  }
+
+  const horasDisponibles = horariosPosibles.filter(hora => !horasOcupadas.has(hora));
+  
+  return horasDisponibles;
 };
+
 
 const obtenerEmpleadosPorNovedad = async (idNovedad) => {
   const novedad = await db.Novedad.findByPk(idNovedad, {
@@ -319,6 +385,20 @@ const obtenerEmpleadosParaAsignar = async () => {
   }
 };
 
+const obtenerNovedadesPublicas = async () => {
+    try {
+        return await db.Novedad.findAll({
+            where: {
+                estado: true,
+            },
+            order: [["fechaInicio", "DESC"]],
+        });
+    } catch (error) {
+        console.error("Error al obtener novedades públicas:", error);
+        throw new CustomError(`Error al obtener novedades públicas: ${error.message}`, 500);
+    }
+};
+
 module.exports = {
   crearNovedad,
   obtenerTodasLasNovedades,
@@ -331,5 +411,6 @@ module.exports = {
   obtenerHorasDisponibles,
   obtenerEmpleadosPorNovedad,
   obtenerEmpleadosParaAsignar,
+  obtenerNovedadesPublicas,
 };
 
