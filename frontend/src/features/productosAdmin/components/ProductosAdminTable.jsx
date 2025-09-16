@@ -1,6 +1,8 @@
 // src/features/productosAdmin/components/ProductosAdminTable.jsx
-import React from "react";
+import React, { useState } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa"; // Asegúrate que FontAwesome esté instalado y configurado
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProductosAdminTable = ({
   productos,
@@ -9,11 +11,41 @@ const ProductosAdminTable = ({
   onDeleteConfirm,
   onToggleEstado,
 }) => {
+  const [imageErrors, setImageErrors] = useState({});
+  const [previewImage, setPreviewImage] = useState(null);
+
+  // 🔑 Función para construir URL de imagen
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    
+    // Si ya es una URL completa (http o https)
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // Para rutas relativas, concatenar con API_URL
+    return `${API_URL}${imagePath}`;
+  };
+
+  const handleImageError = (productoId) => {
+    setImageErrors(prev => ({ ...prev, [productoId]: true }));
+  };
+
+  const handleImageClick = (imageUrl, productoNombre) => {
+    setPreviewImage({ url: imageUrl, nombre: productoNombre });
+  };
+
+  const closePreview = () => {
+    setPreviewImage(null);
+  };
+
   return (
-    <table className="tablaProductosAdministrador">
+    <div>
+      <table className="tablaProductosAdministrador">
       <thead>
         <tr>
           <th>#</th>
+          <th>Imagen</th>
           <th>Nombre</th>
           <th>Categoría</th>
           <th>Precio</th>
@@ -24,11 +56,31 @@ const ProductosAdminTable = ({
         </tr>
       </thead>
       <tbody>
-        {productos.map((producto, index) => (
-          // CAMBIO CLAVE: Usar producto.idProducto como key
-          <tr key={producto.idProducto}> 
-            <td data-label="#">{index + 1}</td>
-            <td data-label="Nombre:">{producto.nombre}</td>
+        {productos.map((producto, index) => {
+          const imageUrl = getImageUrl(producto.imagen);
+          const hasImageError = imageErrors[producto.idProducto];
+          
+          return (
+            // CAMBIO CLAVE: Usar producto.idProducto como key
+            <tr key={producto.idProducto}> 
+              <td data-label="#">{index + 1}</td>
+              <td data-label="Imagen:" className="producto-imagen-cell">
+                {imageUrl && !hasImageError ? (
+                  <img 
+                    src={imageUrl} 
+                    alt={producto.nombre}
+                    className="producto-tabla-imagen"
+                    onError={() => handleImageError(producto.idProducto)}
+                    onClick={() => handleImageClick(imageUrl, producto.nombre)}
+                    title="Click para ver imagen completa"
+                  />
+                ) : (
+                  <div className="producto-sin-imagen">
+                    {hasImageError ? '❌ Error' : '📷 Sin imagen'}
+                  </div>
+                )}
+              </td>
+              <td data-label="Nombre:">{producto.nombre}</td>
             {/* CAMBIO CLAVE: Acceder a 'nombre' de 'producto.categoria' */}
             <td data-label="Categoría:">
               {producto.categoria ? producto.categoria.nombre : 'N/A'}
@@ -86,9 +138,28 @@ const ProductosAdminTable = ({
               </div>
             </td>
           </tr>
-        ))}
+          );
+        })}
       </tbody>
     </table>
+    
+    {/* Modal de preview de imagen */}
+    {previewImage && (
+      <div className="image-preview-modal" onClick={closePreview}>
+        <div className="image-preview-content" onClick={(e) => e.stopPropagation()}>
+          <button className="image-preview-close" onClick={closePreview}>
+            ×
+          </button>
+          <h3>{previewImage.nombre}</h3>
+          <img 
+            src={previewImage.url} 
+            alt={previewImage.nombre}
+            className="image-preview-img"
+          />
+        </div>
+      </div>
+    )}
+  </div>
   );
 };
 
