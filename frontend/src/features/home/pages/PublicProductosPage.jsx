@@ -20,7 +20,7 @@ function PublicProductosPage() {
 
       console.log("📥 Respuesta completa del backend:", data);
 
-      const productos = Array.isArray(data.data) ? data.data : data.productos || [];
+      const productos = data.data?.productos || [];
 
       console.log("📦 Lista de productos recibida en frontend:", productos);
       console.table(productos); // 👀 Muestra los productos en formato tabla
