@@ -36,10 +36,6 @@ apiClient.interceptors.request.use(
   }
 );
 
-console.error('Errores de validación:', error.response?.data?.errors);
-
-
-
 // --- Interceptor de Respuesta (Response) ---
 // Se ejecuta DESPUÉS de recibir una respuesta de la API.
 apiClient.interceptors.response.use(
