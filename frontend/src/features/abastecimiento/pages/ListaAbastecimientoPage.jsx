@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import useDebounce from "../../../shared/hooks/useDebounce";
 
 // Importación de todos nuestros componentes
 import AbastecimientoTable from "../components/AbastecimientoTable";
 import AbastecimientoCrearModal from "../components/AbastecimientoCrearModal";
 import AbastecimientoEditarModal from "../components/AbastecimientoEditarModal";
 import AbastecimientoDetalleModal from "../components/AbastecimientoDetailsModal";
-import DepleteProductModal from "../components/DepleteProductModal"; 
+import DepleteProductModal from "../components/DepleteProductModal";
 import ConfirmModal from "../../../shared/components/common/ConfirmModal";
 import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination";
@@ -38,7 +37,6 @@ function ListaAbastecimientoPage() {
     const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
     const [validationMessage, setValidationMessage] = useState("");
     const [currentAbastecimiento, setCurrentAbastecimiento] = useState(null);
-    const debouncedBusqueda = useDebounce(busqueda, 500);
 
     // La función para cargar datos no cambia
     const loadAbastecimientos = useCallback(async () => {
@@ -46,7 +44,7 @@ function ListaAbastecimientoPage() {
             setLoading(true);
             setError(null);
             const estadoParam = filtroEstado === 'todos' ? undefined : filtroEstado === 'activos';
-            const params = { page: currentPage, limit: itemsPerPage, search: debouncedBusqueda, estado: estadoParam };
+            const params = { page: currentPage, limit: itemsPerPage, search: busqueda, estado: estadoParam };
             
             const result = await fetchAbastecimientos(params);
             setAbastecimientos(Array.isArray(result.data) ? result.data : []);
@@ -58,7 +56,7 @@ function ListaAbastecimientoPage() {
         } finally {
             setLoading(false);
         }
-    }, [currentPage, itemsPerPage, debouncedBusqueda, filtroEstado]);
+    }, [currentPage, itemsPerPage, busqueda, filtroEstado]);
 
     useEffect(() => {
         loadAbastecimientos();
@@ -85,7 +83,6 @@ function ListaAbastecimientoPage() {
         setCurrentAbastecimiento(null);
     };
 
-    // ¡NUEVA FUNCIÓN! Maneja el éxito de Crear y Editar
     const handleSaveSuccess = (message = "Operación exitosa.") => {
         handleCloseAllModals();
         setValidationMessage(message);
@@ -93,7 +90,6 @@ function ListaAbastecimientoPage() {
         loadAbastecimientos(); // Recargar los datos
     };
     
-    // Las demás funciones de manejo no cambian
     const handleToggleEstado = async (item) => {
         try {
             await toggleAbastecimientoEstado(item.idAbastecimiento, !item.estado);
@@ -136,7 +132,6 @@ function ListaAbastecimientoPage() {
                 <div className="abastecimiento-content-wrapper">
                     <h1>Gestión de Abastecimiento</h1>
                     <div className="abastecimiento-actions-bar">
-                        {/* La barra de acciones no cambia */}
                         <div className="abastecimiento-search-bar">
                             <input
                                 type="text"
@@ -217,13 +212,15 @@ function ListaAbastecimientoPage() {
                 abastecimiento={currentAbastecimiento}
             />
 
+            {/* ✅ MODAL DE CONFIRMACIÓN CORREGIDO */}
             <ConfirmModal
                 isOpen={isConfirmDeleteOpen}
                 onClose={handleCloseAllModals}
                 onConfirm={handleDelete}
                 title="Confirmar Eliminación"
-                message={`¿Está seguro de eliminar el registro para ${currentAbastecimiento?.usuario?.rol?.nombre || 'el empleado'} (${currentAbastecimiento?.usuario?.correo || ''})?`}
+                message={`¿Está seguro de eliminar el registro para ${currentAbastecimiento?.usuario?.empleadoInfo?.nombre || 'el empleado'} (${currentAbastecimiento?.usuario?.correo || ''})?`}
             />
+            
             <ValidationModal
                 isOpen={isValidationModalOpen}
                 onClose={handleCloseAllModals}
