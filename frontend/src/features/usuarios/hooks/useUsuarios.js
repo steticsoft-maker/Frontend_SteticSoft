@@ -433,12 +433,51 @@ const useUsuarios = () => {
 
     setIsSubmitting(true);
     try {
-      const dataParaAPI = { ...formData };
-      delete dataParaAPI.confirmarContrasena;
+      // --- INICIO DE LA CORRECCIÓN ---
+      // Se reestructura el objeto que se enviará a la API
+      const selectedRole = getRoleById(formData.idRol);
+      const needsProfile =
+        selectedRole &&
+        (selectedRole.tipoPerfil === "CLIENTE" ||
+          selectedRole.tipoPerfil === "EMPLEADO");
+
+      // 1. Datos base de la cuenta de usuario
+      const dataParaAPI = {
+        correo: formData.correo,
+        idRol: formData.idRol,
+        estado: formData.estado,
+      };
+
+      // 2. Añadir contraseña solo si es un usuario nuevo
+      if (formType === "create") {
+        dataParaAPI.contrasena = formData.contrasena;
+      }
+
+      // 3. Si se requiere perfil, se recopilan los datos y se anidan
+      if (needsProfile) {
+        const profileData = {
+          nombre: formData.nombre,
+          apellido: formData.apellido,
+          tipoDocumento: formData.tipoDocumento,
+          numeroDocumento: formData.numeroDocumento,
+          telefono: formData.telefono,
+          fechaNacimiento: formData.fechaNacimiento,
+        };
+
+        // El campo 'direccion' solo se añade si el rol es 'CLIENTE'
+        if (selectedRole.tipoPerfil === "CLIENTE") {
+          profileData.direccion = formData.direccion;
+          dataParaAPI.cliente = profileData;
+        } else if (selectedRole.tipoPerfil === "EMPLEADO") {
+          // Si es empleado, se anida bajo la clave 'empleado'
+          dataParaAPI.empleado = profileData;
+        }
+      }
+      // --- FIN DE LA CORRECCIÓN ---
 
       const successMessage = formData.idUsuario
-        ? `El usuario ${dataParaAPI.correo} ha sido actualizado.`
-        : `El usuario ${dataParaAPI.correo} ha sido creado exitosamente.`;
+        ? `El usuario ${formData.correo} ha sido actualizado.`
+        : `El usuario ${formData.correo} ha sido creado exitosamente.`;
 
       if (formData.idUsuario) {
         await updateUsuarioAPI(formData.idUsuario, dataParaAPI);
@@ -468,7 +507,14 @@ const useUsuarios = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, isFormValid, runAllValidations, cargarDatos, closeModal]);
+  }, [
+    formData,
+    isFormValid,
+    runAllValidations,
+    cargarDatos,
+    closeModal,
+    getRoleById,
+  ]);
 
   const handleToggleEstadoUsuario = useCallback(
     async (usuarioToToggle) => {
