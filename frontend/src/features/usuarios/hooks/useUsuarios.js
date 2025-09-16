@@ -420,6 +420,9 @@ const useUsuarios = () => {
 
   // --- HANDLERS DE ACCIONES DE USUARIO ---
   const handleSaveUsuario = useCallback(async () => {
+    console.log("--- Iniciando guardado de usuario ---");
+    console.log("1. Datos crudos del formulario (formData):", formData);
+
     const formType = formData.idUsuario ? "edit" : "create";
     const validationErrors = runAllValidations(formData, formType);
 
@@ -436,10 +439,13 @@ const useUsuarios = () => {
       // --- INICIO DE LA CORRECCIÓN ---
       // Se reestructura el objeto que se enviará a la API
       const selectedRole = getRoleById(formData.idRol);
+      console.log("2. Rol seleccionado:", selectedRole);
+
       const needsProfile =
         selectedRole &&
         (selectedRole.tipoPerfil === "CLIENTE" ||
           selectedRole.tipoPerfil === "EMPLEADO");
+      console.log("3. ¿Necesita perfil? (needsProfile):", needsProfile);
 
       // 1. Datos base de la cuenta de usuario
       const dataParaAPI = {
@@ -475,15 +481,20 @@ const useUsuarios = () => {
       }
       // --- FIN DE LA CORRECCIÓN ---
 
+      console.log("4. Datos finales para la API (dataParaAPI):", dataParaAPI);
+
       const successMessage = formData.idUsuario
         ? `El usuario ${formData.correo} ha sido actualizado.`
         : `El usuario ${formData.correo} ha sido creado exitosamente.`;
 
       if (formData.idUsuario) {
+        console.log("Enviando actualización a la API...");
         await updateUsuarioAPI(formData.idUsuario, dataParaAPI);
       } else {
+        console.log("Enviando creación a la API...");
         await createUsuarioAPI(dataParaAPI);
       }
+      console.log("¡Operación en API exitosa!");
       await cargarDatos();
       closeModal();
       MySwal.fire({
@@ -493,6 +504,7 @@ const useUsuarios = () => {
         confirmButtonText: "Ok",
       });
     } catch (err) {
+      console.error("--- ERROR al guardar el usuario ---", err);
       const apiErrorMessage =
         err.response?.data?.message ||
         err.message ||
@@ -505,6 +517,7 @@ const useUsuarios = () => {
         confirmButtonText: "Ok",
       });
     } finally {
+      console.log("--- Finalizando proceso de guardado ---");
       setIsSubmitting(false);
     }
   }, [
