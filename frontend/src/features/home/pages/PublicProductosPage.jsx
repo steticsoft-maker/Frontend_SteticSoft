@@ -28,7 +28,7 @@ function PublicProductosPage() {
       const productosAdaptados = productos.map(p => ({
         id: p.idProducto,
         name: p.nombre,
-        image: p.imagenURL,
+        image: p.imagen,
         price: p.precio,
         description: p.descripcion,
         categoryName: p.categoria?.nombre,
