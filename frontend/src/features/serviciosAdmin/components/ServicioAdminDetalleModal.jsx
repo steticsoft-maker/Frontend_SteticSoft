@@ -5,18 +5,6 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [imageLoading, setImageLoading] = useState(false);
 
-  if (!isOpen || !servicio) return null;
-
-  const formatCurrency = (value) => {
-    const numericValue = parseFloat(value);
-    if (isNaN(numericValue)) return 'N/A';
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-    }).format(numericValue);
-  };
-
   // 🔑 Función mejorada para construir URL de imagen
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
@@ -49,6 +37,18 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
       });
     }
   }, [isOpen, servicio]);
+
+  if (!isOpen || !servicio) return null;
+
+  const formatCurrency = (value) => {
+    const numericValue = parseFloat(value);
+    if (isNaN(numericValue)) return 'N/A';
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+    }).format(numericValue);
+  };
 
   const handleImageError = (e) => {
     console.error("❌ Error cargando la imagen:", {
