@@ -59,15 +59,17 @@ const crearProductoValidators = [
   body("imagen")
     .optional()
     .custom((value, { req }) => {
+      // Si hay un archivo subido, validamos su tipo y tamaño
       if (req.file) {
         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
         if (!allowedTypes.includes(req.file.mimetype)) {
-          throw new Error("El formato de imagen no es válido.");
+          throw new Error("El formato de imagen no es válido. Solo se permiten JPG, PNG y WEBP.");
         }
         if (req.file.size > 2 * 1024 * 1024) {
           throw new Error("La imagen no debe superar los 2MB.");
         }
       }
+      // Si no hay archivo pero hay un valor en el body (URL existente), también es válido
       return true;
     }),
 
@@ -129,15 +131,17 @@ const actualizarProductoValidators = [
   body("imagen")
     .optional()
     .custom((value, { req }) => {
+      // Si hay un archivo subido, validamos su tipo y tamaño
       if (req.file) {
         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
         if (!allowedTypes.includes(req.file.mimetype)) {
-          throw new Error("El formato de imagen no es válido.");
+          throw new Error("El formato de imagen no es válido. Solo se permiten JPG, PNG y WEBP.");
         }
         if (req.file.size > 2 * 1024 * 1024) {
           throw new Error("La imagen no debe superar los 2MB.");
         }
       }
+      // Si no hay archivo pero hay un valor en el body (URL existente), también es válido
       return true;
     }),
 

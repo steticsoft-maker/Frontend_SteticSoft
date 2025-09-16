@@ -111,11 +111,11 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
         break;
       case "imagen": {
         const file = value?.target?.files?.[0];
-        const allowedTypes = ["image/jpeg", "image/png"];
+        const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
         if (!file) {
           error = "Debes seleccionar una imagen.";
         } else if (!allowedTypes.includes(file.type)) {
-          error = "Formato no permitido. Solo se aceptan imágenes JPG o PNG.";
+          error = "Formato no permitido. Solo se aceptan imágenes JPG, PNG o WEBP.";
         }
         break;
       }
@@ -189,6 +189,10 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
     ) {
       errors.stockMaximo = "El stock máximo no puede ser menor al mínimo.";
     }
+    // Validar imagen
+    if (!formData.imagen) {
+      errors.imagen = "Debes seleccionar una imagen.";
+    }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -212,6 +216,15 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       imagen: formData.imagen, // 👈 archivo real
     };
 
+    console.log("📤 Datos a enviar:", {
+      ...dataToSubmit,
+      imagen: formData.imagen ? {
+        name: formData.imagen.name,
+        type: formData.imagen.type,
+        size: formData.imagen.size
+      } : null
+    });
+
     try {
       const response = await onSubmit(dataToSubmit);
       if (response?.errors) {
@@ -227,6 +240,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
       }
       onClose();
     } catch (err) {
+      console.error("❌ Error al enviar producto:", err);
       setValidationMessage(err.message || "Error al guardar el producto.");
       setIsValidationModalOpen(true);
     }

@@ -14,12 +14,29 @@ const uploadImage = (fieldName = "imagen") =>
 const uploadToCloudinary =
   (folder = "steticsoft") =>
   (req, res, next) => {
-    if (!req.file) return next();
+    if (!req.file) {
+      console.log("📁 No hay archivo para subir a Cloudinary");
+      return next();
+    }
+
+    console.log("📁 Subiendo archivo a Cloudinary:", {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      folder: folder
+    });
 
     const uploadStream = cloudinary.uploader.upload_stream(
       { folder, resource_type: "image" },
       (error, result) => {
-        if (error) return next(error);
+        if (error) {
+          console.error("❌ Error al subir a Cloudinary:", error);
+          return next(error);
+        }
+        console.log("✅ Archivo subido exitosamente a Cloudinary:", {
+          secure_url: result.secure_url,
+          public_id: result.public_id
+        });
         req.file.secure_url = result.secure_url;
         req.file.public_id = result.public_id;
         return next();

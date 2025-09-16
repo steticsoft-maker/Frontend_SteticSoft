@@ -91,8 +91,6 @@ const cambiarEstadoUsuario = async (idUsuario, nuevoEstado) => {
   }
 };
 
-// --- INICIO DE CORRECCIÓN ---
-
 /**
  * @function crearUsuario
  * @description Crea un nuevo usuario, su perfil asociado (Cliente o Empleado) según el tipo de rol,
@@ -101,6 +99,7 @@ const cambiarEstadoUsuario = async (idUsuario, nuevoEstado) => {
  * @returns {Promise<object>} El objeto del usuario recién creado con todas sus relaciones.
  */
 const crearUsuario = async (usuarioData) => {
+  console.log("DEBUG: Iniciando crearUsuario con los siguientes datos:", usuarioData);
   const {
     correo,
     contrasena,
@@ -111,7 +110,7 @@ const crearUsuario = async (usuarioData) => {
     tipoDocumento,
     numeroDocumento,
     fechaNacimiento,
-    direccion, // Añadido para capturar la dirección
+    direccion,
     estado,
   } = usuarioData;
 
@@ -125,6 +124,7 @@ const crearUsuario = async (usuarioData) => {
   const rol = await db.Rol.findOne({
     where: { idRol: rolIdNumerico, estado: true },
   });
+  console.log("DEBUG: Rol encontrado:", rol ? rol.toJSON() : "No se encontró rol");
   if (!rol) {
     console.error(
       `[usuario.service.js] Rol no encontrado o inactivo para idRol: ${rolIdNumerico}`
@@ -156,7 +156,6 @@ const crearUsuario = async (usuarioData) => {
       throw new ConflictError("El correo electrónico ya está registrado.");
     }
 
-    // Solo dependemos de tipoPerfil
     const requierePerfil = ["CLIENTE", "EMPLEADO"].includes(rol.tipoPerfil);
 
     if (requierePerfil && numeroDocumento) {
@@ -207,44 +206,28 @@ const crearUsuario = async (usuarioData) => {
         tipoDocumento,
         numeroDocumento,
         fechaNacimiento,
-        idUsuario: nuevoUsuario.idUsuario, // CORRECCIÓN: Usar 'idUsuario' para coincidir con el modelo Sequelize
+        idUsuario: nuevoUsuario.idUsuario,
         estado: nuevoUsuario.estado,
       };
 
       if (rol.tipoPerfil === "CLIENTE") {
-        // Validación para Cliente, incluyendo la dirección
-        if (
-          !nombre ||
-          !apellido ||
-          !telefono ||
-          !tipoDocumento ||
-          !numeroDocumento ||
-          !fechaNacimiento ||
-          !direccion // La dirección es obligatoria para clientes
-        ) {
+        if (!direccion) {
           await t.rollback();
           throw new BadRequestError(
-            "Para el perfil CLIENTE, todos los campos de perfil, incluida la dirección, son requeridos."
+            "Para el perfil CLIENTE, la dirección es requerida."
           );
         }
-        // Añadir dirección a los datos del perfil
         perfilData.direccion = direccion;
         await db.Cliente.create(perfilData, { transaction: t });
       } else if (rol.tipoPerfil === "EMPLEADO") {
-        if (
-          !nombre ||
-          !apellido ||
-          !telefono ||
-          !tipoDocumento ||
-          !numeroDocumento ||
-          !fechaNacimiento
-        ) {
-          await t.rollback();
-          throw new BadRequestError(
-            "Para el perfil EMPLEADO, los campos de perfil (nombre, apellido, teléfono, tipo/número de documento, fecha de nacimiento) son requeridos."
-          );
-        }
-        await db.Empleado.create(perfilData, { transaction: t });
+        console.log("DEBUG: El rol es de tipo EMPLEADO. Preparando para crear perfil de empleado.");
+        console.log("DEBUG: Datos para crear el empleado (perfilData):", perfilData);
+        // --- INICIO DE LA CORRECCIÓN ---
+        // Se elimina la validación redundante que causaba el error.
+        // El validador de middleware ya ha confirmado que los campos necesarios existen.
+        const nuevoEmpleado = await db.Empleado.create(perfilData, { transaction: t });
+        console.log("DEBUG: Resultado de la creación del empleado:", nuevoEmpleado ? nuevoEmpleado.toJSON() : "Falló la creación del empleado");
+        // --- FIN DE LA CORRECCIÓN ---
       }
     }
 
@@ -254,7 +237,7 @@ const crearUsuario = async (usuarioData) => {
       include: [
         { model: db.Rol, as: "rol" },
         { model: db.Cliente, as: "clienteInfo" },
-        { model: db.Empleado, as: "empleadoInfo" },
+        { model: db.Empleado, as: "empleado" },
       ],
       attributes: { exclude: ["contrasena"] },
     });
@@ -281,6 +264,7 @@ const crearUsuario = async (usuarioData) => {
     );
   }
 };
+
 
 /**
  * Verifica si un correo electrónico ya existe.
@@ -323,7 +307,7 @@ const obtenerTodosLosUsuarios = async (opcionesDeFiltro = {}) => {
       },
       {
         model: db.Empleado,
-        as: "empleadoInfo",
+        as: "empleado",
         required: false,
       },
     ];
@@ -361,7 +345,7 @@ const obtenerUsuarioPorId = async (idUsuario) => {
           attributes: ["idRol", "nombre", "tipoPerfil"],
         },
         { model: db.Cliente, as: "clienteInfo", required: false },
-        { model: db.Empleado, as: "empleadoInfo", required: false },
+        { model: db.Empleado, as: "empleado", required: false },
       ],
     });
     if (!usuario) {
@@ -495,11 +479,6 @@ const eliminarUsuarioFisico = async (idUsuario) => {
         "Usuario no encontrado para eliminar físicamente."
       );
     }
-
-    // La eliminación en cascada de la base de datos se encargará de los perfiles
-    // si las restricciones ON DELETE CASCADE están definidas en la migración.
-    // Si no, se debe eliminar manualmente como se hacía antes.
-    // Por seguridad, mantenemos la eliminación manual explícita.
 
     const rol = await db.Rol.findByPk(usuario.idRol, { transaction: t });
     if (rol) {

@@ -6,6 +6,8 @@ const productoService = require("../services/producto.service.js");
 const crearProducto = async (req, res, next) => {
   console.log("📦 Payload recibido en crearProducto:", req.body);
   console.log("📁 Archivo recibido:", req.file);
+  console.log("🔍 Headers de la petición:", req.headers);
+  
   try {
     const datosProducto = { ...req.body };
 
@@ -16,10 +18,18 @@ const crearProducto = async (req, res, next) => {
 
     // ✅ Manejar imagen de Cloudinary si existe
     if (req.file) {
+      console.log("🖼️ Procesando imagen:", {
+        secure_url: req.file.secure_url,
+        public_id: req.file.public_id,
+        originalname: req.file.originalname
+      });
       datosProducto.imagen = req.file.secure_url;
       datosProducto.imagenPublicId = req.file.public_id;
+    } else {
+      console.log("⚠️ No se recibió archivo de imagen");
     }
 
+    console.log("📝 Datos finales del producto:", datosProducto);
     const nuevoProducto = await productoService.crearProducto(datosProducto);
     res.status(201).json({
       success: true,
@@ -27,6 +37,7 @@ const crearProducto = async (req, res, next) => {
       data: nuevoProducto,
     });
   } catch (error) {
+    console.error("❌ Error en crearProducto:", error);
     next(error);
   }
 };

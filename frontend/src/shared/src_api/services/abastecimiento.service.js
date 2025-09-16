@@ -42,7 +42,7 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
         fechaIngreso: fechaIngreso || new Date(),
         estaAgotado: false,
         estado: typeof estado === "boolean" ? estado : true,
-        idUsuario: empleadoAsignado, // Se usa el campo correcto del modelo
+        idUsuario: empleadoAsignado,
       },
       { transaction }
     );
@@ -73,7 +73,7 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
 };
 
 
-// --- OBTENER TODOS LOS ABASTECIMIENTOS (VERSIÓN DEFINITIVA) ---
+// --- OBTENER TODOS LOS ABASTECIMIENTOS ---
 const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
   const { page = 1, limit = 10, search, estado } = opcionesDeFiltro;
   const offset = (page - 1) * limit;
@@ -86,9 +86,11 @@ const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
   if (search) {
     whereClause[Op.or] = [
       { '$producto.nombre$': { [Op.iLike]: `%${search}%` } },
-      { '$usuario.correo$': { [Op.iLike]: `%${search}%` } },
-      { '$usuario.empleadoInfo.nombre$': { [Op.iLike]: `%${search}%` } },
-      { '$usuario.empleadoInfo.apellido$': { [Op.iLike]: `%${search}%` } },
+      { '$empleado.correo$': { [Op.iLike]: `%${search}%` } },
+      // --- INICIO DE LA CORRECCIÓN ---
+      { '$empleado.empleado.nombre$': { [Op.iLike]: `%${search}%` } }, // Alias corregido
+      { '$empleado.empleado.apellido$': { [Op.iLike]: `%${search}%` } }, // Alias corregido
+      // --- FIN DE LA CORRECCIÓN ---
     ];
   }
 
@@ -102,11 +104,13 @@ const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
         },
         {
           model: Usuario,
-          as: "usuario",
+          as: "empleado",
           attributes: ['id_usuario', 'correo'],
           include: [
             { model: Rol, as: "rol", attributes: ['nombre'] },
-            { model: Empleado, as: "empleadoInfo", attributes: ['nombre', 'apellido'], required: true }
+            // --- INICIO DE LA CORRECCIÓN ---
+            { model: Empleado, as: "empleado", attributes: ['nombre', 'apellido'], required: true } // Alias corregido
+            // --- FIN DE LA CORRECCIÓN ---
           ]
         }
       ],
@@ -114,7 +118,7 @@ const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
       limit: parseInt(limit),
       offset: parseInt(offset),
       distinct: true,
-      subQuery: false // Clave para el correcto funcionamiento de JOINs con filtros
+      subQuery: false
     });
 
     return {
@@ -130,7 +134,7 @@ const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
 };
 
 
-// --- OBTENER ABASTECIMIENTO POR ID (CON SINTAXIS EXPLÍCITA) ---
+// --- OBTENER ABASTECIMIENTO POR ID ---
 const obtenerAbastecimientoPorId = async (idAbastecimiento) => {
   try {
     const abastecimiento = await Abastecimiento.findByPk(idAbastecimiento, {
@@ -142,10 +146,12 @@ const obtenerAbastecimientoPorId = async (idAbastecimiento) => {
         },
         {
           model: Usuario,
-          as: "usuario",
+          as: "empleado",
           include: [
               { model: Rol, as: "rol" },
-              { model: Empleado, as: "empleadoInfo" }
+              // --- INICIO DE LA CORRECCIÓN ---
+              { model: Empleado, as: "empleado" } // Alias corregido
+              // --- FIN DE LA CORRECCIÓN ---
           ]
         }
       ],
@@ -257,29 +263,45 @@ const agotarAbastecimiento = async (idAbastecimiento, razonAgotamiento) => {
     return abastecimiento;
 };
 
-// --- OBTENER EMPLEADOS (VERSIÓN DEFINITIVA) ---
+// --- OBTENER EMPLEADOS ---
 const obtenerEmpleados = async () => {
-    try {
-      const usuarios = await Usuario.findAll({
-        include: [
-          {
-            model: Rol,
-            as: 'rol',
-            where: { nombre: 'Empleado' }
-          },
-          {
-            model: Empleado,
-            as: 'empleadoInfo',
-            required: true // Solo trae usuarios que tienen un perfil de empleado asociado
-          }
-        ],
-        attributes: ['id_usuario', 'correo']
-      });
-      return usuarios;
-    } catch (error) {
-      console.error("Error al obtener la lista de empleados:", error);
-      throw new CustomError(`Error al obtener la lista de empleados: ${error.message}`, 500);
-    }
+  try {
+    const usuarios = await Usuario.findAll({
+      include: [
+        { model: Rol, as: "rol", attributes: ["nombre"] },
+        {
+          // --- INICIO DE LA CORRECCIÓN ---
+          model: Empleado,
+          as: "empleado", // Alias corregido de 'empleadoInfo' a 'empleado'
+          // --- FIN DE LA CORRECCIÓN ---
+          attributes: ["nombre", "apellido"],
+          required: true,
+        },
+      ],
+      attributes: ["id_usuario", "correo"],
+      raw: true,
+      nest: true,
+    });
+
+    // --- INICIO DE LA CORRECCIÓN ---
+    // Se ajusta el acceso a las propiedades del empleado según el alias corregido
+    const empleadosPlano = usuarios.map((u) => ({
+      id_usuario: u.id_usuario,
+      correo: u.correo,
+      nombre: u.empleado.nombre,
+      apellido: u.empleado.apellido,
+      rol: u.rol.nombre,
+    }));
+    // --- FIN DE LA CORRECCIÓN ---
+
+    return empleadosPlano;
+  } catch (error) {
+    console.error("Error al obtener la lista de empleados:", error);
+    throw new CustomError(
+      `Error al obtener la lista de empleados: ${error.message}`,
+      500
+    );
+  }
 };
 
 module.exports = {

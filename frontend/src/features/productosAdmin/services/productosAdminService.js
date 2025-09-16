@@ -28,15 +28,20 @@ const getProductos = async (searchTerm = "") => {
 // Se reestructura para usar FormData, que es necesario para la subida de archivos.
 const createProducto = async (productoData) => {
   try {
+    console.log("🔧 Creando FormData con:", productoData);
     const formData = new FormData();
 
     // Iteramos sobre los datos del producto y los añadimos al FormData.
     // Esto funciona para texto, números, booleanos y, lo más importante, archivos.
     for (const key in productoData) {
       if (productoData[key] !== null && productoData[key] !== undefined) {
+        console.log(`📝 Agregando al FormData: ${key} =`, productoData[key]);
         formData.append(key, productoData[key]);
       }
     }
+
+    // Verificar que el archivo esté en el FormData
+    console.log("📁 Archivo en FormData:", formData.get('imagen'));
 
     // Enviamos el formData. Axios se encarga de poner el 'Content-Type' correcto ('multipart/form-data').
     const response = await apiClient.post("/productos", formData, {
