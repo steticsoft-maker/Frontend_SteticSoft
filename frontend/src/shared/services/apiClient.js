@@ -36,6 +36,8 @@ apiClient.interceptors.request.use(
   }
 );
 
+console.error('Errores de validación:', error.response?.data?.errors);
+
 
 
 // --- Interceptor de Respuesta (Response) ---
@@ -77,7 +79,5 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-console.error('Errores de validación:', error.response?.data?.errors);
 
 export default apiClient;
