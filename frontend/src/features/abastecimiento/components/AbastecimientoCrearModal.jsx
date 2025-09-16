@@ -61,7 +61,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
         displayName: `${emp.empleadoInfo?.nombre || ''} ${emp.empleadoInfo?.apellido || ''} (${emp.correo})`
     })) : [];
 
-console.log("Datos que se envían al modal:", empleadosParaSeleccion);
+// console.log("Datos que se envían al modal:", empleadosParaSeleccion);
 
     const handleEmpleadoSelect = (empleado) => {
         setFormData(prev => ({ ...prev, empleado: empleado }));
