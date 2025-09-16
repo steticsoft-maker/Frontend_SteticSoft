@@ -218,21 +218,16 @@
     margin: 0;
 }
 .compras-table-actions .botonVerDetallesCompra,
-.compras-table-actions .botonGenerarPDFCompra {
+.compras-table-actions .botonGenerarPDFCompra,
+.compras-table-actions .botonAnularCompra {
     background-color: var(--color-secondary);
     color: var(--color-secondary-text);
 }
 .compras-table-actions .botonVerDetallesCompra:hover,
-.compras-table-actions .botonGenerarPDFCompra:hover {
-    background-color: var(--color-secondary-hover);
-}
-.compras-table-actions .botonAnularCompra {
-    background-color: var(--color-secondary);
-}
+.compras-table-actions .botonGenerarPDFCompra:hover,
 .compras-table-actions .botonAnularCompra:hover {
     background-color: var(--color-secondary-hover);
 }
-
 
 /* ======================================================== */
 /* ================== ESTILOS DE MODAL ================== */
