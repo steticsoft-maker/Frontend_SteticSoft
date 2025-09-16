@@ -36,6 +36,8 @@ apiClient.interceptors.request.use(
   }
 );
 
+
+
 // --- Interceptor de Respuesta (Response) ---
 // Se ejecuta DESPUÉS de recibir una respuesta de la API.
 apiClient.interceptors.response.use(
@@ -75,5 +77,7 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+console.error('Errores de validación:', error.response?.data?.errors);
 
 export default apiClient;
