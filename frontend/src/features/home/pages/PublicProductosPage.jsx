@@ -26,13 +26,13 @@ function PublicProductosPage() {
       console.table(productos); // 👀 Muestra los productos en formato tabla
 
       const productosAdaptados = productos.map(p => ({
-  id: p.id,
-  name: p.name,           // ya viene como "name"
-  image: p.image,         // ya viene como "image"
-  price: p.price,         // ya viene como "price"
-  description: p.description, // ya viene como "description"
-  categoryName: p.categoryName // opcional
-}));
+        id: p.idProducto,
+        name: p.nombre,
+        image: p.imagenURL,
+        price: p.precio,
+        description: p.descripcion,
+        categoryName: p.categoria?.nombre,
+      }));
 
 
       console.log("✅ Productos adaptados para renderizar:", productosAdaptados);
