@@ -44,21 +44,23 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode, cat
   const trimmedValue = value.trim();
   const validationRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+(\s[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+)*$/;
 
+  // Validación de formato
   if ((name === 'nombre' || name === 'descripcion') && value && !validationRegex.test(value)) {
     error = /^\s|\s$/.test(value)
       ? 'No se permiten espacios al inicio o al final.'
       : 'Solo se permiten letras, números y espacios intermedios.';
   }
 
+  // Validaciones específicas para nombre
   if (name === 'nombre' && !error) {
     if (!trimmedValue) {
       error = 'El nombre es obligatorio.';
-    } else if (checkLength && trimmedValue.length < 3) {
+    } else if (trimmedValue.length < 3) {
       error = 'El nombre debe tener al menos 3 caracteres.';
+    } else if (trimmedValue.length > 45) {
+      error = 'El nombre no puede exceder los 45 caracteres.';
     } else {
       const nombreIngresado = trimmedValue.toLowerCase().replace(/\s+/g, ' ');
-
-      // 🔹 Si estoy editando, ignoro la validación si el nombre no ha cambiado
       const nombreOriginal = initialData?.nombre?.trim().toLowerCase().replace(/\s+/g, ' ') || null;
 
       const categoriaDuplicada = categoriasExistentes.find(cat =>
@@ -71,7 +73,8 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode, cat
     }
   }
 
-  if (name === 'descripcion') {
+  // Validaciones específicas para descripción
+  if (name === 'descripcion' && !error) {
     if (!trimmedValue) {
       error = 'La descripción es obligatoria.';
     } else if (trimmedValue.length > 200) {
@@ -82,6 +85,7 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode, cat
   setErrors(prev => ({ ...prev, [name]: error }));
   return !error;
 };
+
 
 
   const validateForm = () => {
