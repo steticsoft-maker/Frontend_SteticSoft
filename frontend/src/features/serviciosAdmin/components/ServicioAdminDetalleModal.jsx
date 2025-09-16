@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+
   if (!isOpen || !servicio) return null;
 
   const formatCurrency = (value) => {
@@ -13,8 +18,37 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
     }).format(numericValue);
   };
 
-  // La URL de Cloudinary es absoluta y viene en el campo 'imagen'. No se necesita lógica extra.
-  const imageUrl = servicio.imagen || '';
+  // 🔑 Función para construir URL de imagen
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    
+    // Si ya es una URL completa (http o https)
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // Para rutas relativas, concatenar con API_URL
+    return `${API_URL}${imagePath}`;
+  };
+
+  // Actualizar la URL de imagen cuando cambie el servicio
+  React.useEffect(() => {
+    if (isOpen && servicio) {
+      setImageError(false);
+      const url = getImageUrl(servicio.imagen);
+      setImageUrl(url);
+    }
+  }, [isOpen, servicio]);
+
+  const handleImageError = (e) => {
+    console.error("❌ Error cargando la imagen:", e.target.src);
+    setImageError(true);
+  };
+
+  const handleImageLoad = (e) => {
+    console.log("✅ Imagen cargada correctamente:", e.target.src);
+    setImageError(false);
+  };
 
   return (
     <>
@@ -38,16 +72,32 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
             <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
             <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'No aplica'}</p>
 
-            {/* Se utiliza la URL directa de 'imageUrl' (que viene de servicio.imagen) */}
-            {imageUrl && (
+            {/* Imagen con manejo de errores mejorado */}
+            {imageUrl ? (
               <div className="servicio-detalle-imagen">
                 <strong>Imagen:</strong>
                 <img
                   src={imageUrl}
                   alt={servicio.nombre}
                   className="servicio-detalle-preview"
+                  onError={handleImageError}
+                  onLoad={handleImageLoad}
                 />
+                {imageError && (
+                  <div style={{ color: 'red', marginTop: '10px' }}>
+                    <p>❌ Error al cargar la imagen</p>
+                    <p>URL intentada: {imageUrl}</p>
+                    <button 
+                      onClick={() => window.open(imageUrl, '_blank')}
+                      style={{ marginTop: '5px', padding: '5px 10px' }}
+                    >
+                      Abrir imagen en nueva pestaña
+                    </button>
+                  </div>
+                )}
               </div>
+            ) : (
+              <p><strong>Imagen:</strong> No disponible</p>
             )}
           </div>
         </div>

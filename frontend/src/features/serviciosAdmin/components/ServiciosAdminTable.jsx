@@ -1,5 +1,5 @@
 // src/features/serviciosAdmin/components/ServiciosAdminTable.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa'; // Se quita FaImage porque ya no se usa
 import '../css/ServiciosAdmin.css';
 
@@ -13,6 +13,8 @@ const ServiciosAdminTable = ({
   onToggleEstado,
   loadingId,
 }) => {
+  const [imageErrors, setImageErrors] = useState({});
+  const [previewImage, setPreviewImage] = useState(null);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('es-CO', {
@@ -20,6 +22,31 @@ const ServiciosAdminTable = ({
       currency: 'COP',
       minimumFractionDigits: 0,
     }).format(parseFloat(value) || 0);
+  };
+
+  // 🔑 Función para construir URL de imagen
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    
+    // Si ya es una URL completa (http o https)
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // Para rutas relativas, concatenar con API_URL
+    return `${API_URL}${imagePath}`;
+  };
+
+  const handleImageError = (servicioId) => {
+    setImageErrors(prev => ({ ...prev, [servicioId]: true }));
+  };
+
+  const handleImageClick = (imageUrl, servicioNombre) => {
+    setPreviewImage({ url: imageUrl, nombre: servicioNombre });
+  };
+
+  const closePreview = () => {
+    setPreviewImage(null);
   };
 
   if (!servicios || servicios.length === 0) {
@@ -31,22 +58,44 @@ const ServiciosAdminTable = ({
   }
 
   return (
-    <table className="servicios-admin-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Precio</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {servicios.map((servicio, index) => (
-          <tr key={servicio.idServicio}>
-            <td data-label="#">{index + 1}</td>
-            <td data-label="Nombre:">{servicio.nombre}</td>
+    <div>
+      <table className="servicios-admin-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {servicios.map((servicio, index) => {
+            const imageUrl = getImageUrl(servicio.imagen);
+            const hasImageError = imageErrors[servicio.idServicio];
+            
+            return (
+              <tr key={servicio.idServicio}>
+                <td data-label="#">{index + 1}</td>
+                <td data-label="Imagen:" className="servicio-imagen-cell">
+                  {imageUrl && !hasImageError ? (
+                    <img 
+                      src={imageUrl} 
+                      alt={servicio.nombre}
+                      className="servicio-tabla-imagen"
+                      onError={() => handleImageError(servicio.idServicio)}
+                      onClick={() => handleImageClick(imageUrl, servicio.nombre)}
+                      title="Click para ver imagen completa"
+                    />
+                  ) : (
+                    <div className="servicio-sin-imagen">
+                      {hasImageError ? '❌ Error' : '📷 Sin imagen'}
+                    </div>
+                  )}
+                </td>
+                <td data-label="Nombre:">{servicio.nombre}</td>
             <td data-label="Descripción:">{servicio.descripcion}</td>
             <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
 
@@ -87,9 +136,28 @@ const ServiciosAdminTable = ({
               </div>
             </td>
           </tr>
-        ))}
-      </tbody>
-    </table>
+          );
+        })}
+        </tbody>
+      </table>
+      
+      {/* Modal de preview de imagen */}
+      {previewImage && (
+        <div className="image-preview-modal" onClick={closePreview}>
+          <div className="image-preview-content" onClick={(e) => e.stopPropagation()}>
+            <button className="image-preview-close" onClick={closePreview}>
+              ×
+            </button>
+            <h3>{previewImage.nombre}</h3>
+            <img 
+              src={previewImage.url} 
+              alt={previewImage.nombre}
+              className="image-preview-img"
+            />
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
