@@ -288,7 +288,8 @@ const verificarCorreoExistente = async (correo) => {
 };
 
 /**
- * Obtiene todos los usuarios con su rol y perfil asociado (Cliente/Empleado).
+ * Obtiene todos los usuarios, combinando la información del perfil (Empleado o Cliente)
+ * en un único objeto para facilitar su consumo en el frontend.
  */
 const obtenerTodosLosUsuarios = async (opcionesDeFiltro = {}) => {
   try {
@@ -318,14 +319,40 @@ const obtenerTodosLosUsuarios = async (opcionesDeFiltro = {}) => {
 
     const usuarios = await db.Usuario.findAll({
       where: filtrosUsuario,
-      attributes: ["idUsuario", "correo", "estado", "idRol"],
+      attributes: { exclude: ["contrasena"] }, // Excluir la contraseña por seguridad
       include: includeOptions,
       order: [["idUsuario", "ASC"]],
+      raw: false, // Asegurarse de que Sequelize devuelva instancias completas
     });
-    return usuarios;
+
+    // Mapear los resultados para aplanar la estructura de datos
+    const usuariosAplanados = usuarios.map((usuario) => {
+      const usuarioJson = usuario.toJSON();
+      const perfil = usuarioJson.empleado || usuarioJson.clienteInfo;
+
+      if (perfil) {
+        // Eliminar los objetos anidados para evitar redundancia
+        delete usuarioJson.empleado;
+        delete usuarioJson.clienteInfo;
+
+        // Combinar los datos del perfil en el objeto de usuario principal
+        // Se excluye idUsuario del perfil para evitar colisiones
+        const { idUsuario, ...datosPerfil } = perfil;
+        return { ...usuarioJson, ...datosPerfil };
+      }
+
+      // Si no hay perfil (ej. Administrador), devolver el usuario tal cual
+      return usuarioJson;
+    });
+
+    return usuariosAplanados;
   } catch (error) {
+    console.error(
+      "[usuario.service.js] Error detallado al obtener usuarios:",
+      error
+    );
     throw new CustomError(
-      `Error al obtener los usuarios: ${error.message}`,
+      `Error en el servicio al obtener los usuarios: ${error.message}`,
       500
     );
   }

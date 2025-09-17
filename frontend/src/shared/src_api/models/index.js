@@ -8,10 +8,12 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../config/sequelize.config.js");
 
 // Importar el inicializador del sistema
-const SimpleSystemInitializer = require("../utils/simple-system-initializer");
+const SimpleSystemInitializer = require("../utils/simple-system-initializer.js");
 
 console.log("\n============================================================");
-console.log("🚀 INICIANDO MÓDULO DE SINCRONIZACIÓN DE MODELOS (models/index.js)");
+console.log(
+  "🚀 INICIANDO MÓDULO DE SINCRONIZACIÓN DE MODELOS (models/index.js)"
+);
 console.log("============================================================\n");
 
 const db = {}; // Objeto que contendrá todos nuestros modelos
@@ -21,8 +23,12 @@ console.log("--- 🔍 Fase 1: Verificando instancia de Sequelize ---");
 if (sequelize && typeof sequelize.define === "function") {
   console.log("✅ Instancia de Sequelize cargada correctamente.");
 } else {
-  console.error("❌ ERROR CRÍTICO: La instancia de Sequelize NO se cargó correctamente o no es válida.");
-  console.error("Verifica la exportación en 'config/sequelize.config.js' y la importación aquí.");
+  console.error(
+    "❌ ERROR CRÍTICO: La instancia de Sequelize NO se cargó correctamente o no es válida."
+  );
+  console.error(
+    "Verifica la exportación en 'config/sequelize.config.js' y la importación aquí."
+  );
   process.exit(1); // Detener la aplicación si Sequelize no está bien
 }
 console.log("----------------------------------------------------\n");
@@ -30,7 +36,7 @@ console.log("----------------------------------------------------\n");
 // 2. Cargar todos los modelos explícitamente
 const nombresDeModelos = [
   "Rol",
-  "Permisos", 
+  "Permisos",
   "PermisosXRol",
   "Usuario",
   "Dashboard",
@@ -71,7 +77,9 @@ nombresDeModelos.forEach((nombreModelo) => {
 });
 
 console.groupEnd();
-console.log(`✅ ${Object.keys(db).length} modelos cargados y registrados exitosamente.`);
+console.log(
+  `✅ ${Object.keys(db).length} modelos cargados y registrados exitosamente.`
+);
 console.log("----------------------------------------------------\n");
 
 // 3. Configurar asociaciones entre los modelos
@@ -84,10 +92,14 @@ Object.keys(db).forEach((nombreModelo) => {
       db[nombreModelo].associate(db);
       console.log(`✅ Asociaciones configuradas para: ${nombreModelo}`);
     } else {
-      console.log(`⚪️ El modelo '${nombreModelo}' no tiene asociaciones para configurar.`);
+      console.log(
+        `⚪️ El modelo '${nombreModelo}' no tiene asociaciones para configurar.`
+      );
     }
   } catch (error) {
-    console.error(`❌ Error configurando asociaciones para ${nombreModelo}: ${error.message}`);
+    console.error(
+      `❌ Error configurando asociaciones para ${nombreModelo}: ${error.message}`
+    );
   }
 });
 
@@ -99,7 +111,9 @@ console.log("----------------------------------------------------\n");
 console.log("--- 🧩 Fase 4: Finalizando el objeto 'db' ---");
 db.sequelize = sequelize; // La instancia configurada
 db.Sequelize = Sequelize; // La clase Sequelize
-console.log("📦 Instancia y clase de Sequelize adjuntadas al objeto 'db' para exportación.");
+console.log(
+  "📦 Instancia y clase de Sequelize adjuntadas al objeto 'db' para exportación."
+);
 console.log("----------------------------------------------------\n");
 
 // 5. Inicializar el sistema completo
@@ -107,12 +121,18 @@ console.log("--- 🚀 Fase 5: Inicializando sistema completo ---");
 const systemInitializer = new SimpleSystemInitializer();
 
 // Ejecutar inicialización del sistema de forma asíncrona
-systemInitializer.initializeSystem().then(() => {
-  console.log("✅ Sistema completamente inicializado y listo.");
-}).catch((error) => {
-  console.error("❌ Error durante la inicialización del sistema:", error.message);
-  process.exit(1);
-});
+systemInitializer
+  .initializeSystem()
+  .then(() => {
+    console.log("✅ Sistema completamente inicializado y listo.");
+  })
+  .catch((error) => {
+    console.error(
+      "❌ Error durante la inicialización del sistema:",
+      error.message
+    );
+    process.exit(1);
+  });
 
 // 6. Exportar el objeto db
 module.exports = db;
