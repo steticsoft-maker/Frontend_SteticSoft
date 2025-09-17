@@ -459,7 +459,7 @@ const useUsuarios = () => {
         dataParaAPI.contrasena = formData.contrasena;
       }
 
-      // 3. Si se requiere perfil, se recopilan los datos y se anidan
+      // 3. Si se requiere perfil, se recopilan los datos y se APLANAN en el objeto principal
       if (needsProfile) {
         const profileData = {
           nombre: formData.nombre,
@@ -473,11 +473,10 @@ const useUsuarios = () => {
         // El campo 'direccion' solo se añade si el rol es 'CLIENTE'
         if (selectedRole.tipoPerfil === "CLIENTE") {
           profileData.direccion = formData.direccion;
-          dataParaAPI.cliente = profileData;
-        } else if (selectedRole.tipoPerfil === "EMPLEADO") {
-          // Si es empleado, se anida bajo la clave 'empleado'
-          dataParaAPI.empleado = profileData;
         }
+
+        // Se combinan los datos del perfil con los datos de la cuenta
+        Object.assign(dataParaAPI, profileData);
       }
       // --- FIN DE LA CORRECCIÓN ---
 
