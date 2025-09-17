@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import AbastecimientoForm from './AbastecimientoForm';
 import { fetchEmpleados, createAbastecimiento } from '../hooks/useAbastecimiento';
-// ✅ CORRECCIÓN 1: Importamos la función correcta.
+// ✅ CORRECCIÓN #1: Asegúrate de importar 'fetchProductosInternos'.
 import { fetchProductosInternos } from '../services/productosService'; 
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 import '../css/Abastecimiento.css';
@@ -27,7 +27,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
         try {
             setGeneralError('');
             const empleadosPromise = fetchEmpleados();
-            // ✅ CORRECCIÓN 2: Llamamos a la función especializada 'fetchProductosInternos'.
+            // ✅ CORRECCIÓN #2: Llama a la función correcta aquí.
             const productosPromise = fetchProductosInternos();
 
             const [empleadosData, productosData] = await Promise.all([
