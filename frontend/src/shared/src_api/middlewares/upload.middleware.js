@@ -1,7 +1,7 @@
 // src/middlewares/upload.middleware.js
 const multer = require("multer");
 const streamifier = require("streamifier");
-const cloudinary = require("../config/cloudinary.config");
+const { cloudinary } = require("../config/cloudinary.config");
 
 const memoryStorage = multer.memoryStorage();
 
