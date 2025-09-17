@@ -68,10 +68,20 @@ const createProducto = async (productoData) => {
 const updateProducto = async (id, productoData) => {
   try {
     const formData = new FormData();
-    for (const key in productoData) {
-      if (productoData[key] !== null && productoData[key] !== undefined) {
-        formData.append(key, productoData[key]);
+    
+    // Separar la imagen del resto de datos
+    const { imagen, ...otrosDatos } = productoData;
+    
+    // Agregar todos los datos excepto la imagen
+    for (const key in otrosDatos) {
+      if (otrosDatos[key] !== null && otrosDatos[key] !== undefined) {
+        formData.append(key, otrosDatos[key]);
       }
+    }
+    
+    // Solo agregar la imagen si es un archivo nuevo (File object)
+    if (imagen && imagen instanceof File) {
+      formData.append('imagen', imagen);
     }
 
     const response = await apiClient.put(`/productos/${id}`, formData, {

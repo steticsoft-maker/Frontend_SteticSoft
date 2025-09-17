@@ -218,12 +218,29 @@ const ProductoAdminForm = ({
         />
 
         {(formData.imagenPreview ||
-          (isEditing && typeof formData.imagen === "string")) && (
-          <img
-            src={formData.imagenPreview || formData.imagen}
-            alt="Vista previa"
-            style={{ maxWidth: "100px", marginTop: "10px" }}
-          />
+          (isEditing && typeof formData.imagen === "string" && formData.imagen)) && (
+          <div style={{ marginTop: "10px" }}>
+            <img
+              src={formData.imagenPreview || formData.imagen}
+              alt="Vista previa"
+              style={{ 
+                maxWidth: "100px", 
+                maxHeight: "100px",
+                objectFit: "cover",
+                border: "1px solid #ddd",
+                borderRadius: "4px"
+              }}
+              onError={(e) => {
+                console.error("Error al cargar imagen:", e);
+                e.target.style.display = "none";
+              }}
+            />
+            {isEditing && typeof formData.imagen === "string" && (
+              <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>
+                Imagen actual
+              </p>
+            )}
+          </div>
         )}
         {formErrors.imagen && (
           <p className="error-message">{formErrors.imagen}</p>

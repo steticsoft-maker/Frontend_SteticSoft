@@ -11,6 +11,8 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
   const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen && initialData) {
@@ -150,9 +152,7 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
       case 'imagen':
         const file = value?.target?.files?.[0];
         const allowedTypes = ['image/jpeg', 'image/png'];
-        if (!file) {
-          error = 'Debes seleccionar una imagen.';
-        } else if (!allowedTypes.includes(file.type)) {
+        if (file && !allowedTypes.includes(file.type)) {
           error = 'Formato no permitido. Solo se aceptan imágenes JPG o PNG.';
         }
         break;
@@ -233,6 +233,9 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
     ) {
       errors.vidaUtilDias = 'La vida útil debe ser un número mayor a cero.';
     }
+
+    // En edición, la imagen no es obligatoria
+    // No validamos imagen aquí ya que es opcional en edición
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -343,6 +346,17 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
               </button>
             </div>
           </form>
+        )}
+        
+        {isValidationModalOpen && (
+          <div className="validationModal">
+            <div className="validationModal-content">
+              <p>{validationMessage}</p>
+              <button onClick={() => setIsValidationModalOpen(false)}>
+                Cerrar
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

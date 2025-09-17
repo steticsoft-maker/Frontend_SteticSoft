@@ -77,21 +77,46 @@ function ListaProductosAdminPage() {
         try {
             if (productoData.idProducto) {
                 await productosAdminService.updateProducto(productoData.idProducto, productoData);
-                 MySwal.fire("¡Éxito!", "Producto actualizado exitosamente.", "success");
+                MySwal.fire("¡Éxito!", "Producto actualizado exitosamente.", "success");
             } else {
                 const response = await productosAdminService.createProducto(productoData);
                 if (response?.errors) {
                     // Si hay errores de validación, los mostramos
                     const errorMessages = response.errors.map(e => e.msg).join('<br>');
-                    MySwal.fire("Error de validación", errorMessages, "error");
+                    MySwal.fire({
+                        title: "Error de validación",
+                        html: errorMessages,
+                        icon: "error",
+                        confirmButtonText: "Entendido"
+                    });
                     return response.errors;
                 }
-                 MySwal.fire("¡Éxito!", "Producto creado exitosamente.", "success");
+                MySwal.fire("¡Éxito!", "Producto creado exitosamente.", "success");
             }
             await cargarProductos();
             closeModal();
         } catch (err) {
-            MySwal.fire("Error", err.message || "Error al guardar el producto.", "error");
+            console.error("Error al guardar producto:", err);
+            
+            // Manejar diferentes tipos de errores
+            let errorMessage = "Error al guardar el producto.";
+            
+            if (err.message) {
+                errorMessage = err.message;
+            } else if (err.response?.data?.message) {
+                errorMessage = err.response.data.message;
+            } else if (err.response?.data?.errors) {
+                // Si hay errores de validación específicos
+                const errorMessages = err.response.data.errors.map(e => e.msg).join('<br>');
+                errorMessage = errorMessages;
+            }
+            
+            MySwal.fire({
+                title: "Error",
+                html: errorMessage,
+                icon: "error",
+                confirmButtonText: "Entendido"
+            });
         }
     };
 
@@ -116,7 +141,27 @@ function ListaProductosAdminPage() {
                         'success'
                     );
                 } catch (err) {
-                    MySwal.fire("Error", err.message || "Error al eliminar el producto.", "error");
+                    console.error("Error al eliminar producto:", err);
+                    
+                    // Manejar diferentes tipos de errores
+                    let errorMessage = "Error al eliminar el producto.";
+                    
+                    if (err.message) {
+                        errorMessage = err.message;
+                    } else if (err.response?.data?.message) {
+                        errorMessage = err.response.data.message;
+                    } else if (err.response?.data?.errors) {
+                        // Si hay errores de validación específicos
+                        const errorMessages = err.response.data.errors.map(e => e.msg).join('<br>');
+                        errorMessage = errorMessages;
+                    }
+                    
+                    MySwal.fire({
+                        title: "Error",
+                        html: errorMessage,
+                        icon: "error",
+                        confirmButtonText: "Entendido"
+                    });
                 }
             }
         });
