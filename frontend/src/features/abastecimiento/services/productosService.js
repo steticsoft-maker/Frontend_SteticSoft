@@ -1,4 +1,3 @@
-
 import apiClient from "../../../shared/services/apiClient";
 
 const API_PATH = "/productos";
@@ -18,6 +17,28 @@ export const fetchProductosConFiltros = async (params = {}) => {
     return Array.isArray(productosData) ? productosData : [];
   } catch (error) {
     console.error("Error al obtener los productos con filtros:", error);
+    throw error; // Lanza el error para que el componente que llama lo maneje.
+  }
+};
+
+/**
+ * ✅ NUEVA FUNCIÓN AÑADIDA
+ * Obtiene la lista de productos designados exclusivamente para "uso interno".
+ * Esta es la función correcta para el módulo de abastecimiento.
+ * @returns {Promise<Array>} - Una promesa que resuelve a un array de productos internos.
+ */
+export const fetchProductosInternos = async () => {
+  try {
+    // Apuntamos directamente al endpoint especializado del backend: /productos/interno
+    const response = await apiClient.get(`${API_PATH}/interno`);
+    
+    // Extraemos el array de datos de la respuesta
+    const productosData = response.data?.data || response.data;
+    
+    // Aseguramos que siempre se retorne un array.
+    return Array.isArray(productosData) ? productosData : [];
+  } catch (error) {
+    console.error("Error al obtener los productos internos:", error);
     throw error; // Lanza el error para que el componente que llama lo maneje.
   }
 };

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import AbastecimientoForm from './AbastecimientoForm';
 import { fetchEmpleados, createAbastecimiento } from '../hooks/useAbastecimiento';
-import { fetchProductosConFiltros } from '../services/productosService'; 
+// ✅ PASO 1: Importa la nueva función 'fetchProductosInternos' en lugar de la antigua.
+import { fetchProductosInternos } from '../services/productosService'; 
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 import '../css/Abastecimiento.css';
 
@@ -25,14 +26,10 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
     const loadRequiredData = useCallback(async () => {
         try {
             setGeneralError('');
-            // Se inician ambas peticiones a la API en paralelo para mayor eficiencia
             const empleadosPromise = fetchEmpleados();
-            const productosPromise = fetchProductosConFiltros({ 
-                tipoUso: 'interno', 
-                estado: true 
-            });
+            // ✅ PASO 2: Llama a la nueva función 'fetchProductosInternos'.
+            const productosPromise = fetchProductosInternos();
 
-            // Esperar a que ambas promesas se resuelvan
             const [empleadosData, productosData] = await Promise.all([
                 empleadosPromise,
                 productosPromise,
