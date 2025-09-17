@@ -1,9 +1,9 @@
 // src/features/home/pages/HomePage.jsx
 import React from "react";
 import Navbar from "../../../shared/components/layout/Navbar";
-import HeroSection from "../components/HeroSection";
+import ImageCarousel from "../../../shared/components/common/ImageCarousel"; // Importa el nuevo componente
 import InfoCard from "../components/InfoCard";
-import ServiceCard from "../components/ServiceCard"; // Para servicios destacados
+import ServiceCard from "../components/ServiceCard";
 import "../css/Home.css";
 import Footer from "../../../shared/components/layout/Footer";
 
@@ -12,8 +12,8 @@ function HomePage() {
     <div>
       <Navbar />
       <div className="home-page-container">
-        {/* Hero principal */}
-        <HeroSection />
+        {/* Carrusel principal */}
+        <ImageCarousel />
 
         {/* Beneficios */}
         <section className="home-features-wrapper">

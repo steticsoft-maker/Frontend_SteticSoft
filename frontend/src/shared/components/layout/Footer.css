@@ -1,0 +1,131 @@
+/* src/shared/components/layout/Footer.css */
+/* Importa tus variables de colores si no son globales */
+/* @import "../../styles/_variables.css"; */
+
+.footer {
+  background-color: var(--color-text-dark);
+  color: #f1f1f1;
+  padding: 50px 20px;
+}
+
+.footer-inner-wrapper {
+  background-color: #3a3a3a;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto 30px auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.footer-brand,
+.footer-links,
+.footer-contact,
+.footer-social {
+  flex: 1;
+  margin-bottom: 30px;
+  min-width: 200px;
+}
+
+.footer-brand h2 {
+  font-size: 2rem;
+  color: var(--color-primary); /* Morado para el título del logo */
+  margin-bottom: 10px;
+}
+
+.footer-brand p {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.footer-links h3,
+.footer-contact h3,
+.footer-social h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: var(--color-primary); /* Morado para los títulos de sección */
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: #f1f1f1; /* Texto de enlace en blanco */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: var(--color-primary); /* Morado al pasar el cursor */
+}
+
+.footer-contact p {
+  color: #f1f1f1; /* Texto de contacto en blanco */
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+/* Estilos de íconos de contacto */
+.footer-contact p svg {
+  margin-right: 10px;
+  color: var(--color-primary); /* Morado para los íconos de contacto */
+}
+
+.social-icons a {
+  color: var(--color-primary); /* Morado para los íconos de redes sociales */
+  font-size: 1.8rem;
+  margin-right: 20px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--color-primary-hover); /* Morado más claro al pasar el cursor */
+  transform: translateY(-3px);
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #777777;
+  font-size: 0.9rem;
+}
+
+/* Media Queries para responsividad */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-brand,
+  .footer-links,
+  .footer-contact,
+  .footer-social {
+    margin-bottom: 40px;
+    width: 100%;
+    min-width: auto;
+  }
+
+  .social-icons {
+    justify-content: center;
+    display: flex;
+  }
+}
+
+.footer-bottom-text{
+  color: white;
+}

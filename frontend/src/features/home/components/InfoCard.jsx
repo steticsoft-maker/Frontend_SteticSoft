@@ -1,13 +1,15 @@
 // src/features/home/components/InfoCard.jsx
 import React from "react";
-// import '../css/InfoCard.css'; // Si necesita estilos propios
+import "../css/InfoCard.css";
 
-const InfoCard = ({ title, children }) => (
-  <div className="home-card">
-    {" "}
-    {/* Usar clase de Home.css o una nueva */}
-    <h2>{title}</h2>
-    <p>{children}</p>
-  </div>
-);
+const InfoCard = ({ icon, title, children }) => {
+  return (
+    <div className="info-card">
+      <div className="info-card-icon">{icon}</div>
+      <h3 className="info-card-title">{title}</h3>
+      <p className="info-card-description">{children}</p>
+    </div>
+  );
+};
+
 export default InfoCard;

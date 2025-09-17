@@ -1,0 +1,35 @@
+/* src/features/home/components/InfoCard.css */
+.info-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex: 1;
+  margin: 0 15px;
+  max-width: 320px;
+}
+
+.info-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.info-card-icon {
+  font-size: 3rem;
+  color: #9c27b0; /* Color de acento para el ícono */
+  margin-bottom: 20px;
+}
+
+.info-card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.info-card-description {
+  color: #666;
+  font-size: 1rem;
+}
