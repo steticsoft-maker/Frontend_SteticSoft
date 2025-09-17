@@ -7,7 +7,7 @@ const UsuarioDetalleModal = ({ isOpen, onClose, usuario }) => {
 
   // Extraer la información del perfil (cliente o empleado) si existe.
   // Ambos, Cliente y Empleado, ahora tienen 'nombre', 'apellido', 'correo', 'telefono', 'tipoDocumento', 'numeroDocumento', 'fechaNacimiento'.
-  const perfil = usuario.clienteInfo || usuario.empleadoInfo || {};
+  const perfil = usuario.clienteInfo || usuario.empleado || {};
 
   const nombreCompleto = `${perfil.nombre || ''} ${perfil.apellido || ''}`.trim();
   

@@ -351,7 +351,7 @@ const useUsuarios = () => {
           setCurrentUsuario(fullUserData);
 
           const perfil =
-            fullUserData.clienteInfo || fullUserData.empleadoInfo || {};
+            fullUserData.clienteInfo || fullUserData.empleado || {};
 
           const initialFormData = {
             idUsuario: fullUserData.idUsuario,
