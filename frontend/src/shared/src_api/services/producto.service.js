@@ -220,7 +220,12 @@ const actualizarProducto = async (idProducto, datosActualizar) => {
     producto.imagenPublicId &&
     producto.imagenPublicId !== datosActualizar.imagenPublicId
   ) {
-    await deleteByPublicId(producto.imagenPublicId);
+    try {
+      await deleteByPublicId(producto.imagenPublicId);
+    } catch (error) {
+      console.error("Error al eliminar imagen anterior de Cloudinary:", error);
+      // No lanzar el error para evitar que falle la actualización del producto
+    }
   }
 
   if (datosActualizar.nombre) {
@@ -299,7 +304,14 @@ const eliminarProductoFisico = async (idProducto) => {
   }
   const publicId =
     producto.imagenPublicId || extractPublicIdFromUrl(producto.imagen);
-  if (publicId) await deleteByPublicId(publicId);
+  if (publicId) {
+    try {
+      await deleteByPublicId(publicId);
+    } catch (error) {
+      console.error("Error al eliminar imagen de Cloudinary:", error);
+      // No lanzar el error para evitar que falle la eliminación del producto
+    }
+  }
 
   try {
     const filasEliminadas = await db.Producto.destroy({

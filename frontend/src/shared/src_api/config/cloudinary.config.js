@@ -9,12 +9,24 @@ const {
 const DEFAULT_FOLDER = "steticsoft";
 
 // Configurar Cloudinary con las credenciales del entorno
-cloudinary.config({
-  cloud_name: CLOUDINARY_CLOUD_NAME,
-  api_key: CLOUDINARY_API_KEY,
-  api_secret: CLOUDINARY_API_SECRET,
-  secure: true, // Usar HTTPS
-});
+try {
+  if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_API_KEY && CLOUDINARY_API_SECRET) {
+    cloudinary.config({
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      secure: true, // Usar HTTPS
+    });
+    console.log("✅ Cloudinary configurado correctamente");
+  } else {
+    console.warn("⚠️ Cloudinary no está configurado. Las variables de entorno faltan:");
+    console.warn("- CLOUDINARY_CLOUD_NAME:", !!CLOUDINARY_CLOUD_NAME);
+    console.warn("- CLOUDINARY_API_KEY:", !!CLOUDINARY_API_KEY);
+    console.warn("- CLOUDINARY_API_SECRET:", !!CLOUDINARY_API_SECRET);
+  }
+} catch (error) {
+  console.error("❌ Error al configurar Cloudinary:", error);
+}
 
 /**
  * Sube un archivo a Cloudinary desde un buffer de memoria.
@@ -57,11 +69,19 @@ const deleteImage = async (publicId) => {
   if (!publicId || typeof publicId !== "string") {
     throw new Error("El parámetro publicId debe ser un string válido.");
   }
+  
+  // Verificar que cloudinary esté configurado
+  if (!cloudinary || !cloudinary.uploader) {
+    console.warn("Cloudinary no está configurado. No se puede eliminar la imagen:", publicId);
+    return { result: "not_configured" };
+  }
+  
   try {
     return await cloudinary.uploader.destroy(publicId);
   } catch (error) {
     console.error("Error al eliminar la imagen de Cloudinary:", error);
-    throw new Error(`No se pudo eliminar la imagen: ${error.message}`);
+    // No lanzar el error para evitar que falle la operación principal
+    return { result: "error", error: error.message };
   }
 };
 
