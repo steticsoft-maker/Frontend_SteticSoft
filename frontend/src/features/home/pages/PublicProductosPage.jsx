@@ -20,19 +20,19 @@ function PublicProductosPage() {
 
       console.log("📥 Respuesta completa del backend:", data);
 
-      const productos = Array.isArray(data.data) ? data.data : data.productos || [];
+      const productos = data.data?.productos || [];
 
       console.log("📦 Lista de productos recibida en frontend:", productos);
       console.table(productos); // 👀 Muestra los productos en formato tabla
 
       const productosAdaptados = productos.map(p => ({
-  id: p.id,
-  name: p.name,           // ya viene como "name"
-  image: p.image,         // ya viene como "image"
-  price: p.price,         // ya viene como "price"
-  description: p.description, // ya viene como "description"
-  categoryName: p.categoryName // opcional
-}));
+        id: p.idProducto,
+        name: p.nombre,
+        image: p.imagen,
+        price: p.precio,
+        description: p.descripcion,
+        categoryName: p.categoria?.nombre,
+      }));
 
 
       console.log("✅ Productos adaptados para renderizar:", productosAdaptados);
