@@ -573,7 +573,6 @@ const useUsuarios = () => {
     if (searchTerm) {
       const lowerSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter((u) => {
-        const perfil = u.clienteInfo || u.empleadoInfo || {};
         const estadoString =
           typeof u.estado === "boolean"
             ? u.estado
@@ -581,10 +580,10 @@ const useUsuarios = () => {
               : "inactivo"
             : "";
         return (
-          perfil.nombre?.toLowerCase().includes(lowerSearchTerm) ||
-          perfil.apellido?.toLowerCase().includes(lowerSearchTerm) ||
+          u.nombre?.toLowerCase().includes(lowerSearchTerm) ||
+          u.apellido?.toLowerCase().includes(lowerSearchTerm) ||
           u.correo?.toLowerCase().includes(lowerSearchTerm) ||
-          perfil.numeroDocumento?.toLowerCase().includes(lowerSearchTerm) ||
+          u.numeroDocumento?.toLowerCase().includes(lowerSearchTerm) ||
           u.rol?.nombre?.toLowerCase().includes(lowerSearchTerm) ||
           estadoString.includes(lowerSearchTerm)
         );
