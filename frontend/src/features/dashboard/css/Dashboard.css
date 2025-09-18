@@ -2,10 +2,10 @@
 
 /* Contenedor principal para el contenido específico de la página del dashboard. */
 .dashboard-main-content-page {
-  margin-left: 270px;
   padding: 30px;
   box-sizing: border-box;
-  /* Se eliminó "width: 100%;" que causaba el desbordamiento horizontal */
+  width: 100%;
+  /* Asegura que el contenedor ocupe todo el ancho */
 }
 
 /* Estilo para el encabezado principal de la página del dashboard. */
