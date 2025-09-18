@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import '../../../shared/styles/admin-layout.css';
 
 const CitaDetalleModal = ({ isOpen, onClose, cita, onEdit, onDeleteConfirm }) => {
   if (!isOpen || !cita) return null;
@@ -9,10 +10,13 @@ const CitaDetalleModal = ({ isOpen, onClose, cita, onEdit, onDeleteConfirm }) =>
   };
 
   return (
-    <div className="modal-citas">
-      <div className="modal-content-citas">
-        <h3>Detalles de la Cita #{cita.id}</h3>
-        <button className="cerrar-modal" onClick={onClose}>&times;</button>
+    <div className="admin-modal-overlay" onClick={onClose}>
+      <div className="admin-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Detalles de la Cita #{cita.id}</h2>
+          <button className="admin-modal-close" onClick={onClose}>&times;</button>
+        </div>
+        <div className="admin-modal-body">
 
         <div className="cita-detalle-content">
           <p><strong>Cliente:</strong> {cita.clienteNombre}</p>
@@ -27,13 +31,14 @@ const CitaDetalleModal = ({ isOpen, onClose, cita, onEdit, onDeleteConfirm }) =>
           </p>
         </div>
 
-        <div className="botonesModalCitas">
-            <button className="cerrar-modal" onClick={onClose}>&times;</button>
-            <button className="citas-action-button" onClick={() => onEdit(cita)}>Editar</button>
-           <button className="citas-action-button" onClick={() => onDeleteConfirm(cita)}>Eliminar</button>
         </div>
+        <div className="admin-modal-footer">
+          <button className="admin-form-button secondary" onClick={onClose}>Cerrar</button>
+          <button className="admin-form-button" onClick={() => onEdit(cita)}>Editar</button>
+          <button className="admin-form-button" onClick={() => onDeleteConfirm(cita)}>Eliminar</button>
         </div>
       </div>
+    </div>
   );
 };
 

@@ -286,13 +286,15 @@ function ListaProductosAdminPage() {
                     </p>
                 ) : (
                     <>
-                        <ProductosAdminTable
-                            productos={productosPaginados}
-                            onView={(prod) => handleOpenModal('details', prod)}
-                            onEdit={(prod) => handleOpenModal('edit', prod)}
-                            onDeleteConfirm={handleDelete}
-                            onToggleEstado={handleToggleEstado}
-                        />
+                        <div className="crud-table-container">
+                            <ProductosAdminTable
+                                productos={productosPaginados}
+                                onView={(prod) => handleOpenModal('details', prod)}
+                                onEdit={(prod) => handleOpenModal('edit', prod)}
+                                onDeleteConfirm={handleDelete}
+                                onToggleEstado={handleToggleEstado}
+                            />
+                        </div>
                         <Pagination
                             itemsPerPage={itemsPerPage}
                             totalItems={filteredProducts.length}

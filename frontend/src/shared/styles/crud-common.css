@@ -8,13 +8,17 @@
   height: 100vh;
   background-color: var(--color-background-light);
   font-family: 'Roboto', sans-serif;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Contenido principal estándar */
 .crud-content {
   flex: 1;
   margin-left: 220px;
-  padding: 30px;
+  width: calc(100% - 220px);
+  max-width: calc(100% - 220px);
+  padding: 20px 5px;
   overflow-y: auto;
   box-sizing: border-box;
   height: 100%;
@@ -41,7 +45,7 @@
   gap: 20px;
   flex-wrap: wrap;
   width: 100%;
-  max-width: 1200px;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -118,17 +122,30 @@
   cursor: not-allowed;
 }
 
+/* Contenedor de tabla estándar */
+.crud-table-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 20px 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: block;
+  overflow-x: auto;
+}
+
 /* Tabla estándar */
 .crud-table {
   width: 100%;
-  max-width: 1200px;
+  max-width: 100%;
+  min-width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin: 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: var(--color-table-row-odd);
   box-sizing: border-box;
   border-radius: 8px;
   overflow: hidden;
+  table-layout: fixed;
 }
 
 /* Encabezados de tabla estándar */
@@ -137,19 +154,53 @@
   color: var(--color-text-dark);
   font-weight: bold;
   text-align: center;
-  padding: 14px;
+  padding: 16px 12px;
   font-size: 1rem;
   border: 1px solid var(--color-table-header);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Celdas de tabla estándar */
 .crud-table td {
   border: 1px solid var(--color-table-header);
   text-align: left;
-  padding: 14px;
+  padding: 16px 12px;
   vertical-align: middle;
   font-size: 1rem;
   color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Distribución específica de columnas para diferentes tipos de tablas */
+.crud-table th:nth-child(1), .crud-table td:nth-child(1) { width: 5%; } /* # */
+.crud-table th:nth-child(2), .crud-table td:nth-child(2) { width: 10%; } /* Imagen/Icono */
+.crud-table th:nth-child(3), .crud-table td:nth-child(3) { width: 20%; } /* Nombre */
+.crud-table th:nth-child(4), .crud-table td:nth-child(4) { width: 15%; } /* Categoría/Descripción */
+.crud-table th:nth-child(5), .crud-table td:nth-child(5) { width: 12%; } /* Precio/Total */
+.crud-table th:nth-child(6), .crud-table td:nth-child(6) { width: 10%; } /* Existencia/Fecha */
+.crud-table th:nth-child(7), .crud-table td:nth-child(7) { width: 10%; } /* Estado */
+.crud-table th:nth-child(8), .crud-table td:nth-child(8) { width: 18%; } /* Acciones */
+
+/* Estilos específicos para tablas de compras */
+.crud-table th:nth-child(1), .crud-table td:nth-child(1) { width: 8%; } /* # */
+.crud-table th:nth-child(2), .crud-table td:nth-child(2) { width: 25%; } /* Proveedor */
+.crud-table th:nth-child(3), .crud-table td:nth-child(3) { width: 15%; } /* Fecha */
+.crud-table th:nth-child(4), .crud-table td:nth-child(4) { width: 15%; } /* Total */
+.crud-table th:nth-child(5), .crud-table td:nth-child(5) { width: 12%; } /* Estado */
+.crud-table th:nth-child(6), .crud-table td:nth-child(6) { width: 25%; } /* Acciones */
+
+/* Ajustes para tablas con menos columnas */
+.crud-table:has(th:nth-child(6):not(th:nth-child(7))) {
+  .crud-table th:nth-child(1), .crud-table td:nth-child(1) { width: 8%; }
+  .crud-table th:nth-child(2), .crud-table td:nth-child(2) { width: 25%; }
+  .crud-table th:nth-child(3), .crud-table td:nth-child(3) { width: 15%; }
+  .crud-table th:nth-child(4), .crud-table td:nth-child(4) { width: 15%; }
+  .crud-table th:nth-child(5), .crud-table td:nth-child(5) { width: 12%; }
+  .crud-table th:nth-child(6), .crud-table td:nth-child(6) { width: 25%; }
 }
 
 /* Fondos de filas estándar */
@@ -161,65 +212,93 @@
   background-color: var(--color-admin-hover);
 }
 
+/* Imágenes en las tablas */
+.crud-table img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid var(--color-border-light);
+}
+
 /* Iconos en la tabla estándar */
 .crud-table-iconos {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 /* Botones de acción en la tabla estándar */
 .crud-table-button {
-  padding: 10px 15px;
-  margin: 0;
-  font-size: 0.9rem;
+  padding: 8px 12px;
+  margin: 0 2px;
+  font-size: 0.85rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   color: var(--color-text-light);
   cursor: pointer;
-  transition: background-color 0.3s ease, opacity 0.3s ease;
+  transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+.crud-table-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Botones Ver y Editar estándar */
-.crud-table-button.btn-view,
-.crud-table-button.btn-edit {
-  background-color: var(--color-secondary);
-  color: var(--color-secondary-text);
+.crud-table-button.btn-view {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
 }
 
-.crud-table-button.btn-view:hover,
+.crud-table-button.btn-view:hover {
+  background: linear-gradient(135deg, #2980b9, #1f618d);
+}
+
+.crud-table-button.btn-edit {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
 .crud-table-button.btn-edit:hover {
-  background-color: var(--color-secondary-hover);
+  background: linear-gradient(135deg, #e67e22, #d35400);
 }
 
 /* Botón Historial estándar */
 .crud-table-button.btn-history {
-  background-color: #17a2b8;
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  color: white;
 }
 
 .crud-table-button.btn-history:hover {
-  background-color: #138496;
+  background: linear-gradient(135deg, #138496, #0f6674);
 }
 
 /* Botón Eliminar estándar */
 .crud-table-button.btn-delete {
-  background-color: var(--color-primary);
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
 }
 
 .crud-table-button.btn-delete:hover {
-  background-color: var(--color-primary-hover);
+  background: linear-gradient(135deg, #c0392b, #a93226);
 }
 
 /* Switch de estado estándar */
 .crud-switch {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 24px;
+  width: 50px;
+  height: 28px;
 }
 
 .crud-switch input {
@@ -238,18 +317,20 @@
   background-color: #ccc;
   transition: .4s;
   border-radius: 34px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .crud-slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
+  height: 22px;
+  width: 22px;
   left: 3px;
   bottom: 3px;
   background-color: white;
   transition: .4s;
   border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 input:checked + .crud-slider {
@@ -257,7 +338,21 @@ input:checked + .crud-slider {
 }
 
 input:checked + .crud-slider:before {
-  transform: translateX(16px);
+  transform: translateX(22px);
+}
+
+/* Centrado de elementos en celdas */
+.crud-table td[data-label*="Estado"] {
+  text-align: center;
+}
+
+.crud-table td[data-label*="Acciones"] {
+  text-align: center;
+}
+
+.crud-table td[data-label*="#"] {
+  text-align: center;
+  font-weight: 600;
 }
 
 /* Modal Overlay estándar */
@@ -485,11 +580,38 @@ input:checked + .crud-slider:before {
 }
 
 /* === RESPONSIVE STYLES === */
+/* Media queries para responsividad */
+@media (max-width: 1200px) {
+  .crud-table-container {
+    padding: 0;
+    overflow-x: auto;
+  }
+  
+  .crud-table {
+    min-width: 1000px;
+  }
+  
+  .crud-table th,
+  .crud-table td {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+}
+
 @media (max-width: 768px) {
   .crud-content {
     padding: 15px;
     margin-left: 0;
     max-width: 100%;
+  }
+  
+  .crud-table-container {
+    padding: 0;
+    overflow-x: auto;
+  }
+  
+  .crud-table {
+    min-width: 800px;
   }
 
   .crud-accionesTop {

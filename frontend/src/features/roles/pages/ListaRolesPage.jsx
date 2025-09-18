@@ -87,16 +87,18 @@ function ListaRolesPage() {
             {error}
           </p>
         ) : (
-          <RolesTable
-            roles={roles}
-            onView={(role) => handleOpenModal("details", role)}
-            onEdit={(role) => handleOpenModal("edit", role)}
-            onDeleteConfirm={(role) => handleOpenModal("delete", role)}
-            onHistory={(role) => handleOpenModal("history", role)}
-            onToggleAnular={handleToggleEstado}
-            currentPage={currentPage}
-            rowsPerPage={itemsPerPage}
-          />
+          <div className="crud-table-container">
+            <RolesTable
+              roles={roles}
+              onView={(role) => handleOpenModal("details", role)}
+              onEdit={(role) => handleOpenModal("edit", role)}
+              onDeleteConfirm={(role) => handleOpenModal("delete", role)}
+              onHistory={(role) => handleOpenModal("history", role)}
+              onToggleAnular={handleToggleEstado}
+              currentPage={currentPage}
+              rowsPerPage={itemsPerPage}
+            />
+          </div>
         )}
         {!isLoading && !error && totalRolesFiltrados > itemsPerPage && (
           <Pagination

@@ -4,6 +4,7 @@ import { fetchEmpleados, createAbastecimiento } from '../hooks/useAbastecimiento
 // ✅ CORRECCIÓN #1: Asegúrate de importar 'fetchProductosInternos'.
 import { fetchProductosInternos } from '../services/productosService'; 
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
+import '../../../shared/styles/admin-layout.css';
 import '../css/Abastecimiento.css';
 
 const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
@@ -151,24 +152,28 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
 
     return (
         <>
-            <div className="modal-abastecimiento-overlay">
-                <div className="modal-abastecimiento-content formulario-modal">
-                    <button type="button" className="modal-close-button-x" onClick={onClose}>&times;</button>
-                    <h2 className="abastecimiento-modal-title">Registrar Nuevo Abastecimiento</h2>
-                    <AbastecimientoForm
-                        formData={formData}
-                        formErrors={formErrors}
-                        onEmpleadoSelect={() => setIsEmpleadoModalOpen(true)}
-                        onProductoSelect={() => setIsProductoModalOpen(true)}
-                        onRemoveProducto={handleRemoveProducto}
-                        onCantidadChange={handleCantidadChange}
-                    />
-                    {generalError && <p className="error-abastecimiento" style={{ textAlign: 'center', marginTop: '15px' }}>{generalError}</p>}
-                    <div className="form-actions-abastecimiento">
-                        <button type="button" className="form-button-cancelar-abastecimiento" onClick={onClose}>
+            <div className="admin-modal-overlay" onClick={onClose}>
+                <div className="admin-modal-content large" onClick={(e) => e.stopPropagation()}>
+                    <div className="admin-modal-header">
+                        <h2 className="admin-modal-title">Registrar Nuevo Abastecimiento</h2>
+                        <button className="admin-modal-close" onClick={onClose}>&times;</button>
+                    </div>
+                    <div className="admin-modal-body">
+                        <AbastecimientoForm
+                            formData={formData}
+                            formErrors={formErrors}
+                            onEmpleadoSelect={() => setIsEmpleadoModalOpen(true)}
+                            onProductoSelect={() => setIsProductoModalOpen(true)}
+                            onRemoveProducto={handleRemoveProducto}
+                            onCantidadChange={handleCantidadChange}
+                        />
+                        {generalError && <p className="admin-form-error" style={{ textAlign: 'center', marginTop: '15px' }}>{generalError}</p>}
+                    </div>
+                    <div className="admin-modal-footer">
+                        <button type="button" className="admin-form-button secondary" onClick={onClose}>
                             Cancelar
                         </button>
-                        <button type="button" className="form-button-guardar-abastecimiento" onClick={handleSubmit}>
+                        <button type="button" className="admin-form-button" onClick={handleSubmit}>
                             Guardar Abastecimiento
                         </button>
                     </div>

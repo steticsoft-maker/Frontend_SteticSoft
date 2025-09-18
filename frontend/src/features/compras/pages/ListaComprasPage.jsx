@@ -308,13 +308,15 @@ function ListaComprasPage() {
                         <p className="error-message">{error}</p>
                     ) : (
                         <>
-                            <ComprasTable
-                                compras={comprasPaginadas}
-                                onDetalle={handleOpenDetalle}
-                                onAnular={handleOpenAnular}
-                                onGenerarPDF={generateAndShowPdf}
-                                startIndex={indexOfFirstItem}
-                            />
+                            <div className="crud-table-container">
+                                <ComprasTable
+                                    compras={comprasPaginadas}
+                                    onDetalle={handleOpenDetalle}
+                                    onAnular={handleOpenAnular}
+                                    onGenerarPDF={generateAndShowPdf}
+                                    startIndex={indexOfFirstItem}
+                                />
+                            </div>
                             <Paginacion
                                 currentPage={currentPage}
                                 totalPages={totalPages}

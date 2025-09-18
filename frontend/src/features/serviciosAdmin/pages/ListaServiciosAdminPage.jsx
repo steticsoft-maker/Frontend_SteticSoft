@@ -166,14 +166,16 @@ function ListaServiciosAdminPage() {
             <p style={{ textAlign: 'center', padding: '2rem' }}>Cargando...</p>
           ) : (
             <>
-              <ServiciosAdminTable
-                servicios={currentItems}
-                onView={(servicio) => handleOpenModal("details", servicio)}
-                onEdit={(servicio) => handleOpenModal("edit", servicio)}
-                onDeleteConfirm={(servicio) => handleOpenModal("delete", servicio)}
-                onToggleEstado={handleToggleEstado}
-                loadingId={loadingId}
-              />
+              <div className="crud-table-container">
+                <ServiciosAdminTable
+                  servicios={currentItems}
+                  onView={(servicio) => handleOpenModal("details", servicio)}
+                  onEdit={(servicio) => handleOpenModal("edit", servicio)}
+                  onDeleteConfirm={(servicio) => handleOpenModal("delete", servicio)}
+                  onToggleEstado={handleToggleEstado}
+                  loadingId={loadingId}
+                />
+              </div>
               
               {servicios.length > itemsPerPage && (
                 <div className="pagination-controls">

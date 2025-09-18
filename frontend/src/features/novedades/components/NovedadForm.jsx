@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { getUsuariosAPI } from '../../usuarios/services/usuariosService';
 import { format, parseISO } from 'date-fns';
 import { Badge } from 'react-bootstrap';
+import '../../../shared/styles/admin-layout.css';
 
 registerLocale('es', es);
 
@@ -138,10 +139,12 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
   const watchHoraInicio = watch('horaInicio');
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="novedad-form">
-      <div className="form-grid">
-        <div className="form-group">
-          <label htmlFor="fechaInicio">Fecha de Inicio</label>
+    <form onSubmit={handleSubmit(onSubmit)} className="admin-form-section">
+      <div className="admin-form-section-title">Información de la Novedad</div>
+      
+      <div className="admin-form-row-2">
+        <div className="admin-form-group">
+          <label htmlFor="fechaInicio" className="admin-form-label">Fecha de Inicio</label>
           <Controller
             name="fechaInicio"
             control={control}
@@ -163,10 +166,10 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
               />
             )}
           />
-          {errors.fechaInicio && <span className="form-error-message">{errors.fechaInicio.message}</span>}
+          {errors.fechaInicio && <span className="admin-form-error">{errors.fechaInicio.message}</span>}
         </div>
-        <div className="form-group">
-          <label htmlFor="fechaFin">Fecha de Fin</label>
+        <div className="admin-form-group">
+          <label htmlFor="fechaFin" className="admin-form-label">Fecha de Fin</label>
           <Controller
             name="fechaFin"
             control={control}
@@ -193,10 +196,13 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
               />
             )}
           />
-          {errors.fechaFin && <span className="form-error-message">{errors.fechaFin.message}</span>}
+          {errors.fechaFin && <span className="admin-form-error">{errors.fechaFin.message}</span>}
         </div>
-        <div className="form-group">
-          <label htmlFor="horaInicio">Hora de Inicio</label>
+      </div>
+      
+      <div className="admin-form-row-2">
+        <div className="admin-form-group">
+          <label htmlFor="horaInicio" className="admin-form-label">Hora de Inicio</label>
           <Controller
             name="horaInicio"
             control={control}
@@ -216,10 +222,10 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
               />
             )}
           />
-          {errors.horaInicio && <span className="form-error-message">{errors.horaInicio.message}</span>}
+          {errors.horaInicio && <span className="admin-form-error">{errors.horaInicio.message}</span>}
         </div>
-        <div className="form-group">
-          <label htmlFor="horaFin">Hora de Fin</label>
+        <div className="admin-form-group">
+          <label htmlFor="horaFin" className="admin-form-label">Hora de Fin</label>
           <Controller
             name="horaFin"
             control={control}
@@ -243,10 +249,12 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
               />
             )}
           />
-          {errors.horaFin && <span className="form-error-message">{errors.horaFin.message}</span>}
+          {errors.horaFin && <span className="admin-form-error">{errors.horaFin.message}</span>}
         </div>
-        <div className="form-group full-width">
-          <label>Días de la Semana Aplicables</label>
+      </div>
+      
+      <div className="admin-form-group">
+        <label className="admin-form-label">Días de la Semana Aplicables</label>
           <Controller
             name="dias"
             control={control}
@@ -266,10 +274,11 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
               />
             )}
           />
-          {errors.dias && <span className="form-error-message">{errors.dias.message}</span>}
-        </div>
-        <div className="form-group full-width">
-          <label>Asignar a Empleado(s)</label>
+          {errors.dias && <span className="admin-form-error">{errors.dias.message}</span>}
+      </div>
+      
+      <div className="admin-form-group">
+        <label className="admin-form-label">Asignar a Empleado(s)</label>
           <Controller
             name="empleados"
             control={control}
@@ -287,15 +296,14 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
               />
             )}
           />
-          {errors.empleados && <span className="form-error-message">{errors.empleados.message}</span>}
-        </div>
+          {errors.empleados && <span className="admin-form-error">{errors.empleados.message}</span>}
       </div>
 
-      <div className="form-actions">
-        <button type="submit" disabled={isLoading} className="button-primary">
+      <div className="admin-form-actions">
+        <button type="submit" disabled={isLoading} className="admin-form-button">
           {isLoading ? 'Guardando...' : isEditing ? 'Actualizar Novedad' : 'Crear Novedad'}
         </button>
-        <button type="button" onClick={onCancel} className="button-secondary" disabled={isLoading}>
+        <button type="button" onClick={onCancel} className="admin-form-button secondary" disabled={isLoading}>
           Cancelar
         </button>
       </div>

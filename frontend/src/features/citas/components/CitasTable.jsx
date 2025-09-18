@@ -1,6 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
+import "../../../shared/styles/crud-common.css";
 
 const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, estadosCita }) => {
   if (!citas || citas.length === 0) {
@@ -20,7 +21,7 @@ const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, es
 
   return (
     <div className="citas-table-container">
-      <table className="citas-table-content">
+      <table className="crud-table">
         <thead>
           <tr>
             <th>Cliente</th>
@@ -68,18 +69,18 @@ const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, es
                 )}
               </td>
               <td>
-                <div className="citas-table-actions">
-                  <button onClick={() => onViewDetails(cita)} className="citas-action-button" title="Ver Detalles">
+                <div className="crud-table-iconos">
+                  <button onClick={() => onViewDetails(cita)} className="crud-table-button btn-view" title="Ver Detalles">
                     <FaEye />
                   </button>
                   {/* El botón de editar solo aparece si la cita es accionable */}
                   {isActionable(cita.estadoCita) && (
-                    <button onClick={() => onEdit(cita)} className="citas-action-button" title="Editar Cita">
+                    <button onClick={() => onEdit(cita)} className="crud-table-button btn-edit" title="Editar Cita">
                       <FaEdit />
                     </button>
                   )}
                   {/* El botón de eliminar se muestra siempre, asumiendo que es una acción administrativa */}
-                  <button onClick={() => onDelete(cita.id)} className="citas-action-button" title="Eliminar Cita">
+                  <button onClick={() => onDelete(cita.id)} className="crud-table-button btn-delete" title="Eliminar Cita">
                     <FaTrashAlt />
                   </button>
                 </div>

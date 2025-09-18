@@ -76,13 +76,15 @@ function ListaUsuariosPage() {
         
         {!isLoadingPage && !errorPage && (
           <>
-            <UsuariosTable
-              usuarios={usuarios}
-              onView={(usuario) => handleOpenModal("details", usuario)}
-              onEdit={(usuario) => handleOpenModal("edit", usuario)}
-              onDeleteConfirm={(usuario) => handleOpenModal('delete', usuario)}
-              onToggleAnular={handleToggleEstadoUsuario}
-            />
+            <div className="crud-table-container">
+              <UsuariosTable
+                usuarios={usuarios}
+                onView={(usuario) => handleOpenModal("details", usuario)}
+                onEdit={(usuario) => handleOpenModal("edit", usuario)}
+                onDeleteConfirm={(usuario) => handleOpenModal('delete', usuario)}
+                onToggleAnular={handleToggleEstadoUsuario}
+              />
+            </div>
             {totalUsuariosFiltrados > usersPerPage && (
               <Pagination
                 itemsPerPage={usersPerPage}

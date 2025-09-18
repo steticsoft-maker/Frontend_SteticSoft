@@ -4,7 +4,7 @@ import moment from 'moment';
 import 'moment/locale/es';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import NavbarAdmin from '../../../shared/components/layout/Navbar';
+// Removido: NavbarAdmin no es necesario en el módulo de administración
 import { CitaFormModal, CitaDetalleModal, CitasTable } from '../components';
 import ConfirmModal from '../../../shared/components/common/ConfirmModal';
 import ValidationModal from '../../../shared/components/common/ValidationModal';
@@ -15,6 +15,8 @@ import {
   deleteCitaById as serviceDeleteCitaById,
   cambiarEstadoCita
 } from '../services/citasService';
+import '../../../shared/styles/crud-common.css';
+import '../../../shared/styles/admin-layout.css';
 import '../css/Citas.css';
 
 moment.locale('es');
@@ -196,54 +198,55 @@ function CitasPage() {
   }, [citasAgendadas, searchTerm, estadoFiltro]);
 
   return (
-    <div className="admin-layout">
-      <NavbarAdmin />
-      <div className="main-content">
-        <div className="citas-page-content-wrapper">
+    <div className="admin-page-layout">
+      <div className="admin-main-content-area">
+        <div className="admin-content-wrapper">
           <h1>Gestión de Citas</h1>
           {isLoading && <div className="cargando-pagina"><span>Cargando citas...</span><div className="spinner"></div></div>}
 
-          <div className="citas-header-actions" style={{ width: '100%', display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 }}>
-            <input
-              type="text"
-              placeholder="Busca por cualquier campo..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="citas-search-input"
-              style={{ flex: 1 }}
-            />
-            <select
-              value={estadoFiltro}
-              onChange={(e) => setEstadoFiltro(e.target.value)}
-              className="citas-filter-select"
-              style={{ padding: '8px 10px', borderRadius: 6 }}
-            >
-            <option value="Todos">Todos los Estados</option>
-            <option value="activa">Activas</option>
-            <option value="Pendiente">Pendientes</option>
-            <option value="Confirmada">Confirmadas</option>
-            <option value="Finalizada">Finalizadas</option>
-            <option value="Cancelada">Canceladas</option>
-            </select>
+          <div className="admin-actions-bar">
+            <div className="admin-filters">
+              <input
+                type="text"
+                placeholder="Busca por cualquier campo..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="admin-search-input"
+              />
+              <select
+                value={estadoFiltro}
+                onChange={(e) => setEstadoFiltro(e.target.value)}
+                className="admin-filter-select"
+              >
+                <option value="Todos">Todos los Estados</option>
+                <option value="activa">Activas</option>
+                <option value="Pendiente">Pendientes</option>
+                <option value="Confirmada">Confirmadas</option>
+                <option value="Finalizada">Finalizadas</option>
+                <option value="Cancelada">Canceladas</option>
+              </select>
+            </div>
             <button
-              className="btn-agregar-cita"
+              className="admin-add-button"
               onClick={() => navigate('/admin/citas/agendar')}
             >
               Agregar Cita
             </button>
           </div>
 
-          <CitasTable
-            citas={citasFiltradas}
-            onViewDetails={(cita) => {
-              setCitaParaOperacion(cita);
-              setIsDetailsModalOpen(true);
-            }}
-            onEdit={handleOpenEditModal}
-            onMarkAsCompleted={handleMarkAsCompleted}
-            onCancel={handleOpenCancelConfirm}
-            onDelete={handleOpenDeleteConfirm}
-          />
+          <div className="crud-table-container">
+            <CitasTable
+              citas={citasFiltradas}
+              onViewDetails={(cita) => {
+                setCitaParaOperacion(cita);
+                setIsDetailsModalOpen(true);
+              }}
+              onEdit={handleOpenEditModal}
+              onMarkAsCompleted={handleMarkAsCompleted}
+              onCancel={handleOpenCancelConfirm}
+              onDelete={handleOpenDeleteConfirm}
+            />
+          </div>
         </div>
       </div>
 

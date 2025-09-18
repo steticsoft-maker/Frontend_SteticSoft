@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa'; // Se quita FaImage porque ya no se usa
 import '../css/ServiciosAdmin.css';
+import "../../../shared/styles/crud-common.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -59,7 +60,7 @@ const ServiciosAdminTable = ({
 
   return (
     <div>
-      <table className="servicios-admin-table">
+      <table className="crud-table">
         <thead>
           <tr>
             <th>#</th>
@@ -100,34 +101,34 @@ const ServiciosAdminTable = ({
             <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
 
             <td data-label="Estado:">
-              <label className="switch">
+              <label className="crud-switch">
                 <input
                   type="checkbox"
                   checked={servicio.estado}
                   onChange={() => onToggleEstado(servicio)}
                   disabled={loadingId === servicio.idServicio}
                 />
-                <span className="slider"></span>
+                <span className="crud-slider"></span>
               </label>
             </td>
             <td data-label="Acciones:">
-              <div className="actions-cell">
+              <div className="crud-table-iconos">
                 <button
-                  className="btn-ver"
+                  className="crud-table-button btn-view"
                   onClick={() => onView(servicio)}
                   title="Ver Detalles"
                 >
                   <FaRegEye />
                 </button>
                 <button
-                  className="btn-editar"
+                  className="crud-table-button btn-edit"
                   onClick={() => onEdit(servicio)}
                   title="Editar Servicio"
                 >
                   <FaEdit />
                 </button>
                 <button
-                  className="btn-eliminar"
+                  className="crud-table-button btn-delete"
                   onClick={() => onDeleteConfirm(servicio)}
                   title="Eliminar Servicio"
                 >

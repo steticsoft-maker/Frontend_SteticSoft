@@ -276,13 +276,15 @@ function ListaProveedoresPage() {
             {error}
           </p>
         ) : (
-          <ProveedoresTable
-            proveedores={proveedoresPaginados}
-            onView={(prov) => handleOpenModal("ver", prov)}
-            onEdit={(prov) => handleOpenModal("edit", prov)}
-            onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}
-            onToggleEstado={(prov) => handleOpenModal("status", prov)}
-          />
+          <div className="crud-table-container">
+            <ProveedoresTable
+              proveedores={proveedoresPaginados}
+              onView={(prov) => handleOpenModal("ver", prov)}
+              onEdit={(prov) => handleOpenModal("edit", prov)}
+              onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}
+              onToggleEstado={(prov) => handleOpenModal("status", prov)}
+            />
+          </div>
         )}
 
         {/* Paginación */}

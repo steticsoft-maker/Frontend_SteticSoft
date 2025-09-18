@@ -62,15 +62,17 @@ function ListaClientesPage() {
 
         {!isLoading && !error && (
           <>
-            <ClientesTable
-              clientes={clientes} // Estos son los currentClientesForTable del hook
-              onView={(cliente) => handleOpenModal("details", cliente)}
-              onEdit={(cliente) => handleOpenModal("edit", cliente)}
-              onDeleteConfirm={(cliente) => handleOpenModal("delete", cliente)}
-              onToggleEstado={handleToggleEstado}
-              currentPage={currentPage}
-              rowsPerPage={itemsPerPage}
-            />
+            <div className="crud-table-container">
+              <ClientesTable
+                clientes={clientes} // Estos son los currentClientesForTable del hook
+                onView={(cliente) => handleOpenModal("details", cliente)}
+                onEdit={(cliente) => handleOpenModal("edit", cliente)}
+                onDeleteConfirm={(cliente) => handleOpenModal("delete", cliente)}
+                onToggleEstado={handleToggleEstado}
+                currentPage={currentPage}
+                rowsPerPage={itemsPerPage}
+              />
+            </div>
             {totalClientesFiltrados > 0 && itemsPerPage > 0 && totalClientesFiltrados > itemsPerPage && (
               <Pagination
                 itemsPerPage={itemsPerPage}

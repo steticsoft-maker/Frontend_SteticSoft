@@ -8,6 +8,7 @@ import {
   fetchClientesParaCitas,
 } from '../services/citasService';
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
+import '../../../shared/styles/admin-layout.css';
 
 const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePreseleccionado, novedadId }) => {
   const [formData, setFormData] = useState({});
@@ -119,10 +120,13 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   if (!isOpen) return null;
 
   return (
-    <div className="modal-citas">
-      <div className="modal-content-citas">
-        <button className="cerrar-modal" onClick={onClose} disabled={isLoading}>&times;</button>
-        <h3>{formData.id ? 'Editar Cita' : 'Agendar Nueva Cita'}</h3>
+    <div className="admin-modal-overlay" onClick={onClose}>
+      <div className="admin-modal-content large" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">{formData.id ? 'Editar Cita' : 'Agendar Nueva Cita'}</h2>
+          <button className="admin-modal-close" onClick={onClose} disabled={isLoading}>&times;</button>
+        </div>
+        <div className="admin-modal-body">
 
         {isLoadingDependencies ? (
           <div className="cargando-modal">Cargando datos...</div>
@@ -148,15 +152,18 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
               />
             </div>
 
-            {error && <div className="error-message">{error}</div>}
-            <div className="botonesModalCitas">
-              <button type="submit" disabled={isLoading || isLoadingDependencies}>
-                {isLoading ? "Guardando..." : (formData.id ? "Actualizar Cita" : "Guardar Cita")}
-              </button>
-              <button type="button" onClick={onClose} disabled={isLoading}>Cancelar</button>
-            </div>
+            {error && <div className="admin-form-error">{error}</div>}
           </form>
         )}
+        </div>
+        <div className="admin-modal-footer">
+          <button type="button" className="admin-form-button secondary" onClick={onClose} disabled={isLoading}>
+            Cancelar
+          </button>
+          <button type="submit" className="admin-form-button" disabled={isLoading || isLoadingDependencies} onClick={handleSubmitForm}>
+            {isLoading ? "Guardando..." : (formData.id ? "Actualizar Cita" : "Guardar Cita")}
+          </button>
+        </div>
       </div>
 
       <ItemSelectionModal

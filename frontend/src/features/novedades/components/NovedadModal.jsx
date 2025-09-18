@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import NovedadForm from './NovedadForm';
 import { crearNovedad, actualizarNovedad } from '../services/horariosService';
 import { toast } from 'react-toastify';
+import '../../../shared/styles/admin-layout.css';
 import '../css/ConfigHorarios.css';
 
 const NovedadModal = ({ onClose, onSuccess, novedadToEdit, isEditing }) => {
@@ -38,17 +39,18 @@ const NovedadModal = ({ onClose, onSuccess, novedadToEdit, isEditing }) => {
 
   return (
     <div
-      className="modal-overlay"
+      className="admin-modal-overlay"
       role="dialog"
       aria-modal="true"
       onClick={handleOverlayClick}
     >
-      <div className="modal-content">
-        <div className="modal-header">
-          <h2>{isEditing ? 'Editar Novedad' : 'Crear Nueva Novedad'}</h2>
+      <div className="admin-modal-content large" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">{isEditing ? 'Editar Novedad' : 'Crear Nueva Novedad'}</h2>
+          <button className="admin-modal-close" onClick={onClose}>&times;</button>
         </div>
 
-        <div className="modal-body">
+        <div className="admin-modal-body">
           <NovedadForm
             onFormSubmit={handleFormSubmit}
             onCancel={onClose}
@@ -57,7 +59,9 @@ const NovedadModal = ({ onClose, onSuccess, novedadToEdit, isEditing }) => {
             isEditing={isEditing}
           />
         </div>
-        <div className="modal-footer"></div>
+        <div className="admin-modal-footer">
+          <button className="admin-form-button secondary" onClick={onClose}>Cancelar</button>
+        </div>
       </div>
     </div>
   );
