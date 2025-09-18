@@ -157,8 +157,9 @@ const AgendarCitaPage = () => {
     if (isLoading) return <div className="cargando-pagina">Cargando...</div>;
 
     return (
-        <div className="agendar-cita-container">
+        <div className="admin-content-wrapper">
             <h1>Agendar Nueva Cita</h1>
+            <div className="agendar-cita-container">
             <div className="agendar-cita-form">
                 
                 <div className="form-step">
@@ -240,6 +241,7 @@ const AgendarCitaPage = () => {
                         {isSubmitting ? 'Agendando...' : 'Revisar y Agendar Cita'}
                     </button>
                 </div>
+            </div>
             </div>
         </div>
     );

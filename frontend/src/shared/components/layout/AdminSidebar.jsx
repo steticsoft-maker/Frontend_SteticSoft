@@ -67,6 +67,8 @@ const AdminSidebar = () => {
     if (isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
     }
+    // Cerrar todos los submenús abiertos al navegar
+    setOpenSubMenus({});
   };
 
   const handleLogoutClick = async () => {

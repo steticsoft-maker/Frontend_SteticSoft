@@ -106,17 +106,20 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
   if (!isOpen) return null;
 
   return (
-    <div className="rol-modalOverlay">
-      <div className="rol-modalContent rol-modalContent-form">
-        <button
-          type="button"
-          className="modal-close-button-x"
-          onClick={onClose}
-        >
-          &times;
-        </button>
-        <h2>Crear Rol</h2>
-        <form onSubmit={handleSubmitForm}>
+    <div className="admin-modal-overlay">
+      <div className="admin-modal-content large">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Crear Rol</h2>
+          <button
+            type="button"
+            className="admin-modal-close"
+            onClick={onClose}
+          >
+            &times;
+          </button>
+        </div>
+        <div className="admin-modal-body">
+          <form onSubmit={handleSubmitForm}>
           <RolForm
             formData={formData}
             onFormChange={handleFormChange}
@@ -130,21 +133,22 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
             formErrors={formErrors}
           />
           {formErrors.permisos && (
-            <p className="rol-error-permisos">{formErrors.permisos}</p>
+            <p className="admin-form-error">{formErrors.permisos}</p>
           )}
-          <div className="rol-form-actions">
-            <button type="submit" className="rol-form-buttonGuardar">
-              Crear Rol
-            </button>
-            <button
-              type="button"
-              className="rol-form-buttonCancelar"
-              onClick={onClose}
-            >
-              Cancelar
-            </button>
-          </div>
         </form>
+        </div>
+        <div className="admin-modal-footer">
+          <button type="submit" className="admin-form-button" form="rol-form">
+            Crear Rol
+          </button>
+          <button
+            type="button"
+            className="admin-form-button secondary"
+            onClick={onClose}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );

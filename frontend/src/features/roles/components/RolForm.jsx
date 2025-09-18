@@ -34,11 +34,11 @@ const RolForm = ({
 
   return (
     <>
-      <div className="rol-seccionInformacionRol">
-        <h3>Información del Rol</h3>
-        <div className="rol-formularioInformacionRol">
-          <div className="rol-campoContainer">
-            <label htmlFor="nombreRolInput" className="rol-label">
+      <div className="admin-form-section">
+        <h3 className="admin-form-section-title">Información del Rol</h3>
+        <div className="admin-form-row-2">
+          <div className="admin-form-group">
+            <label htmlFor="nombreRolInput" className="admin-form-label">
               Nombre del Rol: <span className="required-asterisk">*</span>
             </label>
             <input
@@ -47,17 +47,17 @@ const RolForm = ({
               name="nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              className="rol-input"
+              className={`admin-form-input ${formErrors.nombre ? 'error' : ''}`}
               disabled={isRoleAdmin}
               required
             />
             {formErrors.nombre && (
-              <span className="error-message">{formErrors.nombre}</span>
+              <span className="admin-form-error">{formErrors.nombre}</span>
             )}
           </div>
 
-          <div className="rol-campoContainer">
-            <label htmlFor="tipoPerfilInput" className="rol-label">
+          <div className="admin-form-group">
+            <label htmlFor="tipoPerfilInput" className="admin-form-label">
               Tipo de Perfil: <span className="required-asterisk">*</span>
             </label>
             <select
@@ -65,7 +65,7 @@ const RolForm = ({
               name="tipoPerfil"
               value={formData.tipoPerfil || 'EMPLEADO'}
               onChange={handleInputChange}
-              className="rol-input"
+              className={`admin-form-select ${formErrors.tipoPerfil ? 'error' : ''}`}
               disabled={isRoleAdmin}
               required
             >
@@ -74,85 +74,95 @@ const RolForm = ({
               <option value="NINGUNO">Ninguno (Solo Acceso al Sistema)</option>
             </select>
             {formErrors.tipoPerfil && (
-              <span className="error-message">{formErrors.tipoPerfil}</span>
+              <span className="admin-form-error">{formErrors.tipoPerfil}</span>
             )}
           </div>
+        </div>
 
-          {/* INICIO DE MODIFICACIÓN */}
-          <div className="rol-campoContainer">
-            <label htmlFor="descripcionRolInput" className="rol-label">
-              Descripción del Rol: <span className="required-asterisk">*</span>
-            </label>
-            <textarea
-              id="descripcionRolInput"
-              name="descripcion"
-              value={formData.descripcion}
-              onChange={handleInputChange}
-              className="rol-textarea"
-              disabled={isRoleAdmin}
-              required
-            />
-            {/* Mensaje de error para la descripción */}
-            {formErrors.descripcion && (
-              <span className="error-message">{formErrors.descripcion}</span>
-            )}
-          </div>
-          {/* FIN DE MODIFICACIÓN */}
-
-          {isEditing && !isRoleAdmin && (
-            <div className="rol-campoContainer">
-              <label className="rol-label">Estado (Activo):</label>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  name="estado"
-                  checked={formData.estado}
-                  onChange={handleInputChange}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
+        <div className="admin-form-group">
+          <label htmlFor="descripcionRolInput" className="admin-form-label">
+            Descripción del Rol: <span className="required-asterisk">*</span>
+          </label>
+          <textarea
+            id="descripcionRolInput"
+            name="descripcion"
+            value={formData.descripcion}
+            onChange={handleInputChange}
+            className={`admin-form-textarea ${formErrors.descripcion ? 'error' : ''}`}
+            disabled={isRoleAdmin}
+            required
+            rows={3}
+          />
+          {formErrors.descripcion && (
+            <span className="admin-form-error">{formErrors.descripcion}</span>
           )}
         </div>
+
+        {isEditing && !isRoleAdmin && (
+          <div className="admin-form-group">
+            <label className="admin-form-label">Estado:</label>
+            <label className="switch">
+              <input
+                type="checkbox"
+                name="estado"
+                checked={formData.estado}
+                onChange={handleInputChange}
+              />
+              <span className="slider"></span>
+            </label>
+          </div>
+        )}
       </div>
 
-      {!isRoleAdmin && (
-        <button
-          type="button"
-          className="rol-botonSeleccionarPermisos"
-          onClick={handleToggleMostrarPermisos}
-        >
-          {mostrarPermisos
-            ? "Ocultar Selección de Módulos"
-            : "Mostrar Selección de Módulos"}
-        </button>
-      )}
-
-      <PermisosSelector
-        permisosAgrupados={permisosAgrupados}
-        permisosSeleccionadosIds={formData.idPermisos || []}
-        onTogglePermiso={onToggleModulo}
-        onSelectAll={onSelectAll}
-        onDeselectAll={onDeselectAll}
-        isRoleAdmin={isRoleAdmin}
-        mostrar={mostrarPermisos || isRoleAdmin}
-        isEditing={isEditing}
-      />
-
-      {(mostrarPermisos || isRoleAdmin) && (
-        <div className="rol-seccionModulosSeleccionados">
-          <h3>Módulos Seleccionados ({modulosSeleccionadosNombres.length})</h3>
-          {modulosSeleccionadosNombres.length > 0 ? (
-            <ul className="rol-listaModulosSeleccionados">
-              {modulosSeleccionadosNombres.map((nombre, index) => (
-                <li key={index}>{nombre}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>No hay módulos seleccionados</p>
-          )}
+      <div className="admin-form-section">
+        <div className="admin-form-section-title">
+          Módulos Disponibles
+          <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+            <button
+              type="button"
+              className="admin-form-button secondary"
+              onClick={onSelectAll}
+            >
+              Marcar Todos
+            </button>
+            <button
+              type="button"
+              className="admin-form-button secondary"
+              onClick={onDeselectAll}
+            >
+              Desmarcar Todos
+            </button>
+          </div>
         </div>
-      )}
+        
+        <PermisosSelector
+          permisosAgrupados={permisosAgrupados}
+          permisosSeleccionadosIds={formData.idPermisos || []}
+          onTogglePermiso={onToggleModulo}
+          onSelectAll={onSelectAll}
+          onDeselectAll={onDeselectAll}
+          isRoleAdmin={isRoleAdmin}
+          mostrar={true}
+          isEditing={isEditing}
+        />
+      </div>
+
+      <div className="admin-form-section">
+        <h3 className="admin-form-section-title">
+          Módulos Seleccionados ({modulosSeleccionadosNombres.length})
+        </h3>
+        {modulosSeleccionadosNombres.length > 0 ? (
+          <div className="admin-modules-container">
+            {modulosSeleccionadosNombres.map((nombre, index) => (
+              <div key={index} className="admin-module-section">
+                <div className="admin-module-title">{nombre}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No hay módulos seleccionados</p>
+        )}
+      </div>
     </>
   );
 };
