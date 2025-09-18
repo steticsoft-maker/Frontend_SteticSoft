@@ -1,9 +1,9 @@
 /* src/App.css */
+/* #root is now just a layout container, specific page padding is handled elsewhere */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .logo {

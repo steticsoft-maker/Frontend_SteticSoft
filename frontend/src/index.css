@@ -1,5 +1,7 @@
-/* src/index.css */
+/* frontend/src/index.css */
 @import "@/shared/styles/_variables.css";
+
+/* --- GLOBAL & RESET STYLES --- */
 
 html {
   box-sizing: border-box;
@@ -14,82 +16,200 @@ html {
 
 body {
   margin: 0;
-  font-family: var(--font-family-roboto, var(--font-family-sans-serif));
-  /* Prioriza Roboto si está definido */
+  font-family: var(--font-family-sans-serif);
   line-height: var(--line-height-base);
   font-weight: 400;
-  background-color: var(--color-background-light);
-  /* O --color-background-warm si es el default */
-  color: var(--color-text-dark);
+  background-color: var(--background);
+  color: var(--text-primary);
   min-height: 100vh;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Estilos base para enlaces y botones (puedes ajustarlos) */
+h1, .h1, h2, .h2, h3, .h3 {
+  color: var(--text-primary);
+  margin-top: 0;
+}
+h1, .h1 { font-size: 2rem; margin-bottom: 1.5rem; }
+h2, .h2 { font-size: 1.75rem; margin-bottom: 1.25rem; }
+h3, .h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+
 a {
-  font-weight: 500;
-  color: var(--color-primary);
+  color: var(--primary);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
-
 a:hover {
-  text-decoration: underline;
-  color: var(--color-primary-hover);
+  color: var(--primary-hover);
 }
 
-button {
-  border-radius: 8px;
+/* --- COMPONENT STYLES --- */
+
+/* Buttons */
+button, .btn {
+  border-radius: var(--border-radius-md);
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s;
+  transition: all 0.25s ease;
 }
 
-/* Estilos para botones primarios y secundarios */
 .btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-  border: 1px solid var(--color-primary);
+  background-color: var(--primary);
+  color: var(--text-on-primary);
+  border-color: var(--primary);
 }
-
 .btn-primary:hover {
-  background-color: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
-  color: var(--color-secondary-text);
-  border: 1px solid var(--color-secondary);
+  background-color: var(--secondary);
+  color: var(--text-on-secondary);
+  border-color: var(--border);
 }
-
 .btn-secondary:hover {
-  background-color: var(--color-secondary-hover);
-  border-color: var(--color-secondary-hover);
+  background-color: var(--secondary-hover);
+  border-color: var(--border);
 }
 
-/* Estilos para campos de formulario */
+.btn-danger {
+  background-color: var(--danger);
+  color: var(--text-on-danger);
+  border-color: var(--danger);
+}
+.btn-danger:hover {
+  background-color: var(--danger-hover);
+  border-color: var(--danger-hover);
+}
+
+/* Forms & Search Bar */
 input,
 select,
 textarea {
-  background-color: var(--color-form-bg);
-  border: 1px solid var(--color-form-border);
-  border-radius: 4px;
-  padding: 0.5em 0.75em;
-  font-size: 1em;
   font-family: inherit;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-form-focus-bg);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--focus-shadow);
+}
+
+/* Special styling for search bar */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: var(--secondary);
+  border-radius: var(--border-radius-lg);
+  padding: 0 0.5rem;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+.search-bar:focus-within {
+  background-color: var(--surface);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--focus-shadow);
+}
+.search-bar input[type="search"] {
+  border: none;
+  background: transparent;
+  padding: 0.75rem;
+  width: 100%;
+}
+.search-bar input[type="search"]:focus {
+  box-shadow: none;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  overflow: hidden;
+}
+
+thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: 0.8em;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border);
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s ease;
+}
+tbody tr:last-child {
+  border-bottom: none;
+}
+tbody tr:hover {
+  background-color: var(--secondary);
+}
+
+tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+/* Action Icons */
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.action-btn {
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  line-height: 0;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+.action-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--secondary-hover);
+  transform: scale(1.1);
+}
+
+.action-btn svg,
+.action-btn i {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.action-btn.edit:hover {
+  color: var(--primary);
+}
+.action-btn.delete:hover {
+  color: var(--danger);
 }

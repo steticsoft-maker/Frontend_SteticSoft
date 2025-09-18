@@ -1,53 +1,65 @@
-/* src/shared/styles/_variables.css */
+/* frontend/src/shared/styles/_variables.css */
+
+/*
+  Este archivo define las variables de color para los temas de la aplicación.
+  - El tema claro se define en :root y es el predeterminado.
+  - El tema oscuro se activa aplicando la clase .theme-dark al elemento raíz.
+*/
+
 :root {
-    /* Paleta de colores nueva */
-    --color-primary: #9a7a9f;
-    /* Botones primarios: Fondo */
-    --color-primary-hover: #c7a7c7;
-    /* Botones primarios: Hover */
-    --color-secondary: #e2cde1;
-    /* Botones secundarios: Fondo */
-    --color-secondary-hover: #c7a7c7;
-    /* Botones secundarios: Hover */
-    --color-secondary-text: #1d1d1d;
-    /* Botones secundarios: Texto */
+  /* --- TEMA CLARO (FEMENINO, PASTEL) --- */
+  --background: #fdfaff;
+  --surface: #ffffff;
 
-    --color-admin-primary: #c7a7c7;
-    /* Menú lateral / barra superior */
-    --color-admin-hover: #e2cde1;
-    /* Hover o selección en el menú */
+  --primary: #c73ab7;
+  --primary-hover: #a12f94;
 
-    --color-text-dark: #1d1d1d;
-    /* Texto general y de tablas */
-    --color-text-light: #1d1d1d;
-    /* Texto de botones primarios */
+  --secondary: #f2eef7;
+  --secondary-hover: #e3dce9;
 
-    --color-background-light: #fefcff;
-    /* Fondo principal de la página */
-    --color-background-warm: #fefcff;
-    /* Fondo principal de la página */
-    --color-background-admin-sidebar: #c7a7c7;
-    /* Menú lateral / barra superior */
-    --color-background-admin-content: #fefcff;
-    /* Fondo del contenido de administración */
+  --danger: #e53935;
+  --danger-hover: #c62828;
 
-    /* Colores para tablas */
-    --color-table-header: #c7a7c7;
-    --color-table-row-odd: #ffffff;
-    --color-table-row-even: #f9f0f7;
+  --text-primary: #3d3547;
+  --text-secondary: #8e82a2;
+  --text-on-primary: #ffffff;
+  --text-on-secondary: #5d5173;
+  --text-on-danger: #ffffff;
 
-    /* Colores para campos de formulario */
-    --color-form-border: #c7a7c7;
-    --color-form-focus-bg: #e2cde1;
-    --color-form-bg: #ffffff;
+  --border: #e6e0f0;
+  --focus-shadow: rgba(199, 58, 183, 0.25);
+  --shadow-color: rgba(61, 53, 71, 0.1);
 
+  /* --- VARIABLES DE LAYOUT --- */
+  --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-size-base: 16px;
+  --line-height-base: 1.5;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+}
 
-    /* Fuentes */
-    --font-family-sans-serif: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    --font-family-roboto: 'Roboto', sans-serif;
-    /* Si usas Roboto */
+.theme-dark {
+  /* --- TEMA OSCURO (ELEGANTE, CONTRASTE) --- */
+  --background: #1a1423;
+  --surface: #292138;
 
-    /* Tamaños base */
-    --font-size-base: 16px;
-    --line-height-base: 1.5;
+  --primary: #d846b8;
+  --primary-hover: #e369c9;
+
+  --secondary: #3d3547;
+  --secondary-hover: #504662;
+
+  --danger: #ef5350;
+  --danger-hover: #e57373;
+
+  --text-primary: #f5f1fa;
+  --text-secondary: #b2a8c8;
+  --text-on-primary: #ffffff;
+  --text-on-secondary: #f5f1fa;
+  --text-on-danger: #ffffff;
+
+  --border: #4d435f;
+  --focus-shadow: rgba(216, 70, 184, 0.25);
+  --shadow-color: rgba(0, 0, 0, 0.2);
 }

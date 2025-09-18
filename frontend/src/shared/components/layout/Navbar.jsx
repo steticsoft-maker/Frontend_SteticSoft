@@ -1,6 +1,7 @@
 // src/shared/components/layout/Navbar.jsx
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ThemeToggle from './ThemeToggle'; // Import the new component
 // Corregido: Importamos el hook personalizado useAuth
 import { useAuth } from "../../contexts/authHooks"; // Path updated
 import "./Navbar.css";
@@ -62,6 +63,9 @@ function Navbar() {
               </li>
             </>
           )}
+          <li>
+            <ThemeToggle />
+          </li>
         </ul>
       </div>
     </nav>

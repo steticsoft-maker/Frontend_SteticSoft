@@ -1,51 +1,43 @@
-/* src/shared/components/layout/Navbar.css */
-/* Asegúrate de que _variables.css esté importado en src/index.css o un global.css */
+/* frontend/src/shared/components/layout/Navbar.css */
 
 .navbar {
-    position: fixed;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(255, 255, 255, 0.8);
-    /* Considera var(--color-background-light-translucent) si lo defines */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    width: 90%;
-    max-width: 1200px;
-    /* Añadido para mejor control en pantallas muy anchas */
-    padding: 10px 20px;
-    z-index: 1000;
-    /* Asegurar que esté por encima */
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    width: 100%;
     box-sizing: border-box;
+    /* Removido el posicionamiento fijo para integrarse en el flujo del layout */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .navbar-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .navbar-logo {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--color-primary);
-    /* Variable CSS */
+    color: var(--primary);
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .navbar-list {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 30px;
-    /* Reducido un poco el gap para más flexibilidad */
+    gap: 2rem;
     margin: 0;
     padding: 0;
 }
 
 .navbar-link {
-    color: var(--color-text-dark);
-    /* Variable CSS */
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
@@ -53,34 +45,27 @@
 }
 
 .navbar-link:hover {
-    color: var(--color-secondary);
-    /* Variable CSS */
+    color: var(--primary);
 }
 
 .navbar-user {
     font-size: 1rem;
-    /* Ajustado para consistencia */
-    color: var(--color-text-dark);
-    /* Variable CSS */
-    margin-right: 10px;
-    /* Espacio antes del botón logout */
+    color: var(--text-primary);
+    margin-right: 1rem;
 }
 
 .logout-button {
-    background-color: var(--color-secondary);
-    /* Variable CSS */
-    color: var(--color-text-light);
-    /* Variable CSS */
-    border: none;
+    background-color: var(--secondary);
+    color: var(--text-on-secondary);
+    border: 1px solid var(--border);
     padding: 8px 15px;
-    border-radius: 5px;
+    border-radius: var(--border-radius-md);
     font-size: 0.9rem;
-    /* Ligeramente más pequeño para diferenciarlo de links principales */
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .logout-button:hover {
-    background-color: var(--color-secondary-hover);
-    /* Considera var(--color-secondary-dark) o similar */ }
+    background-color: var(--secondary-hover);
+}
