@@ -26,7 +26,6 @@ router.post(
   authController.solicitarRecuperacionContrasena
 );
 
-
 // POST /api/auth/verificar-token - Verificar el token de recuperación
 router.post(
   "/verificar-token",

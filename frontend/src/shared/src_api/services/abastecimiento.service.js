@@ -12,7 +12,8 @@ const { checkAndSendStockAlert } = require("../utils/stockAlertHelper.js");
 
 // --- CREAR ABASTECIMIENTO ---
 const crearAbastecimiento = async (datosAbastecimiento) => {
-  const { idProducto, cantidad, fechaIngreso, estado, empleadoAsignado } =
+  // ✅ CORRECCIÓN: Se espera 'idUsuario' en lugar de 'empleadoAsignado'.
+  const { idProducto, cantidad, fechaIngreso, estado, idUsuario } =
     datosAbastecimiento;
 
   const producto = await Producto.findByPk(idProducto);
@@ -42,7 +43,8 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
         fechaIngreso: fechaIngreso || new Date(),
         estaAgotado: false,
         estado: typeof estado === "boolean" ? estado : true,
-        idUsuario: empleadoAsignado,
+        // ✅ CORRECCIÓN: Se usa 'idUsuario' directamente.
+        idUsuario: idUsuario,
       },
       { transaction }
     );
@@ -87,10 +89,8 @@ const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
     whereClause[Op.or] = [
       { '$producto.nombre$': { [Op.iLike]: `%${search}%` } },
       { '$empleado.correo$': { [Op.iLike]: `%${search}%` } },
-      // --- INICIO DE LA CORRECCIÓN ---
-      { '$empleado.empleado.nombre$': { [Op.iLike]: `%${search}%` } }, // Alias corregido
-      { '$empleado.empleado.apellido$': { [Op.iLike]: `%${search}%` } }, // Alias corregido
-      // --- FIN DE LA CORRECCIÓN ---
+      { '$empleado.empleado.nombre$': { [Op.iLike]: `%${search}%` } },
+      { '$empleado.empleado.apellido$': { [Op.iLike]: `%${search}%` } },
     ];
   }
 
@@ -108,9 +108,7 @@ const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {
           attributes: ['id_usuario', 'correo'],
           include: [
             { model: Rol, as: "rol", attributes: ['nombre'] },
-            // --- INICIO DE LA CORRECCIÓN ---
-            { model: Empleado, as: "empleado", attributes: ['nombre', 'apellido'], required: true } // Alias corregido
-            // --- FIN DE LA CORRECCIÓN ---
+            { model: Empleado, as: "empleado", attributes: ['nombre', 'apellido'], required: true }
           ]
         }
       ],
@@ -149,9 +147,7 @@ const obtenerAbastecimientoPorId = async (idAbastecimiento) => {
           as: "empleado",
           include: [
               { model: Rol, as: "rol" },
-              // --- INICIO DE LA CORRECCIÓN ---
-              { model: Empleado, as: "empleado" } // Alias corregido
-              // --- FIN DE LA CORRECCIÓN ---
+              { model: Empleado, as: "empleado" }
           ]
         }
       ],
@@ -168,7 +164,8 @@ const obtenerAbastecimientoPorId = async (idAbastecimiento) => {
 
 // --- ACTUALIZAR ABASTECIMIENTO ---
 const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
-    const { estaAgotado, razonAgotamiento, fechaAgotamiento, estado, cantidad, empleadoAsignado } = datosActualizar;
+    // ✅ CORRECCIÓN: Se espera 'idUsuario' en lugar de 'empleadoAsignado'.
+    const { estaAgotado, razonAgotamiento, fechaAgotamiento, estado, cantidad, idUsuario } = datosActualizar;
     const transaction = await sequelize.transaction();
     try {
         const abastecimiento = await Abastecimiento.findByPk(idAbastecimiento, { transaction });
@@ -188,7 +185,8 @@ const actualizarAbastecimiento = async (idAbastecimiento, datosActualizar) => {
         const camposAActualizar = {};
 
         if (estaAgotado !== undefined) camposAActualizar.estaAgotado = estaAgotado;
-        if (empleadoAsignado !== undefined) camposAActualizar.idUsuario = empleadoAsignado;
+        // ✅ CORRECCIÓN: Se usa 'idUsuario' para la actualización.
+        if (idUsuario !== undefined) camposAActualizar.idUsuario = idUsuario;
         if (estaAgotado === true) {
             if (razonAgotamiento !== undefined) camposAActualizar.razonAgotamiento = razonAgotamiento;
             if (fechaAgotamiento !== undefined) camposAActualizar.fechaAgotamiento = fechaAgotamiento;
@@ -270,10 +268,8 @@ const obtenerEmpleados = async () => {
       include: [
         { model: Rol, as: "rol", attributes: ["nombre"] },
         {
-          // --- INICIO DE LA CORRECCIÓN ---
           model: Empleado,
-          as: "empleado", // Alias corregido de 'empleadoInfo' a 'empleado'
-          // --- FIN DE LA CORRECCIÓN ---
+          as: "empleado",
           attributes: ["nombre", "apellido"],
           required: true,
         },
@@ -283,8 +279,6 @@ const obtenerEmpleados = async () => {
       nest: true,
     });
 
-    // --- INICIO DE LA CORRECCIÓN ---
-    // Se ajusta el acceso a las propiedades del empleado según el alias corregido
     const empleadosPlano = usuarios.map((u) => ({
       id_usuario: u.id_usuario,
       correo: u.correo,
@@ -292,7 +286,6 @@ const obtenerEmpleados = async () => {
       apellido: u.empleado.apellido,
       rol: u.rol.nombre,
     }));
-    // --- FIN DE LA CORRECCIÓN ---
 
     return empleadosPlano;
   } catch (error) {

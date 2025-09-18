@@ -1,4 +1,5 @@
 // src/shared/src_api/services/auth.service.js
+const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");

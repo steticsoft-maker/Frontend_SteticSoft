@@ -1,60 +1,69 @@
+// src/services/novedades.service.js
 const db = require("../models");
 const { Op } = db.Sequelize;
 const { NotFoundError, BadRequestError, CustomError } = require("../errors");
-const moment = require("moment-timezone");
+
+/**
+ * Helper para obtener la estructura de inclusión de empleados de forma consistente.
+ * @returns {object} Objeto de configuración para `include` de Sequelize.
+ */
+const getIncludeEmpleado = () => ({
+  model: db.Usuario,
+  as: 'empleados',
+  attributes: ['idUsuario', 'correo'],
+  through: { attributes: [] },
+  include: [{
+    model: db.Empleado,
+    as: 'empleado',
+    attributes: ['nombre', 'apellido', 'telefono'],
+    required: true
+  }],
+});
+
+/**
+ * Transforma la estructura de la novedad para aplanar los datos del empleado.
+ * @param {object} novedad - Objeto de Sequelize de la novedad.
+ * @returns {object} Un objeto plano de la novedad listo para ser enviado como JSON.
+ */
+const aplanarDatosNovedad = (novedad) => {
+  if (!novedad) return null;
+  const plainNovedad = novedad.get({ plain: true });
+  if (plainNovedad.empleados) {
+    plainNovedad.empleados = plainNovedad.empleados.map((usuario) => ({
+      idUsuario: usuario.idUsuario,
+      correo: usuario.correo,
+      nombre: usuario.empleado?.nombre,
+      apellido: usuario.empleado?.apellido,
+      telefono: usuario.empleado?.telefono,
+    }));
+  }
+  return plainNovedad;
+};
 
 const crearNovedad = async (datosNovedad, empleadosIds) => {
   const t = await db.sequelize.transaction();
   try {
-    if (empleadosIds && empleadosIds.length > 0) {
-      const rolEmpleado = await db.Rol.findOne({ where: { nombre: 'Empleado' }, transaction: t });
-      if (!rolEmpleado) {
-        throw new CustomError("El rol 'Empleado' no está configurado en el sistema.", 500);
-      }
-      const usuariosValidos = await db.Usuario.count({
-        where: {
-          idUsuario: empleadosIds,
-          estado: true,
-          idRol: rolEmpleado.idRol 
-        },
-        transaction: t,
-      });
-      if (usuariosValidos !== empleadosIds.length) {
-        throw new BadRequestError("Uno o más de los IDs proporcionados no corresponden a empleados válidos y activos.");
-      }
+    if (!empleadosIds || empleadosIds.length === 0) {
+      throw new BadRequestError("Se debe asignar al menos un empleado a la novedad.");
     }
-    // Se eliminó la dependencia de 'nombre' y 'descripcion'
+    const rolEmpleado = await db.Rol.findOne({ where: { nombre: 'Empleado' }, transaction: t });
+    if (!rolEmpleado) {
+      throw new CustomError("El rol 'Empleado' no está configurado en el sistema.", 500);
+    }
+    const usuariosValidos = await db.Usuario.count({
+      where: { idUsuario: empleadosIds, estado: true, idRol: rolEmpleado.idRol },
+      transaction: t,
+    });
+    if (usuariosValidos !== empleadosIds.length) {
+      throw new BadRequestError("Uno o más de los IDs proporcionados no corresponden a empleados válidos y activos.");
+    }
     const nuevaNovedad = await db.Novedad.create(datosNovedad, { transaction: t });
-    if (empleadosIds && empleadosIds.length > 0) {
-      await nuevaNovedad.setEmpleados(empleadosIds, { transaction: t });
-    }
+    await nuevaNovedad.setEmpleados(empleadosIds, { transaction: t });
     await t.commit();
     const novedadCreada = await db.Novedad.findByPk(nuevaNovedad.idNovedad, {
-      include: [
-        {
-          model: db.Usuario,
-          as: "empleados",
-          attributes: ["idUsuario", "correo"],
-          through: { attributes: [] },
-          include: [
-            {
-              model: db.Empleado,
-              as: "empleado",
-              attributes: ["nombre", "apellido"],
-            },
-          ],
-        },
-      ],
+      include: [getIncludeEmpleado()],
     });
-
-    const plainNovedad = novedadCreada.get({ plain: true });
-    plainNovedad.empleados = plainNovedad.empleados.map((empleado) => ({
-      ...empleado,
-      nombre: empleado.empleado?.nombre,
-      apellido: empleado.empleado?.apellido,
-      empleado: undefined,
-    }));
-    return plainNovedad;
+    return aplanarDatosNovedad(novedadCreada);
   } catch (error) {
     await t.rollback();
     console.error("Error al crear la novedad en el servicio:", error);
@@ -63,35 +72,30 @@ const crearNovedad = async (datosNovedad, empleadosIds) => {
 };
 
 const obtenerTodasLasNovedades = async (opcionesDeFiltro = {}) => {
-  const { estado, empleadoId, busqueda } = opcionesDeFiltro;
+  const { estado, busqueda } = opcionesDeFiltro;
   const whereClause = {};
-  // Se ajusta el 'include' para traer los datos del modelo Empleado.
-  const includeOptions = {
-    model: db.Usuario,
-    as: 'empleados', // Alias de la relación Novedad -> Usuario
-    attributes: ['idUsuario', 'correo'], // Traemos solo lo necesario de Usuario
-    through: { attributes: [] },
-    include: [{
-      model: db.Empleado,
-      as: 'empleado', // Alias de la relación Usuario -> Empleado
-      attributes: ['nombre', 'apellido', 'telefono'], // ¡Traemos los datos completos!
-    }],
-    required: false
-  };
+  const includeOptions = getIncludeEmpleado();
 
-  if (empleadoId) {
-    includeOptions.where = { idUsuario: empleadoId };
-    includeOptions.required = true;
+  if (estado === 'true' || estado === 'false') {
+    whereClause.estado = estado === 'true';
   }
 
   if (busqueda) {
     const searchTerm = `%${busqueda}%`;
     whereClause[Op.or] = [
-      // ... (búsqueda en campos de Novedad)
-      { '$empleados.correo$': { [Op.like]: searchTerm } },
-      { '$empleados.empleado.nombre$': { [Op.like]: searchTerm } },
-      { '$empleados.empleado.apellido$': { [Op.like]: searchTerm } },
+      { '$empleados.empleado.nombre$': { [Op.iLike]: searchTerm } },
+      { '$empleados.empleado.apellido$': { [Op.iLike]: searchTerm } },
+      db.sequelize.where(db.sequelize.cast(db.sequelize.col('dias'), 'text'), {
+        [Op.iLike]: searchTerm
+      }),
+      db.sequelize.where(db.sequelize.cast(db.sequelize.col('hora_inicio'), 'text'), {
+        [Op.iLike]: searchTerm
+      }),
+      db.sequelize.where(db.sequelize.cast(db.sequelize.col('hora_fin'), 'text'), {
+        [Op.iLike]: searchTerm
+      }),
     ];
+    includeOptions.required = true;
   }
 
   try {
@@ -99,67 +103,23 @@ const obtenerTodasLasNovedades = async (opcionesDeFiltro = {}) => {
       where: whereClause,
       include: [includeOptions],
       order: [["fechaInicio", "DESC"]],
+      distinct: true,
     });
-    return novedades;
+    return novedades.map(aplanarDatosNovedad);
   } catch (error) {
     console.error("Error al obtener todas las novedades:", error);
     throw new CustomError(`Error al obtener novedades: ${error.message}`, 500);
   }
 };
 
-const obtenerNovedadesActivas = async () => {
-    try {
-        // Se usa moment().tz para asegurar que la fecha actual se evalúe en la zona horaria correcta (ej. America/Bogota).
-        // Esto previene problemas si el servidor está en una zona horaria diferente.
-        const hoy = moment().tz("America/Bogota").startOf('day').toDate();
-
-        return await db.Novedad.findAll({
-            where: {
-                estado: true,
-                fechaInicio: {
-                    [Op.lte]: hoy,
-                },
-                fechaFin: {
-                    [Op.gte]: hoy,
-                },
-            },
-        });
-    } catch (error) {
-        console.error("Error al obtener novedades activas:", error);
-        throw new CustomError(`Error al obtener novedades activas: ${error.message}`, 500);
-    }
-};
-
 const obtenerNovedadPorId = async (idNovedad) => {
   const novedad = await db.Novedad.findByPk(idNovedad, {
-    include: [
-      {
-        model: db.Usuario,
-        as: "empleados",
-        attributes: ["idUsuario", "correo"],
-        through: { attributes: [] },
-        include: [
-          {
-            model: db.Empleado,
-            as: "empleado",
-            attributes: ["nombre", "apellido"],
-          },
-        ],
-      },
-    ],
+    include: [getIncludeEmpleado()],
   });
   if (!novedad) {
     throw new NotFoundError("Novedad no encontrada.");
   }
-
-  const plainNovedad = novedad.get({ plain: true });
-  plainNovedad.empleados = plainNovedad.empleados.map((empleado) => ({
-    ...empleado,
-    nombre: empleado.empleado?.nombre,
-    apellido: empleado.empleado?.apellido,
-    empleado: undefined,
-  }));
-  return plainNovedad;
+  return aplanarDatosNovedad(novedad);
 };
 
 const actualizarNovedad = async (idNovedad, datosActualizar, empleadosIds) => {
@@ -170,10 +130,11 @@ const actualizarNovedad = async (idNovedad, datosActualizar, empleadosIds) => {
       throw new NotFoundError("Novedad no encontrada para actualizar.");
     }
     if (empleadosIds) {
-      const rolEmpleado = await db.Rol.findOne({ where: { nombre: 'Empleado' }, transaction: t });
-      if (!rolEmpleado) {
-        throw new CustomError("El rol 'Empleado' no está configurado.", 500);
+      if (empleadosIds.length === 0) {
+        throw new BadRequestError("Se debe asignar al menos un empleado a la novedad.");
       }
+      const rolEmpleado = await db.Rol.findOne({ where: { nombre: 'Empleado' }, transaction: t });
+      if (!rolEmpleado) throw new CustomError("El rol 'Empleado' no está configurado.", 500);
       const usuariosValidos = await db.Usuario.count({
         where: { idUsuario: empleadosIds, estado: true, idRol: rolEmpleado.idRol },
         transaction: t
@@ -183,7 +144,6 @@ const actualizarNovedad = async (idNovedad, datosActualizar, empleadosIds) => {
       }
       await novedad.setEmpleados(empleadosIds, { transaction: t });
     }
-    // Se eliminó la dependencia de 'nombre' y 'descripcion'
     await novedad.update(datosActualizar, { transaction: t });
     await t.commit();
     return await obtenerNovedadPorId(idNovedad);
@@ -207,173 +167,60 @@ const eliminarNovedadFisica = async (idNovedad) => {
   await novedad.destroy();
 };
 
-const obtenerDiasDisponibles = async (idNovedad, anio, mes) => {
-  // 1. Busca la novedad por su ID para obtener sus reglas (fechas y días)
-  const novedad = await db.Novedad.findByPk(idNovedad);
-  if (!novedad) {
-    throw new NotFoundError("Novedad no encontrada.");
-  }
 
-  const inicioDelMes = moment.tz({ year: anio, month: mes - 1 }, "America/Bogota").startOf('month');
-  const finDelMes = moment.tz({ year: anio, month: mes - 1 }, "America/Bogota").endOf('month');
-
-  // ✅ LÍNEAS AÑADIDAS: Convertimos las fechas de la novedad a objetos moment en la misma zona horaria.
-  const fechaInicioNovedad = moment.tz(novedad.fechaInicio, "America/Bogota").startOf('day');
-  const fechaFinNovedad = moment.tz(novedad.fechaFin, "America/Bogota").endOf('day');
-
-  const diasValidos = [];
-  
-  moment.locale('es'); // Establecer el idioma a español
-
-  let diaActual = inicioDelMes.clone();
-  while (diaActual.isSameOrBefore(finDelMes)) {
-    
-    // ✅ LÍNEAS MODIFICADAS: Comparamos usando los nuevos objetos moment.
-    const esDespuesDeInicioNovedad = diaActual.isSameOrAfter(fechaInicioNovedad);
-    const esAntesDeFinNovedad = diaActual.isSameOrBefore(fechaFinNovedad);
-    
-    const diaDeLaSemana = diaActual.format('dddd');
-    const diaDeLaSemanaCapitalizado = diaDeLaSemana.charAt(0).toUpperCase() + diaDeLaSemana.slice(1);
-    const esDiaPermitido = novedad.dias.includes(diaDeLaSemanaCapitalizado);
-
-    if (esDespuesDeInicioNovedad && esAntesDeFinNovedad && esDiaPermitido) {
-      diasValidos.push(diaActual.format('YYYY-MM-DD'));
-    }
-
-    diaActual.add(1, 'days');
-  }
-
-  moment.locale('en'); // Revertir al idioma original para no afectar otras partes
-
-  return diasValidos;
-};
-
-
-const obtenerHorasDisponibles = async (idNovedad, fecha) => {
-  // 1. Busca la novedad para obtener sus reglas de horario
-  const novedad = await db.Novedad.findByPk(idNovedad);
-  if (!novedad) {
-    throw new NotFoundError("Novedad no encontrada.");
-  }
-  const citasDelDia = await db.Cita.findAll({
-    where: {
-      fecha: fecha,
-    },
-    attributes: ['horaInicio'], // Solo necesitamos la hora de inicio de cada cita
-  });
-  // Creamos un Set para una búsqueda más rápida de las horas ocupadas
-  const horasOcupadas = new Set(citasDelDia.map(cita => cita.horaInicio));
-  const horariosPosibles = [];
-  const formatoHora = 'HH:mm:ss';
-  const intervaloMinutos = 60;
-
-  let horaActual = moment(novedad.horaInicio, formatoHora);
-  const horaFin = moment(novedad.horaFin, formatoHora);
-
-  while (horaActual.isBefore(horaFin)) {
-    horariosPosibles.push(horaActual.format(formatoHora));
-    horaActual.add(intervaloMinutos, 'minutes');
-  }
-
-  const horasDisponibles = horariosPosibles.filter(hora => !horasOcupadas.has(hora));
-  
-  return horasDisponibles;
-};
-
-
-const obtenerEmpleadosPorNovedad = async (idNovedad) => {
-  const novedad = await db.Novedad.findByPk(idNovedad, {
-    include: [
-      {
-        model: db.Usuario,
-        as: "empleados",
-        attributes: ["idUsuario", "correo"],
-        where: { estado: true },
-        through: { attributes: [] },
-        include: [
-          {
-            model: db.Empleado,
-            as: "empleado",
-            attributes: ["nombre", "apellido", "telefono"],
-          },
-        ],
-      },
-    ],
-  });
-
-  if (!novedad) {
-    throw new NotFoundError("Novedad no encontrada");
-  }
-
-  return novedad.empleados.map((empleado) => {
-    const plainEmpleado = empleado.get({ plain: true });
-    return {
-      ...plainEmpleado,
-      nombre: plainEmpleado.empleado?.nombre,
-      apellido: plainEmpleado.empleado?.apellido,
-      telefono: plainEmpleado.empleado?.telefono,
-      empleado: undefined,
-    };
-  });
-};
-
-const obtenerEmpleadosParaAsignar = async () => {
+/**
+ * Obtiene las novedades que tienen al menos un empleado disponible.
+ * Un empleado está disponible si tiene alguna cita que NO esté en estado 'Finalizada'.
+ * @returns {Promise<Array<object>>} Una lista de novedades con sus empleados disponibles.
+ */
+const obtenerNovedadesDisponibles = async () => {
   try {
-    const rolEmpleado = await db.Rol.findOne({ where: { nombre: "Empleado" } });
-    if (!rolEmpleado) {
-      throw new CustomError(
-        "El rol 'Empleado' no está configurado en el sistema.",
-        500
-      );
+    const estadoFinalizada = await db.Estado.findOne({ where: { nombreEstado: 'Finalizada' } });
+    if (!estadoFinalizada) {
+      throw new CustomError("El estado 'Finalizada' no está configurado en el sistema.", 500);
     }
-
-    const usuarios = await db.Usuario.findAll({
-      where: {
-        idRol: rolEmpleado.idRol,
-        estado: true,
-      },
-      attributes: ["idUsuario", "correo"],
-      include: [
-        {
+    const todasLasNovedades = await db.Novedad.findAll({
+      where: { estado: true },
+      include: [{
+        model: db.Usuario,
+        as: 'empleados',
+        attributes: ['idUsuario'],
+        through: { attributes: [] },
+        include: [{
           model: db.Empleado,
-          as: "empleado",
-          attributes: ["nombre", "apellido", "telefono"],
-          required: true
-        },
-      ],
-      order: [[{ model: db.Empleado, as: "empleado" }, "nombre", "ASC"]],
+          as: 'empleado',
+          attributes: ['nombre', 'apellido']
+        }]
+      }]
     });
-
-    return usuarios.map((usuario) => {
-      const plainUsuario = usuario.get({ plain: true });
-      const info = plainUsuario.empleado;
-      return {
-        idUsuario: plainUsuario.idUsuario,
-        nombreCompleto: `${info?.nombre || ""} ${info?.apellido || ""}`.trim(),
-      };
-    });
-  } catch (error) {
-    console.error("Error al obtener empleados para asignar:", error);
-    if (error instanceof CustomError) throw error;
-    throw new CustomError(
-      `Error al obtener la lista de empleados: ${error.message}`,
-      500
-    );
-  }
-};
-
-const obtenerNovedadesPublicas = async () => {
-    try {
-        return await db.Novedad.findAll({
-            where: {
-                estado: true,
-            },
-            order: [["fechaInicio", "DESC"]],
+    const novedadesDisponibles = [];
+    for (const novedad of todasLasNovedades) {
+      const empleadosDisponibles = [];
+      for (const empleado of novedad.empleados) {
+        const citasActivas = await db.Cita.count({
+          where: {
+            idUsuario: empleado.idUsuario,
+            idEstado: { [Op.ne]: estadoFinalizada.idEstado }
+          }
         });
-    } catch (error) {
-        console.error("Error al obtener novedades públicas:", error);
-        throw new CustomError(`Error al obtener novedades públicas: ${error.message}`, 500);
+        if (citasActivas === 0) {
+          empleadosDisponibles.push(empleado);
+        }
+      }
+      if (empleadosDisponibles.length > 0) {
+        const novedadConDisponibles = aplanarDatosNovedad(novedad); 
+        novedadConDisponibles.empleados = empleadosDisponibles.map(e => aplanarDatosNovedad({empleados: [e]}).empleados[0]);
+        novedadesDisponibles.push(novedadConDisponibles);
+      }
     }
+
+    return novedadesDisponibles;
+
+  } catch (error) {
+    console.error("Error al obtener novedades disponibles:", error);
+    if (error instanceof CustomError) throw error;
+    throw new CustomError(`Error al obtener novedades disponibles: ${error.message}`, 500);
+  }
 };
 
 module.exports = {
@@ -383,11 +230,5 @@ module.exports = {
   actualizarNovedad,
   cambiarEstadoNovedad,
   eliminarNovedadFisica,
-  obtenerNovedadesActivas,
-  obtenerDiasDisponibles,
-  obtenerHorasDisponibles,
-  obtenerEmpleadosPorNovedad,
-  obtenerEmpleadosParaAsignar,
-  obtenerNovedadesPublicas,
+  obtenerNovedadesDisponibles,
 };
-

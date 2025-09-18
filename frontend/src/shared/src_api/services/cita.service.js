@@ -15,7 +15,7 @@ const { formatDateTime } = require('../utils/dateHelpers.js');
 
 /**
  * Función interna unificada para obtener los detalles completos de una cita.
- * Utiliza los alias correctos definidos en tus modelos.
+ * Corregida para usar los alias y atributos correctos de los modelos.
  */
 const obtenerCitaCompletaPorIdInterno = async (idCita, transaction = null) => {
   return db.Cita.findByPk(idCita, {
@@ -27,12 +27,12 @@ const obtenerCitaCompletaPorIdInterno = async (idCita, transaction = null) => {
       },
       {
         model: db.Usuario,
-        as: "empleado",
+        as: "empleado", // Alias de la relación Cita -> Usuario
         attributes: ['idUsuario', 'correo'],
         include: [{
             model: db.Empleado,
-            as: 'empleado',
-            attributes: { exclude: ['idUsuario'] }
+            as: 'empleadoInfo', // Alias de la relación Usuario -> Empleado
+            attributes: ['nombre', 'apellido']
         }]
       },
       {
@@ -52,47 +52,52 @@ const obtenerCitaCompletaPorIdInterno = async (idCita, transaction = null) => {
 };
 
 /**
- * Crea una nueva cita, validando contra la novedad y enviando un correo.
+ * Crea una nueva cita, validando que todos los recursos estén activos.
  */
 const crearCita = async (datosCita) => {
-    const { fecha, hora_inicio, clienteId, usuarioId, idEstado, novedadId, servicios = [] } = datosCita;
+    const { fechaHora, clienteId, usuarioId, idEstado, novedadId, servicios = [] } = datosCita;
 
-    const transaction = await db.sequelize.transaction();
-    try {
-        const novedad = await db.Novedad.findByPk(novedadId, {
-            include: [{ model: db.Usuario, as: 'empleados' }],
+    if (!novedadId) throw new BadRequestError("Debes seleccionar una novedad de horario.");
+    if (!usuarioId) throw new BadRequestError("Debes seleccionar un empleado.");
+    if (!clienteId) throw new BadRequestError("Debes seleccionar un cliente.");
+    if (!servicios || servicios.length === 0) throw new BadRequestError("Debes seleccionar al menos un servicio.");
+
+      const transaction = await db.sequelize.transaction();
+        try {
+        // --- VALIDACIÓN DE DISPONIBILIDAD DEL EMPLEADO ---
+        const estadoFinalizada = await db.Estado.findOne({ where: { nombreEstado: 'Finalizada' }, transaction });
+        if (!estadoFinalizada) {
+            throw new CustomError("El estado 'Finalizada' no está configurado en el sistema.", 500);
+        }
+
+        const citasActivasDelEmpleado = await db.Cita.count({
+            where: {
+                idUsuario: usuarioId,
+                idEstado: { [Op.ne]: estadoFinalizada.idEstado }
+            },
             transaction
         });
-        if (!novedad) throw new BadRequestError(`La novedad de horario con ID ${novedadId} no fue encontrada.`);
 
-        // ... (Todas las validaciones de novedad: empleado, fecha, día, hora)
-
-        let precioTotalCalculado = 0;
-        const serviciosConsultados = await db.Servicio.findAll({
-            where: { idServicio: servicios, estado: true }, transaction
-        });
-        if (serviciosConsultados.length !== servicios.length) {
-            throw new BadRequestError(`Uno o más servicios no existen o están inactivos.`);
+        if (citasActivasDelEmpleado > 0) {
+            throw new ConflictError("El empleado seleccionado ya no está disponible. Por favor, actualice la página y seleccione otro.");
         }
-        serviciosConsultados.forEach(s => {
-            precioTotalCalculado += parseFloat(s.precio);
-        });
 
         const nuevaCita = await db.Cita.create({
-            fecha, hora_inicio, precio_total: precioTotalCalculado,
-            idCliente: clienteId, idUsuario: usuarioId, idEstado: idEstado, novedadId: novedadId,
+            fechaHora,
+            idCliente: clienteId,
+            idUsuario: usuarioId,
+            idEstado,
+            idNovedad,
+            estado: true
         }, { transaction });
 
         await nuevaCita.addServiciosProgramados(serviciosConsultados, { transaction });
-
         await transaction.commit();
-
-        // --- ✅ INICIO DE LA CORRECCIÓN: Lógica para usar las funciones importadas ---
+        
         const citaCreadaConDetalles = await obtenerCitaCompletaPorIdInterno(nuevaCita.idCita);
 
         if (citaCreadaConDetalles && citaCreadaConDetalles.cliente?.correo) {
             try {
-                // Combinamos fecha y hora para el correo
                 const fechaHoraParaCorreo = moment(`${citaCreadaConDetalles.fecha} ${citaCreadaConDetalles.hora_inicio}`).toDate();
 
                 await enviarCorreoCita({
@@ -100,19 +105,17 @@ const crearCita = async (datosCita) => {
                     nombreCliente: citaCreadaConDetalles.cliente.nombre,
                     citaInfo: {
                         accion: 'agendada',
-                        fechaHora: formatDateTime(fechaHoraParaCorreo), // Usamos el helper
+                        fechaHora: formatDateTime(fechaHoraParaCorreo),
                         empleado: citaCreadaConDetalles.empleado?.empleado?.nombre || 'No asignado',
                         estado: citaCreadaConDetalles.estadoDetalle?.nombreEstado || 'Pendiente',
                         servicios: citaCreadaConDetalles.serviciosProgramados,
                         total: citaCreadaConDetalles.precio_total,
-                        // duracionTotalEstimada: ... (puedes calcularla si la necesitas)
                     }
                 });
             } catch (emailError) {
                 console.error(`Cita ${nuevaCita.idCita} creada, pero falló el envío de correo:`, emailError);
             }
         }
-        // --- FIN DE LA CORRECCIÓN ---
 
         return citaCreadaConDetalles;
 
@@ -129,34 +132,43 @@ const crearCita = async (datosCita) => {
  */
 const obtenerTodasLasCitas = async (opcionesDeFiltro = {}) => {
   try {
+    const { idEstado, search, estado } = opcionesDeFiltro;
     const whereClause = {};
-    if (opcionesDeFiltro.estadoCitaId) whereClause.idEstado = opcionesDeFiltro.estadoCitaId;
-    if (opcionesDeFiltro.clienteId) whereClause.idCliente = opcionesDeFiltro.clienteId;
-    if (opcionesDeFiltro.empleadoId) whereClause.idUsuario = opcionesDeFiltro.empleadoId;
+    
+    // Filtro por estado del proceso (Pendiente, Confirmada, etc.)
+    if (idEstado) whereClause.idEstado = idEstado;
+
+    // Filtro por estado de la cita (activa/inactiva-cancelada)
+    if (estado === 'true' || estado === 'false') {
+        whereClause.estado = estado === 'true';
+    } else if (estado === 'activa') { // Añadido para manejar el estado "activa"
+        whereClause.estado = true;
+    }
+
+    // Lógica de búsqueda por texto en múltiples campos
+    if (search) {
+        whereClause[Op.or] = [
+            db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('cliente.nombre')), { [Op.like]: `%${search.toLowerCase()}%` }),
+            db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('cliente.apellido')), { [Op.like]: `%${search.toLowerCase()}%` }),
+            db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('empleado->empleadoInfo.nombre')), { [Op.like]: `%${search.toLowerCase()}%` }),
+            db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('empleado->empleadoInfo.apellido')), { [Op.like]: `%${search.toLowerCase()}%` }),
+            db.sequelize.where(db.sequelize.cast(db.col('Cita.fechaHora'), 'text'), { [Op.iLike]: `%${search}%` })
+        ];
+    }
 
     return await db.Cita.findAll({
       where: whereClause,
       include: [
-        { model: db.Cliente, as: "cliente", attributes: ["idCliente", "nombre", "apellido"] },
+        { model: db.Cliente, as: "cliente", attributes: ["nombre", "apellido"] },
         {
           model: db.Usuario,
           as: "empleado",
-          attributes: ['idUsuario', 'correo'],
-          include: [{
-              model: db.Empleado,
-              as: 'empleado',
-              attributes: ['nombre', 'apellido']
-          }]
+          attributes: ['idUsuario'],
+          include: [{ model: db.Empleado, as: 'empleadoInfo', attributes: ['nombre', 'apellido'] }]
         },
-        { model: db.Estado, as: "estadoDetalle", attributes: ["idEstado", "nombreEstado"] },
-        {
-          model: db.Servicio,
-          as: "serviciosProgramados", // ✅ ALIAS CORREGIDO
-          attributes: ["idServicio", "nombre"],
-          through: { attributes: [] },
-        },
+        { model: db.Estado, as: "estadoDetalle", attributes: ["nombreEstado"] },
       ],
-      order: [["fecha", "DESC"], ["hora_inicio", "DESC"]],
+      order: [["fechaHora", "DESC"]],
     });
   } catch (error) {
     console.error("Error al obtener todas las citas:", error.message);
@@ -225,7 +237,6 @@ const eliminarCitaFisica = async (idCita) => {
     if (!cita) {
         throw new NotFoundError("Cita no encontrada para eliminar.");
     }
-    // La restricción de tiempo para eliminar debe estar aquí
     const unaSemanaDespues = moment(cita.fecha).add(7, 'days');
     if (moment().isBefore(unaSemanaDespues)) {
         throw new BadRequestError("Una cita solo puede ser eliminada una semana después de su fecha de realización.");
