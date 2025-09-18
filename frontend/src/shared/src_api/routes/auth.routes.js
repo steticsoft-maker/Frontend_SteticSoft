@@ -27,6 +27,13 @@ router.post(
 );
 
 
+// POST /api/auth/verificar-token - Verificar el token de recuperación
+router.post(
+  "/verificar-token",
+  authValidators.verificarTokenValidators,
+  authController.validarTokenRecuperacion // Reutilizamos el controlador existente
+);
+
 // POST /api/auth/resetear-contrasena - Resetear la contraseña usando un correo y el código OTP (token)
 router.post(
   "/resetear-contrasena",

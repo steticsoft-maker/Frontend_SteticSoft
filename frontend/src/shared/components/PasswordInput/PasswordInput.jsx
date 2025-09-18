@@ -18,36 +18,39 @@ const PasswordInput = ({
   onBlur,
   placeholder,
   autoComplete = "new-password",
-  className = "", // Permite pasar clases adicionales para personalizar
-  required = false
+  className = "",
+  required = false,
+  helpText // Nueva prop para el texto de ayuda
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  // Combinamos las clases que vienen de props con las de error si es necesario
   const inputClassName = `password-input ${className}`.trim();
 
   return (
-    <div className="password-input-wrapper">
-      <input
-        type={showPassword ? "text" : "password"}
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        required={required}
-        className={inputClassName}
-      />
-      <button
-        type="button"
-        className="password-toggle-button"
-        onClick={() => setShowPassword(!showPassword)}
-        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-      >
-        <EyeIcon closed={showPassword} />
-      </button>
+    <div className="password-input-container">
+      <div className="password-input-wrapper">
+        <input
+          type={showPassword ? "text" : "password"}
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          required={required}
+          className={inputClassName}
+        />
+        <button
+          type="button"
+          className="password-toggle-button"
+          onClick={() => setShowPassword(!showPassword)}
+          aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+        >
+          <EyeIcon closed={showPassword} />
+        </button>
+      </div>
+      {helpText && <small className="password-help-text">{helpText}</small>}
     </div>
   );
 };

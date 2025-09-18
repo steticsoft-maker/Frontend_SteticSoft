@@ -155,9 +155,22 @@ const resetearContrasenaValidators = [
   handleValidationErrors,
 ];
 
+const verificarTokenValidators = [
+  body("token")
+    .trim()
+    .notEmpty()
+    .withMessage("El código de recuperación es obligatorio.")
+    .isNumeric()
+    .withMessage("El código debe ser numérico.")
+    .isLength({ min: 6, max: 6 })
+    .withMessage("El código debe tener exactamente 6 dígitos."),
+  handleValidationErrors,
+];
+
 module.exports = {
   registrarUsuarioValidators,
   loginValidators,
   solicitarRecuperacionValidators,
   resetearContrasenaValidators,
+  verificarTokenValidators,
 };

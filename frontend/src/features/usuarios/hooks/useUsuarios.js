@@ -13,13 +13,15 @@ import {
   getUsuarioByIdAPI,
 } from "../services/usuariosService";
 
-// --- CONSTANTES DE VALIDACIÓN ---
-const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+import {
+  validatePassword,
+  validateName,
+  validateEmail,
+} from "../../../shared/utils/validationUtils";
+
+// --- CONSTANTES DE VALIDACIÓN (Se mantienen las que no están en el utilitario) ---
 const numericOnlyRegex = /^\d+$/;
 const alphanumericRegex = /^[a-zA-Z0-9]+$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
 const MySwal = withReactContent(Swal);
@@ -105,7 +107,7 @@ const useUsuarios = () => {
       switch (name) {
         case "correo":
           if (!value) error = "El correo es obligatorio.";
-          else if (!emailRegex.test(value))
+          else if (!validateEmail(value))
             error = "Formato de correo inválido.";
           break;
         case "idRol":
@@ -114,9 +116,8 @@ const useUsuarios = () => {
         case "contrasena":
           if (formType === "create" && !value)
             error = "La contraseña es requerida.";
-          else if (formType === "create" && value && !passwordRegex.test(value))
-            error =
-              "Contraseña insegura (mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb).";
+          else if (formType === "create" && value && !validatePassword(value))
+            error = "Contraseña insegura (mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb).";
           break;
         case "confirmarContrasena":
           if (formType === "create" && !value)
@@ -127,7 +128,7 @@ const useUsuarios = () => {
         case "nombre":
         case "apellido":
           if (requiresProfile && !value) error = `El ${name} es requerido.`;
-          else if (value && !nameRegex.test(value))
+          else if (value && !validateName(value))
             error = `El ${name} solo puede contener letras y espacios.`;
           else if (value && (value.length < 2 || value.length > 100))
             error = `Debe tener entre 2 y 100 caracteres.`;
