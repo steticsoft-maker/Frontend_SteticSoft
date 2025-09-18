@@ -19,6 +19,7 @@ const RolEditarModal = ({
     id: null,
     nombre: "",
     descripcion: "",
+    tipoPerfil: "EMPLEADO", // Agregado: valor por defecto para tipoPerfil
     idPermisos: [],
     estado: true,
   });
@@ -49,6 +50,7 @@ const RolEditarModal = ({
         id: roleDetails.idRol,
         nombre: roleDetails.nombre,
         descripcion: roleDetails.descripcion || "",
+        tipoPerfil: roleDetails.tipoPerfil || "EMPLEADO", // Agregado: cargar tipoPerfil desde la API
         estado: roleDetails.estado,
         idPermisos: roleDetails.permisos?.map((p) => p.idPermiso) || [],
       });

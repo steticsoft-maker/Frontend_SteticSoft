@@ -1,15 +1,13 @@
 // src/features/roles/components/HistorialRolModal.jsx
 import React, { useState, useMemo } from 'react';
-import Modal from '../../../shared/components/common/Modal';
 import Spinner from '../../../shared/components/common/Spinner';
 import { FaTimes, FaUserCircle, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import '../../../shared/styles/admin-layout.css';
 import '../css/HistorialRolModal.css';
 
 const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, error, permisosDisponibles }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
-  if (!isOpen) return null;
 
   const formatDate = (dateString) => {
     // Función mejorada para evitar "Invalid Date"
@@ -87,11 +85,16 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
     }
   }, [isOpen]);
 
+  if (!isOpen) return null;
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="historial-modal-content">
-        <button onClick={onClose} className="historial-modal-close-button" title="Cerrar"><FaTimes /></button>
-        <h2>Historial de Cambios para: <strong>{roleName}</strong></h2>
+    <div className="admin-modal-overlay" onClick={onClose}>
+      <div className="admin-modal-content extra-large" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Historial de Cambios para: <strong>{roleName}</strong></h2>
+          <button onClick={onClose} className="admin-modal-close" title="Cerrar"><FaTimes /></button>
+        </div>
+        <div className="admin-modal-body">
         {isLoading ? ( <div className="historial-loading"><Spinner /><p>Cargando historial...</p></div>
         ) : error ? ( <p className="error-message">{error}</p>
         ) : history.length > 0 ? (
@@ -159,8 +162,12 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
         ) : (
           <div className="historial-no-records"><p>Aún no hay cambios registrados para este rol.</p></div>
         )}
+        </div>
+        <div className="admin-modal-footer">
+          <button onClick={onClose} className="admin-form-button secondary">Cerrar</button>
+        </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 
