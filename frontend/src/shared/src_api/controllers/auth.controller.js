@@ -94,8 +94,8 @@ const validarTokenRecuperacion = async (req, res, next) => {
  */
 const resetearContrasena = async (req, res, next) => {
   try {
-    const { token, nuevaContrasena } = req.body;
-    await authService.resetearContrasena(token, nuevaContrasena);
+    const { correo, token, nuevaContrasena } = req.body;
+    await authService.resetearContrasena(correo, token, nuevaContrasena);
     res.status(200).json({
       success: true,
       message:

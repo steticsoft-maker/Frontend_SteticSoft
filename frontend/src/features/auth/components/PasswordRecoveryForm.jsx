@@ -12,6 +12,10 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
     confirmarNuevaContrasena: "",
   });
   const [passwordError, setPasswordError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  // Expresiones regulares para validación
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.,;?¡¿"'(){}[\]\-_+=|\\/°¬~`´¨´`+*çÇªº]).{8,}$/;
 
   useEffect(() => {
     if (email) {
@@ -19,23 +23,57 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
     }
   }, [email]);
 
+  const validatePassword = (password) => {
+    if (!password) return "La nueva contraseña es obligatoria.";
+    if (password.length < 8) return "La contraseña debe tener al menos 8 caracteres.";
+    if (!passwordRegex.test(password)) {
+      return "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.";
+    }
+    return "";
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
+    // Validar campos en tiempo real
+    if (name === "nuevaContrasena") {
+      const error = validatePassword(value);
+      setFieldErrors((prev) => ({ ...prev, nuevaContrasena: error }));
+    }
+
     if (name === "confirmarNuevaContrasena" || name === "nuevaContrasena") {
       const newPassword = name === "nuevaContrasena" ? value : formData.nuevaContrasena;
       const confirmPassword = name === "confirmarNuevaContrasena" ? value : formData.confirmarNuevaContrasena;
-      if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-        setPasswordError("Las contraseñas no son iguales.");
+      
+      if (confirmPassword && newPassword !== confirmPassword) {
+        setPasswordError("Las contraseñas no coinciden.");
+        setFieldErrors((prev) => ({ ...prev, confirmarNuevaContrasena: "Las contraseñas no coinciden." }));
       } else {
         setPasswordError("");
+        setFieldErrors((prev) => ({ ...prev, confirmarNuevaContrasena: "" }));
       }
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Validar contraseñas antes de enviar
+    if (view === "reset") {
+      const passwordError = validatePassword(formData.nuevaContrasena);
+      if (passwordError) {
+        setFieldErrors((prev) => ({ ...prev, nuevaContrasena: passwordError }));
+        return;
+      }
+      
+      if (formData.nuevaContrasena !== formData.confirmarNuevaContrasena) {
+        setPasswordError("Las contraseñas no coinciden.");
+        setFieldErrors((prev) => ({ ...prev, confirmarNuevaContrasena: "Las contraseñas no coinciden." }));
+        return;
+      }
+    }
+    
     if (passwordError) return;
     onSubmit(formData);
   };
@@ -81,11 +119,12 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
               name="nuevaContrasena"
               value={formData.nuevaContrasena}
               onChange={handleChange}
-              className="auth-form-input"
+              className={`auth-form-input ${fieldErrors.nuevaContrasena ? "input-error" : ""}`}
               required
               disabled={view === 'verify'}
               helpText={view === 'reset' ? "Mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb" : ""}
             />
+            {fieldErrors.nuevaContrasena && <span className="error-message">{fieldErrors.nuevaContrasena}</span>}
           </div>
           <div className="auth-form-group">
             <label htmlFor="confirmarNuevaContrasena">Confirmar Nueva Contraseña</label>
@@ -93,10 +132,11 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
               name="confirmarNuevaContrasena"
               value={formData.confirmarNuevaContrasena}
               onChange={handleChange}
-              className="auth-form-input"
+              className={`auth-form-input ${fieldErrors.confirmarNuevaContrasena ? "input-error" : ""}`}
               required
               disabled={view === 'verify'}
             />
+            {fieldErrors.confirmarNuevaContrasena && <span className="error-message">{fieldErrors.confirmarNuevaContrasena}</span>}
           </div>
         </>
       ) : null}

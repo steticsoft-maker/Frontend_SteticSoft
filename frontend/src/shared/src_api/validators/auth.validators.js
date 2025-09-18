@@ -11,7 +11,7 @@ const numericOnlyRegex = /^\d+$/;
 const alphanumericRegex = /^[a-zA-Z0-9]+$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.,;?¡¿"'(){}[\]\-_+=|\\/°¬~`´¨´`+*çÇªº]).{8,}$/;
 const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
 const registrarUsuarioValidators = [
@@ -140,7 +140,11 @@ const resetearContrasenaValidators = [
     .isString()
     .withMessage("La nueva contraseña debe ser una cadena de texto.")
     .isLength({ min: 8 })
-    .withMessage("La nueva contraseña debe tener al menos 8 caracteres."),
+    .withMessage("La nueva contraseña debe tener al menos 8 caracteres.")
+    .matches(passwordRegex)
+    .withMessage(
+      "La nueva contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial."
+    ),
   body("confirmarNuevaContrasena")
     .notEmpty()
     .withMessage("La confirmación de la nueva contraseña es obligatoria.")
