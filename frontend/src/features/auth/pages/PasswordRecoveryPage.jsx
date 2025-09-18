@@ -8,8 +8,9 @@ import "../css/Auth.css";
 import Stetic2 from "/Stetic2.svg";
 
 function PasswordRecoveryPage() {
-  const [step, setStep] = useState("request"); // 'request' or 'reset'
+  const [view, setView] = useState("request"); // 'request', 'verify', 'reset'
   const [email, setEmail] = useState("");
+  const [token, setToken] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ function PasswordRecoveryPage() {
     try {
       await authService.solicitarRecuperacionAPI(formData.email);
       setEmail(formData.email);
-      setStep("reset");
+      setView("verify");
       Swal.fire({
         title: "¡Revisa tu correo!",
         text: "Hemos enviado un código de 6 dígitos a tu correo electrónico.",
@@ -34,13 +35,35 @@ function PasswordRecoveryPage() {
     }
   };
 
+  const handleVerifySubmit = async (formData) => {
+    setIsLoading(true);
+    setError("");
+    try {
+      await authService.verificarTokenAPI(formData.token);
+      setToken(formData.token);
+      setView("reset");
+      Swal.fire({
+        title: "¡Token verificado!",
+        text: "Ahora puedes ingresar tu nueva contraseña.",
+        icon: "success",
+        confirmButtonText: "Continuar",
+      });
+    } catch (err) {
+      setError(err.message || "El token es inválido o ha expirado.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleResetSubmit = async (formData) => {
     setIsLoading(true);
     setError("");
     try {
       await authService.resetearContrasenaAPI({
-        ...formData,
         correo: email,
+        token: token,
+        nuevaContrasena: formData.nuevaContrasena,
+        confirmarNuevaContrasena: formData.confirmarNuevaContrasena,
       });
       Swal.fire({
         title: "¡Contraseña actualizada!",
@@ -51,18 +74,33 @@ function PasswordRecoveryPage() {
         navigate("/login");
       });
     } catch (err) {
-      if (err.message && err.message.includes("inválido")) {
-        setError("Código de recuperación inválido, expirado o correo incorrecto.");
-      } else if (err.errors) {
-        // Handle validation errors from express-validator
-        const errorMessages = Object.values(err.errors).map(e => e.msg).join(' ');
-        setError(errorMessages);
-      }
-      else {
-        setError(err.message || "Ocurrió un error al restablecer la contraseña.");
-      }
+      const errorMessages = err.errors ? Object.values(err.errors).map(e => e.msg).join(' ') : (err.message || "Ocurrió un error al restablecer la contraseña.");
+      setError(errorMessages);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getTitle = () => {
+    switch (view) {
+      case "request":
+        return "Recuperar Contraseña";
+      case "verify":
+        return "Verificar Código";
+      case "reset":
+        return "Restablecer Contraseña";
+      default:
+        return "Recuperar Contraseña";
+    }
+  };
+
+  const handleSubmit = (formData) => {
+    if (view === "request") {
+      handleRequestSubmit(formData);
+    } else if (view === "verify") {
+      handleVerifySubmit(formData);
+    } else {
+      handleResetSubmit(formData);
     }
   };
 
@@ -70,12 +108,10 @@ function PasswordRecoveryPage() {
     <div className="auth-page-container">
       <div className="auth-form-box">
         <img src={Stetic2} alt="Logo" className="auth-form-logo" />
-        <h2 className="auth-form-title">
-          {step === "request" ? "Recuperar Contraseña" : "Restablecer Contraseña"}
-        </h2>
+        <h2 className="auth-form-title">{getTitle()}</h2>
         <PasswordRecoveryForm
-          step={step}
-          onSubmit={step === "request" ? handleRequestSubmit : handleResetSubmit}
+          view={view}
+          onSubmit={handleSubmit}
           error={error}
           isLoading={isLoading}
           email={email}

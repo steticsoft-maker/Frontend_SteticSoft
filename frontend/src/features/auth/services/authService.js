@@ -85,6 +85,28 @@ export const solicitarRecuperacionAPI = async (emailSolicitud) => {
  * @returns {Promise<object>} La respuesta de la API, generalmente un mensaje de éxito.
  * @throws {Error} Relanza el error si la llamada a la API falla.
  */
+export const verificarTokenAPI = async (token) => {
+  try {
+    const response = await apiClient.post("/auth/verificar-token", { token });
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data ||
+      new Error(error.message || "Error desconocido al verificar el token.")
+    );
+  }
+};
+
+/**
+ * Realiza la llamada al endpoint para restablecer la contraseña utilizando un código OTP.
+ * @param {object} data - Objeto con los datos para el reseteo.
+ * @param {string} data.correo - Correo electrónico del usuario.
+ * @param {string} data.token - Código OTP de 6 dígitos.
+ * @param {string} data.nuevaContrasena - Nueva contraseña.
+ * @param {string} data.confirmarNuevaContrasena - Confirmación de la nueva contraseña.
+ * @returns {Promise<object>} La respuesta de la API, generalmente un mensaje de éxito.
+ * @throws {Error} Relanza el error si la llamada a la API falla.
+ */
 export const resetearContrasenaAPI = async (data) => {
   const datosParaAPI = {
     correo: data.correo,

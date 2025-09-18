@@ -72,6 +72,7 @@ const UsuarioForm = ({
               placeholder="Contraseña"
               required
               className={`usuarios-form-input ${errors.contrasena ? "input-error" : ""}`}
+              helpText="Mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb"
             />
             {errors.contrasena && <span className="error-message">{errors.contrasena}</span>}
           </div>
