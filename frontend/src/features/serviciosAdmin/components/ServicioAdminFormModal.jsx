@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { FaUpload, FaTrashAlt } from 'react-icons/fa';
-import '../css/ServiciosAdmin.css';
+import '../../../shared/styles/admin-layout.css';
 
 // --- Constantes de Validación ---
 const NAME_REGEX = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚüÜ\s]*$/;
@@ -176,84 +176,183 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
   if (!isOpen) return null;
 
   return (
-    <div className="servicios-admin-modal-overlay">
-      <div className="servicios-admin-modal-content">
-        <h3>{isEditMode ? 'Editar Servicio' : 'Agregar Nuevo Servicio'}</h3>
-        
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="servicios-admin-form-grid-with-image">
-            <div className="servicios-admin-form-fields">
-              {/* Campo Nombre */}
-              <div className="servicios-admin-form-group">
-                <label>Nombre del Servicio <span className="required-asterisk">*</span></label>
-                <input name="nombre" value={formData.nombre} onChange={handleChange} onBlur={handleBlur} className={`form-control ${formErrors.nombre ? 'is-invalid' : ''}`} />
-                {formErrors.nombre && <span className="field-error-message">{formErrors.nombre}</span>}
+    <div className="admin-modal-overlay">
+      <div className="admin-modal-content large">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">{isEditMode ? 'Editar Servicio' : 'Crear Servicio'}</h2>
+          <button
+            type="button"
+            className="admin-modal-close"
+            onClick={onClose}
+          >
+            &times;
+          </button>
+        </div>
+        <div className="admin-modal-body">
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="admin-form-section">
+              <h3 className="admin-form-section-title">Información del Servicio</h3>
+              <div className="admin-form-row-2">
+                <div className="admin-form-group">
+                  <label htmlFor="nombre" className="admin-form-label">
+                    Nombre del Servicio: <span className="required-asterisk">*</span>
+                  </label>
+                  <input 
+                    id="nombre"
+                    name="nombre" 
+                    value={formData.nombre} 
+                    onChange={handleChange} 
+                    onBlur={handleBlur} 
+                    className={`admin-form-input ${formErrors.nombre ? 'error' : ''}`} 
+                    required
+                  />
+                  {formErrors.nombre && (
+                    <span className="admin-form-error">{formErrors.nombre}</span>
+                  )}
+                </div>
+
+                <div className="admin-form-group">
+                  <label htmlFor="precio" className="admin-form-label">
+                    Precio: <span className="required-asterisk">*</span>
+                  </label>
+                  <input 
+                    id="precio"
+                    name="precio" 
+                    type="number" 
+                    step="0.01" 
+                    value={formData.precio} 
+                    onChange={handleChange} 
+                    onBlur={handleBlur} 
+                    className={`admin-form-input ${formErrors.precio ? 'error' : ''}`} 
+                    required
+                  />
+                  {formErrors.precio && (
+                    <span className="admin-form-error">{formErrors.precio}</span>
+                  )}
+                </div>
               </div>
 
-              {/* Campo Descripción */}
-              <div className="servicios-admin-form-group">
-                <label>Descripción</label>
-                <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} onBlur={handleBlur} className="form-control" />
+              <div className="admin-form-group">
+                <label htmlFor="descripcion" className="admin-form-label">Descripción:</label>
+                <textarea 
+                  id="descripcion"
+                  name="descripcion" 
+                  value={formData.descripcion} 
+                  onChange={handleChange} 
+                  onBlur={handleBlur} 
+                  className="admin-form-textarea"
+                  rows="4"
+                />
               </div>
-              
-              {/* Campo Precio */}
-              <div className="servicios-admin-form-group">
-                <label>Precio <span className="required-asterisk">*</span></label>
-                <input name="precio" type="number" step="0.01" value={formData.precio} onChange={handleChange} onBlur={handleBlur} className={`form-control ${formErrors.precio ? 'is-invalid' : ''}`} />
-                {formErrors.precio && <span className="field-error-message">{formErrors.precio}</span>}
-              </div>
-              
-              {/* Campo Categoría */}
-              <div className="servicios-admin-form-group">
-                <label>Categoría <span className="required-asterisk">*</span></label>
-                <select name="idCategoriaServicio" value={formData.idCategoriaServicio} onChange={handleChange} onBlur={handleBlur} className={`form-control ${formErrors.idCategoriaServicio ? 'is-invalid' : ''}`}>
+
+              <div className="admin-form-group">
+                <label htmlFor="idCategoriaServicio" className="admin-form-label">
+                  Categoría: <span className="required-asterisk">*</span>
+                </label>
+                <select 
+                  id="idCategoriaServicio"
+                  name="idCategoriaServicio" 
+                  value={formData.idCategoriaServicio} 
+                  onChange={handleChange} 
+                  onBlur={handleBlur} 
+                  className={`admin-form-select ${formErrors.idCategoriaServicio ? 'error' : ''}`}
+                  required
+                >
                   <option value="">Seleccione una categoría...</option>
-                  {(categorias || []).map(cat => <option key={cat.value} value={cat.value}>{cat.label}</option>)}
+                  {(categorias || []).map(cat => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
                 </select>
-                {formErrors.idCategoriaServicio && <span className="field-error-message">{formErrors.idCategoriaServicio}</span>}
-              </div>
-            </div>
-
-            {/* Sección de Imagen */}
-            <div className="servicios-admin-form-image-section">
-              <label>Imagen del Servicio</label>
-              <div 
-                className={`image-upload-area ${isDragging ? 'dragging' : ''}`} 
-                onDragEnter={handleDragEvents}
-                onDragOver={handleDragEvents}
-                onDragLeave={handleDragEvents}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById('file-input-servicio')?.click()}
-              >
-                <input type="file" id="file-input-servicio" accept={ALLOWED_FILE_TYPES.join(',')} onChange={handleFileSelect} style={{ display: 'none' }} />
-                
-                {imagePreview ? (
-                  <div className="image-preview-container">
-                    <img src={imagePreview} alt="Vista previa del servicio" className="image-preview" />
-                    <button type="button" className="remove-image-btn" onClick={(e) => { e.stopPropagation(); handleRemoveImage(); }} title="Eliminar imagen">
-                      <FaTrashAlt />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="upload-placeholder">
-                    <FaUpload />
-                    <p>Arrastra una imagen aquí o haz clic para seleccionar</p>
-                    <small>JPG, PNG, WEBP - Máx 2MB</small>
-                  </div>
+                {formErrors.idCategoriaServicio && (
+                  <span className="admin-form-error">{formErrors.idCategoriaServicio}</span>
                 )}
               </div>
             </div>
-          </div>
 
-          <div className="servicios-admin-form-actions">
-            <button type="submit" className="guardar" disabled={isSubmitting}>
-              {isSubmitting ? 'Guardando...' : 'Guardar'}
-            </button>
-            <button type="button" className="cancelar" onClick={onClose} disabled={isSubmitting}>
-              Cancelar
-            </button>
-          </div>
-        </form>
+            <div className="admin-form-section">
+              <h3 className="admin-form-section-title">Imagen del Servicio</h3>
+              <div className="admin-form-group">
+                <label className="admin-form-label">Imagen:</label>
+                <div 
+                  className={`image-upload-area ${isDragging ? 'dragging' : ''}`} 
+                  onDragEnter={handleDragEvents}
+                  onDragOver={handleDragEvents}
+                  onDragLeave={handleDragEvents}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById('file-input-servicio')?.click()}
+                  style={{
+                    border: '2px dashed #ccc',
+                    borderRadius: '8px',
+                    padding: '20px',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'border-color 0.3s ease',
+                    backgroundColor: isDragging ? '#f0f0f0' : 'transparent'
+                  }}
+                >
+                  <input type="file" id="file-input-servicio" accept={ALLOWED_FILE_TYPES.join(',')} onChange={handleFileSelect} style={{ display: 'none' }} />
+                  
+                  {imagePreview ? (
+                    <div className="image-preview-container" style={{ position: 'relative', display: 'inline-block' }}>
+                      <img 
+                        src={imagePreview} 
+                        alt="Vista previa del servicio" 
+                        style={{ 
+                          maxWidth: '200px', 
+                          maxHeight: '200px', 
+                          borderRadius: '8px',
+                          objectFit: 'cover'
+                        }} 
+                      />
+                      <button 
+                        type="button" 
+                        className="remove-image-btn" 
+                        onClick={(e) => { e.stopPropagation(); handleRemoveImage(); }} 
+                        title="Eliminar imagen"
+                        style={{
+                          position: 'absolute',
+                          top: '5px',
+                          right: '5px',
+                          background: 'red',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '25px',
+                          height: '25px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <FaTrashAlt size={12} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="upload-placeholder" style={{ color: '#666' }}>
+                      <FaUpload size={48} style={{ marginBottom: '10px' }} />
+                      <p>Arrastra una imagen aquí o haz clic para seleccionar</p>
+                      <small>JPG, PNG, WEBP - Máx 2MB</small>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div className="admin-modal-footer">
+          <button type="submit" className="admin-form-button" form="servicio-form" disabled={isSubmitting}>
+            {isSubmitting ? 'Guardando...' : (isEditMode ? 'Actualizar Servicio' : 'Crear Servicio')}
+          </button>
+          <button 
+            type="button" 
+            className="admin-form-button secondary" 
+            onClick={onClose} 
+            disabled={isSubmitting}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );

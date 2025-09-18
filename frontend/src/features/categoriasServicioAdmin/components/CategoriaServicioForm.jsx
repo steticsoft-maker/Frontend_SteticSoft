@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../../../shared/styles/admin-layout.css';
 
 const INITIAL_FORM_STATE = {
   nombre: '',
@@ -86,8 +87,6 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode, cat
   return !error;
 };
 
-
-
   const validateForm = () => {
     const isNombreValid = validateField('nombre', formData.nombre, true);
     const isDescripcionValid = validateField('descripcion', formData.descripcion, true);
@@ -122,57 +121,108 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode, cat
   const isFormInvalid = Object.values(errors).some(error => !!error) || !formData.nombre.trim() || !formData.descripcion.trim();
 
   return (
-    <div className="modal-Categoria">
-      <div className="modal-content-Categoria formulario">
-        <button type="button" className="modal-close-button" onClick={onClose} title="Cerrar">&times;</button>
-        <h3>{isEditMode ? 'Editar Categoría de Servicio' : 'Nueva Categoría'}</h3>
+    <div className="admin-modal-overlay">
+      <div className="admin-modal-content">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">
+            {isEditMode ? 'Editar Categoría de Servicio' : 'Crear Categoría de Servicio'}
+          </h2>
+          <button
+            type="button"
+            className="admin-modal-close"
+            onClick={onClose}
+            title="Cerrar"
+          >
+            &times;
+          </button>
+        </div>
+        <div className="admin-modal-body">
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="admin-form-section">
+              <h3 className="admin-form-section-title">Información de la Categoría</h3>
+              <div className="admin-form-group">
+                <label htmlFor="nombre" className="admin-form-label">
+                  Nombre: <span className="required-asterisk">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  className={`admin-form-input ${errors.nombre ? 'error' : ''}`}
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  disabled={loading}
+                  required
+                  autoComplete="off"
+                  placeholder="Ej: Limpieza de Hogar"
+                />
+                {errors.nombre && (
+                  <span className="admin-form-error">{errors.nombre}</span>
+                )}
+              </div>
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="camposAgregarCategoria">
-            <label htmlFor="nombre">Nombre <span className="requiredCategoria">*</span></label>
-            <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              className={`campoAgregarCategoria ${errors.nombre ? 'input-error' : ''}`}
-              value={formData.nombre}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              disabled={loading}
-              required
-              autoComplete="off"
-              placeholder="Ej: Limpieza de Hogar"
-            />
-            {errors.nombre && <div className="error">{errors.nombre}</div>}
-          </div>
+              <div className="admin-form-group">
+                <label htmlFor="descripcion" className="admin-form-label">
+                  Descripción: <span className="required-asterisk">*</span>
+                </label>
+                <textarea
+                  id="descripcion"
+                  name="descripcion"
+                  className={`admin-form-textarea ${errors.descripcion ? 'error' : ''}`}
+                  value={formData.descripcion}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  rows="4"
+                  disabled={loading}
+                  required
+                />
+                {errors.descripcion && (
+                  <span className="admin-form-error">{errors.descripcion}</span>
+                )}
+              </div>
 
-          <div className="camposAgregarCategoria">
-            <label htmlFor="descripcion">Descripción <span className="requiredCategoria">*</span></label>
-            <textarea
-              id="descripcion"
-              name="descripcion"
-              className={`campoAgregarCategoria ${errors.descripcion ? 'input-error' : ''}`}
-              value={formData.descripcion}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              rows="4"
-              disabled={loading}
-              required
-            ></textarea>
-            {errors.descripcion && <div className="error">{errors.descripcion}</div>}
-          </div>
+              {isEditMode && (
+                <div className="admin-form-group">
+                  <label className="admin-form-label">Estado:</label>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      name="estado"
+                      checked={formData.estado}
+                      onChange={(e) => setFormData(prev => ({ ...prev, estado: e.target.checked }))}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+              )}
 
-          {apiError && <p className="error" style={{ textAlign: 'center', width: '100%' }}>{apiError}</p>}
-
-          <div className="containerBotonesAgregarCategoria">
-            <button type="submit" className="botonEditarCategoria" disabled={loading || isFormInvalid}>
-              {loading ? 'Guardando...' : 'Guardar'}
-            </button>
-            <button type="button" className="botonEliminarCategoria" onClick={onClose} disabled={loading}>
-              Cancelar
-            </button>
-          </div>
-        </form>
+              {apiError && (
+                <p className="admin-form-error" style={{ textAlign: 'center', width: '100%' }}>
+                  {apiError}
+                </p>
+              )}
+            </div>
+          </form>
+        </div>
+        <div className="admin-modal-footer">
+          <button 
+            type="submit" 
+            className="admin-form-button" 
+            form="categoria-servicio-form"
+            disabled={loading || isFormInvalid}
+          >
+            {loading ? 'Guardando...' : (isEditMode ? 'Actualizar Categoría' : 'Crear Categoría')}
+          </button>
+          <button 
+            type="button" 
+            className="admin-form-button secondary" 
+            onClick={onClose} 
+            disabled={loading}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );

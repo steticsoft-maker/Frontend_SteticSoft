@@ -1,7 +1,7 @@
 // src/features/productosAdmin/components/CategoriaProductoCrearModal.jsx
 import React, { useState, useEffect } from 'react';
 import CategoriaProductoForm from './CategoriaProductoForm';
-import '../css/CategoriasProducto.css';
+import '../../../shared/styles/admin-layout.css';
 
 const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const getInitialFormState = () => ({
@@ -138,28 +138,45 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="categorias-container-modal-overlay">
-      <div className="modal-content-categoria-form">
-        <div className="modal-header-categorias-productos">
-          <h2 className="modal-title">Agregar Nueva Categoría de Producto</h2>
-          <button type="button" className="modal-close-button" onClick={onClose}>
+    <div className="admin-modal-overlay">
+      <div className="admin-modal-content">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Crear Categoría de Producto</h2>
+          <button
+            type="button"
+            className="admin-modal-close"
+            onClick={onClose}
+          >
             &times;
           </button>
         </div>
-        <form onSubmit={handleSubmitForm}>
-          <CategoriaProductoForm
-            formData={formData}
-            onFormChange={handleFormChange}
-            isEditing={false}
-            formErrors={formErrors}
-          />
-          {generalError && <p className="error-message general-error">{generalError}</p>}
-          <div className="form-actions-categoria">
-            <button type="submit" className="form-button-guardar-categoria">
-              Guardar Categoría
-            </button>
-          </div>
-        </form>
+        <div className="admin-modal-body">
+          <form onSubmit={handleSubmitForm} noValidate>
+            <CategoriaProductoForm
+              formData={formData}
+              onFormChange={handleFormChange}
+              isEditing={false}
+              formErrors={formErrors}
+            />
+            {generalError && (
+              <p className="admin-form-error" style={{ width: '100%', textAlign: 'center' }}>
+                {generalError}
+              </p>
+            )}
+          </form>
+        </div>
+        <div className="admin-modal-footer">
+          <button type="submit" className="admin-form-button" form="categoria-form">
+            Crear Categoría
+          </button>
+          <button
+            type="button"
+            className="admin-form-button secondary"
+            onClick={onClose}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );
