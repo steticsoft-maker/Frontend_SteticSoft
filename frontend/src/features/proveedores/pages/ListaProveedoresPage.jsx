@@ -9,6 +9,7 @@ import ProveedorEditarModal from "../components/ProveedorEditarModal";
 import ProveedorDetalleModal from "../components/ProveedorDetalleModal";
 import { proveedoresService } from "../services/proveedoresService";
 import "../css/Proveedores.css";
+import "../../../shared/styles/crud-common.css";
 
 const MySwal = withReactContent(Swal);
 
@@ -230,85 +231,88 @@ function ListaProveedoresPage() {
   };
 
   return (
-    <div className="proveedores-page-container">
-      <div className="proveedores-main-content">
-        <div className="proveedores-content-wrapper">
-          <h1>Gestión de Proveedores</h1>
-          <div className="proveedores-actions-bar">
-            <div className="proveedores-filters">
-              <div className="proveedores-search-bar">
-                <input
-                  type="text"
-                  placeholder="Buscar por cualquier campo..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="filtro-estado-grupo">
-                <select
-                  id="filtro-estado"
-                  className="filtro-input"
-                  value={filtroEstado}
-                  onChange={(e) => setFiltroEstado(e.target.value)}
-                  disabled={isLoading}
-                >
-                  <option value="todos">Todos los estados</option>
-                  <option value="activos">Activos</option>
-                  <option value="inactivos">Inactivos</option>
-                </select>
-              </div>
-            </div>
-            <button
-              className="proveedores-add-button"
-              onClick={() => handleOpenModal("create")}
+    <div className="crud-container">
+      <div className="crud-content">
+        <h1>Gestión de Proveedores ({filteredProveedores.length})</h1>
+        <div className="crud-accionesTop">
+          <input
+            type="text"
+            placeholder="Buscar por cualquier campo..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="crud-barraBusqueda"
+            disabled={isLoading}
+          />
+          <div className="crud-filtro-estado">
+            <span>Estado: </span>
+            <select
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
               disabled={isLoading}
             >
-              Agregar Proveedor
+              <option value="todos">Todos</option>
+              <option value="activos">Activos</option>
+              <option value="inactivos">Inactivos</option>
+            </select>
+          </div>
+          <button
+            className="crud-botonAgregar"
+            onClick={() => handleOpenModal("create")}
+            disabled={isLoading}
+          >
+            Crear Proveedor
+          </button>
+        </div>
+
+        {isLoading ? (
+          <p style={{ textAlign: "center", margin: "20px 0" }}>
+            Cargando proveedores...
+          </p>
+        ) : error ? (
+          <p
+            className="error-message"
+            style={{ textAlign: "center", marginTop: "20px" }}
+          >
+            {error}
+          </p>
+        ) : (
+          <ProveedoresTable
+            proveedores={proveedoresPaginados}
+            onView={(prov) => handleOpenModal("ver", prov)}
+            onEdit={(prov) => handleOpenModal("edit", prov)}
+            onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}
+            onToggleEstado={(prov) => handleOpenModal("status", prov)}
+          />
+        )}
+
+        {/* Paginación */}
+        {!isLoading && totalPaginas > 1 && (
+          <div className="pagination-bar">
+            <button
+              onClick={() => irAPagina(paginaActual - 1)}
+              disabled={paginaActual === 1}
+              className="pagination-button"
+            >
+              ← Anterior
+            </button>
+            {[...Array(totalPaginas)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => irAPagina(index + 1)}
+                className={`pagination-button ${paginaActual === index + 1 ? "active" : ""}`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => irAPagina(paginaActual + 1)}
+              disabled={paginaActual === totalPaginas}
+              className="pagination-button"
+            >
+              Siguiente →
             </button>
           </div>
-
-          {isLoading && <p>Cargando proveedores...</p>}
-          {error && <p className="error-message">{error}</p>}
-          {!isLoading && !error && (
-            <ProveedoresTable
-              proveedores={proveedoresPaginados}
-              onView={(prov) => handleOpenModal("ver", prov)}
-              onEdit={(prov) => handleOpenModal("edit", prov)}
-              onDeleteConfirm={(prov) => handleOpenModal("delete", prov)}
-              onToggleEstado={(prov) => handleOpenModal("status", prov)}
-            />
-          )}
-
-          {/* Paginación */}
-          {!isLoading && totalPaginas > 1 && (
-            <div className="pagination-bar">
-              <button
-                onClick={() => irAPagina(paginaActual - 1)}
-                disabled={paginaActual === 1}
-                className="pagination-button"
-              >
-                ← Anterior
-              </button>
-              {[...Array(totalPaginas)].map((_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => irAPagina(index + 1)}
-                  className={`pagination-button ${paginaActual === index + 1 ? "active" : ""}`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-              <button
-                onClick={() => irAPagina(paginaActual + 1)}
-                disabled={paginaActual === totalPaginas}
-                className="pagination-button"
-              >
-                Siguiente →
-              </button>
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
       <ProveedorCrearModal isOpen={isCrearModalOpen} onClose={closeModal} onSubmit={handleSave} />

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import ProductoAdminForm from "./ProductoAdminForm";
 import { productosAdminService } from "../services/productosAdminService";
+import "../../../shared/styles/admin-layout.css";
 
 const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
 const MAX_FILE_SIZE_MB = MAX_FILE_SIZE_BYTES / (1024 * 1024);
@@ -249,39 +250,68 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modalProductosAdministrador">
-      <div className="modal-content-ProductosAdministrador">
-        <h2>Agregar Producto</h2>
-        <form onSubmit={handleSubmitForm} noValidate>
-          <ProductoAdminForm
-            formData={formData}
-            onFormChange={handleFormChange}
-            onFileChange={handleFileChange}
-            categoriasDisponibles={categoriasDisponibles}
-            isEditing={false}
-            formErrors={formErrors}
-          />
-          <div className="botonesGuardarCancelarProductoAdministrador">
-            <button type="submit" className="botonGuardarProducto">
-              Crear Producto
-            </button>
-            <button
-              type="button"
-              className="botonCancelarAgregarProducto"
-              onClick={onClose}
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
+    <div className="admin-modal-overlay">
+      <div className="admin-modal-content large">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Crear Producto</h2>
+          <button
+            type="button"
+            className="admin-modal-close"
+            onClick={onClose}
+          >
+            &times;
+          </button>
+        </div>
+        <div className="admin-modal-body">
+          <form onSubmit={handleSubmitForm} noValidate>
+            <ProductoAdminForm
+              formData={formData}
+              onFormChange={handleFormChange}
+              onFileChange={handleFileChange}
+              categoriasDisponibles={categoriasDisponibles}
+              isEditing={false}
+              formErrors={formErrors}
+            />
+          </form>
+        </div>
+        <div className="admin-modal-footer">
+          <button type="submit" className="admin-form-button" form="producto-form">
+            Crear Producto
+          </button>
+          <button
+            type="button"
+            className="admin-form-button secondary"
+            onClick={onClose}
+          >
+            Cancelar
+          </button>
+        </div>
 
         {isValidationModalOpen && (
-          <div className="validationModal">
-            <div className="validationModal-content">
-              <p>{validationMessage}</p>
-              <button onClick={() => setIsValidationModalOpen(false)}>
-                Cerrar
-              </button>
+          <div className="admin-modal-overlay">
+            <div className="admin-modal-content">
+              <div className="admin-modal-header">
+                <h3 className="admin-modal-title">Error de Validación</h3>
+                <button
+                  type="button"
+                  className="admin-modal-close"
+                  onClick={() => setIsValidationModalOpen(false)}
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="admin-modal-body">
+                <p className="admin-form-error">{validationMessage}</p>
+              </div>
+              <div className="admin-modal-footer">
+                <button
+                  type="button"
+                  className="admin-form-button secondary"
+                  onClick={() => setIsValidationModalOpen(false)}
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
           </div>
         )}

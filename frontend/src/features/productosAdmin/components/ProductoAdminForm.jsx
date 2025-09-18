@@ -1,5 +1,6 @@
 // src/features/productosAdmin/components/ProductoAdminForm.jsx
 import React from "react";
+import "../../../shared/styles/admin-layout.css";
 
 const ProductoAdminForm = ({
   formData,
@@ -32,237 +33,251 @@ const ProductoAdminForm = ({
   };
 
   return (
-    <div className="producto-admin-form-grid">
-      {/* Nombre */}
-      <div className="producto-admin-form-group">
-        <label htmlFor="nombre">
-          Nombre: <span className="required-asterisk">*</span>
-        </label>
-        <input
-          type="text"
-          id="nombre"
-          name="nombre"
-          value={formData.nombre || ""}
-          onChange={handleChange}
-          required
-        />
-        {formErrors.nombre && (
-          <p className="error-message">{formErrors.nombre}</p>
-        )}
-      </div>
-
-      {/* Categoría */}
-      <div className="producto-admin-form-group">
-        <label htmlFor="idCategoriaProducto">
-          Categoría: <span className="required-asterisk">*</span>
-        </label>
-        <select
-          id="idCategoriaProducto"
-          name="idCategoriaProducto"
-          value={formData.idCategoriaProducto || ""}
-          onChange={handleChange}
-          required
-        >
-          <option value="" disabled>
-            Seleccionar categoría
-          </option>
-          {categoriasDisponibles.map((cat) => (
-            <option key={cat.idCategoriaProducto} value={cat.idCategoriaProducto}>
-              {cat.nombre}
-            </option>
-          ))}
-        </select>
-        {formErrors.idCategoriaProducto && (
-          <p className="error-message">{formErrors.idCategoriaProducto}</p>
-        )}
-      </div>
-
-      {/* Tipo de uso */}
-      <div className="producto-admin-form-group">
-        <label htmlFor="tipoUso">
-          Tipo de Uso: <span className="required-asterisk">*</span>
-        </label>
-        <select
-          id="tipoUso"
-          name="tipoUso"
-          value={formData.tipoUso || ""}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Selecciona tipo de uso</option>
-          <option value="Interno">Interno</option>
-          <option value="Externo">Externo</option>
-        </select>
-        {formErrors.tipoUso && (
-          <p className="error-message">{formErrors.tipoUso}</p>
-        )}
-      </div>
-
-      {/* Vida útil */}
-      <div className="producto-admin-form-group">
-        <label htmlFor="vidaUtilDias">
-          Vida Útil (días): <span className="required-asterisk">*</span>
-        </label>
-        <input
-          type="number"
-          id="vidaUtilDias"
-          name="vidaUtilDias"
-          value={formData.vidaUtilDias || ""}
-          onChange={handleChange}
-          min="1"
-          required
-        />
-        {formErrors.vidaUtilDias && (
-          <p className="error-message">{formErrors.vidaUtilDias}</p>
-        )}
-      </div>
-
-      {/* Precio */}
-      <div className="producto-admin-form-group">
-        <label htmlFor="precio">
-          Precio: <span className="required-asterisk">*</span>
-        </label>
-        <input
-          type="number"
-          id="precio"
-          name="precio"
-          value={formData.precio || ""}
-          onChange={handleChange}
-          required
-          min="0"
-          step="0.01"
-        />
-        {formErrors.precio && (
-          <p className="error-message">{formErrors.precio}</p>
-        )}
-      </div>
-
-      {/* Existencia */}
-      <div className="producto-admin-form-group">
-        <label htmlFor="existencia">
-          Existencia: <span className="required-asterisk">*</span>
-        </label>
-        <input
-          type="number"
-          id="existencia"
-          name="existencia"
-          value={formData.existencia || ""}
-          onChange={handleChange}
-          required
-          min="0"
-        />
-        {formErrors.existencia && (
-          <p className="error-message">{formErrors.existencia}</p>
-        )}
-      </div>
-
-      {/* Stock mínimo */}
-      <div className="producto-admin-form-group">
-        <label htmlFor="stockMinimo">
-          Stock Mínimo: <span className="required-asterisk">*</span>
-        </label>
-        <input
-          type="number"
-          id="stockMinimo"
-          name="stockMinimo"
-          value={formData.stockMinimo || ""}
-          onChange={handleChange}
-          min="0"
-        />
-        {formErrors.stockMinimo && (
-          <p className="error-message">{formErrors.stockMinimo}</p>
-        )}
-      </div>
-
-      {/* Stock máximo */}
-      <div className="producto-admin-form-group">
-        <label htmlFor="stockMaximo">
-          Stock Máximo: <span className="required-asterisk">*</span>
-        </label>
-        <input
-          type="number"
-          id="stockMaximo"
-          name="stockMaximo"
-          value={formData.stockMaximo || ""}
-          onChange={handleChange}
-          min="0"
-        />
-        {formErrors.stockMaximo && (
-          <p className="error-message">{formErrors.stockMaximo}</p>
-        )}
-      </div>
-
-      {/* Descripción */}
-      <div className="producto-admin-form-group full-width">
-        <label htmlFor="descripcion">Descripción:</label>
-        <textarea
-          id="descripcion"
-          name="descripcion"
-          value={formData.descripcion || ""}
-          onChange={handleChange}
-        />
-        {formErrors.descripcion && (
-          <p className="error-message">{formErrors.descripcion}</p>
-        )}
-      </div>
-
-      {/* Imagen */}
-      <div className="producto-admin-form-group full-width">
-        <label htmlFor="imagen">Imagen del Producto:</label>
-        <input
-          type="file"
-          id="imagen"
-          name="imagen"
-          accept=".jpg,.jpeg,.png"
-          onChange={handleFileChange}
-        />
-
-        {(formData.imagenPreview ||
-          (isEditing && typeof formData.imagen === "string" && formData.imagen)) && (
-          <div style={{ marginTop: "10px" }}>
-            <img
-              src={formData.imagenPreview || formData.imagen}
-              alt="Vista previa"
-              style={{ 
-                maxWidth: "100px", 
-                maxHeight: "100px",
-                objectFit: "cover",
-                border: "1px solid #ddd",
-                borderRadius: "4px"
-              }}
-              onError={(e) => {
-                console.error("Error al cargar imagen:", e);
-                e.target.style.display = "none";
-              }}
+    <>
+      <div className="admin-form-section">
+        <h3 className="admin-form-section-title">Información del Producto</h3>
+        <div className="admin-form-row-2">
+          <div className="admin-form-group">
+            <label htmlFor="nombre" className="admin-form-label">
+              Nombre: <span className="required-asterisk">*</span>
+            </label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              value={formData.nombre || ""}
+              onChange={handleChange}
+              className={`admin-form-input ${formErrors.nombre ? 'error' : ''}`}
+              required
             />
-            {isEditing && typeof formData.imagen === "string" && (
-              <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>
-                Imagen actual
-              </p>
+            {formErrors.nombre && (
+              <span className="admin-form-error">{formErrors.nombre}</span>
             )}
           </div>
-        )}
-        {formErrors.imagen && (
-          <p className="error-message">{formErrors.imagen}</p>
-        )}
+
+          <div className="admin-form-group">
+            <label htmlFor="idCategoriaProducto" className="admin-form-label">
+              Categoría: <span className="required-asterisk">*</span>
+            </label>
+            <select
+              id="idCategoriaProducto"
+              name="idCategoriaProducto"
+              value={formData.idCategoriaProducto || ""}
+              onChange={handleChange}
+              className={`admin-form-select ${formErrors.idCategoriaProducto ? 'error' : ''}`}
+              required
+            >
+              <option value="">Seleccionar categoría</option>
+              {categoriasDisponibles.map((categoria) => (
+                <option key={categoria.idCategoriaProducto} value={categoria.idCategoriaProducto}>
+                  {categoria.nombre}
+                </option>
+              ))}
+            </select>
+            {formErrors.idCategoriaProducto && (
+              <span className="admin-form-error">{formErrors.idCategoriaProducto}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="admin-form-group">
+          <label htmlFor="descripcion" className="admin-form-label">
+            Descripción: <span className="required-asterisk">*</span>
+          </label>
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            value={formData.descripcion || ""}
+            onChange={handleChange}
+            className={`admin-form-textarea ${formErrors.descripcion ? 'error' : ''}`}
+            rows="4"
+            required
+          />
+          {formErrors.descripcion && (
+            <span className="admin-form-error">{formErrors.descripcion}</span>
+          )}
+        </div>
       </div>
 
-      {/* Estado solo en edición */}
-      {isEditing && (
-        <div className="producto-admin-form-group">
-          <label>Estado (Activo):</label>
-          <label className="switch">
+      <div className="admin-form-section">
+        <h3 className="admin-form-section-title">Precio y Stock</h3>
+        <div className="admin-form-row-3">
+          <div className="admin-form-group">
+            <label htmlFor="precio" className="admin-form-label">
+              Precio: <span className="required-asterisk">*</span>
+            </label>
             <input
-              type="checkbox"
-              name="estado"
-              checked={formData.estado}
+              type="number"
+              id="precio"
+              name="precio"
+              value={formData.precio || ""}
               onChange={handleChange}
+              className={`admin-form-input ${formErrors.precio ? 'error' : ''}`}
+              min="0"
+              step="0.01"
+              required
             />
-            <span className="slider round"></span>
-          </label>
+            {formErrors.precio && (
+              <span className="admin-form-error">{formErrors.precio}</span>
+            )}
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="existencia" className="admin-form-label">
+              Existencia: <span className="required-asterisk">*</span>
+            </label>
+            <input
+              type="number"
+              id="existencia"
+              name="existencia"
+              value={formData.existencia || ""}
+              onChange={handleChange}
+              className={`admin-form-input ${formErrors.existencia ? 'error' : ''}`}
+              min="0"
+              required
+            />
+            {formErrors.existencia && (
+              <span className="admin-form-error">{formErrors.existencia}</span>
+            )}
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="tipoUso" className="admin-form-label">
+              Tipo de Uso: <span className="required-asterisk">*</span>
+            </label>
+            <select
+              id="tipoUso"
+              name="tipoUso"
+              value={formData.tipoUso || ""}
+              onChange={handleChange}
+              className={`admin-form-select ${formErrors.tipoUso ? 'error' : ''}`}
+              required
+            >
+              <option value="">Seleccionar tipo de uso</option>
+              <option value="Externo">Externo</option>
+              <option value="Interno">Interno</option>
+            </select>
+            {formErrors.tipoUso && (
+              <span className="admin-form-error">{formErrors.tipoUso}</span>
+            )}
+          </div>
         </div>
-      )}
-    </div>
+
+        <div className="admin-form-row-3">
+          <div className="admin-form-group">
+            <label htmlFor="stockMinimo" className="admin-form-label">Stock Mínimo:</label>
+            <input
+              type="number"
+              id="stockMinimo"
+              name="stockMinimo"
+              value={formData.stockMinimo || ""}
+              onChange={handleChange}
+              className={`admin-form-input ${formErrors.stockMinimo ? 'error' : ''}`}
+              min="0"
+            />
+            {formErrors.stockMinimo && (
+              <span className="admin-form-error">{formErrors.stockMinimo}</span>
+            )}
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="stockMaximo" className="admin-form-label">Stock Máximo:</label>
+            <input
+              type="number"
+              id="stockMaximo"
+              name="stockMaximo"
+              value={formData.stockMaximo || ""}
+              onChange={handleChange}
+              className={`admin-form-input ${formErrors.stockMaximo ? 'error' : ''}`}
+              min="0"
+            />
+            {formErrors.stockMaximo && (
+              <span className="admin-form-error">{formErrors.stockMaximo}</span>
+            )}
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="vidaUtilDias" className="admin-form-label">
+              Vida Útil (días): <span className="required-asterisk">*</span>
+            </label>
+            <input
+              type="number"
+              id="vidaUtilDias"
+              name="vidaUtilDias"
+              value={formData.vidaUtilDias || ""}
+              onChange={handleChange}
+              className={`admin-form-input ${formErrors.vidaUtilDias ? 'error' : ''}`}
+              min="1"
+              required
+            />
+            {formErrors.vidaUtilDias && (
+              <span className="admin-form-error">{formErrors.vidaUtilDias}</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="admin-form-section">
+        <h3 className="admin-form-section-title">Imagen del Producto</h3>
+        <div className="admin-form-group">
+          <label htmlFor="imagen" className="admin-form-label">
+            Imagen: <span className="required-asterisk">*</span>
+          </label>
+          <input
+            type="file"
+            id="imagen"
+            name="imagen"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleFileChange}
+            className={`admin-form-input ${formErrors.imagen ? 'error' : ''}`}
+            required
+          />
+          {formErrors.imagen && (
+            <span className="admin-form-error">{formErrors.imagen}</span>
+          )}
+          {(formData.imagenPreview ||
+            (isEditing && typeof formData.imagen === "string" && formData.imagen)) && (
+            <div className="image-preview" style={{ marginTop: '10px' }}>
+              <img
+                src={formData.imagenPreview || formData.imagen}
+                alt="Vista previa"
+                style={{ 
+                  maxWidth: "200px", 
+                  maxHeight: "200px", 
+                  borderRadius: '8px',
+                  objectFit: "cover",
+                  border: "1px solid #ddd"
+                }}
+                onError={(e) => {
+                  console.error("Error al cargar imagen:", e);
+                  e.target.style.display = "none";
+                }}
+              />
+              {isEditing && typeof formData.imagen === "string" && (
+                <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>
+                  Imagen actual
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {isEditing && (
+          <div className="admin-form-group">
+            <label className="admin-form-label">Estado:</label>
+            <label className="switch">
+              <input
+                type="checkbox"
+                name="estado"
+                checked={formData.estado === true}
+                onChange={handleChange}
+              />
+              <span className="slider"></span>
+            </label>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -10,6 +10,7 @@ import ProductoAdminDetalleModal from '../components/ProductoAdminDetalleModal';
 import Pagination from "../../../shared/components/common/Pagination";
 import { productosAdminService } from '../services/productosAdminService';
 import '../css/ProductosAdmin.css';
+import '../../../shared/styles/crud-common.css';
 
 const MySwal = withReactContent(Swal);
 
@@ -240,65 +241,66 @@ function ListaProductosAdminPage() {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
-        <div className="productos-admin-page-container">
-            <div className="productos-admin-main-content">
-                <div className="productos-admin-content-wrapper">
-                    <h1>Gestión de Productos</h1>
-                    <div className="productos-admin-actions-bar">
-                        {/* ✨ Controles de filtro y búsqueda */}
-                        <div className="productos-admin-filters"> {/* Nuevo div para agrupar filtros */}
-                            <div className="productos-admin-search-bar">
-                                <input
-                                    type="text"
-                                    placeholder="Busca por cualquier campo de la tabla"
-                                    value={busqueda}
-                                    onChange={(e) => setBusqueda(e.target.value)}
-                                    disabled={isLoading}
-                                />
-                            </div>
-                            {/* ✨ Select para el filtro de estado */}
-                            <div className="filtro-estado-grupo">
-                                <select
-                                    id="filtro-estado"
-                                    className="filtro-input"
-                                    value={filtroEstado}
-                                    onChange={(e) => setFiltroEstado(e.target.value)}
-                                    disabled={isLoading}
-                                >
-                                    <option value="todos">Todos los estados</option>
-                                    <option value="activos">Activos</option>
-                                    <option value="inactivos">Inactivos</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button
-                            className="productos-admin-add-button"
-                            onClick={() => handleOpenModal('create')}
+        <div className="crud-container">
+            <div className="crud-content">
+                <h1>Gestión de Productos ({filteredProducts.length})</h1>
+                <div className="crud-accionesTop">
+                    <input
+                        type="text"
+                        placeholder="Buscar por cualquier campo..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                        className="crud-barraBusqueda"
+                        disabled={isLoading}
+                    />
+                    <div className="crud-filtro-estado">
+                        <span>Estado: </span>
+                        <select
+                            value={filtroEstado}
+                            onChange={(e) => setFiltroEstado(e.target.value)}
                             disabled={isLoading}
                         >
-                            Agregar Producto
-                        </button>
+                            <option value="todos">Todos</option>
+                            <option value="activos">Activos</option>
+                            <option value="inactivos">Inactivos</option>
+                        </select>
                     </div>
-                    {isLoading && <p>Cargando productos...</p>}
-                    {error && <p className="error-message">{error}</p>}
-                    {!isLoading && !error && (
-                        <>
-                            <ProductosAdminTable
-                                productos={productosPaginados} // ✨ La tabla recibe los productos paginados y filtrados
-                                onView={(prod) => handleOpenModal('details', prod)}
-                                onEdit={(prod) => handleOpenModal('edit', prod)}
-                                onDeleteConfirm={handleDelete}
-                                onToggleEstado={handleToggleEstado}
-                            />
-                            <Pagination
-                                itemsPerPage={itemsPerPage}
-                                totalItems={filteredProducts.length} // ✨ La paginación usa la longitud de los productos filtrados
-                                paginate={paginate}
-                                currentPage={currentPage}
-                            />
-                        </>
-                    )}
+                    <button
+                        className="crud-botonAgregar"
+                        onClick={() => handleOpenModal('create')}
+                        disabled={isLoading}
+                    >
+                        Crear Producto
+                    </button>
                 </div>
+                {isLoading ? (
+                    <p style={{ textAlign: "center", margin: "20px 0" }}>
+                        Cargando productos...
+                    </p>
+                ) : error ? (
+                    <p
+                        className="error-message"
+                        style={{ textAlign: "center", marginTop: "20px" }}
+                    >
+                        {error}
+                    </p>
+                ) : (
+                    <>
+                        <ProductosAdminTable
+                            productos={productosPaginados}
+                            onView={(prod) => handleOpenModal('details', prod)}
+                            onEdit={(prod) => handleOpenModal('edit', prod)}
+                            onDeleteConfirm={handleDelete}
+                            onToggleEstado={handleToggleEstado}
+                        />
+                        <Pagination
+                            itemsPerPage={itemsPerPage}
+                            totalItems={filteredProducts.length}
+                            paginate={paginate}
+                            currentPage={currentPage}
+                        />
+                    </>
+                )}
             </div>
 
             <ProductoAdminCrearModal

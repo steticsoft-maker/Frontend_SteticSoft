@@ -1,11 +1,14 @@
 // src/features/roles/components/HistorialRolModal.jsx
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import Modal from '../../../shared/components/common/Modal';
 import Spinner from '../../../shared/components/common/Spinner';
-import { FaTimes, FaUserCircle } from 'react-icons/fa';
+import { FaTimes, FaUserCircle, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../css/HistorialRolModal.css';
 
 const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, error, permisosDisponibles }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   if (!isOpen) return null;
 
   const formatDate = (dateString) => {
@@ -58,6 +61,32 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
     return value.toString();
   };
 
+  // Paginación
+  const paginatedHistory = useMemo(() => {
+    if (!history || history.length === 0) return [];
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return history.slice(startIndex, startIndex + itemsPerPage);
+  }, [history, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil((history?.length || 0) / itemsPerPage);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const resetPagination = () => {
+    setCurrentPage(1);
+  };
+
+  // Reset pagination when modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      resetPagination();
+    }
+  }, [isOpen]);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="historial-modal-content">
@@ -66,40 +95,67 @@ const HistorialRolModal = ({ isOpen, onClose, history, roleName, isLoading, erro
         {isLoading ? ( <div className="historial-loading"><Spinner /><p>Cargando historial...</p></div>
         ) : error ? ( <p className="error-message">{error}</p>
         ) : history.length > 0 ? (
-          <div className="historial-table-container">
-            <table className="historial-table">
-              <thead>
-                <tr>
-                  <th className="th-fecha">Fecha</th>
-                  <th className="th-usuario">Usuario</th>
-                  <th className="th-campo">Campo Modificado</th>
-                  <th className="th-anterior">Valor Anterior</th>
-                  <th className="th-nuevo">Valor Nuevo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((record) => (
-                  <tr key={record.idHistorial}>
-                    <td data-label="Fecha">{formatDate(record.fechaCambio)}</td>
-                    <td data-label="Usuario" className="user-info">
-                      <FaUserCircle className="user-icon" />
-                      <div className="user-details">
-                        <span className="user-role">
-                          {record.usuarioModificador?.rol?.nombre || 'Rol Desconocido'}
-                        </span>
-                        <span className="user-email">
-                          {record.usuarioModificador?.correo || 'Sistema'}
-                        </span>
-                      </div>
-                    </td>
-                    <td data-label="Campo Modificado">{record.campoModificado}</td>
-                    <td data-label="Valor Anterior">{renderValue(record.valorAnterior, record.campoModificado)}</td>
-                    <td data-label="Valor Nuevo">{renderValue(record.valorNuevo, record.campoModificado)}</td>
+          <>
+            <div className="historial-table-container">
+              <table className="historial-table">
+                <thead>
+                  <tr>
+                    <th className="th-fecha">Fecha</th>
+                    <th className="th-usuario">Usuario</th>
+                    <th className="th-campo">Campo Modificado</th>
+                    <th className="th-anterior">Valor Anterior</th>
+                    <th className="th-nuevo">Valor Nuevo</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {paginatedHistory.map((record) => (
+                    <tr key={record.idHistorial}>
+                      <td data-label="Fecha">{formatDate(record.fechaCambio)}</td>
+                      <td data-label="Usuario" className="user-info">
+                        <FaUserCircle className="user-icon" />
+                        <div className="user-details">
+                          <span className="user-role">
+                            {record.usuarioModificador?.rol?.nombre || 'Rol Desconocido'}
+                          </span>
+                          <span className="user-email">
+                            {record.usuarioModificador?.correo || 'Sistema'}
+                          </span>
+                        </div>
+                      </td>
+                      <td data-label="Campo Modificado">{record.campoModificado}</td>
+                      <td data-label="Valor Anterior">{renderValue(record.valorAnterior, record.campoModificado)}</td>
+                      <td data-label="Valor Nuevo">{renderValue(record.valorNuevo, record.campoModificado)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Paginación */}
+            {totalPages > 1 && (
+              <div className="historial-pagination">
+                <button 
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="pagination-button"
+                >
+                  <FaChevronLeft />
+                </button>
+                
+                <span className="pagination-info">
+                  Página {currentPage} de {totalPages}
+                </span>
+                
+                <button 
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="pagination-button"
+                >
+                  <FaChevronRight />
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="historial-no-records"><p>Aún no hay cambios registrados para este rol.</p></div>
         )}

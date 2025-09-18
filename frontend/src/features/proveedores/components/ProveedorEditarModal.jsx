@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProveedorForm from './ProveedorForm';
 import { proveedoresService } from '../services/proveedoresService';
+import '../../../shared/styles/admin-layout.css';
 
 const ProveedorEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
   const getInitialFormState = (proveedor) => ({
@@ -165,21 +166,45 @@ const ProveedorEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-Proveedores">
-      <div className="modal-content-Proveedores formulario-modal">
-        <h2 className="proveedores-modal-title">Editar Proveedor</h2>
-        <form onSubmit={handleSubmit} noValidate className="proveedores-form-grid">
-          <ProveedorForm 
-            formData={formData} 
-            onFormChange={handleFormChange}
-            errors={errors}
-            isEditing={true}
-          />
-          <div className="proveedores-form-actions">
-            <button type="submit" className="proveedores-form-button-guardar">Guardar Cambios</button>
-            <button type="button" className="proveedores-form-button-cancelar" onClick={onClose}>Cancelar</button>
-          </div>
-        </form>
+    <div className="admin-modal-overlay">
+      <div className="admin-modal-content large">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Editar Proveedor</h2>
+          <button
+            type="button"
+            className="admin-modal-close"
+            onClick={onClose}
+          >
+            &times;
+          </button>
+        </div>
+        <div className="admin-modal-body">
+          <form onSubmit={handleSubmit} noValidate>
+            <ProveedorForm 
+              formData={formData} 
+              onFormChange={handleFormChange}
+              errors={errors}
+              isEditing={true}
+            />
+            {errors.api && (
+              <p className="admin-form-error" style={{ width: '100%', textAlign: 'center' }}>
+                {errors.api}
+              </p>
+            )}
+          </form>
+        </div>
+        <div className="admin-modal-footer">
+          <button type="submit" className="admin-form-button" form="proveedor-form">
+            Guardar Cambios
+          </button>
+          <button
+            type="button"
+            className="admin-form-button secondary"
+            onClick={onClose}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );

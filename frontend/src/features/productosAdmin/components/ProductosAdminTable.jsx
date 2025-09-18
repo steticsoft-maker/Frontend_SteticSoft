@@ -41,7 +41,7 @@ const ProductosAdminTable = ({
 
   return (
     <div>
-      <table className="tablaProductosAdministrador">
+      <table className="crud-table">
       <thead>
         <tr>
           <th>#</th>
@@ -49,7 +49,6 @@ const ProductosAdminTable = ({
           <th>Nombre</th>
           <th>Categoría</th>
           <th>Precio</th>
-          {/* CAMBIO: Renombrado de 'Stock' a 'Existencia' */}
           <th>Existencia</th> 
           <th>Estado</th>
           <th>Acciones</th>
@@ -61,7 +60,6 @@ const ProductosAdminTable = ({
           const hasImageError = imageErrors[producto.idProducto];
           
           return (
-            // CAMBIO CLAVE: Usar producto.idProducto como key
             <tr key={producto.idProducto}> 
               <td data-label="#">{index + 1}</td>
               <td data-label="Imagen:" className="producto-imagen-cell">
@@ -81,7 +79,6 @@ const ProductosAdminTable = ({
                 )}
               </td>
               <td data-label="Nombre:">{producto.nombre}</td>
-            {/* CAMBIO CLAVE: Acceder a 'nombre' de 'producto.categoria' */}
             <td data-label="Categoría:">
               {producto.categoria ? producto.categoria.nombre : 'N/A'}
             </td>
@@ -94,48 +91,39 @@ const ProductosAdminTable = ({
                   })
                 : "0.00"}
             </td>
-            {/* CAMBIO: Mostrar 'producto.existencia' en lugar de 'producto.stock' */}
             <td data-label="Existencia:">{producto.existencia}</td> 
             <td data-label="Estado:">
-              <label className="switch">
+              <label className="crud-switch">
                 <input
                   type="checkbox"
-                  checked={producto.estado} // Asume que producto.estado es booleano (true/false)
+                  checked={producto.estado}
                   onChange={() => onToggleEstado(producto)}
                 />
-                <span className="slider round"></span>
+                <span className="crud-slider"></span>
               </label>
             </td>
-            <td
-              data-label="Acciones:"
-              className="productos-admin-table-actions"
-            >
-              <div className="productos-admin-table-actions-buttons-container">
-                <button
-                  className="iconBotonProductoAdministrador"
-                  // CAMBIO CLAVE: Pasar el producto completo (que incluye idProducto)
-                  onClick={() => onView(producto)} 
-                  title="Ver Detalles"
-                >
-                  <FaEye />
-                </button>
-                <button
-                  className="iconBotonProductoAdministrador"
-                  // CAMBIO CLAVE: Pasar el producto completo (que incluye idProducto)
-                  onClick={() => onEdit(producto)} 
-                  title="Editar Producto"
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  className="iconBotonProductoAdministrador EliminarProductoAdministradorIcon"
-                  // CAMBIO CLAVE: Pasar el producto completo (que incluye idProducto)
-                  onClick={() => onDeleteConfirm(producto)} 
-                  title="Eliminar Producto"
-                >
-                  <FaTrash />
-                </button>
-              </div>
+            <td data-label="Acciones:" className="crud-table-iconos">
+              <button
+                className="crud-table-button btn-view"
+                onClick={() => onView(producto)} 
+                title="Ver Detalles"
+              >
+                <FaEye />
+              </button>
+              <button
+                className="crud-table-button btn-edit"
+                onClick={() => onEdit(producto)} 
+                title="Editar Producto"
+              >
+                <FaEdit />
+              </button>
+              <button
+                className="crud-table-button btn-delete"
+                onClick={() => onDeleteConfirm(producto)} 
+                title="Eliminar Producto"
+              >
+                <FaTrash />
+              </button>
             </td>
           </tr>
           );

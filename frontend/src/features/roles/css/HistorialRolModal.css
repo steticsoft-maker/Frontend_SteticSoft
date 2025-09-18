@@ -180,6 +180,49 @@
   font-weight: bold;
 }
 
+/* --- Estilos para la Paginación --- */
+.historial-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 15px;
+  border-top: 1px solid var(--color-form-border);
+}
+
+.pagination-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 6px;
+  background-color: var(--color-background-light);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-color: var(--color-primary);
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--color-disabled-bg, #f0f0f0);
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: var(--color-text-dark);
+  font-weight: 500;
+}
+
 /* --- Media Queries para Responsividad --- */
 @media (max-width: 768px) {
   .historial-table thead {

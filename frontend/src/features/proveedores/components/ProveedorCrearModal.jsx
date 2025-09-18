@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProveedorForm from './ProveedorForm';
 import { proveedoresService } from '../services/proveedoresService';
+import '../../../shared/styles/admin-layout.css';
 
 const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
   const getInitialFormState = () => ({
@@ -158,30 +159,45 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-Proveedores">
-      <div className="modal-content-Proveedores formulario-modal">
-        <h2 className="proveedores-modal-title">Agregar Proveedor</h2>
-        <form className="proveedores-form-grid" onSubmit={handleSubmitForm} noValidate>
-          <ProveedorForm
-            formData={formData}
-            onFormChange={handleFormChange}
-            isEditing={false}
-            errors={errors}
-          />
-          <div className="proveedores-form-actions">
+    <div className="admin-modal-overlay">
+      <div className="admin-modal-content large">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Crear Proveedor</h2>
+          <button
+            type="button"
+            className="admin-modal-close"
+            onClick={onClose}
+          >
+            &times;
+          </button>
+        </div>
+        <div className="admin-modal-body">
+          <form onSubmit={handleSubmitForm} noValidate>
+            <ProveedorForm
+              formData={formData}
+              onFormChange={handleFormChange}
+              isEditing={false}
+              errors={errors}
+            />
             {errors.api && (
-              <p className="error-proveedores" style={{ width: '100%', textAlign: 'center' }}>
+              <p className="admin-form-error" style={{ width: '100%', textAlign: 'center' }}>
                 {errors.api}
               </p>
             )}
-            <button type="submit" className="proveedores-form-button-guardar">
-              Guardar Proveedor
-            </button>
-            <button type="button" className="proveedores-form-button-cancelar" onClick={onClose}>
-              Cancelar
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
+        <div className="admin-modal-footer">
+          <button type="submit" className="admin-form-button" form="proveedor-form">
+            Crear Proveedor
+          </button>
+          <button
+            type="button"
+            className="admin-form-button secondary"
+            onClick={onClose}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );
