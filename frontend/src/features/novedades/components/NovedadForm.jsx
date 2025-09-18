@@ -77,9 +77,9 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
         const usuarios = await getUsuariosAPI({ rol: 'Empleado', estado: true });
         const options = usuarios.map((user) => ({
           value: user.idUsuario,
-          label: user.empleadoInfo
-            ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}`
-            : user.correo,
+          label: user.empleado
+            ? `${user.nombre} ${user.apellido}`
+            : `${user.nombre} ${user.apellido}`,
         }));
         setEmpleadoOptions(options);
       } catch (err) {
@@ -113,9 +113,9 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
       const empleadosAsignados =
         initialData.empleados?.map((emp) => ({
           value: emp.idUsuario,
-          label: emp.empleadoInfo
-            ? `${emp.empleadoInfo.nombre} ${emp.empleadoInfo.apellido}`
-            : emp.correo,
+          label: emp.empleado
+            ? `${emp.nombre} ${emp.apellido}`
+            : emp.nombre,
         })) || [];
       setValue('empleados', empleadosAsignados);
     }

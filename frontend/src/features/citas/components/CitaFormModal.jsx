@@ -3,14 +3,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import moment from 'moment';
 import CitaForm from './CitaForm';
 import {
-  // ✅ CORRECCIÓN: Nombres de funciones actualizados para coincidir con citasService.js
-  fetchServiciosDisponibles,
-  fetchEmpleadosPorNovedad, // Se usará cuando se tenga una novedad
-  buscarClientes,
+  fetchServiciosDisponiblesParaCitas,
+  fetchEmpleadosDisponiblesParaCitas,
+  fetchClientesParaCitas,
 } from '../services/citasService';
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 
-// El modal ahora necesita saber la novedad para buscar empleados
 const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePreseleccionado, novedadId }) => {
   const [formData, setFormData] = useState({});
   const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
@@ -21,17 +19,14 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDependencies, setIsLoadingDependencies] = useState(false);
-
-  // Cargar dependencias (Servicios y Empleados si hay novedad)
   useEffect(() => {
     if (isOpen) {
       setIsLoadingDependencies(true);
       setError('');
 
       const promises = [
-        fetchServiciosDisponibles(),
-        // ✅ CORRECCIÓN: Solo buscamos empleados si tenemos una novedadId para la cita
-        novedadId ? fetchEmpleadosPorNovedad(novedadId) : Promise.resolve({ data: { data: [] } })
+        fetchServiciosDisponiblesParaCitas(),
+        novedadId ? fetchEmpleadosDisponiblesParaCitas(novedadId) : Promise.resolve({ data: { data: [] } })
       ];
 
       Promise.all(promises).then(([serviciosRes, empleadosRes]) => {
@@ -40,35 +35,27 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
 
         setServiciosDisponibles(servicios);
         setEmpleadosDisponibles(empleados);
-        
-        // Inicializar formulario (lógica existente adaptada)
-        let idInit = initialSlotData?.id || null;
-        let clienteInit = clientePreseleccionado || initialSlotData?.cliente || null;
-        let empleadoIdInit = initialSlotData?.empleadoId || null;
-        let servicioIdsInit = initialSlotData?.servicios?.map(s => s.idServicio) || initialSlotData?.serviciosProgramados?.map(s => s.idServicio) || [];
-        let estadoCitaIdInit = initialSlotData?.idEstado || 1;
-        let startTimeInit = initialSlotData?.start || initialSlotData?.fechaHora || null;
-        let endTimeInit = initialSlotData?.end || null;
+        let idInit = null;
+        let clienteInit = clientePreseleccionado || null;
+        let empleadoNombreInit = '';
+        let empleadoIdInit = null;
+        let servicioIdsInit = [];
+        let estadoCitaIdInit = 5 
+        let startTimeInit = initialSlotData?.start || null;
+        let endTimeInit = null;
 
-        // Si no hay hora de fin, se calcula basado en los servicios iniciales
-        if (startTimeInit && !endTimeInit && servicioIdsInit.length > 0) {
-            const duracionTotal = servicios
-                .filter(s => servicioIdsInit.includes(s.idServicio))
-                .reduce((total, s) => total + (s.duracionEstimadaMin || 30), 0);
-            endTimeInit = moment(startTimeInit).add(duracionTotal, 'minutes').toDate();
-        }
-
-        setFormData({
-          id: idInit,
-          cliente: clienteInit,
-          clienteId: clienteInit?.idCliente || null,
-          empleadoId: empleadoIdInit,
-          servicioIds: servicioIdsInit,
-          start: startTimeInit,
-          end: endTimeInit,
-          estadoCitaId: estadoCitaIdInit,
-          novedadId: novedadId, // Guardamos la novedad
-        });
+      setFormData({
+        id: idInit,
+        cliente: clienteInit,
+        clienteId: clienteInit?.idCliente || null,
+        empleado: empleadoNombreInit,
+        empleadoId: empleadoIdInit, // El estado interno puede seguir siendo empleadoId
+        servicioIds: servicioIdsInit,
+        start: startTimeInit,
+        end: endTimeInit,
+        estadoCitaId: estadoCitaIdInit,
+        novedadId: initialSlotData?.novedadId || null,
+      });
 
       }).catch(err => {
         console.error("Error cargando dependencias:", err);
@@ -82,7 +69,7 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   // Lógica para buscar clientes
   const handleClienteSearch = (term) => {
     if (term.length > 2) {
-        buscarClientes(term).then(res => {
+        fetchClientesParaCitas(term).then(res => {
             setClientesList(res.data?.data || []);
         });
     }

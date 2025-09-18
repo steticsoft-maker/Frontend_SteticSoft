@@ -1,11 +1,9 @@
 import React from 'react';
-import { Badge } from 'react-bootstrap'; // <-- 1. IMPORTAR BADGE
+import { Badge } from 'react-bootstrap';
 import '../css/ConfigHorarios.css';
 
 const HorarioDetalleModal = ({ novedad, onClose }) => {
   if (!novedad) return null;
-
-  // 2. AÑADIR LA FUNCIÓN PARA GENERAR LAS CLASES DE COLOR
   const getDiaPillClass = (dia) => {
     const diaNormalizado = dia
       .toLowerCase()
@@ -68,8 +66,6 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
                 )}`}
               </span>
             </div>
-            
-            {/* --- 3. SECCIÓN MODIFICADA --- */}
             <div className="detail-item">
               <strong>Días Aplicables:</strong>
               <div className="dias-pills-container-modal">
@@ -79,7 +75,6 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
                     key={dia}
                     className={getDiaPillClass(dia)}
                   >
-                    {/* Mostramos el nombre completo del día para mayor claridad */}
                     {dia.charAt(0).toUpperCase() + dia.slice(1)}
                   </Badge>
                 ))}
@@ -96,12 +91,6 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
             </div>
 
             <div className="detail-item">
-              <strong>Estado:</strong>
-              <span
-                className={novedad.estado ? 'status-active' : 'status-inactive'}
-              >
-                {novedad.estado ? 'Activo' : 'Inactivo'}
-              </span>
             </div>
           </div>
 
@@ -112,16 +101,17 @@ const HorarioDetalleModal = ({ novedad, onClose }) => {
                 {novedad.empleados.map((user) => (
                   <li key={user.idUsuario} className="employee-item">
                     <div className="employee-name-detail">
-                      {user.empleadoInfo
-                        ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}`
-                        : 'Nombre no disponible'}
+                      {user.nombre 
+                        ? `${user.nombre} ${user.apellido}` 
+                        : 'Nombre no disponible'
+                      }
                     </div>
                     <div className="employee-contact-info">
                       <strong>Correo:</strong> {user.correo || 'No disponible'}
                     </div>
                     <div className="employee-contact-info">
-                      <strong>Documento:</strong>{' '}
-                      {user.empleadoInfo?.numeroDocumento || 'No disponible'}
+                      <strong>Número tel/cel:</strong>{' '}
+                      {user.telefono || 'No disponible'}
                     </div>
                   </li>
                 ))}

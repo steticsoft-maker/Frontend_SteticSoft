@@ -45,9 +45,7 @@ const NovedadesTable = ({
                     {empleados.length > 0 ? (
                       empleados.map((user) => (
                         <div key={user.idUsuario} className="novedades-table__employee-name">
-                          {user.empleadoInfo
-                            ? `${user.empleadoInfo.nombre} ${user.empleadoInfo.apellido}`
-                            : user.correo}
+                          {`${user.nombre} ${user.apellido}`}
                         </div>
                       ))
                     ) : (
