@@ -1,41 +1,49 @@
-/* src/shared/components/layout/NavbarAdmin.css */
+/* src/shared/components/layout/AdminSidebar.css */
 
 /* --- Estructura Principal del Sidebar --- */
 .dashboard-sidebar {
-  width: 250px;
+  width: 280px;
   height: 100vh;
-  background-color: var(--color-admin-primary);
+  background: linear-gradient(135deg, var(--color-admin-primary) 0%, var(--color-admin-secondary) 100%);
   color: var(--color-text-light);
   padding: 20px 15px;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 0 20px var(--color-shadow-medium);
   position: fixed;
   left: 0;
   top: 0;
   overflow-y: auto;
   z-index: 1000;
   box-sizing: border-box;
+  border-right: 1px solid var(--color-border-light);
 }
 
 /* --- Sección de Información del Administrador --- */
 .admin-section {
   text-align: center;
   margin-bottom: 25px;
-  padding-top: 10px;
+  padding: 20px 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .admin-icon {
-  color: var(--color-primary);
-  font-size: 4rem;
-  margin-bottom: 5px;
+  color: var(--color-text-light);
+  font-size: 3.5rem;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .admin-label {
   color: var(--color-text-light);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 0.5px;
+  margin: 5px 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* --- Contenedor de Enlaces de Navegación --- */
@@ -46,7 +54,8 @@
   gap: 6px;
   /* flex-grow: 1; Se quita o ajusta para controlar la posición del botón de logout */
   /* Si quieres que los links ocupen la mayoría del espacio y el logout quede abajo pero no pegado al fondo: */
-  margin-bottom: 20px; /* Añade un margen inferior a la lista de links */
+  margin-bottom: 20px;
+  /* Añade un margen inferior a la lista de links */
 }
 
 /* --- Estilo Base para Enlaces/Botones de Navegación --- */
@@ -70,15 +79,237 @@
 .dashboard-link:hover,
 .nested-link:hover {
   background-color: var(--color-admin-hover);
-  color: #000000; /* Texto blanco al hacer hover, también para nested-link */
+  color: #000000;
+  /* Texto blanco al hacer hover, también para nested-link */
   transform: translateX(4px);
 }
 
+/* --- Navegación al Landing --- */
+.landing-navigation {
+  margin-bottom: 20px;
+}
+
+.landing-button {
+  width: 100%;
+  background: var(--color-accent-pink);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px var(--color-shadow-light);
+}
+
+.landing-button:hover {
+  background: var(--color-accent-rose);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--color-shadow-medium);
+}
+
+.landing-icon {
+  font-size: 1.2rem;
+}
+
+/* --- Contenedor de Enlaces de Navegación --- */
+.dashboard-links {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* --- Estilo Base para Enlaces/Botones de Navegación --- */
+.dashboard-link,
+.nested-link {
+  background-color: transparent;
+  color: var(--color-text-light);
+  border: none;
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-link::before,
+.nested-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.dashboard-link:hover::before,
+.nested-link:hover::before {
+  left: 100%;
+}
+
+.dashboard-link:hover,
+.nested-link:hover {
+  background: var(--color-admin-hover);
+  color: var(--color-text-dark);
+  transform: translateX(6px);
+  box-shadow: 0 4px 12px var(--color-shadow-light);
+}
+
+.dashboard-link.active,
+.nested-link.active {
+  background: var(--color-accent-lavender);
+  color: var(--color-text-dark);
+  box-shadow: 0 2px 8px var(--color-shadow-light);
+}
+
 .dashboard-icon {
-  margin-right: 12px;
+  margin-right: 15px;
   font-size: 1.2rem;
   min-width: 24px;
   text-align: center;
+}
+
+.dashboard-link-label {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* --- Enlaces Anidados --- */
+.nested-links {
+  margin-left: 20px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nested-link {
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.nested-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-left-color: var(--color-accent-pink);
+  transform: translateX(4px);
+}
+
+.nested-link .dashboard-icon {
+  font-size: 1rem;
+  margin-right: 12px;
+}
+
+/* --- Footer del Sidebar --- */
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.theme-section {
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-theme-toggle {
+  width: 100%;
+  justify-content: center;
+}
+
+/* --- Botón de Logout --- */
+.logout-button {
+  background: var(--color-button-danger) !important;
+  color: var(--color-text-light) !important;
+  border: 1px solid var(--color-button-danger-hover) !important;
+}
+
+.logout-button:hover {
+  background: var(--color-button-danger-hover) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3) !important;
+}
+
+/* --- Menú Móvil --- */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: var(--color-button-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--color-shadow-medium);
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background: var(--color-button-primary-hover);
+  transform: scale(1.05);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  .dashboard-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .dashboard-sidebar {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* --- Scrollbar personalizado --- */
+.dashboard-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* --- Estilos para Submenús (Enlaces Anidados) --- */
@@ -96,7 +327,8 @@
 .nested-link {
   padding: 10px 15px;
   font-size: 0.9rem;
-  color: #000000; /* << --- CAMBIO: Color de texto de nested-link a blanco --- */
+  color: #000000;
+  /* << --- CAMBIO: Color de texto de nested-link a blanco --- */
 }
 
 /* .nested-link:hover ya hereda el color #ffffff del selector .dashboard-link:hover, .nested-link:hover */
@@ -105,15 +337,17 @@
 /* --- Sección de Cerrar Sesión --- */
 .dashboard-link.logout-button {
   /* margin-top: auto; Quitado para que no se vaya al fondo absoluto */
-  margin-top: 20px; /* <--- NUEVO: Margen superior para separarlo de los links anteriores */
-  background-color: var(--color-danger, #8a6391); 
+  margin-top: 20px;
+  /* <--- NUEVO: Margen superior para separarlo de los links anteriores */
+  background-color: var(--color-danger, #8a6391);
   color: var(--color-danger, #331836);
   border: var(--color-danger, #f0b6f7);
 }
 
 .dashboard-link.logout-button:hover {
   background-color: var(--color-danger, rgb(101, 59, 105));
-  color: var(--color-text-light); /* Asegura que el texto sea blanco al hacer hover */
+  color: var(--color-text-light);
+  /* Asegura que el texto sea blanco al hacer hover */
   border-color: var(--color-danger, #412246);
 }
 
@@ -121,11 +355,13 @@
 
 /* Estilos para el botón de menú móvil */
 .mobile-menu-toggle {
-  display: none; /* Oculto por defecto */
+  display: none;
+  /* Oculto por defecto */
   position: fixed;
   top: 15px;
   left: 15px;
-  z-index: 1005; /* Debe estar sobre el contenido pero debajo del sidebar abierto */
+  z-index: 1005;
+  /* Debe estar sobre el contenido pero debajo del sidebar abierto */
   background-color: var(--color-admin-primary);
   color: var(--color-text-light);
   border: none;
@@ -141,14 +377,23 @@
     padding: 15px 10px;
   }
 
-  .dashboard-link, .nested-link {
+  .dashboard-link,
+  .nested-link {
     font-size: 0.9rem;
     padding: 10px 12px;
   }
 
-  .admin-icon { font-size: 3.5rem; }
-  .admin-label { font-size: 1.1rem; }
-  .dashboard-icon { font-size: 1.1rem; }
+  .admin-icon {
+    font-size: 3.5rem;
+  }
+
+  .admin-label {
+    font-size: 1.1rem;
+  }
+
+  .dashboard-icon {
+    font-size: 1.1rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -161,9 +406,12 @@
   .dashboard-sidebar {
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
-    width: 250px; /* Ancho completo cuando se abre en móvil */
-    padding: 20px 15px; /* Restaurar padding original */
-    box-shadow: 4px 0 10px rgba(0,0,0,0.2); /* Sombra más pronunciada cuando está abierto */
+    width: 250px;
+    /* Ancho completo cuando se abre en móvil */
+    padding: 20px 15px;
+    /* Restaurar padding original */
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+    /* Sombra más pronunciada cuando está abierto */
   }
 
   .dashboard-sidebar.open {
@@ -171,31 +419,40 @@
   }
 
   .mobile-menu-toggle {
-    display: block; /* Mostrar el botón hamburguesa */
+    display: block;
+    /* Mostrar el botón hamburguesa */
   }
 
   /* Mostrar las etiquetas de los links cuando el menú móvil está abierto */
   .dashboard-sidebar.open .admin-label,
   .dashboard-sidebar.open .dashboard-link-label {
-    display: inline; /* o block/flex dependiendo del layout interno del link */
+    display: inline;
+    /* o block/flex dependiendo del layout interno del link */
   }
 
   .dashboard-sidebar.open .dashboard-link,
   .dashboard-sidebar.open .nested-link {
-    justify-content: flex-start; /* Alinear contenido a la izquierda */
-    padding: 12px 15px; /* Restaurar padding original */
+    justify-content: flex-start;
+    /* Alinear contenido a la izquierda */
+    padding: 12px 15px;
+    /* Restaurar padding original */
   }
 
   .dashboard-sidebar.open .dashboard-icon {
-    margin-right: 12px; /* Restaurar margen del ícono */
-    font-size: 1.2rem; /* Restaurar tamaño del ícono */
+    margin-right: 12px;
+    /* Restaurar margen del ícono */
+    font-size: 1.2rem;
+    /* Restaurar tamaño del ícono */
   }
 
   .dashboard-sidebar.open .admin-icon {
-    font-size: 4rem; /* Restaurar tamaño original */
+    font-size: 4rem;
+    /* Restaurar tamaño original */
   }
+
   .dashboard-sidebar.open .nested-links {
-    display: flex; /* Mostrar submenús */
+    display: flex;
+    /* Mostrar submenús */
   }
 
   /* Ocultar el botón de cerrar (FaTimes) cuando el menú está cerrado y viceversa */

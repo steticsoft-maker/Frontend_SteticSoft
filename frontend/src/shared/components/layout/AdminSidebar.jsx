@@ -2,8 +2,9 @@ import React, { useState, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authHooks";
 import { menuItemsConfig } from "../../config/navigationConfig.jsx"; // Importar la configuración central
+import ThemeToggle from "../common/ThemeToggle";
 import "./AdminSidebar.css"; // Importar el CSS renombrado
-import { FaUserCircle, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
+import { FaUserCircle, FaSignOutAlt, FaBars, FaTimes, FaChevronDown, FaChevronRight, FaHome } from "react-icons/fa";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
@@ -73,6 +74,24 @@ const AdminSidebar = () => {
     navigate("/login");
   };
 
+  // Verificar si el usuario tiene permisos para acceder al landing
+  const canAccessLanding = useMemo(() => {
+    // Si es administrador, puede acceder a todo
+    if (user?.rol?.nombre === "Administrador") {
+      return true;
+    }
+    // Verificar permisos específicos para el landing
+    return permissions && (
+      permissions.includes("MODULO_PRODUCTOS_VER") ||
+      permissions.includes("MODULO_SERVICIOS_VER") ||
+      permissions.includes("MODULO_CITAS_GESTIONAR")
+    );
+  }, [user, permissions]);
+
+  const handleLandingClick = () => {
+    navigate("/");
+  };
+
   return (
     <>
       <button
@@ -94,6 +113,20 @@ const AdminSidebar = () => {
             {user?.rol?.nombre || "Rol"}
           </p>
         </div>
+
+        {/* Botón de navegación al landing */}
+        {canAccessLanding && (
+          <div className="landing-navigation">
+            <button
+              className="landing-button"
+              onClick={handleLandingClick}
+              title="Ir al sitio web principal"
+            >
+              <FaHome className="landing-icon" />
+              <span>Inicio</span>
+            </button>
+          </div>
+        )}
 
         <nav className="dashboard-links">
           {filteredMenu.map((item) => (
@@ -137,8 +170,14 @@ const AdminSidebar = () => {
           ))}
         </nav>
 
-        {/* Contenedor para empujar el botón de logout al final */}
-        <div style={{ marginTop: "auto" }}>
+        {/* Contenedor para empujar los botones al final */}
+        <div className="sidebar-footer">
+          {/* Botón de cambio de tema */}
+          <div className="theme-section">
+            <ThemeToggle className="sidebar-theme-toggle" />
+          </div>
+          
+          {/* Botón de logout */}
           <button
             onClick={handleLogoutClick}
             className="dashboard-link logout-button"

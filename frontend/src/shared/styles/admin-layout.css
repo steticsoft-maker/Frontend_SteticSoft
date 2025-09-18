@@ -1,0 +1,368 @@
+/* src/shared/styles/admin-layout.css */
+
+/* === LAYOUT PRINCIPAL DEL ÁREA DE ADMINISTRACIÓN === */
+.admin-page-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-background-admin-content);
+    transition: background-color 0.3s ease;
+}
+
+.admin-main-content-area {
+    flex: 1;
+    padding: 30px;
+    margin-left: 280px;
+    /* Ancho del sidebar + espacio */
+    overflow-y: auto;
+    box-sizing: border-box;
+    background-color: var(--color-background-admin-content);
+    transition: all 0.3s ease;
+}
+
+/* === ESTILOS PARA PÁGINAS DE ADMINISTRACIÓN === */
+.admin-page-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: var(--font-family-roboto, var(--font-family-sans-serif));
+    background-color: var(--color-background-admin-content);
+}
+
+.admin-main-content {
+    flex: 1;
+    padding: 30px;
+    margin-left: 280px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background-color: var(--color-background-admin-content);
+}
+
+.admin-content-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.admin-content-wrapper h1 {
+    color: var(--color-text-dark);
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    width: 100%;
+}
+
+/* === BARRA DE ACCIONES === */
+.admin-actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 25px;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-filters {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.admin-search-input {
+    padding: 12px 16px;
+    border: 2px solid var(--color-form-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    transition: all 0.3s ease;
+    min-width: 250px;
+}
+
+.admin-search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-form-focus-bg);
+}
+
+.admin-filter-select {
+    padding: 12px 16px;
+    border: 2px solid var(--color-form-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.admin-filter-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-form-focus-bg);
+}
+
+.admin-add-button {
+    background: var(--color-button-primary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--color-shadow-light);
+}
+
+.admin-add-button:hover {
+    background: var(--color-button-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--color-shadow-medium);
+}
+
+/* === TABLAS === */
+.admin-table {
+    width: 100%;
+    background-color: var(--color-background-card);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px var(--color-shadow-light);
+    border: 1px solid var(--color-border-light);
+}
+
+.admin-table thead {
+    background: linear-gradient(135deg, var(--color-table-header) 0%, var(--color-admin-secondary) 100%);
+}
+
+.admin-table th {
+    padding: 18px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-light);
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.admin-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--color-table-border);
+    color: var(--color-text-dark);
+    font-size: 0.95rem;
+}
+
+.admin-table tbody tr:nth-child(odd) {
+    background-color: var(--color-table-row-odd);
+}
+
+.admin-table tbody tr:nth-child(even) {
+    background-color: var(--color-table-row-even);
+}
+
+.admin-table tbody tr:hover {
+    background-color: var(--color-background-hover);
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+/* === BOTONES DE ACCIÓN === */
+.admin-action-button {
+    background: var(--color-button-secondary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 4px;
+    transition: all 0.3s ease;
+}
+
+.admin-action-button:hover {
+    background: var(--color-button-secondary-hover);
+    transform: translateY(-1px);
+}
+
+.admin-action-button.danger {
+    background: var(--color-button-danger);
+}
+
+.admin-action-button.danger:hover {
+    background: var(--color-button-danger-hover);
+}
+
+/* === MODALES === */
+.admin-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.admin-modal-content {
+    background-color: var(--color-background-card);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px var(--color-shadow-dark);
+    border: 1px solid var(--color-border-light);
+}
+
+.admin-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--color-border-light);
+}
+
+.admin-modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    margin: 0;
+}
+
+.admin-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: color 0.3s ease;
+}
+
+.admin-modal-close:hover {
+    color: var(--color-text-dark);
+}
+
+/* === FORMULARIOS === */
+.admin-form-group {
+    margin-bottom: 20px;
+}
+
+.admin-form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--color-text-dark);
+    font-size: 1rem;
+}
+
+.admin-form-input,
+.admin-form-select,
+.admin-form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--color-form-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.admin-form-input:focus,
+.admin-form-select:focus,
+.admin-form-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-form-focus-bg);
+}
+
+.admin-form-input.error,
+.admin-form-select.error,
+.admin-form-textarea.error {
+    border-color: var(--color-form-error);
+}
+
+.admin-form-error {
+    color: var(--color-form-error);
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+
+    .admin-main-content-area,
+    .admin-main-content {
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+
+    .admin-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .admin-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .admin-search-input {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .admin-modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+}
+
+/* === ESTADOS DE CARGA === */
+.admin-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+}
+
+.admin-error {
+    background-color: var(--color-form-error);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.admin-success {
+    background-color: var(--color-form-success);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+    text-align: center;
+}

@@ -1,53 +1,142 @@
 /* src/shared/styles/_variables.css */
-:root {
-    /* Paleta de colores nueva */
-    --color-primary: #9a7a9f;
-    /* Botones primarios: Fondo */
-    --color-primary-hover: #c7a7c7;
-    /* Botones primarios: Hover */
-    --color-secondary: #e2cde1;
-    /* Botones secundarios: Fondo */
-    --color-secondary-hover: #c7a7c7;
-    /* Botones secundarios: Hover */
-    --color-secondary-text: #1d1d1d;
-    /* Botones secundarios: Texto */
 
-    --color-admin-primary: #c7a7c7;
-    /* Menú lateral / barra superior */
-    --color-admin-hover: #e2cde1;
-    /* Hover o selección en el menú */
+/* === TEMA CLARO (DÍA) === */
+:root,
+.light-theme {
+    /* Paleta de colores femeninos - Día */
+    --color-primary: #d4a5d8;
+    --color-primary-hover: #c190c6;
+    --color-secondary: #f0e6f2;
+    --color-secondary-hover: #e6d3e8;
+    --color-secondary-text: #2d1b30;
 
-    --color-text-dark: #1d1d1d;
-    /* Texto general y de tablas */
-    --color-text-light: #1d1d1d;
-    /* Texto de botones primarios */
+    /* Colores de acento femeninos */
+    --color-accent-pink: #f8b5d1;
+    --color-accent-lavender: #d4a5d8;
+    --color-accent-rose: #f2c2e9;
+    --color-accent-mauve: #c190c6;
 
+    /* Admin colors */
+    --color-admin-primary: #d4a5d8;
+    --color-admin-hover: #f0e6f2;
+    --color-admin-secondary: #f8b5d1;
+
+    /* Text colors */
+    --color-text-dark: #2d1b30;
+    --color-text-light: #ffffff;
+    --color-text-secondary: #6b4c6e;
+    --color-text-muted: #9a7a9f;
+
+    /* Background colors */
     --color-background-light: #fefcff;
-    /* Fondo principal de la página */
     --color-background-warm: #fefcff;
-    /* Fondo principal de la página */
-    --color-background-admin-sidebar: #c7a7c7;
-    /* Menú lateral / barra superior */
+    --color-background-admin-sidebar: #d4a5d8;
     --color-background-admin-content: #fefcff;
-    /* Fondo del contenido de administración */
+    --color-background-card: #ffffff;
+    --color-background-hover: #f8f5f9;
 
-    /* Colores para tablas */
-    --color-table-header: #c7a7c7;
+    /* Table colors */
+    --color-table-header: #d4a5d8;
     --color-table-row-odd: #ffffff;
-    --color-table-row-even: #f9f0f7;
+    --color-table-row-even: #f8f5f9;
+    --color-table-border: #e6d3e8;
 
-    /* Colores para campos de formulario */
-    --color-form-border: #c7a7c7;
-    --color-form-focus-bg: #e2cde1;
+    /* Form colors */
+    --color-form-border: #d4a5d8;
+    --color-form-focus-bg: #f0e6f2;
     --color-form-bg: #ffffff;
+    --color-form-error: #e74c3c;
+    --color-form-success: #27ae60;
 
+    /* Button colors */
+    --color-button-primary: #d4a5d8;
+    --color-button-primary-hover: #c190c6;
+    --color-button-secondary: #f8b5d1;
+    --color-button-secondary-hover: #f2c2e9;
+    --color-button-danger: #e74c3c;
+    --color-button-danger-hover: #c0392b;
+
+    /* Shadow colors */
+    --color-shadow-light: rgba(212, 165, 216, 0.1);
+    --color-shadow-medium: rgba(212, 165, 216, 0.2);
+    --color-shadow-dark: rgba(212, 165, 216, 0.3);
+
+    /* Border colors */
+    --color-border-light: #e6d3e8;
+    --color-border-medium: #d4a5d8;
+    --color-border-dark: #c190c6;
 
     /* Fuentes */
     --font-family-sans-serif: system-ui, Avenir, Helvetica, Arial, sans-serif;
     --font-family-roboto: 'Roboto', sans-serif;
-    /* Si usas Roboto */
 
     /* Tamaños base */
     --font-size-base: 16px;
     --line-height-base: 1.5;
+}
+
+/* === TEMA OSCURO (NOCHE) === */
+.dark-theme {
+    /* Paleta de colores femeninos - Noche */
+    --color-primary: #8b5a8f;
+    --color-primary-hover: #a16ba5;
+    --color-secondary: #2d1b30;
+    --color-secondary-hover: #3d2b40;
+    --color-secondary-text: #f0e6f2;
+
+    /* Colores de acento femeninos oscuros */
+    --color-accent-pink: #c485a8;
+    --color-accent-lavender: #8b5a8f;
+    --color-accent-rose: #b870a0;
+    --color-accent-mauve: #7a4a7e;
+
+    /* Admin colors */
+    --color-admin-primary: #2d1b30;
+    --color-admin-hover: #3d2b40;
+    --color-admin-secondary: #8b5a8f;
+
+    /* Text colors */
+    --color-text-dark: #f0e6f2;
+    --color-text-light: #2d1b30;
+    --color-text-secondary: #b8a8bb;
+    --color-text-muted: #8b7a8f;
+
+    /* Background colors */
+    --color-background-light: #1a0f1c;
+    --color-background-warm: #1a0f1c;
+    --color-background-admin-sidebar: #2d1b30;
+    --color-background-admin-content: #1a0f1c;
+    --color-background-card: #2d1b30;
+    --color-background-hover: #3d2b40;
+
+    /* Table colors */
+    --color-table-header: #3d2b40;
+    --color-table-row-odd: #2d1b30;
+    --color-table-row-even: #3d2b40;
+    --color-table-border: #4d3b50;
+
+    /* Form colors */
+    --color-form-border: #8b5a8f;
+    --color-form-focus-bg: #3d2b40;
+    --color-form-bg: #2d1b30;
+    --color-form-error: #e74c3c;
+    --color-form-success: #27ae60;
+
+    /* Button colors */
+    --color-button-primary: #8b5a8f;
+    --color-button-primary-hover: #a16ba5;
+    --color-button-secondary: #c485a8;
+    --color-button-secondary-hover: #b870a0;
+    --color-button-danger: #e74c3c;
+    --color-button-danger-hover: #c0392b;
+
+    /* Shadow colors */
+    --color-shadow-light: rgba(45, 27, 48, 0.3);
+    --color-shadow-medium: rgba(45, 27, 48, 0.5);
+    --color-shadow-dark: rgba(45, 27, 48, 0.7);
+
+    /* Border colors */
+    --color-border-light: #4d3b50;
+    --color-border-medium: #8b5a8f;
+    --color-border-dark: #a16ba5;
 }

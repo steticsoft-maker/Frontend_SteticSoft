@@ -1,0 +1,69 @@
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-button-primary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px var(--color-shadow-light);
+}
+
+.theme-toggle:hover {
+    background: var(--color-button-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px var(--color-shadow-medium);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px var(--color-shadow-light);
+}
+
+.theme-toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.theme-toggle-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Variante más pequeña para navbars */
+.theme-toggle.small {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.theme-toggle.small .theme-toggle-icon {
+    font-size: 14px;
+}
+
+.theme-toggle.small .theme-toggle-text {
+    font-size: 12px;
+}
+
+/* Variante solo icono */
+.theme-toggle.icon-only {
+    padding: 8px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+}
+
+.theme-toggle.icon-only .theme-toggle-text {
+    display: none;
+}
+
+.theme-toggle.icon-only .theme-toggle-icon {
+    font-size: 16px;
+}

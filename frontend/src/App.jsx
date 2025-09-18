@@ -1,12 +1,14 @@
 import React from "react";
 import AppRoutes from "./routes";
-import { AuthProvider } from "./shared/contexts/AuthContext";
+import { AuthProvider, ThemeProvider } from "./shared/contexts";
 
 function App() {
   return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
