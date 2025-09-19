@@ -1,128 +1,666 @@
 /* src/features/dashboard/css/Dashboard.css */
 
+/* Variables CSS para el Dashboard */
+:root {
+  --dashboard-primary: #6366f1;
+  --dashboard-secondary: #10b981;
+  --dashboard-accent: #f59e0b;
+  --dashboard-danger: #ef4444;
+  --dashboard-purple: #8b5cf6;
+  --dashboard-green: #22c55e;
+  --dashboard-orange: #fb923c;
+  --dashboard-pink: #ec4899;
+  
+  --dashboard-bg-primary: #ffffff;
+  --dashboard-bg-secondary: #f8fafc;
+  --dashboard-bg-card: #ffffff;
+  --dashboard-text-primary: #1e293b;
+  --dashboard-text-secondary: #64748b;
+  --dashboard-border: #e2e8f0;
+  --dashboard-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --dashboard-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
 /* Contenedor principal para el contenido específico de la página del dashboard. */
 .dashboard-main-content-page {
-  padding: 30px;
+  padding: 2rem;
   box-sizing: border-box;
   width: 100%;
-  /* Asegura que el contenedor ocupe todo el ancho */
+  max-width: 1400px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--dashboard-bg-secondary) 0%, var(--dashboard-bg-primary) 100%);
+  min-height: 100vh;
 }
 
 /* Estilo para el encabezado principal de la página del dashboard. */
 .dashboard-header {
-  font-size: 1.8rem;
-  margin-bottom: 25px;
-  color: var(--color-text-dark);
-  text-align: left;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: var(--dashboard-text-primary);
+  text-align: center;
+  background: linear-gradient(135deg, var(--dashboard-primary), var(--dashboard-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+/* Sección de Estadísticas */
+.stats-section {
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.8s ease-out 0.1s both;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 /* Contenedor para todas las filas de gráficos. */
 .charts-container {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 2rem;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
 /* Estilo para una fila que contiene uno o más gráficos. */
 .rowDashboard {
   display: flex;
   flex-wrap: wrap;
-  gap: 25px;
+  gap: 2rem;
+  justify-content: center;
 }
 
 /* Estilo para cada tarjeta individual que envuelve un gráfico (ChartCard). */
 .chart {
-  flex: 1 1 calc(50% - 13px);
-  /* Dos columnas, ajustado para un gap de 25px. */
-  min-width: 300px;
-  background-color: var(--color-background-light);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  flex: 1 1 calc(50% - 1rem);
+  min-width: 400px;
+  max-width: 600px;
+  background: var(--dashboard-bg-card);
+  border-radius: 16px;
+  box-shadow: var(--dashboard-shadow);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--dashboard-border);
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.chart.chart-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chart:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--dashboard-shadow-hover);
+}
+
+/* Header de la tarjeta */
+.chart-header {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--dashboard-border);
+  background: linear-gradient(135deg, var(--dashboard-bg-card) 0%, var(--dashboard-bg-secondary) 100%);
+}
+
+.chart-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: var(--dashboard-text-primary);
   text-align: center;
-}
-
-/* Estilo para el título H2 dentro de cada tarjeta de gráfico. */
-.chart h2 {
-  font-size: 1.1rem;
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: var(--color-text-dark);
-}
-
-/* Contenedor del canvas del gráfico para controlar su tamaño y crecimiento. */
-.chart-wrapper {
-  width: 100%;
-  flex-grow: 1;
-  min-height: 280px;
   position: relative;
 }
 
-/* Contenedor para los botones de selección de período de tiempo. */
-.time-period-buttons {
+.chart-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--dashboard-primary), var(--dashboard-secondary));
+  border-radius: 2px;
+}
+
+/* Contenedor de botones de período */
+.time-period-container {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 15px;
+  margin-top: 1rem;
 }
 
-/* Estilo base para los botones de período de tiempo. */
+.time-period-buttons {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--dashboard-bg-secondary);
+  padding: 0.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--dashboard-border);
+}
+
 .time-period-buttons button {
-  padding: 6px 12px;
-  border: 1px solid var(--color-form-border);
-  border-radius: 4px;
-  background-color: var(--color-secondary);
-  color: var(--color-secondary-text);
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dashboard-text-secondary);
   cursor: pointer;
-  font-size: 0.85rem;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Estilo para el botón de período de tiempo que está activo/seleccionado. */
+.time-period-buttons button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.time-period-buttons button:hover::before {
+  left: 100%;
+}
+
 .time-period-buttons button.active {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-  border-color: var(--color-primary);
-  font-weight: bold;
+  background: linear-gradient(135deg, var(--dashboard-primary), var(--dashboard-purple));
+  color: white;
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
 }
 
-/* Estilo para los botones de período de tiempo al pasar el mouse (no activos). */
 .time-period-buttons button:not(.active):hover {
-  background-color: var(--color-secondary-hover);
-  border-color: var(--color-secondary-hover);
+  background: var(--dashboard-bg-primary);
+  color: var(--dashboard-text-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenido de la tarjeta */
+.chart-content {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-wrapper {
+  width: 100%;
+  flex-grow: 1;
+  min-height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading state */
+.chart-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--dashboard-border);
+  border-top: 4px solid var(--dashboard-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.chart-loading p {
+  color: var(--dashboard-text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Footer de la tarjeta */
+.chart-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--dashboard-border);
+  background: var(--dashboard-bg-secondary);
+}
+
+.chart-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.stats-indicator {
+  width: 8px;
+  height: 8px;
+  background: var(--dashboard-green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.stats-text {
+  font-size: 0.75rem;
+  color: var(--dashboard-text-secondary);
+  font-weight: 500;
+}
+
+/* Stats Card Component */
+.stats-card {
+  background: var(--dashboard-bg-card);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--dashboard-shadow);
+  border: 1px solid var(--dashboard-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(20px);
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stats-card.stats-card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--dashboard-shadow-hover);
+}
+
+.stats-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stats-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.stats-card-title h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dashboard-text-primary);
+  margin: 0;
+}
+
+.stats-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stats-card-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.value-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--dashboard-text-primary);
+}
+
+.trend-indicator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.trend-up {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.trend-down {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.stats-card-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--dashboard-bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+.progress-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dashboard-text-secondary);
+  min-width: 50px;
+  text-align: right;
+}
+
+/* Loading states for stats cards */
+.stats-card-loading {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.loading-skeleton-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 12px;
+}
+
+.loading-skeleton-text {
+  width: 120px;
+  height: 16px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+.loading-skeleton-value {
+  width: 80px;
+  height: 28px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+.loading-skeleton-percentage {
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animaciones escalonadas para las tarjetas */
+.chart:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.chart:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chart:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.chart:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.chart:nth-child(5) {
+  animation-delay: 0.5s;
 }
 
 /* --- Media Queries para Responsividad del Dashboard --- */
 
 /* Gráficos en una columna para tablets o pantallas medianas. */
+@media (max-width: 1200px) {
+  .dashboard-main-content-page {
+    padding: 1.5rem;
+  }
+  
+  .chart {
+    flex: 1 1 calc(50% - 1rem);
+    min-width: 350px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 992px) {
   .dashboard-main-content-page {
-    margin-left: 0;
-    /* Se elimina el margen cuando la navbar se oculta o cambia */
+    padding: 1rem;
   }
 
   .chart {
     flex: 1 1 100%;
+    min-width: 300px;
+    max-width: none;
+  }
+  
+  .rowDashboard {
+    flex-direction: column;
+    align-items: center;
   }
 }
 
 /* Ajustes adicionales para pantallas más pequeñas/móviles. */
 @media (max-width: 768px) {
   .dashboard-main-content-page {
-    padding: 15px;
-    /* Menos padding en móviles */
+    padding: 1rem;
   }
 
   .dashboard-header {
-    font-size: 1.6rem;
-    margin-bottom: 20px;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stats-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .stats-card {
+    padding: 1rem;
+    min-height: 120px;
+  }
+
+  .stats-card-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+
+  .stats-card-title h3 {
+    font-size: 0.9rem;
+  }
+
+  .value-number {
+    font-size: 1.5rem;
+  }
+
+  .charts-container {
+    gap: 1.5rem;
+  }
+
+  .rowDashboard {
+    gap: 1.5rem;
+  }
+
+  .chart {
+    min-width: 280px;
+    border-radius: 12px;
+  }
+
+  .chart-header {
+    padding: 1rem;
+  }
+
+  .chart-title {
+    font-size: 1.1rem;
+  }
+
+  .chart-content {
+    padding: 1rem;
+  }
+
+  .chart-wrapper {
+    min-height: 250px;
+  }
+
+  .time-period-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .time-period-buttons button {
-    padding: 5px 10px;
+    padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
+  }
+
+  .chart-footer {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-main-content-page {
+    padding: 0.75rem;
+  }
+
+  .dashboard-header {
+    font-size: 1.75rem;
+  }
+
+  .chart {
+    min-width: 260px;
   }
 
   .chart-wrapper {
