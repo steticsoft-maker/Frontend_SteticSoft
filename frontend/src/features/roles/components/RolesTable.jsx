@@ -166,19 +166,19 @@ const RolesTable = ({
                 )}
               </td>
               <td data-label="Acciones">
-                <div className="rol-table-iconos">
-                  <button className="rol-table-button btn-view" onClick={() => onView(rol)} title="Ver Detalles">
+                <div className="table-iconos">
+                  <button className="table-button btn-view" onClick={() => onView(rol)} title="Ver Detalles">
                     <FaEye />
                   </button>
-                  <button className="rol-table-button btn-history" onClick={() => onHistory(rol)} title="Ver Historial de Cambios">
+                  <button className="table-button btn-history" onClick={() => onHistory(rol)} title="Ver Historial de Cambios">
                     <FaHistory />
                   </button>
                   {rol.nombre !== "Administrador" && (
                     <>
-                      <button className="rol-table-button btn-edit" onClick={() => onEdit(rol)} title="Editar Rol">
+                      <button className="table-button btn-edit" onClick={() => onEdit(rol)} title="Editar Rol">
                         <FaEdit />
                       </button>
-                      <button className="rol-table-button rol-table-button-delete" onClick={() => onDeleteConfirm(rol)} title="Eliminar Rol">
+                      <button className="table-button btn-delete" onClick={() => onDeleteConfirm(rol)} title="Eliminar Rol">
                         <FaTrash />
                       </button>
                     </>

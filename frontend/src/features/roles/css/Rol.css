@@ -277,76 +277,7 @@
     background-color: var(--color-admin-hover);
 }
 
-/* Iconos en la tabla */
-.rol-table-iconos {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
-    min-width: 120px;
-}
-
-/* Botones de acción en la tabla */
-.rol-table-button {
-    padding: 8px 12px;
-    margin: 0;
-    font-size: 0.85rem;
-    border: none;
-    border-radius: 5px;
-    color: var(--color-text-light);
-    cursor: pointer;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    flex-shrink: 0;
-}
-
-/* Estilos específicos para cada botón de acción por clase */
-/* Botón Ver */
-.rol-table-button.btn-view {
-    background-color: var(--color-primary);
-    color: var(--color-text-light);
-}
-
-.rol-table-button.btn-view:hover {
-    background-color: var(--color-primary-hover);
-}
-
-/* Botón Editar */
-.rol-table-button.btn-edit {
-    background-color: var(--color-secondary);
-    color: var(--color-secondary-text);
-}
-
-.rol-table-button.btn-edit:hover {
-    background-color: var(--color-secondary-hover);
-}
-
-/* Botón Historial */
-.rol-table-button.btn-history {
-    background-color: var(--color-primary);
-    color: var(--color-text-light);
-    opacity: 0.8;
-}
-
-.rol-table-button.btn-history:hover {
-    background-color: var(--color-primary-hover);
-    opacity: 1;
-}
-
-/* Botón Eliminar */
-.rol-table-button.rol-table-button-delete {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.rol-table-button-delete:hover {
-    background-color: #c0392b;
-}
+/* Los estilos de botones de tabla ahora se manejan desde table-common.css */
 
 /* Switch de estado */
 .switch {

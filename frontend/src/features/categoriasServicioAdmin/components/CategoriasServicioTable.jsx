@@ -1,18 +1,20 @@
 import React from 'react';
 import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa';
+import '../../../shared/styles/table-common.css';
 
 const CategoriasServicioTable = ({ categorias, onEditar, onEliminar, onCambiarEstado, onVerDetalles, loadingId }) => {
   return (
-    <table className="tablaCategoria">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
+    <div className="table-container">
+      <table className="table-main">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
       <tbody>
         {!categorias || categorias.length === 0 ? (
           <tr>
@@ -35,35 +37,40 @@ const CategoriasServicioTable = ({ categorias, onEditar, onEliminar, onCambiarEs
                   <span className="slider"></span>
                 </label>
               </td>
-              {/* === SECCIÓN DE ACCIONES ACTUALIZADA === */}
-              <td data-label="Acciones" className="categorias-servicio-actions">
-                <button
-                  onClick={() => onVerDetalles(cat)}
-                  className="botonEditarCategoria"
-                  disabled={loadingId === cat.idCategoriaServicio}
-                >
-                  <FaRegEye /> 
-                </button>
-                <button
-                  onClick={() => onEditar(cat)}
-                  className="botonEditarCategoria"
-                  disabled={loadingId === cat.idCategoriaServicio}
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() => onEliminar(cat)}
-                  className="botonEliminarCategoria"
-                  disabled={loadingId === cat.idCategoriaServicio}
-                >
-                  <FaTrashAlt />
-                </button>
+              <td data-label="Acciones">
+                <div className="table-iconos">
+                  <button
+                    onClick={() => onVerDetalles(cat)}
+                    className="table-button btn-view"
+                    disabled={loadingId === cat.idCategoriaServicio}
+                    title="Ver Detalles"
+                  >
+                    <FaRegEye /> 
+                  </button>
+                  <button
+                    onClick={() => onEditar(cat)}
+                    className="table-button btn-edit"
+                    disabled={loadingId === cat.idCategoriaServicio}
+                    title="Editar Categoría"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => onEliminar(cat)}
+                    className="table-button btn-delete"
+                    disabled={loadingId === cat.idCategoriaServicio}
+                    title="Eliminar Categoría"
+                  >
+                    <FaTrashAlt />
+                  </button>
+                </div>
               </td>
             </tr>
           ))
         )}
       </tbody>
     </table>
+    </div>
   );
 };
 

@@ -110,31 +110,35 @@ function ConfigHorariosPage() {
   if (error) return <div className="error-message">Error: {error}</div>;
 
   return (
-    <div className="page-container">
-      <div className="content-container">
-        <h1>Gestión de Novedades de Horario</h1>
+    <div className="lista-novedades-container">
+      <div className="novedades-content-wrapper">
+        <h1>Gestión de Novedades de Horario ({novedades.length})</h1>
         
-        <div className="actions-bar">
-          <div className="filters-container">
-            <input
-              className="search-bar"
-              type="text"
-              placeholder="Buscar por encargado, fecha, hora..."
-              value={search}
-              onChange={handleSearchChange}
-            />
-            <select
-              className="filter-select"
-              value={filtroEstado}
-              onChange={handleFilterChange}
-            >
-              <option value="">Todos los Estados</option>
-              <option value="activos">Activos</option>
-              <option value="inactivos">Inactivos</option>
-            </select>
+        <div className="novedades-actions-bar">
+          <div className="novedades-filters">
+            <div className="novedades-search-bar">
+              <input
+                className="novedades-search-input"
+                type="text"
+                placeholder="Buscar por encargado, fecha, hora..."
+                value={search}
+                onChange={handleSearchChange}
+              />
+            </div>
+            <div className="novedades-filtro-estado-grupo">
+              <select
+                className="novedades-filtro-input"
+                value={filtroEstado}
+                onChange={handleFilterChange}
+              >
+                <option value="">Todos los Estados</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+              </select>
+            </div>
           </div>
-          <button className="add-button" onClick={() => openModal('form')}>
-            + Agregar Novedad
+          <button className="novedades-add-button" onClick={() => openModal('form')}>
+            Agregar Novedad
           </button>
         </div>
 
@@ -178,7 +182,6 @@ function ConfigHorariosPage() {
       
       {modalType === 'form' && <NovedadModal onClose={closeModal} onSuccess={handleSuccess} novedadToEdit={currentNovedad} isEditing={!!currentNovedad} />}
       {modalType === 'details' && <NovedadDetalleModal novedad={currentNovedad} onClose={closeModal} />}
-
     </div>
   );
 }

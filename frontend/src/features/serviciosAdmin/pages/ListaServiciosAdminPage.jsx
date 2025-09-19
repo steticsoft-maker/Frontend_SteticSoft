@@ -143,23 +143,37 @@ function ListaServiciosAdminPage() {
   const totalPages = Math.ceil(servicios.length / itemsPerPage);
 
   return (
-    <>
-      <div className="admin-page-container">
-        <div className="admin-main-content">
-          <div className="admin-content-wrapper">
-            <h1>Gestión de Servicios</h1>
-          
-          <div className="admin-actions-bar">
-            <div className="admin-filters">
-              <input type="text" placeholder="Buscar por nombre o precio..." value={terminoBusqueda} onChange={(e) => setTerminoBusqueda(e.target.value)} />
-              <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
-                <option value="todos">Todos los estados</option>
+    <div className="lista-servicios-container">
+      <div className="servicios-content-wrapper">
+        <h1>Gestión de Servicios ({servicios.length})</h1>
+        
+        <div className="servicios-actions-bar">
+          <div className="servicios-filters">
+            <div className="servicios-search-bar">
+              <input
+                type="text"
+                placeholder="Buscar por nombre o precio..."
+                value={terminoBusqueda}
+                onChange={(e) => setTerminoBusqueda(e.target.value)}
+                className="servicios-search-input"
+              />
+            </div>
+            <div className="servicios-filtro-estado-grupo">
+              <select
+                value={filtroEstado}
+                onChange={(e) => setFiltroEstado(e.target.value)}
+                className="servicios-filtro-input"
+              >
+                <option value="todos">Todos los Estados</option>
                 <option value="true">Activos</option>
                 <option value="false">Inactivos</option>
               </select>
             </div>
-            <button className="admin-add-button" onClick={() => handleOpenModal("create")}>Agregar Servicio</button>
           </div>
+          <button className="servicios-add-button" onClick={() => handleOpenModal("create")}>
+            Agregar Servicio
+          </button>
+        </div>
 
           {error && <p className="error-message">{error}</p>}
 
@@ -205,26 +219,24 @@ function ListaServiciosAdminPage() {
                 </div>
               )}
             </>
-          )}
-          </div>
-        </div>
-
-        {/* Modales */}
-        <ServicioAdminFormModal 
-          isOpen={modalState.type === 'create' || modalState.type === 'edit'} 
-          onClose={handleCloseModal} 
-          onSubmit={handleSave} 
-          initialData={modalState.data} 
-          isEditMode={modalState.type === "edit"} 
-          categorias={categorias} 
-        />
-        <ServicioAdminDetalleModal 
-          isOpen={modalState.type === 'details'} 
-          onClose={handleCloseModal} 
-          servicio={modalState.data} 
-        />
+        )}
       </div>
-    </>
+
+      {/* Modales */}
+      <ServicioAdminFormModal 
+        isOpen={modalState.type === 'create' || modalState.type === 'edit'} 
+        onClose={handleCloseModal} 
+        onSubmit={handleSave} 
+        initialData={modalState.data} 
+        isEditMode={modalState.type === "edit"} 
+        categorias={categorias} 
+      />
+      <ServicioAdminDetalleModal 
+        isOpen={modalState.type === 'details'} 
+        onClose={handleCloseModal} 
+        servicio={modalState.data} 
+      />
+    </div>
   );
 }
 

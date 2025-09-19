@@ -246,41 +246,43 @@ return dataFiltrada;
   };
 
   return (
-    <div className="Categoria-content">
+    <div className="lista-categorias-servicio-container">
       <div className="categorias-servicio-content-wrapper">
-        <h1>Gestión de Categorías de Servicio</h1>
+        <h1>Gestión de Categorías de Servicio ({categorias.length})</h1>
 
-        <div className="ContainerBotonAgregarCategoria">
-          <div className="filtros-wrapper">
-            <input
-              className="filtro-input"
-              type="text"
-              placeholder="Buscar por nombre o descripción..."
-              value={terminoBusqueda}
-              onChange={(e) => {
-                setTerminoBusqueda(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-            <div className="filtro-estado-grupo">
-                <select
-                  id="filtro-estado"
-                  className="filtro-input-estados"
-                  value={filtroEstado}
-                  onChange={(e) => {
-                    setFiltroEstado(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <option value="todos">Todos los estados</option>
-                  <option value="activos">Activos</option>
-                  <option value="inactivos">Inactivos</option>
-                </select>
+        <div className="categorias-servicio-actions-bar">
+          <div className="categorias-servicio-filters">
+            <div className="categorias-servicio-search-bar">
+              <input
+                className="categorias-servicio-search-input"
+                type="text"
+                placeholder="Buscar por nombre o descripción..."
+                value={terminoBusqueda}
+                onChange={(e) => {
+                  setTerminoBusqueda(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+            <div className="categorias-servicio-filtro-estado-grupo">
+              <select
+                id="filtro-estado"
+                className="categorias-servicio-filtro-input"
+                value={filtroEstado}
+                onChange={(e) => {
+                  setFiltroEstado(e.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="todos">Todos los Estados</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+              </select>
             </div>
           </div>
 
-          <button className="botonAgregarCategoria" onClick={handleAbrirCrearModal}>
-            Agregar Nueva Categoría
+          <button className="categorias-servicio-add-button" onClick={handleAbrirCrearModal}>
+            Agregar Categoría
           </button>
         </div>
 

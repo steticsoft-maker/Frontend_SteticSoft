@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaRegEye, FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { Badge } from 'react-bootstrap';
+import '../../../shared/styles/table-common.css';
 import '../css/ConfigHorarios.css';
 
 const NovedadesTable = ({
@@ -22,16 +23,16 @@ const NovedadesTable = ({
   };
 
   return (
-    <div className="novedades-table__container table-responsive">
-      <table className="novedades-table table">
+    <div className="table-container">
+      <table className="table-main">
         <thead>
           <tr>
-            <th className="text-center">#</th>
+            <th>#</th>
             <th>Encargado(s)</th>
             <th>Días Aplicables</th>
             <th>Horario</th>
-            <th className="text-center">Estado</th>
-            <th className="text-center">Acciones</th>
+            <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -40,8 +41,8 @@ const NovedadesTable = ({
               const empleados = novedad.empleados || [];
               return (
                 <tr key={novedad.idNovedad}>
-                  <td className="text-center">{index + 1}</td>
-                  <td>
+                  <td data-label="#">{index + 1}</td>
+                  <td data-label="Encargado(s)">
                     {empleados.length > 0 ? (
                       empleados.map((user) => (
                         <div key={user.idUsuario} className="novedades-table__employee-name">
@@ -52,7 +53,7 @@ const NovedadesTable = ({
                       <span className="text-muted">Sin asignar</span>
                     )}
                   </td>
-                  <td>
+                  <td data-label="Días Aplicables">
                     <div className="dias-pills-container">
                       {(novedad.dias || []).map((dia) => (
                         <Badge
@@ -65,13 +66,13 @@ const NovedadesTable = ({
                       ))}
                     </div>
                   </td>
-                  <td>
+                  <td data-label="Horario">
                     {`${formatTime(novedad.horaInicio)} - ${formatTime(
                       novedad.horaFin
                     )}`}
                   </td>
-                  <td className="text-center">
-                    <label className="toggle-switch">
+                  <td data-label="Estado">
+                    <label className="switch">
                       <input
                         type="checkbox"
                         checked={novedad.estado}
@@ -80,19 +81,19 @@ const NovedadesTable = ({
                       <span className="slider"></span>
                     </label>
                   </td>
-                <td className="text-center">
-                  <div className="actions-container">
-                    <button onClick={() => onView(novedad)} className="action-button" title="Ver Detalles">
-                      <FaRegEye />
-                    </button>
-                    <button onClick={() => onEdit(novedad)} className="action-button" title="Editar">
-                      <FaEdit />
-                    </button>
-                    <button onClick={() => onDeleteConfirm(novedad)} className="action-button" title="Eliminar">
-                      <FaTrashAlt />
-                    </button>
-                  </div>
-                </td>
+                  <td data-label="Acciones">
+                    <div className="table-iconos">
+                      <button onClick={() => onView(novedad)} className="table-button btn-view" title="Ver Detalles">
+                        <FaRegEye />
+                      </button>
+                      <button onClick={() => onEdit(novedad)} className="table-button btn-edit" title="Editar">
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => onDeleteConfirm(novedad)} className="table-button btn-delete" title="Eliminar">
+                        <FaTrashAlt />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               );
             })
