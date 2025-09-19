@@ -3,12 +3,27 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authHooks";
 import { menuItemsConfig } from "../../config/navigationConfig.jsx"; // Importar la configuración central
 import ThemeToggle from "../common/ThemeToggle";
+import UserProfileCard from "../common/UserProfileCard";
 import "./AdminSidebar.css"; // Importar el CSS renombrado
-import { FaUserCircle, FaSignOutAlt, FaBars, FaTimes, FaChevronDown, FaChevronRight, FaHome } from "react-icons/fa";
+import {
+  FaUserCircle,
+  FaSignOutAlt,
+  FaBars,
+  FaTimes,
+  FaChevronDown,
+  FaChevronRight,
+  FaHome,
+} from "react-icons/fa";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
   const { user, permissions, logout } = useAuth(); // Obtener user, permissions y logout
+
+  // Validación de datos críticos
+  if (!logout) {
+    console.error("AdminSidebar: logout function not available");
+    return <div>Error: Función de logout no disponible</div>;
+  }
 
   const [openSubMenus, setOpenSubMenus] = useState({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -72,8 +87,14 @@ const AdminSidebar = () => {
   };
 
   const handleLogoutClick = async () => {
-    await logout();
-    navigate("/login");
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Fallback: navegar directamente al login
+      navigate("/login");
+    }
   };
 
   // Verificar si el usuario tiene permisos para acceder al landing
@@ -83,10 +104,11 @@ const AdminSidebar = () => {
       return true;
     }
     // Verificar permisos específicos para el landing
-    return permissions && (
-      permissions.includes("MODULO_PRODUCTOS_VER") ||
-      permissions.includes("MODULO_SERVICIOS_VER") ||
-      permissions.includes("MODULO_CITAS_GESTIONAR")
+    return (
+      permissions &&
+      (permissions.includes("MODULO_PRODUCTOS_VER") ||
+        permissions.includes("MODULO_SERVICIOS_VER") ||
+        permissions.includes("MODULO_CITAS_GESTIONAR"))
     );
   }, [user, permissions]);
 
@@ -104,17 +126,14 @@ const AdminSidebar = () => {
         {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
       </button>
       <aside className={`dashboard-sidebar ${isMobileMenuOpen ? "open" : ""}`}>
-        <div className="admin-section">
-          <FaUserCircle className="admin-icon" />
-          {/* Mostramos el nombre y rol del usuario si están disponibles */}
-          <p className="admin-label">{user?.nombre || "Usuario"}</p>
-          <p
-            className="admin-label"
-            style={{ fontSize: "0.9em", fontWeight: "normal" }}
-          >
-            {user?.rol?.nombre || "Rol"}
-          </p>
-        </div>
+        {/* Componente mejorado de información del usuario */}
+        {user && (
+          <UserProfileCard
+            user={user}
+            onLogout={handleLogoutClick}
+            onSettings={() => navigate("/admin/configuracion")}
+          />
+        )}
 
         {/* Botón de navegación al landing */}
         {canAccessLanding && (
@@ -178,7 +197,7 @@ const AdminSidebar = () => {
           <div className="theme-section">
             <ThemeToggle className="sidebar-theme-toggle" />
           </div>
-          
+
           {/* Botón de logout */}
           <button
             onClick={handleLogoutClick}

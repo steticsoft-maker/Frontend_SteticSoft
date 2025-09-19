@@ -19,32 +19,8 @@
   border-right: 1px solid var(--color-border-light);
 }
 
-/* --- Sección de Información del Administrador --- */
-.admin-section {
-  text-align: center;
-  margin-bottom: 25px;
-  padding: 20px 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.admin-icon {
-  color: var(--color-text-light);
-  font-size: 3.5rem;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.admin-label {
-  color: var(--color-text-light);
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  margin: 5px 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
+/* --- Sección de Información del Administrador (REEMPLAZADA POR UserProfileCard) --- */
+/* Los estilos de .admin-section, .admin-icon y .admin-label han sido movidos al componente UserProfileCard */
 
 /* --- Contenedor de Enlaces de Navegación --- */
 .dashboard-links {
@@ -383,13 +359,7 @@
     padding: 10px 12px;
   }
 
-  .admin-icon {
-    font-size: 3.5rem;
-  }
-
-  .admin-label {
-    font-size: 1.1rem;
-  }
+  /* Los estilos de admin-icon y admin-label ahora están en UserProfileCard.css */
 
   .dashboard-icon {
     font-size: 1.1rem;
@@ -424,7 +394,6 @@
   }
 
   /* Mostrar las etiquetas de los links cuando el menú móvil está abierto */
-  .dashboard-sidebar.open .admin-label,
   .dashboard-sidebar.open .dashboard-link-label {
     display: inline;
     /* o block/flex dependiendo del layout interno del link */
@@ -445,10 +414,7 @@
     /* Restaurar tamaño del ícono */
   }
 
-  .dashboard-sidebar.open .admin-icon {
-    font-size: 4rem;
-    /* Restaurar tamaño original */
-  }
+  /* Los estilos de admin-icon ahora están en UserProfileCard.css */
 
   .dashboard-sidebar.open .nested-links {
     display: flex;

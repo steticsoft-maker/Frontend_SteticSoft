@@ -1,0 +1,436 @@
+/* UserProfileCard.css */
+.user-profile-card {
+    position: relative;
+    background: var(--color-background-card);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border-medium);
+    padding: 12px;
+    margin-bottom: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 4px 16px var(--color-shadow-light);
+    min-height: 70px;
+}
+
+.user-profile-card:hover {
+    background: var(--color-background-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--color-shadow-medium);
+    border-color: var(--color-border-dark);
+}
+
+/* Header principal */
+.user-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+/* Logo de SteticSoft */
+.logo-container {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent-lavender));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px var(--color-shadow-light);
+    transition: all 0.3s ease;
+    border: 1px solid var(--color-border-light);
+}
+
+.logo-container:hover {
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stetic-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    filter: brightness(1.2) contrast(1.1);
+}
+
+.logo-container:hover .stetic-logo {
+    transform: scale(1.1);
+}
+
+/* Información principal del usuario */
+.user-main-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.user-name {
+    color: var(--color-text-dark);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 2px var(--color-shadow-light);
+    transition: all 0.3s ease;
+    margin-bottom: 2px;
+}
+
+.user-profile-card:hover .user-name {
+    color: var(--color-text-dark);
+    text-shadow: 0 2px 8px var(--color-shadow-medium);
+}
+
+.user-role-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.role-icon {
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.role-icon.admin {
+    color: var(--color-accent-pink);
+}
+
+.role-icon.employee {
+    color: var(--color-accent-lavender);
+}
+
+.role-icon.client {
+    color: var(--color-accent-rose);
+}
+
+.role-icon.default {
+    color: var(--color-primary);
+}
+
+.user-role {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    text-shadow: 0 1px 2px var(--color-shadow-light);
+    color: var(--color-text-dark);
+}
+
+/* Indicador de expansión */
+.expand-indicator {
+    width: 28px;
+    height: 28px;
+    background: var(--color-background-hover);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 1px solid var(--color-border-medium);
+}
+
+.expand-indicator:hover {
+    background: var(--color-accent-lavender);
+    transform: scale(1.1);
+}
+
+.expand-indicator.expanded {
+    background: var(--color-accent-pink);
+    transform: rotate(180deg);
+}
+
+.expand-icon {
+    color: var(--color-text-dark);
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.expand-indicator.expanded .expand-icon {
+    color: var(--color-text-light);
+}
+
+/* Información expandida */
+.user-profile-details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border-light);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-details-section {
+    margin-bottom: 20px;
+}
+
+.details-title {
+    color: var(--color-text-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+    text-shadow: 0 1px 2px var(--color-shadow-light);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding: 4px 0;
+    transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+    background: var(--color-background-hover);
+    border-radius: 8px;
+    padding-left: 8px;
+    transform: translateX(5px);
+}
+
+.detail-icon {
+    color: var(--color-accent-lavender);
+    font-size: 0.8rem;
+    min-width: 12px;
+    transition: all 0.3s ease;
+}
+
+.detail-item:hover .detail-icon {
+    color: var(--color-accent-pink);
+    transform: scale(1.1);
+}
+
+.detail-text {
+    color: var(--color-text-dark);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+}
+
+/* Acciones del usuario */
+.user-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Aviso de perfil incompleto */
+.incomplete-profile-notice {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.incomplete-profile-notice p {
+    color: #ffc107;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: 0.2px;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    letter-spacing: 0.2px;
+}
+
+.settings-button {
+    background: var(--color-background-hover);
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-border-medium);
+}
+
+.settings-button:hover {
+    background: var(--color-accent-lavender);
+    color: var(--color-text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--color-shadow-medium);
+}
+
+.logout-button {
+    background: var(--color-button-danger);
+    color: var(--color-text-light);
+    border: 1px solid var(--color-button-danger-hover);
+}
+
+.logout-button:hover {
+    background: var(--color-button-danger-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.action-icon {
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover .action-icon {
+    transform: scale(1.1);
+}
+
+/* Tooltip */
+.user-tooltip {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.tooltip-content {
+    background: var(--color-background-card);
+    color: var(--color-text-dark);
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    text-align: center;
+    box-shadow: 0 8px 25px var(--color-shadow-dark);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--color-border-medium);
+    animation: tooltipFadeIn 0.3s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.tooltip-name {
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--color-text-dark);
+}
+
+.tooltip-role {
+    color: var(--color-accent-pink);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.tooltip-hint {
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user-profile-card {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .user-profile-header {
+        gap: 12px;
+    }
+
+    .logo-container {
+        width: 45px;
+        height: 45px;
+    }
+
+    .stetic-logo {
+        width: 25px;
+        height: 25px;
+    }
+
+    .user-name {
+        font-size: 1.1rem;
+    }
+
+    .user-role {
+        font-size: 0.85rem;
+    }
+
+    .expand-indicator {
+        width: 30px;
+        height: 30px;
+    }
+
+    .action-button {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+
+    .detail-item {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .detail-text {
+        font-size: 0.85rem;
+    }
+}
+
+/* Animaciones adicionales */
+.user-profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.user-profile-card:hover::before {
+    left: 100%;
+}
+
+/* Efectos de partículas sutiles */
+.user-profile-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: float 20s infinite linear;
+    pointer-events: none;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-20px) rotate(360deg);
+    }
+}
