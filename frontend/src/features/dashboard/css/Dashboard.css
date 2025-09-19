@@ -21,6 +21,27 @@
   --dashboard-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+/* Variables para tema oscuro */
+.dark-theme {
+  --dashboard-primary: #8b5a8f;
+  --dashboard-secondary: #22c55e;
+  --dashboard-accent: #f59e0b;
+  --dashboard-danger: #ef4444;
+  --dashboard-purple: #a16ba5;
+  --dashboard-green: #22c55e;
+  --dashboard-orange: #fb923c;
+  --dashboard-pink: #c485a8;
+  
+  --dashboard-bg-primary: #1a0f1c;
+  --dashboard-bg-secondary: #2d1b30;
+  --dashboard-bg-card: #2d1b30;
+  --dashboard-text-primary: #f0e6f2;
+  --dashboard-text-secondary: #b8a8bb;
+  --dashboard-border: #4d3b50;
+  --dashboard-shadow: 0 4px 6px -1px rgba(45, 27, 48, 0.3), 0 2px 4px -1px rgba(45, 27, 48, 0.2);
+  --dashboard-shadow-hover: 0 10px 15px -3px rgba(45, 27, 48, 0.4), 0 4px 6px -2px rgba(45, 27, 48, 0.3);
+}
+
 /* Contenedor principal para el contenido específico de la página del dashboard. */
 .dashboard-main-content-page {
   padding: 2rem;
