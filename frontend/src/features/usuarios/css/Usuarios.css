@@ -226,7 +226,7 @@
   width: 100%;
   max-width: 920px;
   margin: auto;
-  padding: 18px;
+  padding: 0;
   border-radius: 12px;
   background-color: var(--color-background-light);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
@@ -243,9 +243,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-bottom: 10px;
+  padding: 18px 18px 10px 18px;
   border-bottom: 1px solid var(--color-form-border);
-  margin-bottom: 12px;
+  flex-shrink: 0;
 }
 .usuarios-modal-header h2,
 .usuarios-modal-header h3 {
@@ -272,7 +272,9 @@
 /* modal body scrollable */
 .usuarios-modal-body {
   overflow-y: auto;
-  padding-right: 6px; /* evita salto por scrollbar */
+  padding: 18px;
+  flex: 1;
+  min-height: 0; /* Permite que el flex funcione correctamente */
 }
 
 /* short helpers for detail/confirm forms inside modal */
@@ -461,23 +463,28 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(0,0,0,0.04);
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--color-form-border);
   flex-wrap: wrap;
+  background-color: var(--color-background-light);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .usuarios-form-buttonGuardar,
 .usuarios-form-buttonCancelar,
 .usuarios-modalButton-cerrar {
-  min-width: 120px;
-  padding: 10px 18px;
+  min-width: 140px;
+  padding: 12px 24px;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.18s ease, transform 0.06s;
+  transition: background-color 0.18s ease, transform 0.06s, box-shadow 0.18s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* guardar */
@@ -485,14 +492,22 @@
   background-color: var(--color-primary);
   color: var(--color-text-light);
 }
-.usuarios-form-buttonGuardar:hover { background-color: var(--color-primary-hover); }
+.usuarios-form-buttonGuardar:hover { 
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
 
 /* cancelar / cerrar */
 .usuarios-form-buttonCancelar {
   background-color: var(--color-secondary);
   color: var(--color-secondary-text, var(--color-text-dark));
 }
-.usuarios-form-buttonCancelar:hover { background-color: var(--color-secondary-hover); }
+.usuarios-form-buttonCancelar:hover { 
+  background-color: var(--color-secondary-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
 
 .usuarios-modalButton-cerrar {
   background-color: var(--color-secondary);
