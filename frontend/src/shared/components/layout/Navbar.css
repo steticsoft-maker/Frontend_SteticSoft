@@ -151,7 +151,7 @@
 
 /* Botón hamburguesa para móvil */
 .mobile-menu-toggle {
-    display: block;
+    display: none; /* Oculto por defecto en pantallas grandes */
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -173,7 +173,14 @@
 }
 
 .dark-theme .mobile-menu-toggle:hover {
-    color: var(--color-primary);
+color: var(--color-primary);
+}
+
+/* Asegurar que el botón esté oculto en pantallas grandes (full screen) */
+@media (min-width: 769px) {
+    .mobile-menu-toggle {
+        display: none !important; /* Forzar ocultación en pantallas grandes */
+    }
 }
 
 /* --- Responsive --- */

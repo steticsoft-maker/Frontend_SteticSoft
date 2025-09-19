@@ -227,7 +227,7 @@
 
 /* --- Menú Móvil --- */
 .mobile-menu-toggle {
-  display: none;
+  display: none; /* Oculto por defecto en pantallas grandes */
   position: fixed;
   top: 20px;
   left: 20px;
@@ -243,7 +243,14 @@
   transition: all 0.3s ease;
 }
 
-/* Mostrar el botón en pantallas pequeñas */
+/* Asegurar que el botón esté oculto en pantallas grandes (full screen) */
+@media (min-width: 1025px) {
+  .mobile-menu-toggle {
+    display: none !important; /* Forzar ocultación en pantallas grandes */
+  }
+}
+
+/* Mostrar el botón solo en pantallas medianas y pequeñas */
 @media (max-width: 1024px) {
   .mobile-menu-toggle {
     display: block;
@@ -283,7 +290,7 @@
 /* Tablet Landscape (1024px and below) */
 @media (max-width: 1024px) {
   .mobile-menu-toggle {
-    display: block;
+    display: block; /* Mostrar botón hamburguesa */
   }
 
   .mobile-sidebar-overlay {
@@ -321,28 +328,6 @@
 
 /* Tablet Portrait (768px and below) */
 @media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: block;
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 1005;
-    background-color: var(--color-admin-primary);
-    color: var(--color-text-light);
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    box-shadow: 0 4px 12px var(--color-shadow-medium);
-    transition: all 0.3s ease;
-  }
-
-  .mobile-menu-toggle:hover {
-    background-color: var(--color-button-primary-hover);
-    transform: scale(1.05);
-  }
-
   .mobile-sidebar-overlay {
     display: block;
   }
@@ -523,23 +508,5 @@
 }
 
 /* --- Media Queries --- */
-
-/* Estilos para el botón de menú móvil */
-.mobile-menu-toggle {
-  display: none;
-  /* Oculto por defecto */
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1005;
-  /* Debe estar sobre el contenido pero debajo del sidebar abierto */
-  background-color: var(--color-admin-primary);
-  color: var(--color-text-light);
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.5rem;
-}
 
 /* Legacy responsive styles - now handled above */
