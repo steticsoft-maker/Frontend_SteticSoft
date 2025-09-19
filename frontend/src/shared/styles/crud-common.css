@@ -579,6 +579,18 @@ input:checked + .crud-slider:before {
   background-color: rgba(231, 76, 60, 0.04);
 }
 
+/* === AJUSTE PARA LAYOUT DE ADMIN === */
+/*
+  Cuando .crud-content está dentro de .admin-main-content-area,
+  el margen izquierdo se elimina para evitar el doble margen del sidebar.
+*/
+.admin-main-content-area .crud-content {
+  margin-left: 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
+
 /* === RESPONSIVE STYLES === */
 /* Media queries para responsividad */
 @media (max-width: 1200px) {
