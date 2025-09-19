@@ -1,3 +1,6 @@
+@import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
+
 /* Página general */
 .productos-page {
   padding: 20px;

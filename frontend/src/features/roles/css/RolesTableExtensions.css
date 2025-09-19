@@ -1,3 +1,6 @@
+@import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
+
 /* frontend/src/features/roles/css/RolesTableExtensions.css */
 .permisos-cell {
   text-align: left; /* Alinea los íconos a la izquierda en la celda de la tabla desktop */

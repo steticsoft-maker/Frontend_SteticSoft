@@ -440,82 +440,393 @@ input:checked+.slider:before { transform: translateX(16px); }
 }
 
 
-/* === ESTILOS RESPONSIVOS === */
+/* === RESPONSIVE DESIGN FOR CLIENTES === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .main-content-clientes {
+        padding: 3rem;
+        margin-left: 300px;
+    }
+
+    .admin-main-content {
+        padding: 3rem;
+        margin-left: 300px;
+    }
+
+    .main-content-clientes h1 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .containerAgregarbuscarClientes {
+        margin-bottom: 2rem;
+        gap: 2rem;
+    }
+
+    .barraBusquedaClientesInput {
+        padding: 14px 18px;
+        font-size: 1.1rem;
+    }
+
+    .buttonAgregarcliente {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+    }
+
+    .tablaClientes {
+        font-size: 1rem;
+    }
+
+    .tablaClientes th,
+    .tablaClientes td {
+        padding: 15px 18px;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .main-content-clientes {
+        padding: 2rem;
+        margin-left: 280px;
+    }
+
+    .admin-main-content {
+        padding: 2rem;
+        margin-left: 280px;
+    }
+
+    .main-content-clientes h1 {
+        font-size: 2rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .containerAgregarbuscarClientes {
+        margin-bottom: 1.8rem;
+        gap: 1.5rem;
+    }
+
+    .barraBusquedaClientesInput {
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+
+    .buttonAgregarcliente {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .main-content-clientes {
+        padding: 1.5rem;
+        margin-left: 260px;
+    }
+
+    .admin-main-content {
+        padding: 1.5rem;
+        margin-left: 260px;
+    }
+
+    .main-content-clientes h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .containerAgregarbuscarClientes {
+        margin-bottom: 1.5rem;
+        gap: 1.2rem;
+    }
+
+    .barraBusquedaClientesInput {
+        padding: 11px 15px;
+        font-size: 0.95rem;
+    }
+
+    .buttonAgregarcliente {
+        padding: 9px 18px;
+        font-size: 0.95rem;
+    }
+
+    .tablaClientes {
+        font-size: 0.9rem;
+    }
+
+    .tablaClientes th,
+    .tablaClientes td {
+        padding: 10px 12px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
 @media (max-width: 768px) {
-    .main-content-clientes { 
-        padding: 20px; margin-left: 0; 
+    .main-content-clientes {
+        padding: 1rem;
+        margin-left: 0;
     }
-    .containerAgregarbuscarClientes { 
-        flex-direction: column; gap: 15px; margin-bottom: 20px; 
+
+    .admin-main-content {
+        padding: 1rem;
+        margin-left: 0;
     }
+
+    .main-content-clientes h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .containerAgregarbuscarClientes {
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+    }
+
     .barraBusquedaClientesInput,
     .buttonAgregarcliente {
-        width: 100%; margin-top: 0; margin-bottom: 0;
+        width: 100%;
+        margin-top: 0;
+        margin-bottom: 0;
     }
-    .buttonAgregarcliente { padding: 12px 20px; }
 
-    .tablaClientes thead { display: none; }
-    .tablaClientes, .tablaClientes tbody, .tablaClientes tr, .tablaClientes td {
-        display: block; width: 100%;
+    .buttonAgregarcliente {
+        padding: 12px 20px;
     }
-    .tablaClientes tr {
-        margin-bottom: 15px; border: 1px solid #e978d0; 
-        border-radius: 8px; padding: 10px;
-        background-color: #ffffff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    /* Table responsive */
+    .tablaClientes thead {
+        display: none;
     }
+
+    .tablaClientes,
+    .tablaClientes tbody,
+    .tablaClientes tr,
     .tablaClientes td {
-        text-align: right; padding-left: 50%; 
-        position: relative; border: none; 
-        padding-top: 8px; padding-bottom: 8px; font-size: 0.9rem; 
+        display: block;
+        width: 100%;
     }
+
+    .tablaClientes tr {
+        margin-bottom: 15px;
+        border: 1px solid #e978d0;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .tablaClientes td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
     .tablaClientes td::before {
-        content: attr(data-label); position: absolute;
-        left: 10px; width: calc(50% - 20px); 
-        padding-right: 10px; white-space: nowrap;
-        font-weight: bold; color: #6d0b58; text-align: left;
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #6d0b58;
+        text-align: left;
     }
-    .tablaClientes td[data-label="Acciones:"] { text-align: center; padding-left: 0; }
-    .tablaClientes td[data-label="Acciones:"]::before { content: ""; }
-    .clientes-table-actions { justify-content: center; padding-top: 5px; }
-    .iconsTablaclientes { padding: 8px 12px; }
 
+    .tablaClientes td[data-label="Acciones:"] {
+        text-align: center;
+        padding-left: 0;
+    }
+
+    .tablaClientes td[data-label="Acciones:"]::before {
+        content: "";
+    }
+
+    .clientes-table-actions {
+        justify-content: center;
+        padding-top: 5px;
+    }
+
+    .iconsTablaclientes {
+        padding: 8px 12px;
+    }
+
+    /* Modals responsive */
     .modal-content-clientes,
-    .modal-content-clientes.formulario { 
-        padding: 20px; max-width: 95%; 
-    }
-    /* En pantallas pequeñas, el modal-header-clientes se puede ajustar */
-    .modal-header-clientes {
-        flex-direction: column; /* Apila el título y la X */
-        align-items: flex-end; /* Alinea la X a la derecha */
-        margin-bottom: 10px;
-    }
-    .modal-content-clientes h2 {
-        text-align: center; /* Mantiene el título centrado */
-        width: 100%; /* Ocupa todo el ancho disponible */
-        margin-bottom: 10px;
-    }
-    .modal-close-button {
-        position: static; /* Elimina la posición absoluta en móvil para que se alinee con flex */
-        margin-top: -10px; /* Ajusta la posición si es necesario */
-        align-self: flex-end; /* Asegura que la X se alinee a la derecha */
-        font-size: 2rem; /* Un poco más pequeño si lo prefieres */
+    .modal-content-clientes.formulario {
+        padding: 20px;
+        max-width: 95%;
     }
 
-    .clientes-form-grid { grid-template-columns: 1fr; gap: 15px; }
-    /* Asegurar que full-width-group se mantenga full-width en móvil */
+    .modal-header-clientes {
+        flex-direction: column;
+        align-items: flex-end;
+        margin-bottom: 10px;
+    }
+
+    .modal-content-clientes h2 {
+        text-align: center;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .modal-close-button {
+        position: static;
+        margin-top: -10px;
+        align-self: flex-end;
+        font-size: 2rem;
+    }
+
+    .clientes-form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
     .clientes-form-group-full-width {
         grid-column: 1 / -1;
     }
-    .clientes-form-group label { font-size: 0.9rem; }
-    .clientes-form-group input, .clientes-form-group select {
-        font-size: 0.95rem; padding: 10px;
+
+    .clientes-form-group label {
+        font-size: 0.9rem;
     }
-    .clientes-form-actions { flex-direction: column; gap: 12px; }
+
+    .clientes-form-group input,
+    .clientes-form-group select {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+
+    .clientes-form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
     .clientes-form-actions .botonguardarClienteModal,
     .clientes-form-actions .botonModalCancelar-Cerrar {
-        width: 100%; max-width: none; padding: 12px; 
+        width: 100%;
+        max-width: none;
+        padding: 12px;
     }
+
     .botonModalCancelar-Cerrar.detalle-modal-cerrar-btn {
-        width: 100%; padding: 12px;
+        width: 100%;
+        padding: 12px;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .main-content-clientes {
+        padding: 0.8rem;
+    }
+
+    .admin-main-content {
+        padding: 0.8rem;
+    }
+
+    .main-content-clientes h1 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .containerAgregarbuscarClientes {
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .barraBusquedaClientesInput {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    .buttonAgregarcliente {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .modal-content-clientes,
+    .modal-content-clientes.formulario {
+        max-width: 98%;
+        padding: 15px;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .main-content-clientes {
+        padding: 0.6rem;
+    }
+
+    .admin-main-content {
+        padding: 0.6rem;
+    }
+
+    .main-content-clientes h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .containerAgregarbuscarClientes {
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .barraBusquedaClientesInput {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .buttonAgregarcliente {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+
+    .tablaClientes td {
+        font-size: 0.8rem;
+    }
+
+    .modal-content-clientes,
+    .modal-content-clientes.formulario {
+        max-width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .main-content-clientes {
+        padding: 0.4rem;
+    }
+
+    .admin-main-content {
+        padding: 0.4rem;
+    }
+
+    .main-content-clientes h1 {
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .containerAgregarbuscarClientes {
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .barraBusquedaClientesInput {
+        padding: 7px 8px;
+        font-size: 0.75rem;
+    }
+
+    .buttonAgregarcliente {
+        padding: 7px 12px;
+        font-size: 0.75rem;
+    }
+
+    .tablaClientes td {
+        font-size: 0.75rem;
     }
 }

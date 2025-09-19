@@ -1,3 +1,6 @@
+@import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
+
 /* src/features/home/css/Novedades.css */
 .novedades-page-container { /* Antes .novedades-page */
     font-family: var(--font-family-sans-serif); /* Usar variable */

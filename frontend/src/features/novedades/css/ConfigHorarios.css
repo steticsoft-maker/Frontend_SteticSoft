@@ -1,6 +1,9 @@
 
 
 
+@import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
+
 /* ==========================================================================
    Estilos para el Módulo de Novedades (Horarios)
    Actualizado con la nueva paleta de colores de la marca.

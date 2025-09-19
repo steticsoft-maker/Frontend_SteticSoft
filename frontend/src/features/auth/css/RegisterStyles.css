@@ -35,6 +35,64 @@
     width: 100%;
     /* box-sizing: border-box; ya está en la definición general de .auth-form-input */
   }
+
+/* === RESPONSIVE DESIGN FOR REGISTER FORM === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .auth-form-grid {
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .auth-form-grid {
+        gap: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .auth-form-grid {
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    .auth-form-grid {
+        gap: 14px;
+        grid-template-columns: 1fr; /* Single column on tablets */
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .auth-form-grid {
+        gap: 12px;
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .auth-form-grid {
+        gap: 10px;
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .auth-form-grid {
+        gap: 8px;
+        grid-template-columns: 1fr;
+    }
+}
   
   /* === Estilos para la sección inferior y acciones secundarias del RegisterForm === */
   .auth-form-bottom-section {
@@ -52,6 +110,90 @@
     width: 100%;
     /* El margin-top es manejado por el gap de .auth-form-bottom-section */
   }
+
+/* === RESPONSIVE BOTTOM SECTION === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .auth-form-bottom-section {
+        gap: 20px;
+    }
+
+    .auth-form-secondary-actions {
+        gap: 15px;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .auth-form-bottom-section {
+        gap: 18px;
+    }
+
+    .auth-form-secondary-actions {
+        gap: 12px;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .auth-form-bottom-section {
+        gap: 16px;
+    }
+
+    .auth-form-secondary-actions {
+        gap: 10px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    .auth-form-bottom-section {
+        gap: 14px;
+    }
+
+    .auth-form-secondary-actions {
+        gap: 8px;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .auth-form-bottom-section {
+        gap: 12px;
+    }
+
+    .auth-form-secondary-actions {
+        gap: 6px;
+        flex-direction: column;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .auth-form-bottom-section {
+        gap: 10px;
+    }
+
+    .auth-form-secondary-actions {
+        gap: 5px;
+        flex-direction: column;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .auth-form-bottom-section {
+        gap: 8px;
+    }
+
+    .auth-form-secondary-actions {
+        gap: 4px;
+        flex-direction: column;
+    }
+}
 
     /* En RegisterStyles.css o Auth.css */
     .auth-form-group label {
@@ -74,3 +216,61 @@
     justify-content: center;
     width: auto;
   }
+
+/* === RESPONSIVE LABELS AND CHECKBOXES === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .auth-form-group label {
+        font-size: 1rem;
+        margin-bottom: 6px;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .auth-form-group label {
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .auth-form-group label {
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    .auth-form-group label {
+        font-size: 0.85rem;
+        margin-bottom: 3px;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .auth-form-group label {
+        font-size: 0.8rem;
+        margin-bottom: 3px;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .auth-form-group label {
+        font-size: 0.75rem;
+        margin-bottom: 2px;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .auth-form-group label {
+        font-size: 0.7rem;
+        margin-bottom: 2px;
+    }
+}

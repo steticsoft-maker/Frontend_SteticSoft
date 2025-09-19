@@ -1,4 +1,5 @@
 @import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
 /* src/features/roles/css/HistorialRolModal.css */
 
 /* --- Estilos específicos para el modal de historial --- */

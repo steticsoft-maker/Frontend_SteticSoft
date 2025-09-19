@@ -704,75 +704,400 @@ input:checked+.slider:before { transform: translateX(16px); }
 }
 
 
-/* === ESTILOS RESPONSIVOS === */
+/* === RESPONSIVE DESIGN FOR PRODUCTOS ADMIN === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .productos-admin-main-content {
+        padding: 3rem;
+        margin-left: 300px;
+    }
+
+    .admin-main-content {
+        padding: 3rem;
+        margin-left: 300px;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .admin-actions-bar {
+        margin-bottom: 2rem;
+        gap: 2rem;
+    }
+
+    .admin-search-input {
+        min-width: 300px;
+        padding: 14px 18px;
+        font-size: 1.1rem;
+    }
+
+    .admin-add-button {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+    }
+
+    .tablaProductosAdministrador {
+        font-size: 1rem;
+    }
+
+    .tablaProductosAdministrador th,
+    .tablaProductosAdministrador td {
+        padding: 15px 18px;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .productos-admin-main-content {
+        padding: 2rem;
+        margin-left: 280px;
+    }
+
+    .admin-main-content {
+        padding: 2rem;
+        margin-left: 280px;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 2rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .admin-actions-bar {
+        margin-bottom: 1.8rem;
+        gap: 1.5rem;
+    }
+
+    .admin-search-input {
+        min-width: 250px;
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+
+    .admin-add-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .productos-admin-main-content {
+        padding: 1.5rem;
+        margin-left: 260px;
+    }
+
+    .admin-main-content {
+        padding: 1.5rem;
+        margin-left: 260px;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .admin-actions-bar {
+        margin-bottom: 1.5rem;
+        gap: 1.2rem;
+    }
+
+    .admin-search-input {
+        min-width: 220px;
+        padding: 11px 15px;
+        font-size: 0.95rem;
+    }
+
+    .admin-add-button {
+        padding: 9px 18px;
+        font-size: 0.95rem;
+    }
+
+    .tablaProductosAdministrador {
+        font-size: 0.9rem;
+    }
+
+    .tablaProductosAdministrador th,
+    .tablaProductosAdministrador td {
+        padding: 10px 12px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
 @media (max-width: 768px) {
     .productos-admin-main-content {
-        margin-left: 0; padding: 15px;
+        margin-left: 0; 
+        padding: 1rem;
     }
-    .productos-admin-content-wrapper { padding: 0; }
+
+    .admin-main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .productos-admin-content-wrapper { 
+        padding: 0; 
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .admin-actions-bar {
+        flex-direction: column; 
+        gap: 1rem;
+        align-items: flex-start;
+        margin-bottom: 1.2rem;
+    }
+
+    .admin-filters {
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .admin-search-input {
+        min-width: 100%;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .admin-add-button {
+        width: 100%;
+        height: auto; 
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+
     .productos-admin-actions-bar {
-        flex-direction: column; gap: 15px;
-        align-items: flex-start; /* Alinea los elementos a la izquierda en columna */
+        flex-direction: column; 
+        gap: 1rem;
+        align-items: flex-start;
     }
-    .productos-admin-search-bar, /* Asegura que la barra de búsqueda ocupe el 100% */
-    .productos-admin-filters { /* Asegura que el contenedor de filtros ocupe el 100% */
+
+    .productos-admin-search-bar,
+    .productos-admin-filters {
         width: 100%;
     }
+
     .productos-admin-search-bar input,
     .productos-admin-add-button,
-    .filtro-estado-grupo, /* Asegura que el grupo de filtro ocupe el 100% */
-    .filtro-input { /* Asegura que el select ocupe el 100% */
+    .filtro-estado-grupo,
+    .filtro-input {
         width: 100%;
     }
-    .productos-admin-add-button { height: auto; padding: 12px 20px; }
 
-    .tablaProductosAdministrador thead { display: none; }
+    .productos-admin-add-button { 
+        height: auto; 
+        padding: 12px 20px; 
+    }
+
+    /* Table responsive */
+    .tablaProductosAdministrador thead { 
+        display: none; 
+    }
+
     .tablaProductosAdministrador,
     .tablaProductosAdministrador tbody,
     .tablaProductosAdministrador tr,
     .tablaProductosAdministrador td {
-        display: block; width: 100%;
+        display: block; 
+        width: 100%;
     }
+
     .tablaProductosAdministrador tr {
-        margin-bottom: 15px; border: 1px solid var(--color-table-header);
-        border-radius: 8px; padding: 10px;
-        background-color: var(--color-background-light); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin-bottom: 15px; 
+        border: 1px solid var(--color-table-header);
+        border-radius: 8px; 
+        padding: 10px;
+        background-color: var(--color-background-light); 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
+
     .tablaProductosAdministrador td {
-        text-align: right; padding-left: 50% !important;
-        position: relative; border: none;
-        border-bottom: 1px solid var(--color-form-border); font-size: 0.9rem;
+        text-align: right; 
+        padding-left: 50% !important;
+        position: relative; 
+        border: none;
+        border-bottom: 1px solid var(--color-form-border); 
+        font-size: 0.9rem;
     }
-    .tablaProductosAdministrador td:last-child { border-bottom: none; }
+
+    .tablaProductosAdministrador td:last-child { 
+        border-bottom: none; 
+    }
+
     .tablaProductosAdministrador td::before {
         content: attr(data-label);
-        position: absolute; left: 10px; width: calc(50% - 20px);
-        padding-right: 10px; white-space: nowrap;
-        font-weight: bold; color: var(--color-primary); text-align: left;
+        position: absolute; 
+        left: 10px; 
+        width: calc(50% - 20px);
+        padding-right: 10px; 
+        white-space: nowrap;
+        font-weight: bold; 
+        color: var(--color-primary); 
+        text-align: left;
     }
-    .tablaProductosAdministrador td.productos-admin-table-actions { text-align: center; padding-left: 0 !important; }
-    .tablaProductosAdministrador td.productos-admin-table-actions::before { content: ""; }
-    .productos-admin-table-actions { justify-content: center; padding-top: 8px; }
 
-    /* Modales en móvil */
+    .tablaProductosAdministrador td.productos-admin-table-actions { 
+        text-align: center; 
+        padding-left: 0 !important; 
+    }
+
+    .tablaProductosAdministrador td.productos-admin-table-actions::before { 
+        content: ""; 
+    }
+
+    .productos-admin-table-actions { 
+        justify-content: center; 
+        padding-top: 8px; 
+    }
+
+    /* Modals responsive */
     .modal-content-ProductosAdministrador,
     .modal-content-ProductosAdministrador.detalle-modal,
-    .modal-content-ProductosAdministrador.formulario-modal { /* Aplicar a todos los tipos de modal de producto */
-        max-width: 95%; padding: 20px;
-    }
-    .modal-content-ProductosAdministrador.detalle-modal img, /* Imagen en detalle */
-    .producto-admin-form-group img { /* Imagen en formulario */
-        max-width: 100px; max-height: 100px;
-    }
-    .productos-admin-modal-button-cerrar { /* Botón cerrar del modal de detalle */
-        width: 100%; max-width: none; padding: 12px;
+    .modal-content-ProductosAdministrador.formulario-modal {
+        max-width: 95%; 
+        padding: 20px;
     }
 
-    .botonesGuardarCancelarProductoAdministrador { /* Botones del modal de formulario */
+    .modal-content-ProductosAdministrador.detalle-modal img,
+    .producto-admin-form-group img {
+        max-width: 100px; 
+        max-height: 100px;
+    }
+
+    .productos-admin-modal-button-cerrar {
+        width: 100%; 
+        max-width: none; 
+        padding: 12px;
+    }
+
+    .botonesGuardarCancelarProductoAdministrador {
         flex-direction: column;
     }
-    .botonGuardarProducto, .botonCancelarAgregarProducto {
+
+    .botonGuardarProducto, 
+    .botonCancelarAgregarProducto {
         width: 100%;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .productos-admin-main-content {
+        padding: 0.8rem;
+    }
+
+    .admin-main-content {
+        padding: 0.8rem;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .admin-actions-bar {
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .admin-search-input {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    .admin-add-button {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .modal-content-ProductosAdministrador,
+    .modal-content-ProductosAdministrador.detalle-modal,
+    .modal-content-ProductosAdministrador.formulario-modal {
+        max-width: 98%; 
+        padding: 15px;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .productos-admin-main-content {
+        padding: 0.6rem;
+    }
+
+    .admin-main-content {
+        padding: 0.6rem;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .admin-actions-bar {
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .admin-search-input {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .admin-add-button {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+
+    .tablaProductosAdministrador td {
+        font-size: 0.8rem;
+    }
+
+    .modal-content-ProductosAdministrador,
+    .modal-content-ProductosAdministrador.detalle-modal,
+    .modal-content-ProductosAdministrador.formulario-modal {
+        max-width: 100%; 
+        padding: 10px;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .productos-admin-main-content {
+        padding: 0.4rem;
+    }
+
+    .admin-main-content {
+        padding: 0.4rem;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .admin-actions-bar {
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .admin-search-input {
+        padding: 7px 8px;
+        font-size: 0.75rem;
+    }
+
+    .admin-add-button {
+        padding: 7px 12px;
+        font-size: 0.75rem;
+    }
+
+    .tablaProductosAdministrador td {
+        font-size: 0.75rem;
     }
 }
 

@@ -1,4 +1,7 @@
 
+@import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
+
 .item-selection-modal-overlay {
     position: fixed;
     top: 0;
