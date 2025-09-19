@@ -362,7 +362,7 @@
   padding: 18px 16px;
   text-align: center;
   font-weight: 600;
-  color: var(--color-text-light);
+  color: var(--color-table-header-text);
   font-size: 1rem;
   letter-spacing: 0.5px;
   border: none;
@@ -397,7 +397,7 @@
   padding: 18px 16px;
   text-align: center;
   font-weight: 600;
-  color: var(--color-text-light);
+  color: var(--color-table-header-text);
   font-size: 1rem;
   letter-spacing: 0.5px;
   border: none;

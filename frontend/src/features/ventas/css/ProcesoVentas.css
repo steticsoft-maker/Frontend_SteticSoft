@@ -173,7 +173,7 @@
 
 .tabla-items thead th {
     background-color: var(--color-table-header);
-    color: var(--color-text-dark);
+    color: var(--color-table-header-text);
     font-size: 16px;
 }
 

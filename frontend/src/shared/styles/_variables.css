@@ -26,6 +26,7 @@
     --color-text-light: #ffffff;
     --color-text-secondary: #6b4c6e;
     --color-text-muted: #9a7a9f;
+    --color-table-header-text: #2d1b30;
 
     /* Background colors */
     --color-background-light: #fefcff;
@@ -100,6 +101,7 @@
     --color-text-light: #2d1b30;
     --color-text-secondary: #b8a8bb;
     --color-text-muted: #8b7a8f;
+    --color-table-header-text: #ffffff;
 
     /* Background colors */
     --color-background-light: #1a0f1c;

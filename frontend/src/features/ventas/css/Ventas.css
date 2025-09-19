@@ -314,7 +314,7 @@ input:checked+.slider:before {
 
 .tablaDetallesVentas th {
     background-color: var(--color-table-header);
-    color: var(--color-text-dark);
+    color: var(--color-table-header-text);
     font-weight: bold;
     text-align: center;
     padding: 14px;

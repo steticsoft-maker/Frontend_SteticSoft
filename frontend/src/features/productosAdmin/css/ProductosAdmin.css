@@ -338,7 +338,7 @@
 }
 .tablaProductosAdministrador th {
     background-color: var(--color-table-header);
-    color: var(--color-text-dark);
+    color: var(--color-table-header-text);
     padding: 12px 15px;
     text-align: center;
     font-weight: 600;
