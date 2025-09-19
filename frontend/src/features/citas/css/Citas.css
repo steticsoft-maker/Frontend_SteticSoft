@@ -135,13 +135,50 @@
   padding: 25px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--color-form-border);
+  width: 100%;
+  max-width: 1400px; /* Centrado absoluto */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .citas-header-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
+  flex-wrap: nowrap; /* Horizontal siempre */
+  gap: 30px;
   margin-bottom: 25px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+}
+
+/* Secciones específicas para citas */
+.citas-search-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  min-width: 300px;
+}
+
+.citas-filters-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.citas-buttons-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
 }
 
 .citas-search-input, .citas-filter-select {

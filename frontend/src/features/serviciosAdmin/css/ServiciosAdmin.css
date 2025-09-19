@@ -13,8 +13,13 @@
 
 .servicios-content {
   flex: 1;
-  padding: 30px;
-  margin-left: 270px;
+  padding: 0; /* El padding lo maneja admin-main-content-area */
+  margin-left: 0; /* Ya está dentro de admin-main-content-area */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .servicios-content h1 {
@@ -118,16 +123,43 @@
   background-color: var(--color-primary-hover);
 }
 
-/* --- Barra de Controles (Búsqueda y Botón) --- */
+/* --- Barra de Controles - HORIZONTAL --- */
 .servicios-admin-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto 25px auto;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 30px;
+  flex-wrap: nowrap; /* Horizontal siempre */
   width: 100%;
-  max-width: none;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+/* Secciones específicas para servicios */
+.servicios-search-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  min-width: 300px;
+}
+
+.servicios-filters-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.servicios-buttons-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
 }
 
 .servicios-admin-search-bar {

@@ -16,10 +16,15 @@
 
 .main-content-clientes {
     flex: 1; 
-    padding: 30px; 
-    margin-left: 270px; /* ASUMIENDO AdminSidebar de 250px + 20px de espacio */
+    padding: 0; /* El padding lo maneja admin-main-content-area */
+    margin-left: 0; /* Ya está dentro de admin-main-content-area */
     overflow-y: auto;
     box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .main-content-clientes h1 {
@@ -128,19 +133,46 @@
     margin-left: 2px;
 }
 
-/* === BARRA DE ACCIONES SUPERIORES === */
+/* === BARRA DE ACCIONES SUPERIORES - HORIZONTAL === */
 .containerAgregarbuscarClientes {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px; 
-    gap: 20px;
-    flex-wrap: wrap; 
+    gap: 30px;
+    flex-wrap: nowrap; /* Horizontal siempre */
     width: 100%;
-    max-width: none; 
-    margin-left: 0;
-    margin-right: 0;
+    max-width: 1200px; 
+    margin-left: auto;
+    margin-right: auto;
     box-sizing: border-box;
+    padding: 0 20px;
+}
+
+/* Secciones específicas para clientes */
+.clientes-search-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.clientes-filters-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.clientes-buttons-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .barraBusquedaClientesInput {

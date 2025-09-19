@@ -36,17 +36,44 @@
   font-size: 2rem;
 }
 
-/* === SECCIÓN DE ACCIONES SUPERIORES === */
+/* === SECCIÓN DE ACCIONES SUPERIORES - HORIZONTAL === */
 .usuarios-accionesTop {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-wrap: nowrap; /* Horizontal siempre */
+  gap: 30px;
   width: 100%;
   max-width: 1200px;
   margin-bottom: 20px;
   box-sizing: border-box;
+  padding: 0 20px;
+}
+
+/* Secciones específicas para usuarios */
+.usuarios-search-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  min-width: 300px;
+}
+
+.usuarios-filters-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.usuarios-buttons-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
 }
 
 .usuarios-filtro-estado {

@@ -32,29 +32,36 @@
 }
 
 /* ================================================= */
-/* =========== SECCIÓN DE FILTROS MODIFICADA =========== */
+/* =========== SECCIÓN DE FILTROS HORIZONTAL =========== */
 /* ================================================= */
 .gestion-filtros {
     display: flex;
-    flex-direction: column; /* Apila las filas verticalmente */
-    gap: 16px; /* Espacio entre la fila de búsqueda y la de estado */
+    flex-direction: row; /* Horizontal siempre */
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px; /* Espacio entre secciones */
     margin-bottom: 30px; /* Espacio antes de la tabla */
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 20px;
+    flex-wrap: nowrap; /* Evita que se rompan en líneas */
 }
 
 .filtros-top {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
+    min-width: 300px;
 }
 
 .filtros-bottom {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espacio entre "Filtrar por estado:" y el select */
+    gap: 15px; /* Espacio entre elementos */
+    flex-shrink: 0;
 }
 
 .filtros-bottom label {

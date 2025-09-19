@@ -16,23 +16,23 @@
 
 .compras-content-wrapper {
     flex: 1;
-    padding: 40px;
+    padding: 0; /* El padding lo maneja admin-main-content-area */
     margin: 0 auto;
     overflow-y: auto;
     box-sizing: border-box;
     width: 100%;
-    max-width: 1800px; /* Mantén el max-width para pantallas grandes */
+    max-width: 1400px; /* Centrado absoluto */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .compras-content-wrapper h1 {
-    padding-left: 200px;
+    padding-left: 0; /* Ya está centrado */
     text-align: center;
     color: var(--color-text-dark);
     margin-top: 0;
-    margin-bottom: 0px;
+    margin-bottom: 25px;
     font-size: 1.8rem;
 }
 
@@ -41,15 +41,45 @@
 /* ============= BARRA DE ACCIONES SUPERIORES ============= */
 /* ======================================================== */
 .compras-actions-bar {
-    padding-left: 250px;
+    padding-left: 0; /* Ya está centrado */
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px; 
-    gap: 20px;
-    flex-wrap: wrap; 
+    gap: 30px;
+    flex-wrap: nowrap; /* Horizontal siempre */
     width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
     box-sizing: border-box;
+    padding: 0 20px;
+}
+
+/* Secciones específicas para compras */
+.compras-search-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.compras-filters-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.compras-buttons-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .compras-filters {
@@ -147,7 +177,7 @@
 }
 
 .tablaCompras {
-    padding-left: 246px;
+    padding-left: 0; /* Ya está centrado */
     width: 100%; /* Cambiado de 1460px a 100% para que se adapte al contenedor */
     margin-top: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 

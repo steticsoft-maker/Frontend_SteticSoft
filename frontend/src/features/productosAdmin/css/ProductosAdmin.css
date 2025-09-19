@@ -16,10 +16,15 @@
 
 .productos-admin-main-content { /* Contenido principal al lado del AdminSidebar */
     flex: 1;
-    padding: 30px;
-    margin-left: 270px; /* CRUCIAL: ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */
+    padding: 0; /* El padding lo maneja admin-main-content-area */
+    margin-left: 0; /* Ya está dentro de admin-main-content-area */
     overflow-y: auto;
     box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 /* === ESTILOS PARA USAR CON ADMIN-LAYOUT === */
@@ -133,16 +138,46 @@
     font-size: 1.8rem; /* Consistencia */
 }
 
-/* === BARRA DE ACCIONES SUPERIORES (BÚSQUEDA, FILTRO Y BOTÓN AGREGAR) === */
+/* === BARRA DE ACCIONES SUPERIORES - HORIZONTAL === */
 .productos-admin-actions-bar { /* Antes: search-add-container */
     display: flex;
     justify-content: space-between; /* Alinea los grupos a los extremos */
-    align-items: flex-end; /* Alinea los elementos al final (parte inferior) */
+    align-items: center; /* Centrado vertical */
     margin-bottom: 25px;
-    gap: 20px; /* Espacio entre los bloques principales (filtros y botón) */
-    flex-wrap: wrap;
+    gap: 30px; /* Espacio entre los bloques principales */
+    flex-wrap: nowrap; /* Horizontal siempre */
     width: 100%; /* Ocupa el ancho del wrapper */
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
     box-sizing: border-box;
+    padding: 0 20px;
+}
+
+/* Secciones específicas para productos */
+.productos-search-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.productos-filters-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.productos-buttons-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 /* Nuevo contenedor para agrupar la búsqueda y el filtro de estado */

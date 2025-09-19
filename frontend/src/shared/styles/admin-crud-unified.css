@@ -26,6 +26,18 @@
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+  max-width: 1400px; /* Ancho máximo para centrado absoluto */
+}
+
+/* === CONTENEDOR CENTRADO ABSOLUTO === */
+.admin-crud-centered-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 /* === RESPONSIVE DESIGN FOR CRUD PAGES === */
@@ -1385,6 +1397,6 @@ input:focus + .slider {
 .admin-main-content-area .ventasContent {
   margin-left: 0;
   width: 100%;
-  max-width: 100%;
+  max-width: 1400px; /* Centrado absoluto */
   padding: 0;
 }

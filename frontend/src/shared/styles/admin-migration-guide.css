@@ -422,6 +422,7 @@
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+  max-width: 1400px; /* Centrado absoluto */
 }
 
 /* Aplicar estilos unificados a títulos */

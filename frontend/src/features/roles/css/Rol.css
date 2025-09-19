@@ -39,17 +39,44 @@
     margin-bottom: 20px;
 }
 
-/* Barra de Búsqueda y Botón Agregar */
+/* Barra de Búsqueda y Botón Agregar - HORIZONTAL */
 .rol-accionesTop {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    gap: 20px;
-    flex-wrap: wrap;
+    gap: 30px;
+    flex-wrap: nowrap; /* Horizontal siempre */
     width: 100%;
     max-width: 1200px;
     box-sizing: border-box;
+    padding: 0 20px;
+}
+
+/* Secciones específicas para roles */
+.rol-search-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.rol-filters-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.rol-buttons-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .rol-filtro-estado {
