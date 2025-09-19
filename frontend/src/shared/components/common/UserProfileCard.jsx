@@ -1,31 +1,24 @@
 import React, { useState } from "react";
 import {
-  FaUserCircle,
   FaEnvelope,
   FaPhone,
   FaCrown,
   FaUser,
   FaUserTie,
   FaShoppingBag,
-  FaSignOutAlt,
   FaCog,
 } from "react-icons/fa";
 // El logo se referencia directamente desde la carpeta public
 const SteticLogo = "/logo.png";
 import "./UserProfileCard.css";
 
-const UserProfileCard = ({ user, onLogout }) => {
+const UserProfileCard = ({ user }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
   // Validación de props críticas
   if (!user) {
     console.warn("UserProfileCard: user prop is undefined");
-    return null;
-  }
-
-  if (!onLogout) {
-    console.warn("UserProfileCard: onLogout prop is undefined");
     return null;
   }
 
@@ -117,19 +110,6 @@ const UserProfileCard = ({ user, onLogout }) => {
               <FaPhone className="detail-icon" />
               <span className="detail-text">{phone}</span>
             </div>
-          </div>
-
-          {/* Acciones del usuario */}
-          <div className="user-actions">
-            {!hasCompleteInfo && (
-              <div className="incomplete-profile-notice">
-                <p>Completa tu perfil para una mejor experiencia</p>
-              </div>
-            )}
-            <button className="action-button logout-button" onClick={onLogout}>
-              <FaSignOutAlt className="action-icon" />
-              <span>Cerrar Sesión</span>
-            </button>
           </div>
         </div>
       )}
