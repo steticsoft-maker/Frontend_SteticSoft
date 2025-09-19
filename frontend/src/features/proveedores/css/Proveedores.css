@@ -10,26 +10,6 @@
     background-color: var(--color-background-light);
 }
 
-.proveedores-main-content {
-    flex: 1; 
-    padding: 30px; 
-    margin-left: 270px;
-    overflow-y: auto;
-    box-sizing: border-box;
-}
-
-.proveedores-content-wrapper {
-    padding-left: 30px;
-    padding-right: 20px;
-    width: 100%;
-    max-width: none; 
-    margin-left: 0;
-    margin-right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-}
-
 .proveedores-content-wrapper h1 { /* Título de la página "Gestión de Proveedores" */
     text-align: center;
     color: var(--color-text-dark);
@@ -601,64 +581,4 @@ input.is-invalid, .input-documento.is-invalid {
   background-color: var(--color-primary);
   color: var(--color-text-light);
   font-weight: bold;
-}
-
-/* REGLAS FINALES PARA FORZAR EL ANCHO DE LA TABLA */
-body div.crud-container div.crud-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: 270px !important;
-    padding-left: 5px !important;
-    align-items: stretch !important;
-}
-
-body div.crud-container div.crud-content div.table-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-body div.crud-container div.crud-content div.table-container table {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 100% !important;
-}
-
-/* SOBRESCRIBIR CRUD-COMMON.CSS PARA PROVEEDORES - SELECTORES MÁS ESPECÍFICOS */
-div.crud-container {
-    max-width: none !important;
-    width: 100% !important;
-    overflow-x: visible !important;
-}
-
-div.crud-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: 270px !important; /* Reducir espacio del menú */
-    padding: 20px 20px 20px 5px !important;
-    align-items: stretch !important; /* Cambiar de center a stretch */
-    overflow-x: visible !important;
-}
-
-div.crud-content div.table-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: visible !important;
-}
-
-div.crud-content div.table-container table.table-main {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 100% !important;
-    table-layout: fixed !important;
-}
-
-/* REGLAS ESPECÍFICAS PARA FORZAR EL ANCHO */
-div.crud-content div.table-container table {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 100% !important;
 }
