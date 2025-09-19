@@ -57,54 +57,56 @@ const PermisosSelector = ({
 
       <div className="rol-contenedorModulos">
         {modulos.length > 0 ? (
-          modulos.map((nombreModulo) => (
-            <details
-              key={nombreModulo}
-              className="rol-modulo-acordeon"
-              open={debeEstarAbierto(nombreModulo)} // Estado open dinámico
-            >
-              <summary className="rol-modulo-header-acordeon">
-                {nombreModulo}
-              </summary>
-              <div className="rol-permisos-grid">
-                {(permisosAgrupados[nombreModulo] || []).map((permiso) => (
-                  <div key={permiso.idPermiso} className="rol-moduloItem">
-                    <input
-                      type="checkbox"
-                      id={`permiso-${permiso.idPermiso}`}
-                      checked={(permisosSeleccionadosIds || []).includes(
-                        permiso.idPermiso
-                      )}
-                      onChange={() => onTogglePermiso(permiso.idPermiso)}
-                      disabled={isRoleAdmin}
-                    />
-                    {(() => {
-                      const parts = permiso.nombre.split("_");
-                      let accionName =
-                        parts.length > 2 && parts[0] === "MODULO"
-                          ? parts.slice(2).join("_")
-                          : permiso.nombre;
+          <div className="rol-modulos-grid">
+            {modulos.map((nombreModulo) => (
+              <details
+                key={nombreModulo}
+                className="rol-modulo-acordeon"
+                open={debeEstarAbierto(nombreModulo)} // Estado open dinámico
+              >
+                <summary className="rol-modulo-header-acordeon">
+                  {nombreModulo}
+                </summary>
+                <div className="rol-permisos-grid">
+                  {(permisosAgrupados[nombreModulo] || []).map((permiso) => (
+                    <div key={permiso.idPermiso} className="rol-moduloItem">
+                      <input
+                        type="checkbox"
+                        id={`permiso-${permiso.idPermiso}`}
+                        checked={(permisosSeleccionadosIds || []).includes(
+                          permiso.idPermiso
+                        )}
+                        onChange={() => onTogglePermiso(permiso.idPermiso)}
+                        disabled={isRoleAdmin}
+                      />
+                      {(() => {
+                        const parts = permiso.nombre.split("_");
+                        let accionName =
+                          parts.length > 2 && parts[0] === "MODULO"
+                            ? parts.slice(2).join("_")
+                            : permiso.nombre;
 
-                      const displayAccion = accionName
-                        .split("_")
-                        .map(
-                          (word) =>
-                            word.charAt(0).toUpperCase() +
-                            word.slice(1).toLowerCase()
-                        )
-                        .join(" ");
+                        const displayAccion = accionName
+                          .split("_")
+                          .map(
+                            (word) =>
+                              word.charAt(0).toUpperCase() +
+                              word.slice(1).toLowerCase()
+                          )
+                          .join(" ");
 
-                      return (
-                        <label htmlFor={`permiso-${permiso.idPermiso}`}>
-                          {displayAccion}
-                        </label>
-                      );
-                    })()}
-                  </div>
-                ))}
-              </div>
-            </details>
-          ))
+                        return (
+                          <label htmlFor={`permiso-${permiso.idPermiso}`}>
+                            {displayAccion}
+                          </label>
+                        );
+                      })()}
+                    </div>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
         ) : (
           <p>No hay permisos disponibles para asignar.</p>
         )}
