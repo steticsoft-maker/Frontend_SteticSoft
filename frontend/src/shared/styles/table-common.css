@@ -47,6 +47,123 @@
   padding: 0 !important;
 }
 
+/* === RESPONSIVE DESIGN FOR TABLES === */
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .table-main {
+    min-width: 800px;
+  }
+
+  .table-main th,
+  .table-main td {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .table-main {
+    min-width: 700px;
+  }
+
+  .table-main th,
+  .table-main td {
+    padding: 10px 6px;
+    font-size: 0.85rem;
+  }
+
+  .table-main th {
+    font-size: 0.8rem;
+  }
+
+  .table-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .table-action-button {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+  .table-main {
+    min-width: 600px;
+  }
+
+  .table-main th,
+  .table-main td {
+    padding: 8px 4px;
+    font-size: 0.8rem;
+  }
+
+  .table-main th {
+    font-size: 0.75rem;
+  }
+
+  .table-action-button {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+  .table-main {
+    min-width: 500px;
+  }
+
+  .table-main th,
+  .table-main td {
+    padding: 6px 3px;
+    font-size: 0.75rem;
+  }
+
+  .table-main th {
+    font-size: 0.7rem;
+  }
+
+  .table-action-button {
+    padding: 3px 5px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+  .table-main {
+    min-width: 450px;
+  }
+
+  .table-main th,
+  .table-main td {
+    padding: 4px 2px;
+    font-size: 0.7rem;
+  }
+
+  .table-main th {
+    font-size: 0.65rem;
+  }
+
+  .table-action-button {
+    padding: 2px 4px;
+    font-size: 0.65rem;
+  }
+}
+
 /* Asegurar que no haya limitaciones de ancho en contenedores padre */
 .admin-page-container,
 .admin-main-content,

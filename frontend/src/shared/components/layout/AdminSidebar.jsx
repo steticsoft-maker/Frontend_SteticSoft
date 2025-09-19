@@ -125,6 +125,12 @@ const AdminSidebar = () => {
       >
         {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
       </button>
+
+      {/* Mobile overlay */}
+      {isMobileMenuOpen && (
+        <div className="mobile-sidebar-overlay" onClick={toggleMobileMenu} />
+      )}
+
       <aside className={`dashboard-sidebar ${isMobileMenuOpen ? "open" : ""}`}>
         {/* Componente mejorado de información del usuario */}
         {user && (
