@@ -1,7 +1,11 @@
 @import "@/shared/styles/_variables.css";
+@import "@/shared/styles/admin-crud-unified.css";
+@import "@/shared/styles/admin-migration-guide.css";
+
 /* src/features/usuarios/css/Usuarios.css */
 
 /* === ESTILOS GENERALES DE LA PÁGINA DE USUARIOS === */
+/* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */
 .usuarios-container {
   display: flex;
   height: 100vh;
@@ -381,6 +385,75 @@
   background-color: var(--color-background-warning-light, #f8d7da);
   text-align: center;
   font-size: 0.92rem;
+}
+
+/* === SECCIONES DEL FORMULARIO === */
+.admin-form-section {
+  margin-bottom: 24px;
+}
+
+.admin-form-section-title {
+  color: var(--color-accent-pink);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.admin-form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.admin-form-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-dark);
+  margin-bottom: 6px;
+}
+
+.admin-form-input,
+.admin-form-select {
+  padding: 12px 16px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-form-input:focus,
+.admin-form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(154, 122, 159, 0.1);
+  outline: none;
+}
+
+.admin-form-input.error,
+.admin-form-select.error {
+  border-color: var(--color-form-error);
+}
+
+.admin-form-error {
+  color: var(--color-form-error);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.verifying-email-message {
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-top: 4px;
 }
 
 /* acciones del formulario en modal (botones) */

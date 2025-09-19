@@ -118,7 +118,11 @@ function ListaProveedoresPage() {
           idProveedorLimpio,
           datosLimpiosParaEnviar
         );
-        MySwal.fire("¡Éxito!", "Proveedor actualizado exitosamente.", "success");
+        MySwal.fire(
+          "¡Éxito!",
+          "Proveedor actualizado exitosamente.",
+          "success"
+        );
       } else {
         await proveedoresService.createProveedor(datosLimpiosParaEnviar);
         MySwal.fire("¡Éxito!", "Proveedor creado exitosamente.", "success");
@@ -127,8 +131,7 @@ function ListaProveedoresPage() {
       await cargarProveedores();
     } catch (err) {
       const errorData = err?.response?.data || err?.data || err || {};
-      let userFriendlyMessage =
-        "Ocurrió un error inesperado.";
+      let userFriendlyMessage = "Ocurrió un error inesperado.";
 
       if (
         errorData.errors &&
@@ -146,11 +149,7 @@ function ListaProveedoresPage() {
   const handleDelete = async (proveedor) => {
     try {
       await proveedoresService.deleteProveedor(proveedor.idProveedor);
-      MySwal.fire(
-        "¡Eliminado!",
-        "El proveedor ha sido eliminado.",
-        "success"
-      );
+      MySwal.fire("¡Eliminado!", "El proveedor ha sido eliminado.", "success");
       await cargarProveedores();
     } catch (err) {
       const errorMessage =
@@ -218,7 +217,9 @@ function ListaProveedoresPage() {
   const [paginaActual, setPaginaActual] = useState(1);
   const proveedoresPorPagina = 10;
 
-  const totalPaginas = Math.ceil(filteredProveedores.length / proveedoresPorPagina);
+  const totalPaginas = Math.ceil(
+    filteredProveedores.length / proveedoresPorPagina
+  );
 
   const proveedoresPaginados = useMemo(() => {
     const inicio = (paginaActual - 1) * proveedoresPorPagina;
@@ -232,19 +233,19 @@ function ListaProveedoresPage() {
   };
 
   return (
-    <div className="crud-container">
-      <div className="crud-content">
+    <div className="proveedores-page-container">
+      <div className="proveedores-content">
         <h1>Gestión de Proveedores ({filteredProveedores.length})</h1>
-        <div className="crud-accionesTop">
+        <div className="proveedores-accionesTop">
           <input
             type="text"
             placeholder="Buscar por cualquier campo..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="crud-barraBusqueda"
+            className="proveedores-barraBusqueda"
             disabled={isLoading}
           />
-          <div className="crud-filtro-estado">
+          <div className="proveedores-filtro-estado">
             <span>Estado: </span>
             <select
               value={filtroEstado}
@@ -257,7 +258,7 @@ function ListaProveedoresPage() {
             </select>
           </div>
           <button
-            className="crud-botonAgregar"
+            className="proveedores-botonAgregar"
             onClick={() => handleOpenModal("create")}
             disabled={isLoading}
           >
@@ -302,7 +303,9 @@ function ListaProveedoresPage() {
               <button
                 key={index + 1}
                 onClick={() => irAPagina(index + 1)}
-                className={`pagination-button ${paginaActual === index + 1 ? "active" : ""}`}
+                className={`pagination-button ${
+                  paginaActual === index + 1 ? "active" : ""
+                }`}
               >
                 {index + 1}
               </button>
@@ -318,9 +321,22 @@ function ListaProveedoresPage() {
         )}
       </div>
 
-      <ProveedorCrearModal isOpen={isCrearModalOpen} onClose={closeModal} onSubmit={handleSave} />
-      <ProveedorEditarModal isOpen={isEditarModalOpen} onClose={closeModal} onSubmit={handleSave} initialData={currentProveedor} />
-      <ProveedorDetalleModal isOpen={isDetailsModalOpen} onClose={closeModal} proveedor={currentProveedor} />
+      <ProveedorCrearModal
+        isOpen={isCrearModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSave}
+      />
+      <ProveedorEditarModal
+        isOpen={isEditarModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSave}
+        initialData={currentProveedor}
+      />
+      <ProveedorDetalleModal
+        isOpen={isDetailsModalOpen}
+        onClose={closeModal}
+        proveedor={currentProveedor}
+      />
     </div>
   );
 }

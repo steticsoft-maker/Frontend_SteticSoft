@@ -1,0 +1,1260 @@
+@import "@/shared/styles/_variables.css";
+
+/* ======================================================== */
+/* ============= ESTILOS UNIFICADOS PARA CRUDs ============= */
+/* ======================================================== */
+
+/* === CONTENEDOR PRINCIPAL ESTÁNDAR === */
+.admin-crud-container {
+  display: flex;
+  height: 100vh;
+  background-color: var(--color-background-light);
+  font-family: var(--font-family-roboto, 'Roboto', sans-serif);
+  width: 100%;
+}
+
+/* === CONTENIDO PRINCIPAL CENTRADO === */
+.admin-crud-content {
+  flex: 1;
+  margin-left: 280px; /* Ancho del sidebar + espacio */
+  padding: 30px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* === CONTENIDO PRINCIPAL CENTRADO (COMPATIBILIDAD) === */
+.usuarios-content,
+.rol-content,
+.productos-admin-content,
+.categorias-producto-content,
+.proveedores-content,
+.clientes-content {
+  flex: 1;
+  margin-left: 280px; /* Ancho del sidebar + espacio */
+  padding: 30px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* === TÍTULO PRINCIPAL CENTRADO === */
+.admin-crud-content h1 {
+  text-align: center;
+  color: var(--color-primary);
+  margin-bottom: 25px;
+  font-size: 2rem;
+  font-weight: 600;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* === TÍTULO PRINCIPAL CENTRADO (COMPATIBILIDAD) === */
+.usuarios-content h1,
+.rol-content h1,
+.productos-admin-content h1,
+.categorias-producto-content h1,
+.proveedores-content h1,
+.clientes-content h1 {
+  text-align: center;
+  color: var(--color-primary);
+  margin-bottom: 25px;
+  font-size: 2rem;
+  font-weight: 600;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* === BARRA DE ACCIONES SUPERIORES === */
+.admin-crud-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 25px;
+  box-sizing: border-box;
+}
+
+/* === BARRA DE ACCIONES SUPERIORES (COMPATIBILIDAD) === */
+.usuarios-accionesTop,
+.rol-accionesTop,
+.productos-admin-accionesTop,
+.categorias-producto-accionesTop,
+.proveedores-accionesTop,
+.clientes-accionesTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 25px;
+  box-sizing: border-box;
+}
+
+/* === CONTENEDOR DE FILTROS === */
+.admin-crud-filters {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+/* === BARRA DE BÚSQUEDA === */
+.admin-crud-search-bar {
+  flex-grow: 1;
+  min-width: 250px;
+}
+
+.admin-crud-search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* === BARRA DE BÚSQUEDA (COMPATIBILIDAD) === */
+.usuarios-barraBusqueda,
+.rol-barraBusqueda,
+.productos-admin-barraBusqueda,
+.categorias-producto-barraBusqueda,
+.proveedores-barraBusqueda,
+.clientes-barraBusqueda {
+  flex-grow: 1;
+  min-width: 250px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-crud-search-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(154, 122, 159, 0.1);
+  outline: none;
+}
+
+.admin-crud-search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* === FILTRO DE ESTADO === */
+.admin-crud-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.admin-crud-filter-label {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  font-weight: 500;
+}
+
+.admin-crud-filter-select {
+  padding: 12px 16px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  min-width: 150px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* === FILTRO DE ESTADO (COMPATIBILIDAD) === */
+.usuarios-filtro-estado,
+.rol-filtro-estado,
+.productos-admin-filtro-estado,
+.categorias-producto-filtro-estado,
+.proveedores-filtro-estado,
+.clientes-filtro-estado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.usuarios-filtro-estado span,
+.rol-filtro-estado span,
+.productos-admin-filtro-estado span,
+.categorias-producto-filtro-estado span,
+.proveedores-filtro-estado span,
+.clientes-filtro-estado span {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  font-weight: 500;
+}
+
+.usuarios-filtro-estado select,
+.rol-filtro-estado select,
+.productos-admin-filtro-estado select,
+.categorias-producto-filtro-estado select,
+.proveedores-filtro-estado select,
+.clientes-filtro-estado select {
+  padding: 12px 16px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  min-width: 150px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.admin-crud-filter-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(154, 122, 159, 0.1);
+  outline: none;
+}
+
+.admin-crud-filter-select:disabled {
+  background-color: var(--color-disabled-bg, #f5f5f5);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* === BOTÓN AGREGAR === */
+.admin-crud-add-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+  background-color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(154, 122, 159, 0.2);
+}
+
+/* === BOTÓN AGREGAR (COMPATIBILIDAD) === */
+.usuarios-botonAgregar,
+.rol-botonAgregar,
+.productos-admin-botonAgregar,
+.categorias-producto-botonAgregar,
+.proveedores-botonAgregar,
+.clientes-botonAgregar {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+  background-color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(154, 122, 159, 0.2);
+}
+
+.admin-crud-add-button:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(154, 122, 159, 0.3);
+}
+
+.admin-crud-add-button:active {
+  transform: translateY(0);
+}
+
+.admin-crud-add-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* === CONTENEDOR DE TABLA === */
+.admin-crud-table-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* === TABLA ESTÁNDAR === */
+.admin-crud-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-background-light);
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* === CONTENEDOR DE TABLA (COMPATIBILIDAD) === */
+.table-container,
+.usuarios-table-container,
+.rol-table-container,
+.productos-admin-table-container,
+.categorias-producto-table-container,
+.proveedores-table-container,
+.clientes-table-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* === TABLA ESTÁNDAR (COMPATIBILIDAD) === */
+.usuarios-table,
+.rol-table,
+.productos-admin-table,
+.categorias-producto-table,
+.proveedores-table,
+.clientes-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-background-light);
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* === ENCABEZADOS DE TABLA === */
+.admin-crud-table thead {
+  background: linear-gradient(135deg, var(--color-table-header) 0%, var(--color-primary) 100%);
+}
+
+.admin-crud-table th {
+  padding: 18px 16px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-text-light);
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+/* === CELDAS DE TABLA === */
+.admin-crud-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--color-table-border);
+  color: var(--color-text-dark);
+  font-size: 0.95rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* === ENCABEZADOS DE TABLA (COMPATIBILIDAD) === */
+.usuarios-table thead,
+.rol-table thead,
+.productos-admin-table thead,
+.categorias-producto-table thead,
+.proveedores-table thead,
+.clientes-table thead {
+  background: linear-gradient(135deg, var(--color-table-header) 0%, var(--color-primary) 100%);
+}
+
+.usuarios-table th,
+.rol-table th,
+.productos-admin-table th,
+.categorias-producto-table th,
+.proveedores-table th,
+.clientes-table th {
+  padding: 18px 16px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-text-light);
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+/* === CELDAS DE TABLA (COMPATIBILIDAD) === */
+.usuarios-table td,
+.rol-table td,
+.productos-admin-table td,
+.categorias-producto-table td,
+.proveedores-table td,
+.clientes-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--color-table-border);
+  color: var(--color-text-dark);
+  font-size: 0.95rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* === FILAS ALTERNADAS === */
+.admin-crud-table tbody tr:nth-child(odd) {
+  background-color: var(--color-table-row-odd);
+}
+
+.admin-crud-table tbody tr:nth-child(even) {
+  background-color: var(--color-table-row-even);
+}
+
+/* === HOVER EN FILAS === */
+.admin-crud-table tbody tr:hover {
+  background-color: var(--color-background-hover);
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+/* === FILAS ALTERNADAS (COMPATIBILIDAD) === */
+.usuarios-table tbody tr:nth-child(odd),
+.rol-table tbody tr:nth-child(odd),
+.productos-admin-table tbody tr:nth-child(odd),
+.categorias-producto-table tbody tr:nth-child(odd),
+.proveedores-table tbody tr:nth-child(odd),
+.clientes-table tbody tr:nth-child(odd) {
+  background-color: var(--color-table-row-odd);
+}
+
+.usuarios-table tbody tr:nth-child(even),
+.rol-table tbody tr:nth-child(even),
+.productos-admin-table tbody tr:nth-child(even),
+.categorias-producto-table tbody tr:nth-child(even),
+.proveedores-table tbody tr:nth-child(even),
+.clientes-table tbody tr:nth-child(even) {
+  background-color: var(--color-table-row-even);
+}
+
+/* === HOVER EN FILAS (COMPATIBILIDAD) === */
+.usuarios-table tbody tr:hover,
+.rol-table tbody tr:hover,
+.productos-admin-table tbody tr:hover,
+.categorias-producto-table tbody tr:hover,
+.proveedores-table tbody tr:hover,
+.clientes-table tbody tr:hover {
+  background-color: var(--color-background-hover);
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+/* === CENTRADO DE ELEMENTOS ESPECÍFICOS === */
+.admin-crud-table td[data-label*="Estado"],
+.admin-crud-table td[data-label*="Acciones"],
+.admin-crud-table td[data-label*="#"],
+.admin-crud-table td[data-label*="Precio"],
+.admin-crud-table td[data-label*="Existencia"] {
+  text-align: center;
+}
+
+/* === IMÁGENES EN TABLA === */
+.admin-crud-table img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--color-border-light);
+  transition: transform 0.2s ease;
+}
+
+.admin-crud-table img:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+/* === CONTENEDOR DE ACCIONES === */
+.admin-crud-table-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* === BOTONES DE ACCIÓN === */
+.admin-crud-action-button {
+  padding: 8px 12px;
+  margin: 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* === CONTENEDOR DE ACCIONES (COMPATIBILIDAD) === */
+.usuarios-table-iconos,
+.rol-table-iconos,
+.productos-admin-table-iconos,
+.categorias-producto-table-iconos,
+.proveedores-table-iconos,
+.clientes-table-iconos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* === BOTONES DE ACCIÓN (COMPATIBILIDAD) === */
+.usuarios-table-button,
+.rol-table-button,
+.productos-admin-table-button,
+.categorias-producto-table-button,
+.proveedores-table-button,
+.clientes-table-button {
+  padding: 8px 12px;
+  margin: 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-crud-action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.admin-crud-action-button:active {
+  transform: translateY(0);
+}
+
+/* === COLORES DE BOTONES === */
+.admin-crud-action-button.btn-view {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.admin-crud-action-button.btn-view:hover {
+  background: linear-gradient(135deg, #2980b9, #1f618d);
+}
+
+.admin-crud-action-button.btn-edit {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.admin-crud-action-button.btn-edit:hover {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+}
+
+.admin-crud-action-button.btn-history {
+  background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+.admin-crud-action-button.btn-history:hover {
+  background: linear-gradient(135deg, #138496, #0f6674);
+}
+
+.admin-crud-action-button.btn-delete {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.admin-crud-action-button.btn-delete:hover {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+}
+
+/* === COLORES DE BOTONES (COMPATIBILIDAD) === */
+.usuarios-table-button:nth-child(1),
+.usuarios-table-button:nth-child(2),
+.rol-table-button:nth-child(1),
+.rol-table-button:nth-child(2),
+.productos-admin-table-button:nth-child(1),
+.productos-admin-table-button:nth-child(2),
+.categorias-producto-table-button:nth-child(1),
+.categorias-producto-table-button:nth-child(2),
+.proveedores-table-button:nth-child(1),
+.proveedores-table-button:nth-child(2),
+.clientes-table-button:nth-child(1),
+.clientes-table-button:nth-child(2) {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.usuarios-table-button:nth-child(1):hover,
+.usuarios-table-button:nth-child(2):hover,
+.rol-table-button:nth-child(1):hover,
+.rol-table-button:nth-child(2):hover,
+.productos-admin-table-button:nth-child(1):hover,
+.productos-admin-table-button:nth-child(2):hover,
+.categorias-producto-table-button:nth-child(1):hover,
+.categorias-producto-table-button:nth-child(2):hover,
+.proveedores-table-button:nth-child(1):hover,
+.proveedores-table-button:nth-child(2):hover,
+.clientes-table-button:nth-child(1):hover,
+.clientes-table-button:nth-child(2):hover {
+  background: linear-gradient(135deg, #2980b9, #1f618d);
+}
+
+.usuarios-table-button-delete,
+.rol-table-button-delete,
+.productos-admin-table-button-delete,
+.categorias-producto-table-button-delete,
+.proveedores-table-button-delete,
+.clientes-table-button-delete {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.usuarios-table-button-delete:hover,
+.rol-table-button-delete:hover,
+.productos-admin-table-button-delete:hover,
+.categorias-producto-table-button-delete:hover,
+.proveedores-table-button-delete:hover,
+.clientes-table-button-delete:hover {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+}
+
+/* === SWITCH DE ESTADO === */
+.admin-crud-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.admin-crud-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.admin-crud-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-crud-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .admin-crud-slider {
+  background-color: #2ecc71;
+}
+
+input:checked + .admin-crud-slider:before {
+  transform: translateX(22px);
+}
+
+input:focus + .admin-crud-slider {
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+}
+
+/* === SWITCH DE ESTADO (COMPATIBILIDAD) === */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider {
+  background-color: #2ecc71;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+}
+
+/* === MODAL OVERLAY === */
+.admin-crud-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  backdrop-filter: blur(4px);
+}
+
+/* === CONTENIDO DEL MODAL === */
+.admin-crud-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 16px;
+  background-color: var(--color-background-light);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* === MODAL DE DETALLES === */
+.admin-crud-modal-content.details-modal {
+  max-width: 600px;
+}
+
+/* === MODAL DE FORMULARIO === */
+.admin-crud-modal-content.form-modal {
+  max-width: 800px;
+}
+
+/* === ENCABEZADO DEL MODAL === */
+.admin-crud-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--color-border-light);
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.admin-crud-modal-title {
+  margin: 0;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.admin-crud-modal-close-button {
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.admin-crud-modal-close-button:hover {
+  background-color: var(--color-background-hover);
+  transform: scale(1.1);
+}
+
+/* === CUERPO DEL MODAL === */
+.admin-crud-modal-body {
+  overflow-y: auto;
+  padding-right: 8px;
+  flex: 1;
+}
+
+/* === ESTILOS PARA DETALLES === */
+.admin-crud-details-content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+}
+
+.admin-crud-details-content p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+  color: var(--color-text-dark);
+  text-align: left;
+}
+
+.admin-crud-details-content strong {
+  color: var(--color-primary);
+  margin-right: 8px;
+  font-weight: 600;
+}
+
+/* === ESTILOS PARA FORMULARIOS === */
+.admin-crud-form-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+}
+
+.admin-crud-form-content h2 {
+  text-align: center;
+  color: var(--color-primary);
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 1.4rem;
+}
+
+/* === GRID DE FORMULARIO === */
+.admin-crud-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 25px;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+.admin-crud-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-crud-form-group.full-width {
+  grid-column: span 2;
+}
+
+/* === LABELS === */
+.admin-crud-form-label {
+  margin-bottom: 5px;
+  color: var(--color-text-dark);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.required-asterisk {
+  color: #e74c3c;
+  margin-left: 2px;
+}
+
+/* === INPUTS === */
+.admin-crud-form-input,
+.admin-crud-form-select,
+.admin-crud-form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  background-color: var(--color-form-bg);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.admin-crud-form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.admin-crud-form-input::placeholder,
+.admin-crud-form-textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* === FOCUS === */
+.admin-crud-form-input:focus,
+.admin-crud-form-select:focus,
+.admin-crud-form-textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(154, 122, 159, 0.1);
+  outline: none;
+}
+
+/* === MENSAJES DE ERROR === */
+.admin-crud-form-input.error,
+.admin-crud-form-select.error,
+.admin-crud-form-textarea.error {
+  border-color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.04);
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  text-align: left;
+}
+
+/* === ACCIONES DEL FORMULARIO === */
+.admin-crud-form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border-light);
+  flex-wrap: wrap;
+}
+
+/* === BOTONES DE FORMULARIO === */
+.admin-crud-form-button-save,
+.admin-crud-form-button-cancel,
+.admin-crud-modal-button-close {
+  min-width: 140px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.admin-crud-form-button-save {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  box-shadow: 0 2px 8px rgba(154, 122, 159, 0.2);
+}
+
+.admin-crud-form-button-save:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(154, 122, 159, 0.3);
+}
+
+.admin-crud-form-button-cancel {
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-text);
+}
+
+.admin-crud-form-button-cancel:hover {
+  background-color: var(--color-secondary-hover);
+  transform: translateY(-2px);
+}
+
+.admin-crud-modal-button-close {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  width: 100%;
+  margin-top: 20px;
+}
+
+.admin-crud-modal-button-close:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+/* === MENSAJES DE ADMINISTRACIÓN === */
+.admin-crud-protected-message {
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border: 1px solid #ffeeba;
+  border-radius: 8px;
+  color: #721c24;
+  background-color: #f8d7da;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 1024px) {
+  .admin-crud-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+  
+  .admin-crud-modal-content {
+    max-width: 90vw;
+    padding: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-crud-content {
+    padding: 15px;
+    margin-left: 0;
+  }
+  
+  .admin-crud-content h1 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+  
+  .admin-crud-actions-bar {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .admin-crud-filters {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  .admin-crud-search-bar,
+  .admin-crud-filter-group {
+    width: 100%;
+  }
+  
+  .admin-crud-search-input,
+  .admin-crud-filter-select {
+    width: 100%;
+  }
+  
+  .admin-crud-add-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* === TABLA RESPONSIVE === */
+  .admin-crud-table thead {
+    display: none;
+  }
+  
+  .admin-crud-table,
+  .admin-crud-table tbody,
+  .admin-crud-table tr,
+  .admin-crud-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .admin-crud-table tr {
+    margin-bottom: 20px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 12px;
+    background-color: var(--color-background-light);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 15px;
+  }
+  
+  .admin-crud-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    border: none;
+    padding: 12px 8px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+  
+  .admin-crud-table td:last-child {
+    border-bottom: none;
+  }
+  
+  .admin-crud-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: calc(50% - 30px);
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-align: left;
+    font-size: 0.85rem;
+  }
+  
+  .admin-crud-table td[data-label*="Acciones"] {
+    text-align: center;
+    padding-left: 0;
+  }
+  
+  .admin-crud-table td[data-label*="Acciones"]::before {
+    content: "";
+  }
+  
+  .admin-crud-table-actions {
+    justify-content: center;
+    padding-top: 10px;
+  }
+  
+  /* === MODALES RESPONSIVE === */
+  .admin-crud-modal-content {
+    width: 95%;
+    max-width: 95%;
+    max-height: 95vh;
+    padding: 20px;
+  }
+  
+  .admin-crud-modal-body {
+    padding-right: 0;
+  }
+  
+  .admin-crud-form-grid {
+    grid-template-columns: 1fr;
+    gap: 15px 0;
+  }
+  
+  .admin-crud-form-group.full-width {
+    grid-column: span 1;
+  }
+  
+  .admin-crud-form-label {
+    font-size: 0.9rem;
+  }
+  
+  .admin-crud-form-input,
+  .admin-crud-form-select,
+  .admin-crud-form-textarea {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+  
+  .admin-crud-form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .admin-crud-form-button-save,
+  .admin-crud-form-button-cancel,
+  .admin-crud-modal-button-close {
+    width: 100%;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-crud-content {
+    padding: 10px;
+  }
+  
+  .admin-crud-content h1 {
+    font-size: 1.4rem;
+  }
+  
+  .admin-crud-modal-content {
+    width: 98%;
+    padding: 15px;
+  }
+  
+  .admin-crud-modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .admin-crud-modal-title {
+    font-size: 1.3rem;
+  }
+}
+
+/* === ESTADOS DE CARGA === */
+.admin-crud-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+.admin-crud-error {
+  background-color: #e74c3c;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.admin-crud-success {
+  background-color: #2ecc71;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* === UTILIDADES === */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-truncate { 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+}
+
+/* === AJUSTE PARA LAYOUT DE ADMIN === */
+.admin-main-content-area .admin-crud-content {
+  margin-left: 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}

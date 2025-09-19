@@ -1,0 +1,470 @@
+/* ======================================================== */
+/* ============= GUÍA DE MIGRACIÓN PARA CRUDs ============= */
+/* ======================================================== */
+
+/* 
+  Este archivo contiene las clases de migración para convertir
+  los estilos específicos de cada módulo a los estilos unificados.
+  
+  INSTRUCCIONES DE USO:
+  1. Importar este archivo después de admin-crud-unified.css
+  2. Reemplazar las clases específicas con las clases unificadas
+  3. Eliminar gradualmente las clases específicas del módulo
+*/
+
+/* === MIGRACIÓN PARA MÓDULO DE USUARIOS === */
+.usuarios-container,
+.usuarios-content {
+  /* Migrar a: .admin-crud-container, .admin-crud-content */
+}
+
+.usuarios-accionesTop {
+  /* Migrar a: .admin-crud-actions-bar */
+}
+
+.usuarios-barraBusqueda {
+  /* Migrar a: .admin-crud-search-input */
+}
+
+.usuarios-filtro-estado {
+  /* Migrar a: .admin-crud-filter-group */
+}
+
+.usuarios-botonAgregar {
+  /* Migrar a: .admin-crud-add-button */
+}
+
+.usuarios-table {
+  /* Migrar a: .admin-crud-table */
+}
+
+.usuarios-table-iconos {
+  /* Migrar a: .admin-crud-table-actions */
+}
+
+.usuarios-table-button {
+  /* Migrar a: .admin-crud-action-button */
+}
+
+.usuarios-modalOverlay {
+  /* Migrar a: .admin-crud-modal-overlay */
+}
+
+.usuarios-modalContent {
+  /* Migrar a: .admin-crud-modal-content */
+}
+
+.usuarios-form-grid-container {
+  /* Migrar a: .admin-crud-form-grid */
+}
+
+.usuarios-form-group {
+  /* Migrar a: .admin-crud-form-group */
+}
+
+.usuarios-form-label {
+  /* Migrar a: .admin-crud-form-label */
+}
+
+.usuarios-form-input,
+.usuarios-form-select,
+.usuarios-form-textarea {
+  /* Migrar a: .admin-crud-form-input, .admin-crud-form-select, .admin-crud-form-textarea */
+}
+
+.usuarios-form-actions {
+  /* Migrar a: .admin-crud-form-actions */
+}
+
+.usuarios-form-buttonGuardar {
+  /* Migrar a: .admin-crud-form-button-save */
+}
+
+.usuarios-form-buttonCancelar {
+  /* Migrar a: .admin-crud-form-button-cancel */
+}
+
+/* === MIGRACIÓN PARA MÓDULO DE ROLES === */
+.rol-container,
+.rol-content {
+  /* Migrar a: .admin-crud-container, .admin-crud-content */
+}
+
+.rol-accionesTop {
+  /* Migrar a: .admin-crud-actions-bar */
+}
+
+.rol-barraBusqueda {
+  /* Migrar a: .admin-crud-search-input */
+}
+
+.rol-filtro-estado {
+  /* Migrar a: .admin-crud-filter-group */
+}
+
+.rol-botonAgregar {
+  /* Migrar a: .admin-crud-add-button */
+}
+
+.rol-table {
+  /* Migrar a: .admin-crud-table */
+}
+
+.rol-table-iconos {
+  /* Migrar a: .admin-crud-table-actions */
+}
+
+.rol-table-button {
+  /* Migrar a: .admin-crud-action-button */
+}
+
+.rol-modalOverlay {
+  /* Migrar a: .admin-crud-modal-overlay */
+}
+
+.rol-modalContent {
+  /* Migrar a: .admin-crud-modal-content */
+}
+
+.rol-campoContainer {
+  /* Migrar a: .admin-crud-form-group */
+}
+
+.rol-label {
+  /* Migrar a: .admin-crud-form-label */
+}
+
+.rol-input,
+.rol-select,
+.rol-textarea {
+  /* Migrar a: .admin-crud-form-input, .admin-crud-form-select, .admin-crud-form-textarea */
+}
+
+.rol-form-actions {
+  /* Migrar a: .admin-crud-form-actions */
+}
+
+.rol-form-buttonGuardar {
+  /* Migrar a: .admin-crud-form-button-save */
+}
+
+.rol-form-buttonCancelar {
+  /* Migrar a: .admin-crud-form-button-cancel */
+}
+
+/* === MIGRACIÓN PARA MÓDULO DE PRODUCTOS === */
+.productos-admin-page-container,
+.productos-admin-main-content {
+  /* Migrar a: .admin-crud-container, .admin-crud-content */
+}
+
+.productos-admin-actions-bar {
+  /* Migrar a: .admin-crud-actions-bar */
+}
+
+.productos-admin-search-bar input {
+  /* Migrar a: .admin-crud-search-input */
+}
+
+.productos-admin-add-button {
+  /* Migrar a: .admin-crud-add-button */
+}
+
+.tablaProductosAdministrador {
+  /* Migrar a: .admin-crud-table */
+}
+
+.productos-admin-table-actions {
+  /* Migrar a: .admin-crud-table-actions */
+}
+
+.iconBotonProductoAdministrador {
+  /* Migrar a: .admin-crud-action-button */
+}
+
+.modalProductosAdministrador {
+  /* Migrar a: .admin-crud-modal-overlay */
+}
+
+.modal-content-ProductosAdministrador {
+  /* Migrar a: .admin-crud-modal-content */
+}
+
+.producto-admin-form-group {
+  /* Migrar a: .admin-crud-form-group */
+}
+
+.producto-admin-form-group label {
+  /* Migrar a: .admin-crud-form-label */
+}
+
+.producto-admin-form-group input,
+.producto-admin-form-group select,
+.producto-admin-form-group textarea {
+  /* Migrar a: .admin-crud-form-input, .admin-crud-form-select, .admin-crud-form-textarea */
+}
+
+.botonesGuardarCancelarProductoAdministrador {
+  /* Migrar a: .admin-crud-form-actions */
+}
+
+.botonGuardarProducto {
+  /* Migrar a: .admin-crud-form-button-save */
+}
+
+.botonCancelarAgregarProducto {
+  /* Migrar a: .admin-crud-form-button-cancel */
+}
+
+/* === MIGRACIÓN PARA MÓDULO DE CATEGORÍAS PRODUCTO === */
+.categorias-producto-admin-page-container,
+.categorias-producto-admin-main-content {
+  /* Migrar a: .admin-crud-container, .admin-crud-content */
+}
+
+.categorias-producto-admin-actions-bar {
+  /* Migrar a: .admin-crud-actions-bar */
+}
+
+.categorias-producto-admin-search-bar input {
+  /* Migrar a: .admin-crud-search-input */
+}
+
+.categorias-producto-admin-add-button {
+  /* Migrar a: .admin-crud-add-button */
+}
+
+.tablaCategoriaProductos {
+  /* Migrar a: .admin-crud-table */
+}
+
+.table-action-button-categoria {
+  /* Migrar a: .admin-crud-action-button */
+}
+
+.categorias-container-modal-overlay {
+  /* Migrar a: .admin-crud-modal-overlay */
+}
+
+.modal-content-categoria-detalles,
+.modal-content-categoria-form {
+  /* Migrar a: .admin-crud-modal-content */
+}
+
+.form-group-categoria {
+  /* Migrar a: .admin-crud-form-group */
+}
+
+.form-label-categoria {
+  /* Migrar a: .admin-crud-form-label */
+}
+
+.form-input-categoria,
+.form-select-categoria,
+.form-textarea-categoria {
+  /* Migrar a: .admin-crud-form-input, .admin-crud-form-select, .admin-crud-form-textarea */
+}
+
+.form-actions-categoria {
+  /* Migrar a: .admin-crud-form-actions */
+}
+
+.form-button-guardar-categoria {
+  /* Migrar a: .admin-crud-form-button-save */
+}
+
+.form-button-cancelar-categoria {
+  /* Migrar a: .admin-crud-form-button-cancel */
+}
+
+/* === MIGRACIÓN PARA MÓDULO DE PROVEEDORES === */
+.proveedores-page-container {
+  /* Migrar a: .admin-crud-container, .admin-crud-content */
+}
+
+.proveedores-search-bar input {
+  /* Migrar a: .admin-crud-search-input */
+}
+
+.proveedores-add-button {
+  /* Migrar a: .admin-crud-add-button */
+}
+
+.modal-Proveedores {
+  /* Migrar a: .admin-crud-modal-overlay */
+}
+
+.modal-content-Proveedores {
+  /* Migrar a: .admin-crud-modal-content */
+}
+
+.proveedores-form-group {
+  /* Migrar a: .admin-crud-form-group */
+}
+
+.proveedores-form-group label {
+  /* Migrar a: .admin-crud-form-label */
+}
+
+.proveedores-form-group input,
+.proveedores-form-group select {
+  /* Migrar a: .admin-crud-form-input, .admin-crud-form-select */
+}
+
+.proveedores-form-actions {
+  /* Migrar a: .admin-crud-form-actions */
+}
+
+.proveedores-form-button-guardar {
+  /* Migrar a: .admin-crud-form-button-save */
+}
+
+.proveedores-form-button-cancelar {
+  /* Migrar a: .admin-crud-form-button-cancel */
+}
+
+/* === MIGRACIÓN PARA MÓDULO DE CLIENTES === */
+.clientes-page-container,
+.main-content-clientes {
+  /* Migrar a: .admin-crud-container, .admin-crud-content */
+}
+
+.containerAgregarbuscarClientes {
+  /* Migrar a: .admin-crud-actions-bar */
+}
+
+.barraBusquedaClientesInput {
+  /* Migrar a: .admin-crud-search-input */
+}
+
+.buttonAgregarcliente {
+  /* Migrar a: .admin-crud-add-button */
+}
+
+.tablaClientes {
+  /* Migrar a: .admin-crud-table */
+}
+
+.clientes-table-actions {
+  /* Migrar a: .admin-crud-table-actions */
+}
+
+.iconsTablaclientes {
+  /* Migrar a: .admin-crud-action-button */
+}
+
+.modal-clientes {
+  /* Migrar a: .admin-crud-modal-overlay */
+}
+
+.modal-content-clientes {
+  /* Migrar a: .admin-crud-modal-content */
+}
+
+.clientes-form-group {
+  /* Migrar a: .admin-crud-form-group */
+}
+
+.clientes-form-group label {
+  /* Migrar a: .admin-crud-form-label */
+}
+
+.clientes-form-group input,
+.clientes-form-group select {
+  /* Migrar a: .admin-crud-form-input, .admin-crud-form-select */
+}
+
+.clientes-form-actions {
+  /* Migrar a: .admin-crud-form-actions */
+}
+
+.botonguardarClienteModal {
+  /* Migrar a: .admin-crud-form-button-save */
+}
+
+.botonModalCancelar-Cerrar {
+  /* Migrar a: .admin-crud-form-button-cancel */
+}
+
+/* === CLASES TEMPORALES DE COMPATIBILIDAD === */
+/* Estas clases permiten una transición gradual */
+
+/* Mantener compatibilidad con clases existentes */
+.usuarios-container,
+.rol-container,
+.productos-admin-page-container,
+.categorias-producto-admin-page-container,
+.proveedores-page-container,
+.clientes-page-container {
+  /* Aplicar estilos unificados manteniendo las clases específicas */
+  display: flex;
+  height: 100vh;
+  background-color: var(--color-background-light);
+  font-family: var(--font-family-roboto, 'Roboto', sans-serif);
+  width: 100%;
+}
+
+/* Aplicar estilos unificados a contenedores de contenido */
+.usuarios-content,
+.rol-content,
+.productos-admin-main-content,
+.categorias-producto-admin-main-content,
+.main-content-clientes {
+  flex: 1;
+  margin-left: 280px;
+  padding: 30px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Aplicar estilos unificados a títulos */
+.usuarios-content h1,
+.rol-content h1,
+.productos-admin-main-content h1,
+.categorias-producto-admin-main-content h1,
+.main-content-clientes h1 {
+  text-align: center;
+  color: var(--color-primary);
+  margin-bottom: 25px;
+  font-size: 2rem;
+  font-weight: 600;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* === RESPONSIVE PARA CLASES DE COMPATIBILIDAD === */
+@media (max-width: 1024px) {
+  .usuarios-content,
+  .rol-content,
+  .productos-admin-main-content,
+  .categorias-producto-admin-main-content,
+  .main-content-clientes {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .usuarios-content,
+  .rol-content,
+  .productos-admin-main-content,
+  .categorias-producto-admin-main-content,
+  .main-content-clientes {
+    padding: 15px;
+    margin-left: 0;
+  }
+  
+  .usuarios-content h1,
+  .rol-content h1,
+  .productos-admin-main-content h1,
+  .categorias-producto-admin-main-content h1,
+  .main-content-clientes h1 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+}

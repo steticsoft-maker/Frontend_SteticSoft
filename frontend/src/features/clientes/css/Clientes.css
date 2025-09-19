@@ -1,5 +1,9 @@
 @import "@/shared/styles/_variables.css";
+@import "@/shared/styles/admin-crud-unified.css";
+@import "@/shared/styles/admin-migration-guide.css";
+
 /* src/features/clientes/css/Clientes.css */
+/* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */
 
 /* === ESTILOS GENERALES DE PÁGINA === */
 .clientes-page-container {

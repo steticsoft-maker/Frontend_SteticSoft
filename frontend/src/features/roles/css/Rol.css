@@ -1,5 +1,9 @@
 @import "@/shared/styles/_variables.css";
+@import "@/shared/styles/admin-crud-unified.css";
+@import "@/shared/styles/admin-migration-guide.css";
+
 /* Contenedor principal */
+/* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */
 .rol-container {
     display: flex;
     height: 100vh;

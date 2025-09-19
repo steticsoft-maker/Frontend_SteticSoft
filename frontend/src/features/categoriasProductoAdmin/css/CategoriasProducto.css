@@ -1,5 +1,9 @@
 @import "@/shared/styles/_variables.css";
-/* src/features/categoriasProductoAdmin/css/CategoriasProducto.css */ 
+@import "@/shared/styles/admin-crud-unified.css";
+@import "@/shared/styles/admin-migration-guide.css";
+
+/* src/features/categoriasProductoAdmin/css/CategoriasProducto.css */
+/* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */ 
 
 /* === ESTILOS GENERALES DE PÁGINA === */
 .categorias-producto-admin-page-container { /* Clase de tu ListaCategoriasProductoPage.jsx */

@@ -13,7 +13,7 @@ const UsuariosTable = ({
   rowsPerPage = 10, // Valor por defecto para rowsPerPage, ajustar si es necesario
 }) => {
   return (
-    <table className="table-main">
+    <table className="usuarios-table">
       <thead>
         <tr>
           <th>#</th> {/* Nueva columna para numeración */}
@@ -30,36 +30,38 @@ const UsuariosTable = ({
         {usuarios.map((usuario, index) => {
           const numeroFila = (currentPage - 1) * rowsPerPage + index + 1;
           const nombreRol = usuario.rol?.nombre || "No asignado";
-          const estaActivo = typeof usuario.estado === 'boolean' ? usuario.estado : false;
+          const estaActivo =
+            typeof usuario.estado === "boolean" ? usuario.estado : false;
 
           return (
             <tr key={usuario.idUsuario}>
               <td data-label="#">{numeroFila}</td>
-              <td data-label="Nombres:">{usuario.nombre || 'N/A'}</td>
-              <td data-label="Apellidos:">{usuario.apellido || 'N/A'}</td>
-              <td data-label="Correo:">{usuario.correo || 'N/A'}</td>
+              <td data-label="Nombres:">{usuario.nombre || "N/A"}</td>
+              <td data-label="Apellidos:">{usuario.apellido || "N/A"}</td>
+              <td data-label="Correo:">{usuario.correo || "N/A"}</td>
               <td data-label="Rol:">{nombreRol}</td>
-              <td data-label="Teléfono:">{usuario.telefono || 'N/A'}</td>
+              <td data-label="Teléfono:">{usuario.telefono || "N/A"}</td>
               <td data-label="Estado:">
                 {nombreRol !== "Administrador" ? (
-                  <label className="table-switch">
+                  <label className="switch">
                     <input
                       type="checkbox"
                       checked={estaActivo}
                       onChange={() => onToggleAnular(usuario)}
-                      title={estaActivo ? "Desactivar usuario" : "Activar usuario"}
+                      title={
+                        estaActivo ? "Desactivar usuario" : "Activar usuario"
+                      }
                     />
-                    <span className="table-slider"></span>
+                    <span className="slider"></span>
                   </label>
                 ) : (
                   <span>Activo</span>
-                )
-                }
+                )}
               </td>
               <td data-label="Acciones:">
-                <div className="table-iconos">
+                <div className="usuarios-table-iconos">
                   <button
-                    className="table-button btn-view"
+                    className="usuarios-table-button btn-view"
                     onClick={() => onView(usuario)}
                     title="Ver Detalles"
                   >
@@ -68,14 +70,14 @@ const UsuariosTable = ({
                   {nombreRol !== "Administrador" && (
                     <>
                       <button
-                        className="table-button btn-edit"
+                        className="usuarios-table-button btn-edit"
                         onClick={() => onEdit(usuario)}
                         title="Editar Usuario"
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="table-button btn-delete"
+                        className="usuarios-table-button usuarios-table-button-delete"
                         onClick={() => onDeleteConfirm(usuario)}
                         title="Eliminar Usuario"
                       >
