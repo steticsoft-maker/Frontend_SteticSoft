@@ -16,14 +16,15 @@
 
 .categorias-producto-admin-main-content { /* Clase de tu ListaCategoriasProductoPage.jsx */
     flex: 1; 
-    padding: 30px; 
-    margin-left: 270px; /* ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */
+    padding: 0; /* El padding lo maneja admin-main-content-area */
+    margin-left: 0; /* Ya está dentro de admin-main-content-area */
     overflow-y: auto;
     box-sizing: border-box;
-    /* ✅ CAMBIO: Alineación del contenido principal a la izquierda */
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Alinea los hijos a la izquierda */
+    align-items: center; /* Centrado absoluto */
+    justify-content: flex-start;
 }
 
 .categorias-producto-admin-content-wrapper { /* Clase de tu ListaCategoriasProductoPage.jsx */
@@ -47,19 +48,46 @@
     width: 100%; /* Asegura que el h1 ocupe todo el ancho para centrado con flex */
 }
 
-/* === BARRA DE ACCIONES SUPERIORES === */
+/* === BARRA DE ACCIONES SUPERIORES - HORIZONTAL === */
 .categorias-producto-admin-actions-bar { /* Tu clase en ListaCategoriasProductoPage.jsx */
     display: flex;
-    /* justify-content: space-between; */ /* ✅ CAMBIO: Justify-content para control de alineación */
+    justify-content: space-between; /* Horizontal separado */
     align-items: center;
     margin-bottom: 25px; 
-    gap: 20px;
-    flex-wrap: wrap; 
+    gap: 30px;
+    flex-wrap: nowrap; /* Horizontal siempre */
     width: 100%; 
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
     box-sizing: border-box;
+    padding: 0 20px;
+}
 
-    /* ✅ CAMBIO: Nuevos estilos para centrar y controlar el flujo */
-    justify-content: flex-start; /* Alinea elementos al inicio, o 'center' si prefieres centrar todo */
+/* Secciones específicas para categorías */
+.categorias-search-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.categorias-filters-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.categorias-buttons-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 /* ✅ NUEVO: Contenedor para los filtros de búsqueda y estado */
@@ -464,107 +492,364 @@ div.categorias-producto-table-actions   /* Si los botones están en un DIV dentr
 }
 
 
-/* === ESTILOS RESPONSIVOS === */
-@media (max-width: 768px) {
-    .categorias-producto-admin-main-content { /* Antes .CategoriaProductoContent */
-        margin-left: 0; padding: 15px; 
-    }
-    .categorias-producto-admin-content-wrapper { padding: 0; }
+/* === RESPONSIVE DESIGN FOR CATEGORIAS PRODUCTO ADMIN === */
 
-    .categorias-producto-admin-actions-bar { /* Antes .BarraBusquedaBotonAgregarCategoriaProductos */
-        flex-direction: column; gap: 15px; 
-        /* ✅ CAMBIO: Alineación en móvil para la barra de acciones */
-        align-items: flex-start; /* Alinea los elementos a la izquierda cuando se apilan */
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .categorias-producto-admin-main-content {
+        padding: 3rem;
+        margin-left: 300px;
     }
+
+    .categorias-producto-admin-content-wrapper h1 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .categorias-producto-admin-actions-bar {
+        margin-bottom: 2rem;
+        gap: 2rem;
+    }
+
+    .categorias-producto-admin-search-bar input {
+        padding: 14px 18px;
+        font-size: 1.1rem;
+    }
+
+    .categorias-producto-admin-add-button {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+    }
+
+    .tablaCategoriaProductos {
+        font-size: 1rem;
+    }
+
+    .tablaCategoriaProductos th,
+    .tablaCategoriaProductos td {
+        padding: 15px 18px;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .categorias-producto-admin-main-content {
+        padding: 2rem;
+        margin-left: 280px;
+    }
+
+    .categorias-producto-admin-content-wrapper h1 {
+        font-size: 2rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .categorias-producto-admin-actions-bar {
+        margin-bottom: 1.8rem;
+        gap: 1.5rem;
+    }
+
+    .categorias-producto-admin-search-bar input {
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+
+    .categorias-producto-admin-add-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .categorias-producto-admin-main-content {
+        padding: 1.5rem;
+        margin-left: 260px;
+    }
+
+    .categorias-producto-admin-content-wrapper h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .categorias-producto-admin-actions-bar {
+        margin-bottom: 1.5rem;
+        gap: 1.2rem;
+    }
+
+    .categorias-producto-admin-search-bar input {
+        padding: 11px 15px;
+        font-size: 0.95rem;
+    }
+
+    .categorias-producto-admin-add-button {
+        padding: 9px 18px;
+        font-size: 0.95rem;
+    }
+
+    .tablaCategoriaProductos {
+        font-size: 0.9rem;
+    }
+
+    .tablaCategoriaProductos th,
+    .tablaCategoriaProductos td {
+        padding: 10px 12px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    .categorias-producto-admin-main-content {
+        margin-left: 0; 
+        padding: 1rem;
+    }
+
+    .categorias-producto-admin-content-wrapper { 
+        padding: 0; 
+    }
+
+    .categorias-producto-admin-content-wrapper h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .categorias-producto-admin-actions-bar {
+        flex-direction: column; 
+        gap: 1rem;
+        align-items: flex-start;
+        margin-bottom: 1.2rem;
+    }
+
+    .categorias-producto-admin-filters {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
     .categorias-producto-admin-search-bar {
-        width: 100%; /* Asegura que la barra de búsqueda ocupe todo el ancho */
-        min-width: auto; /* Permite que el min-width se adapte */
+        width: 100%;
+        min-width: auto;
     }
-    .categorias-producto-admin-search-bar input, /* Antes .inputBarraBusquedaCategoriaProductos */
-    .categorias-producto-admin-add-button { /* Antes .botonAgregarCategoriaProducto */
+
+    .categorias-producto-admin-search-bar input,
+    .categorias-producto-admin-add-button {
         width: 100%;
     }
-    .categorias-producto-admin-add-button { height: auto; padding: 12px 20px; }
 
-    /* ✅ NUEVO: Ajuste para el grupo de filtros en móvil */
-    .categorias-producto-admin-filters {
-        flex-direction: column; /* Apila los filtros verticalmente */
-        width: 100%; /* Ocupa todo el ancho disponible */
-        gap: 15px; /* Espacio entre el input de búsqueda y el select */
-        align-items: flex-start; /* Alinea los elementos a la izquierda */
+    .categorias-producto-admin-add-button { 
+        height: auto; 
+        padding: 12px 20px; 
     }
-    
+
     .filtro-estado-grupo {
-        width: 100%; /* Asegura que el grupo de estado ocupe todo el ancho */
-        justify-content: space-between; /* Espacia label y select */
+        width: 100%;
+        justify-content: space-between;
     }
+
     .filtro-input {
-        flex-grow: 1; /* Permite que el select ocupe el espacio restante */
+        flex-grow: 1;
     }
 
-    .tablaCategoriaProductos thead { display: none; }
-    .tablaCategoriaProductos, 
-    .tablaCategoriaProductos tbody, 
-    .tablaCategoriaProductos tr, 
-    .tablaCategoriaProductos td {
-        display: block; width: 100%;
+    /* Table responsive */
+    .tablaCategoriaProductos thead { 
+        display: none; 
     }
+
+    .tablaCategoriaProductos,
+    .tablaCategoriaProductos tbody,
+    .tablaCategoriaProductos tr,
+    .tablaCategoriaProductos td {
+        display: block; 
+        width: 100%;
+    }
+
     .tablaCategoriaProductos tr {
-        margin-bottom: 15px; border: 1px solid var(--color-table-header);
-        border-radius: 8px; padding: 10px;
-        background-color: var(--color-background-light); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin-bottom: 15px; 
+        border: 1px solid var(--color-table-header);
+        border-radius: 8px; 
+        padding: 10px;
+        background-color: var(--color-background-light); 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
+
     .tablaCategoriaProductos td {
-        text-align: right; padding-left: 50% !important; 
-        position: relative; border: none; 
-        border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; 
+        text-align: right; 
+        padding-left: 50% !important;
+        position: relative; 
+        border: none;
+        border-bottom: 1px solid #f0f0f0; 
+        font-size: 0.9rem;
     }
-    .tablaCategoriaProductos td:last-child { border-bottom: none; }
+
+    .tablaCategoriaProductos td:last-child { 
+        border-bottom: none; 
+    }
+
     .tablaCategoriaProductos td::before {
-        content: attr(data-label); /* Asegúrate que tus <td> tengan data-label */
-        position: absolute; left: 10px; width: calc(50% - 20px); 
-        padding-right: 10px; white-space: nowrap;
-        font-weight: bold; color: var(--color-primary); text-align: left;
+        content: attr(data-label);
+        position: absolute; 
+        left: 10px; 
+        width: calc(50% - 20px);
+        padding-right: 10px; 
+        white-space: nowrap;
+        font-weight: bold; 
+        color: var(--color-primary); 
+        text-align: left;
     }
-    /* Específico para la celda de acciones en móvil */
-    .tablaCategoriaProductos td.categorias-producto-table-actions { /* Si usas esta clase en el TD */
-        text-align: center; padding-left: 0 !important; 
+
+    .tablaCategoriaProductos td.categorias-producto-table-actions {
+        text-align: center; 
+        padding-left: 0 !important;
     }
-    .tablaCategoriaProductos td.categorias-producto-table-actions::before { content: ""; }
-    /* Si los botones están en un div interno con clase 'categorias-producto-table-actions' */
-    div.categorias-producto-table-actions { justify-content: center; padding-top: 8px; }
 
+    .tablaCategoriaProductos td.categorias-producto-table-actions::before { 
+        content: ""; 
+    }
 
-    /* Modales en móvil */
+    div.categorias-producto-table-actions { 
+        justify-content: center; 
+        padding-top: 8px; 
+    }
+
+    /* Modals responsive */
     .modal-content-categoria-detalles,
     .modal-content-categoria-form {
-        max-width: 95%; padding: 20px;
+        max-width: 95%; 
+        padding: 20px;
     }
-    .close-button-categoria-detalles { 
-        width: 100%; max-width: none; padding: 12px; 
+
+    .close-button-categoria-detalles {
+        width: 100%; 
+        max-width: none; 
+        padding: 12px;
     }
-    
+
     .modal-header-categorias-productos {
-        flex-direction: column; /* Apila el título y la X */
-        align-items: flex-end; /* Alinea la X a la derecha */
+        flex-direction: column;
+        align-items: flex-end;
         margin-bottom: 10px;
     }
+
     .modal-title {
         text-align: center;
         width: 100%;
         margin-bottom: 10px;
     }
+
     .modal-close-button {
-        position: static; /* Elimina la posición absoluta en móvil para que se alinee con flex */
-        margin-top: -10px; /* Ajusta la posición si es necesario */
-        align-self: flex-end; /* Asegura que la X se alinee a la derecha */
-        font-size: 2rem; /* Un poco más pequeño si lo prefieres */
+        position: static;
+        margin-top: -10px;
+        align-self: flex-end;
+        font-size: 2rem;
     }
 
-    .form-actions-categoria { /* Botones del modal de formulario */
+    .form-actions-categoria {
         flex-direction: column;
     }
-    .form-button-guardar-categoria, .form-button-cancelar-categoria {
+
+    .form-button-guardar-categoria, 
+    .form-button-cancelar-categoria {
         width: 100%;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .categorias-producto-admin-main-content {
+        padding: 0.8rem;
+    }
+
+    .categorias-producto-admin-content-wrapper h1 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .categorias-producto-admin-actions-bar {
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .categorias-producto-admin-search-bar input {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    .categorias-producto-admin-add-button {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .modal-content-categoria-detalles,
+    .modal-content-categoria-form {
+        max-width: 98%; 
+        padding: 15px;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .categorias-producto-admin-main-content {
+        padding: 0.6rem;
+    }
+
+    .categorias-producto-admin-content-wrapper h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .categorias-producto-admin-actions-bar {
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .categorias-producto-admin-search-bar input {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .categorias-producto-admin-add-button {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+
+    .tablaCategoriaProductos td {
+        font-size: 0.8rem;
+    }
+
+    .modal-content-categoria-detalles,
+    .modal-content-categoria-form {
+        max-width: 100%; 
+        padding: 10px;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .categorias-producto-admin-main-content {
+        padding: 0.4rem;
+    }
+
+    .categorias-producto-admin-content-wrapper h1 {
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .categorias-producto-admin-actions-bar {
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .categorias-producto-admin-search-bar input {
+        padding: 7px 8px;
+        font-size: 0.75rem;
+    }
+
+    .categorias-producto-admin-add-button {
+        padding: 7px 12px;
+        font-size: 0.75rem;
+    }
+
+    .tablaCategoriaProductos td {
+        font-size: 0.75rem;
     }
 }

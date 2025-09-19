@@ -1,4 +1,5 @@
 @import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
 @import "@/shared/styles/admin-crud-unified.css";
 @import "@/shared/styles/admin-migration-guide.css";
 
@@ -129,6 +130,70 @@
     margin-left: 2px;
 }
 
+<<<<<<< HEAD
+=======
+/* Contenido principal */
+.rol-content {
+    flex: 1;
+    margin-left: 0; /* Ya está dentro de admin-main-content-area */
+    padding: 0; /* El padding lo maneja admin-main-content-area */
+    overflow-y: auto;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Título principal */
+.rol-content h1 {
+    text-align: center;
+    color: var(--color-text-dark);
+    margin-bottom: 20px;
+}
+
+/* Barra de Búsqueda y Botón Agregar - HORIZONTAL */
+.rol-accionesTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 30px;
+    flex-wrap: nowrap; /* Horizontal siempre */
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
+    padding: 0 20px;
+}
+
+/* Secciones específicas para roles */
+.rol-search-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.rol-filters-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.rol-buttons-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+>>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
 .rol-filtro-estado {
     display: flex;
     align-items: center;

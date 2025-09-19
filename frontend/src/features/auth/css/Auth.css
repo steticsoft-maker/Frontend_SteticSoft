@@ -45,6 +45,164 @@
     color: var(--color-text-dark);
 }
 
+/* === RESPONSIVE DESIGN FOR AUTH === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .auth-page-container {
+        padding: 3rem;
+    }
+
+    .auth-form-box {
+        padding: 3rem;
+        max-width: 800px;
+    }
+
+    .auth-form-title {
+        font-size: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .auth-form-logo {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .auth-page-container {
+        padding: 1.5rem;
+    }
+
+    .auth-form-box {
+        padding: 2.5rem;
+        max-width: 650px;
+    }
+
+    .auth-form-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .auth-page-container {
+        padding: 1.2rem;
+    }
+
+    .auth-form-box {
+        padding: 2rem;
+        max-width: 600px;
+    }
+
+    .auth-form-title {
+        font-size: 1.6rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .auth-form-logo {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    .auth-page-container {
+        padding: 1rem;
+    }
+
+    .auth-form-box {
+        padding: 1.5rem;
+        max-width: 100%;
+        border-radius: 12px;
+    }
+
+    .auth-form-title {
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-form-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 1.2rem;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .auth-page-container {
+        padding: 0.8rem;
+    }
+
+    .auth-form-box {
+        padding: 1.2rem;
+        border-radius: 10px;
+    }
+
+    .auth-form-title {
+        font-size: 1.3rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .auth-form-logo {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .auth-page-container {
+        padding: 0.6rem;
+    }
+
+    .auth-form-box {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .auth-form-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .auth-form-logo {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 0.8rem;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .auth-page-container {
+        padding: 0.4rem;
+    }
+
+    .auth-form-box {
+        padding: 0.8rem;
+        border-radius: 6px;
+    }
+
+    .auth-form-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .auth-form-logo {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 0.6rem;
+    }
+}
+
 /* === Estilos Base para el Contenido del Formulario === */
 .auth-form-content {
     /* Layout base para el contenido de los formularios (ej. <form>) */
@@ -66,6 +224,70 @@
     background-color: var(--color-form-bg);
     /* Considera var(--color-background-input) */
     transition: border-color 0.3s ease;
+}
+
+/* === RESPONSIVE FORM ELEMENTS === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .auth-form-input {
+        padding: 14px 18px;
+        font-size: 1.1rem;
+        border-radius: 12px;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .auth-form-input {
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .auth-form-input {
+        padding: 11px 15px;
+        font-size: 0.95rem;
+        border-radius: 8px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    .auth-form-input {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        border-radius: 6px;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .auth-form-input {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+        border-radius: 5px;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .auth-form-input {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+        border-radius: 4px;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .auth-form-input {
+        padding: 7px 8px;
+        font-size: 0.75rem;
+        border-radius: 3px;
+    }
 }
 
 .auth-form-input:focus {
@@ -141,6 +363,111 @@
 .auth-secondary-button:hover {
     color: var(--color-text-light);
     background-color: var(--color-primary);
+}
+
+/* === RESPONSIVE BUTTONS === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .auth-primary-button {
+        padding: 14px;
+        font-size: 1.2rem;
+        border-radius: 12px;
+    }
+
+    .auth-secondary-button {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        border-radius: 12px;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .auth-primary-button {
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+
+    .auth-secondary-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .auth-primary-button {
+        padding: 11px;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+
+    .auth-secondary-button {
+        padding: 9px 18px;
+        font-size: 0.95rem;
+        border-radius: 8px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    .auth-primary-button {
+        padding: 10px;
+        font-size: 0.95rem;
+        border-radius: 6px;
+    }
+
+    .auth-secondary-button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        border-radius: 6px;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .auth-primary-button {
+        padding: 9px;
+        font-size: 0.9rem;
+        border-radius: 5px;
+    }
+
+    .auth-secondary-button {
+        padding: 7px 14px;
+        font-size: 0.85rem;
+        border-radius: 5px;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .auth-primary-button {
+        padding: 8px;
+        font-size: 0.85rem;
+        border-radius: 4px;
+    }
+
+    .auth-secondary-button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        border-radius: 4px;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .auth-primary-button {
+        padding: 7px;
+        font-size: 0.8rem;
+        border-radius: 3px;
+    }
+
+    .auth-secondary-button {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        border-radius: 3px;
+    }
 }
 
 /* === Estilos Base para Contenedores de Acciones y Mensajes === */

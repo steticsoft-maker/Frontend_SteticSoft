@@ -1,4 +1,5 @@
 @import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
 
 /* Estilos para el Módulo de Administración de Servicios */
 
@@ -12,8 +13,13 @@
 
 .servicios-content {
   flex: 1;
-  padding: 30px;
-  margin-left: 270px;
+  padding: 0; /* El padding lo maneja admin-main-content-area */
+  margin-left: 0; /* Ya está dentro de admin-main-content-area */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .servicios-content h1 {
@@ -117,16 +123,43 @@
   background-color: var(--color-primary-hover);
 }
 
-/* --- Barra de Controles (Búsqueda y Botón) --- */
+/* --- Barra de Controles - HORIZONTAL --- */
 .servicios-admin-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto 25px auto;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 30px;
+  flex-wrap: nowrap; /* Horizontal siempre */
   width: 100%;
-  max-width: none;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+/* Secciones específicas para servicios */
+.servicios-search-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  min-width: 300px;
+}
+
+.servicios-filters-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.servicios-buttons-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
 }
 
 .servicios-admin-search-bar {
@@ -328,27 +361,320 @@
 input:checked + .slider { background-color: var(--color-success); }
 input:checked + .slider:before { transform: translateX(16px); }
 
-/* --- Estilos Responsivos --- */
-@media (max-width: 992px) {
-  .servicios-content { margin-left: 0; }
+/* === RESPONSIVE DESIGN FOR SERVICIOS ADMIN === */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .servicios-content {
+        padding: 3rem;
+        margin-left: 300px;
+    }
+
+    .servicios-admin-controls h1 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .servicios-admin-controls {
+        margin-bottom: 2rem;
+        gap: 2rem;
+    }
+
+    .servicios-admin-search-bar input,
+    .servicios-admin-search-bar select {
+        padding: 14px 18px;
+        font-size: 1.1rem;
+    }
+
+    .botonAgregarServicio {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+    }
+
+    .servicios-admin-table {
+        font-size: 1rem;
+    }
+
+    .servicios-admin-table th,
+    .servicios-admin-table td {
+        padding: 15px 18px;
+    }
 }
 
-@media (max-width: 768px) {
-  .servicios-content { padding: 15px; }
-  .servicios-admin-controls { flex-direction: column; }
-  .servicios-admin-search-bar { flex-direction: column; width: 100%; gap: 10px; }
-  .servicios-admin-search-bar input,
-  .servicios-admin-search-bar select,
-  .botonAgregarServicio {
-    width: 100%;
-  }
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .servicios-content {
+        padding: 2rem;
+        margin-left: 280px;
+    }
 
-  .servicios-admin-table thead { display: none; }
-  .servicios-admin-table, .servicios-admin-table tbody, .servicios-admin-table tr, .servicios-admin-table td { display: block; width: 100%; }
-  .servicios-admin-table tr { margin-bottom: 1rem; border: 1px solid var(--color-border); border-radius: 8px; }
-  .servicios-admin-table td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px; border-bottom: 1px solid var(--color-border); }
-  .servicios-admin-table td:last-child { border-bottom: none; }
-  .servicios-admin-table td::before { content: attr(data-label); font-weight: bold; color: var(--color-text-dark); text-align: left; }
+    .servicios-admin-controls h1 {
+        font-size: 2rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .servicios-admin-controls {
+        margin-bottom: 1.8rem;
+        gap: 1.5rem;
+    }
+
+    .servicios-admin-search-bar input,
+    .servicios-admin-search-bar select {
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+
+    .botonAgregarServicio {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .servicios-content {
+        padding: 1.5rem;
+        margin-left: 260px;
+    }
+
+    .servicios-admin-controls h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .servicios-admin-controls {
+        margin-bottom: 1.5rem;
+        gap: 1.2rem;
+    }
+
+    .servicios-admin-search-bar input,
+    .servicios-admin-search-bar select {
+        padding: 11px 15px;
+        font-size: 0.95rem;
+    }
+
+    .botonAgregarServicio {
+        padding: 9px 18px;
+        font-size: 0.95rem;
+    }
+
+    .servicios-admin-table {
+        font-size: 0.9rem;
+    }
+
+    .servicios-admin-table th,
+    .servicios-admin-table td {
+        padding: 10px 12px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    .servicios-content {
+        padding: 1rem;
+        margin-left: 0;
+    }
+
+    .servicios-admin-controls h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .servicios-admin-controls {
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .servicios-admin-search-bar {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .servicios-admin-search-bar input,
+    .servicios-admin-search-bar select,
+    .botonAgregarServicio {
+        width: 100%;
+    }
+
+    .servicios-admin-search-bar input,
+    .servicios-admin-search-bar select {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .botonAgregarServicio {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    /* Table responsive */
+    .servicios-admin-table thead {
+        display: none;
+    }
+
+    .servicios-admin-table,
+    .servicios-admin-table tbody,
+    .servicios-admin-table tr,
+    .servicios-admin-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .servicios-admin-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--color-border, #e0e0e0);
+        border-radius: 8px;
+        padding: 10px;
+        background-color: var(--color-background-light, #ffffff);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .servicios-admin-table td {
+        text-align: right;
+        padding-left: 50% !important;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid var(--color-border, #e0e0e0);
+        font-size: 0.9rem;
+    }
+
+    .servicios-admin-table td:last-child {
+        border-bottom: none;
+    }
+
+    .servicios-admin-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: var(--color-text-dark, #333);
+        text-align: left;
+    }
+
+    /* Actions column */
+    .servicios-admin-table td[data-label*="Acciones"],
+    .servicios-admin-table td[data-label*="Actions"] {
+        text-align: center;
+        padding-left: 0 !important;
+    }
+
+    .servicios-admin-table td[data-label*="Acciones"]::before,
+    .servicios-admin-table td[data-label*="Actions"]::before {
+        content: "";
+    }
+
+    /* Modals responsive */
+    .servicios-admin-modal-content {
+        max-width: 95%;
+        padding: 20px;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .servicios-content {
+        padding: 0.8rem;
+    }
+
+    .servicios-admin-controls h1 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .servicios-admin-controls {
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .servicios-admin-search-bar input,
+    .servicios-admin-search-bar select {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    .botonAgregarServicio {
+        padding: 9px 14px;
+        font-size: 0.85rem;
+    }
+
+    .servicios-admin-modal-content {
+        max-width: 98%;
+        padding: 15px;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .servicios-content {
+        padding: 0.6rem;
+    }
+
+    .servicios-admin-controls h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .servicios-admin-controls {
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .servicios-admin-search-bar input,
+    .servicios-admin-search-bar select {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .botonAgregarServicio {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .servicios-admin-table td {
+        font-size: 0.8rem;
+    }
+
+    .servicios-admin-modal-content {
+        max-width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .servicios-content {
+        padding: 0.4rem;
+    }
+
+    .servicios-admin-controls h1 {
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .servicios-admin-controls {
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .servicios-admin-search-bar input,
+    .servicios-admin-search-bar select {
+        padding: 7px 8px;
+        font-size: 0.75rem;
+    }
+
+    .botonAgregarServicio {
+        padding: 7px 10px;
+        font-size: 0.75rem;
+    }
+
+    .servicios-admin-table td {
+        font-size: 0.75rem;
+    }
 }
 
 /* --- Estilos para el Modal y Formulario de Servicios --- */

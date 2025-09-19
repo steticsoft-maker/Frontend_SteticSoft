@@ -60,16 +60,44 @@
     text-align: center;
 }
 
-/* === BARRA DE ACCIONES === */
+/* === BARRA DE ACCIONES HORIZONTAL === */
 .admin-actions-bar {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     margin-bottom: 25px;
-    gap: 20px;
-    flex-wrap: wrap;
+    gap: 30px;
+    flex-wrap: nowrap; /* Evita que se rompan en líneas */
     width: 100%;
+    max-width: 1200px;
     box-sizing: border-box;
+    padding: 0 20px;
+}
+
+/* === SECCIONES DE ACCIONES HORIZONTALES === */
+.admin-search-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.admin-filters-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.admin-buttons-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .admin-filters {
@@ -521,13 +549,106 @@
     flex: 1;
 }
 
-/* === RESPONSIVE === */
-@media (max-width: 768px) {
+/* === COMPREHENSIVE RESPONSIVE DESIGN === */
 
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .admin-main-content-area {
+        padding: 30px 40px;
+    }
+
+    .admin-content-wrapper {
+        max-width: 1400px;
+    }
+
+    .admin-modal-content.large {
+        width: 1200px;
+    }
+
+    .admin-modal-content.extra-large {
+        width: 1400px;
+    }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+    .admin-main-content-area {
+        padding: 25px 30px;
+    }
+
+    .admin-modal-content.large {
+        width: 90vw;
+        max-width: 1000px;
+    }
+
+    .admin-modal-content.extra-large {
+        width: 95vw;
+        max-width: 1200px;
+    }
+}
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .admin-main-content-area {
+        margin-left: 0;
+        padding: 20px 25px;
+    }
+    
+    .admin-actions-bar {
+        flex-wrap: wrap; /* Permite wrap en tablets */
+        gap: 20px;
+    }
+    
+    .admin-search-section {
+        min-width: 250px;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.6rem;
+    }
+
+    .admin-actions-bar {
+        gap: 15px;
+    }
+
+    .admin-search-input {
+        min-width: 200px;
+    }
+
+    .admin-modal-content {
+        width: 90vw;
+        padding: 25px;
+    }
+
+    .admin-form-row-3 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
     .admin-main-content-area,
     .admin-main-content {
         margin-left: 0;
         padding: 20px 15px;
+    }
+    
+    .admin-actions-bar {
+        flex-direction: column; /* Vertical en móviles */
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .admin-search-section,
+    .admin-filters-section,
+    .admin-buttons-section {
+        justify-content: center;
+        min-width: auto;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
     }
 
     .admin-actions-bar {
@@ -542,6 +663,11 @@
     }
 
     .admin-search-input {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .admin-filter-select {
         min-width: auto;
         width: 100%;
     }
@@ -564,12 +690,77 @@
         flex-direction: column;
         gap: 15px;
     }
+
+    .admin-table {
+        font-size: 0.9rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 12px 8px;
+    }
 }
 
-@media (max-width: 480px) {
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .admin-main-content-area {
+        padding: 15px 10px;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+
+    .admin-actions-bar {
+        gap: 10px;
+    }
+
+    .admin-add-button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
     .admin-modal-content {
         width: 98%;
         padding: 15px;
+        max-height: 95vh;
+    }
+
+    .admin-modal-title {
+        font-size: 1.3rem;
+    }
+
+    .admin-table {
+        font-size: 0.8rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 8px 6px;
+    }
+
+    .admin-action-button {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        margin: 0 2px;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .admin-main-content-area {
+        padding: 10px 8px;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+
+    .admin-modal-content {
+        width: 98%;
+        padding: 12px;
         max-height: 95vh;
     }
 
@@ -577,6 +768,11 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .admin-modal-title {
+        font-size: 1.2rem;
     }
 
     .admin-modal-footer {
@@ -587,6 +783,77 @@
     .admin-form-button {
         width: 100%;
         justify-content: center;
+        padding: 12px 20px;
+    }
+
+    .admin-form-section {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .admin-form-section-title {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .admin-table {
+        font-size: 0.75rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 6px 4px;
+    }
+
+    .admin-action-button {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        margin: 0 1px;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .admin-main-content-area {
+        padding: 8px 5px;
+    }
+
+    .admin-content-wrapper h1 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .admin-modal-content {
+        width: 99%;
+        padding: 10px;
+    }
+
+    .admin-modal-title {
+        font-size: 1.1rem;
+    }
+
+    .admin-form-section {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    .admin-form-section-title {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .admin-table {
+        font-size: 0.7rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 4px 2px;
+    }
+
+    .admin-action-button {
+        padding: 3px 6px;
+        font-size: 0.7rem;
     }
 }
 

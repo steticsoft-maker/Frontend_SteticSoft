@@ -334,7 +334,44 @@
     font-style: italic;
 }
 
-/* Responsive */
+/* === COMPREHENSIVE RESPONSIVE DESIGN === */
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+    .user-profile-card {
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .user-profile-header {
+        gap: 8px;
+    }
+
+    .logo-container {
+        width: 36px;
+        height: 36px;
+    }
+
+    .stetic-logo {
+        width: 20px;
+        height: 20px;
+    }
+
+    .user-name {
+        font-size: 0.95rem;
+    }
+
+    .user-role {
+        font-size: 0.8rem;
+    }
+
+    .expand-indicator {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+/* Tablet Portrait (768px and below) */
 @media (max-width: 768px) {
     .user-profile-card {
         padding: 15px;
@@ -380,6 +417,188 @@
 
     .detail-text {
         font-size: 0.85rem;
+    }
+
+    .user-profile-details {
+        margin-top: 8px;
+        padding-top: 10px;
+    }
+
+    .details-title {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+    .user-profile-card {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    .user-profile-header {
+        gap: 10px;
+    }
+
+    .logo-container {
+        width: 40px;
+        height: 40px;
+    }
+
+    .stetic-logo {
+        width: 22px;
+        height: 22px;
+    }
+
+    .user-name {
+        font-size: 1rem;
+    }
+
+    .user-role {
+        font-size: 0.8rem;
+    }
+
+    .expand-indicator {
+        width: 28px;
+        height: 28px;
+    }
+
+    .user-profile-details {
+        margin-top: 6px;
+        padding-top: 8px;
+    }
+
+    .details-title {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+
+    .detail-item {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .detail-text {
+        font-size: 0.8rem;
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+    .user-profile-card {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+
+    .user-profile-header {
+        gap: 8px;
+    }
+
+    .logo-container {
+        width: 35px;
+        height: 35px;
+    }
+
+    .stetic-logo {
+        width: 20px;
+        height: 20px;
+    }
+
+    .user-name {
+        font-size: 0.9rem;
+    }
+
+    .user-role {
+        font-size: 0.75rem;
+    }
+
+    .expand-indicator {
+        width: 26px;
+        height: 26px;
+    }
+
+    .user-profile-details {
+        margin-top: 4px;
+        padding-top: 6px;
+    }
+
+    .details-title {
+        font-size: 0.75rem;
+        margin-bottom: 4px;
+    }
+
+    .detail-item {
+        gap: 6px;
+        margin-bottom: 6px;
+        padding: 3px 0;
+    }
+
+    .detail-text {
+        font-size: 0.75rem;
+    }
+
+    .detail-icon {
+        font-size: 0.7rem;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    .user-profile-card {
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .user-profile-header {
+        gap: 6px;
+    }
+
+    .logo-container {
+        width: 32px;
+        height: 32px;
+    }
+
+    .stetic-logo {
+        width: 18px;
+        height: 18px;
+    }
+
+    .user-name {
+        font-size: 0.85rem;
+    }
+
+    .user-role {
+        font-size: 0.7rem;
+    }
+
+    .expand-indicator {
+        width: 24px;
+        height: 24px;
+    }
+
+    .user-profile-details {
+        margin-top: 3px;
+        padding-top: 4px;
+    }
+
+    .details-title {
+        font-size: 0.7rem;
+        margin-bottom: 3px;
+    }
+
+    .detail-item {
+        gap: 5px;
+        margin-bottom: 5px;
+        padding: 2px 0;
+    }
+
+    .detail-text {
+        font-size: 0.7rem;
+    }
+
+    .detail-icon {
+        font-size: 0.65rem;
     }
 }
 

@@ -1,4 +1,5 @@
 @import "@/shared/styles/_variables.css";
+@import "@/shared/styles/responsive-template.css";
 /* src/features/abastecimiento/css/Abastecimiento.css */
 
 /* Define estas variables en tu _variables.css si no existen */
@@ -20,23 +21,28 @@
     background-color: var(--color-background-light);
   }
   
-  .abastecimiento-main-content {
+.abastecimiento-main-content {
     flex: 1;
-    padding: 30px;
-    margin-left: 270px; /* ANCHO_NAVBAR_ADMIN + ESPACIO */
+    padding: 0; /* El padding lo maneja admin-main-content-area */
+    margin-left: 0; /* Ya está dentro de admin-main-content-area */
     overflow-y: auto;
     box-sizing: border-box;
-  }
-  
-  .abastecimiento-content-wrapper {
     width: 100%;
-    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+  
+.abastecimiento-content-wrapper {
+    width: 100%;
+    max-width: 1400px; /* Centrado absoluto */
     margin-left: auto;
     margin-right: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
+}
   
   .abastecimiento-content-wrapper h1 {
     text-align: center;
@@ -46,17 +52,47 @@
     font-size: 1.8rem;
   }
   
-  /* === BARRA DE ACCIONES SUPERIORES === */
-  .abastecimiento-actions-bar {
+/* === BARRA DE ACCIONES SUPERIORES - HORIZONTAL === */
+.abastecimiento-actions-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
-    gap: 20px;
-    flex-wrap: wrap;
+    gap: 30px;
+    flex-wrap: nowrap; /* Horizontal siempre */
     width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
     box-sizing: border-box;
-  }
+    padding: 0 20px;
+}
+
+/* Secciones específicas para abastecimiento */
+.abastecimiento-search-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.abastecimiento-filters-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.abastecimiento-buttons-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
   
   .abastecimiento-search-bar {
     flex-grow: 1;

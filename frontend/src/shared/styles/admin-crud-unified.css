@@ -16,8 +16,8 @@
 /* === CONTENIDO PRINCIPAL CENTRADO === */
 .admin-crud-content {
   flex: 1;
-  margin-left: 280px; /* Ancho del sidebar + espacio */
-  padding: 30px;
+  margin-left: 0; /* Ya está dentro de admin-main-content-area */
+  padding: 0; /* El padding lo maneja admin-main-content-area */
   overflow-y: auto;
   box-sizing: border-box;
   height: 100%;
@@ -25,6 +25,142 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
+  max-width: 1400px; /* Ancho máximo para centrado absoluto */
+}
+
+/* === CONTENEDOR CENTRADO ABSOLUTO === */
+.admin-crud-centered-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* === RESPONSIVE DESIGN FOR CRUD PAGES === */
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+  .admin-crud-content,
+  .usuarios-content,
+  .rol-content,
+  .productos-admin-content,
+  .categorias-producto-content,
+  .proveedores-content,
+  .clientes-content {
+    margin-left: 0;
+    padding: 25px;
+  }
+
+  .admin-crud-content h1,
+  .usuarios-content h1,
+  .rol-content h1,
+  .productos-admin-content h1,
+  .categorias-producto-content h1,
+  .proveedores-content h1,
+  .clientes-content h1 {
+    font-size: 1.8rem;
+  }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+  .admin-crud-content,
+  .usuarios-content,
+  .rol-content,
+  .productos-admin-content,
+  .categorias-producto-content,
+  .proveedores-content,
+  .clientes-content {
+    margin-left: 0;
+    padding: 20px 15px;
+  }
+
+  .admin-crud-content h1,
+  .usuarios-content h1,
+  .rol-content h1,
+  .productos-admin-content h1,
+  .categorias-producto-content h1,
+  .proveedores-content h1,
+  .clientes-content h1 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+  .admin-crud-content,
+  .usuarios-content,
+  .rol-content,
+  .productos-admin-content,
+  .categorias-producto-content,
+  .proveedores-content,
+  .clientes-content {
+    padding: 15px 10px;
+  }
+
+  .admin-crud-content h1,
+  .usuarios-content h1,
+  .rol-content h1,
+  .productos-admin-content h1,
+  .categorias-producto-content h1,
+  .proveedores-content h1,
+  .clientes-content h1 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+  }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+  .admin-crud-content,
+  .usuarios-content,
+  .rol-content,
+  .productos-admin-content,
+  .categorias-producto-content,
+  .proveedores-content,
+  .clientes-content {
+    padding: 10px 8px;
+  }
+
+  .admin-crud-content h1,
+  .usuarios-content h1,
+  .rol-content h1,
+  .productos-admin-content h1,
+  .categorias-producto-content h1,
+  .proveedores-content h1,
+  .clientes-content h1 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+  .admin-crud-content,
+  .usuarios-content,
+  .rol-content,
+  .productos-admin-content,
+  .categorias-producto-content,
+  .proveedores-content,
+  .clientes-content {
+    padding: 8px 5px;
+  }
+
+  .admin-crud-content h1,
+  .usuarios-content h1,
+  .rol-content h1,
+  .productos-admin-content h1,
+  .categorias-producto-content h1,
+  .proveedores-content h1,
+  .clientes-content h1 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
 }
 
 /* === CONTENIDO PRINCIPAL CENTRADO (COMPATIBILIDAD) === */
@@ -1252,9 +1388,15 @@ input:focus + .slider {
 }
 
 /* === AJUSTE PARA LAYOUT DE ADMIN === */
-.admin-main-content-area .admin-crud-content {
+.admin-main-content-area .admin-crud-content,
+.admin-main-content-area .usuarios-content,
+.admin-main-content-area .rol-content,
+.admin-main-content-area .productos-admin-main-content,
+.admin-main-content-area .categorias-producto-admin-main-content,
+.admin-main-content-area .main-content-clientes,
+.admin-main-content-area .ventasContent {
   margin-left: 0;
   width: 100%;
-  max-width: 100%;
+  max-width: 1400px; /* Centrado absoluto */
   padding: 0;
 }
