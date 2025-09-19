@@ -67,6 +67,46 @@
   animation: fadeInDown 0.8s ease-out;
 }
 
+/* Color rosado/femenino para el título durante el modo día */
+.light-theme .dashboard-header {
+  background: linear-gradient(135deg, #f8b5d1, #d4a5d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mejorar visibilidad de barras de progreso en modo día */
+.light-theme .progress-bar {
+  background: #f0f0f0;
+  border: 1px solid #d1d5db;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .progress-fill {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.light-theme .progress-text {
+  color: #374151;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Mejorar visibilidad de barras de progreso en modo noche */
+.dark-theme .progress-bar {
+  background: #374151;
+  border: 1px solid #4b5563;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .progress-fill {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.dark-theme .progress-text {
+  color: #f9fafb;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
 /* Sección de Estadísticas */
 .stats-section {
   margin-bottom: 2rem;
@@ -389,18 +429,21 @@
 
 .progress-bar {
   flex: 1;
-  height: 8px;
+  height: 12px;
   background: var(--dashboard-bg-secondary);
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
   position: relative;
+  border: 1px solid var(--dashboard-border);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .progress-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 5px;
   transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .progress-fill::after {
@@ -410,16 +453,17 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   animation: shimmer 2s infinite;
 }
 
 .progress-text {
   font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--dashboard-text-secondary);
+  font-weight: 700;
+  color: var(--dashboard-text-primary);
   min-width: 50px;
   text-align: right;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Loading states for stats cards */
