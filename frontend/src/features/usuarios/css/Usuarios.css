@@ -4,47 +4,125 @@
 
 /* src/features/usuarios/css/Usuarios.css */
 
-/* === ESTILOS GENERALES DE LA PÁGINA DE USUARIOS === */
-/* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */
-.usuarios-container {
-  display: flex;
-  height: 100vh;
-  background-color: var(--color-background-light);
-  font-family: var(--font-family-roboto);
+/* ESTRUCTURA COMO COMPRAS - FUNCIONA CORRECTAMENTE */
+.lista-usuarios-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-background-light);
 }
 
-.usuarios-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100%;
-  padding: 30px;
-  margin-left: 280px; /* Ajusta si tu AdminSidebar tiene otro ancho */
-  box-sizing: border-box;
-  overflow-y: auto;
+.usuarios-content-wrapper {
+    flex: 1;
+    padding: 40px;
+    margin: 0 auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.usuarios-content h1 {
-  margin-bottom: 20px;
-  color: var(--color-primary);
-  text-align: center;
-  font-weight: 600;
-  font-size: 2rem;
+.usuarios-content-wrapper h1 {
+    padding-left: 200px;
+    text-align: center;
+    color: var(--color-text-dark);
+    margin-top: 0;
+    margin-bottom: 0px;
+    font-size: 1.8rem;
 }
 
-/* === SECCIÓN DE ACCIONES SUPERIORES === */
-.usuarios-accionesTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-  width: 100%;
-  max-width: 1200px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
+/* ======================================================== */
+/* ============= BARRA DE ACCIONES SUPERIORES ============= */
+/* ======================================================== */
+.usuarios-actions-bar {
+    padding-left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; 
+    gap: 20px;
+    flex-wrap: wrap; 
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.usuarios-filters {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.usuarios-search-bar {
+    flex-grow: 1;
+    display: flex;
+}
+
+.usuarios-search-bar input {
+    padding: 10px 12px; 
+    width: 100%; 
+    min-width: 250px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    box-sizing: border-box;
+}
+
+.usuarios-search-bar input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.usuarios-filtro-estado-grupo {
+    display: flex;
+    align-items: center;
+}
+
+.usuarios-filtro-input {
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    min-width: 200px;
+    box-sizing: border-box;
+}
+
+.usuarios-filtro-input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.usuarios-add-button {
+    padding: 10px 20px;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.usuarios-add-button:hover {
+    background-color: var(--color-primary-hover);
 }
 
 .usuarios-filtro-estado {

@@ -178,7 +178,7 @@ const RolesTable = ({
                       <button className="rol-table-button btn-edit" onClick={() => onEdit(rol)} title="Editar Rol">
                         <FaEdit />
                       </button>
-                      <button className="rol-table-button rol-table-button-delete btn-delete" onClick={() => onDeleteConfirm(rol)} title="Eliminar Rol">
+                      <button className="rol-table-button rol-table-button-delete" onClick={() => onDeleteConfirm(rol)} title="Eliminar Rol">
                         <FaTrash />
                       </button>
                     </>

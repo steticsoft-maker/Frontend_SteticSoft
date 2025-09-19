@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaEye, FaFilePdf, FaBan } from 'react-icons/fa';
+import "../../../shared/styles/table-common.css";
 
 const VentasTable = ({
     ventas,
@@ -23,7 +24,7 @@ const VentasTable = ({
     ];
 
     return (
-        <table className="ventas-table">
+        <table className="table-main">
             <thead>
                 <tr>
                     <th>#</th>
@@ -67,10 +68,10 @@ const VentasTable = ({
                                 </select>
                             </td>
                             <td>
-                                <div className="accionesTablaVentas">
-                                    <button className="botonDetalleVenta" onClick={() => onShowDetails(venta)} title="Ver detalles"><FaEye /></button>
-                                    <button className="botonPdfVenta" onClick={() => onGenerarPDF(venta)} title="Generar PDF"><FaFilePdf /></button>
-                                    <button className="botonAnularVenta" onClick={() => onAnularVenta(venta)} title="Anular venta" disabled={estadoActualNombre === "Anulada"}><FaBan /></button>
+                                <div className="table-iconos">
+                                    <button className="table-button" onClick={() => onShowDetails(venta)} title="Ver detalles"><FaEye /></button>
+                                    <button className="table-button" onClick={() => onGenerarPDF(venta)} title="Generar PDF"><FaFilePdf /></button>
+                                    <button className="table-button" onClick={() => onAnularVenta(venta)} title="Anular venta" disabled={estadoActualNombre === "Anulada"}><FaBan /></button>
                                 </div>
                             </td>
                         </tr>

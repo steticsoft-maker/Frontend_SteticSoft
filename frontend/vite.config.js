@@ -19,4 +19,12 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
+  cacheDir: 'node_modules/.vite',
+  optimizeDeps: {
+    force: true,
+  },
 })

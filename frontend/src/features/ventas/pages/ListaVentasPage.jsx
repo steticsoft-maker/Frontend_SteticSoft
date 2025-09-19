@@ -166,56 +166,77 @@ function ListaVentasPage() {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
-        <div className="ventas-page-container">
-            <div className="ventasContent">
+        <div className="lista-ventas-container">
+            <div className="ventas-content-wrapper">
                 <h1>Gestión de Ventas</h1>
 
-                <div className="gestion-filtros">
-                    <div className="filtros-top">
-                        <input type="text" placeholder="Buscar venta" value={busqueda} onChange={handleSearchChange} className="barraBusquedaVenta" />
-                        <button className="botonAgregarVenta" onClick={() => navigate('/admin/ventas/proceso')}>Agregar Venta</button>
+                <div className="ventas-actions-bar">
+                    <div className="ventas-filters">
+                        <div className="ventas-search-bar">
+                            <input
+                                type="text"
+                                placeholder="Busca por cualquier campo..."
+                                value={busqueda}
+                                onChange={handleSearchChange}
+                            />
+                        </div>
+                        <div className="ventas-filtro-estado-grupo">
+                            <select
+                                id="filtro-estado"
+                                className="ventas-filtro-input"
+                                value={filtroEstado}
+                                onChange={(e) => setFiltroEstado(e.target.value)}
+                            >
+                                <option value="">Todas</option>
+                                <option value="1">Activa</option>
+                                <option value="2">En proceso</option>
+                                <option value="3">Completada</option>
+                                <option value="4">Anulada</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div className="filtros-bottom">
-                        <label htmlFor="filtro-estado">Filtrar por estado:</label>
-                        <select id="filtro-estado" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} className="filtro-estado-select">
-                            <option value="">Todas</option>
-                            <option value="1">Activa</option>
-                            <option value="2">En proceso</option>
-                            <option value="3">Completada</option>
-                            <option value="4">Anulada</option>
-                        </select>
-                    </div>
+                    <button
+                        className="ventas-add-button"
+                        onClick={() => navigate('/admin/ventas/proceso')}
+                    >
+                        Agregar Venta
+                    </button>
                 </div>
 
-                {isLoading ? (<p style={{ textAlign: 'center', marginTop: '50px' }}>Cargando ventas...</p>) : 
-                 error ? (<p className="error-message" style={{ textAlign: 'center', marginTop: '50px' }}>{error}</p>) : 
-                 (<>
-                     <VentasTable
-                         ventas={currentVentasForTable}
-                         onShowDetails={handleOpenDetails}
-                         onGenerarPDF={handleOpenPdf}
-                         onAnularVenta={handleOpenAnularConfirm}
-                         onEstadoChange={handleEstadoChange}
-                         currentPage={currentPage}
-                         itemsPerPage={itemsPerPage}
-                     />
-                    
-                    {/* ✅ CAMBIO 2: La paginación solo se muestra si hay más de una página (más de 10 registros) */}
-                    {totalPages > 1 && (
-                        <div className="paginacionVenta">
-                            {Array.from({ length: totalPages }, (_, i) => (
-                                <button 
-                                    key={i + 1} 
-                                    onClick={() => paginate(i + 1)} 
-                                    className={currentPage === i + 1 ? "active" : ""}
-                                >
-                                    {i + 1}
-                                </button>
-                            ))}
+                {isLoading ? (
+                    <p style={{ textAlign: 'center', marginTop: '50px' }}>Cargando ventas...</p>
+                ) : error ? (
+                    <p className="error-message" style={{ textAlign: 'center', marginTop: '50px' }}>{error}</p>
+                ) : (
+                    <>
+                        <div className="table-container">
+                            <VentasTable
+                                ventas={currentVentasForTable}
+                                onShowDetails={handleOpenDetails}
+                                onGenerarPDF={handleOpenPdf}
+                                onAnularVenta={handleOpenAnularConfirm}
+                                onEstadoChange={handleEstadoChange}
+                                currentPage={currentPage}
+                                itemsPerPage={itemsPerPage}
+                            />
                         </div>
-                    )}
-                 </>)}
+                        
+                        {/* ✅ CAMBIO 2: La paginación solo se muestra si hay más de una página (más de 10 registros) */}
+                        {totalPages > 1 && (
+                            <div className="paginacionVenta">
+                                {Array.from({ length: totalPages }, (_, i) => (
+                                    <button 
+                                        key={i + 1} 
+                                        onClick={() => paginate(i + 1)} 
+                                        className={currentPage === i + 1 ? "active" : ""}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
             
             {/* Modales */}

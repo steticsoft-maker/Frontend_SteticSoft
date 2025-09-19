@@ -13,7 +13,7 @@ const UsuariosTable = ({
   rowsPerPage = 10, // Valor por defecto para rowsPerPage, ajustar si es necesario
 }) => {
   return (
-    <table className="usuarios-table">
+    <table className="table-main">
       <thead>
         <tr>
           <th>#</th> {/* Nueva columna para numeración */}
@@ -59,9 +59,9 @@ const UsuariosTable = ({
                 )}
               </td>
               <td data-label="Acciones:">
-                <div className="usuarios-table-iconos">
+                <div className="table-iconos">
                   <button
-                    className="usuarios-table-button btn-view"
+                    className="table-button"
                     onClick={() => onView(usuario)}
                     title="Ver Detalles"
                   >
@@ -70,14 +70,14 @@ const UsuariosTable = ({
                   {nombreRol !== "Administrador" && (
                     <>
                       <button
-                        className="usuarios-table-button btn-edit"
+                        className="table-button"
                         onClick={() => onEdit(usuario)}
                         title="Editar Usuario"
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="usuarios-table-button usuarios-table-button-delete"
+                        className="table-button"
                         onClick={() => onDeleteConfirm(usuario)}
                         title="Eliminar Usuario"
                       >

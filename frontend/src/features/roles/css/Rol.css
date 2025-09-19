@@ -2,52 +2,131 @@
 @import "@/shared/styles/admin-crud-unified.css";
 @import "@/shared/styles/admin-migration-guide.css";
 
-/* Contenedor principal */
-/* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */
-.rol-container {
+/* ESTRUCTURA COMO COMPRAS - FUNCIONA CORRECTAMENTE */
+.lista-roles-container {
     display: flex;
-    height: 100vh;
-    background-color: var(--color-background-light);
+    min-height: 100vh;
+    width: 100%;
     font-family: 'Roboto', sans-serif;
+    background-color: var(--color-background-light);
+}
+
+.roles-content-wrapper {
+    flex: 1;
+    padding: 40px;
+    margin: 0 auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.roles-content-wrapper h1 {
+    padding-left: 200px;
+    text-align: center;
+    color: var(--color-text-dark);
+    margin-top: 0;
+    margin-bottom: 0px;
+    font-size: 1.8rem;
+}
+
+/* ======================================================== */
+/* ============= BARRA DE ACCIONES SUPERIORES ============= */
+/* ======================================================== */
+.roles-actions-bar {
+    padding-left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; 
+    gap: 20px;
+    flex-wrap: wrap; 
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.roles-filters {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.roles-search-bar {
+    flex-grow: 1;
+    display: flex;
+}
+
+.roles-search-bar input {
+    padding: 10px 12px; 
+    width: 100%; 
+    min-width: 250px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    box-sizing: border-box;
+}
+
+.roles-search-bar input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.roles-filtro-estado-grupo {
+    display: flex;
+    align-items: center;
+}
+
+.roles-filtro-input {
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    min-width: 200px;
+    box-sizing: border-box;
+}
+
+.roles-filtro-input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.roles-add-button {
+    padding: 10px 20px;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.roles-add-button:hover {
+    background-color: var(--color-primary-hover);
 }
 
 /* Asterisco rojo */
 .required-asterisk {
     color: red;
     margin-left: 2px;
-}
-
-/* Contenido principal */
-.rol-content {
-    flex: 1;
-    margin-left: 220px;
-    padding: 30px;
-    overflow-y: auto;
-    box-sizing: border-box;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Título principal */
-.rol-content h1 {
-    text-align: center;
-    color: var(--color-text-dark);
-    margin-bottom: 20px;
-}
-
-/* Barra de Búsqueda y Botón Agregar */
-.rol-accionesTop {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 20px;
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 1200px;
-    box-sizing: border-box;
 }
 
 .rol-filtro-estado {
@@ -118,7 +197,7 @@
 /* Tabla de Roles */
 .rol-table {
     width: 100%;
-    max-width: 1200px;
+    max-width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -126,6 +205,7 @@
     box-sizing: border-box;
     border-radius: 8px;
     overflow: hidden;
+    table-layout: fixed;
 }
 
 /* Encabezados de tabla */
@@ -137,6 +217,43 @@
     padding: 14px;
     font-size: 1rem;
     border: 1px solid var(--color-table-header);
+}
+
+/* Anchos específicos de columnas para evitar scroll horizontal */
+.rol-table th:nth-child(1),
+.rol-table td:nth-child(1) {
+    width: 5%; /* Columna # */
+}
+
+.rol-table th:nth-child(2),
+.rol-table td:nth-child(2) {
+    width: 15%; /* Nombre del Rol */
+}
+
+.rol-table th:nth-child(3),
+.rol-table td:nth-child(3) {
+    width: 20%; /* Descripción - Reducida de 25% a 20% */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rol-table th:nth-child(4),
+.rol-table td:nth-child(4) {
+    width: 30%; /* Permisos por Módulo - Reducida de 35% a 30% */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rol-table th:nth-child(5),
+.rol-table td:nth-child(5) {
+    width: 10%; /* Estado */
+}
+
+.rol-table th:nth-child(6),
+.rol-table td:nth-child(6) {
+    width: 15%; /* Acciones - Aumentada de 10% a 15% */
 }
 
 /* Celdas de tabla */
@@ -162,16 +279,18 @@
 /* Iconos en la tabla */
 .rol-table-iconos {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
     align-items: center;
+    flex-wrap: nowrap;
+    min-width: 120px;
 }
 
 /* Botones de acción en la tabla */
 .rol-table-button {
-    padding: 10px 15px;
+    padding: 8px 12px;
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     border: none;
     border-radius: 5px;
     color: var(--color-text-light);
@@ -180,6 +299,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    flex-shrink: 0;
 }
 
 /* Estilos específicos para cada botón de acción por clase */

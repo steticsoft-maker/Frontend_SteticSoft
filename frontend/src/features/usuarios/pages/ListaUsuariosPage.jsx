@@ -42,32 +42,39 @@ function ListaUsuariosPage() {
   } = useUsuarios();
 
   return (
-    <div className="usuarios-container">
-      <div className="usuarios-content">
+    <div className="lista-usuarios-container">
+      <div className="usuarios-content-wrapper">
         <h1>Gestión de Usuarios ({totalUsuariosFiltrados})</h1>
-        <div className="usuarios-accionesTop">
-          <input
-            type="text"
-            placeholder="Buscar por nombre, apellido, estado, correo, rol..."
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="usuarios-barraBusqueda"
-            disabled={isLoadingPage}
-          />
-          <div className="usuarios-filtro-estado">
-            <span>Estado: </span>
-            <select value={filterEstado} onChange={(e) => setFilterEstado(e.target.value)} disabled={isLoadingPage}>
-              <option value="todos">Todos</option>
-              <option value="activos">Activos</option>
-              <option value="inactivos">Inactivos</option>
-            </select>
+        <div className="usuarios-actions-bar">
+          <div className="usuarios-filters">
+            <div className="usuarios-search-bar">
+              <input
+                type="text"
+                placeholder="Busca por cualquier campo..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                disabled={isLoadingPage}
+              />
+            </div>
+            <div className="usuarios-filtro-estado-grupo">
+              <select
+                className="usuarios-filtro-input"
+                value={filterEstado}
+                onChange={(e) => setFilterEstado(e.target.value)}
+                disabled={isLoadingPage}
+              >
+                <option value="todos">Todos los Estados</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+              </select>
+            </div>
           </div>
           <button
-            className="usuarios-botonAgregar"
+            className="usuarios-add-button"
             onClick={() => handleOpenModal("create")}
             disabled={isLoadingPage || isSubmitting}
           >
-            Crear Usuario
+            Agregar Usuario
           </button>
         </div>
 

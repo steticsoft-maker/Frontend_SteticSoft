@@ -233,36 +233,39 @@ function ListaProveedoresPage() {
   };
 
   return (
-    <div className="proveedores-page-container">
-      <div className="proveedores-content">
+    <div className="lista-proveedores-container">
+      <div className="proveedores-content-wrapper">
         <h1>Gestión de Proveedores ({filteredProveedores.length})</h1>
-        <div className="proveedores-accionesTop">
-          <input
-            type="text"
-            placeholder="Buscar por cualquier campo..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="proveedores-barraBusqueda"
-            disabled={isLoading}
-          />
-          <div className="proveedores-filtro-estado">
-            <span>Estado: </span>
-            <select
-              value={filtroEstado}
-              onChange={(e) => setFiltroEstado(e.target.value)}
-              disabled={isLoading}
-            >
-              <option value="todos">Todos</option>
-              <option value="activos">Activos</option>
-              <option value="inactivos">Inactivos</option>
-            </select>
+        <div className="proveedores-actions-bar">
+          <div className="proveedores-filters">
+            <div className="proveedores-search-bar">
+              <input
+                type="text"
+                placeholder="Busca por cualquier campo..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="proveedores-filtro-estado-grupo">
+              <select
+                className="proveedores-filtro-input"
+                value={filtroEstado}
+                onChange={(e) => setFiltroEstado(e.target.value)}
+                disabled={isLoading}
+              >
+                <option value="todos">Todos los Estados</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+              </select>
+            </div>
           </div>
           <button
-            className="proveedores-botonAgregar"
+            className="proveedores-add-button"
             onClick={() => handleOpenModal("create")}
             disabled={isLoading}
           >
-            Crear Proveedor
+            Agregar Proveedor
           </button>
         </div>
 

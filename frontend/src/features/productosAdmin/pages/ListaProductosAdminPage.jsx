@@ -260,36 +260,39 @@ function ListaProductosAdminPage() {
 
   return (
     <>
-      <div className="productos-admin-page-container">
-        <div className="productos-admin-content">
+      <div className="lista-productos-container">
+        <div className="productos-content-wrapper">
           <h1>Gestión de Productos ({filteredProducts.length})</h1>
-          <div className="productos-admin-accionesTop">
-            <input
-              type="text"
-              placeholder="Buscar por cualquier campo..."
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              className="productos-admin-barraBusqueda"
-              disabled={isLoading}
-            />
-            <div className="productos-admin-filtro-estado">
-              <span>Estado: </span>
-              <select
-                value={filtroEstado}
-                onChange={(e) => setFiltroEstado(e.target.value)}
-                disabled={isLoading}
-              >
-                <option value="todos">Todos</option>
-                <option value="activos">Activos</option>
-                <option value="inactivos">Inactivos</option>
-              </select>
+          <div className="productos-actions-bar">
+            <div className="productos-filters">
+              <div className="productos-search-bar">
+                <input
+                  type="text"
+                  placeholder="Busca por cualquier campo..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="productos-filtro-estado-grupo">
+                <select
+                  className="productos-filtro-input"
+                  value={filtroEstado}
+                  onChange={(e) => setFiltroEstado(e.target.value)}
+                  disabled={isLoading}
+                >
+                  <option value="todos">Todos los Estados</option>
+                  <option value="activos">Activos</option>
+                  <option value="inactivos">Inactivos</option>
+                </select>
+              </div>
             </div>
             <button
-              className="productos-admin-botonAgregar"
+              className="productos-add-button"
               onClick={() => handleOpenModal("create")}
               disabled={isLoading}
             >
-              Crear Producto
+              Agregar Producto
             </button>
           </div>
           {isLoading ? (

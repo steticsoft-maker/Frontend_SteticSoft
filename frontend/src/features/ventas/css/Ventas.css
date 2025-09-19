@@ -1,55 +1,126 @@
 @import "@/shared/styles/_variables.css";
 
 /* src/features/ventas/css/Ventas.css */
-.ventas-container {
+.lista-ventas-container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
-    max-width: 100vw;
-    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
     background-color: var(--color-background-light);
 }
 
-.ventasContent {
+.ventas-content-wrapper {
     flex: 1;
-    padding: 30px;
-    margin-left: 270px;
-    border-radius: 8px;
+    padding: 40px;
+    margin: 0 auto;
     overflow-y: auto;
     box-sizing: border-box;
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.ventasContent h1 {
+.ventas-content-wrapper h1 {
+    padding-left: 200px;
     text-align: center;
     color: var(--color-text-dark);
-    margin-bottom: 20px;
+    margin-top: 0;
+    margin-bottom: 0px;
+    font-size: 1.8rem;
 }
 
-/* ================================================= */
-/* =========== SECCIÓN DE FILTROS MODIFICADA =========== */
-/* ================================================= */
-.gestion-filtros {
-    display: flex;
-    flex-direction: column; /* Apila las filas verticalmente */
-    gap: 16px; /* Espacio entre la fila de búsqueda y la de estado */
-    margin-bottom: 30px; /* Espacio antes de la tabla */
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.filtros-top {
+/* ======================================================== */
+/* ============= BARRA DE ACCIONES SUPERIORES ============= */
+/* ======================================================== */
+.ventas-actions-bar {
+    padding-left: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    margin-bottom: 25px; 
+    gap: 20px;
+    flex-wrap: wrap; 
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
 }
 
-.filtros-bottom {
+.ventas-filters {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.ventas-search-bar {
+    flex-grow: 1;
+    display: flex;
+}
+
+.ventas-search-bar input {
+    padding: 10px 12px; 
+    width: 100%; 
+    min-width: 250px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    box-sizing: border-box;
+}
+
+.ventas-search-bar input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.ventas-filtro-estado-grupo {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espacio entre "Filtrar por estado:" y el select */
 }
+
+.ventas-filtro-input {
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    min-width: 200px;
+    box-sizing: border-box;
+}
+
+.ventas-filtro-input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.ventas-add-button {
+    padding: 10px 20px;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.ventas-add-button:hover {
+    background-color: var(--color-primary-hover);
+}
+
 
 .filtros-bottom label {
     font-weight: 500;

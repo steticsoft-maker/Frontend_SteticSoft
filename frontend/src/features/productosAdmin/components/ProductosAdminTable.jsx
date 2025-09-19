@@ -43,7 +43,7 @@ const ProductosAdminTable = ({
   return (
     <>
       <div className="table-container">
-        <table className="productos-admin-table">
+        <table className="table-main">
           <thead>
             <tr>
               <th>#</th>
@@ -107,23 +107,23 @@ const ProductosAdminTable = ({
                     </label>
                   </td>
                   <td data-label="Acciones:">
-                    <div className="productos-admin-table-iconos">
+                    <div className="table-iconos">
                       <button
-                        className="productos-admin-table-button btn-view"
+                        className="table-button"
                         onClick={() => onView(producto)}
                         title="Ver Detalles"
                       >
                         <FaEye />
                       </button>
                       <button
-                        className="productos-admin-table-button btn-edit"
+                        className="table-button"
                         onClick={() => onEdit(producto)}
                         title="Editar Producto"
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="productos-admin-table-button productos-admin-table-button-delete"
+                        className="table-button"
                         onClick={() => onDeleteConfirm(producto)}
                         title="Eliminar Producto"
                       >

@@ -6,21 +6,123 @@
 /* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */
 
 /* === ESTILOS GENERALES DE PÁGINA === */
-.productos-admin-page-container { /* Clase para la página completa */
+.lista-productos-container {
     display: flex;
     min-height: 100vh;
-    width: 100%; /* Ocupa todo el ancho del viewport */
-    font-family: 'Roboto', sans-serif; /* O tu fuente global */
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
     background-color: var(--color-background-light);
 }
 
-.productos-admin-main-content { /* Contenido principal al lado del AdminSidebar */
+.productos-content-wrapper {
     flex: 1;
-    padding: 30px;
-    margin-left: 270px; /* CRUCIAL: ANCHO_NAVBAR_ADMIN (ej. 250px) + ESPACIO (ej. 20px) */
+    padding: 40px;
+    margin: 0 auto;
     overflow-y: auto;
     box-sizing: border-box;
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+.productos-content-wrapper h1 {
+    padding-left: 200px;
+    text-align: center;
+    color: var(--color-text-dark);
+    margin-top: 0;
+    margin-bottom: 0px;
+    font-size: 1.8rem;
+}
+
+.productos-actions-bar {
+    padding-left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; 
+    gap: 20px;
+    flex-wrap: wrap; 
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.productos-filters {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.productos-search-bar {
+    flex-grow: 1;
+    display: flex;
+}
+
+.productos-search-bar input {
+    padding: 10px 12px; 
+    width: 100%; 
+    min-width: 250px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    box-sizing: border-box;
+}
+
+.productos-search-bar input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.productos-filtro-estado-grupo {
+    display: flex;
+    align-items: center;
+}
+
+.productos-filtro-input {
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    min-width: 200px;
+    box-sizing: border-box;
+}
+
+.productos-filtro-input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.productos-add-button {
+    padding: 10px 20px;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.productos-add-button:hover {
+    background-color: var(--color-primary-hover);
+}
+
 
 /* === ESTILOS PARA USAR CON ADMIN-LAYOUT === */
 .admin-page-container {

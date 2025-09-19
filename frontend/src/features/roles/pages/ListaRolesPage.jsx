@@ -39,40 +39,39 @@ function ListaRolesPage() {
   } = useRoles();
 
   return (
-    <div className="rol-container">
-      <div className="rol-content">
+    <div className="lista-roles-container">
+      <div className="roles-content-wrapper">
         <h1>Gestión de Roles ({totalRolesFiltrados})</h1>
-        <div className="rol-accionesTop">
-          <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-            <input
-              type="text"
-              placeholder="Buscar por nombre, descripción o permiso..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="rol-barraBusqueda"
-              disabled={isLoading}
-            />
-          </div>
-          {/* FIN DE MODIFICACIÓN */}
-          
-          <div className="rol-filtro-estado">
-            <span>Estado: </span>
-            <select
-              value={filterEstado}
-              onChange={(e) => setFilterEstado(e.target.value)}
-              disabled={isLoading}
-            >
-              <option value="todos">Todos</option>
-              <option value="activos">Activos</option>
-              <option value="inactivos">Inactivos</option>
-            </select>
+        <div className="roles-actions-bar">
+          <div className="roles-filters">
+            <div className="roles-search-bar">
+              <input
+                type="text"
+                placeholder="Busca por cualquier campo..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="roles-filtro-estado-grupo">
+              <select
+                className="roles-filtro-input"
+                value={filterEstado}
+                onChange={(e) => setFilterEstado(e.target.value)}
+                disabled={isLoading}
+              >
+                <option value="todos">Todos los Estados</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+              </select>
+            </div>
           </div>
           <button
-            className="rol-botonAgregar"
+            className="roles-add-button"
             onClick={() => handleOpenModal("create")}
             disabled={isLoading || isSubmitting}
           >
-            Crear Rol
+            Agregar Rol
           </button>
         </div>
         {isLoading ? (
