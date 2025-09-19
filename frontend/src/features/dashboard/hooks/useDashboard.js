@@ -160,6 +160,77 @@ const useDashboard = () => {
     };
   };
 
+  // Función específica para gráficos circulares
+  const formatPieChartData = (
+    apiData,
+    label,
+    valueKey,
+    nameKey,
+    colorIndex = 0
+  ) => {
+    if (!apiData || apiData.length === 0) {
+      return {
+        labels: ["No hay datos disponibles"],
+        datasets: [
+          {
+            label,
+            data: [0],
+            backgroundColor: [colorPalettes.primary[colorIndex]],
+            borderColor: [colorPalettes.borders[colorIndex]],
+            borderWidth: 2,
+            hoverBackgroundColor: [colorPalettes.hover[colorIndex]],
+            hoverBorderColor: [colorPalettes.borders[colorIndex]],
+            hoverBorderWidth: 3,
+          },
+        ],
+      };
+    }
+
+    const labels = apiData.map((item) => item[nameKey]);
+    const data = apiData.map((item) => Number(item[valueKey]));
+
+    // Crear colores para gráfico circular
+    const backgroundColor = data.map((_, index) => {
+      const baseColorIndex =
+        (colorIndex + index) % colorPalettes.primary.length;
+      return colorPalettes.primary[baseColorIndex];
+    });
+
+    const borderColor = data.map((_, index) => {
+      const baseColorIndex =
+        (colorIndex + index) % colorPalettes.borders.length;
+      return colorPalettes.borders[baseColorIndex];
+    });
+
+    const hoverBackgroundColor = data.map((_, index) => {
+      const baseColorIndex = (colorIndex + index) % colorPalettes.hover.length;
+      return colorPalettes.hover[baseColorIndex];
+    });
+
+    return {
+      labels,
+      datasets: [
+        {
+          label,
+          data,
+          backgroundColor,
+          borderColor,
+          borderWidth: 2,
+          hoverBackgroundColor,
+          hoverBorderColor: borderColor,
+          hoverBorderWidth: 3,
+          // Animación específica para gráficos circulares
+          animation: {
+            duration: 2500,
+            easing: "easeOutQuart",
+            animateRotate: true,
+            animateScale: true,
+          },
+        },
+      ],
+    };
+  };
+
   const fetchDashboardData = useCallback(
     async (productTimePeriod, serviceTimePeriod, subtotalTimePeriod) => {
       setIsLoading(true);
@@ -198,12 +269,12 @@ const useDashboard = () => {
           )
         );
         setIncomeByCategoryData(
-          formatSimpleChartData(
+          formatPieChartData(
             ingresosCategoria,
             "Ingresos por Categoría",
             "total",
             "categoria",
-            2
+            5
           )
         );
 

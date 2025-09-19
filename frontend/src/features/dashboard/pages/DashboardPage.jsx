@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -219,6 +219,91 @@ function DashboardPage() {
     },
   };
 
+  // Opciones específicas para gráfico circular
+  const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: {
+      duration: 2500,
+      easing: "easeOutQuart",
+      animateRotate: true,
+      animateScale: true,
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          usePointStyle: true,
+          padding: 20,
+          font: {
+            size: 12,
+            weight: "600",
+            family: "'Inter', sans-serif",
+          },
+          color: "#1e293b",
+          boxWidth: 12,
+          boxHeight: 12,
+        },
+      },
+      title: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "rgba(15, 23, 42, 0.95)",
+        titleColor: "#f8fafc",
+        bodyColor: "#f8fafc",
+        borderColor: "rgba(99, 102, 241, 0.3)",
+        borderWidth: 1,
+        cornerRadius: 12,
+        displayColors: true,
+        padding: 16,
+        titleFont: {
+          size: 14,
+          weight: "bold",
+          family: "'Inter', sans-serif",
+        },
+        bodyFont: {
+          size: 13,
+          weight: "500",
+          family: "'Inter', sans-serif",
+        },
+        titleSpacing: 8,
+        bodySpacing: 6,
+        callbacks: {
+          label: function (context) {
+            const value = context.parsed;
+            const total = context.dataset.data.reduce(
+              (sum, val) => sum + val,
+              0
+            );
+            const percentage = ((value / total) * 100).toFixed(1);
+            const formattedValue =
+              typeof value === "number"
+                ? value.toLocaleString("es-ES", {
+                    style: "currency",
+                    currency: "COP",
+                    minimumFractionDigits: 0,
+                  })
+                : value.toLocaleString("es-ES");
+            return `${context.label}: ${formattedValue} (${percentage}%)`;
+          },
+        },
+      },
+    },
+    interaction: {
+      intersect: false,
+    },
+    elements: {
+      arc: {
+        borderWidth: 2,
+        borderColor: "#ffffff",
+        hoverBorderWidth: 3,
+        hoverBorderColor: "#ffffff",
+      },
+    },
+  };
+
   const timePeriodButtons = (period, setPeriod) => (
     <div className="time-period-buttons">
       <button
@@ -426,7 +511,7 @@ function DashboardPage() {
         <div className="rowDashboard">
           <ChartCard title="Ingresos por Categoría" isLoading={isLoading}>
             {incomeByCategoryData && (
-              <Bar data={incomeByCategoryData} options={chartOptions} />
+              <Pie data={incomeByCategoryData} options={pieChartOptions} />
             )}
           </ChartCard>
         </div>

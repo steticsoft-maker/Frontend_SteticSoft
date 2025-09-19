@@ -205,6 +205,18 @@
   justify-content: center;
 }
 
+/* Estilos específicos para gráficos circulares */
+.chart-wrapper canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Ajuste especial para gráficos circulares */
+.chart:has(canvas) .chart-wrapper {
+  min-height: 350px;
+  padding: 1rem;
+}
+
 /* Loading state */
 .chart-loading {
   display: flex;
