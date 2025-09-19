@@ -87,31 +87,6 @@ const ProductoAdminDetalleModal = ({ isOpen, onClose, producto }) => {
           )}
 
           {/* Información de debug para desarrolladores */}
-          {process.env.NODE_ENV === 'development' && (
-            <div style={{ 
-              marginTop: '20px', 
-              padding: '10px', 
-              backgroundColor: '#f5f5f5', 
-              borderRadius: '5px',
-              fontSize: '12px'
-            }}>
-              <p><strong>Debug Info:</strong></p>
-              <p>API_URL: {API_URL}</p>
-              <p>producto.imagen: {producto.imagen}</p>
-              <p>URL completa: {imageUrl}</p>
-              <button 
-                onClick={() => {
-                  const debugInfo = `API_URL: ${API_URL}\nproducto.imagen: ${producto.imagen}\nURL completa: ${imageUrl}`;
-                  console.log('📋 Debug info:', debugInfo);
-                  navigator.clipboard.writeText(debugInfo);
-                  alert('Info de debug copiada al portapapeles');
-                }}
-                style={{ marginTop: '5px', padding: '2px 5px' }}
-              >
-                Copiar info debug
-              </button>
-            </div>
-          )}
         </div>
         
         <button 

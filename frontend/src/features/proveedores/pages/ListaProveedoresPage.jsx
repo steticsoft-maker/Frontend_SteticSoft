@@ -276,7 +276,7 @@ function ListaProveedoresPage() {
             {error}
           </p>
         ) : (
-          <div className="crud-table-container">
+          <div className="table-container">
             <ProveedoresTable
               proveedores={proveedoresPaginados}
               onView={(prov) => handleOpenModal("ver", prov)}

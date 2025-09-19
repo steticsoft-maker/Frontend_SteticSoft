@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
-import "../../../shared/styles/crud-common.css";
+import "../../../shared/styles/table-common.css";
 
 const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, estadosCita }) => {
   if (!citas || citas.length === 0) {
@@ -20,8 +20,7 @@ const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, es
   };
 
   return (
-    <div className="citas-table-container">
-      <table className="crud-table">
+    <table className="table-main">
         <thead>
           <tr>
             <th>Cliente</th>
@@ -89,7 +88,6 @@ const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, es
           ))}
         </tbody>
       </table>
-    </div>
   );
 };
 

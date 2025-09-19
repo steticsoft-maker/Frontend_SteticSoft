@@ -76,7 +76,7 @@ function ListaUsuariosPage() {
         
         {!isLoadingPage && !errorPage && (
           <>
-            <div className="crud-table-container">
+            <div className="table-container">
               <UsuariosTable
                 usuarios={usuarios}
                 onView={(usuario) => handleOpenModal("details", usuario)}

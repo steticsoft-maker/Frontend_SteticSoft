@@ -234,7 +234,7 @@ function CitasPage() {
             </button>
           </div>
 
-          <div className="crud-table-container">
+          <div className="table-container">
             <CitasTable
               citas={citasFiltradas}
               onViewDetails={(cita) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faFilePdf, faBan } from "@fortawesome/free-solid-svg-icons";
-import "../../../shared/styles/crud-common.css";
+import "../../../shared/styles/table-common.css";
 
 // ✅ FUNCIÓN CLAVE: Formatea la fecha sin ser afectada por la zona horaria.
 const formatFechaSinTimezone = (fechaString) => {
@@ -18,7 +18,7 @@ const formatFechaSinTimezone = (fechaString) => {
 const ComprasTable = ({ compras, onDetalle, onAnular, onGenerarPDF, startIndex }) => {
   if (!compras || compras.length === 0) {
     return (
-      <table className="crud-table">
+      <table className="table-main">
         <thead>
           <tr>
             <th>#</th>
@@ -39,7 +39,7 @@ const ComprasTable = ({ compras, onDetalle, onAnular, onGenerarPDF, startIndex }
   }
 
   return (
-    <table className="crud-table">
+    <table className="table-main">
         <thead>
           <tr>
             <th>#</th>
@@ -70,15 +70,15 @@ const ComprasTable = ({ compras, onDetalle, onAnular, onGenerarPDF, startIndex }
                     {estadoNombre}
                   </span>
                 </td>
-                <td data-label="Acciones:" className="crud-table-iconos">
-                  <button onClick={() => onDetalle(compra)} className="crud-table-button btn-view" title="Ver Detalles">
+                <td data-label="Acciones:" className="table-iconos">
+                  <button onClick={() => onDetalle(compra)} className="table-button btn-view" title="Ver Detalles">
                     <FontAwesomeIcon icon={faEye} />
                   </button>
-                  <button onClick={() => onGenerarPDF(compra)} className="crud-table-button btn-history" title="Descargar PDF">
+                  <button onClick={() => onGenerarPDF(compra)} className="table-button btn-history" title="Descargar PDF">
                     <FontAwesomeIcon icon={faFilePdf} />
                   </button>
                   {compra.estado && (
-                    <button onClick={() => onAnular(compra)} className="crud-table-button btn-delete" title="Anular Compra">
+                    <button onClick={() => onAnular(compra)} className="table-button btn-delete" title="Anular Compra">
                       <FontAwesomeIcon icon={faBan} />
                     </button>
                   )}

@@ -36,20 +36,21 @@ function ListaClientesPage() {
   } = useClientes();
 
   return (
-    <div className="clientes-page-container">
-      <div className="main-content-clientes">
-        <h1>Gestión de Clientes ({totalClientesFiltrados})</h1>
-        <div className="containerAgregarbuscarClientes">
+    <div className="admin-page-container">
+      <div className="admin-main-content">
+        <div className="admin-content-wrapper">
+          <h1>Gestión de Clientes ({totalClientesFiltrados})</h1>
+        <div className="admin-actions-bar">
           <input
             type="text"
             placeholder="Buscar por cualquier campo..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            className="barraBusquedaClientesInput"
+            className="admin-search-input"
             disabled={isLoading}
           />
           <button
-            className="buttonAgregarcliente"
+            className="admin-add-button"
             onClick={() => handleOpenModal("create")}
             disabled={isLoading}
           >
@@ -62,7 +63,7 @@ function ListaClientesPage() {
 
         {!isLoading && !error && (
           <>
-            <div className="crud-table-container">
+            <div className="table-container">
               <ClientesTable
                 clientes={clientes} // Estos son los currentClientesForTable del hook
                 onView={(cliente) => handleOpenModal("details", cliente)}
@@ -83,6 +84,7 @@ function ListaClientesPage() {
             )}
           </>
         )}
+        </div>
       </div>
 
       <ClienteCrearModal

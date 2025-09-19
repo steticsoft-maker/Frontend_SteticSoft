@@ -1,6 +1,7 @@
 // src/features/productosAdmin/components/ProductosAdminTable.jsx
 import React, { useState } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa"; // Asegúrate que FontAwesome esté instalado y configurado
+import '../../../shared/styles/table-common.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -40,8 +41,9 @@ const ProductosAdminTable = ({
   };
 
   return (
-    <div>
-      <table className="crud-table">
+    <>
+      <div className="table-container">
+        <table className="table-main tablaProductosAdministrador">
       <thead>
         <tr>
           <th>#</th>
@@ -93,32 +95,32 @@ const ProductosAdminTable = ({
             </td>
             <td data-label="Existencia:">{producto.existencia}</td> 
             <td data-label="Estado:">
-              <label className="crud-switch">
+              <label className="table-switch">
                 <input
                   type="checkbox"
                   checked={producto.estado}
                   onChange={() => onToggleEstado(producto)}
                 />
-                <span className="crud-slider"></span>
+                <span className="table-slider"></span>
               </label>
             </td>
-            <td data-label="Acciones:" className="crud-table-iconos">
+            <td data-label="Acciones:" className="table-iconos">
               <button
-                className="crud-table-button btn-view"
+                className="table-button btn-view"
                 onClick={() => onView(producto)} 
                 title="Ver Detalles"
               >
                 <FaEye />
               </button>
               <button
-                className="crud-table-button btn-edit"
+                className="table-button btn-edit"
                 onClick={() => onEdit(producto)} 
                 title="Editar Producto"
               >
                 <FaEdit />
               </button>
               <button
-                className="crud-table-button btn-delete"
+                className="table-button btn-delete"
                 onClick={() => onDeleteConfirm(producto)} 
                 title="Eliminar Producto"
               >
@@ -130,6 +132,7 @@ const ProductosAdminTable = ({
         })}
       </tbody>
     </table>
+      </div>
     
     {/* Modal de preview de imagen */}
     {previewImage && (
@@ -147,7 +150,7 @@ const ProductosAdminTable = ({
         </div>
       </div>
     )}
-  </div>
+    </>
   );
 };
 

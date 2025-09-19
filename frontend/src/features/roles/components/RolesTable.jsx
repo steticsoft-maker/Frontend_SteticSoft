@@ -1,5 +1,6 @@
 // src/features/roles/components/RolesTable.jsx
 import React from "react";
+import "../../../shared/styles/table-common.css";
 import {
   FaEdit,
   FaTrash,

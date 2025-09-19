@@ -1,10 +1,11 @@
 // src/features/proveedores/components/ProveedoresTable.jsx
 import React from 'react';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import '../../../shared/styles/table-common.css';
 
 const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onToggleEstado }) => {
   return (
-    <table className="crud-table">
+    <table className="table-main">
       <thead>
         <tr>
           <th>#</th>
@@ -35,33 +36,33 @@ const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onTogg
             <td data-label="Email:">{proveedor.correo}</td>
 
             <td data-label="Estado:">
-              <label className="crud-switch">
+              <label className="table-switch">
                 <input
                   type="checkbox"
                   checked={proveedor.estado === true}
                   onChange={() => onToggleEstado(proveedor)}
                 />
-                <span className="crud-slider"></span>
+                <span className="table-slider"></span>
               </label>
             </td>
 
-            <td data-label="Acciones:" className="crud-table-iconos">
+            <td data-label="Acciones:" className="table-iconos">
               <button
-                className="crud-table-button btn-view"
+                className="table-button btn-view"
                 onClick={() => onView(proveedor)}
                 title="Ver Detalles"
               >
                 <FaEye />
               </button>
               <button
-                className="crud-table-button btn-edit"
+                className="table-button btn-edit"
                 onClick={() => onEdit(proveedor)}
                 title="Editar"
               >
                 <FaEdit />
               </button>
               <button
-                className="crud-table-button btn-delete"
+                className="table-button btn-delete"
                 onClick={() => onDeleteConfirm(proveedor)}
                 title="Eliminar"
               >

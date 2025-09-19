@@ -87,7 +87,7 @@ function ListaRolesPage() {
             {error}
           </p>
         ) : (
-          <div className="crud-table-container">
+          <div className="table-container">
             <RolesTable
               roles={roles}
               onView={(role) => handleOpenModal("details", role)}

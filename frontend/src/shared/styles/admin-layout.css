@@ -33,8 +33,8 @@
 
 .admin-main-content {
     flex: 1;
-    padding: 30px;
-    margin-left: 280px;
+    padding: 20px 30px;
+    margin-left: 290px;
     overflow-y: auto;
     box-sizing: border-box;
     background-color: var(--color-background-admin-content);
@@ -42,12 +42,12 @@
 
 .admin-content-wrapper {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: none;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 0 20px;
+    align-items: stretch;
+    padding: 0;
 }
 
 .admin-content-wrapper h1 {

@@ -1,7 +1,7 @@
 // src/features/usuarios/components/UsuariosTable.jsx
 import React from "react";
 import { FaEye, FaTrash, FaEdit } from "react-icons/fa";
-import "../../../shared/styles/crud-common.css";
+import "../../../shared/styles/table-common.css";
 
 const UsuariosTable = ({
   usuarios,
@@ -13,7 +13,7 @@ const UsuariosTable = ({
   rowsPerPage = 10, // Valor por defecto para rowsPerPage, ajustar si es necesario
 }) => {
   return (
-    <table className="crud-table">
+    <table className="table-main">
       <thead>
         <tr>
           <th>#</th> {/* Nueva columna para numeración */}
@@ -42,14 +42,14 @@ const UsuariosTable = ({
               <td data-label="Teléfono:">{usuario.telefono || 'N/A'}</td>
               <td data-label="Estado:">
                 {nombreRol !== "Administrador" ? (
-                  <label className="crud-switch">
+                  <label className="table-switch">
                     <input
                       type="checkbox"
                       checked={estaActivo}
                       onChange={() => onToggleAnular(usuario)}
                       title={estaActivo ? "Desactivar usuario" : "Activar usuario"}
                     />
-                    <span className="crud-slider"></span>
+                    <span className="table-slider"></span>
                   </label>
                 ) : (
                   <span>Activo</span>
@@ -57,9 +57,9 @@ const UsuariosTable = ({
                 }
               </td>
               <td data-label="Acciones:">
-                <div className="crud-table-iconos">
+                <div className="table-iconos">
                   <button
-                    className="crud-table-button btn-view"
+                    className="table-button btn-view"
                     onClick={() => onView(usuario)}
                     title="Ver Detalles"
                   >
@@ -68,14 +68,14 @@ const UsuariosTable = ({
                   {nombreRol !== "Administrador" && (
                     <>
                       <button
-                        className="crud-table-button btn-edit"
+                        className="table-button btn-edit"
                         onClick={() => onEdit(usuario)}
                         title="Editar Usuario"
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="crud-table-button btn-delete"
+                        className="table-button btn-delete"
                         onClick={() => onDeleteConfirm(usuario)}
                         title="Eliminar Usuario"
                       >

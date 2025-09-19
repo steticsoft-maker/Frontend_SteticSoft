@@ -308,7 +308,7 @@ function ListaComprasPage() {
                         <p className="error-message">{error}</p>
                     ) : (
                         <>
-                            <div className="crud-table-container">
+                            <div className="table-container">
                                 <ComprasTable
                                     compras={comprasPaginadas}
                                     onDetalle={handleOpenDetalle}

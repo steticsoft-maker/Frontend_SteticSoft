@@ -1,7 +1,7 @@
 // src/features/clientes/components/ClientesTable.jsx
 import React from 'react';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
-import "../../../shared/styles/crud-common.css";
+import "../../../shared/styles/table-common.css";
 
 const ClientesTable = ({
   clientes,
@@ -17,7 +17,8 @@ const ClientesTable = ({
   }
 
   return (
-    <table className="crud-table">
+    <div className="table-container">
+      <table className="table-main">
         <thead>
           <tr>
             <th>#</th>
@@ -42,24 +43,24 @@ const ClientesTable = ({
                 <td data-label="Teléfono:">{cliente.telefono}</td>
                 <td data-label="Dirección:">{cliente.direccion}</td>
                 <td data-label="Estado:">
-                  <label className="crud-switch">
+                  <label className="table-switch">
                     <input
                       type="checkbox"
                       checked={cliente.estado}
                       onChange={() => onToggleEstado(cliente.idCliente)}
                     />
-                    <span className="crud-slider"></span>
+                    <span className="table-slider"></span>
                   </label>
                 </td>
                 <td data-label="Acciones:">
-                  <div className="crud-table-iconos">
-                    <button className="crud-table-button btn-view" onClick={() => onView(cliente)} title="Ver">
+                  <div className="table-iconos">
+                    <button className="table-button btn-view" onClick={() => onView(cliente)} title="Ver">
                       <FaEye />
                     </button>
-                    <button className="crud-table-button btn-edit" onClick={() => onEdit(cliente)} title="Editar">
+                    <button className="table-button btn-edit" onClick={() => onEdit(cliente)} title="Editar">
                       <FaEdit />
                     </button>
-                    <button className="crud-table-button btn-delete" onClick={() => onDeleteConfirm(cliente)} title="Eliminar">
+                    <button className="table-button btn-delete" onClick={() => onDeleteConfirm(cliente)} title="Eliminar">
                       <FaTrash />
                     </button>
                   </div>
@@ -69,6 +70,7 @@ const ClientesTable = ({
           })}
         </tbody>
       </table>
+    </div>
   );
 };
 

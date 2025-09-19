@@ -1,0 +1,379 @@
+@import "@/shared/styles/_variables.css";
+
+/* === ESTILOS COMUNES PARA TODAS LAS TABLAS === */
+
+/* Asegurar que las tablas no se vean afectadas por el sidebar */
+.admin-main-content-area .table-container {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Asegurar que los estilos de table-common.css tengan prioridad sobre crud-common.css */
+.table-container .table-main {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  table-layout: auto !important;
+}
+
+/* Forzar que las tablas ocupen todo el ancho disponible en el admin */
+.admin-content-wrapper .table-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.admin-content-wrapper .table-main {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  table-layout: auto !important;
+}
+
+/* Forzar que todas las tablas en el admin ocupen el ancho completo */
+.admin-main-content table {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+}
+
+.admin-main-content .table-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Asegurar que no haya limitaciones de ancho en contenedores padre */
+.admin-page-container,
+.admin-main-content,
+.admin-content-wrapper {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Contenedor principal de tabla - Ocupa todo el ancho disponible */
+.table-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 20px 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: block;
+  overflow-x: auto;
+  /* Asegurar que ocupe todo el espacio disponible */
+  margin-left: 0;
+  margin-right: 0;
+  /* Forzar que ocupe todo el ancho disponible del contenedor padre */
+  min-width: 100%;
+}
+
+/* Tabla principal - Ocupa todo el ancho del contenedor */
+.table-main {
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-table-row-odd);
+  box-sizing: border-box;
+  border-radius: 8px;
+  overflow: hidden;
+  /* Asegurar que ocupe todo el espacio disponible */
+  display: table;
+  /* Forzar que la tabla ocupe todo el ancho disponible */
+  table-layout: auto;
+}
+
+/* Encabezados de tabla */
+.table-main th {
+  background-color: var(--color-table-header);
+  color: var(--color-text-dark);
+  font-weight: bold;
+  text-align: center;
+  padding: 16px 12px;
+  font-size: 1rem;
+  border: 1px solid var(--color-table-header);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Asegurar consistencia visual */
+  vertical-align: middle;
+  height: 50px;
+}
+
+/* Celdas de tabla */
+.table-main td {
+  border: 1px solid var(--color-table-header);
+  text-align: left;
+  padding: 16px 12px;
+  vertical-align: middle;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Asegurar consistencia visual */
+  height: 60px;
+}
+
+/* Distribución específica de columnas para diferentes tipos de tablas */
+
+/* Tablas de 8 columnas (Productos, Servicios, etc.) */
+.table-main th:nth-child(1), .table-main td:nth-child(1) { width: 5%; } /* # */
+.table-main th:nth-child(2), .table-main td:nth-child(2) { width: 10%; } /* Imagen/Icono */
+.table-main th:nth-child(3), .table-main td:nth-child(3) { width: 25%; } /* Nombre */
+.table-main th:nth-child(4), .table-main td:nth-child(4) { width: 20%; } /* Categoría/Descripción */
+.table-main th:nth-child(5), .table-main td:nth-child(5) { width: 15%; } /* Precio/Total */
+.table-main th:nth-child(6), .table-main td:nth-child(6) { width: 10%; } /* Existencia/Fecha */
+.table-main th:nth-child(7), .table-main td:nth-child(7) { width: 10%; } /* Estado */
+.table-main th:nth-child(8), .table-main td:nth-child(8) { width: 15%; } /* Acciones */
+
+/* Tablas de 6 columnas (Compras, Clientes, etc.) */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(1),
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(1) { width: 8%; } /* # */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(2),
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(2) { width: 30%; } /* Proveedor/Nombre */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(3),
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(3) { width: 18%; } /* Fecha/Apellido */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(4),
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(4) { width: 18%; } /* Total/Correo */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(5),
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(5) { width: 10%; } /* Estado/Teléfono */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(6),
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(6) { width: 16%; } /* Acciones/Dirección */
+
+/* Tablas de 7 columnas (Usuarios, etc.) */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(1),
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(1) { width: 6%; } /* # */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(2),
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(2) { width: 20%; } /* Nombres */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(3),
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(3) { width: 20%; } /* Apellidos */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(4),
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(4) { width: 20%; } /* Correo */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(5),
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(5) { width: 12%; } /* Rol */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(6),
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(6) { width: 10%; } /* Teléfono */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(7),
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) { width: 12%; } /* Estado/Acciones */
+
+/* Fondos de filas */
+.table-main tbody tr:nth-child(even) {
+  background-color: var(--color-table-row-even);
+}
+
+.table-main tbody tr:hover {
+  background-color: var(--color-admin-hover);
+}
+
+/* Imágenes en las tablas */
+.table-main img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid var(--color-border-light);
+}
+
+/* Iconos en la tabla */
+.table-iconos {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Botones de acción en la tabla */
+.table-button {
+  padding: 8px 12px;
+  margin: 0 2px;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 8px;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+.table-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Botones específicos con gradientes */
+.table-button.btn-view {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.table-button.btn-view:hover {
+  background: linear-gradient(135deg, #2980b9, #1f618d);
+}
+
+.table-button.btn-edit {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.table-button.btn-edit:hover {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+}
+
+.table-button.btn-history {
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  color: white;
+}
+
+.table-button.btn-history:hover {
+  background: linear-gradient(135deg, #138496, #0f6674);
+}
+
+.table-button.btn-delete {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.table-button.btn-delete:hover {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+}
+
+/* Switch de estado */
+.table-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.table-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.table-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .table-slider {
+  background-color: #2ecc71;
+}
+
+input:checked + .table-slider:before {
+  transform: translateX(22px);
+}
+
+/* Centrado de elementos en celdas específicas */
+.table-main td[data-label*="Estado"] {
+  text-align: center;
+}
+
+.table-main td[data-label*="Acciones"] {
+  text-align: center;
+}
+
+.table-main td[data-label*="#"] {
+  text-align: center;
+  font-weight: 600;
+}
+
+/* === RESPONSIVE STYLES === */
+@media (max-width: 1400px) {
+  .table-container {
+    padding: 0;
+    overflow-x: auto;
+    margin: 15px 0;
+  }
+  
+  .table-main {
+    min-width: 1200px;
+  }
+  
+  .table-main th,
+  .table-main td {
+    padding: 14px 10px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .table-container {
+    padding: 0;
+    overflow-x: auto;
+    margin: 10px 0;
+  }
+  
+  .table-main {
+    min-width: 1000px;
+  }
+  
+  .table-main th,
+  .table-main td {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    padding: 0;
+    overflow-x: auto;
+  }
+  
+  .table-main {
+    min-width: 800px;
+  }
+  
+  .table-main th,
+  .table-main td {
+    padding: 10px 6px;
+    font-size: 0.8rem;
+  }
+  
+  .table-button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    min-width: 32px;
+    height: 32px;
+  }
+  
+  .table-iconos {
+    gap: 6px;
+  }
+}

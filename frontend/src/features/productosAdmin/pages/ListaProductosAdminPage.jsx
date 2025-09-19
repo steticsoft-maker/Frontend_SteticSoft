@@ -10,7 +10,6 @@ import ProductoAdminDetalleModal from '../components/ProductoAdminDetalleModal';
 import Pagination from "../../../shared/components/common/Pagination";
 import { productosAdminService } from '../services/productosAdminService';
 import '../css/ProductosAdmin.css';
-import '../../../shared/styles/crud-common.css';
 
 const MySwal = withReactContent(Swal);
 
@@ -241,19 +240,20 @@ function ListaProductosAdminPage() {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
-        <div className="crud-container">
-            <div className="crud-content">
-                <h1>Gestión de Productos ({filteredProducts.length})</h1>
-                <div className="crud-accionesTop">
+        <div className="admin-page-container">
+            <div className="admin-main-content">
+                <div className="admin-content-wrapper">
+                    <h1>Gestión de Productos ({filteredProducts.length})</h1>
+                <div className="admin-actions-bar">
                     <input
                         type="text"
                         placeholder="Buscar por cualquier campo..."
                         value={busqueda}
                         onChange={(e) => setBusqueda(e.target.value)}
-                        className="crud-barraBusqueda"
+                        className="admin-search-input"
                         disabled={isLoading}
                     />
-                    <div className="crud-filtro-estado">
+                    <div className="admin-filters">
                         <span>Estado: </span>
                         <select
                             value={filtroEstado}
@@ -266,7 +266,7 @@ function ListaProductosAdminPage() {
                         </select>
                     </div>
                     <button
-                        className="crud-botonAgregar"
+                        className="admin-add-button"
                         onClick={() => handleOpenModal('create')}
                         disabled={isLoading}
                     >
@@ -286,7 +286,7 @@ function ListaProductosAdminPage() {
                     </p>
                 ) : (
                     <>
-                        <div className="crud-table-container">
+                        <div className="table-container">
                             <ProductosAdminTable
                                 productos={productosPaginados}
                                 onView={(prod) => handleOpenModal('details', prod)}
@@ -303,6 +303,7 @@ function ListaProductosAdminPage() {
                         />
                     </>
                 )}
+                </div>
             </div>
 
             <ProductoAdminCrearModal

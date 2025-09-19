@@ -144,12 +144,13 @@ function ListaServiciosAdminPage() {
 
   return (
     <>
-      <div className="servicios-admin-page-container">
-        <div className="servicios-content">
-          <h1>Gestión de Servicios</h1>
+      <div className="admin-page-container">
+        <div className="admin-main-content">
+          <div className="admin-content-wrapper">
+            <h1>Gestión de Servicios</h1>
           
-          <div className="servicios-admin-controls">
-            <div className="servicios-admin-search-bar">
+          <div className="admin-actions-bar">
+            <div className="admin-filters">
               <input type="text" placeholder="Buscar por nombre o precio..." value={terminoBusqueda} onChange={(e) => setTerminoBusqueda(e.target.value)} />
               <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
                 <option value="todos">Todos los estados</option>
@@ -157,7 +158,7 @@ function ListaServiciosAdminPage() {
                 <option value="false">Inactivos</option>
               </select>
             </div>
-            <button className="botonAgregarServicio" onClick={() => handleOpenModal("create")}>Agregar Servicio</button>
+            <button className="admin-add-button" onClick={() => handleOpenModal("create")}>Agregar Servicio</button>
           </div>
 
           {error && <p className="error-message">{error}</p>}
@@ -166,7 +167,7 @@ function ListaServiciosAdminPage() {
             <p style={{ textAlign: 'center', padding: '2rem' }}>Cargando...</p>
           ) : (
             <>
-              <div className="crud-table-container">
+              <div className="table-container">
                 <ServiciosAdminTable
                   servicios={currentItems}
                   onView={(servicio) => handleOpenModal("details", servicio)}
@@ -205,6 +206,7 @@ function ListaServiciosAdminPage() {
               )}
             </>
           )}
+          </div>
         </div>
 
         {/* Modales */}

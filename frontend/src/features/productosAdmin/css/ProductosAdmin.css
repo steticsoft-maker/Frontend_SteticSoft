@@ -18,14 +18,107 @@
     box-sizing: border-box;
 }
 
-.productos-admin-content-wrapper { /* Wrapper interno para centrar contenido */
+/* === ESTILOS PARA USAR CON ADMIN-LAYOUT === */
+.admin-page-container {
+    display: flex;
+    min-height: 100vh;
     width: 100%;
-    max-width: 1200px; /* Ancho máximo para el contenido principal (tabla, barra de acciones) */
-    margin-left: auto;
-    margin-right: auto;
+    font-family: var(--font-family-roboto, var(--font-family-sans-serif));
+    background-color: var(--color-background-admin-content);
+}
+
+.admin-main-content {
+    flex: 1;
+    padding: 30px;
+    margin-left: 280px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background-color: var(--color-background-admin-content);
+}
+
+.admin-content-wrapper {
+    width: 100%;
+    max-width: none;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra los hijos directos como el h1 y la barra de acciones si no ocupan todo el ancho */
+    align-items: stretch;
+    padding: 0;
+}
+
+.admin-content-wrapper h1 {
+    color: var(--color-accent-pink);
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    width: 100%;
+    text-align: center;
+}
+
+/* === BARRA DE ACCIONES === */
+.admin-actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 25px;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-filters {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.admin-search-input {
+    padding: 12px 16px;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--color-background-light);
+    color: var(--color-text-dark);
+    min-width: 250px;
+    box-sizing: border-box;
+    height: 41px;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.admin-search-input:focus {
+    border-color: var(--color-admin-hover);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.3);
+    outline: none;
+}
+
+.admin-add-button {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+    height: 41px;
+    box-sizing: border-box;
+}
+
+.admin-add-button:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.productos-admin-content-wrapper { /* Wrapper interno para centrar contenido */
+    width: 100%;
+    max-width: none; /* Sin límite de ancho para que ocupe todo el espacio */
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Estirar para ocupar todo el ancho */
 }
 
 .productos-admin-content-wrapper h1 {
@@ -135,7 +228,9 @@
 
 /* === ESTILOS DE TABLA === */
 .tablaProductosAdministrador {
-    width: 100%; /* Ocupa el ancho del wrapper */
+    width: 100% !important; /* Ocupa el ancho del wrapper */
+    max-width: 100% !important;
+    min-width: 100% !important;
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -143,6 +238,99 @@
     border-radius: 8px;
     overflow: hidden;
     font-size: 0.95rem;
+    table-layout: auto !important;
+}
+
+/* Forzar que la tabla ocupe todo el ancho disponible */
+.admin-content-wrapper .table-container .tablaProductosAdministrador {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    table-layout: auto !important;
+}
+
+/* Asegurar que no haya limitaciones de ancho en contenedores padre */
+.admin-page-container .admin-main-content .admin-content-wrapper .table-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Distribución específica de columnas para la tabla de productos */
+.tablaProductosAdministrador th:nth-child(1), 
+.tablaProductosAdministrador td:nth-child(1) { 
+    width: 5% !important; /* # */
+}
+
+.tablaProductosAdministrador th:nth-child(2), 
+.tablaProductosAdministrador td:nth-child(2) { 
+    width: 10% !important; /* Imagen */
+}
+
+.tablaProductosAdministrador th:nth-child(3), 
+.tablaProductosAdministrador td:nth-child(3) { 
+    width: 25% !important; /* Nombre */
+}
+
+.tablaProductosAdministrador th:nth-child(4), 
+.tablaProductosAdministrador td:nth-child(4) { 
+    width: 20% !important; /* Categoría */
+}
+
+.tablaProductosAdministrador th:nth-child(5), 
+.tablaProductosAdministrador td:nth-child(5) { 
+    width: 15% !important; /* Precio */
+}
+
+.tablaProductosAdministrador th:nth-child(6), 
+.tablaProductosAdministrador td:nth-child(6) { 
+    width: 10% !important; /* Existencia */
+}
+
+.tablaProductosAdministrador th:nth-child(7), 
+.tablaProductosAdministrador td:nth-child(7) { 
+    width: 10% !important; /* Estado */
+}
+
+.tablaProductosAdministrador th:nth-child(8), 
+.tablaProductosAdministrador td:nth-child(8) { 
+    width: 15% !important; /* Acciones */
+}
+
+/* Sobrescribir las reglas de table-common.css para la tabla de productos */
+.table-main.tablaProductosAdministrador {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    table-layout: auto !important;
+}
+
+/* Forzar que la tabla ocupe todo el ancho disponible */
+.admin-content-wrapper .table-container .table-main.tablaProductosAdministrador {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    table-layout: auto !important;
+}
+
+/* Estilos más agresivos para forzar el ancho completo */
+.admin-page-container .admin-main-content .admin-content-wrapper .table-container .table-main.tablaProductosAdministrador {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    table-layout: auto !important;
+    display: table !important;
+}
+
+/* Forzar que el contenedor de la tabla ocupe todo el ancho */
+.admin-page-container .admin-main-content .admin-content-wrapper .table-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
 }
 .tablaProductosAdministrador th {
     background-color: var(--color-table-header);
