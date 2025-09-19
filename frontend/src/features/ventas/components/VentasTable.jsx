@@ -69,9 +69,9 @@ const VentasTable = ({
                             </td>
                             <td>
                                 <div className="table-iconos">
-                                    <button className="table-button" onClick={() => onShowDetails(venta)} title="Ver detalles"><FaEye /></button>
-                                    <button className="table-button" onClick={() => onGenerarPDF(venta)} title="Generar PDF"><FaFilePdf /></button>
-                                    <button className="table-button" onClick={() => onAnularVenta(venta)} title="Anular venta" disabled={estadoActualNombre === "Anulada"}><FaBan /></button>
+                                    <button className="table-button btn-view" onClick={() => onShowDetails(venta)} title="Ver detalles"><FaEye /></button>
+                                    <button className="table-button btn-history" onClick={() => onGenerarPDF(venta)} title="Generar PDF"><FaFilePdf /></button>
+                                    <button className="table-button btn-delete" onClick={() => onAnularVenta(venta)} title="Anular venta" disabled={estadoActualNombre === "Anulada"}><FaBan /></button>
                                 </div>
                             </td>
                         </tr>

@@ -130,70 +130,6 @@
     margin-left: 2px;
 }
 
-<<<<<<< HEAD
-=======
-/* Contenido principal */
-.rol-content {
-    flex: 1;
-    margin-left: 0; /* Ya está dentro de admin-main-content-area */
-    padding: 0; /* El padding lo maneja admin-main-content-area */
-    overflow-y: auto;
-    box-sizing: border-box;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-
-/* Título principal */
-.rol-content h1 {
-    text-align: center;
-    color: var(--color-text-dark);
-    margin-bottom: 20px;
-}
-
-/* Barra de Búsqueda y Botón Agregar - HORIZONTAL */
-.rol-accionesTop {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 30px;
-    flex-wrap: nowrap; /* Horizontal siempre */
-    width: 100%;
-    max-width: 1200px;
-    box-sizing: border-box;
-    padding: 0 20px;
-}
-
-/* Secciones específicas para roles */
-.rol-search-section {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 15px;
-    min-width: 300px;
-}
-
-.rol-filters-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    flex-shrink: 0;
-}
-
-.rol-buttons-section {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 15px;
-    flex-shrink: 0;
-}
-
->>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
 .rol-filtro-estado {
     display: flex;
     align-items: center;
@@ -370,38 +306,46 @@
 }
 
 /* Estilos específicos para cada botón de acción por clase */
-/* Botón Ver y Editar */
-.rol-table-button.btn-view,
+/* Botón Ver */
+.rol-table-button.btn-view {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+}
+
+.rol-table-button.btn-view:hover {
+    background-color: var(--color-primary-hover);
+}
+
+/* Botón Editar */
 .rol-table-button.btn-edit {
     background-color: var(--color-secondary);
     color: var(--color-secondary-text);
-    /* Color original */
 }
 
-.rol-table-button.btn-view:hover,
 .rol-table-button.btn-edit:hover {
     background-color: var(--color-secondary-hover);
-    /* Color hover original */
 }
 
 /* Botón Historial */
 .rol-table-button.btn-history {
-    background-color: #17a2b8;
-    /* Un color azul verdoso para diferenciar */
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    opacity: 0.8;
 }
 
 .rol-table-button.btn-history:hover {
-    background-color: #138496;
-    /* Un tono más oscuro para el hover */
+    background-color: var(--color-primary-hover);
+    opacity: 1;
 }
 
 /* Botón Eliminar */
 .rol-table-button.rol-table-button-delete {
-    background-color: var(--color-primary);
+    background-color: #e74c3c;
+    color: white;
 }
 
 .rol-table-button-delete:hover {
-    background-color: var(--color-primary-hover);
+    background-color: #c0392b;
 }
 
 /* Switch de estado */

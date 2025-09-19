@@ -14,7 +14,6 @@
     background-color: var(--color-background-light);
 }
 
-<<<<<<< HEAD
 .usuarios-content-wrapper {
     flex: 1;
     padding: 40px;
@@ -26,20 +25,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-=======
-.usuarios-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100%;
-  padding: 0; /* El padding lo maneja admin-main-content-area */
-  margin-left: 0; /* Ya está dentro de admin-main-content-area */
-  box-sizing: border-box;
-  overflow-y: auto;
-  width: 100%;
->>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
 }
 
 .usuarios-content-wrapper h1 {
@@ -51,7 +36,6 @@
     font-size: 1.8rem;
 }
 
-<<<<<<< HEAD
 /* ======================================================== */
 /* ============= BARRA DE ACCIONES SUPERIORES ============= */
 /* ======================================================== */
@@ -140,46 +124,6 @@
 
 .usuarios-add-button:hover {
     background-color: var(--color-primary-hover);
-=======
-/* === SECCIÓN DE ACCIONES SUPERIORES - HORIZONTAL === */
-.usuarios-accionesTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: nowrap; /* Horizontal siempre */
-  gap: 30px;
-  width: 100%;
-  max-width: 1200px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-  padding: 0 20px;
-}
-
-/* Secciones específicas para usuarios */
-.usuarios-search-section {
-  flex: 1;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 15px;
-  min-width: 300px;
-}
-
-.usuarios-filters-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  flex-shrink: 0;
-}
-
-.usuarios-buttons-section {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 15px;
-  flex-shrink: 0;
->>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
 }
 
 .usuarios-filtro-estado {
@@ -314,21 +258,26 @@
 .usuarios-table-button:active { transform: translateY(1px); }
 
 /* colores para botones (usar variables con fallback) */
-.usuarios-table-button:nth-child(1),
-.usuarios-table-button:nth-child(2) {
+.usuarios-table-button:nth-child(1) {
   background-color: var(--color-primary);
   color: var(--color-text-light);
 }
-.usuarios-table-button:nth-child(1):hover,
-.usuarios-table-button:nth-child(2):hover {
+.usuarios-table-button:nth-child(1):hover {
   background-color: var(--color-primary-hover);
 }
-.usuarios-table-button-delete {
+.usuarios-table-button:nth-child(2) {
   background-color: var(--color-secondary);
-  color: var(--color-secondary-text, var(--color-text-dark));
+  color: var(--color-secondary-text);
+}
+.usuarios-table-button:nth-child(2):hover {
+  background-color: var(--color-secondary-hover);
+}
+.usuarios-table-button-delete {
+  background-color: #e74c3c;
+  color: white;
 }
 .usuarios-table-button-delete:hover {
-  background-color: var(--color-secondary-hover);
+  background-color: #c0392b;
 }
 
 /* Badge / estado pequeño en la tabla (ejemplo) */

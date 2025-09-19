@@ -61,7 +61,7 @@ const UsuariosTable = ({
               <td data-label="Acciones:">
                 <div className="table-iconos">
                   <button
-                    className="table-button"
+                    className="table-button btn-view"
                     onClick={() => onView(usuario)}
                     title="Ver Detalles"
                   >
@@ -70,14 +70,14 @@ const UsuariosTable = ({
                   {nombreRol !== "Administrador" && (
                     <>
                       <button
-                        className="table-button"
+                        className="table-button btn-edit"
                         onClick={() => onEdit(usuario)}
                         title="Editar Usuario"
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="table-button"
+                        className="table-button btn-delete"
                         onClick={() => onDeleteConfirm(usuario)}
                         title="Eliminar Usuario"
                       >

@@ -109,21 +109,21 @@ const ProductosAdminTable = ({
                   <td data-label="Acciones:">
                     <div className="table-iconos">
                       <button
-                        className="table-button"
+                        className="table-button btn-view"
                         onClick={() => onView(producto)}
                         title="Ver Detalles"
                       >
                         <FaEye />
                       </button>
                       <button
-                        className="table-button"
+                        className="table-button btn-edit"
                         onClick={() => onEdit(producto)}
                         title="Editar Producto"
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="table-button"
+                        className="table-button btn-delete"
                         onClick={() => onDeleteConfirm(producto)}
                         title="Eliminar Producto"
                       >

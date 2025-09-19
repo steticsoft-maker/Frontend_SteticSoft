@@ -12,7 +12,6 @@
 
 .ventas-content-wrapper {
     flex: 1;
-<<<<<<< HEAD
     padding: 40px;
     margin: 0 auto;
     overflow-y: auto;
@@ -22,18 +21,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-=======
-    padding: 0; /* El padding lo maneja admin-main-content-area */
-    margin-left: 0; /* Ya está dentro de admin-main-content-area */
-    border-radius: 8px;
-    overflow-y: auto;
-    box-sizing: border-box;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
->>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
 }
 
 .ventas-content-wrapper h1 {
@@ -45,37 +32,14 @@
     font-size: 1.8rem;
 }
 
-<<<<<<< HEAD
 /* ======================================================== */
 /* ============= BARRA DE ACCIONES SUPERIORES ============= */
 /* ======================================================== */
 .ventas-actions-bar {
     padding-left: 0;
-=======
-/* ================================================= */
-/* =========== SECCIÓN DE FILTROS HORIZONTAL =========== */
-/* ================================================= */
-.gestion-filtros {
     display: flex;
-    flex-direction: row; /* Horizontal siempre */
     justify-content: space-between;
     align-items: center;
-    gap: 30px; /* Espacio entre secciones */
-    margin-bottom: 30px; /* Espacio antes de la tabla */
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 20px;
-    flex-wrap: nowrap; /* Evita que se rompan en líneas */
-}
-
-.filtros-top {
-    flex: 1;
->>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-<<<<<<< HEAD
     margin-bottom: 25px; 
     gap: 20px;
     flex-wrap: wrap; 
@@ -83,10 +47,6 @@
     box-sizing: border-box;
     position: relative;
     z-index: 1;
-=======
-    gap: 15px;
-    min-width: 300px;
->>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
 }
 
 .ventas-filters {
@@ -124,11 +84,8 @@
 .ventas-filtro-estado-grupo {
     display: flex;
     align-items: center;
-<<<<<<< HEAD
-=======
     gap: 15px; /* Espacio entre elementos */
     flex-shrink: 0;
->>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
 }
 
 .ventas-filtro-input {
