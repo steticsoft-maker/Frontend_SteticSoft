@@ -16,7 +16,6 @@
 
 .productos-content-wrapper {
     flex: 1;
-<<<<<<< HEAD
     padding: 40px;
     margin: 0 auto;
     overflow-y: auto;
@@ -26,17 +25,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-=======
-    padding: 0; /* El padding lo maneja admin-main-content-area */
-    margin-left: 0; /* Ya está dentro de admin-main-content-area */
-    overflow-y: auto;
-    box-sizing: border-box;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
->>>>>>> f7fb7c587358732e909a774827ea113a5a2bcf9a
 }
 
 .productos-content-wrapper h1 {
