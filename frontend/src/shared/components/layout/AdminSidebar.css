@@ -62,7 +62,7 @@
 .dashboard-link,
 .nested-link {
   background-color: transparent;
-  color: var(--color-text-light-secondary, #000000);
+  color: var(--color-text-dark);
   border: none;
   padding: 12px 15px;
   text-align: left;
@@ -79,7 +79,7 @@
 .dashboard-link:hover,
 .nested-link:hover {
   background-color: var(--color-admin-hover);
-  color: #000000;
+  color: var(--color-text-dark);
   /* Texto blanco al hacer hover, también para nested-link */
   transform: translateX(4px);
 }
@@ -129,7 +129,7 @@
 .dashboard-link,
 .nested-link {
   background-color: transparent;
-  color: var(--color-text-light);
+  color: var(--color-text-dark);
   border: none;
   padding: 14px 18px;
   text-align: left;
@@ -327,7 +327,7 @@
 .nested-link {
   padding: 10px 15px;
   font-size: 0.9rem;
-  color: #000000;
+  color: var(--color-text-dark);
   /* << --- CAMBIO: Color de texto de nested-link a blanco --- */
 }
 

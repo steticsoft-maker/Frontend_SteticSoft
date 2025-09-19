@@ -24,6 +24,14 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.dark-theme .navbar-link {
+    color: var(--color-text-dark);
+}
+
+.dark-theme .navbar-user {
+    color: var(--color-text-dark);
+}
+
 .navbar-container {
     display: flex;
     justify-content: space-between;
