@@ -21,10 +21,11 @@
   align-items: center;
   justify-content: flex-start;
   height: 100%;
-  padding: 30px;
-  margin-left: 280px; /* Ajusta si tu AdminSidebar tiene otro ancho */
+  padding: 0; /* El padding lo maneja admin-main-content-area */
+  margin-left: 0; /* Ya está dentro de admin-main-content-area */
   box-sizing: border-box;
   overflow-y: auto;
+  width: 100%;
 }
 
 .usuarios-content h1 {

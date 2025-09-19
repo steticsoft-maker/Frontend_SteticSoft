@@ -409,10 +409,11 @@
 .rol-content,
 .productos-admin-main-content,
 .categorias-producto-admin-main-content,
-.main-content-clientes {
+.main-content-clientes,
+.ventasContent {
   flex: 1;
-  margin-left: 280px;
-  padding: 30px;
+  margin-left: 0; /* Ya está dentro de admin-main-content-area */
+  padding: 0; /* El padding lo maneja admin-main-content-area */
   overflow-y: auto;
   box-sizing: border-box;
   height: 100%;
@@ -420,6 +421,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
 }
 
 /* Aplicar estilos unificados a títulos */

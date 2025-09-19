@@ -18,7 +18,7 @@
     background-color: var(--color-background-admin-content);
     transition: all 0.3s ease;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
 }
 

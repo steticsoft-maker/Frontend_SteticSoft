@@ -16,8 +16,8 @@
 /* === CONTENIDO PRINCIPAL CENTRADO === */
 .admin-crud-content {
   flex: 1;
-  margin-left: 280px; /* Ancho del sidebar + espacio */
-  padding: 30px;
+  margin-left: 0; /* Ya está dentro de admin-main-content-area */
+  padding: 0; /* El padding lo maneja admin-main-content-area */
   overflow-y: auto;
   box-sizing: border-box;
   height: 100%;
@@ -25,6 +25,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
 }
 
 /* === RESPONSIVE DESIGN FOR CRUD PAGES === */
@@ -1375,7 +1376,13 @@ input:focus + .slider {
 }
 
 /* === AJUSTE PARA LAYOUT DE ADMIN === */
-.admin-main-content-area .admin-crud-content {
+.admin-main-content-area .admin-crud-content,
+.admin-main-content-area .usuarios-content,
+.admin-main-content-area .rol-content,
+.admin-main-content-area .productos-admin-main-content,
+.admin-main-content-area .categorias-producto-admin-main-content,
+.admin-main-content-area .main-content-clientes,
+.admin-main-content-area .ventasContent {
   margin-left: 0;
   width: 100%;
   max-width: 100%;
