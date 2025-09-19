@@ -3,8 +3,6 @@ import {
   FaUserCircle,
   FaEnvelope,
   FaPhone,
-  FaIdCard,
-  FaCalendarAlt,
   FaCrown,
   FaUser,
   FaUserTie,
@@ -16,7 +14,7 @@ import {
 const SteticLogo = "/logo.png";
 import "./UserProfileCard.css";
 
-const UserProfileCard = ({ user, onLogout, onSettings }) => {
+const UserProfileCard = ({ user, onLogout }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -59,23 +57,6 @@ const UserProfileCard = ({ user, onLogout, onSettings }) => {
     }
   };
 
-  // Función para formatear fecha
-  const formatDate = (dateString) => {
-    try {
-      if (!dateString) return "N/A";
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return "Fecha inválida";
-      return date.toLocaleDateString("es-ES", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    } catch (error) {
-      console.error("Error formatting date:", error);
-      return "N/A";
-    }
-  };
-
   // Información del perfil (cliente o empleado)
   const profileInfo = user?.clienteInfo || user?.empleado || {};
   const fullName =
@@ -84,10 +65,6 @@ const UserProfileCard = ({ user, onLogout, onSettings }) => {
     "Usuario";
   const email = profileInfo.correo || user?.correo || "Sin correo";
   const phone = profileInfo.telefono || "Sin teléfono";
-  const document = profileInfo.numeroDocumento
-    ? `${profileInfo.tipoDocumento || "Doc"}: ${profileInfo.numeroDocumento}`
-    : "Sin documento";
-  const birthDate = formatDate(profileInfo.fechaNacimiento);
 
   // Verificar si hay información completa disponible
   const hasCompleteInfo =
@@ -140,27 +117,10 @@ const UserProfileCard = ({ user, onLogout, onSettings }) => {
               <FaPhone className="detail-icon" />
               <span className="detail-text">{phone}</span>
             </div>
-            <div className="detail-item">
-              <FaIdCard className="detail-icon" />
-              <span className="detail-text">{document}</span>
-            </div>
-            <div className="detail-item">
-              <FaCalendarAlt className="detail-icon" />
-              <span className="detail-text">{birthDate}</span>
-            </div>
           </div>
 
           {/* Acciones del usuario */}
           <div className="user-actions">
-            {onSettings && (
-              <button
-                className="action-button settings-button"
-                onClick={onSettings}
-              >
-                <FaCog className="action-icon" />
-                <span>Configuración</span>
-              </button>
-            )}
             {!hasCompleteInfo && (
               <div className="incomplete-profile-notice">
                 <p>Completa tu perfil para una mejor experiencia</p>
