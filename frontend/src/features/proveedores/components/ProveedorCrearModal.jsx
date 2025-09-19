@@ -172,7 +172,7 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
           </button>
         </div>
         <div className="admin-modal-body">
-          <form onSubmit={handleSubmitForm} noValidate>
+          <form id="proveedor-form" onSubmit={handleSubmitForm} noValidate>
             <ProveedorForm
               formData={formData}
               onFormChange={handleFormChange}

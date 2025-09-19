@@ -50,9 +50,31 @@
 /* Asegurar que no haya limitaciones de ancho en contenedores padre */
 .admin-page-container,
 .admin-main-content,
-.admin-content-wrapper {
+.admin-content-wrapper,
+.crud-container,
+.crud-content {
   max-width: none !important;
   width: 100% !important;
+}
+
+/* Reglas específicas para crud-content */
+.crud-content {
+  align-items: stretch !important;
+  margin-left: 270px !important;
+  padding: 20px 20px 20px 5px !important;
+}
+
+.crud-content .table-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.crud-content .table-container .table-main {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
 }
 
 /* Contenedor principal de tabla - Ocupa todo el ancho disponible */
@@ -147,21 +169,21 @@
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(6),
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(6) { width: 16%; } /* Acciones/Dirección */
 
-/* Tablas de 7 columnas (Usuarios, etc.) */
+/* Tablas de 7 columnas (Usuarios, Proveedores, etc.) */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(1),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(1) { width: 6%; } /* # */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(1) { width: 5%; } /* # */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(2),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(2) { width: 20%; } /* Nombres */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(2) { width: 18%; } /* Nombres/Empresa */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(3),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(3) { width: 20%; } /* Apellidos */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(3) { width: 18%; } /* Apellidos/Tipo Doc */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(4),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(4) { width: 20%; } /* Correo */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(4) { width: 18%; } /* Correo/Teléfono */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(5),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(5) { width: 12%; } /* Rol */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(5) { width: 10%; } /* Rol/Email */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(6),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(6) { width: 10%; } /* Teléfono */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(6) { width: 8%; } /* Teléfono/Estado */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(7),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) { width: 12%; } /* Estado/Acciones */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) { width: 23%; } /* Estado/Acciones */
 
 /* Fondos de filas */
 .table-main tbody tr:nth-child(even) {
@@ -187,26 +209,30 @@
   gap: 8px;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-width: 150px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Botones de acción en la tabla */
 .table-button {
-  padding: 8px 12px;
-  margin: 0 2px;
-  font-size: 0.85rem;
+  padding: 6px 10px;
+  margin: 0 1px;
+  font-size: 0.8rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   color: var(--color-text-light);
   cursor: pointer;
   transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  height: 36px;
+  min-width: 32px;
+  height: 32px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 .table-button:hover {
@@ -306,11 +332,26 @@ input:checked + .table-slider:before {
 
 .table-main td[data-label*="Acciones"] {
   text-align: center;
+  min-width: 150px;
+  width: auto;
 }
 
 .table-main td[data-label*="#"] {
   text-align: center;
   font-weight: 600;
+}
+
+/* Reglas específicas para la columna de acciones en tablas de 7 columnas */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) {
+  min-width: 150px;
+  width: 23%;
+  text-align: center;
+  padding: 8px 4px;
+}
+
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) .table-iconos {
+  min-width: 140px;
+  justify-content: center;
 }
 
 /* === RESPONSIVE STYLES === */

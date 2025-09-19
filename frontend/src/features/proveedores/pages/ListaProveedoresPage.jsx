@@ -10,6 +10,7 @@ import ProveedorDetalleModal from "../components/ProveedorDetalleModal";
 import { proveedoresService } from "../services/proveedoresService";
 import "../css/Proveedores.css";
 import "../../../shared/styles/crud-common.css";
+import "../../../shared/styles/table-common.css";
 
 const MySwal = withReactContent(Swal);
 

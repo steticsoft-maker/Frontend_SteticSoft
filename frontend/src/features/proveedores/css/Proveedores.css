@@ -20,13 +20,14 @@
 
 .proveedores-content-wrapper {
     padding-left: 30px;
+    padding-right: 20px;
     width: 100%;
-    max-width: 1600px; 
-    margin-left: auto;
-    margin-right: auto;
+    max-width: none; 
+    margin-left: 0;
+    margin-right: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
 }
 
 .proveedores-content-wrapper h1 { /* Título de la página "Gestión de Proveedores" */
@@ -38,15 +39,21 @@
 }
 
 /* === BARRA DE ACCIONES SUPERIORES === */
-.proveedores-actions-bar { 
+.crud-content .crud-accionesTop { 
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px; 
     gap: 20px;
     flex-wrap: wrap; 
-    width: 100%; 
+    width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 /* NUEVO: Contenedor para la barra de búsqueda y el filtro de estado */
@@ -136,89 +143,27 @@
     background-color: var(--color-primary-hover);
 }
 
-/* === ESTILOS DE TABLA === */
-.tablaProveedores table { 
-    padding-left: 20px;
-    width: 100%;
-    border-collapse: collapse;
+/* Asegurar que el botón Crear Proveedor funcione correctamente */
+.crud-botonAgregar {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    z-index: 1 !important;
+    position: relative !important;
 }
-.tablaProveedores { 
-    width: 1460px; 
-    margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    background-color: var(--color-table-row-odd);
-    border-radius: 8px;
-    overflow: hidden; 
-    font-size: 0.95rem;
-}
-.tablaProveedores th {
-    background-color: var(--color-table-header);
-    color: var(--color-text-dark);
-    padding: 12px 15px; 
-    text-align: center; 
-    font-weight: 600; 
-    font-size: 1rem; 
-    border: 1px solid var(--color-table-header);
-}
-.tablaProveedores td {
-    padding: 12px 15px; 
-    border: 1px solid var(--color-table-header);
-    color: var(--color-text-dark);
-    font-size: 0.9rem; 
-    text-align: left; 
-    vertical-align: middle;
-}
-.tablaProveedores td:nth-child(1), /* # */
-.tablaProveedores td:nth-child(7), /* Estado */
-.tablaProveedores td:nth-child(8)  /* Acciones */
-{ text-align: center; }
 
-.tablaProveedores tbody tr:nth-child(even) { background-color: var(--color-table-row-even); }
-.tablaProveedores tbody tr:hover { background-color: var(--color-secondary-hover); }
+.crud-botonAgregar:disabled {
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+/* === ESTILOS DE TABLA === */
+/* Los estilos de tabla ahora se manejan desde table-common.css */
 
 /* === ESTILOS DEL COMPONENTE SWITCH === */
-.switch { position: relative; display: inline-block; width: 40px; height: 24px; vertical-align: middle;}
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 34px; cursor: pointer; transition: 0.4s; }
-.slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.4s; }
-input:checked+.slider { background-color: #2ecc71; } 
-input:checked+.slider:before { transform: translateX(16px); }
+/* Los estilos del switch ahora se manejan desde table-common.css */
 
 /* === BOTONES DE ACCIÓN EN TABLA === */
-.proveedores-table-actions { /* Aplicar esta clase al <td> de acciones */
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    gap: 10px; 
-}
-.proveedores-table-actions button { /* Estilo base para los botones de acción individuales */
-    padding: 8px 10px; 
-    font-size: 0.9rem; 
-    border: none; 
-    border-radius: 5px;
-    color: white; 
-    cursor: pointer; 
-    transition: background-color 0.3s ease;
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center;
-    margin: 0; 
-}
-.proveedores-table-actions .botonVerDetallesProveedor, 
-.proveedores-table-actions .botonEditarProveedor { 
-    background-color: var(--color-secondary);
-    color: var(--color-secondary-text);
-}
-.proveedores-table-actions .botonVerDetallesProveedor:hover, 
-.proveedores-table-actions .botonEditarProveedor:hover { 
-    background-color: var(--color-secondary-hover);
-}
-.proveedores-table-actions .botonEliminarProveedor { 
-    background-color: var(--color-primary);
-}
-.proveedores-table-actions .botonEliminarProveedor:hover {
-    background-color: var(--color-primary-hover);
-}
+/* Los estilos de botones de acción ahora se manejan desde table-common.css */
 
 /* === ESTILOS DE MODAL === */
 .modal-Proveedores { /* Overlay */
@@ -583,70 +528,7 @@ input.is-invalid, .input-documento.is-invalid {
     }
     
     /* === Transformación de la Tabla a Tarjetas === */
-    .tablaProveedores thead {
-        display: none; /* Ocultar encabezados de la tabla */
-    }
-
-    .tablaProveedores,
-    .tablaProveedores tbody,
-    .tablaProveedores tr,
-    .tablaProveedores td {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .tablaProveedores tr {
-        margin-bottom: 15px;
-        border: 1px solid var(--color-table-header);
-        border-radius: 8px;
-        padding: 10px;
-        background-color: var(--color-background-light) !important; /* Forzar fondo blanco para cada tarjeta */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-    
-    .tablaProveedores tbody tr:hover {
-        background-color: #ffffff !important; /* Desactivar hover en modo tarjeta */
-    }
-
-    .tablaProveedores td {
-        text-align: right;
-        padding-left: 50% !important; /* Espacio para la etiqueta */
-        position: relative;
-        border: none;
-        border-bottom: 1px solid var(--color-form-border);
-        font-size: 0.9rem;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-    }
-
-    .tablaProveedores td:last-child {
-        border-bottom: none;
-    }
-
-    .tablaProveedores td::before {
-        content: attr(data-label); /* Usar el atributo data-label como etiqueta */
-        position: absolute;
-        left: 10px;
-        width: calc(50% - 20px);
-        padding-right: 10px;
-        white-space: nowrap;
-        font-weight: bold;
-        color: var(--color-primary);
-        text-align: left;
-    }
-
-    .tablaProveedores .proveedores-table-actions {
-        padding: 10px 0 0 0 !important;
-        justify-content: center; /* Centrar botones en la tarjeta */
-    }
-
-    .tablaProveedores .proveedores-table-actions::before {
-        display: none; /* Ocultar la etiqueta para la fila de acciones */
-    }
+    /* Los estilos responsive de tabla ahora se manejan desde table-common.css */
 
     /* === Ajustes para Modales en Móvil === */
     .modal-content-Proveedores.formulario-modal {
@@ -719,4 +601,64 @@ input.is-invalid, .input-documento.is-invalid {
   background-color: var(--color-primary);
   color: var(--color-text-light);
   font-weight: bold;
+}
+
+/* REGLAS FINALES PARA FORZAR EL ANCHO DE LA TABLA */
+body div.crud-container div.crud-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 270px !important;
+    padding-left: 5px !important;
+    align-items: stretch !important;
+}
+
+body div.crud-container div.crud-content div.table-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body div.crud-container div.crud-content div.table-container table {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+}
+
+/* SOBRESCRIBIR CRUD-COMMON.CSS PARA PROVEEDORES - SELECTORES MÁS ESPECÍFICOS */
+div.crud-container {
+    max-width: none !important;
+    width: 100% !important;
+    overflow-x: visible !important;
+}
+
+div.crud-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 270px !important; /* Reducir espacio del menú */
+    padding: 20px 20px 20px 5px !important;
+    align-items: stretch !important; /* Cambiar de center a stretch */
+    overflow-x: visible !important;
+}
+
+div.crud-content div.table-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: visible !important;
+}
+
+div.crud-content div.table-container table.table-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    table-layout: fixed !important;
+}
+
+/* REGLAS ESPECÍFICAS PARA FORZAR EL ANCHO */
+div.crud-content div.table-container table {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
 }
