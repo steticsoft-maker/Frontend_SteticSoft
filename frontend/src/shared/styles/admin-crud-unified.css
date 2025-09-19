@@ -38,7 +38,7 @@
   .categorias-producto-content,
   .proveedores-content,
   .clientes-content {
-    margin-left: 240px;
+    margin-left: 0;
     padding: 25px;
   }
 

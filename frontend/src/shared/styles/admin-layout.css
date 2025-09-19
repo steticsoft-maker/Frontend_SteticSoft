@@ -562,7 +562,7 @@
 /* Tablet Landscape (1024px and below) */
 @media (max-width: 1024px) {
     .admin-main-content-area {
-        margin-left: 240px;
+        margin-left: 0;
         padding: 20px 25px;
     }
 
