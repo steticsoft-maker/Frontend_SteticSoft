@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   FaTachometerAlt,
   FaCogs,
@@ -17,8 +17,18 @@ import {
   FaPlusSquare,
   FaCalendarCheck,
   FaUserCog,
-  FaFileInvoiceDollar
-} from 'react-icons/fa';
+  FaFileInvoiceDollar,
+  FaShieldAlt,
+  FaUserCog as FaUserSettings,
+  FaPlus,
+  FaHistory,
+  FaUserFriends as FaClients,
+  FaTruckLoading,
+  FaWarehouse,
+  FaCog,
+  FaClipboardList as FaServices,
+  FaLayerGroup,
+} from "react-icons/fa";
 
 export const menuItemsConfig = [
   {
@@ -36,11 +46,13 @@ export const menuItemsConfig = [
       {
         label: "Roles",
         path: "/admin/roles",
+        icon: <FaShieldAlt />,
         requiredPermission: "MODULO_ROLES_GESTIONAR",
       },
       {
         label: "Usuarios",
         path: "/admin/usuarios",
+        icon: <FaUserSettings />,
         requiredPermission: "MODULO_USUARIOS_GESTIONAR",
       },
     ],
@@ -54,16 +66,19 @@ export const menuItemsConfig = [
       {
         label: "Nueva Venta",
         path: "/admin/ventas/proceso",
+        icon: <FaPlus />,
         requiredPermission: "MODULO_VENTAS_GESTIONAR",
       },
       {
         label: "Historial de Ventas",
         path: "/admin/ventas",
+        icon: <FaHistory />,
         requiredPermission: "MODULO_VENTAS_GESTIONAR",
       },
       {
         label: "Clientes",
         path: "/admin/clientes",
+        icon: <FaClients />,
         requiredPermission: "MODULO_CLIENTES_GESTIONAR",
       },
     ],
@@ -77,16 +92,19 @@ export const menuItemsConfig = [
       {
         label: "Nueva Compra",
         path: "/admin/compras/agregar",
+        icon: <FaPlus />,
         requiredPermission: "MODULO_COMPRAS_GESTIONAR",
       },
       {
         label: "Historial de Compras",
         path: "/admin/compras",
+        icon: <FaHistory />,
         requiredPermission: "MODULO_COMPRAS_GESTIONAR",
       },
       {
         label: "Proveedores",
         path: "/admin/proveedores",
+        icon: <FaTruckLoading />,
         requiredPermission: "MODULO_PROVEEDORES_GESTIONAR",
       },
     ],
@@ -100,16 +118,19 @@ export const menuItemsConfig = [
       {
         label: "Productos",
         path: "/admin/productos-admin",
+        icon: <FaBox />,
         requiredPermission: "MODULO_PRODUCTOS_GESTIONAR",
       },
       {
         label: "Categorías de Productos",
         path: "/admin/categorias-producto",
+        icon: <FaLayerGroup />,
         requiredPermission: "MODULO_CATEGORIAS_PRODUCTOS_GESTIONAR",
       },
       {
         label: "Abastecimiento",
         path: "/admin/abastecimiento",
+        icon: <FaWarehouse />,
         requiredPermission: "MODULO_ABASTECIMIENTOS_GESTIONAR",
       },
     ],
@@ -123,11 +144,13 @@ export const menuItemsConfig = [
       {
         label: "Gestionar Servicios",
         path: "/admin/servicios-admin",
+        icon: <FaServices />,
         requiredPermission: "MODULO_SERVICIOS_GESTIONAR",
       },
       {
         label: "Categorías de Servicios",
         path: "/admin/categorias-servicio",
+        icon: <FaLayerGroup />,
         requiredPermission: "MODULO_CATEGORIAS_SERVICIOS_GESTIONAR",
       },
     ],
