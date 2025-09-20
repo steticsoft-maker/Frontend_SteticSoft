@@ -20,41 +20,36 @@ const cambiarEstadoCategoriaServicio = async (idCategoriaServicio, nuevoEstado) 
   return categoria;
 };
 
-/**
- * Crear una nueva categoría de servicio.
- */
-const crearCategoriaServicio = async (datosCategoria) => {
-  const { nombre, descripcion, estado } = datosCategoria;
-
-  const categoriaExistente = await db.CategoriaServicio.findOne({
+  const crearCategoriaServicio = async (datosCategoria) => { /* (1) */
+    const { nombre, descripcion, estado } = datosCategoria; /* (2) */
+    const categoriaExistente = await db.CategoriaServicio.findOne({ /* (3) */
     where: { nombre },
   });
-  if (categoriaExistente) {
-    throw new ConflictError(
+  if (categoriaExistente) { /* (4) */
+    throw new ConflictError( /* (5) */
       `La categoría de servicio con el nombre '${nombre}' ya existe.`
     );
   }
-
   try {
-    const nuevaCategoria = await db.CategoriaServicio.create({
+    const nuevaCategoria = await db.CategoriaServicio.create({ /* (6) */
       nombre,
       descripcion: descripcion || null,
       estado: typeof estado === "boolean" ? estado : true,
     });
-    return nuevaCategoria;
-  } catch (error) {
-    if (error.name === "SequelizeUniqueConstraintError") {
-      throw new ConflictError(
+    return nuevaCategoria; /* (7) */
+  } catch (error) { /* (8) */
+    if (error.name === "SequelizeUniqueConstraintError") { /* (9) */
+      throw new ConflictError( /* (10) */
         `La categoría de servicio con el nombre '${nombre}' ya existe.`
       );
     }
-    console.error("Error al crear la categoría de servicio:", error.message);
-    throw new CustomError(
+    console.error("Error al crear la categoría de servicio:", error.message); /* (11) */
+    throw new CustomError(/* (12) */
       `Error al crear la categoría de servicio: ${error.message}`,
       500
     );
   }
-};
+};/* (Fin) */
 
 /**
  * Obtener todas las categorías de servicio.

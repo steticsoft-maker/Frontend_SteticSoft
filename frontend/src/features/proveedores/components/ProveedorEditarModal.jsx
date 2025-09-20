@@ -112,7 +112,7 @@ const ProveedorEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
       break;
   }
 
-  const camposUnicos = ['correo', 'numeroDocumento', 'nitEmpresa'];
+  const camposUnicos = ['correo', 'numeroDocumento', 'nitEmpresa', 'telefono', 'telefonoPersonaEncargada', 'emailPersonaEncargada', 'nombre'];
   if (
     !error &&
     camposUnicos.includes(name) &&
