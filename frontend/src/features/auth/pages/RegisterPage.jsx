@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
+import RequirementsChecklist from "../components/RequirementsChecklist";
 import { useAuth } from "../../../shared/contexts/authHooks"; // Path updated
 import { registerAPI } from "../services/authService";
+import ThemeToggle from "../../../shared/components/common/ThemeToggle";
 import "../css/Auth.css";
 
 function RegisterPage() {
@@ -12,6 +14,8 @@ function RegisterPage() {
   const [errorApi, setErrorApi] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleRegisterSubmit = async (userData) => {
     setErrorApi("");
@@ -23,9 +27,12 @@ function RegisterPage() {
 
       if (response.success) {
         setSuccessMessage("¡Registro exitoso! Iniciando sesión...");
-        
+
         // Opcional: Iniciar sesión automáticamente después del registro exitoso
-        await login({ email: userData.correo, password: userData.contrasena }, false);
+        await login(
+          { email: userData.correo, password: userData.contrasena },
+          false
+        );
 
         // Espera un momento para que el usuario vea el mensaje y luego redirige
         setTimeout(() => {
@@ -33,7 +40,9 @@ function RegisterPage() {
         }, 1500);
       }
     } catch (err) {
-      const errorMessage = err.message || "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
+      const errorMessage =
+        err.message ||
+        "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
       setErrorApi(errorMessage);
     } finally {
       // No cambiar isSubmitting a false inmediatamente si hay éxito,
@@ -46,24 +55,37 @@ function RegisterPage() {
 
   return (
     <div className="auth-page-container">
-      <div className="auth-form-box">
-        <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
-        <h2 className="auth-form-title">Crear Cuenta</h2>
-        <RegisterForm
-          onSubmit={handleRegisterSubmit}
-          error={errorApi}
-          successMessage={successMessage}
-          isLoading={isSubmitting}
-        />
-        <div className="auth-form-actions">
-          <button
-            className="auth-secondary-button"
-            onClick={() => navigate("/login")}
-            disabled={isSubmitting}
-          >
-            ¿Ya tienes cuenta? Iniciar Sesión
-          </button>
+      <div className="auth-register-container">
+        <div className="auth-form-box">
+          <img
+            src="/logo.png"
+            alt="SteticSoft Logo"
+            className="auth-form-logo"
+          />
+          <h2 className="auth-form-title">Crear Cuenta</h2>
+          <div className="auth-theme-toggle-container">
+            <ThemeToggle />
+          </div>
+          <RegisterForm
+            onSubmit={handleRegisterSubmit}
+            error={errorApi}
+            successMessage={successMessage}
+            isLoading={isSubmitting}
+            onFormDataChange={setFormData}
+            onFieldErrorsChange={setFieldErrors}
+          />
+          <div className="auth-form-links">
+            <button
+              className="auth-form-link"
+              onClick={() => navigate("/login")}
+              disabled={isSubmitting}
+              style={{ background: "none", border: "none", padding: 0 }}
+            >
+              ¿Ya tienes cuenta? Iniciar Sesión
+            </button>
+          </div>
         </div>
+        <RequirementsChecklist formData={formData} fieldErrors={fieldErrors} />
       </div>
     </div>
   );
