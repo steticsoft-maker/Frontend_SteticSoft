@@ -45,7 +45,7 @@
     display: flex;
     gap: 30px;
     align-items: flex-start;
-    max-width: 1200px;
+    max-width: 1400px; /* Aumentado para acomodar el formulario más ancho */
     width: 100%;
     justify-content: center;
 }
@@ -78,7 +78,7 @@
 
 .auth-form-box {
     width: 100%;
-    max-width: 700px;
+    max-width: 900px; /* Aumentado para acomodar 3 columnas */
     padding: 50px;
     margin: 0 auto;
     border-radius: var(--auth-border-radius);
@@ -200,7 +200,7 @@
 
     .auth-form-box {
         padding: 4rem;
-        max-width: 800px;
+        max-width: 1000px; /* Aumentado para pantallas grandes */
     }
 
     .auth-form-title {
@@ -228,7 +228,7 @@
 
     .auth-form-box {
         padding: 2.5rem;
-        max-width: 650px;
+        max-width: 900px; /* Mantener ancho para 3 columnas */
     }
 
     .auth-form-title {
@@ -245,7 +245,7 @@
 
     .auth-form-box {
         padding: 2rem;
-        max-width: 600px;
+        max-width: 850px; /* Mantener ancho para 3 columnas */
     }
 
     .auth-form-title {

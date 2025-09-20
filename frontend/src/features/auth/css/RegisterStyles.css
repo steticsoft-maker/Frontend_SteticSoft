@@ -9,18 +9,17 @@
    Por ahora, asumo que 700px es el general.
 */
 
-/* === Estilos para el Grid de dos columnas en RegisterForm === */
+/* === Estilos para el Grid de tres columnas en RegisterForm === */
 .auth-form-grid {
     display: grid;
     /* Optimizado para mejor distribución horizontal */
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px; /* Espacio reducido entre los campos para mejor uso del espacio */
-    max-height: 400px; /* Altura máxima para evitar scroll vertical */
-    overflow-y: auto; /* Scroll interno si es necesario */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* Espacio reducido entre los campos para mejor uso del espacio */
     padding: 10px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(5px);
+    /* Eliminado max-height y overflow para evitar scroll */
   }
   
   .dark-theme .auth-form-grid {
@@ -49,48 +48,47 @@
 /* Large Desktop (1400px and above) */
 @media (min-width: 1400px) {
     .auth-form-grid {
-        gap: 20px;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 /* Desktop (1200px and below) */
 @media (max-width: 1200px) {
     .auth-form-grid {
-        gap: 18px;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 /* Tablet Landscape (1024px and below) */
 @media (max-width: 1024px) {
     .auth-form-grid {
-        gap: 16px;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 /* Tablet Portrait (768px and below) */
 @media (max-width: 768px) {
     .auth-form-grid {
-        gap: 14px;
-        grid-template-columns: 1fr; /* Single column on tablets */
-        max-height: 500px; /* Más altura en móviles para compensar columna única */
+        gap: 12px;
+        grid-template-columns: repeat(2, 1fr); /* Two columns on tablets */
     }
 }
 
 /* Mobile Landscape (640px and below) */
 @media (max-width: 640px) {
     .auth-form-grid {
-        gap: 12px;
-        grid-template-columns: 1fr;
+        gap: 10px;
+        grid-template-columns: 1fr; /* Single column on mobile */
     }
 }
 
 /* Mobile Portrait (480px and below) */
 @media (max-width: 480px) {
     .auth-form-grid {
-        gap: 10px;
+        gap: 8px;
         grid-template-columns: 1fr;
     }
 }
@@ -98,7 +96,7 @@
 /* Small Mobile (360px and below) */
 @media (max-width: 360px) {
     .auth-form-grid {
-        gap: 8px;
+        gap: 6px;
         grid-template-columns: 1fr;
     }
 }
