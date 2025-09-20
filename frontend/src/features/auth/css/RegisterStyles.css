@@ -14,12 +14,13 @@
     display: grid;
     /* Optimizado para mejor distribución horizontal */
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px; /* Espacio reducido entre los campos para mejor uso del espacio */
-    padding: 10px;
+    gap: 15px; /* Espacio aumentado para mejor distribución */
+    padding: 15px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(5px);
-    /* Eliminado max-height y overflow para evitar scroll */
+    /* Sin restricciones de altura para evitar scroll */
+    min-height: auto;
   }
   
   .dark-theme .auth-form-grid {
@@ -48,8 +49,9 @@
 /* Large Desktop (1400px and above) */
 @media (min-width: 1400px) {
     .auth-form-grid {
-        gap: 15px;
+        gap: 20px;
         grid-template-columns: repeat(3, 1fr);
+        padding: 20px;
     }
 }
 
