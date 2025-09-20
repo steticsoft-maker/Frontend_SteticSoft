@@ -40,6 +40,20 @@
     overflow: hidden;
 }
 
+/* === Contenedor para el registro con formulario y checklist === */
+.auth-register-container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    max-width: 1200px;
+    width: 100%;
+    justify-content: center;
+}
+
+.dark-theme .auth-register-container {
+    /* Estilos específicos para tema oscuro si es necesario */
+}
+
 /* Fondo decorativo con patrones */
 .auth-page-container::before {
     content: '';
@@ -180,6 +194,10 @@
         padding: 3rem;
     }
 
+    .auth-register-container {
+        gap: 40px;
+    }
+
     .auth-form-box {
         padding: 4rem;
         max-width: 800px;
@@ -246,6 +264,12 @@
 @media (max-width: 768px) {
     .auth-page-container {
         padding: 1rem;
+    }
+
+    .auth-register-container {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
     }
 
     .auth-form-box {

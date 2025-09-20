@@ -5,7 +5,14 @@ import PasswordInput from "../../../shared/components/PasswordInput/PasswordInpu
 import "../css/Auth.css"; // Estilos comunes
 import "../css/RegisterStyles.css"; // Estilos específicos del registro
 
-function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
+function RegisterForm({
+  onSubmit,
+  error,
+  successMessage,
+  isLoading,
+  onFormDataChange,
+  onFieldErrorsChange,
+}) {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -16,8 +23,8 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
     numeroDocumento: "",
     fechaNacimiento: "",
     direccion: "",
+    confirmPassword: "",
   });
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [formError, setFormError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
@@ -30,38 +37,54 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
 
   const validateField = (name, value) => {
     let error = "";
-    
+
     switch (name) {
       case "nombre":
       case "apellido":
         if (!value) error = `El ${name} es obligatorio.`;
-        else if (!nameRegex.test(value)) error = `El ${name} solo puede contener letras y espacios.`;
-        else if (value.length < 2 || value.length > 100) error = `Debe tener entre 2 y 100 caracteres.`;
+        else if (!nameRegex.test(value))
+          error = `El ${name} solo puede contener letras y espacios.`;
+        else if (value.length < 2 || value.length > 100)
+          error = `Debe tener entre 2 y 100 caracteres.`;
         break;
       case "correo":
         if (!value) error = "El correo electrónico es obligatorio.";
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Debe proporcionar un correo electrónico válido.";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          error = "Debe proporcionar un correo electrónico válido.";
         break;
       case "contrasena":
         if (!value) error = "La contraseña es obligatoria.";
-        else if (value.length < 8) error = "La contraseña debe tener al menos 8 caracteres.";
-        else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.,;?¡¿"'(){}[\]\-_+=|\\/°¬~`´¨´`+*çÇªº]).{8,}$/.test(value)) {
-          error = "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.";
+        else if (value.length < 8)
+          error = "La contraseña debe tener al menos 8 caracteres.";
+        else if (
+          !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.,;?¡¿"'(){}[\]\-_+=|\\/°¬~`´¨´`+*çÇªº]).{8,}$/.test(
+            value
+          )
+        ) {
+          error =
+            "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.";
         }
         break;
       case "telefono":
         if (!value) error = "El teléfono es obligatorio.";
-        else if (!numericOnlyRegex.test(value)) error = "El teléfono solo debe contener números.";
-        else if (value.length < 7 || value.length > 15) error = "Debe tener entre 7 y 15 dígitos.";
+        else if (!numericOnlyRegex.test(value))
+          error = "El teléfono solo debe contener números.";
+        else if (value.length < 7 || value.length > 15)
+          error = "Debe tener entre 7 y 15 dígitos.";
         break;
       case "numeroDocumento":
         if (!value) error = "El número de documento es obligatorio.";
         else {
           const docType = formData.tipoDocumento;
-          if (docType === "Cédula de Ciudadanía" || docType === "Cédula de Extranjería") {
-            if (!numericOnlyRegex.test(value)) error = "Para este tipo de documento, ingrese solo números.";
+          if (
+            docType === "Cédula de Ciudadanía" ||
+            docType === "Cédula de Extranjería"
+          ) {
+            if (!numericOnlyRegex.test(value))
+              error = "Para este tipo de documento, ingrese solo números.";
           } else if (docType === "Pasaporte") {
-            if (!alphanumericRegex.test(value)) error = "Para Pasaporte, ingrese solo letras y números.";
+            if (!alphanumericRegex.test(value))
+              error = "Para Pasaporte, ingrese solo letras y números.";
           }
           if (!error && (value.length < 5 || value.length > 20)) {
             error = "Debe tener entre 5 y 20 caracteres.";
@@ -74,7 +97,7 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
           const birthDate = new Date(`${value}T00:00:00`);
           const today = new Date();
           today.setHours(0, 0, 0, 0);
-          
+
           if (isNaN(birthDate.getTime())) {
             error = "La fecha ingresada no es válida.";
           } else if (birthDate > today) {
@@ -93,23 +116,35 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
         break;
       case "direccion":
         if (!value) error = "La dirección es obligatoria.";
-        else if (!addressRegex.test(value)) error = "La dirección contiene caracteres no permitidos.";
-        else if (value.length < 5 || value.length > 255) error = "La dirección debe tener entre 5 y 255 caracteres.";
+        else if (!addressRegex.test(value))
+          error = "La dirección contiene caracteres no permitidos.";
+        else if (value.length < 5 || value.length > 255)
+          error = "La dirección debe tener entre 5 y 255 caracteres.";
         break;
       default:
         break;
     }
-    
+
     return error;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    
+    const newFormData = { ...formData, [name]: value };
+    setFormData(newFormData);
+
     // Validar campo en tiempo real
     const error = validateField(name, value);
-    setFieldErrors((prev) => ({ ...prev, [name]: error }));
+    const newFieldErrors = { ...fieldErrors, [name]: error };
+    setFieldErrors(newFieldErrors);
+
+    // Notificar a la página padre sobre los cambios
+    if (onFormDataChange) {
+      onFormDataChange(newFormData);
+    }
+    if (onFieldErrorsChange) {
+      onFieldErrorsChange(newFieldErrors);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -120,7 +155,7 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
     const newFieldErrors = {};
     let hasErrors = false;
 
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       const error = validateField(key, formData[key]);
       if (error) {
         newFieldErrors[key] = error;
@@ -129,10 +164,10 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
     });
 
     // Validar confirmación de contraseña
-    if (!confirmPassword) {
+    if (!formData.confirmPassword) {
       newFieldErrors.confirmPassword = "Por favor, confirma tu contraseña.";
       hasErrors = true;
-    } else if (formData.contrasena !== confirmPassword) {
+    } else if (formData.contrasena !== formData.confirmPassword) {
       newFieldErrors.confirmPassword = "Las contraseñas no coinciden.";
       hasErrors = true;
     }
@@ -149,7 +184,9 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
       return;
     }
 
-    onSubmit(formData);
+    // Remover confirmPassword del objeto que se envía
+    const { confirmPassword, ...userData } = formData;
+    onSubmit(userData);
   };
 
   // Componente para el asterisco rojo
@@ -160,7 +197,9 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
       <div className="auth-form-grid">
         {/* Campo Nombre */}
         <div className="auth-form-group">
-          <label htmlFor="nombre">Nombre completo <RequiredAsterisk /></label>
+          <label htmlFor="nombre">
+            Nombre completo <RequiredAsterisk />
+          </label>
           <input
             type="text"
             id="nombre"
@@ -168,15 +207,21 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: Ana"
             value={formData.nombre}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.nombre ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.nombre ? "input-error" : ""
+            }`}
             required
           />
-          {fieldErrors.nombre && <span className="error-message">{fieldErrors.nombre}</span>}
+          {fieldErrors.nombre && (
+            <span className="error-message">{fieldErrors.nombre}</span>
+          )}
         </div>
 
         {/* Campo Apellido */}
         <div className="auth-form-group">
-          <label htmlFor="apellido">Apellidos <RequiredAsterisk /></label>
+          <label htmlFor="apellido">
+            Apellidos <RequiredAsterisk />
+          </label>
           <input
             type="text"
             id="apellido"
@@ -184,15 +229,21 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: Pérez López"
             value={formData.apellido}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.apellido ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.apellido ? "input-error" : ""
+            }`}
             required
           />
-          {fieldErrors.apellido && <span className="error-message">{fieldErrors.apellido}</span>}
+          {fieldErrors.apellido && (
+            <span className="error-message">{fieldErrors.apellido}</span>
+          )}
         </div>
 
         {/* Campo Correo Electrónico */}
         <div className="auth-form-group">
-          <label htmlFor="correo">Correo electrónico <RequiredAsterisk /></label>
+          <label htmlFor="correo">
+            Correo electrónico <RequiredAsterisk />
+          </label>
           <input
             type="email"
             id="correo"
@@ -200,42 +251,62 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="ejemplo@correo.com"
             value={formData.correo}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.correo ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.correo ? "input-error" : ""
+            }`}
             required
           />
-          {fieldErrors.correo && <span className="error-message">{fieldErrors.correo}</span>}
+          {fieldErrors.correo && (
+            <span className="error-message">{fieldErrors.correo}</span>
+          )}
         </div>
 
         {/* Campo Contraseña */}
         <div className="auth-form-group">
-          <label htmlFor="contrasena">Contraseña <RequiredAsterisk /></label>
+          <label htmlFor="contrasena">
+            Contraseña <RequiredAsterisk />
+          </label>
           <PasswordInput
             name="contrasena"
             value={formData.contrasena}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.contrasena ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.contrasena ? "input-error" : ""
+            }`}
             required
             helpText="Mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb"
           />
-          {fieldErrors.contrasena && <span className="error-message">{fieldErrors.contrasena}</span>}
+          {fieldErrors.contrasena && (
+            <span className="error-message">{fieldErrors.contrasena}</span>
+          )}
         </div>
 
         {/* Campo Confirmar Contraseña */}
         <div className="auth-form-group">
-          <label htmlFor="confirmPassword">Confirmar Contraseña <RequiredAsterisk /></label>
+          <label htmlFor="confirmPassword">
+            Confirmar Contraseña <RequiredAsterisk />
+          </label>
           <PasswordInput
             name="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className={`auth-form-input ${fieldErrors.confirmPassword ? "input-error" : ""}`}
+            value={formData.confirmPassword}
+            onChange={(value) =>
+              handleChange({ target: { name: "confirmPassword", value } })
+            }
+            className={`auth-form-input ${
+              fieldErrors.confirmPassword ? "input-error" : ""
+            }`}
             required
           />
-          {fieldErrors.confirmPassword && <span className="error-message">{fieldErrors.confirmPassword}</span>}
+          {fieldErrors.confirmPassword && (
+            <span className="error-message">{fieldErrors.confirmPassword}</span>
+          )}
         </div>
 
         {/* Campo Teléfono */}
         <div className="auth-form-group">
-          <label htmlFor="telefono">Teléfono <RequiredAsterisk /></label>
+          <label htmlFor="telefono">
+            Teléfono <RequiredAsterisk />
+          </label>
           <input
             type="tel"
             id="telefono"
@@ -243,35 +314,49 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: 3001234567"
             value={formData.telefono}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.telefono ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.telefono ? "input-error" : ""
+            }`}
             required
           />
-          {fieldErrors.telefono && <span className="error-message">{fieldErrors.telefono}</span>}
+          {fieldErrors.telefono && (
+            <span className="error-message">{fieldErrors.telefono}</span>
+          )}
         </div>
 
         {/* Campo Tipo de Documento */}
         <div className="auth-form-group">
-          <label htmlFor="tipoDocumento">Tipo de Documento <RequiredAsterisk /></label>
+          <label htmlFor="tipoDocumento">
+            Tipo de Documento <RequiredAsterisk />
+          </label>
           <select
             id="tipoDocumento"
             name="tipoDocumento"
             value={formData.tipoDocumento}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.tipoDocumento ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.tipoDocumento ? "input-error" : ""
+            }`}
             required
           >
-            <option value="" disabled>Selecciona un tipo...</option>
+            <option value="" disabled>
+              Selecciona un tipo...
+            </option>
             <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
             <option value="Cédula de Extranjería">Cédula de Extranjería</option>
             <option value="Pasaporte">Pasaporte</option>
             <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
           </select>
-          {fieldErrors.tipoDocumento && <span className="error-message">{fieldErrors.tipoDocumento}</span>}
+          {fieldErrors.tipoDocumento && (
+            <span className="error-message">{fieldErrors.tipoDocumento}</span>
+          )}
         </div>
 
         {/* Campo Número de Documento */}
         <div className="auth-form-group">
-          <label htmlFor="numeroDocumento">Número de Documento <RequiredAsterisk /></label>
+          <label htmlFor="numeroDocumento">
+            Número de Documento <RequiredAsterisk />
+          </label>
           <input
             type="text"
             id="numeroDocumento"
@@ -279,31 +364,43 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: 1020304050"
             value={formData.numeroDocumento}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.numeroDocumento ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.numeroDocumento ? "input-error" : ""
+            }`}
             required
           />
-          {fieldErrors.numeroDocumento && <span className="error-message">{fieldErrors.numeroDocumento}</span>}
+          {fieldErrors.numeroDocumento && (
+            <span className="error-message">{fieldErrors.numeroDocumento}</span>
+          )}
         </div>
 
         {/* Campo Fecha de Nacimiento */}
         <div className="auth-form-group">
-          <label htmlFor="fechaNacimiento">Fecha de Nacimiento <RequiredAsterisk /></label>
+          <label htmlFor="fechaNacimiento">
+            Fecha de Nacimiento <RequiredAsterisk />
+          </label>
           <input
             type="date"
             id="fechaNacimiento"
             name="fechaNacimiento"
             value={formData.fechaNacimiento}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.fechaNacimiento ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.fechaNacimiento ? "input-error" : ""
+            }`}
             required
             max={new Date().toISOString().split("T")[0]}
           />
-          {fieldErrors.fechaNacimiento && <span className="error-message">{fieldErrors.fechaNacimiento}</span>}
+          {fieldErrors.fechaNacimiento && (
+            <span className="error-message">{fieldErrors.fechaNacimiento}</span>
+          )}
         </div>
 
         {/* Campo Dirección */}
         <div className="auth-form-group">
-          <label htmlFor="direccion">Dirección <RequiredAsterisk /></label>
+          <label htmlFor="direccion">
+            Dirección <RequiredAsterisk />
+          </label>
           <input
             type="text"
             id="direccion"
@@ -311,10 +408,14 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             placeholder="Ej: Calle 5 # 4-3"
             value={formData.direccion}
             onChange={handleChange}
-            className={`auth-form-input ${fieldErrors.direccion ? "input-error" : ""}`}
+            className={`auth-form-input ${
+              fieldErrors.direccion ? "input-error" : ""
+            }`}
             required
           />
-          {fieldErrors.direccion && <span className="error-message">{fieldErrors.direccion}</span>}
+          {fieldErrors.direccion && (
+            <span className="error-message">{fieldErrors.direccion}</span>
+          )}
         </div>
       </div>
 
@@ -327,7 +428,9 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
             onChange={(e) => setIsCheckboxChecked(e.target.checked)}
             required
           />
-          <label htmlFor="terms-check">Acepto los términos y condiciones <RequiredAsterisk /></label>
+          <label htmlFor="terms-check">
+            Acepto los términos y condiciones <RequiredAsterisk />
+          </label>
         </div>
 
         {formError && <p className="auth-form-error">{formError}</p>}
@@ -337,7 +440,11 @@ function RegisterForm({ onSubmit, error, successMessage, isLoading }) {
         )}
 
         <div className="auth-form-actions">
-          <button type="submit" className="auth-primary-button" disabled={isLoading}>
+          <button
+            type="submit"
+            className="auth-primary-button"
+            disabled={isLoading}
+          >
             {isLoading ? "Registrando..." : "Registrarse"}
           </button>
           <Link to="/" className="auth-secondary-button">
