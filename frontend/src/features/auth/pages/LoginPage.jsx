@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 // Corregido: Importamos el hook personalizado useAuth
 import { useAuth } from "../../../shared/contexts/authHooks"; // Path updated
 import LoginForm from "../components/LoginForm";
+import ThemeToggle from "../../../shared/components/common/ThemeToggle";
 import "../css/Auth.css";
 import "../css/LoginStyles.css";
 
@@ -22,7 +23,10 @@ function LoginPage() {
 
       if (loginResult.success) {
         // Redirección basada en el rol
-        if (loginResult.role === "Administrador" || loginResult.role === "Empleado") {
+        if (
+          loginResult.role === "Administrador" ||
+          loginResult.role === "Empleado"
+        ) {
           navigate("/admin/dashboard");
         } else if (loginResult.role === "Cliente") {
           navigate("/");
@@ -31,7 +35,9 @@ function LoginPage() {
         }
       }
     } catch (err) {
-      setError(err.message || "Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+      setError(
+        err.message || "Error al iniciar sesión. Por favor, inténtalo de nuevo."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -39,10 +45,15 @@ function LoginPage() {
 
   return (
     <div className="auth-page-container">
+      <ThemeToggle />
       <div className="auth-form-box">
         <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
         <h2 className="auth-form-title">Iniciar Sesión</h2>
-        <LoginForm onSubmit={handleLoginSubmit} error={error} isLoading={isLoading} />
+        <LoginForm
+          onSubmit={handleLoginSubmit}
+          error={error}
+          isLoading={isLoading}
+        />
         <div className="auth-form-actions">
           <Link to="/password-recovery" className="auth-secondary-button">
             ¿Olvidaste tu contraseña?

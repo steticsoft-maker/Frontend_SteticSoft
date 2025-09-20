@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
 import { useAuth } from "../../../shared/contexts/authHooks"; // Path updated
 import { registerAPI } from "../services/authService";
+import ThemeToggle from "../../../shared/components/common/ThemeToggle";
 import "../css/Auth.css";
 
 function RegisterPage() {
@@ -23,9 +24,12 @@ function RegisterPage() {
 
       if (response.success) {
         setSuccessMessage("¡Registro exitoso! Iniciando sesión...");
-        
+
         // Opcional: Iniciar sesión automáticamente después del registro exitoso
-        await login({ email: userData.correo, password: userData.contrasena }, false);
+        await login(
+          { email: userData.correo, password: userData.contrasena },
+          false
+        );
 
         // Espera un momento para que el usuario vea el mensaje y luego redirige
         setTimeout(() => {
@@ -33,7 +37,9 @@ function RegisterPage() {
         }, 1500);
       }
     } catch (err) {
-      const errorMessage = err.message || "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
+      const errorMessage =
+        err.message ||
+        "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
       setErrorApi(errorMessage);
     } finally {
       // No cambiar isSubmitting a false inmediatamente si hay éxito,
@@ -46,6 +52,7 @@ function RegisterPage() {
 
   return (
     <div className="auth-page-container">
+      <ThemeToggle />
       <div className="auth-form-box">
         <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
         <h2 className="auth-form-title">Crear Cuenta</h2>

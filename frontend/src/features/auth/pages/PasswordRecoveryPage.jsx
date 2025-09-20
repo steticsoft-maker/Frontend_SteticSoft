@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import PasswordRecoveryForm from "../components/PasswordRecoveryForm";
 import * as authService from "../services/authService";
+import ThemeToggle from "../../../shared/components/common/ThemeToggle";
 import "../css/Auth.css";
 import Stetic2 from "/Stetic2.svg";
 
@@ -74,7 +75,11 @@ function PasswordRecoveryPage() {
         navigate("/login");
       });
     } catch (err) {
-      const errorMessages = err.errors ? Object.values(err.errors).map(e => e.msg).join(' ') : (err.message || "Ocurrió un error al restablecer la contraseña.");
+      const errorMessages = err.errors
+        ? Object.values(err.errors)
+            .map((e) => e.msg)
+            .join(" ")
+        : err.message || "Ocurrió un error al restablecer la contraseña.";
       setError(errorMessages);
     } finally {
       setIsLoading(false);
@@ -106,8 +111,9 @@ function PasswordRecoveryPage() {
 
   return (
     <div className="auth-page-container">
+      <ThemeToggle />
       <div className="auth-form-box">
-        <img src={Stetic2} alt="Logo" className="auth-form-logo" />
+        <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
         <h2 className="auth-form-title">{getTitle()}</h2>
         <PasswordRecoveryForm
           view={view}
