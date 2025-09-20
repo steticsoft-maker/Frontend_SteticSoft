@@ -461,6 +461,16 @@
         font-size: 0.9rem;
         border-radius: 6px;
     }
+    
+    .auth-form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .auth-form-actions .auth-primary-button,
+    .auth-form-actions .auth-secondary-button {
+        max-width: 100%;
+    }
 }
 
 /* Mobile Landscape (640px and below) */
@@ -737,10 +747,24 @@
 .auth-form-actions {
     /* Contenedor general para varios botones si fuera necesario */
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
     margin-top: 25px;
+    width: 100%;
+}
+
+.auth-form-actions .auth-primary-button {
+    order: 1;
+    width: 100%;
+    max-width: 300px;
+}
+
+.auth-form-actions .auth-secondary-button {
+    order: 2;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
 }
 
 .auth-form-error {
@@ -917,6 +941,21 @@
     color: var(--color-text-light);
 }
 
+/* Asegurar que todos los textos en formularios sean legibles */
+.auth-form-content {
+    color: var(--color-text-dark);
+}
+
+.dark-theme .auth-form-content {
+    color: var(--color-text-light);
+}
+
+.auth-form-content label,
+.auth-form-content span,
+.auth-form-content p {
+    color: inherit;
+}
+
 .auth-form-group label:hover {
     color: var(--auth-primary);
 }
@@ -1061,6 +1100,39 @@
     width: 100%;
 }
 
+/* === Estilos para contenedor de enlaces de navegación === */
+.auth-form-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(154, 122, 159, 0.2);
+}
+
+.dark-theme .auth-form-links {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.auth-form-links .auth-form-link {
+    color: var(--auth-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--auth-transition);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 5px 0;
+}
+
+.auth-form-links .auth-form-link:hover {
+    color: var(--auth-primary-hover);
+    text-decoration: underline;
+    transform: translateY(-1px);
+}
+
 /* Efecto de carga mejorado */
 .auth-primary-button.loading {
     pointer-events: none;
@@ -1080,4 +1152,66 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* === Efectos de transición entre formularios === */
+.auth-transition {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.auth-transition-enter {
+    animation: slideInFromRight 0.4s ease-out;
+}
+
+.auth-transition-exit {
+    animation: slideOutToLeft 0.4s ease-in;
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+@keyframes slideInFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutToLeft {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+/* Efecto de fade para cambios de contenido */
+.auth-form-fade-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.auth-form-fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.auth-form-fade-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.auth-form-fade-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }

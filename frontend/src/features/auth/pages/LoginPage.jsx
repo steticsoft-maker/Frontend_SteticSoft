@@ -54,12 +54,12 @@ function LoginPage() {
           error={error}
           isLoading={isLoading}
         />
-        <div className="auth-form-actions">
-          <Link to="/password-recovery" className="auth-secondary-button">
+        <div className="auth-form-links">
+          <Link to="/password-recovery" className="auth-form-link">
             ¿Olvidaste tu contraseña?
           </Link>
-          <Link to="/register" className="auth-secondary-button">
-            Crear cuenta
+          <Link to="/register" className="auth-form-link">
+            ¿No tienes cuenta? Crear una aquí
           </Link>
         </div>
       </div>

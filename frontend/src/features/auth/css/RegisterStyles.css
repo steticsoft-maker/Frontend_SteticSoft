@@ -12,11 +12,19 @@
 /* === Estilos para el Grid de dos columnas en RegisterForm === */
 .auth-form-grid {
     display: grid;
-    /* Opción 1: Responsive (2 columnas si hay espacio, sino 1) */
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    /* Opción 2: Siempre 2 columnas (se encogen si no hay espacio) */
-    /* grid-template-columns: 1fr 1fr; */
-    gap: 15px; /* Espacio entre los campos */
+    /* Optimizado para mejor distribución horizontal */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px; /* Espacio reducido entre los campos para mejor uso del espacio */
+    max-height: 400px; /* Altura máxima para evitar scroll vertical */
+    overflow-y: auto; /* Scroll interno si es necesario */
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+  }
+  
+  .dark-theme .auth-form-grid {
+    background: rgba(45, 27, 48, 0.1);
   }
   
   .auth-form-group {
@@ -67,6 +75,7 @@
     .auth-form-grid {
         gap: 14px;
         grid-template-columns: 1fr; /* Single column on tablets */
+        max-height: 500px; /* Más altura en móviles para compensar columna única */
     }
 }
 

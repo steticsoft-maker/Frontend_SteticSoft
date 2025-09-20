@@ -62,11 +62,12 @@ function RegisterPage() {
           successMessage={successMessage}
           isLoading={isSubmitting}
         />
-        <div className="auth-form-actions">
+        <div className="auth-form-links">
           <button
-            className="auth-secondary-button"
+            className="auth-form-link"
             onClick={() => navigate("/login")}
             disabled={isSubmitting}
+            style={{ background: "none", border: "none", padding: 0 }}
           >
             ¿Ya tienes cuenta? Iniciar Sesión
           </button>
