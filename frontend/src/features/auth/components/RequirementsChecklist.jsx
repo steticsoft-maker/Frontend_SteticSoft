@@ -8,8 +8,8 @@ function RequirementsChecklist({ formData, fieldErrors }) {
     const value = formData[fieldName] || "";
     const hasError = fieldErrors[fieldName];
 
-    // Si no hay valor, estado neutral
-    if (!value.trim()) {
+    // Si no hay valor o el valor no es string, estado neutral
+    if (!value || typeof value !== "string" || !value.trim()) {
       return "neutral";
     }
 
@@ -18,7 +18,12 @@ function RequirementsChecklist({ formData, fieldErrors }) {
       return "invalid";
     }
 
-    // Si no hay error y hay valor, estado válido
+    // Si hay valor y no hay error, usar el validator para determinar si es válido
+    if (validator && typeof validator === "function") {
+      return validator(value) ? "valid" : "invalid";
+    }
+
+    // Si no hay validator, asumir válido si no hay error
     return "valid";
   };
 

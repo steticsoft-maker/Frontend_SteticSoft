@@ -32,7 +32,9 @@ function LoginForm({ onSubmit, error }) {
     <form className="auth-form-content" onSubmit={handleSubmit}>
       {/* Campo Correo Electrónico */}
       <div className="auth-form-group">
-        <label htmlFor="login-email">Correo electrónico <RequiredAsterisk /></label>
+        <label htmlFor="login-email">
+          Correo electrónico <RequiredAsterisk />
+        </label>
         <input
           type="email"
           id="login-email"
@@ -42,13 +44,15 @@ function LoginForm({ onSubmit, error }) {
           onChange={handleChange}
           className="auth-form-input"
           required
-          autoComplete="email" // <--- ATRIBUTO AÑADIDO/SUGERIDO
+          autoComplete="username"
         />
       </div>
 
       {/* Campo Contraseña */}
       <div className="auth-form-group">
-        <label htmlFor="login-password">Contraseña <RequiredAsterisk /></label>
+        <label htmlFor="login-password">
+          Contraseña <RequiredAsterisk />
+        </label>
         <input
           type="password"
           id="login-password"

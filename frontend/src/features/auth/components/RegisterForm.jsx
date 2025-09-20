@@ -255,6 +255,7 @@ function RegisterForm({
               fieldErrors.correo ? "input-error" : ""
             }`}
             required
+            autoComplete="username"
           />
           {fieldErrors.correo && (
             <span className="error-message">{fieldErrors.correo}</span>
@@ -289,9 +290,7 @@ function RegisterForm({
           <PasswordInput
             name="confirmPassword"
             value={formData.confirmPassword}
-            onChange={(value) =>
-              handleChange({ target: { name: "confirmPassword", value } })
-            }
+            onChange={handleChange}
             className={`auth-form-input ${
               fieldErrors.confirmPassword ? "input-error" : ""
             }`}

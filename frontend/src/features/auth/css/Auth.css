@@ -472,7 +472,7 @@
     border: 2px solid rgba(154, 122, 159, 0.2);
     border-radius: 12px; /* Reducido para un look más compacto */
     font-size: 0.95rem; /* Reducido ligeramente */
-    color: var(--color-text-dark);
+    color: var(--color-text-dark) !important;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     transition: var(--auth-transition);
@@ -481,7 +481,7 @@
 
 .dark-theme .auth-form-input {
     background: rgba(42, 29, 45, 0.8);
-    color: var(--color-text-light);
+    color: var(--color-text-dark) !important;
     border-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -1047,7 +1047,7 @@
 }
 
 .dark-theme .auth-form-group label {
-    color: var(--color-text-light);
+    color: var(--color-text-dark);
 }
 
 /* Asegurar que todos los textos en formularios sean legibles */
@@ -1056,7 +1056,7 @@
 }
 
 .dark-theme .auth-form-content {
-    color: var(--color-text-light);
+    color: var(--color-text-dark);
 }
 
 .auth-form-content label,
@@ -1166,7 +1166,7 @@
 }
 
 .dark-theme .auth-form-checkbox label {
-    color: var(--color-text-light);
+    color: var(--color-text-dark);
 }
 
 .auth-form-checkbox label:hover {

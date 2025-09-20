@@ -43,7 +43,7 @@
 }
 
 .dark-theme .requirements-title {
-  color: var(--color-text-light);
+  color: var(--color-text-dark);
   background: linear-gradient(135deg, var(--auth-primary), #ffffff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -119,7 +119,7 @@
 }
 
 .dark-theme .requirement-item.neutral .requirement-text {
-  color: var(--color-text-light);
+  color: var(--color-text-dark);
 }
 
 .neutral-icon {
