@@ -111,7 +111,7 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
       break;
   }
 
-  const camposUnicos = ['correo', 'numeroDocumento', 'nitEmpresa'];
+  const camposUnicos = ['correo', 'numeroDocumento', 'nitEmpresa', 'telefono', 'telefonoPersonaEncargada', 'emailPersonaEncargada', 'nombre'];
   if (!error && camposUnicos.includes(name)) {
     try {
       const payload = { [name]: value };

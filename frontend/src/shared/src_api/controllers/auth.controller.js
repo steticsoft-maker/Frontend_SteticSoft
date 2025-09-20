@@ -128,12 +128,10 @@ const logoutUsuario = (req, res, next) => {
     });
   } else {
     // Si no hay sesión de servidor, el logout es responsabilidad del cliente (borrar token JWT)
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Logout procesado (el cliente debe eliminar el token JWT).",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Logout procesado (el cliente debe eliminar el token JWT).",
+    });
   }
 };
 

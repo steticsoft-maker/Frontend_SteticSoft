@@ -18,7 +18,13 @@ const crearProveedorValidators = [
     .trim()
     .notEmpty().withMessage("El nombre del proveedor es un campo obligatorio.")
     .isLength({ min: 3 }).withMessage("El nombre del proveedor debe tener al menos 3 caracteres.")
-    .matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/).withMessage("El nombre del proveedor solo puede contener letras y espacios."),
+    .matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/).withMessage("El nombre del proveedor solo puede contener letras y espacios.")
+    .custom(async (value) => {
+      const proveedor = await db.Proveedor.findOne({
+        where: { nombre: value, estado: true },
+      });
+      if (proveedor) return Promise.reject("El nombre del proveedor ya está registrado. Por favor, ingrese uno diferente.");
+    }),
   
   body("tipo")
     .trim()
@@ -27,7 +33,13 @@ const crearProveedorValidators = [
   body("telefono")
     .trim()
     .notEmpty().withMessage("El teléfono del proveedor es un campo obligatorio.")
-    .matches(/^\d{10}$/).withMessage("El teléfono del proveedor debe tener exactamente 10 dígitos."),
+    .matches(/^\d{10}$/).withMessage("El teléfono del proveedor debe tener exactamente 10 dígitos.")
+    .custom(async (value) => {
+      const proveedor = await db.Proveedor.findOne({
+        where: { telefono: value, estado: true },
+      });
+      if (proveedor) return Promise.reject("El teléfono del proveedor ya está registrado. Por favor, ingrese uno diferente.");
+    }),
 
   body("correo")
     .trim()
@@ -84,7 +96,13 @@ const crearProveedorValidators = [
   body("telefonoPersonaEncargada")
     .trim()
     .notEmpty().withMessage("El teléfono del encargado es obligatorio.")
-    .matches(/^\d{10}$/).withMessage("El teléfono del encargado debe tener exactamente 10 dígitos."),
+    .matches(/^\d{10}$/).withMessage("El teléfono del encargado debe tener exactamente 10 dígitos.")
+    .custom(async (value) => {
+      const proveedor = await db.Proveedor.findOne({
+        where: { telefonoPersonaEncargada: value, estado: true },
+      });
+      if (proveedor) return Promise.reject("El teléfono del encargado ya está registrado. Por favor, ingrese uno diferente.");
+    }),
 
   body("emailPersonaEncargada")
     .trim()
@@ -114,7 +132,18 @@ const actualizarProveedorValidators = [
     .trim()
     .notEmpty().withMessage("El nombre del proveedor es un campo obligatorio.")
     .isLength({ min: 3 }).withMessage("El nombre del proveedor debe tener al menos 3 caracteres.")
-    .matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/).withMessage("El nombre del proveedor solo puede contener letras y espacios."),
+    .matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/).withMessage("El nombre del proveedor solo puede contener letras y espacios.")
+    .custom(async (value, { req }) => {
+      if (!value) return true;
+      const proveedor = await db.Proveedor.findOne({
+        where: {
+          nombre: value,
+          idProveedor: { [Op.ne]: req.params.idProveedor },
+          estado: true,
+        },
+      });
+      if (proveedor) return Promise.reject("El nombre del proveedor ya está en uso por otro proveedor.");
+    }),
   
   body("tipo")
     .optional()
@@ -125,7 +154,18 @@ const actualizarProveedorValidators = [
     .optional()
     .trim()
     .notEmpty().withMessage("El teléfono del proveedor es un campo obligatorio.")
-    .matches(/^\d{10}$/).withMessage("El teléfono del proveedor debe tener exactamente 10 dígitos."),
+    .matches(/^\d{10}$/).withMessage("El teléfono del proveedor debe tener exactamente 10 dígitos.")
+    .custom(async (value, { req }) => {
+      if (!value) return true;
+      const proveedor = await db.Proveedor.findOne({
+        where: {
+          telefono: value,
+          idProveedor: { [Op.ne]: req.params.idProveedor },
+          estado: true,
+        },
+      });
+      if (proveedor) return Promise.reject("El teléfono del proveedor ya está en uso por otro proveedor.");
+    }),
   
   body("direccion")
     .optional()
@@ -146,7 +186,18 @@ const actualizarProveedorValidators = [
     .optional()
     .trim()
     .notEmpty().withMessage("El teléfono del encargado es obligatorio.")
-    .matches(/^\d{10}$/).withMessage("El teléfono del encargado debe tener exactamente 10 dígitos."),
+    .matches(/^\d{10}$/).withMessage("El teléfono del encargado debe tener exactamente 10 dígitos.")
+    .custom(async (value, { req }) => {
+      if (!value) return true;
+      const proveedor = await db.Proveedor.findOne({
+        where: {
+          telefonoPersonaEncargada: value,
+          idProveedor: { [Op.ne]: req.params.idProveedor },
+          estado: true,
+        },
+      });
+      if (proveedor) return Promise.reject("El teléfono del encargado ya está en uso por otro proveedor.");
+    }),
 
   body("correo")
     .optional()
