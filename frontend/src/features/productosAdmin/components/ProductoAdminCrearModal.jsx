@@ -263,7 +263,7 @@ const ProductoAdminCrearModal = ({ isOpen, onClose, onSubmit }) => {
           </button>
         </div>
         <div className="admin-modal-body">
-          <form onSubmit={handleSubmitForm} noValidate>
+          <form id="producto-form" onSubmit={handleSubmitForm} noValidate>
             <ProductoAdminForm
               formData={formData}
               onFormChange={handleFormChange}

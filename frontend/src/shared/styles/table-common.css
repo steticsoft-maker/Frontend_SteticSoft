@@ -276,31 +276,31 @@
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(1),
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(1) { width: 8%; } /* # */
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(2),
-.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(2) { width: 30%; } /* Proveedor/Nombre */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(2) { width: 35%; } /* Proveedor/Nombre */
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(3),
-.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(3) { width: 18%; } /* Fecha/Apellido */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(3) { width: 20%; } /* Fecha/Apellido */
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(4),
-.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(4) { width: 18%; } /* Total/Correo */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(4) { width: 20%; } /* Total/Correo */
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(5),
-.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(5) { width: 10%; } /* Estado/Teléfono */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(5) { width: 5%; } /* Estado/Teléfono */
 .table-main:has(th:nth-child(6):not(th:nth-child(7))) th:nth-child(6),
-.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(6) { width: 16%; } /* Acciones/Dirección */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(6) { width: 12%; } /* Acciones/Dirección */
 
 /* Tablas de 7 columnas (Usuarios, Proveedores, etc.) */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(1),
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(1) { width: 5%; } /* # */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(2),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(2) { width: 18%; } /* Nombres/Empresa */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(2) { width: 20%; } /* Nombres/Empresa */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(3),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(3) { width: 18%; } /* Apellidos/Tipo Doc */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(3) { width: 20%; } /* Apellidos/Tipo Doc */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(4),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(4) { width: 18%; } /* Correo/Teléfono */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(4) { width: 20%; } /* Correo/Teléfono */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(5),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(5) { width: 10%; } /* Rol/Email */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(5) { width: 15%; } /* Rol/Email */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(6),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(6) { width: 8%; } /* Teléfono/Estado */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(6) { width: 5%; } /* Teléfono/Estado */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) th:nth-child(7),
-.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) { width: 23%; } /* Estado/Acciones */
+.table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) { width: 15%; } /* Estado/Acciones */
 
 /* Fondos de filas */
 .table-main tbody tr:nth-child(even) {
@@ -471,15 +471,30 @@ input:checked + .table-slider:before {
 
 /* Reglas específicas para la columna de acciones en tablas de 7 columnas */
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) {
-  min-width: 150px;
-  width: 23%;
+  min-width: 100px;
+  width: 15%;
   text-align: center;
-  padding: 8px 4px;
+  padding: 8px 1px;
 }
 
 .table-main:has(th:nth-child(7):not(th:nth-child(8))) td:nth-child(7) .table-iconos {
-  min-width: 140px;
+  min-width: 90px;
   justify-content: center;
+  gap: 4px;
+}
+
+/* Reglas específicas para la columna de acciones en tablas de 6 columnas */
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(6) {
+  min-width: 80px;
+  width: 12%;
+  text-align: center;
+  padding: 8px 1px;
+}
+
+.table-main:has(th:nth-child(6):not(th:nth-child(7))) td:nth-child(6) .table-iconos {
+  min-width: 75px;
+  justify-content: center;
+  gap: 4px;
 }
 
 /* === RESPONSIVE STYLES === */

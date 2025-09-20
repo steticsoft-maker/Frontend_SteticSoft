@@ -338,7 +338,7 @@ const ProductoAdminEditarModal = ({ isOpen, onClose, onSubmit, initialData }) =>
           {isLoading ? (
             <p style={{ textAlign: 'center', padding: '20px' }}>Cargando categorías...</p>
           ) : (
-            <form onSubmit={handleSubmitForm} noValidate>
+            <form id="producto-form" onSubmit={handleSubmitForm} noValidate>
               <ProductoAdminForm
                 formData={formData}
                 onFormChange={handleFormChange}

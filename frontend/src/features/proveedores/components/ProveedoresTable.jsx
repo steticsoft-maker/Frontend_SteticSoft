@@ -46,28 +46,30 @@ const ProveedoresTable = ({ proveedores, onView, onEdit, onDeleteConfirm, onTogg
               </label>
             </td>
 
-            <td data-label="Acciones:" className="table-iconos">
-              <button
-                className="table-button btn-view"
-                onClick={() => onView(proveedor)}
-                title="Ver Detalles"
-              >
-                <FaEye />
-              </button>
-              <button
-                className="table-button btn-edit"
-                onClick={() => onEdit(proveedor)}
-                title="Editar"
-              >
-                <FaEdit />
-              </button>
-              <button
-                className="table-button btn-delete"
-                onClick={() => onDeleteConfirm(proveedor)}
-                title="Eliminar"
-              >
-                <FaTrash />
-              </button>
+            <td data-label="Acciones:">
+              <div className="table-iconos">
+                <button
+                  className="table-button btn-view"
+                  onClick={() => onView(proveedor)}
+                  title="Ver Detalles"
+                >
+                  <FaEye />
+                </button>
+                <button
+                  className="table-button btn-edit"
+                  onClick={() => onEdit(proveedor)}
+                  title="Editar"
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  className="table-button btn-delete"
+                  onClick={() => onDeleteConfirm(proveedor)}
+                  title="Eliminar"
+                >
+                  <FaTrash />
+                </button>
+              </div>
             </td>
           </tr>
         ))}

@@ -17,7 +17,7 @@
   }
   
   .item-selection-modal-content {
-    background: white;
+    background: var(--color-background-light); /* Usar variable del tema */
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     max-width: 550px; /* Un poco más ancho para listas */
@@ -27,6 +27,7 @@
     max-height: 85vh; /* Limitar altura */
     padding: 20px;
     box-sizing: border-box;
+    color: var(--color-text-dark); /* Usar variable de texto del tema */
   }
   
   .item-selection-modal-header {
@@ -35,7 +36,7 @@
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--color-border-light, #eee);
+    border-bottom: 1px solid var(--color-primary, #9a7a9f); /* Borde con color primario */
   }
   
   .item-selection-modal-header .shared-modal-title {
@@ -47,12 +48,12 @@
     border: none;
     font-size: 1.8rem; /* Más grande para la 'X' */
     cursor: pointer;
-    color: var(--color-text-muted, #777);
+    color: var(--color-text-dark); /* Usar variable de texto del tema */
     padding: 0;
     line-height: 1;
   }
   .item-selection-modal-close-btn:hover {
-    color: var(--color-text-dark, #333);
+    color: var(--color-primary); /* Color primario al hover */
   }
   
   .item-selection-modal-search-container {
@@ -62,15 +63,20 @@
   .item-selection-modal-search-input {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid var(--color-border-light, #ccc);
+    border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem;
     box-sizing: border-box;
+    background-color: var(--color-form-bg); /* Usar variable del tema */
+    color: var(--color-text-dark); /* Usar variable de texto del tema */
   }
   .item-selection-modal-search-input:focus {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.2);
+  }
+  .item-selection-modal-search-input::placeholder {
+    color: var(--color-text-muted); /* Usar variable de texto del tema */
   }
   
   
@@ -94,10 +100,10 @@
     text-align: left;
     background-color: transparent;
     border: none;
-    border-bottom: 1px solid var(--color-background-section-light, #f0f0f0);
+    border-bottom: 1px solid var(--color-form-border); /* Borde con variable del tema */
     cursor: pointer;
     font-size: 0.95rem;
-    color: var(--color-text-dark, #333);
+    color: var(--color-text-dark); /* Usar variable de texto del tema */
     transition: background-color 0.2s ease;
   }
   
@@ -106,13 +112,13 @@
   }
   
   .selection-modal-item button:hover {
-    background-color: var(--color-background-hover-light, #e9ecef);
-    color: var(--color-primary);
+    background-color: var(--color-background-hover-light); /* Fondo hover del tema */
+    color: var(--color-primary); /* Color primario al hover */
   }
   
   .selection-modal-empty-state {
     padding: 20px;
     text-align: center;
-    color: var(--color-text-muted, #777);
+    color: var(--color-text-muted); /* Usar variable de texto del tema */
     font-style: italic;
   }

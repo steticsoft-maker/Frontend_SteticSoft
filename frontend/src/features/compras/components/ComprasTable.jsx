@@ -70,18 +70,20 @@ const ComprasTable = ({ compras, onDetalle, onAnular, onGenerarPDF, startIndex }
                     {estadoNombre}
                   </span>
                 </td>
-                <td data-label="Acciones:" className="table-iconos">
-                  <button onClick={() => onDetalle(compra)} className="table-button btn-view" title="Ver Detalles">
-                    <FontAwesomeIcon icon={faEye} />
-                  </button>
-                  <button onClick={() => onGenerarPDF(compra)} className="table-button btn-history" title="Descargar PDF">
-                    <FontAwesomeIcon icon={faFilePdf} />
-                  </button>
-                  {compra.estado && (
-                    <button onClick={() => onAnular(compra)} className="table-button btn-delete" title="Anular Compra">
-                      <FontAwesomeIcon icon={faBan} />
+                <td data-label="Acciones:">
+                  <div className="table-iconos">
+                    <button onClick={() => onDetalle(compra)} className="table-button btn-view" title="Ver Detalles">
+                      <FontAwesomeIcon icon={faEye} />
                     </button>
-                  )}
+                    <button onClick={() => onGenerarPDF(compra)} className="table-button btn-history" title="Descargar PDF">
+                      <FontAwesomeIcon icon={faFilePdf} />
+                    </button>
+                    {compra.estado && (
+                      <button onClick={() => onAnular(compra)} className="table-button btn-delete" title="Anular Compra">
+                        <FontAwesomeIcon icon={faBan} />
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             );

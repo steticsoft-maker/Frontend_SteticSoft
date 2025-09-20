@@ -90,32 +90,34 @@ const CompraForm = ({
   };
 
   return (
-    <>
-      <div className="form-group">
-        <label htmlFor="proveedorSearch">Proveedor <span className="required-asterisk">*</span>:</label>
-        <input
-            type="text"
-            className="buscar-proveedor-input"
-            value={proveedorSeleccionado?.nombre || ''}
-            onClick={() => setShowProveedorSelectModal(true)}
-            placeholder="Seleccionar proveedor"
-            readOnly
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="fechaCompra">Fecha de Compra <span className="required-asterisk">*</span>:</label>
-        <input 
-          type="date" 
-          id="fechaCompra" 
-          value={fecha} 
-          onChange={(e) => setFecha(e.target.value)} 
-          className="LaFecha" 
-          required 
-          max={getTodayString()}
-          min={getMinDateString()}
-        />
+    <div className="compra-form-container">
+      <div className="form-main-fields">
+        <div className="form-group">
+          <label htmlFor="proveedorSearch">Proveedor <span className="required-asterisk">*</span>:</label>
+          <input
+              type="text"
+              className="buscar-proveedor-input"
+              value={proveedorSeleccionado?.nombre || ''}
+              onClick={() => setShowProveedorSelectModal(true)}
+              placeholder="Seleccionar proveedor"
+              readOnly
+          />
         </div>
+
+        <div className="form-group">
+          <label htmlFor="fechaCompra">Fecha de Compra <span className="required-asterisk">*</span>:</label>
+          <input 
+            type="date" 
+            id="fechaCompra" 
+            value={fecha} 
+            onChange={(e) => setFecha(e.target.value)} 
+            className="LaFecha" 
+            required 
+            max={getTodayString()}
+            min={getMinDateString()}
+          />
+        </div>
+      </div>
 
       <button type="button" className="btn-agregar-producto-compra" onClick={handleAgregarProductoRow}>
         Agregar Producto a la Compra
@@ -158,6 +160,8 @@ const CompraForm = ({
         items={todosLosProveedoresParaModal}
         onSelectItem={(selectedItem) => { setProveedor(selectedItem); setShowProveedorSelectModal(false); }}
         searchPlaceholder="Buscar proveedor..."
+        itemKey="idProveedor"
+        itemName="nombre"
       />
       <ItemSelectionModal
         isOpen={showProductoSelectModal}
@@ -166,8 +170,10 @@ const CompraForm = ({
         items={todosLosProductosParaModal} 
         onSelectItem={handleSelectProductoParaAgregar}
         searchPlaceholder="Buscar producto..."
+        itemKey="idProducto"
+        itemName="nombre"
       />
-    </>
+    </div>
   );
 };
 
