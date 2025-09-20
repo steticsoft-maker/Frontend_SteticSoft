@@ -55,7 +55,6 @@ function RegisterPage() {
 
   return (
     <div className="auth-page-container">
-      <ThemeToggle />
       <div className="auth-register-container">
         <div className="auth-form-box">
           <img
@@ -64,6 +63,9 @@ function RegisterPage() {
             className="auth-form-logo"
           />
           <h2 className="auth-form-title">Crear Cuenta</h2>
+          <div className="auth-theme-toggle-container">
+            <ThemeToggle />
+          </div>
           <RegisterForm
             onSubmit={handleRegisterSubmit}
             error={errorApi}

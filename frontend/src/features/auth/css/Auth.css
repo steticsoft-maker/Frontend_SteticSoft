@@ -294,6 +294,17 @@
         top: 15px;
         right: 15px;
     }
+
+    .auth-theme-toggle-container {
+        margin-bottom: 15px;
+        padding: 8px 0;
+    }
+
+    .auth-theme-toggle-container .theme-toggle {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
     
     .auth-form-input {
         padding: 14px 18px;
@@ -321,6 +332,17 @@
         width: 70px;
         height: 70px;
         margin-bottom: 1rem;
+    }
+
+    .auth-theme-toggle-container {
+        margin-bottom: 12px;
+        padding: 6px 0;
+    }
+
+    .auth-theme-toggle-container .theme-toggle {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+        border-radius: 8px;
     }
 }
 
@@ -350,6 +372,17 @@
     .theme-toggle-container {
         top: 10px;
         right: 10px;
+    }
+
+    .auth-theme-toggle-container {
+        margin-bottom: 10px;
+        padding: 5px 0;
+    }
+
+    .auth-theme-toggle-container .theme-toggle {
+        padding: 7px 12px;
+        font-size: 0.75rem;
+        border-radius: 6px;
     }
     
     .auth-form-input {
@@ -394,6 +427,17 @@
     .theme-toggle-container {
         top: 8px;
         right: 8px;
+    }
+
+    .auth-theme-toggle-container {
+        margin-bottom: 8px;
+        padding: 4px 0;
+    }
+
+    .auth-theme-toggle-container .theme-toggle {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+        border-radius: 5px;
     }
     
     .auth-form-input {
@@ -919,6 +963,15 @@
     z-index: 100;
 }
 
+/* === Contenedor del toggle de tema dentro del formulario === */
+.auth-theme-toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
 /* Estilos específicos para el ThemeToggle en páginas de auth */
 .auth-page-container .theme-toggle {
     background: rgba(255, 255, 255, 0.9);
@@ -942,6 +995,38 @@
 }
 
 .dark-theme .auth-page-container .theme-toggle:hover {
+    background: var(--auth-primary);
+    color: white;
+}
+
+/* Estilos para el ThemeToggle dentro del contenedor del formulario */
+.auth-theme-toggle-container .theme-toggle {
+    background: rgba(154, 122, 159, 0.1);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--auth-primary);
+    color: var(--auth-primary);
+    box-shadow: 0 4px 15px rgba(154, 122, 159, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.dark-theme .auth-theme-toggle-container .theme-toggle {
+    background: rgba(184, 148, 191, 0.1);
+    border-color: var(--auth-primary);
+    color: var(--auth-primary);
+}
+
+.auth-theme-toggle-container .theme-toggle:hover {
+    background: var(--auth-primary);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(154, 122, 159, 0.4);
+}
+
+.dark-theme .auth-theme-toggle-container .theme-toggle:hover {
     background: var(--auth-primary);
     color: white;
 }

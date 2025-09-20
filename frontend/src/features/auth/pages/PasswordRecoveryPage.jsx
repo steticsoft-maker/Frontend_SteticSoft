@@ -111,10 +111,12 @@ function PasswordRecoveryPage() {
 
   return (
     <div className="auth-page-container">
-      <ThemeToggle />
       <div className="auth-form-box">
         <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
         <h2 className="auth-form-title">{getTitle()}</h2>
+        <div className="auth-theme-toggle-container">
+          <ThemeToggle />
+        </div>
         <PasswordRecoveryForm
           view={view}
           onSubmit={handleSubmit}
