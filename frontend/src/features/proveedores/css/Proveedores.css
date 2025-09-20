@@ -89,6 +89,7 @@
     background-color: var(--color-form-bg);
     color: var(--color-text-dark);
     box-sizing: border-box;
+    height: 52px;
 }
 
 .proveedores-search-bar input:focus {
@@ -105,25 +106,24 @@
 
 /* Estilos para el select del filtro de estado (con la clase "filtro-input") */
 .filtro-input {
-    padding: 9px 10px; /* Consistente con el select de Usuarios y Compras */
+    padding: 10px 12px;
     border: 1px solid var(--color-form-border);
     border-radius: 5px;
-    font-size: 1rem; /* Consistente con el select de Usuarios y Compras */
+    font-size: 1rem;
     background-color: var(--color-form-bg);
     color: var(--color-text-dark);
-    min-width: 150px; /* Asegura un ancho mínimo */
-    height: 41px; /* Para que coincida con la altura del input de búsqueda y el botón */
+    min-width: 200px;
     box-sizing: border-box;
     cursor: pointer;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    -webkit-appearance: none; /* Elimina la apariencia por defecto del sistema */
+    -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E'); /* Icono de flecha SVG personalizado */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right 8px top 50%;
     background-size: .65em auto;
-    padding-right: 25px; /* Espacio para el icono de flecha */
+    padding-right: 25px;
 }
 
 .filtro-input:focus {
@@ -144,7 +144,6 @@
     font-weight: 500;
     transition: background-color 0.3s ease;
     flex-shrink: 0;
-    height: 41px; 
     box-sizing: border-box;
     display: flex; 
     align-items: center;
@@ -705,6 +704,7 @@ input.is-invalid, .input-documento.is-invalid {
     color: var(--color-text-dark);
     min-width: 200px;
     box-sizing: border-box;
+    height: 52px;
 }
 
 .proveedores-filtro-input:focus {
@@ -726,6 +726,7 @@ input.is-invalid, .input-documento.is-invalid {
     transition: background-color 0.3s ease;
     white-space: nowrap;
     box-sizing: border-box;
+    height: 52px;
 }
 
 .proveedores-add-button:hover {

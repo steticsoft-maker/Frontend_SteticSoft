@@ -1,5 +1,6 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/responsive-template.css";
+@import "@/shared/styles/table-common.css";
 
 /*
 ============================================================
@@ -201,36 +202,19 @@
   box-shadow: 0 0 0 3px rgba(154, 122, 159, 0.15);
 }
 
+/* Usar estilos unificados de table-common.css */
+.table-container {
+  width: 100%;
+  margin-top: 20px;
+  box-sizing: border-box;
+}
+
 .citas-table-container {
   width: 100%;
   overflow-x: auto;
 }
 
-.citas-table-content {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  min-width: 800px;
-}
-
-.citas-table-content th,
-.citas-table-content td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid var(--color-form-border);
-}
-
-.citas-table-content th {
-  background-color: var(--color-table-header);
-  color: var(--color-text-dark);
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-}
-
-.citas-table-content tbody tr:hover {
-  background-color: var(--color-admin-hover);
-}
+/* Los estilos de tabla ahora se manejan desde table-common.css */
 
 .cita-estado-badge {
   padding: 5px 12px;
@@ -247,29 +231,43 @@
 .estado-cancelada { background-color: #f8d7da; color: #842029; }
 .estado-desconocido { background-color: #f0f0f0; color: #555; }
 
+/* Usar estilos unificados de table-common.css */
 .citas-table-actions {
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .citas-action-button {
-  background: none;
-  border: 1px solid var(--color-form-border);
-  border-radius: 6px;
-  width: 32px;
-  height: 32px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  color: var(--color-text-dark);
-  transition: all 0.2s ease;
+  margin: 0;
 }
 
-.citas-action-button:hover {
-  background-color: var(--color-primary-hover);
+/* Colores consistentes con otros módulos */
+.citas-action-button:nth-child(1), /* Ver */
+.citas-action-button:nth-child(2)  /* Editar */
+{ background-color: var(--color-secondary); color: var(--color-secondary-text); }
+
+.citas-action-button:nth-child(1):hover,
+.citas-action-button:nth-child(2):hover
+{ background-color: var(--color-secondary-hover); }
+
+.citas-action-button:nth-child(3) { /* Eliminar */
+  background-color: var(--color-primary);
   color: var(--color-text-light);
-  border-color: var(--color-primary-hover);
+}
+.citas-action-button:nth-child(3):hover {
+  background-color: var(--color-primary-hover);
 }
 
 /*

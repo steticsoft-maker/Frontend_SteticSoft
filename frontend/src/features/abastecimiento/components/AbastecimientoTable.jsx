@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { FaEye, FaEdit, FaTrash, FaExclamationTriangle } from 'react-icons/fa';
+import '../../../shared/styles/table-common.css';
 
 const AbastecimientoTable = ({ 
     abastecimientos, 
@@ -18,7 +19,7 @@ const AbastecimientoTable = ({
     };
 
     return (
-        <table className="tabla-abastecimiento">
+        <table className="table-main">
             <thead>
                 <tr>
                     <th>#</th>
@@ -33,10 +34,10 @@ const AbastecimientoTable = ({
                 {abastecimientos.map((item, index) => (
                     <tr key={item.idAbastecimiento} className={item.estaAgotado ? 'depleted-row' : ''}>
                         <td data-label="#">{startIndex + index + 1}</td>
-                        <td data-label="Empleado">
-    {`${item.usuario?.rol?.nombre || 'Empleado'} (${item.usuario?.correo || 'N/A'})`}
-</td>
-                        <td data-label="Producto(s)">
+                        <td data-label="Empleado:">
+                            {`${item.usuario?.rol?.nombre || 'Empleado'} (${item.usuario?.correo || 'N/A'})`}
+                        </td>
+                        <td data-label="Producto(s):">
                             {item.producto?.nombre || 'N/A'}
                             {item.estaAgotado && (
                                 <span className="depleted-reason-text">
@@ -44,43 +45,43 @@ const AbastecimientoTable = ({
                                 </span>
                             )}
                         </td>
-                        <td data-label="Fecha de Ingreso">{formatDate(item.fechaIngreso)}</td>
-                        <td data-label="Estado">
-                            <label className="switch">
+                        <td data-label="Fecha de Ingreso:">{formatDate(item.fechaIngreso)}</td>
+                        <td data-label="Estado:">
+                            <label className="table-switch">
                                 <input
                                     type="checkbox"
                                     checked={item.estado}
                                     onChange={() => onToggleEstado(item)}
                                 />
-                                <span className="slider round"></span>
+                                <span className="table-slider"></span>
                             </label>
                         </td>
-                        <td data-label="Acciones">
-                            <div className="icon-actions-abastecimiento">
+                        <td data-label="Acciones:">
+                            <div className="table-iconos">
                                 <button
-                                    className="table-icons-abastecimiento view-button"
+                                    className="table-button btn-view"
                                     onClick={() => onView(item)}
                                     title="Ver Detalles"
                                 >
                                     <FaEye />
                                 </button>
                                 <button
-                                    className="table-icons-abastecimiento edit-button"
+                                    className="table-button btn-edit"
                                     onClick={() => onEdit(item)}
                                     title="Editar Registro"
                                 >
                                     <FaEdit />
                                 </button>
                                 <button
-                                    className="table-icons-abastecimiento deplete-button-abastecimiento"
+                                    className="table-button btn-warning"
                                     onClick={() => onDeplete(item)}
                                     title="Razón de Agotamiento"
-                                    disabled={item.estaAgotado} // Se deshabilita si ya está agotado
+                                    disabled={item.estaAgotado}
                                 >
                                     <FaExclamationTriangle />
                                 </button>
                                 <button
-                                    className="table-icons-abastecimiento delete-button-abastecimiento"
+                                    className="table-button btn-delete"
                                     onClick={() => onDeleteConfirm(item)}
                                     title="Eliminar Registro"
                                 >

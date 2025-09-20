@@ -1,5 +1,6 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/responsive-template.css";
+@import "@/shared/styles/table-common.css";
 /* src/features/abastecimiento/css/Abastecimiento.css */
 
 /* Define estas variables en tu _variables.css si no existen */
@@ -51,22 +52,143 @@
     margin-bottom: 25px;
     font-size: 1.8rem;
   }
-  
-/* === BARRA DE ACCIONES SUPERIORES - HORIZONTAL === */
+
+/* ESTRUCTURA COMO PROVEEDORES - FUNCIONA CORRECTAMENTE */
+.lista-abastecimiento-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-background-light);
+}
+
+.abastecimiento-content-wrapper {
+    flex: 1;
+    padding: 40px;
+    margin: 0 auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.abastecimiento-content-wrapper h1 {
+    padding-left: 200px;
+    text-align: center;
+    color: var(--color-text-dark);
+    margin-top: 0;
+    margin-bottom: 0px;
+    font-size: 1.8rem;
+}
+
 .abastecimiento-actions-bar {
+    padding-left: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    gap: 30px;
-    flex-wrap: nowrap; /* Horizontal siempre */
+    margin-bottom: 25px; 
+    gap: 20px;
+    flex-wrap: wrap; 
     width: 100%;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
     box-sizing: border-box;
-    padding: 0 20px;
+    position: relative;
+    z-index: 1;
 }
+
+.abastecimiento-filters {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.abastecimiento-search-bar {
+    flex-grow: 1;
+    display: flex;
+}
+
+.abastecimiento-search-bar input {
+    padding: 10px 12px; 
+    width: 100%; 
+    min-width: 250px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    box-sizing: border-box;
+    height: 52px;
+}
+
+.abastecimiento-search-bar input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.abastecimiento-filtro-estado-grupo {
+    display: flex;
+    align-items: center;
+}
+
+.abastecimiento-filtro-input {
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    min-width: 200px;
+    box-sizing: border-box;
+    height: 52px;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 8px top 50%;
+    background-size: .65em auto;
+    padding-right: 25px;
+}
+
+.abastecimiento-filtro-input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.abastecimiento-add-button {
+    padding: 10px 20px;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.abastecimiento-add-button:hover {
+    background-color: var(--color-primary-hover);
+}
+  
+/* === BARRA DE ACCIONES SUPERIORES - HORIZONTAL === */
+/* Estilos duplicados eliminados - se usan los de arriba */
 
 /* Secciones específicas para abastecimiento */
 .abastecimiento-search-section {
@@ -116,28 +238,10 @@
     outline: none;
   }
   
-  .abastecimiento-add-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    background-color: var(--color-primary);
-    color: var(--color-text-light);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-    flex-shrink: 0;
-    height: 41px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .abastecimiento-add-button:hover {
-    background-color: var(--color-primary-hover);
-  }
+  /* Estilos duplicados eliminados - se usan los de arriba */
   
   /* === ESTILOS DE TABLA === */
+  /* Usar estilos unificados de table-common.css */
   .tabla-abastecimiento {
     width: 100%;
     border-collapse: collapse;
@@ -148,6 +252,7 @@
     overflow: hidden;
     font-size: 0.95rem;
   }
+  
   .tabla-abastecimiento th {
     background-color: var(--color-table-header);
     color: var(--color-table-header-text);
@@ -157,6 +262,7 @@
     font-size: 1rem;
     border: 1px solid var(--color-table-header);
   }
+  
   .tabla-abastecimiento td {
     padding: 12px 15px;
     border: 1px solid var(--color-table-header);
@@ -195,12 +301,14 @@
   }
   
   /* === BOTONES DE ACCIÓN EN TABLA === */
+  /* Usar estilos unificados de table-common.css */
   .icon-actions-abastecimiento {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
   }
+  
   .table-icons-abastecimiento {
     padding: 8px 10px;
     font-size: 0.9rem;
@@ -282,10 +390,16 @@
     gap: 15px;
   }
 
+  .abastecimiento-filters {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+
   .abastecimiento-search-bar,
   .abastecimiento-search-bar input,
-  .abastecimiento-filtro-estado, /* Aplicar a la nueva sección de filtro */
-  .abastecimiento-filtro-estado select, /* El select también al 100% */
+  .abastecimiento-filtro-estado-grupo,
+  .abastecimiento-filtro-estado-grupo select,
   .abastecimiento-add-button {
     width: 100%;
   }
@@ -481,6 +595,64 @@
     display: flex; /* Mantenido */
     flex-direction: column; /* Mantenido */
   }
+
+/* ======================================================== */
+/* ============= RESPONSIVE PARA NUEVA ESTRUCTURA ============= */
+/* ======================================================== */
+
+@media (max-width: 992px) {
+    .lista-abastecimiento-container {
+        margin-left: 0;
+    }
+
+    .abastecimiento-content-wrapper {
+        padding: 20px;
+    }
+
+    .abastecimiento-content-wrapper h1 {
+        padding-left: 0;
+        font-size: 1.6rem;
+    }
+}
+
+/* --- Para Móviles (hasta 768px) --- */
+@media (max-width: 768px) {
+    .lista-abastecimiento-container {
+        padding: 15px;
+    }
+
+    .abastecimiento-content-wrapper {
+        padding: 0;
+    }
+    
+    .abastecimiento-content-wrapper h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding-left: 0;
+    }
+
+    .abastecimiento-actions-bar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .abastecimiento-filters {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .abastecimiento-search-bar input,
+    .abastecimiento-filtro-estado-grupo select,
+    .abastecimiento-add-button {
+        width: 100%;
+    }
+
+    .abastecimiento-add-button {
+        height: auto;
+        padding: 12px 20px;
+    }
+}
 
   /* Estilos para el botón de cierre X, usando la clase del JSX */
   .modal-close-button-x {

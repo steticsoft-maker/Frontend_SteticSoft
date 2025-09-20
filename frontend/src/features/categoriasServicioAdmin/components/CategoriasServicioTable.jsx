@@ -4,8 +4,9 @@ import '../../../shared/styles/table-common.css';
 
 const CategoriasServicioTable = ({ categorias, onEditar, onEliminar, onCambiarEstado, onVerDetalles, loadingId }) => {
   return (
-    <div className="table-container">
-      <table className="table-main">
+    <>
+      <div className="table-container">
+        <table className="table-main">
         <thead>
           <tr>
             <th>#</th>
@@ -70,7 +71,8 @@ const CategoriasServicioTable = ({ categorias, onEditar, onEliminar, onCambiarEs
         )}
       </tbody>
     </table>
-    </div>
+      </div>
+    </>
   );
 };
 

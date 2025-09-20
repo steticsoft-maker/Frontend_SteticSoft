@@ -1,6 +1,7 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/admin-crud-unified.css";
 @import "@/shared/styles/admin-migration-guide.css";
+@import "@/shared/styles/table-common.css";
 
 /* src/features/clientes/css/Clientes.css */
 /* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */
@@ -32,6 +33,137 @@
     color: var(--color-text-dark);
     margin-bottom: 25px;
     font-size: 1.8rem;
+}
+
+/* ESTRUCTURA COMO PROVEEDORES - FUNCIONA CORRECTAMENTE */
+.lista-clientes-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-background-light);
+}
+
+.clientes-content-wrapper {
+    flex: 1;
+    padding: 40px;
+    margin: 0 auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.clientes-content-wrapper h1 {
+    padding-left: 200px;
+    text-align: center;
+    color: var(--color-text-dark);
+    margin-top: 0;
+    margin-bottom: 0px;
+    font-size: 1.8rem;
+}
+
+.clientes-actions-bar {
+    padding-left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; 
+    gap: 20px;
+    flex-wrap: wrap; 
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.clientes-filters {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.clientes-search-bar {
+    flex-grow: 1;
+    display: flex;
+}
+
+.clientes-search-bar input {
+    padding: 10px 12px; 
+    width: 100%; 
+    min-width: 250px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    box-sizing: border-box;
+    height: 52px;
+}
+
+.clientes-search-bar input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.clientes-filtro-estado-grupo {
+    display: flex;
+    align-items: center;
+}
+
+.clientes-filtro-input {
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid var(--color-form-border);
+    border-radius: 5px;
+    background-color: var(--color-form-bg);
+    color: var(--color-text-dark);
+    min-width: 200px;
+    box-sizing: border-box;
+    height: 52px;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239a7a9f%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9s-1.8-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 8px top 50%;
+    background-size: .65em auto;
+    padding-right: 25px;
+}
+
+.clientes-filtro-input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-form-focus-bg);
+    box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+    outline: none;
+}
+
+.clientes-add-button {
+    padding: 10px 20px;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+    height: 52px;
+}
+
+.clientes-add-button:hover {
+    background-color: var(--color-primary-hover);
 }
 
 /* === ESTILOS PARA USAR CON ADMIN-LAYOUT === */
@@ -100,7 +232,7 @@
     color: var(--color-text-dark);
     min-width: 250px;
     box-sizing: border-box;
-    height: 41px;
+    height: 52px;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
@@ -120,7 +252,7 @@
     font-size: 1rem;
     transition: background-color 0.3s ease;
     flex-shrink: 0;
-    height: 41px;
+    height: 52px;
     box-sizing: border-box;
 }
 
@@ -209,52 +341,54 @@
 }
 
 /* === ESTILOS DE TABLA === */
-.tablaClientes {
+/* Usar estilos unificados de table-common.css */
+.table-container {
     width: 100%;
-    max-width: none; 
-    margin: 25px 0; 
-    border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    background-color: var(--color-table-row-odd);
-    border-radius: 8px;
-    overflow: hidden; 
-    font-size: 0.95rem; 
+    margin-top: 20px;
+    box-sizing: border-box;
 }
-.tablaClientes th {
-    background-color: var(--color-table-header);
-    color: var(--color-table-header-text);
-    padding: 12px 15px; 
-    text-align: center; 
-    font-weight: 600; 
-    font-size: 1rem; 
-    border: 1px solid var(--color-table-header);
+
+/* Los estilos de tabla ahora se manejan desde table-common.css */
+
+/* Los estilos de tabla ahora se manejan desde table-common.css */
+/* Usar estilos unificados de table-common.css */
+.clientes-table-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
-.tablaClientes td {
-    padding: 12px 15px; 
-    border: 1px solid var(--color-table-header);
-    color: var(--color-text-dark);
-    font-size: 0.9rem; 
-    text-align: left; 
-    vertical-align: middle;
+
+.iconsTablaclientes {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
 }
-.tablaClientes td:nth-child(1), .tablaClientes td:nth-child(2), 
-.tablaClientes td:nth-child(3), .tablaClientes td:nth-child(5) { text-align: left; }
-.tablaClientes td:nth-child(4), .tablaClientes td:nth-child(6), 
-.tablaClientes td:nth-child(7) { text-align: center; }
-.tablaClientes tbody tr:nth-child(even) { background-color: var(--color-table-row-even); }
-.tablaClientes tbody tr:hover { background-color: var(--color-admin-hover); }
-.clientes-table-actions { 
-    display: flex; justify-content: center; align-items: center; gap: 8px;
+
+/* Colores consistentes con otros módulos */
+.iconsTablaclientes:nth-child(1), /* Ver */
+.iconsTablaclientes:nth-child(2)  /* Editar */
+{ background-color: var(--color-secondary); color: var(--color-secondary-text); }
+
+.iconsTablaclientes:nth-child(1):hover,
+.iconsTablaclientes:nth-child(2):hover
+{ background-color: var(--color-secondary-hover); }
+
+.delete-button-elimnarCliente { 
+    background-color: var(--color-primary); 
+    color: var(--color-text-light); 
 }
-.iconsTablaclientes { 
-    padding: 8px 10px; font-size: 0.9rem; border: none; border-radius: 5px;
-    color: var(--color-secondary-text); background-color: var(--color-secondary); cursor: pointer;
-    transition: background-color 0.3s ease; display: inline-flex;
-    align-items: center; justify-content: center;
+.delete-button-elimnarCliente:hover { 
+    background-color: var(--color-primary-hover); 
 }
-.iconsTablaclientes:hover { background-color: var(--color-secondary-hover); }
-.delete-button-elimnarCliente { background-color: var(--color-primary); color: var(--color-text-light); }
-.delete-button-elimnarCliente:hover { background-color: var(--color-primary-hover); }
 
 /* === ESTILOS DEL COMPONENTE SWITCH === */
 .switch {
@@ -860,5 +994,63 @@ input:checked+.slider:before { transform: translateX(16px); }
 
     .tablaClientes td {
         font-size: 0.75rem;
+    }
+}
+
+/* ======================================================== */
+/* ============= RESPONSIVE PARA NUEVA ESTRUCTURA ============= */
+/* ======================================================== */
+
+@media (max-width: 992px) {
+    .lista-clientes-container {
+        margin-left: 0;
+    }
+
+    .clientes-content-wrapper {
+        padding: 20px;
+    }
+
+    .clientes-content-wrapper h1 {
+        padding-left: 0;
+        font-size: 1.6rem;
+    }
+}
+
+/* --- Para Móviles (hasta 768px) --- */
+@media (max-width: 768px) {
+    .lista-clientes-container {
+        padding: 15px;
+    }
+
+    .clientes-content-wrapper {
+        padding: 0;
+    }
+    
+    .clientes-content-wrapper h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding-left: 0;
+    }
+
+    .clientes-actions-bar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .clientes-filters {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .clientes-search-bar input,
+    .clientes-filtro-estado-grupo select,
+    .clientes-add-button {
+        width: 100%;
+    }
+
+    .clientes-add-button {
+        height: auto;
+        padding: 12px 20px;
     }
 }

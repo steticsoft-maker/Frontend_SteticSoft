@@ -17,8 +17,7 @@ const ClientesTable = ({
   }
 
   return (
-    <div className="table-container">
-      <table className="table-main">
+    <table className="table-main">
         <thead>
           <tr>
             <th>#</th>
@@ -69,8 +68,7 @@ const ClientesTable = ({
             );
           })}
         </tbody>
-      </table>
-    </div>
+    </table>
   );
 };
 

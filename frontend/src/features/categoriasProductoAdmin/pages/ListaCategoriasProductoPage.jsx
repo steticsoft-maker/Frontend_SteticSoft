@@ -181,43 +181,41 @@ function ListaCategoriasProductoPage() {
     };
 
     return (
-        <div className="categorias-producto-admin-page-container">
-            <div className="categorias-producto-admin-main-content">
-                <div className="categorias-producto-admin-content-wrapper">
-                    <h1>Gestión Categorías de Productos</h1>
-                    <div className="categorias-producto-admin-actions-bar">
-                        <div className="categorias-producto-admin-filters">
-                            <div className="categorias-producto-admin-search-bar">
-                                <input
-                                    type="text"
-                                    placeholder="Busca por cualquier campo..."
-                                    value={busqueda}
-                                    onChange={(e) => setBusqueda(e.target.value)}
-                                    disabled={loading}
-                                />
-                            </div>
-                            <div className="filtro-estado-grupo">
-                                <select
-                                    id="filtro-estado"
-                                    className="filtro-input"
-                                    value={filtroEstado}
-                                    onChange={(e) => setFiltroEstado(e.target.value)}
-                                    disabled={loading}
-                                >
-                                    <option value="todos">Todos</option>
-                                    <option value="activos">Activos</option>
-                                    <option value="inactivos">Inactivos</option>
-                                </select>
-                            </div>
+        <div className="lista-categorias-container">
+            <div className="categorias-content-wrapper">
+                <h1>Gestión Categorías de Productos ({filteredCategorias.length})</h1>
+                <div className="categorias-actions-bar">
+                    <div className="categorias-filters">
+                        <div className="categorias-search-bar">
+                            <input
+                                type="text"
+                                placeholder="Busca por cualquier campo..."
+                                value={busqueda}
+                                onChange={(e) => setBusqueda(e.target.value)}
+                                disabled={loading}
+                            />
                         </div>
-                        <button
-                            className="categorias-producto-admin-add-button"
-                            onClick={() => handleOpenModal("create")}
-                            disabled={loading}
-                        >
-                            Agregar Categoría
-                        </button>
+                        <div className="categorias-filtro-estado-grupo">
+                            <select
+                                className="categorias-filtro-input"
+                                value={filtroEstado}
+                                onChange={(e) => setFiltroEstado(e.target.value)}
+                                disabled={loading}
+                            >
+                                <option value="todos">Todos los Estados</option>
+                                <option value="activos">Activos</option>
+                                <option value="inactivos">Inactivos</option>
+                            </select>
+                        </div>
                     </div>
+                    <button
+                        className="categorias-add-button"
+                        onClick={() => handleOpenModal("create")}
+                        disabled={loading}
+                    >
+                        Agregar Categoría
+                    </button>
+                </div>
 
                     {loading ? (
                         <p>Cargando categorías...</p>
@@ -225,14 +223,16 @@ function ListaCategoriasProductoPage() {
                         <p className="error-message">{error}</p>
                     ) : (
                         <>
-                            <CategoriasProductoTable
-                                categorias={categoriasPaginadas}
-                                startIndex={indexOfFirstItem}
-                                onView={(cat) => handleOpenModal("details", cat)}
-                                onEdit={(cat) => handleOpenModal("edit", cat)}
-                                onDeleteConfirm={(cat) => handleOpenModal("delete", cat)}
-                                onToggleEstado={handleToggleEstado}
-                            />
+                            <div className="table-container">
+                                <CategoriasProductoTable
+                                    categorias={categoriasPaginadas}
+                                    startIndex={indexOfFirstItem}
+                                    onView={(cat) => handleOpenModal("details", cat)}
+                                    onEdit={(cat) => handleOpenModal("edit", cat)}
+                                    onDeleteConfirm={(cat) => handleOpenModal("delete", cat)}
+                                    onToggleEstado={handleToggleEstado}
+                                />
+                            </div>
                             <Pagination
                                 itemsPerPage={itemsPerPage}
                                 totalItems={filteredCategorias.length}
@@ -241,7 +241,6 @@ function ListaCategoriasProductoPage() {
                             />
                         </>
                     )}
-                </div>
             </div>
 
             <CategoriaProductoCrearModal

@@ -97,6 +97,7 @@
     color: var(--color-text-dark);
     min-width: 200px;
     box-sizing: border-box;
+    height: 52px;
 }
 
 .ventas-filtro-input:focus {
@@ -118,6 +119,7 @@
     transition: background-color 0.3s ease;
     white-space: nowrap;
     box-sizing: border-box;
+    height: 52px;
 }
 
 .ventas-add-button:hover {

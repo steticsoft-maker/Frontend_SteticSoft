@@ -36,6 +36,7 @@ const useClientes = () => {
   // Estados para búsqueda y filtrado
   const [inputValue, setInputValue] = useState(""); // Para el input de búsqueda inmediato
   const [searchTerm, setSearchTerm] = useState(""); // Para la búsqueda con debounce
+  const [filtroEstado, setFiltroEstado] = useState("todos"); // Para el filtro de estado
 
   // Estados para paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -478,10 +479,18 @@ const useClientes = () => {
     [clientes, loadClientes, searchTerm]
   );
 
-  // Lógica de paginación
+  // Lógica de filtrado y paginación
   const processedClientes = useMemo(() => {
-    return clientes;
-  }, [clientes]);
+    let clientesFiltrados = [...clientes];
+    
+    // Aplicar filtro por estado
+    if (filtroEstado !== "todos") {
+      const esActivo = filtroEstado === "activos";
+      clientesFiltrados = clientesFiltrados.filter((cliente) => cliente.estado === esActivo);
+    }
+    
+    return clientesFiltrados;
+  }, [clientes, filtroEstado]);
 
   const totalClientesFiltrados = processedClientes.length;
 
@@ -513,6 +522,8 @@ const useClientes = () => {
     isDetailsModalOpen,
     inputValue,
     setInputValue,
+    filtroEstado,
+    setFiltroEstado,
     currentPage,
     itemsPerPage,
     paginate,

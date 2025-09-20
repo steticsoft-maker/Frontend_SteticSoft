@@ -20,6 +20,8 @@ function ListaClientesPage() {
     isDetailsModalOpen,
     inputValue,
     setInputValue,
+    filtroEstado,
+    setFiltroEstado,
     currentPage,
     itemsPerPage,
     paginate,
@@ -36,21 +38,35 @@ function ListaClientesPage() {
   } = useClientes();
 
   return (
-    <div className="admin-page-container">
-      <div className="admin-main-content">
-        <div className="admin-content-wrapper">
-          <h1>Gestión de Clientes ({totalClientesFiltrados})</h1>
-        <div className="admin-actions-bar">
-          <input
-            type="text"
-            placeholder="Buscar por cualquier campo..."
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="admin-search-input"
-            disabled={isLoading}
-          />
+    <div className="lista-clientes-container">
+      <div className="clientes-content-wrapper">
+        <h1>Gestión de Clientes ({totalClientesFiltrados})</h1>
+        <div className="clientes-actions-bar">
+          <div className="clientes-filters">
+            <div className="clientes-search-bar">
+              <input
+                type="text"
+                placeholder="Busca por cualquier campo..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="clientes-filtro-estado-grupo">
+              <select
+                className="clientes-filtro-input"
+                value={filtroEstado}
+                onChange={(e) => setFiltroEstado(e.target.value)}
+                disabled={isLoading}
+              >
+                <option value="todos">Todos los Estados</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+              </select>
+            </div>
+          </div>
           <button
-            className="admin-add-button"
+            className="clientes-add-button"
             onClick={() => handleOpenModal("create")}
             disabled={isLoading}
           >
@@ -84,7 +100,6 @@ function ListaClientesPage() {
             )}
           </>
         )}
-        </div>
       </div>
 
       <ClienteCrearModal

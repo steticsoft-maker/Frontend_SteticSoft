@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import CategoriasTabla from '../components/CategoriasServicioTable';
+import CategoriasServicioTable from '../components/CategoriasServicioTable';
 import CategoriaForm from '../components/CategoriaServicioForm.jsx';
 import CategoriaServicioDetalleModal from '../components/CategoriaServicioDetalleModal';
 
@@ -292,7 +292,7 @@ return dataFiltrada;
           <p>Cargando categorías...</p>
         ) : (
           <>
-            <CategoriasTabla
+            <CategoriasServicioTable
               categorias={paginatedData} 
               onEditar={handleAbrirEditarModal}
               onEliminar={handleEliminarCategoria}

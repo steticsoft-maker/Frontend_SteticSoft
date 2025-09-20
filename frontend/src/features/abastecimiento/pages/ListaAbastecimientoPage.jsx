@@ -127,11 +127,11 @@ function ListaAbastecimientoPage() {
     const indexOfFirstItem = (currentPage - 1) * itemsPerPage;
 
     return (
-        <div className="abastecimiento-page-container">
-            <div className="abastecimiento-main-content">
-                <div className="abastecimiento-content-wrapper">
-                    <h1>Gestión de Abastecimiento</h1>
-                    <div className="abastecimiento-actions-bar">
+        <div className="lista-abastecimiento-container">
+            <div className="abastecimiento-content-wrapper">
+                <h1>Gestión de Abastecimiento ({totalItems})</h1>
+                <div className="abastecimiento-actions-bar">
+                    <div className="abastecimiento-filters">
                         <div className="abastecimiento-search-bar">
                             <input
                                 type="text"
@@ -141,9 +141,9 @@ function ListaAbastecimientoPage() {
                                 disabled={loading}
                             />
                         </div>
-                        <div className="abastecimiento-filtro-estado">
+                        <div className="abastecimiento-filtro-estado-grupo">
                             <select
-                                className="abastecimiento-filtro-estado-select"
+                                className="abastecimiento-filtro-input"
                                 value={filtroEstado}
                                 onChange={(e) => setFiltroEstado(e.target.value)}
                                 disabled={loading}
@@ -153,14 +153,15 @@ function ListaAbastecimientoPage() {
                                 <option value="inactivos">Inactivos</option>
                             </select>
                         </div>
-                        <button
-                            className="abastecimiento-add-button"
-                            onClick={() => handleOpenModal('create')}
-                            disabled={loading}
-                        >
-                            Agregar Abastecimiento
-                        </button>
                     </div>
+                    <button
+                        className="abastecimiento-add-button"
+                        onClick={() => handleOpenModal('create')}
+                        disabled={loading}
+                    >
+                        Agregar Abastecimiento
+                    </button>
+                </div>
 
                     {loading ? <p>Cargando registros...</p> : error ? <p className="error-message">{error}</p> : (
                         <>
@@ -181,7 +182,6 @@ function ListaAbastecimientoPage() {
                             />
                         </>
                     )}
-                </div>
             </div>
 
             {/* --- RENDERIZADO DE TODOS LOS MODALES --- */}

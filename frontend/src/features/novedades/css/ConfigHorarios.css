@@ -114,6 +114,7 @@
     color: var(--color-text-dark);
     min-width: 200px;
     box-sizing: border-box;
+    height: 52px;
 }
 
 .novedades-filtro-input:focus {
@@ -135,6 +136,7 @@
     transition: background-color 0.3s ease;
     white-space: nowrap;
     box-sizing: border-box;
+    height: 52px;
 }
 
 .novedades-add-button:hover {
@@ -157,7 +159,7 @@
   background-color: var(--color-background-light);
   border-radius: 5px;
   font-size: 1rem;
-  height: 41.5px; /* Altura consistente */
+  /* Altura automática basada en padding */
   box-sizing: border-box;
 }
 
@@ -178,7 +180,7 @@
   transition: background-color 0.3s ease;
   font-size: 1rem;
   font-weight: 500;
-  height: 41.5px;
+  /* Altura automática basada en padding */
 }
 
 .add-button:hover {

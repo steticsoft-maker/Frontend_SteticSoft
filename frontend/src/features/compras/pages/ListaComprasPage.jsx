@@ -271,60 +271,60 @@ function ListaComprasPage() {
         <div className="lista-compras-container">
             <div className="compras-content-wrapper">
                 <h1>Listado de Compras</h1>
-                <div className="compras-content-wrapper">
-                    <div className="compras-actions-bar">
-                        <div className="compras-filters">
-                            <div className="compras-search-bar">
-                                <input
-                                    type="text"
-                                    placeholder="Busca por cualquier campo..."
-                                    value={busqueda}
-                                    onChange={(e) => setBusqueda(e.target.value)}
-                                />
-                            </div>
-                            <div className="compras-filtro-estado-grupo">
-                                <select
-                                    id="filtro-estado"
-                                    className="compras-filtro-input"
-                                    value={filtroEstado}
-                                    onChange={(e) => setFiltroEstado(e.target.value)}
-                                >
-                                    <option value="todos">Todos los Estados</option>
-                                    <option value="completadas">Completadas</option>
-                                    <option value="anuladas">Anuladas</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button
-                            className="compras-add-button"
-                            onClick={() => navigate('/admin/compras/agregar')}
-                        >
-                            Agregar Compra
-                        </button>
-                    </div>
-                    {isLoading ? (
-                        <p>Cargando compras...</p>
-                    ) : error ? (
-                        <p className="error-message">{error}</p>
-                    ) : (
-                        <>
-                            <div className="table-container">
-                                <ComprasTable
-                                    compras={comprasPaginadas}
-                                    onDetalle={handleOpenDetalle}
-                                    onAnular={handleOpenAnular}
-                                    onGenerarPDF={generateAndShowPdf}
-                                    startIndex={indexOfFirstItem}
-                                />
-                            </div>
-                            <Paginacion
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                onPageChange={handlePageChange}
+                
+                <div className="compras-actions-bar">
+                    <div className="compras-filters">
+                        <div className="compras-search-bar">
+                            <input
+                                type="text"
+                                placeholder="Busca por cualquier campo..."
+                                value={busqueda}
+                                onChange={(e) => setBusqueda(e.target.value)}
                             />
-                        </>
-                    )}
+                        </div>
+                        <div className="compras-filtro-estado-grupo">
+                            <select
+                                id="filtro-estado"
+                                className="compras-filtro-input"
+                                value={filtroEstado}
+                                onChange={(e) => setFiltroEstado(e.target.value)}
+                            >
+                                <option value="todos">Todos los Estados</option>
+                                <option value="completadas">Completadas</option>
+                                <option value="anuladas">Anuladas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button
+                        className="compras-add-button"
+                        onClick={() => navigate('/admin/compras/agregar')}
+                    >
+                        Agregar Compra
+                    </button>
                 </div>
+
+                {isLoading ? (
+                    <p>Cargando compras...</p>
+                ) : error ? (
+                    <p className="error-message">{error}</p>
+                ) : (
+                    <>
+                        <div className="table-container">
+                            <ComprasTable
+                                compras={comprasPaginadas}
+                                onDetalle={handleOpenDetalle}
+                                onAnular={handleOpenAnular}
+                                onGenerarPDF={generateAndShowPdf}
+                                startIndex={indexOfFirstItem}
+                            />
+                        </div>
+                        <Paginacion
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
+                )}
             </div>
             {isDetalleModalOpen && (
                 <CompraDetalleModal compra={selectedCompra} onClose={handleCloseModals} />

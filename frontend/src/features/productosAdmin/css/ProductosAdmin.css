@@ -96,6 +96,7 @@
     color: var(--color-text-dark);
     min-width: 200px;
     box-sizing: border-box;
+    height: 52px;
 }
 
 .productos-filtro-input:focus {
@@ -117,6 +118,7 @@
     transition: background-color 0.3s ease;
     white-space: nowrap;
     box-sizing: border-box;
+    height: 52px;
 }
 
 .productos-add-button:hover {
@@ -190,7 +192,7 @@
     color: var(--color-text-dark);
     min-width: 250px;
     box-sizing: border-box;
-    height: 41px;
+    /* Altura automática basada en padding */
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
@@ -210,7 +212,7 @@
     font-size: 1rem;
     transition: background-color 0.3s ease;
     flex-shrink: 0;
-    height: 41px;
+    /* Altura automática basada en padding */
     box-sizing: border-box;
 }
 
@@ -333,7 +335,7 @@
     color: var(--color-text-dark);
     cursor: pointer;
     box-sizing: border-box;
-    height: 41px; /* Asegura que tenga la misma altura que el input de búsqueda */
+    /* Altura automática basada en padding */ /* Asegura que tenga la misma altura que el input de búsqueda */
 }
 
 .filtro-input:focus {
@@ -355,7 +357,7 @@
     font-weight: 500; /* Consistencia */
     transition: background-color 0.3s ease;
     flex-shrink: 0; /* Para que no se encoja */
-    height: 41px; /* Para alinear con input si tienen misma altura de padding/border */
+    /* Altura automática basada en padding */ /* Para alinear con input si tienen misma altura de padding/border */
     box-sizing: border-box;
 }
 .productos-admin-add-button:hover {

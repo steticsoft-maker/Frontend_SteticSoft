@@ -1,10 +1,11 @@
 import React from 'react';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import '../../../shared/styles/table-common.css';
 
 const CategoriasProductoTable = ({ categorias, onView, onEdit, onDeleteConfirm, onToggleEstado, startIndex }) => {
 
   return (
-    <table className="tablaCategoriaProductos">
+    <table className="table-main">
       <thead>
         <tr>
           <th>#</th>
@@ -17,29 +18,31 @@ const CategoriasProductoTable = ({ categorias, onView, onEdit, onDeleteConfirm, 
       <tbody>
         {categorias.map((categoria, index) => (
           <tr key={categoria.idCategoriaProducto}>
-            <td>{startIndex + index + 1}</td>
-            <td>{categoria.nombre}</td>
-            <td>{categoria.descripcion}</td>
-            <td>
-              <label className="switch">
+            <td data-label="#">{startIndex + index + 1}</td>
+            <td data-label="Nombre:">{categoria.nombre}</td>
+            <td data-label="Descripción:">{categoria.descripcion}</td>
+            <td data-label="Estado:">
+              <label className="table-switch">
                 <input
                   type="checkbox"
                   checked={categoria.estado}
                   onChange={() => onToggleEstado(categoria)}
                 />
-                <span className="slider round"></span>
+                <span className="table-slider"></span>
               </label>
             </td>
-            <td>
-              <button className="table-action-button-categoria" onClick={() => onView(categoria)} title="Ver Detalles">
-                <FaEye />
-              </button>
-              <button className="table-action-button-categoria" onClick={() => onEdit(categoria)} title="Editar Categoría">
-                <FaEdit />
-              </button>
-              <button className="table-action-button-categoria" onClick={() => onDeleteConfirm(categoria)} title="Eliminar Categoría">
-                <FaTrash />
-              </button>
+            <td data-label="Acciones:">
+              <div className="table-iconos">
+                <button className="table-button btn-view" onClick={() => onView(categoria)} title="Ver Detalles">
+                  <FaEye />
+                </button>
+                <button className="table-button btn-edit" onClick={() => onEdit(categoria)} title="Editar Categoría">
+                  <FaEdit />
+                </button>
+                <button className="table-button btn-delete" onClick={() => onDeleteConfirm(categoria)} title="Eliminar Categoría">
+                  <FaTrash />
+                </button>
+              </div>
             </td>
           </tr>
         ))}

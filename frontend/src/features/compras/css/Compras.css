@@ -41,46 +41,19 @@
 /* ============= BARRA DE ACCIONES SUPERIORES ============= */
 /* ======================================================== */
 .compras-actions-bar {
-    padding-left: 0; /* Ya está centrado */
+    padding-left: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px; 
-    gap: 30px;
-    flex-wrap: nowrap; /* Horizontal siempre */
+    gap: 20px;
+    flex-wrap: wrap; 
     width: 100%;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
     box-sizing: border-box;
-    padding: 0 20px;
+    position: relative;
+    z-index: 1;
 }
 
-/* Secciones específicas para compras */
-.compras-search-section {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 15px;
-    min-width: 300px;
-}
-
-.compras-filters-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    flex-shrink: 0;
-}
-
-.compras-buttons-section {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 15px;
-    flex-shrink: 0;
-}
 
 .compras-filters {
     display: flex;
@@ -113,18 +86,18 @@
 }
 
 .compras-filtro-estado-grupo {
-    flex-shrink: 0;
+    display: flex;
+    align-items: center;
 }
 
 .compras-filtro-input {
-    padding: 9px 10px;
+    padding: 10px 12px;
     border: 1px solid var(--color-form-border);
     border-radius: 5px;
     font-size: 1rem;
     background-color: var(--color-form-bg);
     color: var(--color-text-dark);
-    min-width: 150px;
-    height: 41px;
+    min-width: 200px;
     box-sizing: border-box;
     cursor: pointer;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -136,6 +109,8 @@
     background-position: right 8px top 50%;
     background-size: .65em auto;
     padding-right: 25px;
+    height: 52px;
+    line-height: 1.2;
 }
 
 .compras-filtro-input:focus {
@@ -156,11 +131,12 @@
     font-weight: 500;
     transition: background-color 0.3s ease;
     flex-shrink: 0;
-    height: 41px; 
     box-sizing: border-box;
     display: flex; 
     align-items: center;
     justify-content: center;
+    height: 52px;
+    line-height: 1.2;
 }
 .compras-add-button:hover {
     background-color: var(--color-primary-hover);
