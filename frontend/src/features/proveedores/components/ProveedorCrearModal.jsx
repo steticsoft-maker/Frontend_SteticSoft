@@ -111,13 +111,13 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
       break;
   }
 
-  const camposUnicos = ['correo', 'numeroDocumento', 'nitEmpresa', 'telefono', 'telefonoPersonaEncargada', 'emailPersonaEncargada', 'nombre'];
-  if (!error && camposUnicos.includes(name)) {
+  const camposUnicos = ['correo', 'numeroDocumento', 'nitEmpresa', 'telefono', 'telefonoPersonaEncargada', 'emailPersonaEncargada', 'nombre', 'nombrePersonaEncargada'];
+  if (!error && camposUnicos.includes(name) && value.trim()) {
     try {
       const payload = { [name]: value };
       const idProveedor = formData.idProveedor || null;
       const response = await proveedoresService.verificarDatosUnicos(payload, idProveedor);
-      if (response[name]) {
+      if (response && response[name]) {
         error = response[name];
       }
     } catch (err) {
@@ -126,7 +126,10 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
     }
   }
 
-  setErrors((prev) => ({ ...prev, [name]: error }));
+  setErrors((prev) => {
+    const newErrors = { ...prev, [name]: error };
+    return newErrors;
+  });
 };
 
   const validateForm = async () => {
@@ -139,13 +142,18 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
 
     for (const field of fieldsToValidate) {
       await handleFormChange(field, formData[field]);
-      if (errors[field]) {
-        newErrors[field] = errors[field];
-      }
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    // Esperar un momento para que se actualice el estado de errores
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Obtener los errores actuales del estado
+    setErrors(currentErrors => {
+      const hasErrors = Object.values(currentErrors).some(error => error && error.trim() !== '');
+      return currentErrors;
+    });
+    
+    return Object.values(errors).every(error => !error || error.trim() === '');
   };
 
   const handleSubmitForm = async (e) => {
@@ -176,6 +184,7 @@ const ProveedorCrearModal = ({ isOpen, onClose, onSubmit }) => {
             <ProveedorForm
               formData={formData}
               onFormChange={handleFormChange}
+              onBlur={handleFormChange}
               isEditing={false}
               errors={errors}
             />

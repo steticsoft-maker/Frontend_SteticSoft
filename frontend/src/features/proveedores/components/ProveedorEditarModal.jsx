@@ -112,7 +112,7 @@ const ProveedorEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
       break;
   }
 
-  const camposUnicos = ['correo', 'numeroDocumento', 'nitEmpresa', 'telefono', 'telefonoPersonaEncargada', 'emailPersonaEncargada', 'nombre'];
+  const camposUnicos = ['correo', 'numeroDocumento', 'nitEmpresa', 'telefono', 'telefonoPersonaEncargada', 'emailPersonaEncargada', 'nombre', 'nombrePersonaEncargada'];
   if (
     !error &&
     camposUnicos.includes(name) &&
@@ -137,7 +137,6 @@ const ProveedorEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
 
 
   const validateForm = async () => {
-    const newErrors = {};
     const fieldsToValidate = [
       'nombre', 'telefono', 'correo', 'direccion',
       'nombrePersonaEncargada', 'telefonoPersonaEncargada', 'emailPersonaEncargada',
@@ -146,13 +145,18 @@ const ProveedorEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
 
     for (const field of fieldsToValidate) {
       await handleFormChange(field, formData[field]);
-      if (errors[field]) {
-        newErrors[field] = errors[field];
-      }
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    // Esperar un momento para que se actualice el estado de errores
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Obtener los errores actuales del estado
+    setErrors(currentErrors => {
+      const hasErrors = Object.values(currentErrors).some(error => error && error.trim() !== '');
+      return currentErrors;
+    });
+    
+    return Object.values(errors).every(error => !error || error.trim() === '');
   };
 
   const handleSubmit = async (e) => {
@@ -183,6 +187,7 @@ const ProveedorEditarModal = ({ isOpen, onClose, onSubmit, initialData }) => {
             <ProveedorForm 
               formData={formData} 
               onFormChange={handleFormChange}
+              onBlur={handleFormChange}
               errors={errors}
               isEditing={true}
             />

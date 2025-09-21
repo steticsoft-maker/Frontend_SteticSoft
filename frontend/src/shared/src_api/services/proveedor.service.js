@@ -335,7 +335,7 @@ const eliminarProveedorFisico = async (idProveedor) => {
  */
 const verificarDatosUnicos = async (campos, idExcluir = null) => {
     const errores = {};
-    const whereClause = { estado: true }; // <-- CORRECCIÓN
+    const whereClause = { estado: true };
     if (idExcluir) {
         whereClause.idProveedor = { [Op.ne]: idExcluir };
     }
@@ -343,17 +343,25 @@ const verificarDatosUnicos = async (campos, idExcluir = null) => {
     const camposAValidar = {
         correo: "Este correo ya está registrado.",
         numeroDocumento: "Este documento ya está registrado.",
-        nitEmpresa: "Este NIT ya está registrado."
+        nitEmpresa: "Este NIT ya está registrado.",
+        telefono: "Este teléfono ya está registrado.",
+        telefonoPersonaEncargada: "Este teléfono del encargado ya está registrado.",
+        emailPersonaEncargada: "Este email del encargado ya está registrado.",
+        nombre: "Este nombre ya está registrado.",
+        nombrePersonaEncargada: "Este nombre del encargado ya está registrado."
     };
 
     for (const campo in campos) {
         if (camposAValidar[campo] && campos[campo]) {
+            const query = {
+                ...whereClause,
+                [campo]: campos[campo],
+            };
+            
             const existe = await db.Proveedor.findOne({
-                where: {
-                    ...whereClause,
-                    [campo]: campos[campo],
-                },
+                where: query,
             });
+            
             if (existe) {
                 errores[campo] = camposAValidar[campo];
             }
