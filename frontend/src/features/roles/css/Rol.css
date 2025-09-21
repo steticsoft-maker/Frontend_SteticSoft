@@ -960,6 +960,188 @@ input:checked+.slider:before {
     font-style: italic;
 }
 
+/* ======================================================== */
+/* ============= MÓDULOS SELECCIONADOS MEJORADOS ========= */
+/* ======================================================== */
+
+/* Header de módulos seleccionados */
+.rol-selected-modules-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.rol-selected-modules-header .admin-form-section-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.selected-count-badge {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+}
+
+.rol-selected-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.rol-clear-all-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
+
+.rol-clear-all-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+}
+
+.rol-clear-all-button .button-icon {
+    font-size: 0.9rem;
+}
+
+/* Container de módulos seleccionados */
+.rol-selected-modules-container {
+    margin-top: 16px;
+}
+
+.rol-selected-modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+/* Card de módulo seleccionado */
+.rol-selected-module-card {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(46, 204, 113, 0.1));
+    border: 2px solid rgba(39, 174, 96, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.1);
+}
+
+.rol-selected-module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(39, 174, 96, 0.2);
+    border-color: rgba(39, 174, 96, 0.4);
+}
+
+/* Header del módulo seleccionado */
+.rol-selected-module-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(39, 174, 96, 0.2);
+}
+
+.rol-selected-module-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.rol-selected-module-name {
+    margin: 0;
+    color: #27ae60;
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+}
+
+.rol-selected-module-count {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+}
+
+/* Permisos del módulo seleccionado */
+.rol-selected-module-permissions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.rol-selected-permission-tag {
+    background: white;
+    color: #27ae60;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(39, 174, 96, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.rol-selected-permission-more {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Estado sin módulos seleccionados */
+.rol-no-selected-modules {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--color-text-secondary);
+    background-color: rgba(154, 122, 159, 0.03);
+    border: 2px dashed var(--color-form-border);
+    border-radius: 12px;
+}
+
+.rol-no-selected-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    opacity: 0.6;
+}
+
+.rol-no-selected-modules p {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.rol-no-selected-modules small {
+    margin: 0;
+    font-size: 0.85rem;
+    font-style: italic;
+    opacity: 0.8;
+}
+
 /* Título en formulario */
 .rol-modalContent-form h2 {
     text-align: center;
@@ -1689,6 +1871,40 @@ input:checked+.slider:before {
     
     .rol-permiso-text {
         font-size: 0.9rem;
+    }
+
+    /* Responsive para módulos seleccionados */
+    .rol-selected-modules-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .rol-selected-actions {
+        justify-content: center;
+    }
+    
+    .rol-selected-modules-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .rol-selected-module-card {
+        padding: 12px;
+    }
+    
+    .rol-selected-module-header {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .rol-selected-module-name {
+        font-size: 1rem;
+    }
+    
+    .rol-selected-permission-tag {
+        font-size: 0.75rem;
+        padding: 3px 6px;
     }
 
     .rol-modalContent-form {

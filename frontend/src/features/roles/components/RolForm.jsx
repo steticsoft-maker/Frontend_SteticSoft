@@ -17,6 +17,30 @@ const RolForm = ({
 }) => {
   const [mostrarPermisos, setMostrarPermisos] = useState(isEditing || false);
 
+  // Función para obtener el icono del módulo
+  const getModuloIcon = (nombreModulo) => {
+    const iconMap = {
+      USUARIOS: "👥",
+      ROLES: "🛡️",
+      CLIENTES: "👤",
+      PRODUCTOS: "📦",
+      VENTAS: "🛒",
+      CITAS: "📅",
+      CATEGORIAS: "📂",
+      SERVICIOS: "🔧",
+      PROVEEDORES: "🚚",
+      COMPRAS: "🛍️",
+      ABASTECIMIENTO: "📋",
+      NOVEDADES: "📰",
+      DASHBOARD: "📊",
+      ESTADOS: "📊",
+      EMPLEADOS: "👨‍💼",
+      ESPECIALIDADES: "⭐",
+      PERMISOS: "🔐",
+    };
+    return iconMap[nombreModulo] || "📁";
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     onFormChange(name, type === "checkbox" ? checked : value);
@@ -47,7 +71,7 @@ const RolForm = ({
               name="nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              className={`admin-form-input ${formErrors.nombre ? 'error' : ''}`}
+              className={`admin-form-input ${formErrors.nombre ? "error" : ""}`}
               disabled={isRoleAdmin}
               required
             />
@@ -63,9 +87,11 @@ const RolForm = ({
             <select
               id="tipoPerfilInput"
               name="tipoPerfil"
-              value={formData.tipoPerfil || 'EMPLEADO'}
+              value={formData.tipoPerfil || "EMPLEADO"}
               onChange={handleInputChange}
-              className={`admin-form-select ${formErrors.tipoPerfil ? 'error' : ''}`}
+              className={`admin-form-select ${
+                formErrors.tipoPerfil ? "error" : ""
+              }`}
               disabled={isRoleAdmin}
               required
             >
@@ -88,7 +114,9 @@ const RolForm = ({
             name="descripcion"
             value={formData.descripcion}
             onChange={handleInputChange}
-            className={`admin-form-textarea ${formErrors.descripcion ? 'error' : ''}`}
+            className={`admin-form-textarea ${
+              formErrors.descripcion ? "error" : ""
+            }`}
             disabled={isRoleAdmin}
             required
             rows={3}
@@ -117,7 +145,7 @@ const RolForm = ({
       <div className="admin-form-section">
         <div className="admin-form-section-title">
           Módulos Disponibles
-          <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
             <button
               type="button"
               className="admin-form-button secondary"
@@ -134,7 +162,7 @@ const RolForm = ({
             </button>
           </div>
         </div>
-        
+
         <PermisosSelector
           permisosAgrupados={permisosAgrupados}
           permisosSeleccionadosIds={formData.idPermisos || []}
@@ -148,19 +176,122 @@ const RolForm = ({
       </div>
 
       <div className="admin-form-section">
-        <h3 className="admin-form-section-title">
-          Módulos Seleccionados ({modulosSeleccionadosNombres.length})
-        </h3>
+        <div className="rol-selected-modules-header">
+          <h3 className="admin-form-section-title">
+            <span className="section-icon">✅</span>
+            Módulos Seleccionados
+            <span className="selected-count-badge">
+              ({modulosSeleccionadosNombres.length})
+            </span>
+          </h3>
+          {modulosSeleccionadosNombres.length > 0 && (
+            <div className="rol-selected-actions">
+              <button
+                type="button"
+                className="rol-clear-all-button"
+                onClick={onDeselectAll}
+                title="Deseleccionar todos los permisos"
+              >
+                <span className="button-icon">🗑️</span>
+                Limpiar Todo
+              </button>
+            </div>
+          )}
+        </div>
+
         {modulosSeleccionadosNombres.length > 0 ? (
-          <div className="admin-modules-container">
-            {modulosSeleccionadosNombres.map((nombre, index) => (
-              <div key={index} className="admin-module-section">
-                <div className="admin-module-title">{nombre}</div>
-              </div>
-            ))}
+          <div className="rol-selected-modules-container">
+            <div className="rol-selected-modules-grid">
+              {(() => {
+                // Agrupar permisos por módulo para mostrar mejor
+                const permisosPorModulo = {};
+                const permisosSeleccionados = (formData.idPermisos || [])
+                  .map((id) =>
+                    permisosDisponibles.find((p) => p.idPermiso === id)
+                  )
+                  .filter(Boolean);
+
+                permisosSeleccionados.forEach((permiso) => {
+                  const parts = permiso.nombre.split("_");
+                  if (parts.length > 2 && parts[0] === "MODULO") {
+                    const moduloName = parts[1];
+                    const accionName = parts.slice(2).join("_");
+
+                    if (!permisosPorModulo[moduloName]) {
+                      permisosPorModulo[moduloName] = [];
+                    }
+                    permisosPorModulo[moduloName].push(accionName);
+                  }
+                });
+
+                return Object.entries(permisosPorModulo).map(
+                  ([moduloName, acciones]) => {
+                    const moduloIcon = getModuloIcon(moduloName);
+                    const displayModuloName = moduloName
+                      .split("_")
+                      .map(
+                        (word) =>
+                          word.charAt(0).toUpperCase() +
+                          word.slice(1).toLowerCase()
+                      )
+                      .join(" ");
+
+                    return (
+                      <div
+                        key={moduloName}
+                        className="rol-selected-module-card"
+                      >
+                        <div className="rol-selected-module-header">
+                          <span className="rol-selected-module-icon">
+                            {moduloIcon}
+                          </span>
+                          <h4 className="rol-selected-module-name">
+                            {displayModuloName}
+                          </h4>
+                          <span className="rol-selected-module-count">
+                            {acciones.length}
+                          </span>
+                        </div>
+                        <div className="rol-selected-module-permissions">
+                          {acciones.slice(0, 3).map((accion, index) => {
+                            const displayAccion = accion
+                              .split("_")
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() +
+                                  word.slice(1).toLowerCase()
+                              )
+                              .join(" ");
+                            return (
+                              <span
+                                key={index}
+                                className="rol-selected-permission-tag"
+                              >
+                                {displayAccion}
+                              </span>
+                            );
+                          })}
+                          {acciones.length > 3 && (
+                            <span className="rol-selected-permission-more">
+                              +{acciones.length - 3} más
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+                );
+              })()}
+            </div>
           </div>
         ) : (
-          <p>No hay módulos seleccionados</p>
+          <div className="rol-no-selected-modules">
+            <span className="rol-no-selected-icon">📝</span>
+            <p>No hay permisos seleccionados</p>
+            <small>
+              Selecciona permisos de los módulos arriba para verlos aquí
+            </small>
+          </div>
         )}
       </div>
     </>
