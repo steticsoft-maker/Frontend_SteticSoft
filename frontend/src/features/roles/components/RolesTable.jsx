@@ -89,7 +89,11 @@ const RolesTable = ({
         let action = parts.slice(2).join("_");
         // Capitalizar la primera letra de la acción para mejor lectura
         action = action.charAt(0).toUpperCase() + action.slice(1).toLowerCase();
-        return action;
+        return {
+          action: action,
+          fullName: p.nombre,
+          id: p.idPermiso,
+        };
       });
   };
 
@@ -106,88 +110,185 @@ const RolesTable = ({
         </tr>
       </thead>
       <tbody>
-        {Array.isArray(roles) && roles.map((rol, index) => {
-          const numeroFila = (currentPage - 1) * rowsPerPage + index + 1;
-          const modulosConPermisos = new Map();
-          (rol.permisos || []).forEach((p) => {
-            const parts = p.nombre.split("_");
-            if (parts.length > 1 && parts[0] === "MODULO") {
-              const moduloNombreOriginal = parts[1];
-              const moduloNombreKey = moduloNombreOriginal.toUpperCase();
-              if (!modulosConPermisos.has(moduloNombreKey)) {
-                modulosConPermisos.set(moduloNombreKey, {
-                  originalName: moduloNombreOriginal,
-                  permissions: [],
-                });
+        {Array.isArray(roles) &&
+          roles.map((rol, index) => {
+            const numeroFila = (currentPage - 1) * rowsPerPage + index + 1;
+            const modulosConPermisos = new Map();
+            (rol.permisos || []).forEach((p) => {
+              const parts = p.nombre.split("_");
+              if (parts.length > 1 && parts[0] === "MODULO") {
+                const moduloNombreOriginal = parts[1];
+                const moduloNombreKey = moduloNombreOriginal.toUpperCase();
+                if (!modulosConPermisos.has(moduloNombreKey)) {
+                  modulosConPermisos.set(moduloNombreKey, {
+                    originalName: moduloNombreOriginal,
+                    permissions: [],
+                  });
+                }
               }
-            }
-          });
-          const modulosParaMostrar = Array.from(modulosConPermisos.entries());
+            });
+            const modulosParaMostrar = Array.from(modulosConPermisos.entries());
 
-          return (
-            <tr key={rol.idRol}>
-              <td data-label="#">{numeroFila}</td>
-              <td data-label="Nombre del Rol">{rol.nombre}</td>
-              <td data-label="Descripción">{rol.descripcion}</td>
-              <td data-label="Permisos por Módulo:" className="permisos-cell">
-                {modulosParaMostrar.length > 0 ? modulosParaMostrar.map(([moduloKey, moduloData]) => {
-                  const IconComponent = moduloIconMap[moduloKey]?.icon || moduloIconMap.DEFAULT.icon;
-                  const acciones = getPermissionsForModule(rol.permisos, moduloData.originalName);
-                  const displayName = moduloIconMap[moduloKey]?.name || moduloData.originalName;
-                  const tooltipContent = (
-                    <div>
-                      <strong>{displayName}:</strong>
-                      <ul>
-                        {acciones.map((accion) => <li key={accion}>{accion}</li>)}
-                      </ul>
-                    </div>
-                  );
-                  return (
-                    <Tooltip key={moduloKey} content={tooltipContent} position="top">
-                      <span className="permission-icon-wrapper" tabIndex={0}>
-                        <IconComponent size="1.5em" className="rol-permission-table-icon" />
-                      </span>
-                    </Tooltip>
-                  );
-                }) : "Ninguno"}
-              </td>
-              <td data-label="Estado">
-                {rol.nombre !== "Administrador" ? (
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={rol.estado}
-                      onChange={() => onToggleAnular(rol)}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                ) : (
-                  <span>No Aplicable</span>
-                )}
-              </td>
-              <td data-label="Acciones">
-                <div className="table-iconos">
-                  <button className="table-button btn-view" onClick={() => onView(rol)} title="Ver Detalles">
-                    <FaEye />
-                  </button>
-                  <button className="table-button btn-history" onClick={() => onHistory(rol)} title="Ver Historial de Cambios">
-                    <FaHistory />
-                  </button>
-                  {rol.nombre !== "Administrador" && (
-                    <>
-                      <button className="table-button btn-edit" onClick={() => onEdit(rol)} title="Editar Rol">
-                        <FaEdit />
-                      </button>
-                      <button className="table-button btn-delete" onClick={() => onDeleteConfirm(rol)} title="Eliminar Rol">
-                        <FaTrash />
-                      </button>
-                    </>
+            return (
+              <tr key={rol.idRol}>
+                <td data-label="#">{numeroFila}</td>
+                <td data-label="Nombre del Rol">{rol.nombre}</td>
+                <td data-label="Descripción">{rol.descripcion}</td>
+                <td data-label="Permisos por Módulo:" className="permisos-cell">
+                  {modulosParaMostrar.length > 0
+                    ? modulosParaMostrar.map(([moduloKey, moduloData]) => {
+                        const IconComponent =
+                          moduloIconMap[moduloKey]?.icon ||
+                          moduloIconMap.DEFAULT.icon;
+                        const permisos = getPermissionsForModule(
+                          rol.permisos,
+                          moduloData.originalName
+                        );
+                        const displayName =
+                          moduloIconMap[moduloKey]?.name ||
+                          moduloData.originalName;
+
+                        // Mostrar un solo icono por módulo con tooltip que liste todos los permisos
+                        if (permisos.length > 0) {
+                          // Función para dividir permisos en columnas
+                          const formatPermissionsInColumns = (permissions) => {
+                            const totalPermissions = permissions.length;
+                            let columns = 1;
+
+                            // Determinar número de columnas según cantidad de permisos
+                            if (totalPermissions <= 3) {
+                              columns = 1;
+                            } else if (totalPermissions <= 6) {
+                              columns = 2;
+                            } else {
+                              columns = 3;
+                            }
+
+                            const itemsPerColumn = Math.ceil(
+                              totalPermissions / columns
+                            );
+                            const columnsData = [];
+
+                            // Dividir permisos en columnas
+                            for (let i = 0; i < columns; i++) {
+                              const start = i * itemsPerColumn;
+                              const end = Math.min(
+                                start + itemsPerColumn,
+                                totalPermissions
+                              );
+                              columnsData.push(permissions.slice(start, end));
+                            }
+
+                            // Crear texto formateado en columnas
+                            let result = `${displayName}\n\n`;
+
+                            // Calcular el ancho máximo de cada columna para alineación
+                            const maxColumnWidth = Math.max(
+                              ...columnsData.map((col) =>
+                                Math.max(...col.map((p) => p.action.length))
+                              )
+                            );
+
+                            // Formatear cada fila
+                            const maxRows = Math.max(
+                              ...columnsData.map((col) => col.length)
+                            );
+                            for (let row = 0; row < maxRows; row++) {
+                              let rowText = "";
+                              for (let col = 0; col < columns; col++) {
+                                if (columnsData[col][row]) {
+                                  const permission =
+                                    columnsData[col][row].action;
+                                  const paddedPermission = permission.padEnd(
+                                    maxColumnWidth + 2
+                                  );
+                                  rowText += `• ${paddedPermission}`;
+                                } else {
+                                  rowText += " ".repeat(maxColumnWidth + 4);
+                                }
+                              }
+                              result += rowText.trim() + "\n";
+                            }
+
+                            return result.trim();
+                          };
+
+                          const permissionsText =
+                            formatPermissionsInColumns(permisos);
+
+                          return (
+                            <Tooltip key={moduloKey} text={permissionsText}>
+                              <span
+                                className="permission-icon-wrapper"
+                                tabIndex={0}
+                              >
+                                <IconComponent
+                                  size="1.4em"
+                                  className="rol-permission-table-icon"
+                                />
+                              </span>
+                            </Tooltip>
+                          );
+                        }
+
+                        // Fallback si no hay permisos
+                        return null;
+                      })
+                    : "Ninguno"}
+                </td>
+                <td data-label="Estado">
+                  {rol.nombre !== "Administrador" ? (
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={rol.estado}
+                        onChange={() => onToggleAnular(rol)}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  ) : (
+                    <span>No Aplicable</span>
                   )}
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+                </td>
+                <td data-label="Acciones">
+                  <div className="table-iconos">
+                    <button
+                      className="table-button btn-view"
+                      onClick={() => onView(rol)}
+                      title="Ver Detalles"
+                    >
+                      <FaEye />
+                    </button>
+                    <button
+                      className="table-button btn-history"
+                      onClick={() => onHistory(rol)}
+                      title="Ver Historial de Cambios"
+                    >
+                      <FaHistory />
+                    </button>
+                    {rol.nombre !== "Administrador" && (
+                      <>
+                        <button
+                          className="table-button btn-edit"
+                          onClick={() => onEdit(rol)}
+                          title="Editar Rol"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          className="table-button btn-delete"
+                          onClick={() => onDeleteConfirm(rol)}
+                          title="Eliminar Rol"
+                        >
+                          <FaTrash />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
       </tbody>
     </table>
   );

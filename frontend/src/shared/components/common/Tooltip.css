@@ -1,109 +1,46 @@
 /* frontend/src/shared/components/common/Tooltip.css */
-.tooltip-wrapper {
+.tooltip-container {
   position: relative;
-  display: inline-flex; /* Para que se ajuste al tamaño del ícono */
-  justify-content: center;
-  align-items: center;
+  display: inline-block;
+  cursor: pointer;
 }
 
-.tooltip-content {
-  position: absolute;
-  background-color: #2c3e50; /* Un color oscuro más suave */
-  color: #ecf0f1; /* Un color claro más suave */
-  padding: 8px 12px;
-  border-radius: 6px;
-  z-index: 1070; /* Bootstrap usa z-index altos para tooltips, ej. 1070 */
-  font-size: 0.875rem; /* 14px si base es 16px */
-  line-height: 1.5;
-  min-width: 120px; /* Ancho mínimo */
-  max-width: 250px; /* Ancho máximo para evitar tooltips muy largos */
-  text-align: left;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  white-space: normal; /* Permitir que el texto del tooltip se ajuste */
-
-  /* Transición suave */
-  opacity: 0;
+.tooltip-text {
   visibility: hidden;
-  transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out;
-  pointer-events: none; /* Para que el tooltip no interfiera con el mouse */
+  width: max-content;
+  max-width: 400px; /* Aumentado para acomodar múltiples columnas */
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Lo posiciona arriba del elemento */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: pre-wrap; /* Para respetar los saltos de línea */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: 'Courier New', monospace; /* Fuente monoespaciada para mejor alineación */
+  font-size: 0.8rem;
+  line-height: 1.3;
 }
 
-.tooltip-wrapper:hover .tooltip-content,
-.tooltip-wrapper:focus-within .tooltip-content { /* focus-within para cuando un hijo (ícono) tiene foco */
-  opacity: 1;
+/* Pequeña flecha debajo del tooltip */
+.tooltip-text::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
   visibility: visible;
-  pointer-events: auto;
-}
-
-/* Posicionamiento */
-.tooltip-top {
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 8px; /* Espacio entre el tooltip y el elemento */
-}
-
-.tooltip-top::after { /* Flecha */
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -6px; /* Mitad del ancho del borde */
-  border-width: 6px;
-  border-style: solid;
-  border-color: #2c3e50 transparent transparent transparent;
-}
-
-.tooltip-bottom {
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 8px;
-}
-
-.tooltip-bottom::after {
-  content: "";
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -6px;
-  border-width: 6px;
-  border-style: solid;
-  border-color: transparent transparent #2c3e50 transparent;
-}
-
-.tooltip-left {
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-right: 8px;
-}
-
-.tooltip-left::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  margin-top: -6px;
-  border-width: 6px;
-  border-style: solid;
-  border-color: transparent transparent transparent #2c3e50;
-}
-
-.tooltip-right {
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 8px;
-}
-
-.tooltip-right::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 100%;
-  margin-top: -6px;
-  border-width: 6px;
-  border-style: solid;
-  border-color: transparent #2c3e50 transparent transparent;
+  opacity: 1;
 }
