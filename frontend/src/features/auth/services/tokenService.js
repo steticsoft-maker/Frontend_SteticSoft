@@ -12,20 +12,14 @@ export const tokenService = {
    * @returns {boolean} - True si el token es válido
    */
   validateToken(token) {
-    if (!token) {
-      console.warn("No token provided");
-      return false;
-    }
+    if (!token) return false;
 
     try {
       const decoded = jwtDecode(token);
-      console.log("Decoded token:", decoded); // Debug log
-
       const currentTime = Date.now() / 1000;
 
       // Verificar si el token ha expirado
       if (decoded.exp && decoded.exp < currentTime) {
-        console.warn("Token has expired");
         return false;
       }
 
@@ -33,7 +27,6 @@ export const tokenService = {
       // Un token es válido si se puede decodificar y no ha expirado
       return true;
     } catch (error) {
-      console.error("Error validating token:", error);
       return false;
     }
   },
@@ -96,8 +89,7 @@ export const tokenService = {
 
     try {
       const decoded = jwtDecode(token);
-      console.log("Getting user from token:", decoded); // Debug log
-
+      
       return {
         id: decoded.idUsuario || decoded.sub || decoded.user_id || decoded.id,
         email: decoded.correo || decoded.email,
@@ -105,7 +97,6 @@ export const tokenService = {
         permisos: decoded.permissions || decoded.permisos || [],
       };
     } catch (error) {
-      console.error("Error decoding token:", error);
       return null;
     }
   },

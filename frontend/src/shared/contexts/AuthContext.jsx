@@ -6,7 +6,6 @@ import {
   logoutAPI as serviceLogoutAPI,
 } from "../../features/auth/services/authService";
 import tokenService from "../../features/auth/services/tokenService";
-import { debugToken } from "../../features/auth/utils/debugToken";
 
 // AuthContext is now imported from authHooks.js
 
@@ -114,14 +113,10 @@ export const AuthProvider = ({ children }) => {
         ) {
           const { token, usuario } = apiResponse.data;
 
-          // Debug del token recibido
-          debugToken(token);
-
-          // Validar token antes de almacenarlo
-          if (!tokenService.validateToken(token)) {
-            console.error("Token validation failed");
-            throw new Error("Token recibido no es válido");
-          }
+           // Validar token antes de almacenarlo
+           if (!tokenService.validateToken(token)) {
+             throw new Error("Token recibido no es válido");
+           }
 
           // Almacenar token usando el servicio
           tokenService.storeToken(token, rememberMe);
