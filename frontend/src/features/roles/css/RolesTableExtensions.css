@@ -4,19 +4,24 @@
 /* frontend/src/features/roles/css/RolesTableExtensions.css */
 .permisos-cell {
   text-align: left; /* Alinea los íconos a la izquierda en la celda de la tabla desktop */
-  white-space: nowrap; /* Evita que los íconos se envuelvan prematuramente en la vista de tabla */
+  white-space: normal; /* Permitir que los íconos se envuelvan para mejor distribución */
+  line-height: 1.4; /* Espaciado vertical reducido */
+  min-height: 40px; /* Altura mínima reducida */
 }
 
 .permission-icon-wrapper {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 10px; /* Espacio horizontal entre íconos */
-  margin-bottom: 5px; /* Espacio vertical si se envuelven (para vista de tarjeta) */
-  padding: 2px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-  vertical-align: middle; /* Asegura que los íconos se alineen bien con cualquier texto adyacente */
+  margin-right: 6px; /* Espacio horizontal reducido entre íconos */
+  margin-bottom: 4px; /* Espacio vertical reducido entre líneas de íconos */
+  padding: 4px; /* Padding reducido */
+  border-radius: 6px; /* Bordes normales */
+  transition: all 0.2s ease;
+  vertical-align: top; /* Alinear arriba para mejor distribución */
+  position: relative;
+  min-width: 32px; /* Ancho mínimo reducido */
+  min-height: 32px; /* Altura mínima reducida */
 }
 
 .permission-icon-wrapper:last-child {
@@ -25,7 +30,9 @@
 
 .permission-icon-wrapper:hover,
 .permission-icon-wrapper:focus { /* Añadir foco para accesibilidad */
-  background-color: var(--color-secondary); /* Un color de fondo suave de Bootstrap */
+  background-color: rgba(154, 122, 159, 0.1);
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(154, 122, 159, 0.3);
   outline: none; /* Quitar el outline por defecto si se maneja el foco de otra forma */
 }
 
@@ -71,15 +78,15 @@
 .rol-table .tooltip-content {
     background: linear-gradient(135deg, rgba(44, 62, 80, 0.98), rgba(52, 73, 94, 0.98)) !important;
     color: #ffffff !important;
-    padding: 4px 8px !important;
-    border-radius: 6px !important;
-    font-size: 0.75rem !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
     font-weight: 500 !important;
-    line-height: 1.3 !important;
-    min-width: 60px !important;
-    max-width: 150px !important;
+    line-height: 1.4 !important;
+    min-width: 80px !important;
+    max-width: 200px !important;
     text-align: center !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
     white-space: nowrap !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
     backdrop-filter: blur(8px) !important;
@@ -103,10 +110,49 @@
 .rol-table .tooltip-content strong {
     color: #ffffff;
     font-weight: 600;
+    font-size: 0.8rem;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.rol-table .tooltip-content span {
+    color: #ecf0f1;
     font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.9;
 }
 
 .rol-permission-table-icon {
-  color: var(--color-primary); /* Un rojo estándar, similar al de botones de peligro */
-  /* También podría ser var(--color-danger) si está definido globalmente */
+  color: var(--color-primary);
+  font-size: 1.4em !important; /* Tamaño de icono reducido */
+  transition: all 0.2s ease;
+}
+
+.permission-icon-wrapper:hover .rol-permission-table-icon {
+  color: var(--color-primary-hover);
+  transform: scale(1.1);
+}
+
+/* Mejoras adicionales para la visualización de permisos */
+.permisos-cell .permission-icon-wrapper {
+  background-color: rgba(154, 122, 159, 0.05);
+  border: 1px solid rgba(154, 122, 159, 0.1);
+}
+
+.permisos-cell .permission-icon-wrapper:hover {
+  background-color: rgba(154, 122, 159, 0.15);
+  border-color: rgba(154, 122, 159, 0.3);
+  box-shadow: 0 4px 12px rgba(154, 122, 159, 0.2);
+}
+
+/* Asegurar que los tooltips no se corten */
+.permisos-cell {
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Mejorar el espaciado entre grupos de iconos */
+.permisos-cell .permission-icon-wrapper:nth-child(n+2) {
+  margin-left: 4px;
 }

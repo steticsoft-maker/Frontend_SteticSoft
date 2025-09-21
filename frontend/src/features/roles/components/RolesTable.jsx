@@ -89,7 +89,11 @@ const RolesTable = ({
         let action = parts.slice(2).join("_");
         // Capitalizar la primera letra de la acción para mejor lectura
         action = action.charAt(0).toUpperCase() + action.slice(1).toLowerCase();
-        return action;
+        return {
+          action: action,
+          fullName: p.nombre,
+          id: p.idPermiso,
+        };
       });
   };
 
@@ -106,88 +110,136 @@ const RolesTable = ({
         </tr>
       </thead>
       <tbody>
-        {Array.isArray(roles) && roles.map((rol, index) => {
-          const numeroFila = (currentPage - 1) * rowsPerPage + index + 1;
-          const modulosConPermisos = new Map();
-          (rol.permisos || []).forEach((p) => {
-            const parts = p.nombre.split("_");
-            if (parts.length > 1 && parts[0] === "MODULO") {
-              const moduloNombreOriginal = parts[1];
-              const moduloNombreKey = moduloNombreOriginal.toUpperCase();
-              if (!modulosConPermisos.has(moduloNombreKey)) {
-                modulosConPermisos.set(moduloNombreKey, {
-                  originalName: moduloNombreOriginal,
-                  permissions: [],
-                });
+        {Array.isArray(roles) &&
+          roles.map((rol, index) => {
+            const numeroFila = (currentPage - 1) * rowsPerPage + index + 1;
+            const modulosConPermisos = new Map();
+            (rol.permisos || []).forEach((p) => {
+              const parts = p.nombre.split("_");
+              if (parts.length > 1 && parts[0] === "MODULO") {
+                const moduloNombreOriginal = parts[1];
+                const moduloNombreKey = moduloNombreOriginal.toUpperCase();
+                if (!modulosConPermisos.has(moduloNombreKey)) {
+                  modulosConPermisos.set(moduloNombreKey, {
+                    originalName: moduloNombreOriginal,
+                    permissions: [],
+                  });
+                }
               }
-            }
-          });
-          const modulosParaMostrar = Array.from(modulosConPermisos.entries());
+            });
+            const modulosParaMostrar = Array.from(modulosConPermisos.entries());
 
-          return (
-            <tr key={rol.idRol}>
-              <td data-label="#">{numeroFila}</td>
-              <td data-label="Nombre del Rol">{rol.nombre}</td>
-              <td data-label="Descripción">{rol.descripcion}</td>
-              <td data-label="Permisos por Módulo:" className="permisos-cell">
-                {modulosParaMostrar.length > 0 ? modulosParaMostrar.map(([moduloKey, moduloData]) => {
-                  const IconComponent = moduloIconMap[moduloKey]?.icon || moduloIconMap.DEFAULT.icon;
-                  const acciones = getPermissionsForModule(rol.permisos, moduloData.originalName);
-                  const displayName = moduloIconMap[moduloKey]?.name || moduloData.originalName;
-                  const tooltipContent = (
-                    <div>
-                      <strong>{displayName}:</strong>
-                      <ul>
-                        {acciones.map((accion) => <li key={accion}>{accion}</li>)}
-                      </ul>
-                    </div>
-                  );
-                  return (
-                    <Tooltip key={moduloKey} content={tooltipContent} position="top">
-                      <span className="permission-icon-wrapper" tabIndex={0}>
-                        <IconComponent size="1.5em" className="rol-permission-table-icon" />
-                      </span>
-                    </Tooltip>
-                  );
-                }) : "Ninguno"}
-              </td>
-              <td data-label="Estado">
-                {rol.nombre !== "Administrador" ? (
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={rol.estado}
-                      onChange={() => onToggleAnular(rol)}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                ) : (
-                  <span>No Aplicable</span>
-                )}
-              </td>
-              <td data-label="Acciones">
-                <div className="table-iconos">
-                  <button className="table-button btn-view" onClick={() => onView(rol)} title="Ver Detalles">
-                    <FaEye />
-                  </button>
-                  <button className="table-button btn-history" onClick={() => onHistory(rol)} title="Ver Historial de Cambios">
-                    <FaHistory />
-                  </button>
-                  {rol.nombre !== "Administrador" && (
-                    <>
-                      <button className="table-button btn-edit" onClick={() => onEdit(rol)} title="Editar Rol">
-                        <FaEdit />
-                      </button>
-                      <button className="table-button btn-delete" onClick={() => onDeleteConfirm(rol)} title="Eliminar Rol">
-                        <FaTrash />
-                      </button>
-                    </>
+            return (
+              <tr key={rol.idRol}>
+                <td data-label="#">{numeroFila}</td>
+                <td data-label="Nombre del Rol">{rol.nombre}</td>
+                <td data-label="Descripción">{rol.descripcion}</td>
+                 <td data-label="Permisos por Módulo:" className="permisos-cell">
+                   {modulosParaMostrar.length > 0
+                     ? modulosParaMostrar.map(([moduloKey, moduloData]) => {
+                         const IconComponent =
+                           moduloIconMap[moduloKey]?.icon ||
+                           moduloIconMap.DEFAULT.icon;
+                         const permisos = getPermissionsForModule(
+                           rol.permisos,
+                           moduloData.originalName
+                         );
+                         const displayName =
+                           moduloIconMap[moduloKey]?.name ||
+                           moduloData.originalName;
+
+                         // Mostrar un solo icono por módulo con tooltip que liste todos los permisos
+                         if (permisos.length > 0) {
+                           const tooltipContent = (
+                             <div>
+                               <strong>{displayName}</strong>
+                               <ul style={{ margin: "4px 0 0 0", paddingLeft: "16px" }}>
+                                 {permisos.map((permiso, index) => (
+                                   <li key={index} style={{ fontSize: "0.8rem" }}>
+                                     {permiso.action}
+                                   </li>
+                                 ))}
+                               </ul>
+                             </div>
+                           );
+
+                           return (
+                             <Tooltip
+                               key={moduloKey}
+                               content={tooltipContent}
+                               position="top"
+                             >
+                               <span
+                                 className="permission-icon-wrapper"
+                                 tabIndex={0}
+                               >
+                                 <IconComponent
+                                   size="1.4em"
+                                   className="rol-permission-table-icon"
+                                 />
+                               </span>
+                             </Tooltip>
+                           );
+                         }
+
+                         // Fallback si no hay permisos
+                         return null;
+                       })
+                     : "Ninguno"}
+                 </td>
+                <td data-label="Estado">
+                  {rol.nombre !== "Administrador" ? (
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={rol.estado}
+                        onChange={() => onToggleAnular(rol)}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  ) : (
+                    <span>No Aplicable</span>
                   )}
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+                </td>
+                <td data-label="Acciones">
+                  <div className="table-iconos">
+                    <button
+                      className="table-button btn-view"
+                      onClick={() => onView(rol)}
+                      title="Ver Detalles"
+                    >
+                      <FaEye />
+                    </button>
+                    <button
+                      className="table-button btn-history"
+                      onClick={() => onHistory(rol)}
+                      title="Ver Historial de Cambios"
+                    >
+                      <FaHistory />
+                    </button>
+                    {rol.nombre !== "Administrador" && (
+                      <>
+                        <button
+                          className="table-button btn-edit"
+                          onClick={() => onEdit(rol)}
+                          title="Editar Rol"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          className="table-button btn-delete"
+                          onClick={() => onDeleteConfirm(rol)}
+                          title="Eliminar Rol"
+                        >
+                          <FaTrash />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
       </tbody>
     </table>
   );
