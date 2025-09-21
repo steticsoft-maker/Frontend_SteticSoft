@@ -13,7 +13,8 @@ import {
   fetchCitasAgendadas,
   saveCita,
   deleteCitaById as serviceDeleteCitaById,
-  cambiarEstadoCita
+  cambiarEstadoCita,
+  fetchEstadosCita,
 } from '../services/citasService';
 import '../../../shared/styles/crud-common.css';
 import '../../../shared/styles/admin-layout.css';
@@ -23,6 +24,7 @@ moment.locale('es');
 
 function CitasPage() {
   const [citasAgendadas, setCitasAgendadas] = useState([]);
+  const [estadosCita, setEstadosCita] = useState([]); // Estado para guardar los estados
   const [searchTerm, setSearchTerm] = useState("");
   const [estadoFiltro, setEstadoFiltro] = useState("Todos");
 
@@ -31,6 +33,7 @@ function CitasPage() {
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
+  
 
   const [selectedSlotOrEvent, setSelectedSlotOrEvent] = useState(null);
   const [citaParaOperacion, setCitaParaOperacion] = useState(null);
@@ -47,39 +50,50 @@ function CitasPage() {
   const cargarDatosCompletos = useCallback(async () => {
     setIsLoading(true);
     try {
-      const params = {};
-      if (estadoFiltro !== "Todos") {
-        params.estado = estadoFiltro;
-      }
-      if (searchTerm.trim() !== "") {
-        params.search = searchTerm.trim();
-      }
-      const agendadas = await fetchCitasAgendadas();
+      const [agendadas, estados] = await Promise.all([
+        fetchCitasAgendadas(),
+        fetchEstadosCita()
+      ]);
+      setEstadosCita(estados);
+      
       const normalizadas = agendadas.map(c => ({
         ...c,
-        id: c.idCita, 
-        start: c.fechaHora ? new Date(c.fechaHora) : null,
-        end: c.fechaHora ? new Date(c.fechaHora) : null, 
+        id: c.idCita,
         clienteNombre: c.cliente ? `${c.cliente.nombre} ${c.cliente.apellido || ""}`.trim() : "Sin cliente",
-        empleadoNombre: c.empleado?.empleado ? `${c.empleado.nombre} ${c.empleado.apellido || ""}`.trim() : "Sin asignar",
-        serviciosNombres: (c.serviciosProgramados || []).map(s => s.nombre).join(", "),
-        estadoCita: c.estadoDetalle?.nombreEstado || (c.estado ? 'Activa' : 'Cancelada')
+        empleadoNombre: c.empleado?.empleado ? `${c.empleado.empleado.nombre} ${c.empleado.empleado.apellido || ""}`.trim() : "Sin asignar",
+        serviciosNombres: (c.servicios || []).map(s => s.nombre).join(", "),
+        estadoCita: c.estadoDetalle?.nombreEstado || 'Desconocido',
+        idEstado: c.idEstado,
       }));
 
       setCitasAgendadas(normalizadas);
     } catch (error) {
-      console.error("Error al cargar citas:", error);
+      console.error("Error al cargar datos:", error);
       setValidationTitle("Error de Carga");
-      setValidationMessage("No se pudieron cargar las citas: " + error.message);
+      setValidationMessage("No se pudieron cargar los datos necesarios: " + error.message);
       setIsValidationModalOpen(true);
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm, estadoFiltro]);
+  }, []); 
 
- useEffect(() => {
+  useEffect(() => {
     cargarDatosCompletos();
   }, [cargarDatosCompletos]);
+
+  const handleStatusChange = async (citaId, nuevoEstadoId) => {
+    try {
+      await cambiarEstadoCita(citaId, nuevoEstadoId);
+      cargarDatosCompletos(); 
+      setValidationTitle("Éxito");
+      setValidationMessage(`Estado de la cita #${citaId} actualizado.`);
+      setIsValidationModalOpen(true);
+    } catch (error) {
+      setValidationTitle("Error al actualizar");
+      setValidationMessage(error.message);
+      setIsValidationModalOpen(true);
+    }
+  };
 
   const handleCloseModals = () => {
     setIsFormModalOpen(false);
@@ -200,44 +214,45 @@ function CitasPage() {
   return (
     <div className="admin-page-layout">
       <div className="admin-main-content-area">
-        <div className="admin-content-wrapper">
+        <div className="citas-page-container">
           <h1>Gestión de Citas</h1>
           {isLoading && <div className="cargando-pagina"><span>Cargando citas...</span><div className="spinner"></div></div>}
 
           <div className="admin-actions-bar">
-            <div className="admin-filters">
+            <div className="admin-actions-bar">
               <input
-                type="text"
-                placeholder="Busca por cualquier campo..."
+               type="search"
+                placeholder="Buscar por cliente, empleado..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="admin-search-input"
               />
-              <select
-                value={estadoFiltro}
-                onChange={(e) => setEstadoFiltro(e.target.value)}
-                className="admin-filter-select"
-              >
-                <option value="Todos">Todos los Estados</option>
-                <option value="activa">Activas</option>
-                <option value="Pendiente">Pendientes</option>
-                <option value="Confirmada">Confirmadas</option>
-                <option value="Finalizada">Finalizadas</option>
-                <option value="Cancelada">Canceladas</option>
-              </select>
+
+          <select
+            value={estadoFiltro}
+            onChange={(e) => setEstadoFiltro(e.target.value)}
+          >
+            <option value="Todos">Todos los Estados</option>
+            <option value="Activa">Activas</option>
+            <option value="Pendiente">Pendientes</option>
+            <option value="En proceso">En proceso</option>
+            <option value="Completado">Completadas</option>
+            <option value="Finalizado">Finalizadas</option>
+            <option value="Cancelado">Canceladas</option>
+          </select>
             </div>
-            <button
-              className="admin-add-button"
-              onClick={() => navigate('/admin/citas/agendar')}
-            >
-              Agregar Cita
-            </button>
+          <button
+            className="btn"
+            onClick={() => navigate('/admin/citas/agendar')}
+          >
+            Agregar Cita
+          </button>
           </div>
 
           <div className="table-container">
             <CitasTable
               citas={citasFiltradas}
               onViewDetails={(cita) => {
+                setSelectedSlotOrEvent(cita);
                 setCitaParaOperacion(cita);
                 setIsDetailsModalOpen(true);
               }}
@@ -245,6 +260,8 @@ function CitasPage() {
               onMarkAsCompleted={handleMarkAsCompleted}
               onCancel={handleOpenCancelConfirm}
               onDelete={handleOpenDeleteConfirm}
+              onStatusChange={handleStatusChange}
+              estadosCita={estadosCita}
             />
           </div>
         </div>

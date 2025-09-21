@@ -1,17 +1,7 @@
-
-
-
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/responsive-template.css";
 
-/* ==========================================================================
-   Estilos para el Módulo de Novedades (Horarios)
-   Actualizado con la nueva paleta de colores de la marca.
-   ========================================================================== */
 :root {
-  /* ...otras variables de color que ya tengas... */
-
-  /* Asegúrate de que estas variables existan y tengan un color asignado */
   --color-dia-lunes: #e0f2fe;     /* Celeste */
   --color-dia-martes: #d1fae5;    /* Verde menta */
   --color-dia-miercoles: #fef3c7; /* Amarillo pálido */
@@ -50,12 +40,9 @@
     margin-bottom: 0px;
     font-size: 1.8rem;
 }
-
-/* ======================================================== */
 /* ============= BARRA DE ACCIONES SUPERIORES ============= */
-/* ======================================================== */
 .novedades-actions-bar {
-    padding-left: 0; /* Corrected alignment */
+    padding-left: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -145,7 +132,7 @@
 
 .filters-container {
   display: flex;
-  gap: 15px; /* Espaciado entre los filtros */
+  gap: 15px;
   flex-grow: 1;
   flex-wrap: wrap;
 }
@@ -159,7 +146,6 @@
   background-color: var(--color-background-light);
   border-radius: 5px;
   font-size: 1rem;
-  /* Altura automática basada en padding */
   box-sizing: border-box;
 }
 
@@ -180,17 +166,12 @@
   transition: background-color 0.3s ease;
   font-size: 1rem;
   font-weight: 500;
-  /* Altura automática basada en padding */
 }
 
 .add-button:hover {
   background-color: var(--color-primary-hover);
 }
-
-/* --- Tabla de Novedades --- */
-/* ==========================================================================
-   Estilos para la Tabla de Novedades (Compatibles con prefijo novedades-table__)
-   ========================================================================== */
+   /*Estilos para la Tabla de Novedades (Compatibles con prefijo novedades-table__)*/
 
 /* Contenedor principal */
 .novedades-table__container {
@@ -215,7 +196,6 @@
   padding: 14px 15px;
   text-align: left;
   vertical-align: middle;
-  /* MODIFICADO: Se restaura el borde original */
   border: 1px solid var(--color-border);
 }
 
@@ -224,8 +204,6 @@
   color: var(--color-text-light);
   font-weight: 600;
 }
-
-/* MODIFICADO: Se restauran los colores originales de las filas */
 .novedades-table tbody tr:nth-child(even) {
   background-color: var(--color-table-row-even);
 }
@@ -234,7 +212,6 @@
   background-color: var(--color-secondary-hover);
 }
 
-/* Celda de acciones */
 .novedades-table__actions {
   display: flex;
   justify-content: center;
@@ -246,34 +223,28 @@
   font-size: 0.85rem;
   border: none;
   border-radius: 5px;
-  color: var(--color-text-on-primary); /* Color del icono */
+  color: var(--color-text-on-primary); 
   cursor: pointer;
   transition: background-color 0.3s ease;
-  
-  /* CAMBIO CLAVE: Usa el color primario para el fondo */
   background-color: var(--color-primary); 
 }
 
 .novedades-table .action-button:hover {
-  /* CAMBIO CLAVE: El hover también usará un color más cercano al primario */
   background-color: var(--color-primary-hover); 
 }
 
-/* Nombre de empleado */
 .novedades-table__employee-name {
   margin-bottom: 4px;
   color: var(--color-text-dark);
   font-weight: 500;
 }
 
-/* Celda de acciones */
 .novedades-table__actions {
   display: flex;
   justify-content: center;
   gap: 8px;
 }
 
-/* Nombre de empleado */
 .novedades-table__employee-name {
   margin-bottom: 4px;
   color: var(--color-text-dark);
@@ -329,7 +300,6 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* Indicador de "+X más" para empleados */
 .more-indicator {
   cursor: help;
   font-size: 0.75rem;
@@ -337,7 +307,6 @@ input:checked + .slider:before {
   display: inline-block;
 }
 
-/* Contenedor para las píldoras de días */
 .dias-pills-container {
   display: flex;
   flex-wrap: wrap;
@@ -345,7 +314,6 @@ input:checked + .slider:before {
   align-items: center;
 }
 
-/* Píldora individual para cada día */
 .dia-pill {
   color: #000;
   padding: 4px 10px;
@@ -404,7 +372,6 @@ input:checked + .slider:before {
 }
 
 /* --- Paginación --- */
-/* Contenedor que alinea la paginación con el ancho de la tabla */
 .pagination-wrapper {
   width: 100%;
   max-width: 1200px;
@@ -412,28 +379,25 @@ input:checked + .slider:before {
   padding: 0;
 }
 
-/* Contenedor principal y único para todos los controles */
 .pagination-container {
   display: flex;
   justify-content: center;
-  align-items: center;  /* <-- Alineará verticalmente TODOS los hijos */
-  gap: 8px;             /* <-- Espacio uniforme entre cada elemento */
+  align-items: center;
+  gap: 8px;
   padding: 20px 0;
   margin-top: 15px;
   font-size: 0.9rem;
 }
 
-/* Estilos para el selector de filas, ahora un hijo directo */
 .pagination-container select {
   padding: 6px 10px;
   border-radius: 5px;
   border: 1px solid var(--color-form-border);
   cursor: pointer;
   background-color: var(--color-background-light);
-  margin-right: 15px; /* <-- Espacio extra para separar los grupos */
+  margin-right: 15px; 
 }
 
-/* Estilo para los botones numéricos de página */
 .pagination-container .page-number {
   padding: 6px 12px;
   min-width: 34px;
@@ -447,13 +411,11 @@ input:checked + .slider:before {
   font-size: 0.9rem;
 }
 
-/* Efecto hover para el botón de página */
 .pagination-container .page-number:hover:not(.active) {
   background-color: var(--color-form-focus-bg);
   border-color: var(--color-form-border);
 }
 
-/* Estilo para el botón de la página activa */
 .pagination-container .page-number.active {
   background-color: var(--color-primary);
   color: var(--color-text-light);
@@ -503,26 +465,26 @@ input:checked + .slider:before {
 
 /* --- Encabezado del Modal --- */
 .modal-header {
-  color: var(--color-text-light);         /* Texto claro para contraste */
+  color: var(--color-text-light);
   padding: 15px 25px;
   border-bottom: none;
-  border-top-left-radius: 8px;  /* Redondea las esquinas superiores */
+  border-top-left-radius: 8px; 
   border-top-right-radius: 8px;
 }
 
 .modal-header h2 {
   font-size: 1.5rem;
   margin: 0;
-  color: inherit; /* Hereda el color del texto del padre (.modal-header) */
+  color: inherit;
 }
 
 /* Ajuste al botón de cierre para que sea visible */
-.modal-close-btn { /* Nombre de clase corregido para coincidir con tu JSX */
+.modal-close-btn {
   background: none;
   border: none;
   font-size: 1.8rem;
   line-height: 1;
-  color: var(--color-text-light); /* Texto claro */
+  color: var(--color-text-light); 
   opacity: 0.8;
   transition: opacity 0.2s ease;
 }
@@ -539,10 +501,9 @@ input:checked + .slider:before {
 .detail-section {
   margin-bottom: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--color-border, #e5e7eb); /* Línea divisora sutil */
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
 }
 
-/* Elimina la línea divisora del último elemento para un acabado limpio */
 .detail-section:last-of-type {
   margin-bottom: 0;
   padding-bottom: 0;
@@ -550,7 +511,7 @@ input:checked + .slider:before {
 }
 
 .detail-section h3 {
-  color: var(--color-primary); /* Título de sección con color principal */
+  color: var(--color-primary);
   font-size: 1.2rem;
   margin-top: 0;
   margin-bottom: 15px;
@@ -558,41 +519,39 @@ input:checked + .slider:before {
 
 .detail-item {
   display: flex;
-  align-items: center; /* Centra verticalmente la etiqueta con el contenido */
-  flex-wrap: wrap;     /* Permite que el contenido pase a la siguiente línea si no cabe */
-  gap: 8px;            /* Espacio entre la etiqueta y el contenido */
+  align-items: center; 
+  flex-wrap: wrap; 
+  gap: 8px; 
 }
 
 /* --- Contenedor para las píldoras de días dentro del modal --- */
 .dias-pills-container-modal {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px; /* Espacio entre cada píldora */
+  gap: 6px;
 }
 
-/* Resalta las etiquetas de cada detalle */
 .detail-item strong {
   color: var(--color-text-dark);
   font-weight: 600;
   margin-right: 8px;
 }
 
-/* --- Indicadores de Estado (Activo/Inactivo) --- */
 .status-active,
 .status-inactive {
   padding: 4px 12px;
   border-radius: 15px;
   font-weight: 500;
   font-size: 0.85rem;
-  color: #fff; /* Texto blanco para ambos por legibilidad */
+  color: #fff; 
 }
 
 .status-active {
-  background-color: var(--color-success, #28a745); /* Verde para 'Activo' */
+  background-color: var(--color-success, #28a745);
 }
 
 .status-inactive {
-  background-color: var(--color-secondary, #6c757d); /* Gris para 'Inactivo' */
+  background-color: var(--color-secondary, #6c757d);
 }
 
 

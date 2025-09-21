@@ -4,82 +4,70 @@ import moment from "moment";
 import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService";
 
 /**
- * ✅ Obtener todas las citas desde la API
- */
-export const fetchCitasAgendadas = async () => {
-  try {
-    const response = await apiClient.get("/citas");
-    const citas = response.data?.data || [];
-    return citas.map(c => ({
-      ...c,
-      title: c.cliente?.nombre || 'Cita',
-      start: moment(`${c.fecha} ${c.horaInicio}`).toDate(),
-      end: moment(`${c.fecha} ${c.horaFin}`).toDate(),
-    }));
-  } catch (error) {
-    console.error("Error al obtener citas:", error);
-    throw new Error("No se pudieron cargar las citas agendadas.");
-  }
-};
-
-/**
- * ✅ Guardar una nueva cita o editar una existente
+ * ✅ CORREGIDO: Guardar una nueva cita o editar una existente
  */
 export const saveCita = async (citaData) => {
   try {
     const dataToSend = {
+      start: citaData.start, 
       clienteId: citaData.clienteId,
-      usuarioId: citaData.d,
-      servicios: citaData.servicioIds || [],
-      fechaHora: moment(citaData.start).toISOString(),
-      idEstado: citaData.estadoCitaId || 5,
-      novedadId: citaData.novedadId,
+      empleadoId: citaData.empleadoId, 
+      servicios: citaData.servicios || [],
+      idEstado: citaData.estadoCitaId || 2, // Por defecto "pendiente"
+      novedadId: citaData.novedadId, 
+      precio_total: citaData.precioTotal || 0
     };
 
-    console.log("➡️ Payload definitivo para la API:", dataToSend);
+    console.log("➡️ Enviando payload a la API:", dataToSend);
 
     if (citaData.id) {
-      const response = await apiClient.put(`/citas/${citaData.id}`, dataToSend);
+      const response = await apiClient.patch(`/citas/${citaData.id}`, dataToSend);
       return response.data.data;
     } else {
       const response = await apiClient.post("/citas", dataToSend);
       return response.data.data;
     }
   } catch (error) {
-    console.error("Error en el servicio al guardar cita:", error);
-    if (error.response?.data?.errors) {
-      const errorMessages = Object.values(error.response.data.errors).flat().join(', ');
-      throw new Error(errorMessages);
+    console.error("Error al guardar cita:", error);
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
     }
     throw error;
   }
 };
 
 /**
- * ✅ Eliminar cita por ID
+ * ✅ CORREGIDO: Eliminar cita por ID
  */
 export const deleteCitaById = async (citaId) => {
   try {
     await apiClient.delete(`/citas/${citaId}`);
+    return true; // Es buena práctica devolver algo en caso de éxito.
   } catch (error) {
     console.error("Error al eliminar cita:", error);
-    throw new Error(error.response?.data?.message || "No se pudo eliminar la cita.");
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
   }
 };
 
 /**
- * ✅ Cambiar estado de una cita
+ * ✅ CORREGIDO: Cambiar estado de una cita
  */
-export const cambiarEstadoCita = async (citaId, nuevoEstado, motivo = "") => {
+export const cambiarEstadoCita = async (citaId, nuevoEstadoId, motivo = "") => {
   try {
     const response = await apiClient.patch(`/citas/${citaId}/estado`, {
-      estado: nuevoEstado,
+      idEstado: nuevoEstadoId,
       motivoCancelacion: motivo,
     });
     return response.data.data;
   } catch (error) {
     console.error("Error al cambiar estado de cita:", error);
-    throw new Error(error.response?.data?.message || "No se pudo cambiar el estado de la cita.");
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
   }
 };
 
@@ -140,5 +128,39 @@ export const fetchEmpleadosDisponiblesParaCitas = async () => {
   } catch (error) {
     console.error("Error al obtener empleados:", error);
     return [];
+  }
+};
+
+export const fetchCitasAgendadas = async () => {
+  try {
+    const response = await apiClient.get("/citas");
+    const citas = response.data?.data || [];
+
+    return citas.map(c => {
+      const startDateTime = moment(`${c.fecha} ${c.hora_inicio}`).toDate();
+      const endDateTime = moment(startDateTime).add(60, 'minutes').toDate();
+
+      return {
+        ...c,
+        start: startDateTime,
+        end: endDateTime,
+      };
+    });
+  } catch (error) {
+    console.error("Error al obtener citas:", error);
+    return [];
+  }
+};
+
+/**
+ * ✅ NUEVA FUNCIÓN: Obtiene los estados posibles para una cita desde la API.
+ */
+export const fetchEstadosCita = async () => {
+  try {
+    const response = await apiClient.get("/citas/estados");
+    return response.data?.data || [];
+  } catch (error) {
+    console.error("Error al obtener los estados de cita:", error);
+    throw new Error("No se pudieron cargar los estados de las citas.");
   }
 };

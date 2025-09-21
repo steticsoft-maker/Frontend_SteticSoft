@@ -1,41 +1,73 @@
 import React from 'react';
 import moment from 'moment';
-import '../../../shared/styles/admin-layout.css';
+import 'moment/locale/es';
 
-const CitaDetalleModal = ({ isOpen, onClose, cita, onEdit, onDeleteConfirm }) => {
+const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
   if (!isOpen || !cita) return null;
+  moment.locale('es');
+  const totalServicios = (cita.serviciosProgramados || []).reduce(
+    (total, s) => total + parseFloat(s.precio || 0), 0
+  );
 
   const getEstadoClass = (estado) => {
     return (estado || "desconocido").toLowerCase().replace(/\s+/g, "-");
   };
 
   return (
-    <div className="admin-modal-overlay" onClick={onClose}>
-      <div className="admin-modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="admin-modal-header">
-          <h2 className="admin-modal-title">Detalles de la Cita #{cita.id}</h2>
-          <button className="admin-modal-close" onClick={onClose}>&times;</button>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2 className="modal-title">Detalles de la Cita #{cita.id || cita.idCita}</h2>
+          <button className="modal-close-button" onClick={onClose}>&times;</button>
         </div>
-        <div className="admin-modal-body">
+        
+        <div className="modal-body">
+          <div className="detalle-grid">
+            <div className="detalle-columna">
+              <div className="detalle-item">
+                <span className="detalle-label">Cliente</span>
+                <span className="detalle-valor">{cita.clienteNombre || "N/A"}</span>
+              </div>
+              <div className="detalle-item">
+                <span className="detalle-label">Encargado(a)</span>
+                <span className="detalle-valor">{cita.empleadoNombre || "N/A"}</span>
+              </div>
+              <div className="detalle-item">
+                <span className="detalle-label">Fecha y Hora</span>
+                <span className="detalle-valor">{moment(cita.start).format("dddd, D [de] MMMM, YYYY hh:mm A")}</span>
+              </div>
+              <div className="detalle-item">
+                <span className="detalle-label">Estado</span>
+                <span className={`status-badge ${getEstadoClass(cita.estadoCita)}`}>
+                  {cita.estadoCita || "Pendiente"}
+                </span>
+              </div>
+            </div>
 
-        <div className="cita-detalle-content">
-          <p><strong>Cliente:</strong> {cita.clienteNombre}</p>
-          <p><strong>Empleado:</strong> {cita.empleadoNombre}</p>
-          <p><strong>Fecha y Hora:</strong> {moment(cita.start).format("dddd, D [de] MMMM, YYYY hh:mm A")}</p>
-          <p><strong>Servicios:</strong> {cita.serviciosNombres}</p>
-          <p><strong>Total Estimado:</strong> ${(cita.precioTotal || 0).toLocaleString("es-CO")}</p>
-          <p><strong>Estado:</strong> 
-            <span className={`cita-estado-badge estado-${getEstadoClass(cita.estadoCita)}`}>
-                {cita.estadoCita}
-            </span>
-          </p>
-        </div>
-
-        </div>
-        <div className="admin-modal-footer">
-          <button className="admin-form-button secondary" onClick={onClose}>Cerrar</button>
-          <button className="admin-form-button" onClick={() => onEdit(cita)}>Editar</button>
-          <button className="admin-form-button" onClick={() => onDeleteConfirm(cita)}>Eliminar</button>
+            <div className="detalle-columna">
+              <div className="detalle-item">
+                <span className="detalle-label">Servicios Contratados</span>
+                <div className="servicios-lista">
+                  {(cita.serviciosProgramados && cita.serviciosProgramados.length > 0) ? (
+                    cita.serviciosProgramados.map(servicio => (
+                      <div className="servicio-item" key={servicio.idServicio}>
+                        <span>{servicio.nombre}</span>
+                        <span>${(parseFloat(servicio.precio) || 0).toLocaleString("es-CO")}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No hay servicios detallados.</p>
+                  )}
+                </div>
+              </div>
+              <div className="detalle-total">
+                <span className="detalle-label-total">Total Estimado</span>
+                <span className="detalle-valor-total">
+                  ${totalServicios.toLocaleString("es-CO")}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

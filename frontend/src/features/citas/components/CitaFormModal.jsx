@@ -40,7 +40,7 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
         let clienteInit = clientePreseleccionado || null;
         let empleadoNombreInit = '';
         let empleadoIdInit = null;
-        let servicioIdsInit = [];
+        let serviciosInit = [];
         let estadoCitaIdInit = 5 
         let startTimeInit = initialSlotData?.start || null;
         let endTimeInit = null;
@@ -51,7 +51,7 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
         clienteId: clienteInit?.idCliente || null,
         empleado: empleadoNombreInit,
         empleadoId: empleadoIdInit, // El estado interno puede seguir siendo empleadoId
-        servicioIds: servicioIdsInit,
+        servicios: serviciosInit,
         start: startTimeInit,
         end: endTimeInit,
         estadoCitaId: estadoCitaIdInit,
@@ -90,7 +90,7 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
     // Validaciones básicas del front-end
     if (!formData.clienteId) { setError("Debe seleccionar un cliente."); return; }
     if (!formData.empleadoId) { setError("Debe seleccionar un empleado."); return; }
-    if (!formData.servicioIds || formData.servicioIds.length === 0) { setError("Debe seleccionar al menos un servicio."); return; }
+    if (!formData.servicios || formData.servicios.length === 0) { setError("Debe seleccionar al menos un servicio."); return; }
     if (!formData.start) { setError("No se ha definido una hora de inicio."); return; }
 
     setError('');
@@ -102,7 +102,7 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
       fechaHora: moment(formData.start).toISOString(),
       clienteId: formData.clienteId,
       usuarioId: formData.empleadoId,
-      servicios: formData.servicioIds,
+      servicios: formData.servicios,
       estadoCitaId: formData.estadoCitaId,
       novedadId: formData.novedadId
     };

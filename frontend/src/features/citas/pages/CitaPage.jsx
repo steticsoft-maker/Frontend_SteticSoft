@@ -1,5 +1,3 @@
-// src/features/citas/pages/AgendarCitaPage.jsx
-
 import React, { useState, useEffect, useMemo } from 'react';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
@@ -7,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
-// Importa los servicios necesarios
+// Servicios
 import { 
     fetchNovedades, 
     fetchClientesParaCitas, 
@@ -15,10 +13,8 @@ import {
     saveCita 
 } from '../services/citasService';
 
-// Importa los estilos específicos para esta página
+// Estilos
 import '../css/Citas.css';
-
-// Nota: El registro del idioma 'es' para el calendario se movió a tu archivo principal (main.jsx) para evitar errores.
 
 const AgendarCitaPage = () => {
     const navigate = useNavigate();
@@ -28,14 +24,16 @@ const AgendarCitaPage = () => {
     const [clientes, setClientes] = useState([]);
     const [servicios, setServicios] = useState([]);
 
-    // Estados para el flujo del formulario
-    const [novedadSeleccionada, setNovedadSeleccionada] = useState(null);
-    const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
-    const [horaSeleccionada, setHoraSeleccionada] = useState(null);
-    const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-    const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
-    const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
-    
+    // ✅ 1. Unificar el estado del formulario en un solo objeto. ¡Mucho más limpio!
+    const [formData, setFormData] = useState({
+        novedad: null,
+        fecha: null,
+        hora: null,
+        clienteId: null,
+        empleadoId: null,
+        servicios: [],
+    });
+
     // Estados para UI
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,7 +53,7 @@ const AgendarCitaPage = () => {
                 setClientes(clientesData);
                 setServicios(serviciosData);
             } catch (err) {
-                setError('Error al cargar los datos necesarios para agendar. ' + err.message);
+                setError('Error al cargar los datos necesarios. ' + err.message);
             } finally {
                 setIsLoading(false);
             }
@@ -63,7 +61,7 @@ const AgendarCitaPage = () => {
         cargarDatos();
     }, []);
 
-    // Opciones formateadas para los Selectores
+    // Opciones para los Selectores (sin cambios, ya estaban bien)
     const opcionesNovedades = useMemo(() => novedades.map(n => ({
         label: `Horario del ${moment(n.fechaInicio).format('DD/MM/YYYY')} al ${moment(n.fechaFin).format('DD/MM/YYYY')}`,
         value: n.idNovedad,
@@ -76,172 +74,159 @@ const AgendarCitaPage = () => {
     })), [clientes]);
 
     const opcionesEmpleados = useMemo(() => 
-        novedadSeleccionada?.empleados.map(e => ({
+        formData.novedad?.empleados.map(e => ({
             label: e.nombre,
-            value: e.id
+            value: e.idUsuario // ✅ Usar idUsuario que es el ID correcto del empleado
         })) || [], 
-    [novedadSeleccionada]);
+    [formData.novedad]);
 
     const opcionesServicios = useMemo(() => servicios.map(s => ({
         label: `${s.nombre} - $${Number(s.precio).toLocaleString('es-CO')}`,
         value: s.id
     })), [servicios]);
 
-    // Lógica para el Calendario
+    // Lógica para el Calendario (sin cambios)
     const diasPermitidosNumeros = useMemo(() => {
-        if (!novedadSeleccionada) return [];
+        if (!formData.novedad) return [];
         const diasMap = { "Domingo": 0, "Lunes": 1, "Martes": 2, "Miércoles": 3, "Jueves": 4, "Viernes": 5, "Sábado": 6 };
-        return novedadSeleccionada.dias.map(nombreDia => diasMap[nombreDia]).filter(dia => dia !== undefined);
-    }, [novedadSeleccionada]);
+        return formData.novedad.dias.map(nombreDia => diasMap[nombreDia]).filter(dia => dia !== undefined);
+    }, [formData.novedad]);
 
     const filtrarDiasDisponibles = (date) => {
         const diaDeLaSemana = moment(date).day();
         return diasPermitidosNumeros.includes(diaDeLaSemana);
     };
 
-    // Lógica para generar Horas
+    // Lógica para generar Horas (sin cambios)
     const horasDisponibles = useMemo(() => {
-        if (!novedadSeleccionada) return [];
+        if (!formData.novedad) return [];
         const horas = [];
-        let tiempoActual = moment(novedadSeleccionada.horaInicio, 'HH:mm:ss');
-        const tiempoFin = moment(novedadSeleccionada.horaFin, 'HH:mm:ss');
+        let tiempoActual = moment(formData.novedad.horaInicio, 'HH:mm:ss');
+        const tiempoFin = moment(formData.novedad.horaFin, 'HH:mm:ss');
         while (tiempoActual.isBefore(tiempoFin)) {
             horas.push(tiempoActual.format('HH:mm'));
             tiempoActual.add(60, 'minutes');
         }
         return horas;
-    }, [novedadSeleccionada]);
+    }, [formData.novedad]);
     
-    // Manejo del envío del formulario
+    // ✅ 2. Manejo del envío del formulario COMPLETAMENTE REVISADO
     const handleAgendarCita = async () => {
         setError('');
-        if (!novedadSeleccionada || !fechaSeleccionada || !horaSeleccionada || !clienteSeleccionado || !empleadoSeleccionado || serviciosSeleccionados.length === 0) {
+        if (!formData.fecha || !formData.hora || !formData.clienteId || !formData.empleadoId || formData.servicios.length === 0) {
             setError('Por favor, complete todos los pasos antes de agendar.');
             return;
         }
 
         setIsSubmitting(true);
-
-        const citaData = {
-            fecha: moment(fechaSeleccionada).format('YYYY-MM-DD'), // Envía solo la fecha
-            hora_inicio: horaSeleccionada,                       // Envía solo la hora
-            clienteId: clienteSeleccionado.value,
-            usuarioId: empleadoSeleccionado.value,
-            idEstado: 5, // Usamos el ID del estado por defecto 'Pendiente' o 'Programada'
-            novedadId: novedadSeleccionada.idNovedad,
-            servicios: serviciosSeleccionados.map(s => s.value),
+        const [horas, minutos] = formData.hora.split(':');
+        const startDateTime = moment(formData.fecha).set({ hour: horas, minute: minutos }).toDate();
+        const citaParaGuardar = {
+            start: startDateTime,
+            clienteId: formData.clienteId,
+            empleadoId: formData.empleadoId,
+            servicios: formData.servicios,
+            novedadId: formData.novedad.idNovedad,
+            estadoCitaId: 2, 
         };
 
-        // Depuración: Verifica en la consola lo que estás enviando
-        console.log("➡️ Payload definitivo para la API:", JSON.stringify(citaData, null, 2));
-        try {
-            await saveCita(citaData);
-            alert('¡Cita agendada con éxito!');
-            navigate('/admin/citas'); // Redirige a la lista de citas
-        } catch (err) {
-        const errorMessage = err.response?.data?.message || err.message;
-        const validationErrors = err.response?.data?.errors;
-        let detailedError = errorMessage;
+        console.log("➡️ Payload enviado a saveCita:", JSON.stringify(citaParaGuardar, null, 2));
 
-        if (validationErrors) {
-            detailedError += "\n" + Object.entries(validationErrors)
-          .map(([field, messages]) => `- ${field}: ${messages.join(', ')}`)
-          .join("\n");
-        }
-        setError(`Error al guardar la cita: ${detailedError}`);
+        try {
+            await saveCita(citaParaGuardar);
+            alert('¡Cita agendada con éxito!');
+            navigate('/admin/citas');
+        } catch (err) {
+            setError(`Error al guardar la cita: ${err.message}`);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     if (isLoading) return <div className="cargando-pagina">Cargando...</div>;
-
     return (
         <div className="admin-content-wrapper">
             <h1>Agendar Nueva Cita</h1>
             <div className="agendar-cita-container">
-            <div className="agendar-cita-form">
-                
-                <div className="form-step">
-                    <label>1. Selecciona una Novedad de Horario</label>
-                    <Select
-                        options={opcionesNovedades}
-                        onChange={opcion => {
-                            setNovedadSeleccionada(opcion.novedadCompleta);
-                            setFechaSeleccionada(null);
-                            setHoraSeleccionada(null);
-                            setEmpleadoSeleccionado(null);
-                        }}
-                        placeholder="Busca o selecciona un rango de fechas..."
-                        noOptionsMessage={() => "No hay novedades de horario disponibles."}
-                    />
-                </div>
-
-                {novedadSeleccionada && (
+                <div className="agendar-cita-form">
+                    
                     <div className="form-step">
-                        <label>2. Elige una Fecha</label>
-                        <div className="datepicker-wrapper">
-                            <DatePicker
-                                selected={fechaSeleccionada}
-                                onChange={(date) => {
-                                    setFechaSeleccionada(date);
-                                    setHoraSeleccionada(null);
-                                }}
-                                minDate={moment(novedadSeleccionada.fechaInicio).toDate()}
-                                maxDate={moment(novedadSeleccionada.fechaFin).toDate()}
-                                filterDate={filtrarDiasDisponibles}
-                                locale="es"
-                                inline
-                            />
-                        </div>
+                        <label>1. Selecciona una Novedad de Horario</label>
+                        <Select
+                            options={opcionesNovedades}
+                            onChange={opcion => {
+                                setFormData({ 
+                                    novedad: opcion.novedadCompleta,
+                                    fecha: null,
+                                    hora: null,
+                                    clienteId: null,
+                                    empleadoId: null,
+                                    servicios: [],
+                                });
+                            }}
+                            placeholder="Busca o selecciona un rango de fechas..."
+                            noOptionsMessage={() => "No hay novedades de horario disponibles."}
+                        />
                     </div>
-                )}
 
-                {fechaSeleccionada && (
-                    <div className="form-step">
-                        <label>3. Elige un Horario</label>
-                        <div className="horas-grid">
-                            {horasDisponibles.length > 0 ? (
-                                horasDisponibles.map(hora => (
+                    {formData.novedad && (
+                        <div className="form-step">
+                            <label>2. Elige una Fecha</label>
+                            <div className="datepicker-wrapper">
+                                <DatePicker
+                                    selected={formData.fecha}
+                                    onChange={(date) => setFormData(prev => ({ ...prev, fecha: date, hora: null }))}
+                                    minDate={moment(formData.novedad.fechaInicio).toDate()}
+                                    maxDate={moment(formData.novedad.fechaFin).toDate()}
+                                    filterDate={filtrarDiasDisponibles}
+                                    locale="es"
+                                    inline
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {formData.fecha && (
+                        <div className="form-step">
+                            <label>3. Elige un Horario</label>
+                            <div className="horas-grid">
+                                {horasDisponibles.map(hora => (
                                     <button 
                                         key={hora} 
-                                        className={`hora-btn ${horaSeleccionada === hora ? 'selected' : ''}`}
-                                        onClick={() => setHoraSeleccionada(hora)}
+                                        className={`hora-btn ${formData.hora === hora ? 'selected' : ''}`}
+                                        onClick={() => setFormData(prev => ({ ...prev, hora }))}
                                     >
                                         {moment(hora, 'HH:mm').format('hh:mm A')}
                                     </button>
-                                ))
-                            ) : (
-                                <p>No hay horas disponibles para esta novedad.</p>
-                            )}
+                                ))}
+                            </div>
                         </div>
+                    )}
+                    
+                    {formData.hora && (
+                        <>
+                            <div className="form-step">
+                                <label>4. Busca y Selecciona el Cliente</label>
+                                <Select options={opcionesClientes} onChange={opcion => setFormData(prev => ({ ...prev, clienteId: opcion.value }))} placeholder="Escribe para buscar un cliente..." />
+                            </div>
+                            <div className="form-step">
+                                <label>5. Selecciona el Empleado</label>
+                                <Select options={opcionesEmpleados} onChange={opcion => setFormData(prev => ({ ...prev, empleadoId: opcion.value }))} placeholder="Elige un empleado..." />
+                            </div>
+                            <div className="form-step">
+                                <label>6. Selecciona los Servicios</label>
+                                <Select options={opcionesServicios} isMulti onChange={opciones => setFormData(prev => ({ ...prev, servicios: opciones.map(o => o.value) }))} placeholder="Elige uno o más servicios..." />
+                            </div>
+                        </>
+                    )}
+                    
+                    <div className="form-step-submit">
+                        {error && <p className="error-message">{error}</p>}
+                        <button onClick={handleAgendarCita} disabled={isSubmitting || !formData.hora}>
+                            {isSubmitting ? 'Agendando...' : 'Revisar y Agendar Cita'}
+                        </button>
                     </div>
-                )}
-                
-                {horaSeleccionada && (
-                    <>
-                        <div className="form-step">
-                            <label>4. Busca y Selecciona el Cliente</label>
-                            <Select options={opcionesClientes} onChange={setClienteSeleccionado} value={clienteSeleccionado} placeholder="Escribe para buscar un cliente..." />
-                        </div>
-                        <div className="form-step">
-                            <label>5. Selecciona el Empleado</label>
-                            <Select options={opcionesEmpleados} onChange={setEmpleadoSeleccionado} value={empleadoSeleccionado} placeholder="Elige un empleado..." />
-                        </div>
-                        <div className="form-step">
-                            <label>6. Selecciona los Servicios</label>
-                            <Select options={opcionesServicios} isMulti onChange={setServiciosSeleccionados} value={serviciosSeleccionados} placeholder="Elige uno o más servicios..." />
-                        </div>
-                    </>
-                )}
-                
-                <div className="form-step-submit">
-                    {error && <p className="error-message">{error}</p>}
-                    <button onClick={handleAgendarCita} disabled={isSubmitting || !horaSeleccionada}>
-                        {isSubmitting ? 'Agendando...' : 'Revisar y Agendar Cita'}
-                    </button>
                 </div>
-            </div>
             </div>
         </div>
     );
