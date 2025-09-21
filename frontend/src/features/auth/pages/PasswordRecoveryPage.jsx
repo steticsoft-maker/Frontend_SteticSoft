@@ -50,7 +50,16 @@ function PasswordRecoveryPage() {
         confirmButtonText: "Continuar",
       });
     } catch (err) {
-      setError(err.message || "El token es inválido o ha expirado.");
+      console.error("Error verificando token:", err);
+      if (err.status === 500) {
+        setError("Error del servidor. Por favor, intenta nuevamente más tarde.");
+      } else if (err.status === 404) {
+        setError("Token no encontrado. Verifica que el token sea correcto.");
+      } else if (err.status === 400) {
+        setError("Token inválido o malformado.");
+      } else {
+        setError(err.message || "El token es inválido o ha expirado.");
+      }
     } finally {
       setIsLoading(false);
     }
