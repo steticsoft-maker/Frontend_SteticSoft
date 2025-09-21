@@ -62,20 +62,20 @@
 }
 
 /* Para el tooltip dentro de la celda de permisos en vista de tarjeta */
-.rol-table td[data-label="Permisos por Módulo:"] .tooltip-wrapper {
+.rol-table td[data-label="Permisos por Módulo:"] .tooltip-container {
     /* Asegurar que el tooltip se posicione correctamente */
     position: relative;
     z-index: 1;
 }
 
 /* Mejoras específicas para tooltips en la tabla de roles */
-.rol-table .tooltip-wrapper {
+.rol-table .tooltip-container {
     position: relative;
     z-index: 1;
 }
 
 /* Tooltip específico para la tabla de roles */
-.rol-table .tooltip-content {
+.rol-table .tooltip-text {
     background: linear-gradient(135deg, rgba(44, 62, 80, 0.98), rgba(52, 73, 94, 0.98)) !important;
     color: #ffffff !important;
     padding: 8px 12px !important;
@@ -84,42 +84,13 @@
     font-weight: 500 !important;
     line-height: 1.4 !important;
     min-width: 80px !important;
-    max-width: 200px !important;
-    text-align: center !important;
+    max-width: 250px !important;
+    text-align: left !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
-    white-space: nowrap !important;
+    white-space: pre-wrap !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
     backdrop-filter: blur(8px) !important;
-    transform: translateY(-2px) scale(1) !important;
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.rol-table .tooltip-content ul {
-    list-style-type: none;
-    padding-left: 0;
-    margin: 2px 0 0 0;
-    text-align: left;
-}
-
-.rol-table .tooltip-content li {
-    padding: 1px 0;
-    font-size: 0.7rem;
-    color: #ecf0f1;
-}
-
-.rol-table .tooltip-content strong {
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 0.8rem;
-    display: block;
-    margin-bottom: 2px;
-}
-
-.rol-table .tooltip-content span {
-    color: #ecf0f1;
-    font-size: 0.75rem;
-    font-weight: 400;
-    opacity: 0.9;
+    z-index: 999999 !important;
 }
 
 .rol-permission-table-icon {
@@ -155,4 +126,18 @@
 /* Mejorar el espaciado entre grupos de iconos */
 .permisos-cell .permission-icon-wrapper:nth-child(n+2) {
   margin-left: 4px;
+}
+
+/* Estilos adicionales para centrar el contenido */
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.permission-icon {
+  cursor: pointer;
+  font-size: 1.2rem; /* Ajusta el tamaño del icono */
+  color: #555;
 }

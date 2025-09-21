@@ -134,59 +134,49 @@ const RolesTable = ({
                 <td data-label="#">{numeroFila}</td>
                 <td data-label="Nombre del Rol">{rol.nombre}</td>
                 <td data-label="Descripción">{rol.descripcion}</td>
-                 <td data-label="Permisos por Módulo:" className="permisos-cell">
-                   {modulosParaMostrar.length > 0
-                     ? modulosParaMostrar.map(([moduloKey, moduloData]) => {
-                         const IconComponent =
-                           moduloIconMap[moduloKey]?.icon ||
-                           moduloIconMap.DEFAULT.icon;
-                         const permisos = getPermissionsForModule(
-                           rol.permisos,
-                           moduloData.originalName
-                         );
-                         const displayName =
-                           moduloIconMap[moduloKey]?.name ||
-                           moduloData.originalName;
+                <td data-label="Permisos por Módulo:" className="permisos-cell">
+                  {modulosParaMostrar.length > 0
+                    ? modulosParaMostrar.map(([moduloKey, moduloData]) => {
+                        const IconComponent =
+                          moduloIconMap[moduloKey]?.icon ||
+                          moduloIconMap.DEFAULT.icon;
+                        const permisos = getPermissionsForModule(
+                          rol.permisos,
+                          moduloData.originalName
+                        );
+                        const displayName =
+                          moduloIconMap[moduloKey]?.name ||
+                          moduloData.originalName;
 
-                         // Mostrar un solo icono por módulo con tooltip que liste todos los permisos
-                         if (permisos.length > 0) {
-                           const tooltipContent = (
-                             <div>
-                               <strong>{displayName}</strong>
-                               <ul style={{ margin: "4px 0 0 0", paddingLeft: "16px" }}>
-                                 {permisos.map((permiso, index) => (
-                                   <li key={index} style={{ fontSize: "0.8rem" }}>
-                                     {permiso.action}
-                                   </li>
-                                 ))}
-                               </ul>
-                             </div>
-                           );
+                        // Mostrar un solo icono por módulo con tooltip que liste todos los permisos
+                        if (permisos.length > 0) {
+                          // Formatea los permisos para mostrarlos en el tooltip
+                          const permissionsText = `Rol: ${
+                            rol.nombre
+                          }\nMódulo: ${displayName}\nPermisos:\n- ${permisos
+                            .map((p) => p.action)
+                            .join("\n- ")}`;
 
-                           return (
-                             <Tooltip
-                               key={moduloKey}
-                               content={tooltipContent}
-                               position="top"
-                             >
-                               <span
-                                 className="permission-icon-wrapper"
-                                 tabIndex={0}
-                               >
-                                 <IconComponent
-                                   size="1.4em"
-                                   className="rol-permission-table-icon"
-                                 />
-                               </span>
-                             </Tooltip>
-                           );
-                         }
+                          return (
+                            <Tooltip key={moduloKey} text={permissionsText}>
+                              <span
+                                className="permission-icon-wrapper"
+                                tabIndex={0}
+                              >
+                                <IconComponent
+                                  size="1.4em"
+                                  className="rol-permission-table-icon"
+                                />
+                              </span>
+                            </Tooltip>
+                          );
+                        }
 
-                         // Fallback si no hay permisos
-                         return null;
-                       })
-                     : "Ninguno"}
-                 </td>
+                        // Fallback si no hay permisos
+                        return null;
+                      })
+                    : "Ninguno"}
+                </td>
                 <td data-label="Estado">
                   {rol.nombre !== "Administrador" ? (
                     <label className="switch">

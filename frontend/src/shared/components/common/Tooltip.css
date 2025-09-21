@@ -1,56 +1,42 @@
 /* frontend/src/shared/components/common/Tooltip.css */
-.tooltip-wrapper {
+.tooltip-container {
   position: relative;
-  display: inline-flex; /* Para que se ajuste al tamaño del ícono */
-  justify-content: center;
-  align-items: center;
+  display: inline-block;
   cursor: pointer;
 }
 
-.tooltip-content {
-  /* Posición se maneja dinámicamente con JavaScript */
-  background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95));
-  color: #ffffff;
-  padding: 6px 10px;
-  border-radius: 8px;
-  z-index: 999999;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  min-width: 80px;
-  max-width: 200px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  white-space: nowrap;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  
-  /* Efecto de cristal moderno */
-  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  
-  /* Transición suave */
-  opacity: 0;
+.tooltip-text {
   visibility: hidden;
-  transform: translateY(5px) scale(0.95);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
+  width: max-content;
+  max-width: 250px; /* Ajusta el ancho máximo según necesites */
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Lo posiciona arriba del elemento */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: pre-wrap; /* Para respetar los saltos de línea */
 }
 
-.tooltip-wrapper:hover .tooltip-content,
-.tooltip-wrapper:focus-within .tooltip-content { /* focus-within para cuando un hijo (ícono) tiene foco */
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-/* Flecha simple para tooltip */
-.tooltip-content::after {
-  content: "";
+/* Pequeña flecha debajo del tooltip */
+.tooltip-text::after {
+  content: '';
   position: absolute;
   top: 100%;
   left: 50%;
-  margin-left: -4px;
-  border-width: 4px;
+  margin-left: -5px;
+  border-width: 5px;
   border-style: solid;
-  border-color: rgba(44, 62, 80, 0.98) transparent transparent transparent;
+  border-color: #333 transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
