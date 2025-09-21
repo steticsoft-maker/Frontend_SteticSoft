@@ -45,10 +45,16 @@ const UsuarioDetalleModal = ({ isOpen, onClose, usuario }) => {
                 Información Personal
               </h3>
               <div className="usuario-details-grid">
-                {nombreCompleto && (
+                {perfil.nombre && (
                   <div className="usuario-detail-item">
-                    <label>Nombre Completo</label>
-                    <span>{nombreCompleto}</span>
+                    <label>Nombre</label>
+                    <span>{perfil.nombre}</span>
+                  </div>
+                )}
+                {perfil.apellido && (
+                  <div className="usuario-detail-item">
+                    <label>Apellido</label>
+                    <span>{perfil.apellido}</span>
                   </div>
                 )}
                 {perfil.fechaNacimiento && (
@@ -93,13 +99,13 @@ const UsuarioDetalleModal = ({ isOpen, onClose, usuario }) => {
               <div className="usuario-details-grid">
                 {perfil.correo && (
                   <div className="usuario-detail-item">
-                    <label>Correo del Perfil</label>
+                    <label>Correo Personal/Profesional</label>
                     <span>{perfil.correo}</span>
                   </div>
                 )}
                 {usuario.correo && (
                   <div className="usuario-detail-item">
-                    <label>Correo de Cuenta</label>
+                    <label>Correo de Acceso al Sistema</label>
                     <span>{usuario.correo}</span>
                   </div>
                 )}
