@@ -37,20 +37,19 @@ const UsuarioEditarModal = ({
   const isUserAdmin = formData.correo === "admin@steticsoft.com"; // O una comprobación más robusta si la tienes
 
   return (
-    <div className="usuarios-modalOverlay">
-      <div className="usuarios-modalContent usuarios-modalContent-form">
-        <div className="usuarios-modal-header">
-          <h2>Editar Usuario</h2>
+    <div className="admin-modal-overlay">
+      <div className="admin-modal-content large">
+        <div className="admin-modal-header">
+          <h2 className="admin-modal-title">Editar Usuario</h2>
           <button
             type="button"
-            className="usuarios-modal-close-button"
+            className="admin-modal-close"
             onClick={onClose}
           >
             &times;
           </button>
         </div>
-
-        <div className="usuarios-modal-body">
+        <div className="admin-modal-body">
           {isLoading ? (
             <p>Cargando datos del usuario...</p>
           ) : (
@@ -67,25 +66,26 @@ const UsuarioEditarModal = ({
                 isCliente={isCliente}
                 isUserAdmin={isUserAdmin}
               />
-              <div className="usuarios-form-actions">
-                <button
-                  type="submit"
-                  className="usuarios-form-buttonGuardar"
-                  disabled={!isFormValid || isSubmitting || isVerifyingEmail}
-                >
-                  {isSubmitting ? "Guardando..." : "Guardar Cambios"}
-                </button>
-                <button
-                  type="button"
-                  className="usuarios-form-buttonCancelar"
-                  onClick={onClose}
-                  disabled={isSubmitting}
-                >
-                  Cancelar
-                </button>
-              </div>
             </form>
           )}
+        </div>
+        <div className="admin-modal-footer">
+          <button
+            type="submit"
+            className="admin-form-button"
+            disabled={!isFormValid || isSubmitting || isVerifyingEmail}
+            onClick={handleSubmit}
+          >
+            {isSubmitting ? "Guardando..." : "Guardar Cambios"}
+          </button>
+          <button
+            type="button"
+            className="admin-form-button secondary"
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
+            Cancelar
+          </button>
         </div>
       </div>
     </div>
