@@ -150,12 +150,71 @@ const RolesTable = ({
 
                         // Mostrar un solo icono por módulo con tooltip que liste todos los permisos
                         if (permisos.length > 0) {
-                          // Formatea los permisos para mostrarlos en el tooltip
-                          const permissionsText = `Rol: ${
-                            rol.nombre
-                          }\nMódulo: ${displayName}\nPermisos:\n- ${permisos
-                            .map((p) => p.action)
-                            .join("\n- ")}`;
+                          // Función para dividir permisos en columnas
+                          const formatPermissionsInColumns = (permissions) => {
+                            const totalPermissions = permissions.length;
+                            let columns = 1;
+
+                            // Determinar número de columnas según cantidad de permisos
+                            if (totalPermissions <= 3) {
+                              columns = 1;
+                            } else if (totalPermissions <= 6) {
+                              columns = 2;
+                            } else {
+                              columns = 3;
+                            }
+
+                            const itemsPerColumn = Math.ceil(
+                              totalPermissions / columns
+                            );
+                            const columnsData = [];
+
+                            // Dividir permisos en columnas
+                            for (let i = 0; i < columns; i++) {
+                              const start = i * itemsPerColumn;
+                              const end = Math.min(
+                                start + itemsPerColumn,
+                                totalPermissions
+                              );
+                              columnsData.push(permissions.slice(start, end));
+                            }
+
+                            // Crear texto formateado en columnas
+                            let result = `${displayName}\n\n`;
+
+                            // Calcular el ancho máximo de cada columna para alineación
+                            const maxColumnWidth = Math.max(
+                              ...columnsData.map((col) =>
+                                Math.max(...col.map((p) => p.action.length))
+                              )
+                            );
+
+                            // Formatear cada fila
+                            const maxRows = Math.max(
+                              ...columnsData.map((col) => col.length)
+                            );
+                            for (let row = 0; row < maxRows; row++) {
+                              let rowText = "";
+                              for (let col = 0; col < columns; col++) {
+                                if (columnsData[col][row]) {
+                                  const permission =
+                                    columnsData[col][row].action;
+                                  const paddedPermission = permission.padEnd(
+                                    maxColumnWidth + 2
+                                  );
+                                  rowText += `• ${paddedPermission}`;
+                                } else {
+                                  rowText += " ".repeat(maxColumnWidth + 4);
+                                }
+                              }
+                              result += rowText.trim() + "\n";
+                            }
+
+                            return result.trim();
+                          };
+
+                          const permissionsText =
+                            formatPermissionsInColumns(permisos);
 
                           return (
                             <Tooltip key={moduloKey} text={permissionsText}>
