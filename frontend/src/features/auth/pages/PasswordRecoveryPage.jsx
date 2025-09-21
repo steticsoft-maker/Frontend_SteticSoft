@@ -52,7 +52,9 @@ function PasswordRecoveryPage() {
     } catch (err) {
       console.error("Error verificando token:", err);
       if (err.status === 500) {
-        setError("Error del servidor. Por favor, intenta nuevamente más tarde.");
+        setError(
+          "Error del servidor. Por favor, intenta nuevamente más tarde."
+        );
       } else if (err.status === 404) {
         setError("Token no encontrado. Verifica que el token sea correcto.");
       } else if (err.status === 400) {
