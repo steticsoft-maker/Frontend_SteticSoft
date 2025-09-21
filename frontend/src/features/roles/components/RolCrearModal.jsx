@@ -1,12 +1,18 @@
 // src/features/roles/components/RolCrearModal.jsx
-import React, { useState, useEffect } from 'react';
-import RolForm from './RolForm';
+import React, { useState, useEffect } from "react";
+import RolForm from "./RolForm";
 
 // NUEVO: Definimos la regex aquí para reutilizarla
 const descriptionRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.,:;_-]+$/;
 const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s_]+$/; // Solo letras, espacios y guiones bajos
 
-const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permisosAgrupados }) => {
+const RolCrearModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  permisosDisponibles,
+  permisosAgrupados,
+}) => {
   const getInitialFormState = () => ({
     nombre: "",
     descripcion: "",
@@ -110,32 +116,28 @@ const RolCrearModal = ({ isOpen, onClose, onSubmit, permisosDisponibles, permiso
       <div className="admin-modal-content large">
         <div className="admin-modal-header">
           <h2 className="admin-modal-title">Crear Rol</h2>
-          <button
-            type="button"
-            className="admin-modal-close"
-            onClick={onClose}
-          >
+          <button type="button" className="admin-modal-close" onClick={onClose}>
             &times;
           </button>
         </div>
         <div className="admin-modal-body">
-          <form onSubmit={handleSubmitForm}>
-          <RolForm
-            formData={formData}
-            onFormChange={handleFormChange}
-            permisosDisponibles={permisosDisponibles}
-            permisosAgrupados={permisosAgrupados}
-            onToggleModulo={handleToggleModulo}
-            onSelectAll={handleSelectAll}
-            onDeselectAll={handleDeselectAll}
-            isEditing={false}
-            isRoleAdmin={false}
-            formErrors={formErrors}
-          />
-          {formErrors.permisos && (
-            <p className="admin-form-error">{formErrors.permisos}</p>
-          )}
-        </form>
+          <form onSubmit={handleSubmitForm} id="rol-form">
+            <RolForm
+              formData={formData}
+              onFormChange={handleFormChange}
+              permisosDisponibles={permisosDisponibles}
+              permisosAgrupados={permisosAgrupados}
+              onToggleModulo={handleToggleModulo}
+              onSelectAll={handleSelectAll}
+              onDeselectAll={handleDeselectAll}
+              isEditing={false}
+              isRoleAdmin={false}
+              formErrors={formErrors}
+            />
+            {formErrors.permisos && (
+              <p className="admin-form-error">{formErrors.permisos}</p>
+            )}
+          </form>
         </div>
         <div className="admin-modal-footer">
           <button type="submit" className="admin-form-button" form="rol-form">
