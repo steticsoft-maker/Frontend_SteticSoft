@@ -1,7 +1,7 @@
 // src/features/clientes/components/ClienteEditarModal.jsx
-import React from 'react';
-import ClienteForm from './ClienteForm';
-import '../../../shared/styles/admin-layout.css';
+import React from "react";
+import ClienteForm from "./ClienteForm";
+import "../../../shared/styles/admin-layout.css";
 
 const ClienteEditarModal = ({
   isOpen,
@@ -25,16 +25,12 @@ const ClienteEditarModal = ({
       <div className="admin-modal-content large">
         <div className="admin-modal-header">
           <h2 className="admin-modal-title">Editar Cliente</h2>
-          <button
-            type="button"
-            className="admin-modal-close"
-            onClick={onClose}
-          >
+          <button type="button" className="admin-modal-close" onClick={onClose}>
             &times;
           </button>
         </div>
         <div className="admin-modal-body">
-          <form onSubmit={handleSubmitForm} noValidate>
+          <form id="cliente-form" onSubmit={handleSubmitForm} noValidate>
             <ClienteForm
               formData={formData}
               onFormChange={handleInputChange}
@@ -45,8 +41,12 @@ const ClienteEditarModal = ({
           </form>
         </div>
         <div className="admin-modal-footer">
-          <button type="submit" className="admin-form-button" form="cliente-form">
-            {isSubmitting ? 'Actualizando...' : 'Actualizar Cliente'}
+          <button
+            type="submit"
+            className="admin-form-button"
+            form="cliente-form"
+          >
+            {isSubmitting ? "Actualizando..." : "Actualizar Cliente"}
           </button>
           <button
             type="button"
