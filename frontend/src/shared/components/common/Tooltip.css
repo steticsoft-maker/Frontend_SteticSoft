@@ -4,6 +4,7 @@
   display: inline-flex; /* Para que se ajuste al tamaño del ícono */
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .tooltip-content {
@@ -12,19 +13,20 @@
   color: #ecf0f1; /* Un color claro más suave */
   padding: 8px 12px;
   border-radius: 6px;
-  z-index: 1070; /* Bootstrap usa z-index altos para tooltips, ej. 1070 */
+  z-index: 9999; /* Z-index muy alto para asegurar que aparezca */
   font-size: 0.875rem; /* 14px si base es 16px */
   line-height: 1.5;
   min-width: 120px; /* Ancho mínimo */
-  max-width: 250px; /* Ancho máximo para evitar tooltips muy largos */
+  max-width: 300px; /* Ancho máximo para evitar tooltips muy largos */
   text-align: left;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   white-space: normal; /* Permitir que el texto del tooltip se ajuste */
+  border: 1px solid rgba(255, 255, 255, 0.1);
 
   /* Transición suave */
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
   pointer-events: none; /* Para que el tooltip no interfiera con el mouse */
 }
 

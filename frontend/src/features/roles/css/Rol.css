@@ -375,65 +375,254 @@ input:checked+.slider:before {
 
 /* Contenido del modal de Detalles */
 .rol-modalContent-details {
-    max-width: 500px;
+    max-width: 900px;
+    padding-bottom: 0;
 }
 
-/* Títulos y párrafos en detalles */
-.rol-modalContent-details h2,
-.rol-modalContent-details h3 {
-    text-align: center;
-    color: var(--color-text-dark);
-    margin-top: 0;
-    margin-bottom: 20px;
+/* Footer del modal */
+.rol-modal-footer {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    border-top: 1px solid var(--color-form-border);
+    background-color: var(--color-background-light);
+    flex-shrink: 0;
 }
 
-.rol-modalContent-details p {
-    margin-bottom: 10px;
-    line-height: 1.6;
-    color: var(--color-text-dark);
+/* Container principal de detalles */
+.rol-details-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-/* Texto fuerte en detalles */
-.rol-modalContent-details strong {
+/* Secciones de detalles */
+.rol-details-section {
+    background-color: var(--color-background-light);
+    border: 1px solid var(--color-form-border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease;
+}
+
+.rol-details-section:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Título de sección */
+.rol-details-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--color-primary);
     color: var(--color-primary);
-    margin-right: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
-/* Lista de módulos en detalles */
-.rol-modalContent-details .rol-listaModulosDetalle {
-    list-style: disc inside;
-    padding-left: 20px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    max-height: 150px;
-    overflow-y: auto;
+.section-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
-/* Item de lista en detalles */
-.rol-modalContent-details .rol-listaModulosDetalle li {
+/* Grid de detalles */
+.rol-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+/* Items individuales */
+.rol-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 16px;
+    background-color: rgba(154, 122, 159, 0.03);
+    border-radius: 8px;
+    border-left: 3px solid var(--color-primary);
+    transition: all 0.2s ease;
+}
+
+.rol-detail-item:hover {
+    background-color: rgba(154, 122, 159, 0.06);
+    transform: translateY(-1px);
+}
+
+.rol-detail-item-full {
+    grid-column: 1 / -1;
+}
+
+.rol-detail-item label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.rol-detail-item span {
+    font-size: 1rem;
+    color: var(--color-text-dark);
+    font-weight: 500;
+    word-break: break-word;
+}
+
+/* Badges especiales */
+.rol-name-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+    color: white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(154, 122, 159, 0.3);
+}
+
+.rol-status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rol-status-badge.active {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+}
+
+.rol-status-badge.inactive {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+/* Grid de permisos por módulo */
+.rol-permisos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+/* Card de módulo */
+.rol-modulo-card {
+    background-color: rgba(154, 122, 159, 0.05);
+    border: 1px solid var(--color-form-border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.rol-modulo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(154, 122, 159, 0.15);
+    border-color: var(--color-primary);
+}
+
+/* Header del módulo */
+.rol-modulo-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-form-border);
+}
+
+.rol-modulo-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.rol-modulo-name {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Lista de permisos */
+.rol-permisos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rol-permiso-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 4px 0;
+}
+
+.rol-permiso-dot {
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.rol-permiso-name {
     font-size: 0.9rem;
     color: var(--color-text-dark);
+    font-weight: 500;
+}
+
+/* Estado sin permisos */
+.rol-no-permisos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--color-text-secondary);
+    background-color: rgba(154, 122, 159, 0.03);
+    border: 2px dashed var(--color-form-border);
+    border-radius: 12px;
+}
+
+.rol-no-permisos-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    opacity: 0.6;
+}
+
+.rol-no-permisos p {
+    margin: 0;
+    font-size: 1rem;
+    font-style: italic;
 }
 
 /* Botón cerrar en detalles */
-.rol-modalContent-details .rol-modalButton-cerrar {
-    display: block;
-    width: 100%;
-    padding: 10px 20px;
+.rol-modalButton-cerrar {
+    min-width: 140px;
+    padding: 12px 24px;
     background-color: var(--color-primary);
     color: var(--color-text-light);
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 8px;
     font-size: 1rem;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
-    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.18s ease, transform 0.06s, box-shadow 0.18s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.rol-modalContent-details .rol-modalButton-cerrar:hover {
+.rol-modalButton-cerrar:hover {
     background-color: var(--color-primary-hover);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
 
 /* Contenido del modal de Formulario */
@@ -1073,6 +1262,49 @@ input:checked+.slider:before {
     .rol-modalContent-validation {
         max-width: 95%;
         margin: auto;
+    }
+    
+    /* Responsive para el modal de detalles de roles */
+    .rol-details-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .rol-permisos-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .rol-details-section {
+        padding: 16px;
+    }
+    
+    .rol-details-section-title {
+        font-size: 1rem;
+    }
+    
+    .rol-detail-item {
+        padding: 10px 12px;
+    }
+    
+    .rol-detail-item label {
+        font-size: 0.8rem;
+    }
+    
+    .rol-detail-item span {
+        font-size: 0.95rem;
+    }
+    
+    .rol-modulo-card {
+        padding: 12px;
+    }
+    
+    .rol-modulo-name {
+        font-size: 0.95rem;
+    }
+    
+    .rol-permiso-name {
+        font-size: 0.85rem;
     }
 
     .rol-modalContent-form {
