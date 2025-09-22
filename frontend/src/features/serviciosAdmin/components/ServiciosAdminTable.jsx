@@ -67,7 +67,6 @@ const ServiciosAdminTable = ({
             <th>#</th>
             <th>Imagen</th>
             <th>Nombre</th>
-            <th>Descripción</th>
             <th>Precio</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -98,20 +97,18 @@ const ServiciosAdminTable = ({
                   )}
                 </td>
                 <td data-label="Nombre:">{servicio.nombre}</td>
-            <td data-label="Descripción:">{servicio.descripcion}</td>
-            <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
-
-            <td data-label="Estado:">
-              <label className="table-switch">
-                <input
-                  type="checkbox"
-                  checked={servicio.estado}
-                  onChange={() => onToggleEstado(servicio)}
-                  disabled={loadingId === servicio.idServicio}
-                />
-                <span className="table-slider"></span>
-              </label>
-            </td>
+                <td data-label="Precio:">{formatCurrency(servicio.precio)}</td>
+                <td data-label="Estado:">
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={servicio.estado}
+                      onChange={() => onToggleEstado(servicio)}
+                      disabled={loadingId === servicio.idServicio}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </td>
             <td data-label="Acciones:">
               <div className="table-iconos">
                 <button

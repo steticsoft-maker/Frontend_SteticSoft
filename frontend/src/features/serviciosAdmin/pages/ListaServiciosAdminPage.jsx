@@ -192,8 +192,8 @@ function ListaServiciosAdminPage() {
                 />
               </div>
               
-              {servicios.length > itemsPerPage && (
-                <div className="pagination-controls">
+              <div className="pagination-wrapper">
+                <div className="pagination-container">
                   <select 
                     value={itemsPerPage} 
                     onChange={(e) => {
@@ -201,23 +201,24 @@ function ListaServiciosAdminPage() {
                       setCurrentPage(1);
                     }}
                   >
-                    <option value={5}>Mostrar 5</option>
-                    <option value={10}>Mostrar 10</option>
-                    <option value={15}>Mostrar 15</option>
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                    <option value={20}>20</option>
                   </select>
-                  <span>
-                    Página <strong>{currentPage}</strong> de <strong>{totalPages}</strong>
-                  </span>
-                  <div className="pagination-buttons">
-                    <button onClick={() => setCurrentPage(c => Math.max(1, c - 1))} disabled={currentPage === 1}>
-                      Anterior
+                  <span>Filas</span>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      className={`page-number ${currentPage === page ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
                     </button>
-                    <button onClick={() => setCurrentPage(c => Math.min(totalPages, c + 1))} disabled={currentPage === totalPages}>
-                      Siguiente
-                    </button>
-                  </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </>
         )}
       </div>

@@ -131,6 +131,10 @@
   max-width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+  background-color: var(--color-background-light);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .lista-servicios-container .table-container .table-main {
@@ -138,6 +142,35 @@
   max-width: 100% !important;
   min-width: 100% !important;
   table-layout: fixed !important;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Estilos mejorados para la tabla de servicios */
+.lista-servicios-container .table-main th {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+  font-weight: 600;
+  padding: 16px 12px;
+  text-align: left;
+  border: none !important;
+  border-bottom: 2px solid var(--color-primary-hover) !important;
+}
+
+.lista-servicios-container .table-main td {
+  padding: 16px 12px;
+  border: none !important;
+  border-bottom: 1px solid var(--color-form-border) !important;
+  background-color: var(--color-background-light);
+  vertical-align: middle;
+}
+
+.lista-servicios-container .table-main tbody tr:hover {
+  background-color: var(--color-background-hover) !important;
+}
+
+.lista-servicios-container .table-main tbody tr:last-child td {
+  border-bottom: none !important;
 }
 
 /* Estilos para el Módulo de Administración de Servicios */
@@ -349,37 +382,39 @@
 /* Estilos específicos para la columna de imagen en servicios */
 .servicio-imagen-cell {
   text-align: center !important;
-  width: 80px;
-  padding: 8px !important;
+  width: 100px;
+  padding: 12px !important;
 }
 
 .servicio-tabla-imagen {
-  width: 50px;
-  height: 50px;
-  border-radius: 6px;
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
   object-fit: cover;
   border: 2px solid var(--color-form-border);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease;
 }
 
 .servicio-tabla-imagen:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .servicio-sin-imagen {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--color-background-light);
   border: 2px dashed var(--color-form-border);
-  border-radius: 6px;
+  border-radius: 8px;
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-align: center;
+  margin: 0 auto;
 }
 
 /* Modal de preview de imagen */
@@ -438,12 +473,54 @@
 }
 
 /* --- Switch de Estado --- */
-.switch { position: relative; display: inline-block; width: 40px; height: 24px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--color-success); }
-input:checked + .slider:before { transform: translateX(16px); }
+.switch { 
+  position: relative; 
+  display: inline-block; 
+  width: 50px; 
+  height: 24px; 
+}
+
+.switch input { 
+  opacity: 0; 
+  width: 0; 
+  height: 0; 
+}
+
+.slider { 
+  position: absolute; 
+  cursor: pointer; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  background-color: #ccc; 
+  -webkit-transition: .4s; 
+  transition: .4s; 
+  border-radius: 24px; 
+}
+
+.slider:before { 
+  position: absolute; 
+  content: ""; 
+  height: 18px; 
+  width: 18px; 
+  left: 3px; 
+  bottom: 3px; 
+  background-color: white; 
+  -webkit-transition: .4s; 
+  transition: .4s; 
+  border-radius: 50%; 
+}
+
+input:checked + .slider { 
+  background-color: var(--color-primary); 
+}
+
+input:checked + .slider:before { 
+  -webkit-transform: translateX(26px); 
+  -ms-transform: translateX(26px); 
+  transform: translateX(26px); 
+}
 
 /* === RESPONSIVE DESIGN FOR SERVICIOS ADMIN === */
 
@@ -687,7 +764,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 /* --- Estilos para el Modal y Formulario de Servicios --- */
-.servicios-admin-modal-overlay {
+.servicio-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -702,16 +779,274 @@ input:checked + .slider:before { transform: translateX(16px); }
   box-sizing: border-box;
 }
 
-.servicios-admin-modal-content {
+.servicio-modal-content {
   background-color: var(--color-background-light);
-  padding: 25px 30px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
   width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.servicio-modal-header {
+  padding: 24px 30px 20px 30px;
+  border-bottom: 1px solid var(--color-form-border);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.servicio-modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.servicio-modal-body {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.servicio-form-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.servicio-image-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.servicio-fields-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.servicio-section-title {
+  margin: 0 0 20px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 8px;
+}
+
+.servicio-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.servicio-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.servicio-form-label {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 0.95rem;
+}
+
+.servicio-form-input,
+.servicio-form-select,
+.servicio-form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--color-form-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  background-color: var(--color-background-light);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.servicio-form-input:focus,
+.servicio-form-select:focus,
+.servicio-form-textarea:focus {
+  border-color: var(--color-primary);
+  background-color: var(--color-form-focus-bg);
+  box-shadow: 0 0 0 3px rgba(154, 122, 159, 0.2);
+  outline: none;
+}
+
+.servicio-form-input.error,
+.servicio-form-select.error {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(217, 83, 79, 0.2);
+}
+
+.servicio-form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.servicio-form-error {
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.servicio-image-upload-area {
+  border: 2px dashed var(--color-form-border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.servicio-image-upload-area:hover {
+  border-color: var(--color-primary);
+  background-color: #f5f5f5;
+}
+
+.servicio-image-upload-area.dragging {
+  border-color: var(--color-primary);
+  background-color: var(--color-table-row-even);
+  transform: scale(1.02);
+}
+
+.servicio-upload-placeholder {
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.servicio-upload-placeholder svg {
+  color: var(--color-primary);
+  opacity: 0.7;
+}
+
+.servicio-upload-placeholder p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--color-text-dark);
+}
+
+.servicio-upload-placeholder small {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.servicio-image-preview-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.servicio-image-preview {
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.servicio-remove-image-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.servicio-remove-image-btn:hover {
+  background: var(--color-danger);
+  transform: scale(1.1);
+}
+
+.servicio-modal-footer {
+  padding: 20px 30px 30px 30px;
+  border-top: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  border-radius: 0 0 12px 12px;
+}
+
+.servicio-form-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 140px;
+  transition: all 0.3s ease;
+  text-transform: none;
+}
+
+.servicio-form-button.primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(154, 122, 159, 0.3);
+}
+
+.servicio-form-button.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(154, 122, 159, 0.4);
+}
+
+.servicio-form-button.secondary {
+  background-color: #6c757d;
+  color: white;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.servicio-form-button.secondary:hover:not(:disabled) {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+}
+
+.servicio-form-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.required-asterisk {
+  color: var(--color-danger);
+  margin-left: 4px;
+  font-weight: bold;
 }
 
 .servicios-admin-modal-content h3 {
@@ -855,42 +1190,54 @@ button.cancelar:hover {
 }
 
 /* --- ESTILOS PARA LA PAGINACIÓN --- */
+.pagination-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
 
-.pagination-controls {
+.pagination-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 16px;
-  margin-top: 20px;
-  border-radius: 0 0 8px 8px;
-}
-
-.pagination-controls select {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.pagination-controls span {
+  gap: 8px;
+  padding: 20px 0;
+  margin-top: 15px;
   font-size: 0.9rem;
-  color: #555;
 }
 
-.pagination-buttons button {
-  margin-left: 8px;
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  background-color: white;
-  color: #333;
+.pagination-container select {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--color-form-border);
   cursor: pointer;
-  border-radius: 6px;
-  transition: background-color 0.2s;
+  background-color: var(--color-background-light);
+  margin-right: 15px; 
 }
 
-.pagination-buttons button:hover:not(:disabled) {
-  background-color: #f0f0f0;
+.pagination-container .page-number {
+  padding: 6px 12px;
+  min-width: 34px;
+  text-align: center;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.pagination-container .page-number:hover:not(.active) {
+  background-color: var(--color-form-focus-bg);
+  border-color: var(--color-form-border);
+}
+
+.pagination-container .page-number.active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
 }
 
 /* --- Nuevos Estilos para Imagen en Tabla --- */
@@ -1037,12 +1384,117 @@ button.cancelar:hover {
 }
 
 
+/* --- Responsive Design para el Modal de Servicios --- */
 @media (max-width: 768px) {
-  .servicios-admin-form-grid-with-image {
-    grid-template-columns: 1fr;
+  .servicio-modal-content {
+    max-width: 95%;
+    max-height: 90vh;
+    margin: 10px;
   }
-  .servicios-admin-form-image-section {
-    grid-row: 1; /* Mover la imagen al principio en móvil */
+  
+  .servicio-modal-header {
+    padding: 20px 20px 16px 20px;
+  }
+  
+  .servicio-modal-title {
+    font-size: 1.3rem;
+  }
+  
+  .servicio-modal-body {
+    padding: 20px;
+  }
+  
+  .servicio-form-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .servicio-fields-section {
+    order: 1;
+  }
+  
+  .servicio-image-section {
+    order: 2;
+  }
+  
+  .servicio-image-upload-area {
+    min-height: 200px;
+  }
+  
+  .servicio-modal-footer {
+    padding: 16px 20px 20px 20px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .servicio-form-button {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .servicio-modal-content {
+    max-width: 98%;
+    margin: 5px;
+  }
+  
+  .servicio-modal-header {
+    padding: 16px 16px 12px 16px;
+  }
+  
+  .servicio-modal-title {
+    font-size: 1.2rem;
+  }
+  
+  .servicio-modal-body {
+    padding: 16px;
+  }
+  
+  .servicio-form-layout {
+    gap: 20px;
+  }
+  
+  .servicio-section-title {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+  
+  .servicio-form-fields {
+    gap: 16px;
+  }
+  
+  .servicio-form-input,
+  .servicio-form-select,
+  .servicio-form-textarea {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+  
+  .servicio-image-upload-area {
+    min-height: 180px;
+    padding: 16px;
+  }
+  
+  .servicio-upload-placeholder svg {
+    font-size: 2.5rem;
+  }
+  
+  .servicio-upload-placeholder p {
+    font-size: 0.9rem;
+  }
+  
+  .servicio-upload-placeholder small {
+    font-size: 0.8rem;
+  }
+  
+  .servicio-modal-footer {
+    padding: 12px 16px 16px 16px;
+  }
+  
+  .servicio-form-button {
+    padding: 10px 20px;
+    font-size: 0.95rem;
   }
 }
 
