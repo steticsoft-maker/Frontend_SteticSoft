@@ -1,5 +1,270 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/responsive-template.css";
+@import "@/shared/styles/table-common.css";
+
+/* ======================================================== */
+/* ============= ESTRUCTURA PRINCIPAL ==================== */
+/* ======================================================== */
+
+/* Contenedor principal de citas */
+.citas-content {
+  padding: 2rem;
+  margin-left: 270px;
+  min-height: 100vh;
+  background-color: var(--color-background-light);
+}
+
+/* ======================================================== */
+/* ============= BARRA DE ACCIONES SUPERIORES ============= */
+/* ======================================================== */
+
+/* Contenedor principal de controles */
+.citas-admin-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 0;
+}
+
+/* Título principal */
+.citas-admin-controls h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0;
+  text-align: left;
+}
+
+/* Barra de acciones */
+.citas-admin-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* Contenedor de filtros */
+.citas-filters {
+  display: flex;
+  gap: 20px;
+  flex-grow: 1;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Barra de búsqueda */
+.citas-search-bar {
+  flex-grow: 1;
+  display: flex;
+}
+
+/* Input de búsqueda */
+.citas-search-input {
+  padding: 10px 12px; 
+  width: 100%; 
+  min-width: 250px;
+  font-size: 1rem;
+  border: 1px solid var(--color-form-border);
+  border-radius: 5px;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  box-sizing: border-box;
+}
+
+.citas-search-input:focus {
+  border-color: var(--color-primary);
+  background-color: var(--color-form-focus-bg);
+  box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+  outline: none;
+}
+
+/* Grupo de filtro de estado */
+.citas-filtro-estado-grupo {
+  display: flex;
+  align-items: center;
+}
+
+.citas-filtro-estado-select {
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid var(--color-form-border);
+  border-radius: 5px;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.citas-filtro-estado-select:focus {
+  border-color: var(--color-primary);
+  background-color: var(--color-form-focus-bg);
+  box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+  outline: none;
+}
+
+/* ============= BOTONES UNIFICADOS ====================== */
+
+/* Botón de agregar cita */
+.citas-add-button,
+.botonAgregarCita {
+  padding: 10px 20px;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.citas-add-button:hover,
+.botonAgregarCita:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Contenedor de la tabla de citas */
+.lista-citas-container {
+  background-color: var(--color-background-light);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+/* Hacer la tabla más pequeña y centrada - igual que servicios */
+.lista-citas-container .table-container {
+  width: 100% !important;
+  max-width: 90% !important;
+  margin: 0 auto !important;
+}
+
+/* Centrar el título de las columnas */
+.lista-citas-container .table-main th {
+  text-align: center !important;
+  background-color: var(--color-table-header);
+  color: var(--color-table-header-text);
+  font-weight: bold;
+  padding: 16px 12px;
+  border: 1px solid var(--color-table-header);
+}
+
+/* Celdas de la tabla */
+.lista-citas-container .table-main td {
+  border: 1px solid var(--color-table-header);
+  text-align: left;
+  padding: 16px 12px;
+  vertical-align: middle;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  border: none !important;
+  background-color: var(--color-background-light);
+  vertical-align: middle;
+}
+
+/* Centrar el título de la columna Estado */
+.lista-citas-container .table-main th:nth-child(5) {
+  text-align: center !important;
+}
+
+/* Centrar el título de la columna Acciones */
+.lista-citas-container .table-main th:nth-child(6) {
+  text-align: center !important;
+}
+
+/* Centrar la columna de acciones */
+.lista-citas-container .table-main td:nth-child(6) {
+  text-align: center !important;
+}
+
+/* Centrar la columna de estado */
+.lista-citas-container .table-main td:nth-child(5) {
+  text-align: center !important;
+}
+
+/* Centrar la columna # */
+.lista-citas-container .table-main td:nth-child(1) {
+  text-align: center !important;
+  font-weight: 600;
+}
+
+/* Eliminar bordes inferiores de la última fila */
+.lista-citas-container .table-main tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* ============= BOTONES DE ACCIONES ====================== */
+
+/* Contenedor de acciones */
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-width: 150px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Botones de acción en la tabla */
+.lista-citas-container .btn {
+  padding: 6px 10px;
+  margin: 0 1px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.lista-citas-container .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Botones específicos con colores unificados */
+.lista-citas-container .btn:nth-child(1) {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+.lista-citas-container .btn:nth-child(1):hover {
+  background-color: var(--color-primary-hover);
+}
+
+.lista-citas-container .btn:nth-child(2) {
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-text);
+}
+
+.lista-citas-container .btn:nth-child(2):hover {
+  background-color: var(--color-secondary-hover);
+}
+
+.lista-citas-container .btn:nth-child(3) {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.lista-citas-container .btn:nth-child(3):hover {
+  background-color: #c0392b;
+}
 
 /* === Badges de Estado === */
 /* ==========================================================================
@@ -154,5 +419,1147 @@
   .detalle-total {
     margin-top: 15px;
   }
+}
+
+/* ============= RESPONSIVE STYLES PARA TABLA DE CITAS ============= */
+
+/* Large Desktop (1400px and above) - Tabla de citas */
+@media (min-width: 1400px) {
+    .lista-citas-container .table-container {
+        max-width: 95% !important;
+    }
+}
+
+/* Desktop (1200px and below) - Tabla de citas */
+@media (max-width: 1200px) {
+    .lista-citas-container .table-container {
+        max-width: 98% !important;
+    }
+    
+    .lista-citas-container .table-main th,
+    .lista-citas-container .table-main td {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) - Tabla de citas */
+@media (max-width: 1024px) {
+    .lista-citas-container .table-container {
+        max-width: 100% !important;
+        overflow-x: auto;
+    }
+    
+    .lista-citas-container .table-main {
+        min-width: 900px;
+    }
+    
+    .lista-citas-container .table-main th,
+    .lista-citas-container .table-main td {
+        padding: 10px 6px;
+        font-size: 0.85rem;
+    }
+    
+    .lista-citas-container .table-main th {
+        font-size: 0.8rem;
+    }
+}
+
+/* Tablet Portrait (768px and below) - Tabla de citas */
+@media (max-width: 768px) {
+    .lista-citas-container .table-container {
+        max-width: 100% !important;
+        overflow-x: auto;
+        margin: 10px 0;
+    }
+    
+    .lista-citas-container .table-main {
+        min-width: 800px;
+    }
+    
+    .lista-citas-container .table-main th,
+    .lista-citas-container .table-main td {
+        padding: 8px 4px;
+        font-size: 0.8rem;
+    }
+    
+    .lista-citas-container .table-main th {
+        font-size: 0.75rem;
+    }
+    
+    .lista-citas-container .btn {
+        padding: 4px 6px;
+        font-size: 0.7rem;
+        min-width: 28px;
+        height: 28px;
+    }
+    
+    .actions-cell {
+        gap: 4px;
+        min-width: 120px;
+    }
+}
+
+/* Mobile Landscape (640px and below) - Tabla de citas */
+@media (max-width: 640px) {
+    .lista-citas-container .table-container {
+        max-width: 100% !important;
+        overflow-x: auto;
+        margin: 8px 0;
+    }
+    
+    .lista-citas-container .table-main {
+        min-width: 700px;
+    }
+    
+    .lista-citas-container .table-main th,
+    .lista-citas-container .table-main td {
+        padding: 6px 3px;
+        font-size: 0.75rem;
+    }
+    
+    .lista-citas-container .table-main th {
+        font-size: 0.7rem;
+    }
+    
+    .lista-citas-container .btn {
+        padding: 3px 5px;
+        font-size: 0.65rem;
+        min-width: 24px;
+        height: 24px;
+    }
+    
+    .actions-cell {
+        gap: 3px;
+        min-width: 100px;
+    }
+}
+
+/* Mobile Portrait (480px and below) - Tabla de citas */
+@media (max-width: 480px) {
+    .lista-citas-container .table-container {
+        max-width: 100% !important;
+        overflow-x: auto;
+        margin: 5px 0;
+    }
+    
+    .lista-citas-container .table-main {
+        min-width: 600px;
+    }
+    
+    .lista-citas-container .table-main th,
+    .lista-citas-container .table-main td {
+        padding: 4px 2px;
+        font-size: 0.7rem;
+    }
+    
+    .lista-citas-container .table-main th {
+        font-size: 0.65rem;
+    }
+    
+    .lista-citas-container .btn {
+        padding: 2px 4px;
+        font-size: 0.6rem;
+        min-width: 20px;
+        height: 20px;
+    }
+    
+    .actions-cell {
+        gap: 2px;
+        min-width: 80px;
+    }
+}
+
+/* Small Mobile (360px and below) - Tabla de citas */
+@media (max-width: 360px) {
+    .lista-citas-container .table-container {
+        max-width: 100% !important;
+        overflow-x: auto;
+        margin: 3px 0;
+    }
+    
+    .lista-citas-container .table-main {
+        min-width: 550px;
+    }
+    
+    .lista-citas-container .table-main th,
+    .lista-citas-container .table-main td {
+        padding: 3px 1px;
+        font-size: 0.65rem;
+    }
+    
+    .lista-citas-container .table-main th {
+        font-size: 0.6rem;
+    }
+    
+    .lista-citas-container .btn {
+        padding: 1px 3px;
+        font-size: 0.55rem;
+        min-width: 18px;
+        height: 18px;
+    }
+    
+    .actions-cell {
+        gap: 1px;
+        min-width: 70px;
+    }
+}
+
+/* ============= RESPONSIVE STYLES PARA CONTROLES DE CITAS ============= */
+
+/* Large Desktop (1400px and above) - Controles de citas */
+@media (min-width: 1400px) {
+    .citas-content {
+        padding: 3rem;
+        margin-left: 300px;
+    }
+
+    .citas-admin-controls h1 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .citas-admin-controls {
+        margin-bottom: 2rem;
+        gap: 2rem;
+    }
+
+    .citas-search-input,
+    .citas-filtro-estado-select {
+        padding: 14px 18px;
+        font-size: 1.1rem;
+    }
+
+    .botonAgregarCita {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Desktop (1200px and below) - Controles de citas */
+@media (max-width: 1200px) {
+    .citas-content {
+        padding: 2rem;
+        margin-left: 280px;
+    }
+
+    .citas-admin-controls h1 {
+        font-size: 2rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .citas-admin-controls {
+        margin-bottom: 1.8rem;
+        gap: 1.5rem;
+    }
+
+    .citas-search-input,
+    .citas-filtro-estado-select {
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+
+    .botonAgregarCita {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) - Controles de citas */
+@media (max-width: 1024px) {
+    .citas-content {
+        padding: 1.5rem;
+        margin-left: 260px;
+    }
+
+    .citas-admin-controls h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .citas-admin-controls {
+        margin-bottom: 1.5rem;
+        gap: 1.2rem;
+    }
+
+    .citas-search-input,
+    .citas-filtro-estado-select {
+        padding: 11px 15px;
+        font-size: 0.95rem;
+    }
+
+    .botonAgregarCita {
+        padding: 9px 18px;
+        font-size: 0.95rem;
+    }
+}
+
+/* Tablet Portrait (768px and below) - Controles de citas */
+@media (max-width: 768px) {
+    .citas-content {
+        padding: 1rem;
+        margin-left: 0;
+    }
+
+    .citas-admin-controls h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .citas-admin-controls {
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .citas-admin-actions-bar {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .citas-search-input,
+    .citas-filtro-estado-select,
+    .botonAgregarCita {
+        width: 100%;
+    }
+
+    .citas-search-input,
+    .citas-filtro-estado-select {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .botonAgregarCita {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile Landscape (640px and below) - Controles de citas */
+@media (max-width: 640px) {
+    .citas-content {
+        padding: 0.8rem;
+    }
+
+    .citas-admin-controls h1 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .citas-admin-controls {
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .citas-search-input,
+    .citas-filtro-estado-select {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    .botonAgregarCita {
+        padding: 9px 14px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Mobile Portrait (480px and below) - Controles de citas */
+@media (max-width: 480px) {
+    .citas-content {
+        padding: 0.6rem;
+    }
+
+    .citas-admin-controls h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .citas-admin-controls {
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .citas-search-input,
+    .citas-filtro-estado-select {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .botonAgregarCita {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Small Mobile (360px and below) - Controles de citas */
+@media (max-width: 360px) {
+    .citas-content {
+        padding: 0.4rem;
+    }
+
+    .citas-admin-controls h1 {
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .citas-admin-controls {
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .citas-search-input,
+    .citas-filtro-estado-select {
+        padding: 7px 8px;
+        font-size: 0.75rem;
+    }
+
+    .botonAgregarCita {
+        padding: 7px 10px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ======================================================== */
+/* ============= FORMULARIO DE AGENDAMIENTO =============== */
+/* ======================================================== */
+
+/* Contenedor principal del formulario */
+.agendar-cita-container {
+  padding: 2rem;
+  margin-left: 270px;
+  min-height: 100vh;
+  background-color: var(--color-background-light);
+}
+
+/* Header del formulario */
+.agendar-cita-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.agendar-cita-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.btn-ver-lista {
+  padding: 10px 20px;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-ver-lista:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Formulario principal */
+.agendar-cita-form {
+  background-color: var(--color-background-light);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Pasos del formulario */
+.form-step {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: var(--color-background-light);
+  border: 2px solid var(--color-form-border);
+  transition: all 0.3s ease;
+}
+
+.form-step.active {
+  border-color: var(--color-primary);
+  background-color: var(--color-form-focus-bg);
+}
+
+.form-step.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.form-step h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 1rem;
+}
+
+/* Selector de novedad */
+.novedad-selector {
+  width: 100%;
+  position: relative;
+}
+
+.novedad-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid var(--color-form-border);
+  border-radius: 5px;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  position: relative;
+}
+
+.novedad-input:focus {
+  border-color: var(--color-primary);
+  background-color: var(--color-form-focus-bg);
+  box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+  outline: none;
+}
+
+.novedad-input::after {
+  content: '▼';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.novedad-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--color-background-light);
+  border: 1px solid var(--color-form-border);
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.novedad-option {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-form-border);
+  color: var(--color-text-dark);
+  transition: background-color 0.3s ease;
+}
+
+.novedad-option:hover {
+  background-color: var(--color-background-hover);
+}
+
+.novedad-option:last-child {
+  border-bottom: none;
+}
+
+/* Calendario */
+.calendar-container {
+  background-color: var(--color-background-light);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--color-form-border);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header button {
+  padding: 8px 12px;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.calendar-header button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.calendar-month {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  text-transform: capitalize;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  padding: 8px;
+  font-size: 0.9rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  padding: 12px 8px;
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.calendar-day:hover {
+  background-color: var(--color-background-hover);
+}
+
+.calendar-day.other-month {
+  color: var(--color-text-muted);
+  background-color: var(--color-background-light);
+}
+
+.calendar-day.today {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+.calendar-day.selected {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+.calendar-day.novedad-range {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  font-weight: 500;
+}
+
+.calendar-day:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Horarios */
+.horario-placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
+}
+
+.horarios-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+.horario-btn {
+  padding: 10px 12px;
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
+  color: var(--color-text-dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.horario-btn:hover {
+  background-color: var(--color-background-hover);
+}
+
+.horario-btn.selected {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-color: var(--color-primary);
+}
+
+.horario-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background-color: var(--color-background-light);
+}
+
+/* Selectores de cliente, empleado y servicios */
+.cliente-selector,
+.empleado-selector,
+.servicios-selector {
+  width: 100%;
+}
+
+.cliente-input,
+.empleado-input,
+.servicios-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid var(--color-form-border);
+  border-radius: 5px;
+  background-color: var(--color-form-bg);
+  color: var(--color-text-dark);
+  margin-bottom: 1rem;
+}
+
+.cliente-input:focus,
+.empleado-input:focus,
+.servicios-input:focus {
+  border-color: var(--color-primary);
+  background-color: var(--color-form-focus-bg);
+  box-shadow: 0 0 0 0.2rem rgba(154, 122, 159, 0.25);
+  outline: none;
+}
+
+.cliente-options,
+.empleado-options,
+.servicios-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.cliente-option,
+.empleado-option,
+.servicio-option {
+  padding: 12px 16px;
+  border: 1px solid var(--color-form-border);
+  background-color: var(--color-background-light);
+  color: var(--color-text-dark);
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.cliente-option:hover,
+.empleado-option:hover,
+.servicio-option:hover {
+  background-color: var(--color-background-hover);
+}
+
+.cliente-option.selected,
+.empleado-option.selected,
+.servicio-option.selected {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-color: var(--color-primary);
+}
+
+/* Servicios seleccionados */
+.servicios-seleccionados {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--color-background-light);
+  border-radius: 8px;
+  border: 1px solid var(--color-form-border);
+}
+
+.servicios-seleccionados h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.servicio-seleccionado {
+  padding: 8px 12px;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.total-servicios {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-form-border);
+  font-size: 1.1rem;
+  color: var(--color-text-dark);
+}
+
+/* Botón de envío */
+.form-submit {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn-agendar {
+  padding: 15px 30px;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.btn-agendar:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-agendar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ============= RESPONSIVE STYLES PARA FORMULARIO DE AGENDAMIENTO ============= */
+
+/* Large Desktop (1400px and above) - Formulario de agendamiento */
+@media (min-width: 1400px) {
+    .agendar-cita-container {
+        padding: 3rem;
+        margin-left: 300px;
+    }
+
+    .agendar-cita-header h1 {
+        font-size: 2.2rem;
+    }
+
+    .agendar-cita-form {
+        padding: 2.5rem;
+        max-width: 900px;
+    }
+
+    .form-step h2 {
+        font-size: 1.6rem;
+    }
+
+    .novedad-select,
+    .cliente-search,
+    .empleado-search,
+    .servicios-search {
+        padding: 14px 18px;
+        font-size: 1.1rem;
+    }
+
+    .btn-agendar {
+        padding: 18px 35px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Desktop (1200px and below) - Formulario de agendamiento */
+@media (max-width: 1200px) {
+    .agendar-cita-container {
+        padding: 2rem;
+        margin-left: 280px;
+    }
+
+    .agendar-cita-header h1 {
+        font-size: 2rem;
+    }
+
+    .agendar-cita-form {
+        padding: 2rem;
+        max-width: 800px;
+    }
+
+    .form-step h2 {
+        font-size: 1.5rem;
+    }
+
+    .novedad-select,
+    .cliente-search,
+    .empleado-search,
+    .servicios-search {
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+
+    .btn-agendar {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Tablet Landscape (1024px and below) - Formulario de agendamiento */
+@media (max-width: 1024px) {
+    .agendar-cita-container {
+        padding: 1.5rem;
+        margin-left: 260px;
+    }
+
+    .agendar-cita-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .agendar-cita-form {
+        padding: 1.5rem;
+        max-width: 700px;
+    }
+
+    .form-step h2 {
+        font-size: 1.4rem;
+    }
+
+    .novedad-select,
+    .cliente-search,
+    .empleado-search,
+    .servicios-search {
+        padding: 11px 15px;
+        font-size: 0.95rem;
+    }
+
+    .btn-agendar {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
+
+/* Tablet Portrait (768px and below) - Formulario de agendamiento */
+@media (max-width: 768px) {
+    .agendar-cita-container {
+        padding: 1rem;
+        margin-left: 0;
+    }
+
+    .agendar-cita-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .agendar-cita-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .agendar-cita-form {
+        padding: 1rem;
+        max-width: 100%;
+    }
+
+    .form-step {
+        padding: 1rem;
+    }
+
+    .form-step h2 {
+        font-size: 1.3rem;
+    }
+
+    .novedad-select,
+    .cliente-search,
+    .empleado-search,
+    .servicios-search {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .btn-agendar {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        min-width: 150px;
+    }
+
+    .calendar-grid {
+        gap: 2px;
+    }
+
+    .calendar-day {
+        padding: 8px 4px;
+        font-size: 0.8rem;
+    }
+
+    .horarios-container {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 6px;
+    }
+
+    .horario-btn {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Mobile Landscape (640px and below) - Formulario de agendamiento */
+@media (max-width: 640px) {
+    .agendar-cita-container {
+        padding: 0.8rem;
+    }
+
+    .agendar-cita-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .agendar-cita-form {
+        padding: 0.8rem;
+    }
+
+    .form-step {
+        padding: 0.8rem;
+    }
+
+    .form-step h2 {
+        font-size: 1.2rem;
+    }
+
+    .novedad-select,
+    .cliente-search,
+    .empleado-search,
+    .servicios-search {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    .btn-agendar {
+        padding: 10px 18px;
+        font-size: 0.85rem;
+        min-width: 120px;
+    }
+
+    .calendar-day {
+        padding: 6px 3px;
+        font-size: 0.75rem;
+    }
+
+    .horarios-container {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 4px;
+    }
+
+    .horario-btn {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Mobile Portrait (480px and below) - Formulario de agendamiento */
+@media (max-width: 480px) {
+    .agendar-cita-container {
+        padding: 0.6rem;
+    }
+
+    .agendar-cita-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .agendar-cita-form {
+        padding: 0.6rem;
+    }
+
+    .form-step {
+        padding: 0.6rem;
+    }
+
+    .form-step h2 {
+        font-size: 1.1rem;
+    }
+
+    .novedad-select,
+    .cliente-search,
+    .empleado-search,
+    .servicios-search {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .btn-agendar {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        min-width: 100px;
+    }
+
+    .calendar-day {
+        padding: 4px 2px;
+        font-size: 0.7rem;
+    }
+
+    .horarios-container {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 3px;
+    }
+
+    .horario-btn {
+        padding: 5px 6px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Small Mobile (360px and below) - Formulario de agendamiento */
+@media (max-width: 360px) {
+    .agendar-cita-container {
+        padding: 0.4rem;
+    }
+
+    .agendar-cita-header h1 {
+        font-size: 1.1rem;
+    }
+
+    .agendar-cita-form {
+        padding: 0.4rem;
+    }
+
+    .form-step {
+        padding: 0.4rem;
+    }
+
+    .form-step h2 {
+        font-size: 1rem;
+    }
+
+    .novedad-select,
+    .cliente-search,
+    .empleado-search,
+    .servicios-search {
+        padding: 7px 8px;
+        font-size: 0.75rem;
+    }
+
+    .btn-agendar {
+        padding: 7px 12px;
+        font-size: 0.75rem;
+        min-width: 80px;
+    }
+
+    .calendar-day {
+        padding: 3px 1px;
+        font-size: 0.65rem;
+    }
+
+    .horarios-container {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        gap: 2px;
+    }
+
+    .horario-btn {
+        padding: 4px 5px;
+        font-size: 0.65rem;
+    }
 }
 

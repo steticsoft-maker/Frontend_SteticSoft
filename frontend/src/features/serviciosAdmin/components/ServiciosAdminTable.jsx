@@ -25,16 +25,12 @@ const ServiciosAdminTable = ({
     }).format(parseFloat(value) || 0);
   };
 
-  // 🔑 Función para construir URL de imagen
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     
-    // Si ya es una URL completa (http o https)
     if (imagePath.startsWith('http')) {
       return imagePath;
     }
-    
-    // Para rutas relativas, concatenar con API_URL
     return `${API_URL}${imagePath}`;
   };
 
@@ -138,10 +134,76 @@ const ServiciosAdminTable = ({
           );
         })}
         </tbody>
-      </table>
+        </table>
       </div>
       
-      {/* Modal de preview de imagen */}
+      <div className="mobile-cards">
+        {servicios.map((servicio) => {
+          const imageUrl = getImageUrl(servicio.imagen);
+          const hasImageError = imageErrors[servicio.idServicio];
+          
+          return (
+            <div key={servicio.idServicio} className="servicio-mobile-card">
+              <div className="servicio-mobile-header">
+                {imageUrl && !hasImageError ? (
+                  <img 
+                    src={imageUrl} 
+                    alt={servicio.nombre}
+                    className="servicio-mobile-image"
+                    onError={() => handleImageError(servicio.idServicio)}
+                  />
+                ) : (
+                  <div className="servicio-mobile-image-placeholder">
+                    📷
+                  </div>
+                )}
+                <div className="servicio-mobile-info">
+                  <h3>{servicio.nombre}</h3>
+                  <p>{servicio.categoria?.nombre || 'Sin categoría'}</p>
+                </div>
+              </div>
+              
+              <div className="servicio-mobile-details">
+                <div className="servicio-mobile-detail">
+                  <span className="servicio-mobile-detail-label">Precio:</span>
+                  <span className="servicio-mobile-detail-value">{formatCurrency(servicio.precio)}</span>
+                </div>
+                <div className="servicio-mobile-detail">
+                  <span className="servicio-mobile-detail-label">Estado:</span>
+                  <span className="servicio-mobile-detail-value">
+                    {servicio.estado ? 'Activo' : 'Inactivo'}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="servicio-mobile-actions">
+                <button 
+                  className="servicio-mobile-button btn-view"
+                  onClick={() => onView(servicio)}
+                  title="Ver detalles"
+                >
+                  👁️ Ver
+                </button>
+                <button 
+                  className="servicio-mobile-button btn-edit"
+                  onClick={() => onEdit(servicio)}
+                  title="Editar servicio"
+                >
+                  ✏️ Editar
+                </button>
+                <button 
+                  className="servicio-mobile-button btn-delete"
+                  onClick={() => onDeleteConfirm(servicio)}
+                  title="Eliminar servicio"
+                >
+                  🗑️ Eliminar
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    
       {previewImage && (
         <div className="image-preview-modal" onClick={closePreview}>
           <div className="image-preview-content" onClick={(e) => e.stopPropagation()}>

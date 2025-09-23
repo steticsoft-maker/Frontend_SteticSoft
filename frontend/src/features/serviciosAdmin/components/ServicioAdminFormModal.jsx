@@ -33,10 +33,8 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
           precio: initialData.precio || '',
           idCategoriaServicio: initialData.idCategoriaServicio || '',
         });
-        // La URL de la imagen ahora viene directamente de Cloudinary
         setImagePreview(initialData.imagen || '');
       } else {
-        // Modo creación: reseteamos todo
         setFormData({
           nombre: '',
           descripcion: '',
@@ -45,7 +43,6 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
         });
         setImagePreview('');
       }
-      // Reseteamos los estados de imagen, errores y envío cada vez que se abre el modal
       setImageFile(null);
       setImageWasRemoved(false);
       setFormErrors({});
@@ -53,20 +50,20 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     }
   }, [isOpen, isEditMode, initialData]);
 
-  // --- Funciones de Validación ---
   const validateField = (name, value) => {
     let error = "";
     if (name === "nombre") {
       if (!value) error = "El nombre es obligatorio.";
       else if (value.trim() !== value) error = "No debe tener espacios al inicio o al final.";
-      else if (value.length < 3 || value.length > 100) error = "El nombre debe tener entre 3 y 100 caracteres.";
-      else if (!NAME_REGEX.test(value)) error = "No se permiten caracteres especiales.";
+      else if (value.trim().length < 3 || value.trim().length > 100) error = "El nombre debe tener entre 3 y 100 caracteres.";
+      else if (!NAME_REGEX.test(value.trim())) error = "No se permiten caracteres especiales.";
     }
     if (name === "precio") {
       const priceRegex = /^\d+(\.\d{1,2})?$/;
-      if (!String(value)) error = "El precio es obligatorio.";
-      else if (isNaN(value) || Number(value) < 0) error = "El precio debe ser un número válido y no negativo.";
-      else if (!priceRegex.test(String(value))) error = "El precio debe tener como máximo dos decimales.";
+      const stringValue = String(value).trim();
+      if (!stringValue) error = "El precio es obligatorio.";
+      else if (isNaN(stringValue) || Number(stringValue) < 0) error = "El precio debe ser un número válido, no negativo.";
+      else if (!priceRegex.test(stringValue)) error = "El precio debe tener como máximo dos decimales.";
     }
     if (name === "idCategoriaServicio") {
       if (!value) error = "Debe seleccionar una categoría.";
@@ -79,13 +76,36 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Validar en tiempo real para campos requeridos
+    const requiredFields = ['nombre', 'precio', 'idCategoriaServicio'];
+    if (requiredFields.includes(name)) {
+      validateField(name, value);
+    }
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
     const trimmedValue = typeof value === "string" ? value.trim() : value;
+    
+    // Actualizar el valor sin espacios al inicio y final
     setFormData(prev => ({ ...prev, [name]: trimmedValue }));
+    
+    // Validar el valor sin espacios
     validateField(name, trimmedValue);
+    
+    // Limpiar el error si el campo ahora es válido después de quitar espacios
+    if (trimmedValue && !validateField(name, trimmedValue)) {
+      setFormErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleFocus = (e) => {
+    const { name, value } = e.target;
+    // Asegurar que el campo esté limpio cuando el usuario vuelva a entrar
+    if (typeof value === "string" && value !== value.trim()) {
+      setFormData(prev => ({ ...prev, [name]: value.trim() }));
+    }
   };
 
   const handleImageChange = (file) => {
@@ -130,6 +150,15 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleImageChange(e.dataTransfer.files[0]);
     }
+  };
+
+  // Función para verificar si el formulario es válido
+  const isFormValid = () => {
+    const requiredFields = ['nombre', 'precio', 'idCategoriaServicio'];
+    return requiredFields.every(field => {
+      const value = formData[field];
+      return value && value.toString().trim() !== '';
+    }) && !Object.values(formErrors).some(error => error !== '');
   };
 
   const handleSubmit = async (e) => {
@@ -184,7 +213,6 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
         <div className="servicio-modal-body">
           <form id="servicio-form" onSubmit={handleSubmit} noValidate className="servicio-form">
             <div className="servicio-form-layout">
-              {/* Sección de campos a la izquierda */}
               <div className="servicio-fields-section">
                 <h3 className="servicio-section-title">Información del Servicio</h3>
                 <div className="servicio-form-fields">
@@ -197,7 +225,8 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
                       name="nombre" 
                       value={formData.nombre} 
                       onChange={handleChange} 
-                      onBlur={handleBlur} 
+                      onBlur={handleBlur}
+                      onFocus={handleFocus}
                       className={`servicio-form-input ${formErrors.nombre ? 'error' : ''}`} 
                       required
                     />
@@ -217,7 +246,8 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
                       step="0.01" 
                       value={formData.precio} 
                       onChange={handleChange} 
-                      onBlur={handleBlur} 
+                      onBlur={handleBlur}
+                      onFocus={handleFocus}
                       className={`servicio-form-input ${formErrors.precio ? 'error' : ''}`} 
                       required
                     />
@@ -235,7 +265,8 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
                       name="idCategoriaServicio" 
                       value={formData.idCategoriaServicio} 
                       onChange={handleChange} 
-                      onBlur={handleBlur} 
+                      onBlur={handleBlur}
+                      onFocus={handleFocus}
                       className={`servicio-form-select ${formErrors.idCategoriaServicio ? 'error' : ''}`}
                       required
                     >
@@ -256,7 +287,8 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
                       name="descripcion" 
                       value={formData.descripcion} 
                       onChange={handleChange} 
-                      onBlur={handleBlur} 
+                      onBlur={handleBlur}
+                      onFocus={handleFocus}
                       className="servicio-form-textarea"
                       rows="4"
                       placeholder="Descripción opcional del servicio..."
@@ -265,7 +297,6 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
                 </div>
               </div>
 
-              {/* Sección de imagen a la derecha */}
               <div className="servicio-image-section">
                 <h3 className="servicio-section-title">Imagen del Servicio</h3>
                 <div 
@@ -311,7 +342,7 @@ const ServicioAdminFormModal = ({ isOpen, onClose, onSubmit, initialData, isEdit
             type="submit" 
             className="servicio-form-button primary" 
             form="servicio-form" 
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isFormValid()}
           >
             {isSubmitting ? 'Guardando...' : (isEditMode ? 'Actualizar Servicio' : 'Crear Servicio')}
           </button>

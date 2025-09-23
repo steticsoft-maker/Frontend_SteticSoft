@@ -215,40 +215,49 @@ function CitasPage() {
     <div className="admin-page-layout">
       <div className="admin-main-content-area">
         <div className="citas-page-container">
-          <h1>Gestión de Citas</h1>
-          {isLoading && <div className="cargando-pagina"><span>Cargando citas...</span><div className="spinner"></div></div>}
+          <div className="citas-admin-controls">
+            <h1>Gestión de Citas</h1>
+            {isLoading && <div className="cargando-pagina"><span>Cargando citas...</span><div className="spinner"></div></div>}
 
-          <div className="admin-actions-bar">
-            <div className="admin-actions-bar">
-              <input
-               type="search"
-                placeholder="Buscar por cliente, empleado..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+            <div className="citas-admin-actions-bar">
+              <div className="citas-filters">
+                <div className="citas-search-bar">
+                  <input
+                    type="search"
+                    className="citas-search-input"
+                    placeholder="Buscar por cliente, empleado..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
 
-          <select
-            value={estadoFiltro}
-            onChange={(e) => setEstadoFiltro(e.target.value)}
-          >
-            <option value="Todos">Todos los Estados</option>
-            <option value="Activa">Activas</option>
-            <option value="Pendiente">Pendientes</option>
-            <option value="En proceso">En proceso</option>
-            <option value="Completado">Completadas</option>
-            <option value="Finalizado">Finalizadas</option>
-            <option value="Cancelado">Canceladas</option>
-          </select>
+                <div className="citas-filtro-estado-grupo">
+                  <select
+                    className="citas-filtro-estado-select"
+                    value={estadoFiltro}
+                    onChange={(e) => setEstadoFiltro(e.target.value)}
+                  >
+                    <option value="Todos">Todos los Estados</option>
+                    <option value="Activa">Activas</option>
+                    <option value="Pendiente">Pendientes</option>
+                    <option value="En proceso">En proceso</option>
+                    <option value="Completado">Completadas</option>
+                    <option value="Finalizado">Finalizadas</option>
+                    <option value="Cancelado">Canceladas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <button
+                className="botonAgregarCita"
+                onClick={() => navigate('/admin/citas/agendar')}
+              >
+                Agendar Cita
+              </button>
             </div>
-          <button
-            className="btn"
-            onClick={() => navigate('/admin/citas/agendar')}
-          >
-            Agregar Cita
-          </button>
           </div>
 
-          <div className="table-container">
+          <div className="lista-citas-container">
             <CitasTable
               citas={citasFiltradas}
               onViewDetails={(cita) => {

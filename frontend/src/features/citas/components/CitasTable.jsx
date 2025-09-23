@@ -21,17 +21,18 @@ const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, es
   };
 
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Cliente</th>
-          <th>Encargado(a)</th>
-          <th>Fecha y Hora</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
+    <div className="table-container">
+      <table className="table-main">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Encargado(a)</th>
+            <th>Fecha y Hora</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
       <tbody>
         {citasOrdenadas.map((cita, index) => (
           <tr key={cita.id}>
@@ -81,7 +82,8 @@ const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, es
           </tr>
         ))}
       </tbody>
-    </table>
+      </table>
+    </div>
   );
 };
 

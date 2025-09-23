@@ -1,174 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
-  const [imageError, setImageError] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-  const [imageLoading, setImageLoading] = useState(false);
+    // Función para construir URL de imagen
+    const getImageUrl = (imagePath) => {
+        if (!imagePath) return null;
+        
+        // Si ya es una URL completa (http o https)
+        if (imagePath.startsWith('http')) {
+            return imagePath;
+        }
+        
+        // Para rutas relativas, concatenar con API_URL
+        const API_URL = import.meta.env.VITE_API_URL;
+        return `${API_URL}${imagePath}`;
+    };
 
-  // 🔑 Función mejorada para construir URL de imagen
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    
-    // Si ya es una URL completa (http o https)
-    if (imagePath.startsWith('http')) {
-      return imagePath;
-    }
-    
-    // Si es una ruta que empieza con /, usar la URL base del proxy
-    if (imagePath.startsWith('/')) {
-      return `/api${imagePath}`;
-    }
-    
-    // Para otras rutas relativas, usar el proxy
-    return `/api/${imagePath}`;
-  };
+    if (!isOpen || !servicio) return null;
 
-  // Actualizar la URL de imagen cuando cambie el servicio
-  useEffect(() => {
-    if (isOpen && servicio) {
-      setImageError(false);
-      setImageLoading(true);
-      const url = getImageUrl(servicio.imagen);
-      setImageUrl(url);
-      console.log("🖼️ Construyendo URL de imagen:", {
-        imagenOriginal: servicio.imagen,
-        urlConstruida: url,
-        servicio: servicio.nombre
-      });
-    }
-  }, [isOpen, servicio]);
+    // Formateador de moneda colombiana
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0,
+        }).format(parseFloat(value) || 0);
+    };
 
-  if (!isOpen || !servicio) return null;
+    return (
+        <div className="details-modal-overlay" onClick={onClose}>
+            <div className="details-modal-content" onClick={(e) => e.stopPropagation()}>
+                
+                <button className="details-modal-close-button" onClick={onClose} aria-label="Cerrar modal">
+                    &times;
+                </button>
 
-  const formatCurrency = (value) => {
-    const numericValue = parseFloat(value);
-    if (isNaN(numericValue)) return 'N/A';
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-    }).format(numericValue);
-  };
+                <h3>Detalles del Servicio</h3>
 
-  const handleImageError = (e) => {
-    console.error("❌ Error cargando la imagen:", {
-      src: e.target.src,
-      servicio: servicio.nombre,
-      imagenOriginal: servicio.imagen
-    });
-    setImageError(true);
-    setImageLoading(false);
-  };
-
-  const handleImageLoad = (e) => {
-    console.log("✅ Imagen cargada correctamente:", {
-      src: e.target.src,
-      servicio: servicio.nombre
-    });
-    setImageError(false);
-    setImageLoading(false);
-  };
-
-  return (
-    <>
-      <div className="servicios-admin-modal-overlay" onClick={onClose}>
-        <div
-          className="servicios-admin-modal-content"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button
-            className="modal-close-button"
-            onClick={onClose}
-            aria-label="Cerrar modal"
-          >
-            &times;
-          </button>
-
-          <h3>Detalles del Servicio</h3>
-          <div className="servicio-details-list">
-            <p><strong>Nombre:</strong> {servicio.nombre}</p>
-            <p><strong>Descripción:</strong> {servicio.descripcion || 'No aplica'}</p>
-            <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
-            <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'No aplica'}</p>
-
-            {/* Imagen con manejo de errores mejorado */}
-            <div className="servicio-detalle-imagen">
-              <strong>Imagen:</strong>
-              {imageUrl ? (
-                <>
-                  {imageLoading && (
-                    <div style={{ 
-                      textAlign: 'center', 
-                      padding: '20px', 
-                      color: '#666',
-                      fontSize: '14px'
-                    }}>
-                      Cargando imagen...
-                    </div>
-                  )}
-                  <img
-                    src={imageUrl}
-                    alt={servicio.nombre}
-                    className="servicio-detalle-preview"
-                    onError={handleImageError}
-                    onLoad={handleImageLoad}
-                    style={{ 
-                      display: imageLoading ? 'none' : 'block',
-                      maxWidth: '100%',
-                      maxHeight: '250px',
-                      borderRadius: '8px',
-                      objectFit: 'cover',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
-                    }}
-                  />
-                  {imageError && (
-                    <div style={{ 
-                      color: 'red', 
-                      marginTop: '10px',
-                      padding: '10px',
-                      backgroundColor: '#ffe6e6',
-                      borderRadius: '5px',
-                      border: '1px solid #ffcccc'
-                    }}>
-                      <p>❌ Error al cargar la imagen</p>
-                      <p><strong>URL intentada:</strong> {imageUrl}</p>
-                      <p><strong>Imagen original:</strong> {servicio.imagen}</p>
-                      <button 
-                        onClick={() => window.open(imageUrl, '_blank')}
-                        style={{ 
-                          marginTop: '5px', 
-                          padding: '5px 10px',
-                          backgroundColor: '#ff6b6b',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '3px',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Abrir imagen en nueva pestaña
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div style={{ 
-                  padding: '20px', 
-                  textAlign: 'center', 
-                  color: '#666',
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: '8px',
-                  border: '2px dashed #ccc'
-                }}>
-                  📷 No hay imagen disponible
+                <div className="details-list">
+                    <p><strong>Nombre:</strong> {servicio.nombre || 'N/A'}</p>
+                    <p><strong>Descripción:</strong> {servicio.descripcion || 'Sin descripción'}</p>
+                    <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
+                    <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'Sin categoría'}</p>
                 </div>
-              )}
+                
+                <div className="details-image-container">
+                    <strong>Imagen:</strong>
+                    {servicio.imagen ? (
+                        <img
+                            src={getImageUrl(servicio.imagen)}
+                            alt={`Imagen de ${servicio.nombre}`}
+                            className="details-image"
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                            }}
+                        />
+                    ) : null}
+                    <div className="details-image-placeholder" style={{ display: servicio.imagen ? 'none' : 'flex' }}>
+                        📷 No hay imagen disponible
+                    </div>
+                </div>
+
             </div>
-          </div>
         </div>
-      </div>
-    </>
-  );
+    );
 };
 
 export default ServicioAdminDetalleModal;
-

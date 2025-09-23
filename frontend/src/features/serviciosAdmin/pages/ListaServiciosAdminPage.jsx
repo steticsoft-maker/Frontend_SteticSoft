@@ -145,7 +145,7 @@ function ListaServiciosAdminPage() {
   return (
     <div className="lista-servicios-container">
       <div className="servicios-content-wrapper">
-        <h1>Gestión de Servicios ({servicios.length})</h1>
+        <h1>Gestión de Servicios</h1>
         
         <div className="servicios-actions-bar">
           <div className="servicios-filters">
@@ -222,8 +222,6 @@ function ListaServiciosAdminPage() {
             </>
         )}
       </div>
-
-      {/* Modales */}
       <ServicioAdminFormModal 
         isOpen={modalState.type === 'create' || modalState.type === 'edit'} 
         onClose={handleCloseModal} 
