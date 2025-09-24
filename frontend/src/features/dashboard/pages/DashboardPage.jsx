@@ -1,36 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Bar, Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Filler,
-} from "chart.js";
 import ChartCard from "../components/ChartCard";
 import StatsCard from "../components/StatsCard";
 import useDashboard from "../hooks/useDashboard";
 import { useTheme } from "../../../shared/contexts/ThemeContext";
 import "../css/Dashboard.css";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Filler
-);
+// La inicialización de ChartJS ya no es necesaria aquí.
+// Se maneja de forma centralizada en `src/chart-init.js`.
 
 function DashboardPage() {
   const { isDarkMode } = useTheme();
@@ -70,10 +47,16 @@ function DashboardPage() {
   // Función para generar opciones de gráfico basadas en el tema
   const getChartOptions = () => {
     const textColor = isDarkMode ? "#f0e6f2" : "#1e293b";
-    const gridColor = isDarkMode ? "rgba(77, 59, 80, 0.3)" : "rgba(226, 232, 240, 0.5)";
-    const tooltipBg = isDarkMode ? "rgba(45, 27, 48, 0.95)" : "rgba(15, 23, 42, 0.95)";
+    const gridColor = isDarkMode
+      ? "rgba(77, 59, 80, 0.3)"
+      : "rgba(226, 232, 240, 0.5)";
+    const tooltipBg = isDarkMode
+      ? "rgba(45, 27, 48, 0.95)"
+      : "rgba(15, 23, 42, 0.95)";
     const tooltipText = isDarkMode ? "#f0e6f2" : "#f8fafc";
-    const borderColor = isDarkMode ? "rgba(139, 90, 143, 0.3)" : "rgba(99, 102, 241, 0.3)";
+    const borderColor = isDarkMode
+      ? "rgba(139, 90, 143, 0.3)"
+      : "rgba(99, 102, 241, 0.3)";
 
     return {
       responsive: true,
@@ -233,9 +216,13 @@ function DashboardPage() {
   // Función para generar opciones de gráfico circular basadas en el tema
   const getPieChartOptions = () => {
     const textColor = isDarkMode ? "#f0e6f2" : "#1e293b";
-    const tooltipBg = isDarkMode ? "rgba(45, 27, 48, 0.95)" : "rgba(15, 23, 42, 0.95)";
+    const tooltipBg = isDarkMode
+      ? "rgba(45, 27, 48, 0.95)"
+      : "rgba(15, 23, 42, 0.95)";
     const tooltipText = isDarkMode ? "#f0e6f2" : "#f8fafc";
-    const borderColor = isDarkMode ? "rgba(139, 90, 143, 0.3)" : "rgba(99, 102, 241, 0.3)";
+    const borderColor = isDarkMode
+      ? "rgba(139, 90, 143, 0.3)"
+      : "rgba(99, 102, 241, 0.3)";
     const arcBorderColor = isDarkMode ? "#2d1b30" : "#ffffff";
 
     return {

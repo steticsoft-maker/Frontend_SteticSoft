@@ -1,6 +1,7 @@
 // src/main.jsx
 
-import "./bootstrap-init.js"; // ¡IMPORTANTE! Esta debe ser la primera línea para evitar conflictos.
+import "./bootstrap-init.js"; // Para el conflicto con Bootstrap
+import "./chart-init.js"; // Para asegurar que Chart.js esté listo
 
 import React from "react";
 import ReactDOM from "react-dom/client";
