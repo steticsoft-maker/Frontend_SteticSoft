@@ -58,8 +58,8 @@ function RegisterPage() {
       <div className="auth-register-container">
         <div className="auth-form-box">
           <img
-            src="/logo.png"
-            alt="SteticSoft Logo"
+            src="/la-fuente-logo.png"
+            alt="La Fuente del Peluquero Logo"
             className="auth-form-logo"
           />
           <h2 className="auth-form-title">Crear Cuenta</h2>

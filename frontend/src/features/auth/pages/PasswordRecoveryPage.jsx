@@ -6,7 +6,6 @@ import PasswordRecoveryForm from "../components/PasswordRecoveryForm";
 import * as authService from "../services/authService";
 import ThemeToggle from "../../../shared/components/common/ThemeToggle";
 import "../css/Auth.css";
-import Stetic2 from "/Stetic2.svg";
 
 function PasswordRecoveryPage() {
   const [view, setView] = useState("request"); // 'request', 'verify', 'reset'
@@ -123,7 +122,11 @@ function PasswordRecoveryPage() {
   return (
     <div className="auth-page-container">
       <div className="auth-form-box">
-        <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
+        <img
+          src="/la-fuente-logo.png"
+          alt="La Fuente del Peluquero Logo"
+          className="auth-form-logo"
+        />
         <h2 className="auth-form-title">{getTitle()}</h2>
         <div className="auth-theme-toggle-container">
           <ThemeToggle />

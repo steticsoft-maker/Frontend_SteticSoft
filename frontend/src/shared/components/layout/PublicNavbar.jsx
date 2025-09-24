@@ -1,8 +1,7 @@
-// src/shared/components/layout/Navbar.jsx
+// src/shared/components/layout/PublicNavbar.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// Corregido: Importamos el hook personalizado useAuth
-import { useAuth } from "../../contexts/authHooks"; // Path updated
+import { useAuth } from "../../contexts/authHooks";
 import ThemeToggle from "../common/ThemeToggle";
 import "./Navbar.css";
 import {
@@ -12,25 +11,18 @@ import {
   FaSignInAlt,
   FaUser,
   FaSignOutAlt,
-  FaCogs,
   FaBars,
   FaTimes,
 } from "react-icons/fa";
 
-function Navbar() {
+function PublicNavbar() {
   const navigate = useNavigate();
-  // Corregido: Usamos el hook useAuth() para obtener los datos del contexto
   const { isAuthenticated, user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogoutClick = async () => {
-    // La función logout del contexto es asíncrona, usamos await
     await logout();
-    navigate("/"); // Redirige al home
-  };
-
-  const handleAdminClick = () => {
-    navigate("/admin/dashboard");
+    navigate("/");
   };
 
   const toggleMobileMenu = () => {
@@ -41,35 +33,20 @@ function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
-  // Verificar si el usuario tiene permisos para acceder a administración
-  // Solo usuarios con rol de Administrador o con permisos específicos de administración
-  const canAccessAdmin =
-    user?.rol?.nombre === "Administrador" ||
-    (user?.permisos &&
-      user.permisos.some(
-        (permiso) =>
-          permiso.includes("MODULO_DASHBOARD_VER") ||
-          permiso.includes("MODULO_ROLES_GESTIONAR") ||
-          permiso.includes("MODULO_USUARIOS_GESTIONAR") ||
-          permiso.includes("MODULO_ABASTECIMIENTOS_GESTIONAR") ||
-          permiso.includes("MODULO_CLIENTES_GESTIONAR") ||
-          permiso.includes("MODULO_PROVEEDORES_GESTIONAR") ||
-          permiso.includes("MODULO_PRODUCTOS_GESTIONAR") ||
-          permiso.includes("MODULO_SERVICIOS_GESTIONAR") ||
-          permiso.includes("MODULO_CITAS_GESTIONAR") ||
-          permiso.includes("MODULO_COMPRAS_GESTIONAR") ||
-          permiso.includes("MODULO_VENTAS_GESTIONAR")
-      ));
-
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <img
-            src="/Stetic2.svg"
-            alt="SteticSoft Logo"
-            className="navbar-logo-img"
+            src="/la-fuente-logo.png"
+            alt="La Fuente del Peluquero Logo"
+            className="public-navbar-logo-img"
+            onError={(e) => {
+              e.target.style.display = "none";
+              e.target.nextSibling.style.display = "block";
+            }}
           />
+          <span style={{ display: "none" }}>La Fuente del Peluquero</span>
         </Link>
 
         {/* Botón hamburguesa para móvil */}
@@ -143,20 +120,6 @@ function Navbar() {
                 <FaUser className="navbar-icon" />
                 {user?.nombre || "Usuario"}
               </li>
-              {canAccessAdmin && (
-                <li>
-                  <button
-                    className="admin-button"
-                    onClick={() => {
-                      handleAdminClick();
-                      closeMobileMenu();
-                    }}
-                  >
-                    <FaCogs className="navbar-icon" />
-                    Administración
-                  </button>
-                </li>
-              )}
               <li>
                 <button
                   className="logout-button"
@@ -177,4 +140,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default PublicNavbar;

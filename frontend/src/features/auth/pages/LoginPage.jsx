@@ -46,7 +46,11 @@ function LoginPage() {
   return (
     <div className="auth-page-container">
       <div className="auth-form-box">
-        <img src="/logo.png" alt="SteticSoft Logo" className="auth-form-logo" />
+        <img
+          src="/la-fuente-logo.png"
+          alt="La Fuente del Peluquero Logo"
+          className="auth-form-logo"
+        />
         <h2 className="auth-form-title">Iniciar Sesión</h2>
         <div className="auth-theme-toggle-container">
           <ThemeToggle />
