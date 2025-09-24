@@ -1,5 +1,3 @@
-// src/chart-init.js
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,6 +12,7 @@ import {
   DoughnutController,
   LineController,
   BarController,
+  Filler, // <--- 1. Importa el plugin Filler
 } from "chart.js";
 
 // Registra todos los componentes que necesitas para tus gráficas
@@ -29,5 +28,6 @@ ChartJS.register(
   ArcElement,
   DoughnutController,
   LineController,
-  BarController
+  BarController,
+  Filler // <--- 2. Añádelo aquí al registro
 );
