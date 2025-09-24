@@ -1,7 +1,6 @@
 // src/features/home/pages/PublicProductosPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
-import Navbar from '../../../shared/components/layout/Navbar';
 import ProductCard from '../components/ProductCard';
 import { getPublicProducts } from '../services/publicProductosService';
 import '../css/PublicProductos.css';
@@ -54,23 +53,35 @@ function PublicProductosPage() {
     }
   }, []);
 
+  useEffect(() => {
+    const savedCart = JSON.parse(localStorage.getItem('productCart')) || [];
+    setCart(savedCart);
+  }, []);
+
   const addToCart = (product) => {
     setCart(prevCart => {
       const existingProduct = prevCart.find(item => item.id === product.id);
+      let newCart;
       if (existingProduct) {
-        return prevCart.map(item =>
+        newCart = prevCart.map(item =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
+      } else {
+        newCart = [...prevCart, { ...product, quantity: 1 }];
       }
-      return [...prevCart, { ...product, quantity: 1 }];
+      
+      // Guardar en localStorage
+      localStorage.setItem('productCart', JSON.stringify(newCart));
+      return newCart;
     });
   };
 
   const handleOrder = () => {
     alert('Tu pedido ha sido registrado. ¡Gracias por comprar con nosotros!');
     setCart([]);
+    localStorage.removeItem('productCart');
   };
 
   const getTotal = () => {
@@ -81,7 +92,6 @@ function PublicProductosPage() {
 
   return (
     <div className="productos-page">
-      <Navbar />
 
       <div className="cart-icon" onClick={() => setShowCart(!showCart)}>
         <FaShoppingCart size={30} />

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authHooks";
 import ThemeToggle from "../common/ThemeToggle";
+import useNavbarScroll from "../../hooks/useNavbarScroll";
 import "./Navbar.css";
 import {
   FaBoxOpen,
@@ -19,6 +20,7 @@ function PublicNavbar() {
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isScrolled = useNavbarScroll();
 
   const handleLogoutClick = async () => {
     await logout();
@@ -34,7 +36,7 @@ function PublicNavbar() {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isScrolled ? "scrolled" : ""}`}>
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <img
