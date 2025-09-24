@@ -1,13 +1,15 @@
+// src/main.jsx
+
+import "./bootstrap-init.js"; // ¡IMPORTANTE! Esta debe ser la primera línea para evitar conflictos.
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import "./bootstrap-init.js"; // Initialize Bootstrap safely
 
 import { registerLocale, setDefaultLocale } from "react-datepicker";
-import es from "date-fns/locale/es"; // Importa el paquete de idioma español
+import es from "date-fns/locale/es";
 
-// Registra el idioma español para que el calendario sepa cómo usarlo
 registerLocale("es", es);
 setDefaultLocale("es");
 
