@@ -1,7 +1,18 @@
 /* src/index.css */
+/* Import only Bootstrap CSS without JS to avoid controller conflicts */
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/admin-layout.css";
+
+/* Override Bootstrap JS controllers to prevent conflicts */
+* {
+  --bs-line-height: inherit;
+}
+
+/* Prevent Bootstrap from auto-initializing controllers */
+[data-bs-toggle] {
+  pointer-events: auto;
+}
 
 html {
   box-sizing: border-box;
