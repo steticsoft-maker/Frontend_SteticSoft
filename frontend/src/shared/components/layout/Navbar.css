@@ -3,13 +3,13 @@
 
 .navbar {
     position: fixed;
-    top: 30px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px); /* Reducido de 20px */
     box-shadow: 
-        0 8px 32px var(--color-shadow-medium),
+        0 4px 16px var(--color-shadow-medium), /* Reducido de 32px */
         0 0 0 1px rgba(154, 122, 159, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -19,10 +19,11 @@
     padding: 15px 25px;
     z-index: 1000;
     box-sizing: border-box;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: navbarSlideDown 0.6s ease-out;
-    position: relative;
+    transition: all 0.2s ease; /* Reducido de 0.4s */
+    animation: navbarSlideDown 0.4s ease-out; /* Reducido de 0.6s */
     overflow: hidden;
+    /* Optimización de rendimiento */
+    will-change: auto; /* Cambiado de transform, background-color, box-shadow */
 }
 
 .navbar::before {
@@ -51,24 +52,81 @@
     }
 }
 
-/* Efecto de scroll para el navbar */
+/* Efecto de scroll para el navbar - Optimizado */
 .navbar.scrolled {
-    top: 15px;
+    top: 10px;
     background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(15px); /* Reducido de 30px */
     box-shadow: 
-        0 12px 40px var(--color-shadow-medium),
-        0 0 0 1px rgba(154, 122, 159, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    transform: translateX(-50%) scale(0.98);
+        0 8px 24px var(--color-shadow-medium), /* Reducido de 50px */
+        0 0 0 1px rgba(154, 122, 159, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateX(-50%) scale(0.98); /* Reducido de 0.96 */
+    border-radius: 15px;
+    padding: 12px 20px;
+    /* Efecto de "pegado" más pronunciado */
+    animation: navbarStick 0.2s ease-out; /* Reducido de 0.3s */
+}
+
+@keyframes navbarStick {
+    0% {
+        transform: translateX(-50%) scale(1);
+        top: 20px;
+    }
+    100% {
+        transform: translateX(-50%) scale(0.96);
+        top: 10px;
+    }
+}
+
+/* Efectos de dirección de scroll - Optimizados */
+.navbar.scroll-down {
+    transform: translateX(-50%) scale(0.98) translateY(-5px); /* Reducido de -10px */
+    opacity: 0.9; /* Aumentado de 0.8 */
+    transition: all 0.2s ease; /* Reducido de 0.3s */
+}
+
+.navbar.scroll-up {
+    transform: translateX(-50%) scale(0.99) translateY(0); /* Aumentado de 0.98 */
+    opacity: 1;
+    transition: all 0.2s ease; /* Reducido de 0.3s */
+}
+
+.navbar.scrolled.scroll-down {
+    transform: translateX(-50%) scale(0.97) translateY(-8px); /* Reducido de -15px */
+    opacity: 0.85; /* Aumentado de 0.7 */
+    transition: all 0.2s ease; /* Reducido de 0.3s */
+}
+
+.navbar.scrolled.scroll-up {
+    transform: translateX(-50%) scale(0.98) translateY(0); /* Aumentado de 0.96 */
+    opacity: 1;
+    transition: all 0.2s ease; /* Reducido de 0.3s */
+}
+
+/* Efecto de hover para mostrar completamente el navbar */
+.navbar:hover {
+    transform: translateX(-50%) scale(1) translateY(0) !important;
+    opacity: 1 !important;
+    transition: all 0.2s ease-out !important;
+}
+
+/* Estado cuando está en la parte superior */
+.navbar.at-top {
+    animation: navbarSlideDown 0.6s ease-out;
+}
+
+.navbar.at-top.scrolled {
+    animation: none;
 }
 
 .dark-theme .navbar.scrolled {
     background: rgba(45, 27, 48, 0.98);
+    backdrop-filter: blur(30px);
     box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(154, 122, 159, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 15px 50px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(154, 122, 159, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Efecto de pulsación para elementos activos */
@@ -452,10 +510,27 @@ color: var(--color-primary);
 /* --- Responsive --- */
 @media (max-width: 768px) {
     .navbar {
-        top: 15px;
+        top: 10px;
         width: 95%;
         padding: 12px 15px;
         border-radius: 15px;
+    }
+    
+    .navbar.scrolled {
+        top: 5px;
+        padding: 10px 12px;
+        border-radius: 12px;
+    }
+    
+    /* Ajustar efectos de scroll en móvil */
+    .navbar.scroll-down {
+        transform: translateX(-50%) scale(0.95) translateY(-5px);
+        opacity: 0.85;
+    }
+    
+    .navbar.scrolled.scroll-down {
+        transform: translateX(-50%) scale(0.92) translateY(-8px);
+        opacity: 0.8;
     }
 
     .public-navbar-logo-img {
@@ -533,9 +608,25 @@ color: var(--color-primary);
 
 @media (max-width: 480px) {
     .navbar {
-        top: 10px;
+        top: 8px;
         width: 98%;
         padding: 10px 12px;
+    }
+    
+    .navbar.scrolled {
+        top: 3px;
+        padding: 8px 10px;
+    }
+    
+    /* Efectos más sutiles en móviles pequeños */
+    .navbar.scroll-down {
+        transform: translateX(-50%) scale(0.96) translateY(-3px);
+        opacity: 0.9;
+    }
+    
+    .navbar.scrolled.scroll-down {
+        transform: translateX(-50%) scale(0.94) translateY(-5px);
+        opacity: 0.85;
     }
 
     .public-navbar-logo-img {

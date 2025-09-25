@@ -22,16 +22,29 @@ function LoginPage() {
       const loginResult = await login(credentials, rememberMe);
 
       if (loginResult.success) {
-        // Redirección basada en el rol
-        if (
-          loginResult.role === "Administrador" ||
-          loginResult.role === "Empleado"
-        ) {
-          navigate("/admin/dashboard");
-        } else if (loginResult.role === "Cliente") {
-          navigate("/");
+        // Verificar si hay una redirección específica en el estado de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo =
+          urlParams.get("redirect") ||
+          (window.location.state && window.location.state.redirectTo);
+
+        if (redirectTo) {
+          // Si hay una redirección específica, usarla
+          navigate(redirectTo, {
+            state: window.location.state?.redirectState || null,
+          });
         } else {
-          navigate("/"); // Ruta por defecto
+          // Redirección basada en el rol solo si no hay redirección específica
+          if (
+            loginResult.role === "Administrador" ||
+            loginResult.role === "Empleado"
+          ) {
+            navigate("/admin/dashboard");
+          } else if (loginResult.role === "Cliente") {
+            navigate("/");
+          } else {
+            navigate("/"); // Ruta por defecto
+          }
         }
       }
     } catch (err) {

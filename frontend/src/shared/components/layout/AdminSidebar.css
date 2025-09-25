@@ -88,6 +88,19 @@
   box-shadow: 0 4px 12px var(--color-shadow-medium);
 }
 
+/* Asegurar que en modo oscuro el botón de landing sea blanco */
+.dark-theme .landing-button {
+  color: #ffffff !important;
+}
+
+.dark-theme .landing-button .landing-icon {
+  color: #ffffff !important;
+}
+
+.dark-theme .landing-button span {
+  color: #ffffff !important;
+}
+
 .landing-icon {
   font-size: 1.2rem;
 }
@@ -122,6 +135,22 @@
   overflow: hidden;
 }
 
+/* Asegurar que en modo oscuro todos los elementos sean blancos */
+.dark-theme .dashboard-link,
+.dark-theme .nested-link {
+  color: #ffffff !important;
+}
+
+.dark-theme .dashboard-link .dashboard-icon,
+.dark-theme .nested-link .dashboard-icon {
+  color: #ffffff !important;
+}
+
+.dark-theme .dashboard-link .dashboard-link-label,
+.dark-theme .nested-link .dashboard-link-label {
+  color: #ffffff !important;
+}
+
 .dashboard-link::before,
 .nested-link::before {
   content: '';
@@ -147,11 +176,43 @@
   box-shadow: 0 4px 12px var(--color-shadow-light);
 }
 
+/* Asegurar que en modo oscuro los elementos hover también sean blancos */
+.dark-theme .dashboard-link:hover,
+.dark-theme .nested-link:hover {
+  color: #ffffff !important;
+}
+
+.dark-theme .dashboard-link:hover .dashboard-icon,
+.dark-theme .nested-link:hover .dashboard-icon {
+  color: #ffffff !important;
+}
+
+.dark-theme .dashboard-link:hover .dashboard-link-label,
+.dark-theme .nested-link:hover .dashboard-link-label {
+  color: #ffffff !important;
+}
+
 .dashboard-link.active,
 .nested-link.active {
   background: var(--color-accent-lavender);
   color: var(--color-text-dark);
   box-shadow: 0 2px 8px var(--color-shadow-light);
+}
+
+/* Asegurar que en modo oscuro los elementos activos también sean blancos */
+.dark-theme .dashboard-link.active,
+.dark-theme .nested-link.active {
+  color: #ffffff !important;
+}
+
+.dark-theme .dashboard-link.active .dashboard-icon,
+.dark-theme .nested-link.active .dashboard-icon {
+  color: #ffffff !important;
+}
+
+.dark-theme .dashboard-link.active .dashboard-link-label,
+.dark-theme .nested-link.active .dashboard-link-label {
+  color: #ffffff !important;
 }
 
 .dashboard-icon {
@@ -223,6 +284,19 @@
   background: var(--color-button-danger-hover) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3) !important;
+}
+
+/* Asegurar que en modo oscuro el botón de logout sea blanco */
+.dark-theme .logout-button {
+  color: #ffffff !important;
+}
+
+.dark-theme .logout-button .dashboard-icon {
+  color: #ffffff !important;
+}
+
+.dark-theme .logout-button .dashboard-link-label {
+  color: #ffffff !important;
 }
 
 /* --- Menú Móvil --- */
@@ -484,7 +558,22 @@
   padding: 10px 15px;
   font-size: 0.9rem;
   color: var(--color-text-dark);
-  /* << --- CAMBIO: Color de texto de nested-link a blanco --- */
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+/* Asegurar que en modo oscuro los nested links sean blancos */
+.dark-theme .nested-link {
+  color: #ffffff !important;
+}
+
+.dark-theme .nested-link .dashboard-icon {
+  color: #ffffff !important;
+}
+
+.dark-theme .nested-link .dashboard-link-label {
+  color: #ffffff !important;
 }
 
 /* .nested-link:hover ya hereda el color #ffffff del selector .dashboard-link:hover, .nested-link:hover */

@@ -61,7 +61,12 @@ const AdminLayout = () => (
 
 function AppRoutes() {
   return (
-    <Router>
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <Routes>
         {/* Rutas Públicas */}
         <Route element={<PublicLayout />}>
@@ -77,14 +82,15 @@ function AppRoutes() {
         <Route path="/password-recovery" element={<PasswordRecoveryPage />} />
 
         {/* --- ESTRUCTURA UNIFICADA DE RUTAS DE ADMINISTRADOR --- */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="/admin" element={<PrivateRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
 
-          <Route
-            element={<PrivateRoute requiredPermission="MODULO_DASHBOARD_VER" />}
-          >
-            <Route path="dashboard" element={<DashboardPage />} />
-          </Route>
+            <Route
+              element={<PrivateRoute requiredPermission="MODULO_DASHBOARD_VER" />}
+            >
+              <Route path="dashboard" element={<DashboardPage />} />
+            </Route>
 
           <Route
             element={
@@ -206,6 +212,7 @@ function AppRoutes() {
           >
             <Route path="ventas" element={<ListaVentasPage />} />
             <Route path="ventas/proceso" element={<ProcesoVentaPage />} />
+          </Route>
           </Route>
         </Route>
 

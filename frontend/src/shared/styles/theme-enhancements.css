@@ -1,0 +1,506 @@
+/* src/shared/styles/theme-enhancements.css */
+
+/* === Mejoras adicionales para el sistema de temas === */
+
+/* Transiciones suaves para todos los elementos */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Elementos específicos que necesitan transiciones mejoradas */
+.productos-page,
+.productos-hero,
+.productos-section,
+.product-card-container,
+.public-servicios-page,
+.servicios-hero,
+.servicios-section,
+.service-card-container {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Mejoras específicas para el tema oscuro */
+.dark-theme {
+  /* Asegurar que el fondo del body cambie */
+  background-color: var(--color-background-light) !important;
+}
+
+.dark-theme body {
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
+}
+
+/* Mejoras para el navbar en tema oscuro */
+.dark-theme .navbar {
+  background: rgba(45, 27, 48, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark-theme .navbar-link {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .navbar-link:hover {
+  color: var(--color-primary) !important;
+  background: rgba(139, 90, 143, 0.1) !important;
+}
+
+.dark-theme .navbar-user {
+  color: var(--color-text-dark) !important;
+  background: linear-gradient(135deg, rgba(139, 90, 143, 0.1), rgba(139, 90, 143, 0.05)) !important;
+  border: 1px solid rgba(139, 90, 143, 0.2) !important;
+}
+
+/* Mejoras para el footer */
+.dark-theme .footer {
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .footer-inner-wrapper {
+  background-color: var(--color-background-card) !important;
+  color: var(--color-text-dark) !important;
+  box-shadow: 0 4px 15px var(--color-shadow-light) !important;
+}
+
+.dark-theme .footer-brand h2 {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .footer-brand p {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .footer-links h3,
+.dark-theme .footer-contact h3,
+.dark-theme .footer-social h3 {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .footer-links a {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .footer-links a:hover {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .footer-contact p {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .footer-contact p svg {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .social-icons a {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .social-icons a:hover {
+  color: var(--color-primary-hover) !important;
+}
+
+.dark-theme .footer-bottom {
+  border-top-color: var(--color-border-light) !important;
+}
+
+.dark-theme .footer-bottom-text {
+  color: var(--color-text-dark) !important;
+}
+
+/* Mejoras para el footer spacer */
+.dark-theme .footer-spacer {
+  background: linear-gradient(135deg, 
+    var(--color-background-light) 0%, 
+    var(--color-background-hover) 25%, 
+    var(--color-secondary) 50%, 
+    var(--color-secondary-hover) 75%, 
+    var(--color-border-light) 100%
+  ) !important;
+}
+
+/* Mejoras para elementos de texto */
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme h5,
+.dark-theme h6 {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme p {
+  color: var(--color-text-dark) !important;
+}
+
+/* Mejoras para botones */
+.dark-theme .btn-primary {
+  background-color: var(--color-button-primary) !important;
+  border-color: var(--color-button-primary) !important;
+}
+
+.dark-theme .btn-primary:hover {
+  background-color: var(--color-button-primary-hover) !important;
+  border-color: var(--color-button-primary-hover) !important;
+}
+
+/* Mejoras para formularios */
+.dark-theme input,
+.dark-theme select,
+.dark-theme textarea {
+  background-color: var(--color-form-bg) !important;
+  border-color: var(--color-form-border) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme input:focus,
+.dark-theme select:focus,
+.dark-theme textarea:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-form-focus-bg) !important;
+}
+
+/* Mejoras para enlaces */
+.dark-theme a {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme a:hover {
+  color: var(--color-primary-hover) !important;
+}
+
+/* Mejoras específicas para la página de inicio */
+.dark-theme .home-page-container {
+  background: var(--home-gradient-soft) !important;
+}
+
+.dark-theme .home-hero {
+  background: var(--home-gradient-hero) !important;
+}
+
+.dark-theme .services-section {
+  background: var(--home-gradient-soft) !important;
+}
+
+.dark-theme .cta-section {
+  background: var(--home-gradient-hero) !important;
+}
+
+/* Mejoras para las tarjetas de servicios */
+.dark-theme .service-card {
+  background: var(--home-bg-card) !important;
+  border: 1px solid rgba(139, 90, 143, 0.2) !important;
+}
+
+.dark-theme .service-card h3 {
+  color: var(--home-primary) !important;
+}
+
+.dark-theme .service-card p {
+  color: var(--home-text-secondary) !important;
+}
+
+.dark-theme .service-price {
+  color: var(--home-primary) !important;
+}
+
+.dark-theme .service-btn {
+  background: var(--home-gradient-primary) !important;
+}
+
+/* Mejoras para estados de carga */
+.dark-theme .loading-state,
+.dark-theme .empty-state {
+  background: var(--home-bg-card) !important;
+  color: var(--home-text-secondary) !important;
+}
+
+.dark-theme .loading-state .loading-icon,
+.dark-theme .empty-state .empty-icon {
+  color: var(--home-primary) !important;
+}
+
+/* === Mejoras específicas para Productos === */
+.dark-theme .productos-page {
+  background: var(--productos-gradient-soft) !important;
+}
+
+.dark-theme .productos-hero {
+  background: var(--productos-gradient-hero) !important;
+}
+
+.dark-theme .productos-section {
+  background: var(--productos-gradient-soft) !important;
+}
+
+.dark-theme .product-card-container {
+  background: var(--productos-bg-card) !important;
+  border-color: rgba(139, 90, 143, 0.2) !important;
+  box-shadow: var(--productos-shadow-card) !important;
+}
+
+.dark-theme .product-card-container:hover {
+  box-shadow: var(--productos-shadow-hover) !important;
+  border-color: rgba(139, 90, 143, 0.4) !important;
+}
+
+.dark-theme .product-title {
+  color: var(--productos-text-primary) !important;
+}
+
+.dark-theme .product-description {
+  color: var(--productos-text-secondary) !important;
+}
+
+.dark-theme .product-price {
+  color: var(--productos-primary) !important;
+}
+
+.dark-theme .product-button {
+  background: var(--productos-gradient-primary) !important;
+}
+
+.dark-theme .product-image-container {
+  background: var(--productos-gradient-primary) !important;
+}
+
+.dark-theme .product-image-placeholder {
+  background: var(--productos-gradient-primary) !important;
+}
+
+.dark-theme .loading-state,
+.dark-theme .empty-state {
+  background: var(--productos-bg-card) !important;
+  color: var(--productos-text-secondary) !important;
+  box-shadow: var(--productos-shadow-card) !important;
+}
+
+/* === Mejoras específicas para Servicios === */
+.dark-theme .public-servicios-page {
+  background: var(--servicios-gradient-soft) !important;
+}
+
+.dark-theme .servicios-hero {
+  background: var(--servicios-gradient-hero) !important;
+}
+
+.dark-theme .servicios-section {
+  background: var(--servicios-gradient-soft) !important;
+}
+
+.dark-theme .service-card-container {
+  background: var(--servicios-bg-card) !important;
+  border-color: rgba(139, 90, 143, 0.2) !important;
+  box-shadow: var(--servicios-shadow-card) !important;
+}
+
+.dark-theme .service-card-container:hover {
+  box-shadow: var(--servicios-shadow-hover) !important;
+  border-color: rgba(139, 90, 143, 0.4) !important;
+}
+
+.dark-theme .service-title {
+  color: var(--servicios-text-primary) !important;
+}
+
+.dark-theme .service-description {
+  color: var(--servicios-text-secondary) !important;
+}
+
+.dark-theme .service-price {
+  color: var(--servicios-primary) !important;
+}
+
+.dark-theme .service-button {
+  background: var(--servicios-gradient-primary) !important;
+}
+
+.dark-theme .service-image-container {
+  background: var(--servicios-gradient-primary) !important;
+}
+
+.dark-theme .service-image-placeholder {
+  background: var(--servicios-gradient-primary) !important;
+}
+
+/* === Mejoras específicas para iconos del carrito === */
+.dark-theme .quantity-btn svg {
+  color: white !important;
+}
+
+.dark-theme .remove-item-btn svg {
+  color: white !important;
+}
+
+.dark-theme .cart-clear-btn svg {
+  color: white !important;
+}
+
+.dark-theme .cart-order-btn svg {
+  color: white !important;
+}
+
+.dark-theme .cart-close-btn svg {
+  color: white !important;
+}
+
+/* Asegurar que los iconos sean visibles en tema claro también */
+.light-theme .quantity-btn svg,
+.light-theme .remove-item-btn svg,
+.light-theme .cart-clear-btn svg,
+.light-theme .cart-order-btn svg,
+.light-theme .cart-close-btn svg {
+  color: white !important;
+}
+
+/* === Estilos globales para iconos de React Icons === */
+svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* Forzar visualización de iconos en botones del carrito */
+.quantity-btn svg,
+.remove-item-btn svg,
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: currentColor !important;
+  color: white !important;
+}
+
+/* Asegurar que los iconos no se oculten */
+.quantity-btn svg,
+.remove-item-btn svg,
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+/* === Estilos específicos para forzar visualización de iconos === */
+.quantity-btn svg,
+.remove-item-btn svg,
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: white !important;
+  color: white !important;
+  width: auto !important;
+  height: auto !important;
+  font-size: inherit !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+}
+
+/* Asegurar que los iconos no se oculten por CSS global */
+.quantity-btn svg,
+.remove-item-btn svg,
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Forzar el tamaño específico de cada tipo de icono */
+.quantity-btn svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.remove-item-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* === Estilos adicionales para asegurar visibilidad === */
+.quantity-btn,
+.remove-item-btn,
+.cart-clear-btn,
+.cart-order-btn,
+.cart-close-btn {
+  position: relative;
+}
+
+.quantity-btn::before,
+.remove-item-btn::before,
+.cart-clear-btn::before,
+.cart-order-btn::before,
+.cart-close-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Fallback para iconos que no se muestran */
+.quantity-btn:not(:has(svg))::before {
+  content: '−';
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.quantity-btn:not(:has(svg)):last-child::before {
+  content: '+';
+}
+
+.remove-item-btn:not(:has(svg))::before {
+  content: '×';
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.cart-clear-btn:not(:has(svg))::before {
+  content: '🗑';
+  font-size: 14px;
+}
+
+.cart-order-btn:not(:has(svg))::before {
+  content: '❤';
+  font-size: 14px;
+}
+
+.cart-close-btn:not(:has(svg))::before {
+  content: '×';
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Mejoras para el tema toggle */
+.dark-theme .theme-toggle {
+  background: var(--color-button-primary) !important;
+  color: var(--color-text-light) !important;
+  border-color: var(--color-button-primary) !important;
+}
+
+.dark-theme .theme-toggle:hover {
+  background: var(--color-button-primary-hover) !important;
+  border-color: var(--color-button-primary-hover) !important;
+}

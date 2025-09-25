@@ -1,0 +1,144 @@
+/* src/shared/styles/performance-optimizations.css */
+
+/* === Optimizaciones de Rendimiento === */
+
+/* Reducir animaciones en dispositivos con preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimizar elementos que causan repaint/reflow */
+.navbar,
+.navbar *,
+.hero-btn,
+.hero-btn *,
+.service-card,
+.service-card * {
+  transform: translateZ(0); /* Forzar aceleración por hardware */
+  backface-visibility: hidden;
+}
+
+/* Reducir efectos costosos en hover */
+.navbar:hover {
+  will-change: auto; /* Solo activar cuando sea necesario */
+}
+
+/* Optimizar backdrop-filter para mejor rendimiento */
+.navbar {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Reducir la complejidad de las sombras */
+.navbar {
+  box-shadow: 
+    0 2px 8px var(--color-shadow-medium),
+    0 0 0 1px rgba(154, 122, 159, 0.1);
+}
+
+.navbar.scrolled {
+  box-shadow: 
+    0 4px 12px var(--color-shadow-medium),
+    0 0 0 1px rgba(154, 122, 159, 0.2);
+}
+
+/* Optimizar animaciones de entrada */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px); /* Reducido de -5px */
+  }
+}
+
+/* Desactivar animaciones en elementos fuera del viewport */
+.floating-heart {
+  animation-play-state: paused;
+}
+
+.floating-heart.in-viewport {
+  animation-play-state: running;
+}
+
+/* Optimizar transiciones globales */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Reducir la frecuencia de animaciones infinitas */
+.footer-spacer-wave svg {
+  animation-duration: 15s; /* Aumentado para menos frecuencia */
+}
+
+.footer-spacer-circle {
+  animation-duration: 8s; /* Aumentado para menos frecuencia */
+}
+
+/* Optimizar elementos con transform */
+.service-card:hover {
+  transform: translateY(-5px); /* Reducido de -10px */
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px); /* Reducido de -3px */
+}
+
+/* Reducir efectos de blur costosos */
+.hero-btn {
+  backdrop-filter: blur(3px); /* Reducido de 5px */
+  -webkit-backdrop-filter: blur(3px);
+}
+
+/* Optimizar elementos con gradientes complejos */
+.home-hero,
+.cta-section {
+  background-attachment: scroll; /* Evitar fixed para mejor rendimiento */
+}
+
+/* Reducir la complejidad de las animaciones de partículas */
+.footer-spacer::before {
+  animation-duration: 20s; /* Aumentado para menos frecuencia */
+  opacity: 0.2; /* Reducido para menos impacto visual */
+}
+
+/* Optimizar elementos con múltiples transformaciones */
+.navbar.scroll-down,
+.navbar.scroll-up {
+  transform: translateX(-50%) scale(0.98); /* Simplificado */
+}
+
+.navbar.scrolled.scroll-down,
+.navbar.scrolled.scroll-up {
+  transform: translateX(-50%) scale(0.97); /* Simplificado */
+}
+
+/* Reducir la frecuencia de actualizaciones del scroll */
+@media (max-width: 768px) {
+  .navbar {
+    transition: none; /* Desactivar transiciones en móvil para mejor rendimiento */
+  }
+  
+  .hero-btn {
+    backdrop-filter: none; /* Desactivar blur en móvil */
+    -webkit-backdrop-filter: none;
+  }
+}

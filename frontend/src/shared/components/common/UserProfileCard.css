@@ -171,6 +171,51 @@
     }
 }
 
+/* Asegurar que en modo oscuro todos los elementos del UserProfileCard sean blancos */
+.dark-theme .user-name {
+    color: #ffffff !important;
+}
+
+.dark-theme .user-role {
+    color: #ffffff !important;
+}
+
+.dark-theme .expand-icon {
+    color: #ffffff !important;
+}
+
+.dark-theme .role-icon {
+    color: #ffffff !important;
+}
+
+.dark-theme .details-title {
+    color: #ffffff !important;
+}
+
+.dark-theme .detail-text {
+    color: #ffffff !important;
+}
+
+.dark-theme .detail-icon {
+    color: #ffffff !important;
+}
+
+.dark-theme .tooltip-content {
+    color: #ffffff !important;
+}
+
+.dark-theme .tooltip-name {
+    color: #ffffff !important;
+}
+
+.dark-theme .tooltip-role {
+    color: #ffffff !important;
+}
+
+.dark-theme .tooltip-hint {
+    color: #ffffff !important;
+}
+
 .user-details-section {
     margin-bottom: 20px;
 }

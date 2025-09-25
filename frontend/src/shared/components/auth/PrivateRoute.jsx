@@ -11,11 +11,22 @@ const PrivateRoute = ({ requiredPermission }) => {
 
   // Mientras se verifica la sesión, mostramos un mensaje de carga.
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontSize: '18px'
+      }}>
+        Verificando autenticación...
+      </div>
+    );
   }
 
   // Si el usuario NO está autenticado, lo redirigimos al login.
   if (!isAuthenticated) {
+    console.log('PrivateRoute: Usuario no autenticado, redirigiendo a login');
     return <Navigate to="/login" replace />;
   }
 

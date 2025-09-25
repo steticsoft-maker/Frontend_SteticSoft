@@ -17,12 +17,17 @@ import {
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
-  const { user, permissions, logout } = useAuth(); // Obtener user, permissions y logout
+  const { user, permissions, logout, isAuthenticated } = useAuth(); // Agregar isAuthenticated
 
   // Validación de datos críticos
   if (!logout) {
     console.error("AdminSidebar: logout function not available");
     return <div>Error: Función de logout no disponible</div>;
+  }
+
+  // Si no está autenticado, no renderizar nada (el PrivateRoute se encargará de la redirección)
+  if (!isAuthenticated) {
+    return null;
   }
 
   const [openSubMenus, setOpenSubMenus] = useState({});

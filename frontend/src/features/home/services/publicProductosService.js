@@ -1,10 +1,22 @@
 // src/features/home/services/publicProductosService.js
-import apiClient from "../../../shared/services/apiClient";
+import publicApiClient from "../../../shared/services/publicApiClient";
 
 /**
  * Obtiene la lista de productos públicos desde la API.
  * @returns {Promise<Object>} La respuesta de la API con la lista de productos.
  */
-export const getPublicProducts = () => {
-  return apiClient.get("/productos/public");
+export const getPublicProducts = async () => {
+  try {
+    // Intentar primero con el endpoint público
+    const response = await publicApiClient.get("/productos/public");
+    return response;
+  } catch (error) {
+    // Si no existe el endpoint público, intentar con el endpoint normal
+    try {
+      const response = await publicApiClient.get("/productos");
+      return response;
+    } catch (fallbackError) {
+      return { data: { data: { productos: [] } } };
+    }
+  }
 };

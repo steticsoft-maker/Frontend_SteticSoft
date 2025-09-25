@@ -1,5 +1,5 @@
 // src/features/auth/pages/PasswordRecoveryPage.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import PasswordRecoveryForm from "../components/PasswordRecoveryForm";
@@ -13,7 +13,20 @@ function PasswordRecoveryPage() {
   const [token, setToken] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isTokenValidated, setIsTokenValidated] = useState(false);
+  const [tokenValidationError, setTokenValidationError] = useState("");
   const navigate = useNavigate();
+
+  // Resetear estado de validación del token cuando cambia la vista
+  useEffect(() => {
+    if (view === "verify") {
+      setIsTokenValidated(false);
+      setTokenValidationError("");
+    } else if (view === "reset") {
+      setIsTokenValidated(true);
+      setTokenValidationError("");
+    }
+  }, [view]);
 
   const handleRequestSubmit = async (formData) => {
     setIsLoading(true);
@@ -38,9 +51,14 @@ function PasswordRecoveryPage() {
   const handleVerifySubmit = async (formData) => {
     setIsLoading(true);
     setError("");
+    setTokenValidationError("");
+    setIsTokenValidated(false);
+
     try {
       await authService.verificarTokenAPI(formData.token);
       setToken(formData.token);
+      setIsTokenValidated(true);
+      setTokenValidationError("");
       setView("reset");
       Swal.fire({
         title: "¡Token verificado!",
@@ -50,16 +68,22 @@ function PasswordRecoveryPage() {
       });
     } catch (err) {
       console.error("Error verificando token:", err);
+      setIsTokenValidated(false);
+
       if (err.status === 500) {
-        setError(
+        setTokenValidationError(
           "Error del servidor. Por favor, intenta nuevamente más tarde."
         );
       } else if (err.status === 404) {
-        setError("Token no encontrado. Verifica que el token sea correcto.");
+        setTokenValidationError(
+          "Token no encontrado. Verifica que el token sea correcto."
+        );
       } else if (err.status === 400) {
-        setError("Token inválido o malformado.");
+        setTokenValidationError("Token inválido o malformado.");
       } else {
-        setError(err.message || "El token es inválido o ha expirado.");
+        setTokenValidationError(
+          err.message || "El token es inválido o ha expirado."
+        );
       }
     } finally {
       setIsLoading(false);
@@ -137,6 +161,8 @@ function PasswordRecoveryPage() {
           error={error}
           isLoading={isLoading}
           email={email}
+          tokenValidationError={tokenValidationError}
+          isTokenValidated={isTokenValidated}
         />
       </div>
     </div>

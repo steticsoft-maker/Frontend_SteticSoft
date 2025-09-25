@@ -67,3 +67,16 @@
 .theme-toggle.icon-only .theme-toggle-icon {
     font-size: 16px;
 }
+
+/* Asegurar que en modo oscuro el ThemeToggle sea blanco */
+.dark-theme .theme-toggle {
+    color: #ffffff !important;
+}
+
+.dark-theme .theme-toggle-icon {
+    color: #ffffff !important;
+}
+
+.dark-theme .theme-toggle-text {
+    color: #ffffff !important;
+}

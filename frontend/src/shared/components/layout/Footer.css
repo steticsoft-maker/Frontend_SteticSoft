@@ -1,22 +1,39 @@
 /* src/shared/components/layout/Footer.css */
 /* Importa tus variables de colores si no son globales */
-/* @import "../../styles/_variables.css"; */
+@import "../../styles/_variables.css";
+
+/* Variables específicas para el footer */
+:root {
+  --footer-bg: var(--color-background-light);
+  --footer-text: var(--color-text-dark);
+  --footer-card-bg: var(--color-background-card);
+  --footer-border: var(--color-border-light);
+}
+
+.dark-theme {
+  --footer-bg: var(--color-background-light);
+  --footer-text: var(--color-text-dark);
+  --footer-card-bg: var(--color-background-card);
+  --footer-border: var(--color-border-light);
+}
 
 .footer {
-  background-color: var(--bs-body-bg, var(--color-text-dark));
-  color: var(--bs-body-color, #f1f1f1);
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
   padding: 50px 20px;
-  border-top: 1px solid var(--bs-border-color, #777777);
+  border-top: 1px solid var(--footer-border);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .footer-inner-wrapper {
-  background-color: var(--bs-secondary-bg, #3a3a3a);
-  color: var(--bs-body-color, #f1f1f1);
+  background-color: var(--footer-card-bg);
+  color: var(--footer-text);
   border-radius: 12px;
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto 30px auto;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px var(--color-shadow-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .footer-container {
@@ -42,7 +59,7 @@
 
 .footer-brand p {
   font-size: 1rem;
-  color: var(--bs-body-color, #ccc);
+  color: var(--footer-text);
   opacity: 0.8;
 }
 
@@ -64,7 +81,7 @@
 }
 
 .footer-links a {
-  color: var(--bs-body-color, #f1f1f1); /* Texto de enlace */
+  color: var(--footer-text);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -74,7 +91,7 @@
 }
 
 .footer-contact p {
-  color: var(--bs-body-color, #f1f1f1); /* Texto de contacto */
+  color: var(--footer-text);
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -102,7 +119,7 @@
   text-align: center;
   margin-top: 30px;
   padding-top: 20px;
-  border-top: 1px solid var(--bs-border-color, #777777);
+  border-top: 1px solid var(--footer-border);
   font-size: 0.9rem;
 }
 
@@ -130,5 +147,5 @@
 }
 
 .footer-bottom-text{
-  color: var(--bs-body-color, white);
+  color: var(--footer-text);
 }

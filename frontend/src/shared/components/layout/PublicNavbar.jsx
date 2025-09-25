@@ -14,13 +14,14 @@ import {
   FaSignOutAlt,
   FaBars,
   FaTimes,
+  FaTachometerAlt,
 } from "react-icons/fa";
 
 function PublicNavbar() {
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isScrolled = useNavbarScroll();
+  const { isScrolled, scrollDirection, isAtTop } = useNavbarScroll();
 
   const handleLogoutClick = async () => {
     await logout();
@@ -36,7 +37,11 @@ function PublicNavbar() {
   };
 
   return (
-    <nav className={`navbar ${isScrolled ? "scrolled" : ""}`}>
+    <nav
+      className={`navbar ${isScrolled ? "scrolled" : ""} ${
+        scrollDirection === "down" ? "scroll-down" : "scroll-up"
+      } ${isAtTop ? "at-top" : ""}`}
+    >
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <img
@@ -122,6 +127,19 @@ function PublicNavbar() {
                 <FaUser className="navbar-icon" />
                 {user?.nombre || "Usuario"}
               </li>
+              {/* Botón para acceder al dashboard */}
+              {(user?.rol === "Administrador" || user?.rol === "Empleado") && (
+                <li>
+                  <Link
+                    to="/admin/dashboard"
+                    className="navbar-link"
+                    onClick={closeMobileMenu}
+                  >
+                    <FaTachometerAlt className="navbar-icon" />
+                    Dashboard
+                  </Link>
+                </li>
+              )}
               <li>
                 <button
                   className="logout-button"

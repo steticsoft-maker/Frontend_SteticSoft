@@ -1,0 +1,192 @@
+/* src/shared/styles/feminine-theme.css */
+:root {
+  /* Paleta de colores femenina */
+  --feminine-primary: #e91e63; /* Rosa vibrante */
+  --feminine-secondary: #f8bbd9; /* Rosa suave */
+  --feminine-accent: #ff4081; /* Rosa accent */
+  --feminine-light: #fce4ec; /* Rosa muy claro */
+  --feminine-dark: #ad1457; /* Rosa oscuro */
+  
+  /* Gradientes femeninos */
+  --gradient-primary: linear-gradient(135deg, #e91e63 0%, #f8bbd9 50%, #ff4081 100%);
+  --gradient-soft: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f3e5f5 100%);
+  --gradient-hero: linear-gradient(135deg, #e91e63 0%, #ad1457 50%, #880e4f 100%);
+  --gradient-card: linear-gradient(145deg, #ffffff 0%, #fce4ec 100%);
+  
+  /* Sombras suaves */
+  --shadow-soft: 0 8px 32px rgba(233, 30, 99, 0.15);
+  --shadow-hover: 0 12px 40px rgba(233, 30, 99, 0.25);
+  --shadow-card: 0 4px 20px rgba(233, 30, 99, 0.1);
+  
+  /* Bordes redondeados */
+  --radius-small: 12px;
+  --radius-medium: 20px;
+  --radius-large: 30px;
+  --radius-full: 50px;
+}
+
+/* Animaciones globales */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Efectos de hover globales */
+.feminine-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feminine-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Botones femeninos */
+.feminine-btn {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-medium);
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feminine-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.feminine-btn:hover::before {
+  left: 100%;
+}
+
+.feminine-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Cards femeninas */
+.feminine-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-large);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feminine-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.feminine-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Efectos de partículas */
+.particle-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.particle-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(233, 30, 99, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(248, 187, 217, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 64, 129, 0.05) 0%, transparent 50%);
+  animation: float 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Texto con gradiente */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* Efectos de brillo */
+.shimmer-effect {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --radius-small: 8px;
+    --radius-medium: 16px;
+    --radius-large: 24px;
+  }
+}

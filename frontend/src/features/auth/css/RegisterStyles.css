@@ -283,3 +283,40 @@
         margin-bottom: 2px;
     }
 }
+
+/* === Estilos para verificación de correo === */
+.verifying-email-message {
+    color: #007bff;
+    font-size: 0.8rem;
+    font-style: italic;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.verifying-email-message::before {
+    content: "⏳";
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tema oscuro para el mensaje de verificación */
+.dark-theme .verifying-email-message {
+    color: #4dabf7;
+}
+
+/* Deshabilitar input durante verificación */
+.auth-form-input:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .auth-form-input:disabled {
+    background-color: rgba(255, 255, 255, 0.05);
+}

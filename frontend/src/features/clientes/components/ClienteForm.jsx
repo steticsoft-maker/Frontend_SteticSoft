@@ -3,12 +3,7 @@ import React from "react";
 import "../../../shared/styles/admin-layout.css";
 import PasswordInput from "../../../shared/components/PasswordInput/PasswordInput"; // Importar el componente reutilizable
 
-const TIPOS_DOCUMENTO = [
-  "Cédula de Ciudadanía",
-  "Cédula de Extranjería",
-  "Pasaporte",
-  "Tarjeta de Identidad",
-];
+const TIPOS_DOCUMENTO = ["Cédula de Ciudadanía", "Cédula de Extranjería"];
 
 const ClienteForm = ({
   formData,

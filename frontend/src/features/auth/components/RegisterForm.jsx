@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import PasswordInput from "../../../shared/components/PasswordInput/PasswordInput";
+import { verificarCorreoAPI } from "../../usuarios/services/usuariosService";
 import "../css/Auth.css"; // Estilos comunes
 import "../css/RegisterStyles.css"; // Estilos específicos del registro
 
@@ -28,11 +29,11 @@ function RegisterForm({
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [formError, setFormError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
 
   // Expresiones regulares para validación
   const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
   const numericOnlyRegex = /^\d+$/;
-  const alphanumericRegex = /^[a-zA-Z0-9]+$/;
   const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
   const validateField = (name, value) => {
@@ -82,9 +83,6 @@ function RegisterForm({
           ) {
             if (!numericOnlyRegex.test(value))
               error = "Para este tipo de documento, ingrese solo números.";
-          } else if (docType === "Pasaporte") {
-            if (!alphanumericRegex.test(value))
-              error = "Para Pasaporte, ingrese solo letras y números.";
           }
           if (!error && (value.length < 5 || value.length > 20)) {
             error = "Debe tener entre 5 y 20 caracteres.";
@@ -147,6 +145,39 @@ function RegisterForm({
     }
   };
 
+  const handleBlur = async (e) => {
+    const { name, value } = e.target;
+
+    // Validar campo al perder el foco
+    const error = validateField(name, value);
+    const newFieldErrors = { ...fieldErrors, [name]: error };
+    setFieldErrors(newFieldErrors);
+
+    // Verificar correo si es válido y no está vacío
+    if (name === "correo" && !error && value) {
+      setIsVerifyingEmail(true);
+      try {
+        const res = await verificarCorreoAPI(value);
+        if (res.estaEnUso) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            correo: "Este correo ya está registrado.",
+          }));
+        }
+      } catch (apiError) {
+        console.error("Error al verificar el correo:", apiError);
+        // No mostramos error de conexión al usuario, solo lo registramos
+      } finally {
+        setIsVerifyingEmail(false);
+      }
+    }
+
+    // Notificar a la página padre sobre los cambios
+    if (onFieldErrorsChange) {
+      onFieldErrorsChange(fieldErrors);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormError("");
@@ -185,7 +216,7 @@ function RegisterForm({
     }
 
     // Remover confirmPassword del objeto que se envía
-    const { confirmPassword, ...userData } = formData;
+    const { ...userData } = formData;
     onSubmit(userData);
   };
 
@@ -251,12 +282,17 @@ function RegisterForm({
             placeholder="ejemplo@correo.com"
             value={formData.correo}
             onChange={handleChange}
+            onBlur={handleBlur}
             className={`auth-form-input ${
               fieldErrors.correo ? "input-error" : ""
             }`}
             required
             autoComplete="username"
+            disabled={isVerifyingEmail}
           />
+          {isVerifyingEmail && (
+            <span className="verifying-email-message">Verificando...</span>
+          )}
           {fieldErrors.correo && (
             <span className="error-message">{fieldErrors.correo}</span>
           )}
@@ -343,8 +379,6 @@ function RegisterForm({
             </option>
             <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
             <option value="Cédula de Extranjería">Cédula de Extranjería</option>
-            <option value="Pasaporte">Pasaporte</option>
-            <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
           </select>
           {fieldErrors.tipoDocumento && (
             <span className="error-message">{fieldErrors.tipoDocumento}</span>
