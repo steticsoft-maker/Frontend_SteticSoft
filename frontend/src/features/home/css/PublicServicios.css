@@ -29,15 +29,19 @@
 /* Grid responsivo */
 .public-servicios-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   padding: 2rem;
   justify-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Tarjeta de servicio */
 .public-servicios-card {
-  background: #fff;
+  background: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #000);
   border-radius: 20px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   overflow: hidden;
@@ -51,19 +55,25 @@
   padding: 18px;
 }
 
+
 .public-servicios-card:hover {
   transform: translateY(-7px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 /* Imagen */
+.public-servicios-image-wrapper {
+  height: 200px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--color-table-row-even);
+}
+
 .public-servicios-image {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  background-color: var(--color-table-row-even);
   transition: transform 0.4s ease;
 }
 
@@ -71,21 +81,47 @@
   transform: scale(1.05);
 }
 
+/* Placeholder para servicios sin imagen */
+.public-servicios-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: var(--color-text-dark);
+  opacity: 0.7;
+}
+
+.placeholder-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+.placeholder-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
 /* Nombre y descripción */
 .public-servicios-card h3 {
   font-size: 1.3rem;
   font-weight: 600;
-  color: var(--color-text-dark);
+  color: var(--bs-body-color, var(--color-text-dark));
   margin-bottom: 8px;
 }
 
 .public-servicios-card p {
   font-size: 0.95rem;
-  color: var(--color-text-dark);
+  color: var(--bs-body-color, var(--color-text-dark));
   opacity: 0.85;
   margin-bottom: 10px;
   line-height: 1.4;
 }
+
 
 /* Precio */
 .public-servicios-price {
@@ -111,6 +147,39 @@
 .public-add-button-servicio:hover {
   background: var(--color-primary-hover);
   transform: scale(1.05);
+}
+
+/* Botón agendar cita */
+.public-appointment-button {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(154, 122, 159, 0.3);
+}
+
+.public-appointment-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(154, 122, 159, 0.4);
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary) 100%);
+}
+
+.public-appointment-button:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  font-size: 0.9rem;
 }
 
 /* Icono del carrito */
@@ -147,7 +216,8 @@
   position: fixed;
   top: 20%;
   right: 20px;
-  background-color: #fff;
+  background-color: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #000);
   border-radius: 15px;
   padding: 25px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.25);
@@ -155,6 +225,7 @@
   z-index: 2000;
   animation: fadeInUp 0.4s ease;
 }
+
 
 @keyframes fadeInUp {
   from {
@@ -185,15 +256,271 @@
   transform: scale(1.05);
 }
 
+/* ===== ESTILOS PARA LA SECCIÓN DE SERVICIOS EN HOME ===== */
+.home-services-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, var(--bs-body-bg, #f8f9fa) 0%, var(--bs-secondary-bg, #e9ecef) 100%);
+  position: relative;
+}
+
+
+.home-services-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Grid específico para la página de inicio (2x2) */
+.home-services-section .public-servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  padding: 2rem;
+  justify-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 15px;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 1px;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--bs-body-color, var(--color-text-dark));
+  text-align: center;
+  margin-bottom: 50px;
+  opacity: 0.8;
+  font-family: 'Lora', serif;
+}
+
+/* Estados de carga y error */
+.services-loading,
+.services-error,
+.services-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--bs-body-color, var(--color-text-dark));
+  font-size: 1.1rem;
+}
+
+.services-error {
+  color: #dc3545;
+}
+
+/* Call to action */
+.services-cta {
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--bs-body-bg, rgba(255, 255, 255, 0.8));
+  color: var(--bs-body-color, #000);
+  border-radius: 20px;
+  margin-top: 40px;
+}
+
+
+.cta-text {
+  font-size: 1.2rem;
+  color: var(--bs-body-color, var(--color-text-dark));
+  margin-bottom: 25px;
+  font-family: 'Lora', serif;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-button {
+  border: none;
+  border-radius: 12px;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+}
+
+.cta-button-primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 15px rgba(154, 122, 159, 0.3);
+}
+
+.cta-button-primary:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(154, 122, 159, 0.4);
+}
+
+.cta-button-secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 4px 15px rgba(154, 122, 159, 0.1);
+}
+
+.cta-button-secondary:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(154, 122, 159, 0.3);
+}
+
+/* ===== BOTÓN FLOTANTE PARA AGENDAR CITAS ===== */
+.floating-appointment-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 18px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(154, 122, 159, 0.4);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+  justify-content: center;
+}
+
+.floating-appointment-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(154, 122, 159, 0.5);
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary) 100%);
+}
+
+.floating-appointment-btn:active {
+  transform: translateY(-1px);
+}
+
+.floating-appointment-btn .btn-icon {
+  font-size: 1.1rem;
+}
+
+/* Animación de pulso */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 6px 20px rgba(154, 122, 159, 0.4);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(154, 122, 159, 0.6), 0 0 0 10px rgba(154, 122, 159, 0.1);
+  }
+  100% {
+    box-shadow: 0 6px 20px rgba(154, 122, 159, 0.4);
+  }
+}
+
+.floating-appointment-btn.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Responsive para botón flotante */
+@media (max-width: 768px) {
+  .floating-appointment-btn {
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    min-width: 160px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-appointment-btn {
+    bottom: 15px;
+    right: 15px;
+    padding: 12px 16px;
+    min-width: 140px;
+    font-size: 0.85rem;
+  }
+}
+
 /* Responsive */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
+  .public-servicios-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
   .public-servicios-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
 }
 
 @media (max-width: 600px) {
   .public-servicios-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-services-section {
+    padding: 60px 0;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .public-servicios-grid {
+    gap: 20px;
+  }
+  
+  .public-servicios-image-wrapper {
+    height: 180px;
+  }
+  
+  /* Grid 2x2 en mobile se convierte en 1 columna */
+  .home-services-section .public-servicios-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-button {
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
   }
 }

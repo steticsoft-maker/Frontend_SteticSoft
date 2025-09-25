@@ -1,7 +1,9 @@
 // src/features/home/pages/PublicServiciosPage.jsx
 import React, { useState, useEffect } from "react";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaCalendarAlt } from "react-icons/fa";
 import ServiceCard from "../components/ServiceCard";
+import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService";
+import Footer from "../../../shared/components/layout/Footer";
 import "../css/PublicServicios.css";
 
 function PublicServiciosPage() {
@@ -10,28 +12,52 @@ function PublicServiciosPage() {
   const [showCart, setShowCart] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showPulse, setShowPulse] = useState(false);
 
   useEffect(() => {
-    fetch("https://api-steticsoft-web-movil.onrender.com/api/servicios/public")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Respuesta completa:", data);
-        if (Array.isArray(data.data)) {
-          const validServices = data.data.filter(
-            (service) => service && service.id
+    const loadServices = async () => {
+      try {
+        setLoading(true);
+        
+        // Obtener servicios activos usando el servicio existente
+        const response = await getServicios({ activo: true });
+        
+        if (response.data && Array.isArray(response.data.data)) {
+          const validServices = response.data.data.filter(
+            (service) => service && service.idServicio && service.estado === true
           );
-          console.table(data.data); // 👈 Esto te muestra los servicios en formato tabla
           setServices(validServices);
         } else {
-          console.warn("La respuesta no contiene un array válido:", data.data);
-          setServices([]);
+          // Intentar sin filtro
+          const responseSinFiltro = await getServicios({});
+          
+          if (responseSinFiltro.data && Array.isArray(responseSinFiltro.data.data)) {
+            const serviciosSinFiltro = responseSinFiltro.data.data.filter(
+              (service) => service && service.idServicio && service.estado === true
+            );
+            setServices(serviciosSinFiltro);
+          } else {
+            setServices([]);
+          }
         }
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error al cargar servicios públicos:", err);
+        setServices([]);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    loadServices();
+  }, []);
+
+  // Efecto para mostrar animación de pulso después de 3 segundos
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPulse(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -44,13 +70,14 @@ function PublicServiciosPage() {
 
   const addToCart = (service) => {
     setCart((prevCart) => {
+      const serviceId = service.idServicio || service.id;
       const existingService = prevCart.find(
-        (item) => item.id === service.id && item.type === "service"
+        (item) => (item.idServicio || item.id) === serviceId && item.type === "service"
       );
       let newCart;
       if (existingService) {
         newCart = prevCart.map((item) =>
-          item.id === service.id && item.type === "service"
+          (item.idServicio || item.id) === serviceId && item.type === "service"
             ? { ...item, quantity: (item.quantity || 0) + 1 }
             : item
         );
@@ -87,8 +114,12 @@ function PublicServiciosPage() {
 
   const getTotal = () => {
     return cart.reduce((total, item) => {
-      if (item.type === "service")
-        return total + item.price * (item.quantity || 0);
+      if (item.type === "service") {
+        const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
+        const precio = typeof item.precio === 'string' ? parseFloat(item.precio) : item.precio;
+        const finalPrice = price || precio || 0;
+        return total + finalPrice * (item.quantity || 0);
+      }
       return total;
     }, 0);
   };
@@ -114,15 +145,21 @@ function PublicServiciosPage() {
           ) : (
             <>
               <ul>
-                {cart
-                  .filter((item) => item.type === "service")
-                  .map((item) => (
-                    <li key={`cart-serv-${item.id}`}>
-                      {item.nombre} - {item.quantity || 1} x $
-                      {item.price.toFixed(2)} = $
-                      {(item.price * (item.quantity || 1)).toFixed(2)}
-                    </li>
-                  ))}
+                  {cart
+                    .filter((item) => item.type === "service")
+                    .map((item) => {
+                      const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
+                      const precio = typeof item.precio === 'string' ? parseFloat(item.precio) : item.precio;
+                      const finalPrice = price || precio || 0;
+                      const total = finalPrice * (item.quantity || 1);
+                      return (
+                        <li key={`cart-serv-${item.idServicio || item.id}`}>
+                          {item.nombre} - {item.quantity || 1} x $
+                          {finalPrice.toFixed(2)} = $
+                          {total.toFixed(2)}
+                        </li>
+                      );
+                    })}
               </ul>
               <p>
                 <strong>Horario Seleccionado:</strong> {selectedSchedule}
@@ -149,7 +186,7 @@ function PublicServiciosPage() {
           <div className="public-servicios-grid">
             {services.map((service) => (
               <ServiceCard
-                key={service.id}
+                key={service.idServicio}
                 service={service}
                 onAddToCart={addToCart}
               />
@@ -157,6 +194,18 @@ function PublicServiciosPage() {
           </div>
         )}
       </div>
+
+      
+      {/* Botón flotante para agendar citas */}
+      <button 
+        className={`floating-appointment-btn ${showPulse ? 'pulse' : ''}`}
+        onClick={() => window.location.href = '/admin/citas/agendar'}
+      >
+        <FaCalendarAlt className="btn-icon" />
+        Agendar Cita
+      </button>
+      
+      <Footer />
     </div>
   );
 }
