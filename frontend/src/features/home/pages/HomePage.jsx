@@ -1,32 +1,27 @@
 // src/features/home/pages/HomePage.jsx
 import React, { useState, useEffect } from "react";
-import ImageCarousel from "../../../shared/components/common/ImageCarousel"; // Importa el nuevo componente
-import InfoCard from "../components/InfoCard";
+import { FaHeart, FaStar, FaMagic, FaCrown, FaGem } from "react-icons/fa";
 import ServiceCard from "../components/ServiceCard";
 import { getPublicServicios } from "../../../shared/services/publicServices";
+import { formatPrice } from "../../../shared/utils/priceUtils";
 import { useAuth } from "../../../shared/contexts/authHooks";
 import "../css/Home.css";
-import "../css/PublicServicios.css";
 import Footer from "../../../shared/components/layout/Footer";
 import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
 
 function HomePage() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     const loadServices = async () => {
       try {
         setLoading(true);
-        setError("");
-
-        // Obtener servicios activos usando el servicio público
         const response = await getPublicServicios({ activo: true });
 
         if (response.data && Array.isArray(response.data.data)) {
-          // Filtrar servicios válidos y activos, limitar a 4 servicios para la página de inicio
           const validServices = response.data.data.filter(
             (service) =>
               service && service.idServicio && service.estado === true
@@ -50,8 +45,6 @@ function HomePage() {
           }
         }
       } catch (err) {
-        console.error("Error al cargar servicios:", err);
-        setError("No se pudieron cargar los servicios");
         setServices([]);
       } finally {
         setLoading(false);
@@ -61,94 +54,159 @@ function HomePage() {
     loadServices();
   }, []);
 
+  // Efecto de seguimiento del mouse para elementos interactivos
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   return (
-    <div>
-      <div className="home-page-container">
-        <ImageCarousel />
-        <section className="home-features-wrapper">
-          <div className="home-features-content">
-            <InfoCard title="Estilo Profesional">
-              Disfruta de cortes, tintes, peinados y más con atención
-              personalizada.
-            </InfoCard>
-            <InfoCard title="Calidad en Cada Servicio">
-              Nos enfocamos en resaltar tu imagen con técnicas modernas y
-              productos de alta calidad.
-            </InfoCard>
-            <InfoCard title="Agendamiento Rápido">
-              Reserva tu cita en línea de forma fácil desde cualquier
-              dispositivo.
-            </InfoCard>
+    <div className="home-page-container">
+      {/* Hero Section */}
+      <section className="home-hero">
+        {/* Floating Hearts */}
+        <div className="floating-hearts">
+          <FaHeart className="floating-heart" />
+          <FaHeart className="floating-heart" />
+          <FaHeart className="floating-heart" />
+          <FaHeart className="floating-heart" />
+          <FaHeart className="floating-heart" />
+        </div>
+
+        <div className="hero-content">
+          <h1 className="hero-title">
+            <FaCrown style={{ marginRight: "15px", fontSize: "0.8em" }} />
+            SteticSoft
+            <FaCrown style={{ marginLeft: "15px", fontSize: "0.8em" }} />
+          </h1>
+          <p className="hero-subtitle">
+            <FaMagic style={{ marginRight: "10px" }} />
+            Transformamos tu estilo, cuidamos tu imagen
+            <FaMagic style={{ marginLeft: "10px" }} />
+          </p>
+          <div className="hero-buttons">
+            <button
+              className="hero-btn primary"
+              onClick={() => (window.location.href = "/admin/citas/agendar")}
+            >
+              <FaGem style={{ marginRight: "8px" }} />
+              Agendar Cita
+            </button>
+            <button
+              className="hero-btn"
+              onClick={() => (window.location.href = "/servicios")}
+            >
+              <FaStar style={{ marginRight: "8px" }} />
+              Ver Servicios
+            </button>
+            {isAuthenticated &&
+              (user?.rol === "Administrador" || user?.rol === "Empleado") && (
+                <button
+                  className="hero-btn"
+                  onClick={() => (window.location.href = "/admin/dashboard")}
+                >
+                  <FaCrown style={{ marginRight: "8px" }} />
+                  Dashboard
+                </button>
+              )}
           </div>
-        </section>
-        <section className="home-services-section">
-          <div className="container">
-            <h2 className="section-title">Nuestros Servicios</h2>
-            <p className="section-subtitle">
-              Descubre nuestros servicios de belleza y agenda tu cita
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section className="services-section">
+        <div className="services-container">
+          <div className="section-title">
+            <h2>
+              <FaStar style={{ marginRight: "15px", color: "#e91e63" }} />
+              Nuestros Servicios Estrella
+              <FaStar style={{ marginLeft: "15px", color: "#e91e63" }} />
+            </h2>
+            <p>
+              Descubre nuestros servicios de belleza diseñados especialmente
+              para realzar tu belleza natural
             </p>
-
-            {loading ? (
-              <div className="services-loading">
-                <p>Cargando servicios...</p>
-              </div>
-            ) : error ? (
-              <div className="services-error">
-                <p>{error}</p>
-              </div>
-            ) : services.length === 0 ? (
-              <div className="services-empty">
-                <p>Próximamente tendremos servicios disponibles</p>
-              </div>
-            ) : (
-              <div className="public-servicios-grid">
-                {services.map((service) => (
-                  <ServiceCard
-                    key={service.idServicio}
-                    service={service}
-                    showAppointmentButton={true}
-                  />
-                ))}
-              </div>
-            )}
-
-            <div className="services-cta">
-              <p className="cta-text">
-                ¿Te interesa alguno de nuestros servicios?
-              </p>
-              <div className="cta-buttons">
-                <button
-                  className="cta-button cta-button-primary"
-                  onClick={() =>
-                    (window.location.href = "/admin/citas/agendar")
-                  }
-                >
-                  Agendar Cita
-                </button>
-                <button
-                  className="cta-button cta-button-secondary"
-                  onClick={() => (window.location.href = "/servicios")}
-                >
-                  Ver Todos los Servicios
-                </button>
-                {/* Botón para acceder al dashboard si el usuario está autenticado */}
-                {isAuthenticated &&
-                  (user?.rol === "Administrador" ||
-                    user?.rol === "Empleado") && (
-                    <button
-                      className="cta-button cta-button-primary"
-                      onClick={() =>
-                        (window.location.href = "/admin/dashboard")
-                      }
-                    >
-                      Acceder al Dashboard
-                    </button>
-                  )}
-              </div>
-            </div>
           </div>
-        </section>
-      </div>
+
+          {loading ? (
+            <div className="loading-state">
+              <FaMagic className="loading-icon" />
+              <p>Cargando servicios increíbles...</p>
+            </div>
+          ) : services.length === 0 ? (
+            <div className="empty-state">
+              <FaHeart className="empty-icon" />
+              <p>Pronto tendremos servicios increíbles para ti</p>
+            </div>
+          ) : (
+            <div className="services-grid">
+              {services.map((service, index) => (
+                <div
+                  key={service.idServicio}
+                  className="service-card"
+                  style={{
+                    animationDelay: `${index * 0.1}s`,
+                    animation: "fadeInUp 0.6s ease-out both",
+                  }}
+                >
+                  <div style={{ marginBottom: "20px" }}>
+                    <FaGem
+                      style={{
+                        fontSize: "2rem",
+                        color: "#e91e63",
+                        marginBottom: "10px",
+                      }}
+                    />
+                  </div>
+                  <h3>{service.nombre}</h3>
+                  <p>{service.descripcion}</p>
+                  <div className="service-price">
+                    ${formatPrice(service.precio)}
+                  </div>
+                  <button className="service-btn">
+                    <FaHeart style={{ marginRight: "8px" }} />
+                    Agendar
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="cta-content">
+          <h2 className="cta-title">
+            <FaMagic style={{ marginRight: "15px" }} />
+            ¿Lista para brillar?
+            <FaMagic style={{ marginLeft: "15px" }} />
+          </h2>
+          <p className="cta-text">
+            Únete a miles de mujeres que han transformado su estilo con nosotros
+          </p>
+          <div className="cta-buttons">
+            <button
+              className="cta-button primary"
+              onClick={() => (window.location.href = "/admin/citas/agendar")}
+            >
+              <FaGem style={{ marginRight: "8px" }} />
+              Reservar Cita
+            </button>
+            <button
+              className="cta-button"
+              onClick={() => (window.location.href = "/servicios")}
+            >
+              <FaStar style={{ marginRight: "8px" }} />
+              Explorar Servicios
+            </button>
+          </div>
+        </div>
+      </section>
 
       <FooterSpacer />
       <Footer />

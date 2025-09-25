@@ -1,68 +1,87 @@
 // src/features/home/components/ProductCard.jsx
 import React from "react";
+import { FaGem, FaShoppingCart } from "react-icons/fa";
+import { formatPrice } from "../../../shared/utils/priceUtils";
 
-// 🔑 Obtenemos la URL base de la API desde las variables de entorno
-const API_URL = import.meta.env.VITE_API_URL;
-
-// 헬퍼 Función para construir la URL completa de la imagen
-const getImageUrl = (imagePath) => {
-  if (!imagePath) {
-    return "/images/no-image.png"; // Imagen por defecto si no hay ruta
-  }
-  // Si la ruta ya es una URL completa (de Cloudinary, por ejemplo)
-  if (imagePath.startsWith("http")) {
-    return imagePath;
-  }
-  // Si es una ruta relativa, la concatenamos con la URL de la API
-  return `${API_URL}${imagePath}`;
-};
-
-function ProductCard({ product, onAddToCart }) {
-  if (!product) return null;
-
-  const { name, image, description, price } = product;
-
-  // 💡 Usamos la función para obtener la URL final de la imagen
-  const imageUrl = getImageUrl(image);
-
-  // Asegurar que el precio sea numérico
-  const numericPrice = price !== null && price !== undefined ? Number(price) : null;
+const ProductCard = ({ product, onAddToCart }) => {
+  const handleAddToCart = () => {
+    onAddToCart(product);
+  };
 
   return (
-    <div className="productos-card">
-      {/* Imagen del producto */}
-      <div className="productos-image-wrapper">
-        <img
-          src={imageUrl}
-          alt={name || "Producto sin nombre"}
-          className="productos-image"
-          // Opcional: manejar errores de carga de imagen
-          onError={(e) => {
-            e.target.onerror = null; // Prevenir bucles infinitos
-            e.target.src = "/images/no-image.png"; // Mostrar imagen por defecto en caso de error
+    <div className="product-card-container">
+      {/* Image Container */}
+      <div
+        className="product-image-container"
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "200px",
+          overflow: "hidden",
+          borderRadius: "18px 18px 0 0",
+          background: "linear-gradient(135deg, #f8bbd9 0%, #e91e63 20%)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+              transition: "transform 0.3s ease",
+              borderRadius: "0",
+            }}
+            onError={(e) => {
+              e.target.style.display = "none";
+              e.target.nextSibling.style.display = "flex";
+            }}
+            onLoad={(e) => {
+              e.target.style.display = "block";
+              e.target.nextSibling.style.display = "none";
+            }}
+          />
+        ) : null}
+        <div
+          className="product-image-placeholder"
+          style={{
+            display: product.image ? "none" : "flex",
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(135deg, #f8bbd9 0%, #e91e63 100%)",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: "3rem",
+            opacity: "0.8",
           }}
-        />
+        >
+          <FaGem />
+        </div>
       </div>
 
-      {/* Contenido */}
-      <div className="productos-content">
-        <h3 className="productos-name">{name || "Producto sin nombre"}</h3>
-        <p className="productos-description">{description || "Sin descripción"}</p>
-        <p className="productos-price">
-          {typeof numericPrice === "number" && !isNaN(numericPrice)
-            ? `$${numericPrice.toLocaleString()}`
-            : "Precio no disponible"}
-        </p>
+      {/* Content */}
+      <div className="product-content">
+        <div>
+          <h3 className="product-title">{product.name}</h3>
+          <p className="product-description">{product.description}</p>
+        </div>
 
-        <button
-          onClick={() => onAddToCart(product)}
-          className="add-button"
-        >
-          Agregar al Carrito
-        </button>
+        <div>
+          <div className="product-price">${formatPrice(product.price)}</div>
+          <button className="product-button" onClick={handleAddToCart}>
+            <FaShoppingCart style={{ marginRight: "8px" }} />
+            Agregar al Carrito
+          </button>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default ProductCard;

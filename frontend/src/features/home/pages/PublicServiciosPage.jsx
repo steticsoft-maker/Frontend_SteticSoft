@@ -1,8 +1,17 @@
 // src/features/home/pages/PublicServiciosPage.jsx
 import React, { useState, useEffect } from "react";
-import { FaShoppingCart, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaShoppingCart,
+  FaCalendarAlt,
+  FaHeart,
+  FaGem,
+  FaMagic,
+  FaStar,
+  FaCrown,
+} from "react-icons/fa";
 import ServiceCard from "../components/ServiceCard";
 import { getPublicServicios } from "../../../shared/services/publicServices";
+import { formatPrice, calculateTotal } from "../../../shared/utils/priceUtils";
 import Footer from "../../../shared/components/layout/Footer";
 import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
 import "../css/PublicServicios.css";
@@ -20,7 +29,6 @@ function PublicServiciosPage() {
       try {
         setLoading(true);
 
-        // Obtener servicios activos usando el servicio público
         const response = await getPublicServicios({ activo: true });
 
         if (response.data && Array.isArray(response.data.data)) {
@@ -30,7 +38,6 @@ function PublicServiciosPage() {
           );
           setServices(validServices);
         } else {
-          // Intentar sin filtro
           const responseSinFiltro = await getPublicServicios({});
 
           if (
@@ -47,7 +54,6 @@ function PublicServiciosPage() {
           }
         }
       } catch (err) {
-        // Error silencioso para producción
         setServices([]);
       } finally {
         setLoading(false);
@@ -57,20 +63,10 @@ function PublicServiciosPage() {
     loadServices();
   }, []);
 
-  // Efecto para mostrar animación de pulso después de 3 segundos
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowPulse(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("publicCart")) || [];
+    const savedSchedule = localStorage.getItem("selectedSchedule") || "";
     setCart(savedCart);
-    const savedSchedule =
-      localStorage.getItem("selectedSchedule") || "No seleccionado";
     setSelectedSchedule(savedSchedule);
   }, []);
 
@@ -85,32 +81,26 @@ function PublicServiciosPage() {
       if (existingService) {
         newCart = prevCart.map((item) =>
           (item.idServicio || item.id) === serviceId && item.type === "service"
-            ? { ...item, quantity: (item.quantity || 0) + 1 }
+            ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
         newCart = [...prevCart, { ...service, quantity: 1, type: "service" }];
       }
-
-      // Guardar en localStorage
       localStorage.setItem("publicCart", JSON.stringify(newCart));
       return newCart;
     });
   };
 
   const handleOrder = () => {
-    if (cart.filter((item) => item.type === "service").length === 0) {
-      alert("No hay servicios en el carrito para pedir.");
-      return;
-    }
-    if (selectedSchedule === "No seleccionado" || !selectedSchedule) {
+    if (!selectedSchedule) {
       alert(
-        "Por favor, selecciona un horario en la sección de Novedades antes de realizar el pedido del servicio."
+        "💕 Por favor, selecciona un horario en la sección de Novedades antes de realizar el pedido del servicio."
       );
       return;
     }
     alert(
-      `Tu pedido de servicio ha sido registrado con éxito.\nHorario seleccionado: ${selectedSchedule}.\nGracias por utilizar nuestros servicios. \nEl pago debe ser realizado al finalizar el servicio.`
+      `✨ ¡Tu pedido de servicio ha sido registrado con éxito!\n🕐 Horario seleccionado: ${selectedSchedule}\n💖 Gracias por utilizar nuestros servicios\n💳 El pago debe ser realizado al finalizar el servicio.`
     );
     setCart((prevCart) => {
       const newCart = prevCart.filter((item) => item.type !== "service");
@@ -137,10 +127,37 @@ function PublicServiciosPage() {
 
   return (
     <div className="public-servicios-page">
-      <div className="public-cart-icon" onClick={() => setShowCart(!showCart)}>
-        <FaShoppingCart size={30} />
+      {/* Floating Elements */}
+      <div className="floating-elements">
+        <FaCrown className="floating-element" />
+        <FaGem className="floating-element" />
+        <FaMagic className="floating-element" />
+        <FaStar className="floating-element" />
+        <FaHeart className="floating-element" />
+      </div>
+
+      {/* Header Section */}
+      <section className="servicios-hero">
+        <div className="container">
+          <h1 className="servicios-title">
+            <FaCrown style={{ marginRight: "15px" }} />
+            Nuestros Servicios
+            <FaCrown style={{ marginLeft: "15px" }} />
+          </h1>
+          <p className="servicios-subtitle">
+            <FaMagic style={{ marginRight: "10px" }} />
+            Descubre nuestros servicios profesionales de belleza y cuidado
+            personal
+            <FaMagic style={{ marginLeft: "10px" }} />
+          </p>
+        </div>
+      </section>
+
+      {/* Cart Icon */}
+      <div className="cart-icon" onClick={() => setShowCart(!showCart)}>
+        <FaShoppingCart size={24} />
         {cart.filter((item) => item.type === "service").length > 0 && (
-          <span className="public-cart-count">
+          <span className="cart-count">
             {cart
               .filter((item) => item.type === "service")
               .reduce((acc, item) => acc + item.quantity, 0)}
@@ -148,11 +165,24 @@ function PublicServiciosPage() {
         )}
       </div>
 
+      {/* Cart Modal */}
       {showCart && (
-        <div className="public-cart-modal">
-          <h2>Carrito de Servicios</h2>
+        <div className="cart-modal">
+          <h3>
+            <FaHeart style={{ marginRight: "10px", color: "#e91e63" }} />
+            Tu Carrito de Servicios
+          </h3>
           {cart.filter((item) => item.type === "service").length === 0 ? (
-            <p>No hay servicios en el carrito.</p>
+            <div style={{ textAlign: "center", padding: "20px" }}>
+              <FaGem
+                style={{
+                  fontSize: "2rem",
+                  color: "#e91e63",
+                  marginBottom: "10px",
+                }}
+              />
+              <p>Tu carrito está vacío</p>
+            </div>
           ) : (
             <>
               <ul>
@@ -171,17 +201,27 @@ function PublicServiciosPage() {
                     const total = finalPrice * (item.quantity || 1);
                     return (
                       <li key={`cart-serv-${item.idServicio || item.id}`}>
+                        <FaStar
+                          style={{ marginRight: "8px", color: "#e91e63" }}
+                        />
                         {item.nombre} - {item.quantity || 1} x $
-                        {finalPrice.toFixed(2)} = ${total.toFixed(2)}
+                        {formatPrice(finalPrice, 2)} = ${formatPrice(total, 2)}
                       </li>
                     );
                   })}
               </ul>
-              <p>
+              <div className="schedule-info">
+                <FaCalendarAlt
+                  style={{ marginRight: "8px", color: "#e91e63" }}
+                />
                 <strong>Horario Seleccionado:</strong> {selectedSchedule}
-              </p>
-              <h3>Total Servicios: ${getTotal().toFixed(2)}</h3>
-              <button onClick={handleOrder} className="public-primary-button">
+              </div>
+              <div className="cart-total">
+                <FaGem style={{ marginRight: "8px" }} />
+                Total Servicios: ${formatPrice(getTotal(), 2)}
+              </div>
+              <button onClick={handleOrder} className="cart-order-btn">
+                <FaHeart style={{ marginRight: "8px" }} />
                 Realizar Pedido
               </button>
             </>
@@ -189,29 +229,39 @@ function PublicServiciosPage() {
         </div>
       )}
 
-      <h1 className="public-servicios-title">Servicios Disponibles</h1>
+      {/* Services Section */}
+      <section className="servicios-section">
+        <div className="servicios-grid-container">
+          {loading ? (
+            <div className="loading-state">
+              <FaMagic className="loading-icon" />
+              <p>Cargando servicios increíbles...</p>
+            </div>
+          ) : services.length === 0 ? (
+            <div className="empty-state">
+              <FaCrown className="empty-icon" />
+              <p>Pronto tendremos servicios increíbles para ti</p>
+            </div>
+          ) : (
+            <div className="servicios-grid">
+              {services.map((service, index) => (
+                <div
+                  key={service.idServicio}
+                  className="service-card-container"
+                  style={{
+                    animationDelay: `${index * 0.1}s`,
+                    animation: "fadeInUp 0.6s ease-out both",
+                  }}
+                >
+                  <ServiceCard service={service} onAddToCart={addToCart} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
-      <div className="public-servicios-grid-wrapper">
-        {loading ? (
-          <p className="public-loading">Cargando servicios...</p>
-        ) : services.length === 0 ? (
-          <p className="public-no-services">
-            No hay servicios disponibles en este momento.
-          </p>
-        ) : (
-          <div className="public-servicios-grid">
-            {services.map((service) => (
-              <ServiceCard
-                key={service.idServicio}
-                service={service}
-                onAddToCart={addToCart}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Botón flotante para agendar citas */}
+      {/* Floating Appointment Button */}
       <button
         className={`floating-appointment-btn ${showPulse ? "pulse" : ""}`}
         onClick={() => (window.location.href = "/admin/citas/agendar")}
