@@ -13,6 +13,8 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
   });
   const [passwordError, setPasswordError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
+  const [isTokenValidated, setIsTokenValidated] = useState(false);
+  const [tokenValidationError, setTokenValidationError] = useState("");
 
   // Expresiones regulares para validación
   const passwordRegex =
@@ -23,6 +25,17 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
       setFormData((prev) => ({ ...prev, email }));
     }
   }, [email]);
+
+  // Resetear estado cuando cambia la vista
+  useEffect(() => {
+    if (view === "verify") {
+      setIsTokenValidated(false);
+      setTokenValidationError("");
+    } else if (view === "reset") {
+      setIsTokenValidated(true);
+      setTokenValidationError("");
+    }
+  }, [view]);
 
   const validatePassword = (password) => {
     if (!password) return "La nueva contraseña es obligatoria.";
@@ -55,6 +68,11 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
         ? "El código debe tener exactamente 6 dígitos."
         : "";
       setFieldErrors((prev) => ({ ...prev, token: tokenError }));
+
+      // Limpiar errores de validación del token cuando el usuario escribe
+      if (tokenValidationError) {
+        setTokenValidationError("");
+      }
     }
 
     if (name === "nuevaContrasena") {
@@ -108,6 +126,17 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
       } else if (!/^\d{6}$/.test(formData.token)) {
         newFieldErrors.token = "El código debe tener exactamente 6 dígitos.";
         hasErrors = true;
+      } else {
+        // Si el token tiene formato correcto, simular validación
+        // En una implementación real, aquí harías la llamada al API
+        // Por ahora, simulamos que el token "123456" es válido
+        if (formData.token === "123456") {
+          setIsTokenValidated(true);
+          setTokenValidationError("");
+        } else {
+          setTokenValidationError("Token no válido");
+          hasErrors = true;
+        }
       }
     }
 
@@ -160,6 +189,13 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
     formData.confirmarNuevaContrasena &&
     !passwordError;
 
+  const isVerifyReady =
+    view === "verify" &&
+    formData.token &&
+    formData.token.length === 6 &&
+    !fieldErrors.token &&
+    !tokenValidationError;
+
   return (
     <form className="auth-form-content" onSubmit={handleSubmit}>
       {view === "request" && (
@@ -210,61 +246,90 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
               value={formData.token}
               onChange={handleChange}
               className={`auth-form-input ${
-                fieldErrors.token ? "input-error" : ""
+                fieldErrors.token
+                  ? "input-error"
+                  : isTokenValidated
+                  ? "input-success"
+                  : formData.token &&
+                    formData.token.length === 6 &&
+                    !fieldErrors.token
+                  ? "input-pending"
+                  : ""
               }`}
               required
               maxLength="6"
               disabled={view === "reset"}
+              style={{
+                borderColor: fieldErrors.token
+                  ? "#dc3545"
+                  : isTokenValidated
+                  ? "#28a745"
+                  : formData.token &&
+                    formData.token.length === 6 &&
+                    !fieldErrors.token
+                  ? "#ffc107"
+                  : undefined,
+              }}
             />
             {fieldErrors.token && (
               <span className="error-message">{fieldErrors.token}</span>
             )}
-          </div>
-          <div className="auth-form-group">
-            <label htmlFor="nuevaContrasena">
-              Nueva Contraseña <span style={{ color: "red" }}>*</span>
-            </label>
-            <PasswordInput
-              name="nuevaContrasena"
-              value={formData.nuevaContrasena}
-              onChange={handleChange}
-              className={`auth-form-input ${
-                fieldErrors.nuevaContrasena ? "input-error" : ""
-              }`}
-              required
-              disabled={view === "verify"}
-              helpText={
-                view === "reset"
-                  ? "Mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb"
-                  : ""
-              }
-            />
-            {fieldErrors.nuevaContrasena && (
-              <span className="error-message">
-                {fieldErrors.nuevaContrasena}
+            {tokenValidationError && (
+              <span className="error-message" style={{ color: "red" }}>
+                {tokenValidationError}
               </span>
             )}
           </div>
-          <div className="auth-form-group">
-            <label htmlFor="confirmarNuevaContrasena">
-              Confirmar Nueva Contraseña <span style={{ color: "red" }}>*</span>
-            </label>
-            <PasswordInput
-              name="confirmarNuevaContrasena"
-              value={formData.confirmarNuevaContrasena}
-              onChange={handleChange}
-              className={`auth-form-input ${
-                fieldErrors.confirmarNuevaContrasena ? "input-error" : ""
-              }`}
-              required
-              disabled={view === "verify"}
-            />
-            {fieldErrors.confirmarNuevaContrasena && (
-              <span className="error-message">
-                {fieldErrors.confirmarNuevaContrasena}
-              </span>
-            )}
-          </div>
+          {isTokenValidated && (
+            <>
+              <div className="auth-form-group">
+                <label htmlFor="nuevaContrasena">
+                  Nueva Contraseña <span style={{ color: "red" }}>*</span>
+                </label>
+                <PasswordInput
+                  name="nuevaContrasena"
+                  value={formData.nuevaContrasena}
+                  onChange={handleChange}
+                  className={`auth-form-input ${
+                    fieldErrors.nuevaContrasena ? "input-error" : ""
+                  }`}
+                  required
+                  disabled={view === "verify"}
+                  helpText={
+                    view === "reset"
+                      ? "Mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb"
+                      : ""
+                  }
+                />
+                {fieldErrors.nuevaContrasena && (
+                  <span className="error-message">
+                    {fieldErrors.nuevaContrasena}
+                  </span>
+                )}
+              </div>
+              <div className="auth-form-group">
+                <label htmlFor="confirmarNuevaContrasena">
+                  Confirmar Nueva Contraseña{" "}
+                  <span style={{ color: "red" }}>*</span>
+                </label>
+                <PasswordInput
+                  name="confirmarNuevaContrasena"
+                  value={formData.confirmarNuevaContrasena}
+                  onChange={handleChange}
+                  className={`auth-form-input ${
+                    fieldErrors.confirmarNuevaContrasena ? "input-error" : ""
+                  }`}
+                  required
+                  disabled={view === "verify"}
+                />
+                {fieldErrors.confirmarNuevaContrasena && (
+                  <span className="error-message">
+                    {fieldErrors.confirmarNuevaContrasena}
+                  </span>
+                )}
+              </div>
+            </>
+          )}
         </>
       ) : null}
 
@@ -275,7 +340,11 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
         <button
           type="submit"
           className="auth-primary-button"
-          disabled={isLoading || (view === "reset" && !isResetReady)}
+          disabled={
+            isLoading ||
+            (view === "reset" && !isResetReady) ||
+            (view === "verify" && !isVerifyReady)
+          }
         >
           {getButtonText()}
         </button>
