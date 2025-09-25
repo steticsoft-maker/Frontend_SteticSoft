@@ -21,7 +21,7 @@ function PublicNavbar() {
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isScrolled = useNavbarScroll();
+  const { isScrolled, scrollDirection, isAtTop } = useNavbarScroll();
 
   const handleLogoutClick = async () => {
     await logout();
@@ -37,7 +37,11 @@ function PublicNavbar() {
   };
 
   return (
-    <nav className={`navbar ${isScrolled ? "scrolled" : ""}`}>
+    <nav
+      className={`navbar ${isScrolled ? "scrolled" : ""} ${
+        scrollDirection === "down" ? "scroll-down" : "scroll-up"
+      } ${isAtTop ? "at-top" : ""}`}
+    >
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <img
