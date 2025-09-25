@@ -1,0 +1,222 @@
+/* src/shared/styles/theme-enhancements.css */
+
+/* === Mejoras adicionales para el sistema de temas === */
+
+/* Transiciones suaves para todos los elementos */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Mejoras específicas para el tema oscuro */
+.dark-theme {
+  /* Asegurar que el fondo del body cambie */
+  background-color: var(--color-background-light) !important;
+}
+
+.dark-theme body {
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
+}
+
+/* Mejoras para el navbar en tema oscuro */
+.dark-theme .navbar {
+  background: rgba(45, 27, 48, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark-theme .navbar-link {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .navbar-link:hover {
+  color: var(--color-primary) !important;
+  background: rgba(139, 90, 143, 0.1) !important;
+}
+
+.dark-theme .navbar-user {
+  color: var(--color-text-dark) !important;
+  background: linear-gradient(135deg, rgba(139, 90, 143, 0.1), rgba(139, 90, 143, 0.05)) !important;
+  border: 1px solid rgba(139, 90, 143, 0.2) !important;
+}
+
+/* Mejoras para el footer */
+.dark-theme .footer {
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .footer-inner-wrapper {
+  background-color: var(--color-background-card) !important;
+  color: var(--color-text-dark) !important;
+  box-shadow: 0 4px 15px var(--color-shadow-light) !important;
+}
+
+.dark-theme .footer-brand h2 {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .footer-brand p {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .footer-links h3,
+.dark-theme .footer-contact h3,
+.dark-theme .footer-social h3 {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .footer-links a {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .footer-links a:hover {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .footer-contact p {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme .footer-contact p svg {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .social-icons a {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme .social-icons a:hover {
+  color: var(--color-primary-hover) !important;
+}
+
+.dark-theme .footer-bottom {
+  border-top-color: var(--color-border-light) !important;
+}
+
+.dark-theme .footer-bottom-text {
+  color: var(--color-text-dark) !important;
+}
+
+/* Mejoras para el footer spacer */
+.dark-theme .footer-spacer {
+  background: linear-gradient(135deg, 
+    var(--color-background-light) 0%, 
+    var(--color-background-hover) 25%, 
+    var(--color-secondary) 50%, 
+    var(--color-secondary-hover) 75%, 
+    var(--color-border-light) 100%
+  ) !important;
+}
+
+/* Mejoras para elementos de texto */
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme h5,
+.dark-theme h6 {
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme p {
+  color: var(--color-text-dark) !important;
+}
+
+/* Mejoras para botones */
+.dark-theme .btn-primary {
+  background-color: var(--color-button-primary) !important;
+  border-color: var(--color-button-primary) !important;
+}
+
+.dark-theme .btn-primary:hover {
+  background-color: var(--color-button-primary-hover) !important;
+  border-color: var(--color-button-primary-hover) !important;
+}
+
+/* Mejoras para formularios */
+.dark-theme input,
+.dark-theme select,
+.dark-theme textarea {
+  background-color: var(--color-form-bg) !important;
+  border-color: var(--color-form-border) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.dark-theme input:focus,
+.dark-theme select:focus,
+.dark-theme textarea:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-form-focus-bg) !important;
+}
+
+/* Mejoras para enlaces */
+.dark-theme a {
+  color: var(--color-primary) !important;
+}
+
+.dark-theme a:hover {
+  color: var(--color-primary-hover) !important;
+}
+
+/* Mejoras específicas para la página de inicio */
+.dark-theme .home-page-container {
+  background: var(--home-gradient-soft) !important;
+}
+
+.dark-theme .home-hero {
+  background: var(--home-gradient-hero) !important;
+}
+
+.dark-theme .services-section {
+  background: var(--home-gradient-soft) !important;
+}
+
+.dark-theme .cta-section {
+  background: var(--home-gradient-hero) !important;
+}
+
+/* Mejoras para las tarjetas de servicios */
+.dark-theme .service-card {
+  background: var(--home-bg-card) !important;
+  border: 1px solid rgba(139, 90, 143, 0.2) !important;
+}
+
+.dark-theme .service-card h3 {
+  color: var(--home-primary) !important;
+}
+
+.dark-theme .service-card p {
+  color: var(--home-text-secondary) !important;
+}
+
+.dark-theme .service-price {
+  color: var(--home-primary) !important;
+}
+
+.dark-theme .service-btn {
+  background: var(--home-gradient-primary) !important;
+}
+
+/* Mejoras para estados de carga */
+.dark-theme .loading-state,
+.dark-theme .empty-state {
+  background: var(--home-bg-card) !important;
+  color: var(--home-text-secondary) !important;
+}
+
+.dark-theme .loading-state .loading-icon,
+.dark-theme .empty-state .empty-icon {
+  color: var(--home-primary) !important;
+}
+
+/* Mejoras para el tema toggle */
+.dark-theme .theme-toggle {
+  background: var(--color-button-primary) !important;
+  color: var(--color-text-light) !important;
+  border-color: var(--color-button-primary) !important;
+}
+
+.dark-theme .theme-toggle:hover {
+  background: var(--color-button-primary-hover) !important;
+  border-color: var(--color-button-primary-hover) !important;
+}

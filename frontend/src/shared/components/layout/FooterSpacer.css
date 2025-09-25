@@ -1,17 +1,28 @@
 /* src/shared/components/layout/FooterSpacer.css */
+@import "../../styles/_variables.css";
+
+/* Variables específicas para el footer spacer */
+:root {
+  --footer-spacer-bg: var(--color-background-light);
+}
+
+.dark-theme {
+  --footer-spacer-bg: var(--color-background-light);
+}
 
 .footer-spacer {
   position: relative;
   height: 120px;
   background: linear-gradient(135deg, 
-    var(--color-background-light) 0%, 
-    #f8f9fa 25%, 
-    #e9ecef 50%, 
-    #dee2e6 75%, 
-    #ced4da 100%
+    var(--footer-spacer-bg) 0%, 
+    var(--color-background-hover) 25%, 
+    var(--color-secondary) 50%, 
+    var(--color-secondary-hover) 75%, 
+    var(--color-border-light) 100%
   );
   overflow: hidden;
   margin-top: 40px;
+  transition: background 0.3s ease;
 }
 
 .footer-spacer-content {

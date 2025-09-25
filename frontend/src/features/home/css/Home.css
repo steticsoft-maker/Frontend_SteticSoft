@@ -2,13 +2,48 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/feminine-theme.css";
 
+/* === Variables CSS específicas para Home === */
+:root {
+  --home-primary: #d4a5d8;
+  --home-primary-hover: #c190c6;
+  --home-secondary: #f0e6f2;
+  --home-accent: #f8b5d1;
+  --home-gradient-hero: linear-gradient(135deg, #d4a5d8 0%, #f8b5d1 100%);
+  --home-gradient-soft: linear-gradient(135deg, #fefcff 0%, #f0e6f2 100%);
+  --home-gradient-primary: linear-gradient(135deg, #d4a5d8 0%, #c190c6 100%);
+  --home-shadow-card: 0 8px 32px rgba(212, 165, 216, 0.15);
+  --home-shadow-hover: 0 15px 40px rgba(212, 165, 216, 0.25);
+  --home-text-primary: #2d1b30;
+  --home-text-secondary: #6b4c6e;
+  --home-bg-light: #fefcff;
+  --home-bg-card: #ffffff;
+}
+
+/* === Tema Oscuro para Home === */
+.dark-theme {
+  --home-primary: #8b5a8f;
+  --home-primary-hover: #a16ba5;
+  --home-secondary: #2d1b30;
+  --home-accent: #c485a8;
+  --home-gradient-hero: linear-gradient(135deg, #2d1b30 0%, #8b5a8f 100%);
+  --home-gradient-soft: linear-gradient(135deg, #1a0f1c 0%, #2d1b30 100%);
+  --home-gradient-primary: linear-gradient(135deg, #8b5a8f 0%, #a16ba5 100%);
+  --home-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --home-shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.4);
+  --home-text-primary: #ffffff;
+  --home-text-secondary: #b8a8bb;
+  --home-bg-light: #1a0f1c;
+  --home-bg-card: #2d1b30;
+}
+
 /* Página principal */
 .home-page-container {
   min-height: 100vh;
-  background: var(--gradient-soft);
+  background: var(--home-gradient-soft);
   font-family: 'Poppins', sans-serif;
   position: relative;
   overflow-x: hidden;
+  transition: background 0.3s ease;
 }
 
 .container {
@@ -20,12 +55,13 @@
 /* Hero Section */
 .home-hero {
   position: relative;
-  background: var(--gradient-hero);
+  background: var(--home-gradient-hero);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
 .home-hero::before {
@@ -109,7 +145,7 @@
 
 .hero-btn.primary {
   background: rgba(255, 255, 255, 0.9);
-  color: var(--feminine-primary);
+  color: var(--home-primary);
   border-color: transparent;
 }
 
@@ -143,8 +179,9 @@
 /* Services Section */
 .services-section {
   padding: 100px 0;
-  background: var(--gradient-soft);
+  background: var(--home-gradient-soft);
   position: relative;
+  transition: background 0.3s ease;
 }
 
 .services-container {
@@ -161,7 +198,7 @@
 .section-title h2 {
   font-size: 3rem;
   font-weight: 700;
-  background: var(--gradient-primary);
+  background: var(--home-gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -170,7 +207,7 @@
 
 .section-title p {
   font-size: 1.2rem;
-  color: #666;
+  color: var(--home-text-secondary);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -183,15 +220,15 @@
 }
 
 .service-card {
-  background: white;
+  background: var(--home-bg-card);
   border-radius: var(--radius-large);
   padding: 30px;
   text-align: center;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--home-shadow-card);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(233, 30, 99, 0.1);
+  border: 1px solid rgba(212, 165, 216, 0.1);
 }
 
 .service-card::before {
@@ -201,23 +238,23 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--gradient-primary);
+  background: var(--home-gradient-primary);
 }
 
 .service-card:hover {
   transform: translateY(-10px);
-  box-shadow: var(--shadow-hover);
+  box-shadow: var(--home-shadow-hover);
 }
 
 .service-card h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--feminine-primary);
+  color: var(--home-primary);
   margin-bottom: 15px;
 }
 
 .service-card p {
-  color: #666;
+  color: var(--home-text-secondary);
   line-height: 1.6;
   margin-bottom: 20px;
 }
@@ -225,12 +262,12 @@
 .service-price {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--feminine-primary);
+  color: var(--home-primary);
   margin-bottom: 20px;
 }
 
 .service-btn {
-  background: var(--gradient-primary);
+  background: var(--home-gradient-primary);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -241,9 +278,13 @@
   width: 100%;
 }
 
-.service-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
+/* Estilos específicos para tema oscuro en servicios */
+.dark-theme .service-card {
+  border: 1px solid rgba(139, 90, 143, 0.2);
+}
+
+.dark-theme .service-card:hover {
+  border-color: rgba(139, 90, 143, 0.4);
 }
 
 /* Estados */
@@ -251,11 +292,11 @@
 .empty-state {
   text-align: center;
   padding: 80px 20px;
-  color: #6c757d;
+  color: var(--home-text-secondary);
   font-size: 1.1rem;
-  background: white;
+  background: var(--home-bg-card);
   border-radius: var(--radius-large);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--home-shadow-card);
   margin: 40px auto;
   max-width: 500px;
 }
@@ -266,26 +307,27 @@
 
 .loading-state .loading-icon {
   font-size: 3rem;
-  color: var(--feminine-primary);
+  color: var(--home-primary);
   margin-bottom: 20px;
   animation: float 2s ease-in-out infinite;
 }
 
 .empty-state .empty-icon {
   font-size: 3rem;
-  color: var(--feminine-primary);
+  color: var(--home-primary);
   margin-bottom: 20px;
   animation: pulse 2s infinite;
 }
 
 /* CTA Section */
 .cta-section {
-  background: var(--gradient-hero);
+  background: var(--home-gradient-hero);
   padding: 80px 0;
   text-align: center;
   color: white;
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
 .cta-section::before {
@@ -347,7 +389,7 @@
 
 .cta-button.primary {
   background: rgba(255, 255, 255, 0.9);
-  color: var(--feminine-primary);
+  color: var(--home-primary);
   border-color: transparent;
 }
 
