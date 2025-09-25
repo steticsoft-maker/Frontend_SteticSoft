@@ -2,13 +2,48 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/feminine-theme.css";
 
+/* === Variables CSS específicas para Productos === */
+:root {
+  --productos-primary: #d4a5d8;
+  --productos-primary-hover: #c190c6;
+  --productos-secondary: #f0e6f2;
+  --productos-accent: #f8b5d1;
+  --productos-gradient-hero: linear-gradient(135deg, #d4a5d8 0%, #f8b5d1 100%);
+  --productos-gradient-soft: linear-gradient(135deg, #fefcff 0%, #f0e6f2 100%);
+  --productos-gradient-primary: linear-gradient(135deg, #d4a5d8 0%, #c190c6 100%);
+  --productos-shadow-card: 0 8px 32px rgba(212, 165, 216, 0.15);
+  --productos-shadow-hover: 0 16px 48px rgba(212, 165, 216, 0.25);
+  --productos-text-primary: #2d1b30;
+  --productos-text-secondary: #6b4c6e;
+  --productos-bg-light: #fefcff;
+  --productos-bg-card: #ffffff;
+}
+
+/* === Tema Oscuro para Productos === */
+.dark-theme {
+  --productos-primary: #8b5a8f;
+  --productos-primary-hover: #a16ba5;
+  --productos-secondary: #2d1b30;
+  --productos-accent: #c485a8;
+  --productos-gradient-hero: linear-gradient(135deg, #2d1b30 0%, #8b5a8f 100%);
+  --productos-gradient-soft: linear-gradient(135deg, #1a0f1c 0%, #2d1b30 100%);
+  --productos-gradient-primary: linear-gradient(135deg, #8b5a8f 0%, #a16ba5 100%);
+  --productos-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --productos-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.4);
+  --productos-text-primary: #ffffff;
+  --productos-text-secondary: #b8a8bb;
+  --productos-bg-light: #1a0f1c;
+  --productos-bg-card: #2d1b30;
+}
+
 /* Página principal */
 .productos-page {
   min-height: 100vh;
-  background: var(--gradient-soft);
+  background: var(--productos-gradient-soft);
   font-family: 'Poppins', sans-serif;
   position: relative;
   overflow-x: hidden;
+  transition: background 0.3s ease;
 }
 
 .container {
@@ -19,12 +54,13 @@
 
 /* Hero Section */
 .productos-hero {
-  background: var(--gradient-hero);
+  background: var(--productos-gradient-hero);
   color: white;
   padding: 120px 0 80px;
   text-align: center;
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
 .productos-hero::before {
@@ -61,8 +97,9 @@
 /* Products Section */
 .productos-section {
   padding: 80px 0;
-  background: var(--gradient-soft);
+  background: var(--productos-gradient-soft);
   position: relative;
+  transition: background 0.3s ease;
 }
 
 .productos-section::before {
@@ -95,14 +132,14 @@
 
 /* Product Card Container */
 .product-card-container {
-  background: white;
+  background: var(--productos-bg-card);
   border-radius: 20px;
   padding: 0;
-  box-shadow: 0 8px 32px rgba(233, 30, 99, 0.15);
+  box-shadow: var(--productos-shadow-card);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  border: 2px solid rgba(233, 30, 99, 0.1);
+  border: 2px solid rgba(212, 165, 216, 0.1);
   min-height: 400px;
   display: flex;
   flex-direction: column;
@@ -115,14 +152,14 @@
   left: 0;
   right: 0;
   height: 6px;
-  background: linear-gradient(135deg, #e91e63 0%, #f8bbd9 100%);
+  background: var(--productos-gradient-primary);
   z-index: 1;
 }
 
 .product-card-container:hover {
   transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 16px 48px rgba(233, 30, 99, 0.25);
-  border-color: rgba(233, 30, 99, 0.3);
+  box-shadow: var(--productos-shadow-hover);
+  border-color: rgba(212, 165, 216, 0.3);
 }
 
 /* Product Image Container */
@@ -132,7 +169,7 @@
   height: 200px;
   overflow: hidden;
   border-radius: 18px 18px 0 0;
-  background: linear-gradient(135deg, #f8bbd9 0%, #e91e63 20%);
+  background: var(--productos-gradient-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,7 +191,7 @@
 .product-image-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #f8bbd9 0%, #e91e63 100%);
+  background: var(--productos-gradient-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,13 +212,13 @@
 .product-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #333;
+  color: var(--productos-text-primary);
   margin-bottom: 10px;
   line-height: 1.3;
 }
 
 .product-description {
-  color: #666;
+  color: var(--productos-text-secondary);
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 15px;
@@ -191,14 +228,14 @@
 .product-price {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #e91e63;
+  color: var(--productos-primary);
   margin-bottom: 15px;
   text-align: center;
 }
 
 .product-button {
   width: 100%;
-  background: linear-gradient(135deg, #e91e63 0%, #f8bbd9 100%);
+  background: var(--productos-gradient-primary);
   color: white;
   border: none;
   padding: 12px 20px;
@@ -211,7 +248,7 @@
 
 .product-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
+  box-shadow: var(--productos-shadow-hover);
 }
 
 /* Estados */
@@ -219,13 +256,13 @@
 .empty-state {
   text-align: center;
   padding: 80px 20px;
-  color: #6c757d;
+  color: var(--productos-text-secondary);
   font-size: 1.1rem;
   position: relative;
   z-index: 1;
-  background: white;
+  background: var(--productos-bg-card);
   border-radius: var(--radius-large);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--productos-shadow-card);
   margin: 40px auto;
   max-width: 500px;
 }

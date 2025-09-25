@@ -7,6 +7,18 @@
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Elementos específicos que necesitan transiciones mejoradas */
+.productos-page,
+.productos-hero,
+.productos-section,
+.product-card-container,
+.public-servicios-page,
+.servicios-hero,
+.servicios-section,
+.service-card-container {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 /* Mejoras específicas para el tema oscuro */
 .dark-theme {
   /* Asegurar que el fondo del body cambie */
@@ -207,6 +219,109 @@
 .dark-theme .loading-state .loading-icon,
 .dark-theme .empty-state .empty-icon {
   color: var(--home-primary) !important;
+}
+
+/* === Mejoras específicas para Productos === */
+.dark-theme .productos-page {
+  background: var(--productos-gradient-soft) !important;
+}
+
+.dark-theme .productos-hero {
+  background: var(--productos-gradient-hero) !important;
+}
+
+.dark-theme .productos-section {
+  background: var(--productos-gradient-soft) !important;
+}
+
+.dark-theme .product-card-container {
+  background: var(--productos-bg-card) !important;
+  border-color: rgba(139, 90, 143, 0.2) !important;
+  box-shadow: var(--productos-shadow-card) !important;
+}
+
+.dark-theme .product-card-container:hover {
+  box-shadow: var(--productos-shadow-hover) !important;
+  border-color: rgba(139, 90, 143, 0.4) !important;
+}
+
+.dark-theme .product-title {
+  color: var(--productos-text-primary) !important;
+}
+
+.dark-theme .product-description {
+  color: var(--productos-text-secondary) !important;
+}
+
+.dark-theme .product-price {
+  color: var(--productos-primary) !important;
+}
+
+.dark-theme .product-button {
+  background: var(--productos-gradient-primary) !important;
+}
+
+.dark-theme .product-image-container {
+  background: var(--productos-gradient-primary) !important;
+}
+
+.dark-theme .product-image-placeholder {
+  background: var(--productos-gradient-primary) !important;
+}
+
+.dark-theme .loading-state,
+.dark-theme .empty-state {
+  background: var(--productos-bg-card) !important;
+  color: var(--productos-text-secondary) !important;
+  box-shadow: var(--productos-shadow-card) !important;
+}
+
+/* === Mejoras específicas para Servicios === */
+.dark-theme .public-servicios-page {
+  background: var(--servicios-gradient-soft) !important;
+}
+
+.dark-theme .servicios-hero {
+  background: var(--servicios-gradient-hero) !important;
+}
+
+.dark-theme .servicios-section {
+  background: var(--servicios-gradient-soft) !important;
+}
+
+.dark-theme .service-card-container {
+  background: var(--servicios-bg-card) !important;
+  border-color: rgba(139, 90, 143, 0.2) !important;
+  box-shadow: var(--servicios-shadow-card) !important;
+}
+
+.dark-theme .service-card-container:hover {
+  box-shadow: var(--servicios-shadow-hover) !important;
+  border-color: rgba(139, 90, 143, 0.4) !important;
+}
+
+.dark-theme .service-title {
+  color: var(--servicios-text-primary) !important;
+}
+
+.dark-theme .service-description {
+  color: var(--servicios-text-secondary) !important;
+}
+
+.dark-theme .service-price {
+  color: var(--servicios-primary) !important;
+}
+
+.dark-theme .service-button {
+  background: var(--servicios-gradient-primary) !important;
+}
+
+.dark-theme .service-image-container {
+  background: var(--servicios-gradient-primary) !important;
+}
+
+.dark-theme .service-image-placeholder {
+  background: var(--servicios-gradient-primary) !important;
 }
 
 /* Mejoras para el tema toggle */
