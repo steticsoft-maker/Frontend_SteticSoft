@@ -14,6 +14,7 @@ import {
   FaSignOutAlt,
   FaBars,
   FaTimes,
+  FaTachometerAlt,
 } from "react-icons/fa";
 
 function PublicNavbar() {
@@ -122,6 +123,19 @@ function PublicNavbar() {
                 <FaUser className="navbar-icon" />
                 {user?.nombre || "Usuario"}
               </li>
+              {/* Botón para acceder al dashboard */}
+              {(user?.rol === "Administrador" || user?.rol === "Empleado") && (
+                <li>
+                  <Link
+                    to="/admin/dashboard"
+                    className="navbar-link"
+                    onClick={closeMobileMenu}
+                  >
+                    <FaTachometerAlt className="navbar-icon" />
+                    Dashboard
+                  </Link>
+                </li>
+              )}
               <li>
                 <button
                   className="logout-button"

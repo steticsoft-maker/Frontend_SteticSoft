@@ -4,6 +4,7 @@ import ImageCarousel from "../../../shared/components/common/ImageCarousel"; // 
 import InfoCard from "../components/InfoCard";
 import ServiceCard from "../components/ServiceCard";
 import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService";
+import { useAuth } from "../../../shared/contexts/authHooks";
 import "../css/Home.css";
 import "../css/PublicServicios.css";
 import Footer from "../../../shared/components/layout/Footer";
@@ -11,29 +12,35 @@ import Footer from "../../../shared/components/layout/Footer";
 function HomePage() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     const loadServices = async () => {
       try {
         setLoading(true);
-        setError('');
-        
+        setError("");
+
         // Obtener servicios activos usando el servicio existente
         const response = await getServicios({ activo: true });
-        
+
         if (response.data && Array.isArray(response.data.data)) {
           // Filtrar servicios válidos y activos, limitar a 4 servicios para la página de inicio
           const validServices = response.data.data.filter(
-            (service) => service && service.idServicio && service.estado === true
+            (service) =>
+              service && service.idServicio && service.estado === true
           );
           const limitedServices = validServices.slice(0, 4);
           setServices(limitedServices);
         } else {
           const responseSinFiltro = await getServicios({});
-          if (responseSinFiltro.data && Array.isArray(responseSinFiltro.data.data)) {
+          if (
+            responseSinFiltro.data &&
+            Array.isArray(responseSinFiltro.data.data)
+          ) {
             const validServices = responseSinFiltro.data.data.filter(
-              (service) => service && service.idServicio && service.estado === true
+              (service) =>
+                service && service.idServicio && service.estado === true
             );
             const serviciosSinFiltro = validServices.slice(0, 4);
             setServices(serviciosSinFiltro);
@@ -42,8 +49,8 @@ function HomePage() {
           }
         }
       } catch (err) {
-        console.error('Error al cargar servicios:', err);
-        setError('No se pudieron cargar los servicios');
+        console.error("Error al cargar servicios:", err);
+        setError("No se pudieron cargar los servicios");
         setServices([]);
       } finally {
         setLoading(false);
@@ -79,7 +86,7 @@ function HomePage() {
             <p className="section-subtitle">
               Descubre nuestros servicios de belleza y agenda tu cita
             </p>
-            
+
             {loading ? (
               <div className="services-loading">
                 <p>Cargando servicios...</p>
@@ -109,25 +116,39 @@ function HomePage() {
                 ¿Te interesa alguno de nuestros servicios?
               </p>
               <div className="cta-buttons">
-                <button 
+                <button
                   className="cta-button cta-button-primary"
-                  onClick={() => window.location.href = '/admin/citas/agendar'}
+                  onClick={() =>
+                    (window.location.href = "/admin/citas/agendar")
+                  }
                 >
                   Agendar Cita
                 </button>
-                <button 
+                <button
                   className="cta-button cta-button-secondary"
-                  onClick={() => window.location.href = '/servicios'}
+                  onClick={() => (window.location.href = "/servicios")}
                 >
                   Ver Todos los Servicios
                 </button>
+                {/* Botón para acceder al dashboard si el usuario está autenticado */}
+                {isAuthenticated &&
+                  (user?.rol === "Administrador" ||
+                    user?.rol === "Empleado") && (
+                    <button
+                      className="cta-button cta-button-primary"
+                      onClick={() =>
+                        (window.location.href = "/admin/dashboard")
+                      }
+                    >
+                      Acceder al Dashboard
+                    </button>
+                  )}
               </div>
             </div>
           </div>
         </section>
       </div>
-      
-      
+
       <Footer />
     </div>
   );
