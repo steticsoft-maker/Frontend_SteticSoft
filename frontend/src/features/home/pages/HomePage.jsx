@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import ImageCarousel from "../../../shared/components/common/ImageCarousel"; // Importa el nuevo componente
 import InfoCard from "../components/InfoCard";
 import ServiceCard from "../components/ServiceCard";
-import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService";
+import { getPublicServicios } from "../../../shared/services/publicServices";
 import { useAuth } from "../../../shared/contexts/authHooks";
 import "../css/Home.css";
 import "../css/PublicServicios.css";
@@ -21,8 +21,8 @@ function HomePage() {
         setLoading(true);
         setError("");
 
-        // Obtener servicios activos usando el servicio existente
-        const response = await getServicios({ activo: true });
+        // Obtener servicios activos usando el servicio público
+        const response = await getPublicServicios({ activo: true });
 
         if (response.data && Array.isArray(response.data.data)) {
           // Filtrar servicios válidos y activos, limitar a 4 servicios para la página de inicio
@@ -33,7 +33,7 @@ function HomePage() {
           const limitedServices = validServices.slice(0, 4);
           setServices(limitedServices);
         } else {
-          const responseSinFiltro = await getServicios({});
+          const responseSinFiltro = await getPublicServicios({});
           if (
             responseSinFiltro.data &&
             Array.isArray(responseSinFiltro.data.data)

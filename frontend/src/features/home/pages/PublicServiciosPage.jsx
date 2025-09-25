@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FaShoppingCart, FaCalendarAlt } from "react-icons/fa";
 import ServiceCard from "../components/ServiceCard";
-import { getServicios } from "../../serviciosAdmin/services/serviciosAdminService";
+import { getPublicServicios } from "../../../shared/services/publicServices";
 import Footer from "../../../shared/components/layout/Footer";
 import "../css/PublicServicios.css";
 
@@ -19,8 +19,8 @@ function PublicServiciosPage() {
       try {
         setLoading(true);
         
-        // Obtener servicios activos usando el servicio existente
-        const response = await getServicios({ activo: true });
+        // Obtener servicios activos usando el servicio público
+        const response = await getPublicServicios({ activo: true });
         
         if (response.data && Array.isArray(response.data.data)) {
           const validServices = response.data.data.filter(
@@ -29,7 +29,7 @@ function PublicServiciosPage() {
           setServices(validServices);
         } else {
           // Intentar sin filtro
-          const responseSinFiltro = await getServicios({});
+          const responseSinFiltro = await getPublicServicios({});
           
           if (responseSinFiltro.data && Array.isArray(responseSinFiltro.data.data)) {
             const serviciosSinFiltro = responseSinFiltro.data.data.filter(
