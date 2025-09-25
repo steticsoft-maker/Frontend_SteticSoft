@@ -108,21 +108,14 @@ const useClientes = () => {
         case "contrasena":
           if (formType === "create" && !value)
             error = "La contraseña es requerida.";
-          else if (
-            formType === "create" &&
-            value &&
-            !passwordRegex.test(value)
-          )
+          else if (formType === "create" && value && !passwordRegex.test(value))
             error =
               "Contraseña insegura (mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb).";
           break;
         case "confirmarContrasena":
           if (formType === "create" && !value)
             error = "Debe confirmar la contraseña.";
-          else if (
-            formType === "create" &&
-            value !== currentData.contrasena
-          )
+          else if (formType === "create" && value !== currentData.contrasena)
             error = "Las contraseñas no coinciden.";
           break;
         case "nombre":
@@ -144,8 +137,7 @@ const useClientes = () => {
               docType === "Cédula de Extranjería"
             ) {
               if (!numericOnlyRegex.test(value)) {
-                error =
-                  "Para este tipo de documento, ingrese solo números.";
+                error = "Para este tipo de documento, ingrese solo números.";
               }
             } else if (docType === "Pasaporte") {
               if (!alphanumericRegex.test(value)) {
@@ -175,15 +167,11 @@ const useClientes = () => {
             if (isNaN(birthDate.getTime())) {
               error = "La fecha ingresada no es válida.";
             } else if (birthDate > today) {
-              error =
-                "La fecha de nacimiento no puede ser una fecha futura.";
+              error = "La fecha de nacimiento no puede ser una fecha futura.";
             } else {
               let age = today.getFullYear() - birthDate.getFullYear();
               const m = today.getMonth() - birthDate.getMonth();
-              if (
-                m < 0 ||
-                (m === 0 && today.getDate() < birthDate.getDate())
-              ) {
+              if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
                 age--;
               }
               if (age < 18) {
@@ -199,6 +187,11 @@ const useClientes = () => {
             error = "La dirección contiene caracteres no permitidos.";
           } else if (value && (value.length < 5 || value.length > 255)) {
             error = "La dirección debe tener entre 5 y 255 caracteres.";
+          }
+          break;
+        case "tipoDocumento":
+          if (!value) {
+            error = "El tipo de documento es requerido.";
           }
           break;
         default:
@@ -272,9 +265,7 @@ const useClientes = () => {
       setFormErrors((prev) => ({ ...prev, [name]: error }));
 
       if (name === "correo" && !error && value) {
-        const originalEmail = isEditarModalOpen
-          ? currentCliente?.correo
-          : null;
+        const originalEmail = isEditarModalOpen ? currentCliente?.correo : null;
         if (value !== originalEmail) {
           setIsVerifyingEmail(true);
           try {
@@ -325,8 +316,7 @@ const useClientes = () => {
           estado: fullClientData.estado,
           nombre: fullClientData.nombre || "",
           apellido: fullClientData.apellido || "",
-          tipoDocumento:
-            fullClientData.tipoDocumento || "Cédula de Ciudadanía",
+          tipoDocumento: fullClientData.tipoDocumento || "Cédula de Ciudadanía",
           numeroDocumento: fullClientData.numeroDocumento || "",
           telefono: fullClientData.telefono || "",
           direccion: fullClientData.direccion || "",
@@ -338,9 +328,7 @@ const useClientes = () => {
         setFormData(initialFormData);
         setIsEditarModalOpen(true);
       } catch (err) {
-        setError(
-          err.message || "No se pudieron cargar los datos del cliente."
-        );
+        setError(err.message || "No se pudieron cargar los datos del cliente.");
       } finally {
         setIsLoading(false);
       }
@@ -383,11 +371,7 @@ const useClientes = () => {
         ? `El cliente ${dataParaAPI.correo} ha sido actualizado.`
         : `El cliente ${dataParaAPI.correo} ha sido creado exitosamente.`;
 
-      await saveCliente(
-        dataParaAPI,
-        !formData.idCliente,
-        formData.idCliente
-      );
+      await saveCliente(dataParaAPI, !formData.idCliente, formData.idCliente);
 
       await loadClientes(searchTerm); // Recargar con el término de búsqueda actual
       closeModal();
@@ -482,13 +466,15 @@ const useClientes = () => {
   // Lógica de filtrado y paginación
   const processedClientes = useMemo(() => {
     let clientesFiltrados = [...clientes];
-    
+
     // Aplicar filtro por estado
     if (filtroEstado !== "todos") {
       const esActivo = filtroEstado === "activos";
-      clientesFiltrados = clientesFiltrados.filter((cliente) => cliente.estado === esActivo);
+      clientesFiltrados = clientesFiltrados.filter(
+        (cliente) => cliente.estado === esActivo
+      );
     }
-    
+
     return clientesFiltrados;
   }, [clientes, filtroEstado]);
 
