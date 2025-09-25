@@ -74,8 +74,19 @@ function ListaClientesPage() {
           </button>
         </div>
 
-        {isLoading && <p style={{ textAlign: 'center', margin: '20px 0' }}>Cargando clientes...</p>}
-        {error && <p className="error-message" style={{ textAlign: 'center', marginTop: '20px' }}>{error}</p>}
+        {isLoading && (
+          <p style={{ textAlign: "center", margin: "20px 0" }}>
+            Cargando clientes...
+          </p>
+        )}
+        {error && (
+          <p
+            className="error-message"
+            style={{ textAlign: "center", marginTop: "20px" }}
+          >
+            {error}
+          </p>
+        )}
 
         {!isLoading && !error && (
           <>
@@ -84,20 +95,22 @@ function ListaClientesPage() {
                 clientes={clientes} // Estos son los currentClientesForTable del hook
                 onView={(cliente) => handleOpenModal("details", cliente)}
                 onEdit={(cliente) => handleOpenModal("edit", cliente)}
-                onDeleteConfirm={(cliente) => handleOpenModal("delete", cliente)}
+                onDeleteConfirm={(cliente) => handleDelete(cliente)}
                 onToggleEstado={handleToggleEstado}
                 currentPage={currentPage}
                 rowsPerPage={itemsPerPage}
               />
             </div>
-            {totalClientesFiltrados > 0 && itemsPerPage > 0 && totalClientesFiltrados > itemsPerPage && (
-              <Pagination
-                itemsPerPage={itemsPerPage}
-                totalItems={totalClientesFiltrados}
-                paginate={paginate}
-                currentPage={currentPage}
-              />
-            )}
+            {totalClientesFiltrados > 0 &&
+              itemsPerPage > 0 &&
+              totalClientesFiltrados > itemsPerPage && (
+                <Pagination
+                  itemsPerPage={itemsPerPage}
+                  totalItems={totalClientesFiltrados}
+                  paginate={paginate}
+                  currentPage={currentPage}
+                />
+              )}
           </>
         )}
       </div>

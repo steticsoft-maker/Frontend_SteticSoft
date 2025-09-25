@@ -281,74 +281,66 @@ const useClientes = () => {
     [formData, validateField, currentCliente, isEditarModalOpen]
   );
 
-  const handleOpenModal = useCallback(
-    async (type, cliente = null) => {
-      setFormErrors({});
-      if (type === "create") {
-        setFormData({
-          tipoDocumento: "Cédula de Ciudadanía",
-          estado: true,
-          nombre: "",
-          apellido: "",
-          correo: "",
-          telefono: "",
-          numeroDocumento: "",
-          fechaNacimiento: "",
-          direccion: "",
-          contrasena: "",
-          confirmarContrasena: "",
-        });
-        setIsCrearModalOpen(true);
-      } else if (type === "edit" && cliente) {
-        try {
-          setIsLoading(true);
-          const fullClientData = await getClienteById(cliente.idCliente);
-          setCurrentCliente(fullClientData);
+  const handleOpenModal = useCallback(async (type, cliente = null) => {
+    setFormErrors({});
+    if (type === "create") {
+      setFormData({
+        tipoDocumento: "Cédula de Ciudadanía",
+        estado: true,
+        nombre: "",
+        apellido: "",
+        correo: "",
+        telefono: "",
+        numeroDocumento: "",
+        fechaNacimiento: "",
+        direccion: "",
+        contrasena: "",
+        confirmarContrasena: "",
+      });
+      setIsCrearModalOpen(true);
+    } else if (type === "edit" && cliente) {
+      try {
+        setIsLoading(true);
+        const fullClientData = await getClienteById(cliente.idCliente);
+        setCurrentCliente(fullClientData);
 
-          const initialFormData = {
-            idCliente: fullClientData.idCliente,
-            correo: fullClientData.correo,
-            estado: fullClientData.estado,
-            nombre: fullClientData.nombre || "",
-            apellido: fullClientData.apellido || "",
-            tipoDocumento:
-              fullClientData.tipoDocumento || "Cédula de Ciudadanía",
-            numeroDocumento: fullClientData.numeroDocumento || "",
-            telefono: fullClientData.telefono || "",
-            direccion: fullClientData.direccion || "",
-            fechaNacimiento: fullClientData.fechaNacimiento
-              ? fullClientData.fechaNacimiento.split("T")[0]
-              : "",
-          };
+        const initialFormData = {
+          idCliente: fullClientData.idCliente,
+          correo: fullClientData.correo,
+          estado: fullClientData.estado,
+          nombre: fullClientData.nombre || "",
+          apellido: fullClientData.apellido || "",
+          tipoDocumento: fullClientData.tipoDocumento || "Cédula de Ciudadanía",
+          numeroDocumento: fullClientData.numeroDocumento || "",
+          telefono: fullClientData.telefono || "",
+          direccion: fullClientData.direccion || "",
+          fechaNacimiento: fullClientData.fechaNacimiento
+            ? fullClientData.fechaNacimiento.split("T")[0]
+            : "",
+        };
 
-          setFormData(initialFormData);
-          setIsEditarModalOpen(true);
-        } catch (err) {
-          setError(
-            err.message || "No se pudieron cargar los datos del cliente."
-          );
-        } finally {
-          setIsLoading(false);
-        }
-      } else if (type === "details" && cliente) {
-        setIsSubmitting(true);
-        try {
-          const fullClientData = await getClienteById(cliente.idCliente);
-          setCurrentCliente(fullClientData);
-          setIsDetailsModalOpen(true);
-        } catch (err) {
-          setError(
-            err.message || "No se pudieron cargar los detalles del cliente."
-          );
-        } finally {
-          setIsSubmitting(false);
-        }
-      } else if (type === "delete" && cliente) {
-        handleDelete(cliente);
+        setFormData(initialFormData);
+        setIsEditarModalOpen(true);
+      } catch (err) {
+        setError(err.message || "No se pudieron cargar los datos del cliente.");
+      } finally {
+        setIsLoading(false);
       }
-    },
-    [handleDelete]
-  );
+    } else if (type === "details" && cliente) {
+      setIsSubmitting(true);
+      try {
+        const fullClientData = await getClienteById(cliente.idCliente);
+        setCurrentCliente(fullClientData);
+        setIsDetailsModalOpen(true);
+      } catch (err) {
+        setError(
+          err.message || "No se pudieron cargar los detalles del cliente."
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  }, []);
 
   const handleSave = useCallback(async () => {
     const formType = formData.idCliente ? "edit" : "create";
@@ -426,6 +418,14 @@ const useClientes = () => {
       });
     },
     [loadClientes, searchTerm]
+  );
+
+  // Function to handle delete action that can be called from outside
+  const handleDeleteAction = useCallback(
+    (cliente) => {
+      handleDelete(cliente);
+    },
+    [handleDelete]
   );
 
   const handleToggleEstado = useCallback(
@@ -516,7 +516,7 @@ const useClientes = () => {
     closeModal,
     handleOpenModal,
     handleSave,
-    handleDelete,
+    handleDelete: handleDeleteAction,
     handleToggleEstado,
     formData,
     formErrors,

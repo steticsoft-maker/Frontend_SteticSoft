@@ -13,20 +13,12 @@ import {
 } from "react-icons/fa";
 import ProductCard from "../components/ProductCard";
 import { getPublicProducts } from "../services/publicProductosService";
-import { formatPrice, calculateTotal } from "../../../shared/utils/priceUtils";
+import { formatPrice } from "../../../shared/utils/priceUtils";
 import Footer from "../../../shared/components/layout/Footer";
 import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
 import "../css/PublicProductos.css";
 
-// Test para verificar que los iconos se están importando correctamente
-console.log("Iconos importados:", {
-  FaMinus,
-  FaPlus,
-  FaTrash,
-  FaTimes,
-  FaHeart,
-  FaShoppingCart,
-});
+
 
 function PublicProductosPage() {
   const [products, setProducts] = useState([]);
@@ -53,7 +45,7 @@ function PublicProductosPage() {
         }));
 
         setProducts(productosAdaptados);
-      } catch (err) {
+      } catch {
         // Error silencioso para producción
       } finally {
         setLoading(false);
