@@ -8,7 +8,8 @@ import axios from "axios";
 // Todo el acceso a la API debe realizarse a través de este cliente (`apiClient`).
 
 // Lee la URL base de la API desde las variables de entorno de Vite.
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+// Si no está definida, usa '/api' para el proxy de Vite
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Creación de la instancia de Axios con la configuración base.
 const apiClient = axios.create({
@@ -64,8 +65,11 @@ apiClient.interceptors.response.use(
       localStorage.removeItem("authPermissions");
       sessionStorage.clear();
 
-      // Redirige al login solo si no estamos ya ahí.
-      if (window.location.pathname !== "/login") {
+      // Redirige al login solo si no estamos ya ahí Y estamos en una ruta que requiere autenticación
+      const publicRoutes = ["/", "/productos", "/servicios", "/novedades-publicas", "/register", "/password-recovery"];
+      const isPublicRoute = publicRoutes.includes(window.location.pathname);
+      
+      if (window.location.pathname !== "/login" && !isPublicRoute) {
         window.location.href = "/login";
       }
     }
