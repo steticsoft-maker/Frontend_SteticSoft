@@ -36,6 +36,39 @@
   --productos-bg-card: #2d1b30;
 }
 
+/* === Iconos en tema oscuro === */
+.dark-theme .quantity-btn svg,
+.dark-theme .remove-item-btn svg,
+.dark-theme .cart-clear-btn svg,
+.dark-theme .cart-order-btn svg,
+.dark-theme .cart-close-btn svg {
+  color: white !important;
+  fill: white !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* === Animaciones === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
 /* Página principal */
 .productos-page {
   min-height: 100vh;
@@ -377,6 +410,19 @@
   animation: pulse 2s infinite;
 }
 
+/* Cart Backdrop */
+.cart-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1999;
+  animation: fadeIn 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
 /* Cart Modal - Mejorado */
 .cart-modal {
   position: fixed;
@@ -428,6 +474,23 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.cart-close-btn svg {
+  width: 16px !important;
+  height: 16px !important;
+  color: white !important;
+  fill: white !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.cart-close-btn * {
+  color: white !important;
+  fill: white !important;
 }
 
 .cart-close-btn:hover {
@@ -556,9 +619,12 @@
   width: 12px !important;
   height: 12px !important;
   color: white !important;
-  display: block !important;
+  fill: white !important;
+  display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 .quantity-btn * {
@@ -598,9 +664,12 @@
   width: 14px !important;
   height: 14px !important;
   color: white !important;
-  display: block !important;
+  fill: white !important;
+  display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 .remove-item-btn * {
@@ -677,10 +746,13 @@
   width: 16px !important;
   height: 16px !important;
   color: white !important;
+  fill: white !important;
   margin-right: 8px !important;
-  display: block !important;
+  display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 .cart-clear-btn * {
@@ -713,10 +785,13 @@
   width: 16px !important;
   height: 16px !important;
   color: white !important;
+  fill: white !important;
   margin-right: 8px !important;
-  display: block !important;
+  display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 .cart-order-btn * {
@@ -792,8 +867,8 @@
   opacity: 1 !important;
   fill: white !important;
   color: white !important;
-  width: auto !important;
-  height: auto !important;
+  position: relative !important;
+  z-index: 1 !important;
   font-size: inherit !important;
   line-height: 1 !important;
   vertical-align: middle !important;

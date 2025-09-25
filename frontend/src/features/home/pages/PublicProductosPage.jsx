@@ -166,128 +166,136 @@ function PublicProductosPage() {
 
       {/* Cart Modal */}
       {showCart && (
-        <div className="cart-modal">
-          <div className="cart-header">
-            <h3>
-              <FaHeart style={{ marginRight: "10px", color: "#e91e63" }} />
-              Tu Carrito de Compras
-            </h3>
-            <button
-              className="cart-close-btn cart-close-btn-alt"
-              onClick={() => setShowCart(false)}
-              aria-label="Cerrar carrito"
-            >
-              <FaTimes size={20} />
-            </button>
-          </div>
-
-          {cart.length === 0 ? (
-            <div className="cart-empty">
-              <FaHeart
-                style={{
-                  fontSize: "3rem",
-                  color: "#e91e63",
-                  marginBottom: "15px",
-                }}
-              />
-              <p>Tu carrito está vacío</p>
-              <p className="cart-empty-subtitle">
-                ¡Agrega algunos productos increíbles!
-              </p>
+        <>
+          {/* Backdrop */}
+          <div
+            className="cart-backdrop"
+            onClick={() => setShowCart(false)}
+            aria-label="Cerrar carrito"
+          />
+          <div className="cart-modal">
+            <div className="cart-header">
+              <h3>
+                <FaHeart style={{ marginRight: "10px", color: "#e91e63" }} />
+                Tu Carrito de Compras
+              </h3>
+              <button
+                className="cart-close-btn cart-close-btn-alt"
+                onClick={() => setShowCart(false)}
+                aria-label="Cerrar carrito"
+              >
+                <FaTimes size={20} />
+              </button>
             </div>
-          ) : (
-            <>
-              <div className="cart-items">
-                {cart.map((item) => (
-                  <div key={`cart-prod-${item.id}`} className="cart-item">
-                    <div className="cart-item-info">
-                      <div className="cart-item-image">
-                        {item.image ? (
-                          <img src={item.image} alt={item.name} />
-                        ) : (
-                          <div className="cart-item-placeholder">
-                            <FaGem />
-                          </div>
-                        )}
-                      </div>
-                      <div className="cart-item-details">
-                        <h4 className="cart-item-name">{item.name}</h4>
-                        <p className="cart-item-price">
-                          ${formatPrice(item.price)}
-                        </p>
-                      </div>
-                    </div>
 
-                    <div className="cart-item-controls">
-                      <div className="quantity-controls">
-                        <button
-                          className="quantity-btn quantity-btn-minus"
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1)
-                          }
-                        >
-                          <FaMinus />
-                        </button>
-                        <span className="quantity-display">
-                          {item.quantity}
-                        </span>
-                        <button
-                          className="quantity-btn quantity-btn-plus"
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
-                          }
-                        >
-                          <FaPlus />
-                        </button>
-                      </div>
-                      <button
-                        className="remove-item-btn remove-item-btn-alt"
-                        onClick={() => removeFromCart(item.id)}
-                        aria-label="Eliminar producto"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-
-                    <div className="cart-item-total">
-                      ${formatPrice(item.price * item.quantity)}
-                    </div>
-                  </div>
-                ))}
+            {cart.length === 0 ? (
+              <div className="cart-empty">
+                <FaHeart
+                  style={{
+                    fontSize: "3rem",
+                    color: "#e91e63",
+                    marginBottom: "15px",
+                  }}
+                />
+                <p>Tu carrito está vacío</p>
+                <p className="cart-empty-subtitle">
+                  ¡Agrega algunos productos increíbles!
+                </p>
               </div>
+            ) : (
+              <>
+                <div className="cart-items">
+                  {cart.map((item) => (
+                    <div key={`cart-prod-${item.id}`} className="cart-item">
+                      <div className="cart-item-info">
+                        <div className="cart-item-image">
+                          {item.image ? (
+                            <img src={item.image} alt={item.name} />
+                          ) : (
+                            <div className="cart-item-placeholder">
+                              <FaGem />
+                            </div>
+                          )}
+                        </div>
+                        <div className="cart-item-details">
+                          <h4 className="cart-item-name">{item.name}</h4>
+                          <p className="cart-item-price">
+                            ${formatPrice(item.price)}
+                          </p>
+                        </div>
+                      </div>
 
-              <div className="cart-summary">
-                <div className="cart-total-section">
-                  <div className="cart-subtotal">
-                    <span>Subtotal:</span>
-                    <span>${formatPrice(getTotal())}</span>
-                  </div>
-                  <div className="cart-total">
-                    <FaStar style={{ marginRight: "8px" }} />
-                    <span>Total: ${formatPrice(getTotal())}</span>
-                  </div>
+                      <div className="cart-item-controls">
+                        <div className="quantity-controls">
+                          <button
+                            className="quantity-btn quantity-btn-minus"
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity - 1)
+                            }
+                          >
+                            <FaMinus />
+                          </button>
+                          <span className="quantity-display">
+                            {item.quantity}
+                          </span>
+                          <button
+                            className="quantity-btn quantity-btn-plus"
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
+                          >
+                            <FaPlus />
+                          </button>
+                        </div>
+                        <button
+                          className="remove-item-btn remove-item-btn-alt"
+                          onClick={() => removeFromCart(item.id)}
+                          aria-label="Eliminar producto"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+
+                      <div className="cart-item-total">
+                        ${formatPrice(item.price * item.quantity)}
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="cart-actions">
-                  <button
-                    onClick={clearCart}
-                    className="cart-clear-btn cart-clear-btn-alt"
-                  >
-                    <FaTrash style={{ marginRight: "8px" }} />
-                    Vaciar Carrito
-                  </button>
-                  <button
-                    onClick={handleOrder}
-                    className="cart-order-btn cart-order-btn-alt"
-                  >
-                    <FaHeart style={{ marginRight: "8px" }} />
-                    Realizar Pedido
-                  </button>
+                <div className="cart-summary">
+                  <div className="cart-total-section">
+                    <div className="cart-subtotal">
+                      <span>Subtotal:</span>
+                      <span>${formatPrice(getTotal())}</span>
+                    </div>
+                    <div className="cart-total">
+                      <FaStar style={{ marginRight: "8px" }} />
+                      <span>Total: ${formatPrice(getTotal())}</span>
+                    </div>
+                  </div>
+
+                  <div className="cart-actions">
+                    <button
+                      onClick={clearCart}
+                      className="cart-clear-btn cart-clear-btn-alt"
+                    >
+                      <FaTrash style={{ marginRight: "8px" }} />
+                      Vaciar Carrito
+                    </button>
+                    <button
+                      onClick={handleOrder}
+                      className="cart-order-btn cart-order-btn-alt"
+                    >
+                      <FaHeart style={{ marginRight: "8px" }} />
+                      Realizar Pedido
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
-        </div>
+              </>
+            )}
+          </div>
+        </>
       )}
 
       {/* Products Section */}
