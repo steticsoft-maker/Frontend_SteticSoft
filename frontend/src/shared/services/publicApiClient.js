@@ -5,7 +5,7 @@ import axios from "axios";
 // Para uso en páginas públicas como HomePage, PublicServiciosPage, etc.
 
 // Lee la URL base de la API desde las variables de entorno de Vite.
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 // Creación de la instancia de Axios para uso público (sin autenticación)
 const publicApiClient = axios.create({
@@ -16,10 +16,8 @@ const publicApiClient = axios.create({
 publicApiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("⛔ Error en la respuesta de la API pública:", error.response);
-    
     // Para el cliente público, no redirigimos automáticamente
-    // Solo logueamos el error y rechazamos la promesa
+    // Solo rechazamos la promesa
     return Promise.reject(error);
   }
 );

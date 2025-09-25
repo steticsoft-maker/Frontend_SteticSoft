@@ -13,7 +13,6 @@ export const getServicios = async (filtros = {}) => {
     const response = await apiClient.get("/servicios", { params: filtros });
     return response;
   } catch (error) {
-    console.error("Error al obtener servicios:", error);
     return { data: { data: [] } };
   }
 };
@@ -38,7 +37,10 @@ export const createServicio = async (servicioData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error al crear el servicio:", error.response?.data || error.message);
+    console.error(
+      "Error al crear el servicio:",
+      error.response?.data || error.message
+    );
     throw error.response?.data || new Error("Error al crear el servicio.");
   }
 };
@@ -58,27 +60,33 @@ export const updateServicio = async (id, servicioData) => {
 
     // Itera sobre los datos y los añade al FormData, manejando la imagen de forma especial.
     for (const key in servicioData) {
-      if (key === 'imagen') {
+      if (key === "imagen") {
         if (servicioData.imagen instanceof File) {
           // Si es un archivo nuevo, lo añade para subirlo.
-          formData.append('imagen', servicioData.imagen);
+          formData.append("imagen", servicioData.imagen);
         } else if (servicioData.imagen === null) {
           // Si es null, añade un string vacío como señal para que el backend la elimine.
-          formData.append('imagen', '');
+          formData.append("imagen", "");
         }
         // Si es una URL (string) o undefined, no hace nada, conservando la imagen existente.
-      } else if (servicioData[key] !== null && servicioData[key] !== undefined) {
+      } else if (
+        servicioData[key] !== null &&
+        servicioData[key] !== undefined
+      ) {
         formData.append(key, servicioData[key]);
       }
     }
-    
+
     // IMPORTANTE: Se usa apiClient.put para la actualización.
     const response = await apiClient.put(`/servicios/${id}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   } catch (error) {
-    console.error(`Error al actualizar el servicio ${id}:`, error.response?.data || error.message);
+    console.error(
+      `Error al actualizar el servicio ${id}:`,
+      error.response?.data || error.message
+    );
     throw error.response?.data || new Error("Error al actualizar el servicio.");
   }
 };
@@ -124,7 +132,7 @@ export const cambiarEstadoServicio = async (id, nuevoEstado) => {
 export const getActiveCategoriasForSelect = async () => {
   try {
     // Asume que getCategoriasServicio(true) filtra por activas.
-    const response = await getCategoriasServicio({ estado: true }); 
+    const response = await getCategoriasServicio({ estado: true });
     const categoriasArray = response?.data?.data;
 
     if (!Array.isArray(categoriasArray)) {

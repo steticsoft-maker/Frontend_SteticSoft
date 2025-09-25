@@ -8,16 +8,18 @@ import publicApiClient from "./publicApiClient";
  */
 export const getPublicServicios = async (filtros = {}) => {
   try {
-    const response = await publicApiClient.get("/servicios/public", { params: filtros });
+    const response = await publicApiClient.get("/servicios/public", {
+      params: filtros,
+    });
     return response;
   } catch (error) {
-    console.error("Error al obtener servicios públicos:", error);
     // Si no existe el endpoint público, intentar con el endpoint normal
     try {
-      const response = await publicApiClient.get("/servicios", { params: filtros });
+      const response = await publicApiClient.get("/servicios", {
+        params: filtros,
+      });
       return response;
     } catch (fallbackError) {
-      console.error("Error en fallback de servicios:", fallbackError);
       return { data: { data: [] } };
     }
   }
@@ -30,16 +32,18 @@ export const getPublicServicios = async (filtros = {}) => {
  */
 export const getPublicProductos = async (filtros = {}) => {
   try {
-    const response = await publicApiClient.get("/productos/public", { params: filtros });
+    const response = await publicApiClient.get("/productos/public", {
+      params: filtros,
+    });
     return response;
   } catch (error) {
-    console.error("Error al obtener productos públicos:", error);
     // Si no existe el endpoint público, intentar con el endpoint normal
     try {
-      const response = await publicApiClient.get("/productos", { params: filtros });
+      const response = await publicApiClient.get("/productos", {
+        params: filtros,
+      });
       return response;
     } catch (fallbackError) {
-      console.error("Error en fallback de productos:", fallbackError);
       return { data: { data: [] } };
     }
   }

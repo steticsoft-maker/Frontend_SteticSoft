@@ -9,7 +9,7 @@ import axios from "axios";
 
 // Lee la URL base de la API desde las variables de entorno de Vite.
 // Si no está definida, usa '/api' para el proxy de Vite
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 // Creación de la instancia de Axios con la configuración base.
 const apiClient = axios.create({
@@ -44,31 +44,24 @@ apiClient.interceptors.response.use(
   (error) => {
     // Si la respuesta es un error, entra aquí.
 
-    // Mostramos el detalle del error en la consola para análisis.
-    console.error("⛔ Error en la respuesta de la API:", error.response);
-
     // Verificamos si el error es un 401 (No Autorizado).
     if (error.response && error.response.status === 401) {
-      console.log(
-        "⏸️ Pausando la ejecución por error 401. Revisa la consola y el estado de la aplicación."
-      );
-
-      // LÍNEA CLAVE PARA DEPURAR:
-      // Esto detendrá la ejecución del script si tienes las herramientas de desarrollador abiertas.
-      // debugger; // Removed
-
-      // La siguiente lógica de limpieza y redirección solo se ejecutará
-      // después de que tú reanudes la ejecución manualmente en el navegador.
-      console.log("🧹 Limpiando almacenamiento y redirigiendo a /login...");
       localStorage.removeItem("authToken");
       localStorage.removeItem("authUser");
       localStorage.removeItem("authPermissions");
       sessionStorage.clear();
 
       // Redirige al login solo si no estamos ya ahí Y estamos en una ruta que requiere autenticación
-      const publicRoutes = ["/", "/productos", "/servicios", "/novedades-publicas", "/register", "/password-recovery"];
+      const publicRoutes = [
+        "/",
+        "/productos",
+        "/servicios",
+        "/novedades-publicas",
+        "/register",
+        "/password-recovery",
+      ];
       const isPublicRoute = publicRoutes.includes(window.location.pathname);
-      
+
       if (window.location.pathname !== "/login" && !isPublicRoute) {
         window.location.href = "/login";
       }
