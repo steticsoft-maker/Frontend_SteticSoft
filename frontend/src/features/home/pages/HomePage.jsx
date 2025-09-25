@@ -12,7 +12,6 @@ import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
 function HomePage() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
@@ -52,16 +51,6 @@ function HomePage() {
     };
 
     loadServices();
-  }, []);
-
-  // Efecto de seguimiento del mouse para elementos interactivos
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   return (

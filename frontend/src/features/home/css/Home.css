@@ -71,8 +71,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,6 C10,2 6,2 6,6 C6,10 10,14 10,14 C10,14 14,10 14,6 C14,2 10,2 10,6 Z" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
-  animation: float 8s ease-in-out infinite;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,6 C10,2 6,2 6,6 C6,10 10,14 10,14 C10,14 14,10 14,6 C14,2 10,2 10,6 Z" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
+  animation: float 12s ease-in-out infinite; /* Reducido de 8s para menos frecuencia */
+  opacity: 0.5; /* Reducir opacidad para menos impacto visual */
 }
 
 .hero-content {
@@ -89,14 +90,14 @@
   font-weight: 800;
   margin-bottom: 20px;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  animation: fadeInUp 1s ease-out;
+  animation: fadeInUp 0.6s ease-out; /* Reducido de 1s */
 }
 
 .hero-subtitle {
   font-size: 1.4rem;
   margin-bottom: 40px;
   opacity: 0.9;
-  animation: fadeInUp 1s ease-out 0.2s both;
+  animation: fadeInUp 0.6s ease-out 0.1s both; /* Reducido de 1s y 0.2s */
 }
 
 .hero-buttons {
@@ -104,7 +105,7 @@
   gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
-  animation: fadeInUp 1s ease-out 0.4s both;
+  animation: fadeInUp 0.6s ease-out 0.2s both; /* Reducido de 1s y 0.4s */
 }
 
 .hero-btn {
@@ -116,8 +117,8 @@
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  transition: all 0.2s ease; /* Reducido de 0.3s */
+  backdrop-filter: blur(5px); /* Reducido de 10px */
   position: relative;
   overflow: hidden;
 }

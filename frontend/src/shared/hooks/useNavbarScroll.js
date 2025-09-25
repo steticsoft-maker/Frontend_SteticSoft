@@ -12,39 +12,45 @@ export const useNavbarScroll = () => {
     // Detectar si está en la parte superior
     setIsAtTop(scrollTop < 50);
 
-    // Detectar dirección del scroll con umbral para evitar cambios muy frecuentes
-    if (scrollTop > lastScrollY && scrollTop > 100) {
+    // Detectar dirección del scroll con umbral más alto para menos cambios
+    if (scrollTop > lastScrollY && scrollTop > 150) {
+      // Aumentado de 100
       setScrollDirection("down");
-    } else if (scrollTop < lastScrollY && scrollTop > 50) {
+    } else if (scrollTop < lastScrollY && scrollTop > 80) {
+      // Aumentado de 50
       setScrollDirection("up");
     }
 
     setLastScrollY(scrollTop);
 
-    // Activar efecto de scroll con umbral más bajo para mejor seguimiento
-    setIsScrolled(scrollTop > 30);
+    // Activar efecto de scroll con umbral más alto
+    setIsScrolled(scrollTop > 50); // Aumentado de 30
   }, [lastScrollY]);
 
   useEffect(() => {
-    // Usar throttling para mejor rendimiento
+    // Usar throttling más agresivo para mejor rendimiento
     let ticking = false;
+    let timeoutId = null;
 
     const throttledHandleScroll = () => {
       if (!ticking) {
-        requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
+        timeoutId = setTimeout(() => {
+          requestAnimationFrame(() => {
+            handleScroll();
+            ticking = false;
+          });
+        }, 16); // ~60fps throttling
         ticking = true;
       }
     };
 
-    // Agregar listener de scroll con throttling
+    // Agregar listener de scroll con throttling mejorado
     window.addEventListener("scroll", throttledHandleScroll, { passive: true });
 
     // Limpiar listener al desmontar
     return () => {
       window.removeEventListener("scroll", throttledHandleScroll);
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [handleScroll]);
 

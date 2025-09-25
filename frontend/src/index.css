@@ -4,6 +4,7 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/admin-layout.css";
 @import "@/shared/styles/theme-enhancements.css";
+@import "@/shared/styles/performance-optimizations.css";
 
 /* Override Bootstrap JS controllers to prevent conflicts */
 * {

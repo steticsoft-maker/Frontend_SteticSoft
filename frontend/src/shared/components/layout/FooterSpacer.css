@@ -44,11 +44,11 @@
 .footer-spacer-wave svg {
   width: 100%;
   height: 100%;
-  animation: waveAnimation 8s ease-in-out infinite;
+  animation: waveAnimation 12s ease-in-out infinite; /* Reducido de 8s */
 }
 
 .footer-spacer-wave path {
-  animation: wavePathAnimation 6s ease-in-out infinite;
+  animation: wavePathAnimation 10s ease-in-out infinite; /* Reducido de 6s */
 }
 
 /* Decoraciones circulares flotantes */
@@ -66,11 +66,11 @@
   border-radius: 50%;
   background: linear-gradient(45deg, 
     var(--color-primary) 0%, 
-    rgba(138, 43, 226, 0.3) 50%, 
+    rgba(138, 43, 226, 0.2) 50%, /* Reducido de 0.3 */
     var(--color-primary) 100%
   );
-  opacity: 0.6;
-  animation: floatAnimation 4s ease-in-out infinite;
+  opacity: 0.4; /* Reducido de 0.6 */
+  animation: floatAnimation 6s ease-in-out infinite; /* Reducido de 4s */
 }
 
 .circle-1 {

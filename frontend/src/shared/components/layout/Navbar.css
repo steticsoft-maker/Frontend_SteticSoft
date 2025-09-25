@@ -7,9 +7,9 @@
     left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px); /* Reducido de 20px */
     box-shadow: 
-        0 8px 32px var(--color-shadow-medium),
+        0 4px 16px var(--color-shadow-medium), /* Reducido de 32px */
         0 0 0 1px rgba(154, 122, 159, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -19,11 +19,11 @@
     padding: 15px 25px;
     z-index: 1000;
     box-sizing: border-box;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: navbarSlideDown 0.6s ease-out;
+    transition: all 0.2s ease; /* Reducido de 0.4s */
+    animation: navbarSlideDown 0.4s ease-out; /* Reducido de 0.6s */
     overflow: hidden;
-    /* Mejorar el sticky behavior */
-    will-change: transform, background-color, box-shadow;
+    /* Optimización de rendimiento */
+    will-change: auto; /* Cambiado de transform, background-color, box-shadow */
 }
 
 .navbar::before {
@@ -52,20 +52,20 @@
     }
 }
 
-/* Efecto de scroll para el navbar - Mejorado para mejor seguimiento */
+/* Efecto de scroll para el navbar - Optimizado */
 .navbar.scrolled {
     top: 10px;
     background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(15px); /* Reducido de 30px */
     box-shadow: 
-        0 15px 50px var(--color-shadow-medium),
+        0 8px 24px var(--color-shadow-medium), /* Reducido de 50px */
         0 0 0 1px rgba(154, 122, 159, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    transform: translateX(-50%) scale(0.96);
+    transform: translateX(-50%) scale(0.98); /* Reducido de 0.96 */
     border-radius: 15px;
     padding: 12px 20px;
     /* Efecto de "pegado" más pronunciado */
-    animation: navbarStick 0.3s ease-out;
+    animation: navbarStick 0.2s ease-out; /* Reducido de 0.3s */
 }
 
 @keyframes navbarStick {
@@ -79,29 +79,29 @@
     }
 }
 
-/* Efectos de dirección de scroll para mejor seguimiento */
+/* Efectos de dirección de scroll - Optimizados */
 .navbar.scroll-down {
-    transform: translateX(-50%) scale(0.96) translateY(-10px);
-    opacity: 0.8;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-50%) scale(0.98) translateY(-5px); /* Reducido de -10px */
+    opacity: 0.9; /* Aumentado de 0.8 */
+    transition: all 0.2s ease; /* Reducido de 0.3s */
 }
 
 .navbar.scroll-up {
-    transform: translateX(-50%) scale(0.98) translateY(0);
+    transform: translateX(-50%) scale(0.99) translateY(0); /* Aumentado de 0.98 */
     opacity: 1;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease; /* Reducido de 0.3s */
 }
 
 .navbar.scrolled.scroll-down {
-    transform: translateX(-50%) scale(0.94) translateY(-15px);
-    opacity: 0.7;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-50%) scale(0.97) translateY(-8px); /* Reducido de -15px */
+    opacity: 0.85; /* Aumentado de 0.7 */
+    transition: all 0.2s ease; /* Reducido de 0.3s */
 }
 
 .navbar.scrolled.scroll-up {
-    transform: translateX(-50%) scale(0.96) translateY(0);
+    transform: translateX(-50%) scale(0.98) translateY(0); /* Aumentado de 0.96 */
     opacity: 1;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease; /* Reducido de 0.3s */
 }
 
 /* Efecto de hover para mostrar completamente el navbar */
