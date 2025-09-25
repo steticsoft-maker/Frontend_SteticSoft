@@ -14,7 +14,6 @@ import {
 // --- CONSTANTES DE VALIDACIÓN ---
 const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const numericOnlyRegex = /^\d+$/;
-const alphanumericRegex = /^[a-zA-Z0-9]+$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -133,15 +132,10 @@ const useClientes = () => {
             const docType = currentData.tipoDocumento;
             if (
               docType === "Cédula de Ciudadanía" ||
-              docType === "Tarjeta de Identidad" ||
               docType === "Cédula de Extranjería"
             ) {
               if (!numericOnlyRegex.test(value)) {
                 error = "Para este tipo de documento, ingrese solo números.";
-              }
-            } else if (docType === "Pasaporte") {
-              if (!alphanumericRegex.test(value)) {
-                error = "Para Pasaporte, ingrese solo letras y números.";
               }
             }
             if (!error && (value.length < 5 || value.length > 20)) {
@@ -287,68 +281,74 @@ const useClientes = () => {
     [formData, validateField, currentCliente, isEditarModalOpen]
   );
 
-  const handleOpenModal = useCallback(async (type, cliente = null) => {
-    setFormErrors({});
-    if (type === "create") {
-      setFormData({
-        tipoDocumento: "Cédula de Ciudadanía",
-        estado: true,
-        nombre: "",
-        apellido: "",
-        correo: "",
-        telefono: "",
-        numeroDocumento: "",
-        fechaNacimiento: "",
-        direccion: "",
-        contrasena: "",
-        confirmarContrasena: "",
-      });
-      setIsCrearModalOpen(true);
-    } else if (type === "edit" && cliente) {
-      try {
-        setIsLoading(true);
-        const fullClientData = await getClienteById(cliente.idCliente);
-        setCurrentCliente(fullClientData);
+  const handleOpenModal = useCallback(
+    async (type, cliente = null) => {
+      setFormErrors({});
+      if (type === "create") {
+        setFormData({
+          tipoDocumento: "Cédula de Ciudadanía",
+          estado: true,
+          nombre: "",
+          apellido: "",
+          correo: "",
+          telefono: "",
+          numeroDocumento: "",
+          fechaNacimiento: "",
+          direccion: "",
+          contrasena: "",
+          confirmarContrasena: "",
+        });
+        setIsCrearModalOpen(true);
+      } else if (type === "edit" && cliente) {
+        try {
+          setIsLoading(true);
+          const fullClientData = await getClienteById(cliente.idCliente);
+          setCurrentCliente(fullClientData);
 
-        const initialFormData = {
-          idCliente: fullClientData.idCliente,
-          correo: fullClientData.correo,
-          estado: fullClientData.estado,
-          nombre: fullClientData.nombre || "",
-          apellido: fullClientData.apellido || "",
-          tipoDocumento: fullClientData.tipoDocumento || "Cédula de Ciudadanía",
-          numeroDocumento: fullClientData.numeroDocumento || "",
-          telefono: fullClientData.telefono || "",
-          direccion: fullClientData.direccion || "",
-          fechaNacimiento: fullClientData.fechaNacimiento
-            ? fullClientData.fechaNacimiento.split("T")[0]
-            : "",
-        };
+          const initialFormData = {
+            idCliente: fullClientData.idCliente,
+            correo: fullClientData.correo,
+            estado: fullClientData.estado,
+            nombre: fullClientData.nombre || "",
+            apellido: fullClientData.apellido || "",
+            tipoDocumento:
+              fullClientData.tipoDocumento || "Cédula de Ciudadanía",
+            numeroDocumento: fullClientData.numeroDocumento || "",
+            telefono: fullClientData.telefono || "",
+            direccion: fullClientData.direccion || "",
+            fechaNacimiento: fullClientData.fechaNacimiento
+              ? fullClientData.fechaNacimiento.split("T")[0]
+              : "",
+          };
 
-        setFormData(initialFormData);
-        setIsEditarModalOpen(true);
-      } catch (err) {
-        setError(err.message || "No se pudieron cargar los datos del cliente.");
-      } finally {
-        setIsLoading(false);
+          setFormData(initialFormData);
+          setIsEditarModalOpen(true);
+        } catch (err) {
+          setError(
+            err.message || "No se pudieron cargar los datos del cliente."
+          );
+        } finally {
+          setIsLoading(false);
+        }
+      } else if (type === "details" && cliente) {
+        setIsSubmitting(true);
+        try {
+          const fullClientData = await getClienteById(cliente.idCliente);
+          setCurrentCliente(fullClientData);
+          setIsDetailsModalOpen(true);
+        } catch (err) {
+          setError(
+            err.message || "No se pudieron cargar los detalles del cliente."
+          );
+        } finally {
+          setIsSubmitting(false);
+        }
+      } else if (type === "delete" && cliente) {
+        handleDelete(cliente);
       }
-    } else if (type === "details" && cliente) {
-      setIsSubmitting(true);
-      try {
-        const fullClientData = await getClienteById(cliente.idCliente);
-        setCurrentCliente(fullClientData);
-        setIsDetailsModalOpen(true);
-      } catch (err) {
-        setError(
-          err.message || "No se pudieron cargar los detalles del cliente."
-        );
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else if (type === "delete" && cliente) {
-      handleDelete(cliente);
-    }
-  }, []);
+    },
+    [handleDelete]
+  );
 
   const handleSave = useCallback(async () => {
     const formType = formData.idCliente ? "edit" : "create";

@@ -32,7 +32,6 @@ function RegisterForm({
   // Expresiones regulares para validación
   const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
   const numericOnlyRegex = /^\d+$/;
-  const alphanumericRegex = /^[a-zA-Z0-9]+$/;
   const addressRegex = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#\-_]+$/;
 
   const validateField = (name, value) => {
@@ -82,9 +81,6 @@ function RegisterForm({
           ) {
             if (!numericOnlyRegex.test(value))
               error = "Para este tipo de documento, ingrese solo números.";
-          } else if (docType === "Pasaporte") {
-            if (!alphanumericRegex.test(value))
-              error = "Para Pasaporte, ingrese solo letras y números.";
           }
           if (!error && (value.length < 5 || value.length > 20)) {
             error = "Debe tener entre 5 y 20 caracteres.";
@@ -185,7 +181,7 @@ function RegisterForm({
     }
 
     // Remover confirmPassword del objeto que se envía
-    const { confirmPassword, ...userData } = formData;
+    const { ...userData } = formData;
     onSubmit(userData);
   };
 
@@ -343,8 +339,6 @@ function RegisterForm({
             </option>
             <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
             <option value="Cédula de Extranjería">Cédula de Extranjería</option>
-            <option value="Pasaporte">Pasaporte</option>
-            <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
           </select>
           {fieldErrors.tipoDocumento && (
             <span className="error-message">{fieldErrors.tipoDocumento}</span>

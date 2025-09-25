@@ -74,12 +74,7 @@ export const VALIDATION_SCHEMAS = {
     },
     tipoDocumento: {
       required: true,
-      allowedValues: [
-        "Cédula de Ciudadanía",
-        "Cédula de Extranjería",
-        "Pasaporte",
-        "Tarjeta de Identidad",
-      ],
+      allowedValues: ["Cédula de Ciudadanía", "Cédula de Extranjería"],
       message: "Debe seleccionar un tipo de documento válido",
     },
     numeroDocumento: {
@@ -209,10 +204,6 @@ export const validateField = (value, rules, formData = {}) => {
     ) {
       if (!REGEX_PATTERNS.phone.test(stringValue)) {
         return "Para este tipo de documento, ingrese solo números";
-      }
-    } else if (docType === "Pasaporte") {
-      if (!REGEX_PATTERNS.document.test(stringValue)) {
-        return "Para Pasaporte, ingrese solo letras y números";
       }
     }
   }

@@ -107,8 +107,7 @@ const useUsuarios = () => {
       switch (name) {
         case "correo":
           if (!value) error = "El correo es obligatorio.";
-          else if (!validateEmail(value))
-            error = "Formato de correo inválido.";
+          else if (!validateEmail(value)) error = "Formato de correo inválido.";
           break;
         case "idRol":
           if (!value) error = "El rol es requerido.";
@@ -117,7 +116,8 @@ const useUsuarios = () => {
           if (formType === "create" && !value)
             error = "La contraseña es requerida.";
           else if (formType === "create" && value && !validatePassword(value))
-            error = "Contraseña insegura (mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb).";
+            error =
+              "Contraseña insegura (mín 8 caract, 1 Mayús, 1 minús, 1 núm, 1 símb).";
           break;
         case "confirmarContrasena":
           if (formType === "create" && !value)
@@ -140,15 +140,10 @@ const useUsuarios = () => {
             const docType = currentData.tipoDocumento;
             if (
               docType === "Cédula de Ciudadanía" ||
-              docType === "Tarjeta de Identidad" ||
               docType === "Cédula de Extranjería"
             ) {
               if (!numericOnlyRegex.test(value)) {
                 error = "Para este tipo de documento, ingrese solo números.";
-              }
-            } else if (docType === "Pasaporte") {
-              if (!alphanumericRegex.test(value)) {
-                error = "Para Pasaporte, ingrese solo letras y números.";
               }
             }
             if (!error && (value.length < 5 || value.length > 20)) {
@@ -300,27 +295,30 @@ const useUsuarios = () => {
     setFormErrors({});
   }, []);
 
-  const handleConfirmDeleteUsuario = useCallback(async (usuarioToDelete) => {
-    if (!usuarioToDelete?.idUsuario) return;
-    setIsSubmitting(true);
-    try {
-      await eliminarUsuarioFisicoAPI(usuarioToDelete.idUsuario);
-      await cargarDatos();
-      MySwal.fire(
-        "¡Eliminado!",
-        `El usuario "${usuarioToDelete.correo}" ha sido eliminado permanentemente.`,
-        "success"
-      );
-    } catch (err) {
-      MySwal.fire(
-        "Error",
-        err.message || "Error al eliminar permanentemente el usuario.",
-        "error"
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [cargarDatos]);
+  const handleConfirmDeleteUsuario = useCallback(
+    async (usuarioToDelete) => {
+      if (!usuarioToDelete?.idUsuario) return;
+      setIsSubmitting(true);
+      try {
+        await eliminarUsuarioFisicoAPI(usuarioToDelete.idUsuario);
+        await cargarDatos();
+        MySwal.fire(
+          "¡Eliminado!",
+          `El usuario "${usuarioToDelete.correo}" ha sido eliminado permanentemente.`,
+          "success"
+        );
+      } catch (err) {
+        MySwal.fire(
+          "Error",
+          err.message || "Error al eliminar permanentemente el usuario.",
+          "error"
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [cargarDatos]
+  );
 
   const handleOpenModal = useCallback(
     async (type, usuario = null) => {
@@ -382,7 +380,7 @@ const useUsuarios = () => {
       } else if (type === "details" && usuario) {
         // --- INICIO DE LA CORRECCIÓN ---
         // Se añade un indicador de carga mientras se obtienen los datos completos.
-        setIsSubmitting(true); 
+        setIsSubmitting(true);
         try {
           // Se llama a la API para obtener todos los detalles del usuario por su ID.
           const fullUserData = await getUsuarioByIdAPI(usuario.idUsuario);
@@ -539,9 +537,9 @@ const useUsuarios = () => {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: `El estado de "${
-            usuarioToToggle.correo
-          }" se cambió a ${nuevoEstado ? "Activo" : "Inactivo"}.`,
+          title: `El estado de "${usuarioToToggle.correo}" se cambió a ${
+            nuevoEstado ? "Activo" : "Inactivo"
+          }.`,
           showConfirmButton: false,
           timer: 3500,
           timerProgressBar: true,
