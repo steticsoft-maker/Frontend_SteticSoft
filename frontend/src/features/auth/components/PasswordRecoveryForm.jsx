@@ -222,6 +222,7 @@ function PasswordRecoveryForm({
               value={formData.email}
               className="auth-form-input"
               disabled
+              autoComplete="email"
             />
           </div>
           <div className="auth-form-group">
@@ -249,6 +250,7 @@ function PasswordRecoveryForm({
               required
               maxLength="6"
               disabled={view === "reset"}
+              autoComplete="one-time-code"
               style={{
                 borderColor: fieldErrors.token
                   ? "#dc3545"

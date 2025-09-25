@@ -94,18 +94,9 @@ export const solicitarRecuperacionAPI = async (emailSolicitud) => {
  */
 export const verificarTokenAPI = async (token) => {
   try {
-    console.log("🔍 Verificando token:", token);
-    console.log("📤 Enviando petición a /auth/verificar-token con:", { token });
-
     const response = await apiClient.post("/auth/verificar-token", { token });
-
-    console.log("✅ Respuesta exitosa:", response.data);
     return response.data;
   } catch (error) {
-    console.error("❌ Error verificando token:", error);
-    console.error("📥 Respuesta del servidor:", error.response?.data);
-    console.error("🔢 Status code:", error.response?.status);
-
     throw (
       error.response?.data ||
       new Error(error.message || "Error desconocido al verificar el token.")

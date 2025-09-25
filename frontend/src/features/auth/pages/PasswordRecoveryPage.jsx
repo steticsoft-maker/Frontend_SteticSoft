@@ -54,11 +54,6 @@ function PasswordRecoveryPage() {
     setTokenValidationError("");
     setIsTokenValidated(false);
 
-    console.log("🚀 Iniciando verificación de token");
-    console.log("📝 Datos del formulario:", formData);
-    console.log("🔑 Token a verificar:", formData.token);
-    console.log("📧 Email asociado:", email);
-
     try {
       await authService.verificarTokenAPI(formData.token);
       setToken(formData.token);
@@ -138,26 +133,6 @@ function PasswordRecoveryPage() {
     }
   };
 
-  // Función de depuración temporal
-  const debugTokenValidation = async () => {
-    console.log("🔧 Iniciando depuración de validación de tokens...");
-
-    const testTokens = ["958914", "123456", "390577"];
-
-    for (const token of testTokens) {
-      console.log(`\n🧪 Probando token: ${token}`);
-      console.log(`📏 Longitud: ${token.length}`);
-      console.log(`🔢 Solo números: ${/^\d+$/.test(token)}`);
-
-      try {
-        const result = await authService.verificarTokenAPI(token);
-        console.log(`✅ Token ${token} VÁLIDO:`, result);
-      } catch (error) {
-        console.log(`❌ Token ${token} INVÁLIDO:`, error);
-      }
-    }
-  };
-
   const handleSubmit = (formData) => {
     if (view === "request") {
       handleRequestSubmit(formData);
@@ -179,24 +154,6 @@ function PasswordRecoveryPage() {
         <h2 className="auth-form-title">{getTitle()}</h2>
         <div className="auth-theme-toggle-container">
           <ThemeToggle />
-          {import.meta.env.DEV && view === "verify" && (
-            <button
-              type="button"
-              onClick={debugTokenValidation}
-              style={{
-                marginLeft: "10px",
-                padding: "5px 10px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "12px",
-              }}
-            >
-              🔧 Debug Tokens
-            </button>
-          )}
         </div>
         <PasswordRecoveryForm
           view={view}
