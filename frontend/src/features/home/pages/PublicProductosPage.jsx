@@ -4,6 +4,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import ProductCard from "../components/ProductCard";
 import { getPublicProducts } from "../services/publicProductosService";
 import Footer from "../../../shared/components/layout/Footer";
+import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
 import "../css/PublicProductos.css";
 
 function PublicProductosPage() {
@@ -133,6 +134,7 @@ function PublicProductosPage() {
         </div>
       </div>
 
+      <FooterSpacer />
       <Footer />
     </div>
   );

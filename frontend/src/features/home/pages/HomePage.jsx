@@ -8,6 +8,7 @@ import { useAuth } from "../../../shared/contexts/authHooks";
 import "../css/Home.css";
 import "../css/PublicServicios.css";
 import Footer from "../../../shared/components/layout/Footer";
+import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
 
 function HomePage() {
   const [services, setServices] = useState([]);
@@ -149,6 +150,7 @@ function HomePage() {
         </section>
       </div>
 
+      <FooterSpacer />
       <Footer />
     </div>
   );

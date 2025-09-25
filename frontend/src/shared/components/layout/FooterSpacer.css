@@ -1,0 +1,205 @@
+/* src/shared/components/layout/FooterSpacer.css */
+
+.footer-spacer {
+  position: relative;
+  height: 120px;
+  background: linear-gradient(135deg, 
+    var(--color-background-light) 0%, 
+    #f8f9fa 25%, 
+    #e9ecef 50%, 
+    #dee2e6 75%, 
+    #ced4da 100%
+  );
+  overflow: hidden;
+  margin-top: 40px;
+}
+
+.footer-spacer-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Onda SVG animada */
+.footer-spacer-wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.footer-spacer-wave svg {
+  width: 100%;
+  height: 100%;
+  animation: waveAnimation 8s ease-in-out infinite;
+}
+
+.footer-spacer-wave path {
+  animation: wavePathAnimation 6s ease-in-out infinite;
+}
+
+/* Decoraciones circulares flotantes */
+.footer-spacer-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.footer-spacer-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(45deg, 
+    var(--color-primary) 0%, 
+    rgba(138, 43, 226, 0.3) 50%, 
+    var(--color-primary) 100%
+  );
+  opacity: 0.6;
+  animation: floatAnimation 4s ease-in-out infinite;
+}
+
+.circle-1 {
+  width: 20px;
+  height: 20px;
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+  animation-duration: 3s;
+}
+
+.circle-2 {
+  width: 15px;
+  height: 15px;
+  top: 60%;
+  right: 20%;
+  animation-delay: 1s;
+  animation-duration: 4s;
+}
+
+.circle-3 {
+  width: 25px;
+  height: 25px;
+  top: 40%;
+  left: 70%;
+  animation-delay: 2s;
+  animation-duration: 5s;
+}
+
+/* Animaciones */
+@keyframes waveAnimation {
+  0%, 100% {
+    transform: translateX(0) scaleY(1);
+  }
+  50% {
+    transform: translateX(-10px) scaleY(1.1);
+  }
+}
+
+@keyframes wavePathAnimation {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes floatAnimation {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-10px) rotate(90deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-5px) rotate(180deg);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-15px) rotate(270deg);
+    opacity: 0.7;
+  }
+}
+
+/* Efecto de partículas adicionales */
+.footer-spacer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 80%, 
+    rgba(138, 43, 226, 0.1) 0%, 
+    transparent 50%
+  ),
+  radial-gradient(circle at 80% 20%, 
+    rgba(138, 43, 226, 0.1) 0%, 
+    transparent 50%
+  ),
+  radial-gradient(circle at 40% 40%, 
+    rgba(138, 43, 226, 0.05) 0%, 
+    transparent 50%
+  );
+  animation: particleAnimation 10s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes particleAnimation {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-spacer {
+    height: 80px;
+    margin-top: 20px;
+  }
+  
+  .circle-1, .circle-2, .circle-3 {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .circle-1 {
+    top: 25%;
+    left: 10%;
+  }
+  
+  .circle-2 {
+    top: 65%;
+    right: 15%;
+  }
+  
+  .circle-3 {
+    top: 45%;
+    left: 75%;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-spacer {
+    height: 60px;
+    margin-top: 15px;
+  }
+  
+  .footer-spacer-circle {
+    width: 12px;
+    height: 12px;
+  }
+}

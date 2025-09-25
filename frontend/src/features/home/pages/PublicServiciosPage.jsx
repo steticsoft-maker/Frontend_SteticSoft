@@ -4,6 +4,7 @@ import { FaShoppingCart, FaCalendarAlt } from "react-icons/fa";
 import ServiceCard from "../components/ServiceCard";
 import { getPublicServicios } from "../../../shared/services/publicServices";
 import Footer from "../../../shared/components/layout/Footer";
+import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
 import "../css/PublicServicios.css";
 
 function PublicServiciosPage() {
@@ -18,22 +19,27 @@ function PublicServiciosPage() {
     const loadServices = async () => {
       try {
         setLoading(true);
-        
+
         // Obtener servicios activos usando el servicio público
         const response = await getPublicServicios({ activo: true });
-        
+
         if (response.data && Array.isArray(response.data.data)) {
           const validServices = response.data.data.filter(
-            (service) => service && service.idServicio && service.estado === true
+            (service) =>
+              service && service.idServicio && service.estado === true
           );
           setServices(validServices);
         } else {
           // Intentar sin filtro
           const responseSinFiltro = await getPublicServicios({});
-          
-          if (responseSinFiltro.data && Array.isArray(responseSinFiltro.data.data)) {
+
+          if (
+            responseSinFiltro.data &&
+            Array.isArray(responseSinFiltro.data.data)
+          ) {
             const serviciosSinFiltro = responseSinFiltro.data.data.filter(
-              (service) => service && service.idServicio && service.estado === true
+              (service) =>
+                service && service.idServicio && service.estado === true
             );
             setServices(serviciosSinFiltro);
           } else {
@@ -41,7 +47,7 @@ function PublicServiciosPage() {
           }
         }
       } catch (err) {
-        console.error("Error al cargar servicios públicos:", err);
+        // Error silencioso para producción
         setServices([]);
       } finally {
         setLoading(false);
@@ -72,7 +78,8 @@ function PublicServiciosPage() {
     setCart((prevCart) => {
       const serviceId = service.idServicio || service.id;
       const existingService = prevCart.find(
-        (item) => (item.idServicio || item.id) === serviceId && item.type === "service"
+        (item) =>
+          (item.idServicio || item.id) === serviceId && item.type === "service"
       );
       let newCart;
       if (existingService) {
@@ -115,8 +122,12 @@ function PublicServiciosPage() {
   const getTotal = () => {
     return cart.reduce((total, item) => {
       if (item.type === "service") {
-        const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
-        const precio = typeof item.precio === 'string' ? parseFloat(item.precio) : item.precio;
+        const price =
+          typeof item.price === "string" ? parseFloat(item.price) : item.price;
+        const precio =
+          typeof item.precio === "string"
+            ? parseFloat(item.precio)
+            : item.precio;
         const finalPrice = price || precio || 0;
         return total + finalPrice * (item.quantity || 0);
       }
@@ -145,21 +156,26 @@ function PublicServiciosPage() {
           ) : (
             <>
               <ul>
-                  {cart
-                    .filter((item) => item.type === "service")
-                    .map((item) => {
-                      const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
-                      const precio = typeof item.precio === 'string' ? parseFloat(item.precio) : item.precio;
-                      const finalPrice = price || precio || 0;
-                      const total = finalPrice * (item.quantity || 1);
-                      return (
-                        <li key={`cart-serv-${item.idServicio || item.id}`}>
-                          {item.nombre} - {item.quantity || 1} x $
-                          {finalPrice.toFixed(2)} = $
-                          {total.toFixed(2)}
-                        </li>
-                      );
-                    })}
+                {cart
+                  .filter((item) => item.type === "service")
+                  .map((item) => {
+                    const price =
+                      typeof item.price === "string"
+                        ? parseFloat(item.price)
+                        : item.price;
+                    const precio =
+                      typeof item.precio === "string"
+                        ? parseFloat(item.precio)
+                        : item.precio;
+                    const finalPrice = price || precio || 0;
+                    const total = finalPrice * (item.quantity || 1);
+                    return (
+                      <li key={`cart-serv-${item.idServicio || item.id}`}>
+                        {item.nombre} - {item.quantity || 1} x $
+                        {finalPrice.toFixed(2)} = ${total.toFixed(2)}
+                      </li>
+                    );
+                  })}
               </ul>
               <p>
                 <strong>Horario Seleccionado:</strong> {selectedSchedule}
@@ -195,16 +211,16 @@ function PublicServiciosPage() {
         )}
       </div>
 
-      
       {/* Botón flotante para agendar citas */}
-      <button 
-        className={`floating-appointment-btn ${showPulse ? 'pulse' : ''}`}
-        onClick={() => window.location.href = '/admin/citas/agendar'}
+      <button
+        className={`floating-appointment-btn ${showPulse ? "pulse" : ""}`}
+        onClick={() => (window.location.href = "/admin/citas/agendar")}
       >
         <FaCalendarAlt className="btn-icon" />
         Agendar Cita
       </button>
-      
+
+      <FooterSpacer />
       <Footer />
     </div>
   );
