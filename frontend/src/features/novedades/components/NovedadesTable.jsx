@@ -18,7 +18,12 @@ const NovedadesTable = ({
     const diaNormalizado = dia
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace('á', 'a')
+      .replace('é', 'e')
+      .replace('í', 'i')
+      .replace('ó', 'o')
+      .replace('ú', 'u');
     return `dia-pill dia-pill-${diaNormalizado}`;
   };
 

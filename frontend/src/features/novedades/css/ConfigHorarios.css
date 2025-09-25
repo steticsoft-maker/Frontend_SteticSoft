@@ -171,7 +171,6 @@
 .add-button:hover {
   background-color: var(--color-primary-hover);
 }
-   /*Estilos para la Tabla de Novedades (Compatibles con prefijo novedades-table__)*/
 
 /* Contenedor principal */
 .novedades-table__container {
@@ -325,14 +324,77 @@ input:checked + .slider:before {
   margin: 2px;
 }
 
-/* Colores específicos para cada día */
-.dia-pill-lunes { background-color: var(--color-dia-lunes); }
-.dia-pill-martes { background-color: var(--color-dia-martes); }
-.dia-pill-miercoles { background-color: var(--color-dia-miercoles); }
-.dia-pill-jueves { background-color: var(--color-dia-jueves); }
-.dia-pill-viernes { background-color: var(--color-dia-viernes); }
-.dia-pill-sabado { background-color: var(--color-dia-sabado); }
-.dia-pill-domingo { background-color: var(--color-dia-domingo); }
+/* Colores específicos para cada día - Forzar aplicación con !important */
+.dia-pill-lunes { 
+  background-color: var(--color-dia-lunes) !important; 
+  color: #000 !important;
+}
+.dia-pill-martes { 
+  background-color: var(--color-dia-martes) !important; 
+  color: #000 !important;
+}
+.dia-pill-miercoles { 
+  background-color: var(--color-dia-miercoles) !important; 
+  color: #000 !important;
+}
+.dia-pill-jueves { 
+  background-color: var(--color-dia-jueves) !important; 
+  color: #000 !important;
+}
+.dia-pill-viernes { 
+  background-color: var(--color-dia-viernes) !important; 
+  color: #000 !important;
+}
+.dia-pill-sabado { 
+  background-color: var(--color-dia-sabado) !important; 
+  color: #000 !important;
+}
+.dia-pill-domingo { 
+  background-color: var(--color-dia-domingo) !important; 
+  color: #000 !important;
+}
+
+/* Asegurar que los colores se apliquen correctamente */
+.dia-pill {
+  color: #000 !important;
+  font-weight: 500 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  background-color: transparent !important;
+}
+
+/* Sobrescribir estilos de Bootstrap Badge específicamente para nuestros días */
+.badge.dia-pill {
+  background-color: transparent !important;
+}
+
+.badge.dia-pill-lunes { 
+  background-color: var(--color-dia-lunes) !important; 
+  color: #000 !important;
+}
+.badge.dia-pill-martes { 
+  background-color: var(--color-dia-martes) !important; 
+  color: #000 !important;
+}
+.badge.dia-pill-miercoles { 
+  background-color: var(--color-dia-miercoles) !important; 
+  color: #000 !important;
+}
+.badge.dia-pill-jueves { 
+  background-color: var(--color-dia-jueves) !important; 
+  color: #000 !important;
+}
+.badge.dia-pill-viernes { 
+  background-color: var(--color-dia-viernes) !important; 
+  color: #000 !important;
+}
+.badge.dia-pill-sabado { 
+  background-color: var(--color-dia-sabado) !important; 
+  color: #000 !important;
+}
+.badge.dia-pill-domingo { 
+  background-color: var(--color-dia-domingo) !important; 
+  color: #000 !important;
+}
 
 /* Badge de estado (Activo/Inactivo) */
 .status-badge {
@@ -350,6 +412,36 @@ input:checked + .slider:before {
   background-color: transparent !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+
+/* Estilos específicos para React-Select con nuestros colores de días */
+.react-select__multi-value .badge.dia-pill-lunes { 
+  background-color: var(--color-dia-lunes) !important; 
+  color: #000 !important;
+}
+.react-select__multi-value .badge.dia-pill-martes { 
+  background-color: var(--color-dia-martes) !important; 
+  color: #000 !important;
+}
+.react-select__multi-value .badge.dia-pill-miercoles { 
+  background-color: var(--color-dia-miercoles) !important; 
+  color: #000 !important;
+}
+.react-select__multi-value .badge.dia-pill-jueves { 
+  background-color: var(--color-dia-jueves) !important; 
+  color: #000 !important;
+}
+.react-select__multi-value .badge.dia-pill-viernes { 
+  background-color: var(--color-dia-viernes) !important; 
+  color: #000 !important;
+}
+.react-select__multi-value .badge.dia-pill-sabado { 
+  background-color: var(--color-dia-sabado) !important; 
+  color: #000 !important;
+}
+.react-select__multi-value .badge.dia-pill-domingo { 
+  background-color: var(--color-dia-domingo) !important; 
+  color: #000 !important;
 }
 
 /* Botón para eliminar la píldora (la 'x') */
@@ -425,36 +517,67 @@ input:checked + .slider:before {
 }
 /* --- Estilos para Modales (Formulario y Detalles) --- */
 .modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1050; padding: 20px; box-sizing: border-box;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  z-index: 1050; 
+  padding: 20px; 
+  box-sizing: border-box;
 }
 
 .modal-content {
-  background-color: var(--color-background-light);
-  padding: 25px 30px; border-radius: 10px;
+  background-color: var(--color-background-light) !important;
+  padding: 0;
+  border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-  width: 100%; max-width: 700px; max-height: 90vh;
-  overflow-y: auto; position: relative;
+  width: 100%; 
+  max-width: 700px; 
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--color-border);
 }
 
 .modal-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 25px; padding-bottom: 15px;
-  border-bottom: 1px solid var(--color-form-border);
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+  padding: 20px 25px;
+  border-bottom: none;
+  border-top-left-radius: 10px; 
+  border-top-right-radius: 10px;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 0;
 }
 
 .modal-header h2 {
-  margin: 0; font-size: 1.6rem; color: var(--color-text-dark);
+  margin: 0; 
+  font-size: 1.5rem; 
+  color: var(--color-text-light) !important;
+  font-weight: 600;
 }
 
 .modal-close-button {
-  position: absolute; top: 15px; right: 20px;
-  background: none; border: none; font-size: 2.5rem;
-  color: var(--color-text-dark); cursor: pointer; line-height: 1;
-  opacity: 0.7;
+  position: absolute; 
+  top: 15px; 
+  right: 20px;
+  background: none; 
+  border: none; 
+  font-size: 2.5rem;
+  color: var(--color-text-light); 
+  cursor: pointer; 
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
 }
+
 .modal-close-button:hover {
     opacity: 1;
 }
@@ -463,19 +586,33 @@ input:checked + .slider:before {
    Estilos para el Modal de Detalles de Novedad
    ========================================================================== */
 
-/* --- Encabezado del Modal --- */
-.modal-header {
-  color: var(--color-text-light);
-  padding: 15px 25px;
-  border-bottom: none;
-  border-top-left-radius: 8px; 
-  border-top-right-radius: 8px;
+/* Asegurar que todo el modal tenga fondo sólido */
+.modal-overlay * {
+  background-color: inherit !important;
 }
 
-.modal-header h2 {
-  font-size: 1.5rem;
-  margin: 0;
-  color: inherit;
+/* Estilos específicos para elementos del modal */
+.modal-content * {
+  background-color: var(--color-background-light) !important;
+}
+
+.modal-header * {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+}
+
+.modal-body * {
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
+}
+
+/* Excepciones para elementos específicos */
+.modal-header {
+  background-color: var(--color-primary) !important;
+}
+
+.employee-item {
+  background-color: var(--color-background-page, #f9fafb) !important;
 }
 
 /* Ajuste al botón de cierre para que sea visible */
@@ -484,9 +621,10 @@ input:checked + .slider:before {
   border: none;
   font-size: 1.8rem;
   line-height: 1;
-  color: var(--color-text-light); 
+  color: var(--color-text-light) !important; 
   opacity: 0.8;
   transition: opacity 0.2s ease;
+  cursor: pointer;
 }
 
 .modal-close-btn:hover {
@@ -496,12 +634,15 @@ input:checked + .slider:before {
 /* --- Cuerpo y Secciones del Modal --- */
 .modal-body {
   padding: 25px;
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
 }
 
 .detail-section {
   margin-bottom: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--color-border, #e5e7eb);
+  background-color: var(--color-background-light) !important;
 }
 
 .detail-section:last-of-type {
@@ -511,10 +652,11 @@ input:checked + .slider:before {
 }
 
 .detail-section h3 {
-  color: var(--color-primary);
+  color: var(--color-primary) !important;
   font-size: 1.2rem;
   margin-top: 0;
   margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .detail-item {
@@ -522,6 +664,13 @@ input:checked + .slider:before {
   align-items: center; 
   flex-wrap: wrap; 
   gap: 8px; 
+  margin-bottom: 10px;
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
 }
 
 /* --- Contenedor para las píldoras de días dentro del modal --- */
@@ -532,7 +681,7 @@ input:checked + .slider:before {
 }
 
 .detail-item strong {
-  color: var(--color-text-dark);
+  color: var(--color-text-dark) !important;
   font-weight: 600;
   margin-right: 8px;
 }
@@ -563,7 +712,7 @@ input:checked + .slider:before {
 }
 
 .employee-item {
-  background-color: var(--color-background-page, #f9fafb); /* Fondo muy sutil */
+  background-color: var(--color-background-page, #f9fafb) !important;
   border: 1px solid var(--color-border, #e5e7eb);
   border-radius: 6px;
   padding: 15px;
@@ -581,18 +730,25 @@ input:checked + .slider:before {
 
 .employee-name-detail {
   font-weight: 600;
-  color: var(--color-primary); /* Nombre del empleado con color principal */
+  color: var(--color-primary) !important;
   margin-bottom: 8px;
+  font-size: 1rem;
 }
 
 .employee-contact-info {
   font-size: 0.9rem;
-  color: var(--color-text-secondary, #6b7280); /* Color de texto secundario */
+  color: var(--color-text-secondary, #6b7280) !important;
   line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.employee-contact-info:last-child {
+  margin-bottom: 0;
 }
 
 .employee-contact-info strong {
-  color: var(--color-text-dark);
+  color: var(--color-text-dark) !important;
+  font-weight: 600;
 }
 
 /* --- Formulario de Novedades (dentro del modal) --- */
@@ -733,8 +889,570 @@ input:checked + .slider:before {
 
 
 .novedad-form .form-actions {
-  display: flex; justify-content: center; gap: 15px;
-  margin-top: 25px; padding-top: 20px;
+  display: flex; 
+  justify-content: center; 
+  gap: 15px;
+  margin-top: 25px; 
+  padding-top: 20px;
+}
+
+/* Centrar botones del formulario */
+.admin-form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+  padding-top: 20px;
+}
+
+/* Contenedores para campos de fecha y hora con íconos */
+.date-input-container,
+.time-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.date-input-container .react-datepicker-wrapper,
+.time-input-container .react-select-container {
+  flex: 1;
+  width: 100%;
+}
+
+.date-icon,
+.time-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  pointer-events: auto;
+  z-index: 20;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.date-icon:hover,
+.time-icon:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+/* Ajustar padding del input para hacer espacio al ícono */
+.date-input-container .react-datepicker__input-container input {
+  padding-right: 40px !important;
+}
+
+/* Ajustar el select de hora para hacer espacio al ícono */
+.time-input-container .react-select__control {
+  padding-right: 40px !important;
+}
+
+
+/* Posicionamiento del calendario */
+.react-datepicker-popper {
+  z-index: 1060 !important;
+}
+
+.react-datepicker-popper[data-placement^="bottom-end"] {
+  transform: translate3d(0px, 40px, 0px) !important;
+}
+
+.react-datepicker-popper[data-placement^="top-end"] {
+  transform: translate3d(0px, -10px, 0px) !important;
+}
+
+/* Asegurar que ambos calendarios se posicionen debajo del ícono */
+.date-input-container .react-datepicker-popper {
+  right: 0 !important;
+  left: auto !important;
+}
+
+.date-input-container .react-datepicker-popper[data-placement^="bottom"] {
+  transform: translate3d(0px, 0px, 0px) !important;
+}
+
+.date-input-container .react-datepicker-popper[data-placement^="top"] {
+  transform: translate3d(0px, 0px, 0px) !important;
+}
+
+/* Posicionamiento más específico para alinear con el ícono */
+.date-input-container .react-datepicker-popper {
+  position: absolute !important;
+  right: 12px !important;
+  left: auto !important;
+  top: calc(100% + 4px) !important;
+  margin-top: 0 !important;
+}
+
+/* Estilos para el select de horas - cajita con scroll */
+.time-input-container .react-select__menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  width: 200px !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  z-index: 1060 !important;
+  background-color: var(--color-background-light) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  margin-top: 4px !important;
+}
+
+/* Estilos para selects de días y empleados - cajita con scroll */
+.react-select__menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  width: 300px !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  z-index: 1060 !important;
+  background-color: var(--color-background-light) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  margin-top: 4px !important;
+}
+
+/* Asegurar que el menú se posicione correctamente */
+.time-input-container .react-select__menu-list {
+  max-height: 180px !important;
+  overflow-y: auto !important;
+}
+
+/* Asegurar que el menú de días y empleados se posicione correctamente */
+.react-select__menu-list {
+  max-height: 180px !important;
+  overflow-y: auto !important;
+}
+
+
+
+/* Estilos para las opciones del select de horas */
+.time-input-container .react-select__option {
+  padding: 8px 12px !important;
+  color: var(--color-text-dark) !important;
+  background-color: var(--color-background-light) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.time-input-container .react-select__option:hover {
+  background-color: var(--color-secondary-hover) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.time-input-container .react-select__option--is-selected {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+}
+
+.time-input-container .react-select__option--is-focused {
+  background-color: var(--color-secondary-hover) !important;
+  color: var(--color-text-dark) !important;
+}
+
+/* Estilos para las opciones de días y empleados */
+.react-select__option {
+  padding: 8px 12px !important;
+  color: var(--color-text-dark) !important;
+  background-color: var(--color-background-light) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.react-select__option:hover {
+  background-color: var(--color-secondary-hover) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.react-select__option--is-selected {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+}
+
+.react-select__option--is-focused {
+  background-color: var(--color-secondary-hover) !important;
+  color: var(--color-text-dark) !important;
+}
+
+/* Textos claros para modo noche - todos los campos */
+.dark .time-input-container .react-select__option,
+.dark .time-input-container .react-select__single-value,
+.dark .time-input-container .react-select__placeholder,
+.dark .react-select__option,
+.dark .react-select__single-value,
+.dark .react-select__placeholder,
+.dark .react-select__input,
+.dark .admin-form-label,
+.dark .react-datepicker__input-container input,
+.dark .react-datepicker__input-container input::placeholder,
+.dark input[type="text"],
+.dark input[type="date"],
+.dark input[type="time"],
+body.dark .time-input-container .react-select__option,
+body.dark .time-input-container .react-select__single-value,
+body.dark .time-input-container .react-select__placeholder,
+body.dark .react-select__option,
+body.dark .react-select__single-value,
+body.dark .react-select__placeholder,
+body.dark .react-select__input,
+body.dark .admin-form-label,
+body.dark .react-datepicker__input-container input,
+body.dark .react-datepicker__input-container input::placeholder,
+body.dark input[type="text"],
+body.dark input[type="date"],
+body.dark input[type="time"] {
+  color: #ffffff !important;
+}
+
+.dark .time-input-container .react-select__option:hover,
+.dark .time-input-container .react-select__option--is-focused,
+.dark .react-select__option:hover,
+.dark .react-select__option--is-focused,
+body.dark .time-input-container .react-select__option:hover,
+body.dark .time-input-container .react-select__option--is-focused,
+body.dark .react-select__option:hover,
+body.dark .react-select__option--is-focused {
+  color: #ffffff !important;
+}
+
+/* Estilos para el calendario en modo noche */
+.dark .react-datepicker,
+body.dark .react-datepicker {
+  background-color: #2d3748 !important;
+  border: 1px solid #4a5568 !important;
+}
+
+.dark .react-datepicker__header,
+body.dark .react-datepicker__header {
+  background-color: var(--color-primary) !important;
+}
+
+.dark .react-datepicker__current-month,
+.dark .react-datepicker__day-name,
+.dark .react-datepicker__day,
+body.dark .react-datepicker__current-month,
+body.dark .react-datepicker__day-name,
+body.dark .react-datepicker__day {
+  color: #ffffff !important;
+}
+
+.dark .react-datepicker__day:hover,
+body.dark .react-datepicker__day:hover {
+  background-color: #4a5568 !important;
+  color: #ffffff !important;
+}
+
+/* Estilos para el control del select de horas */
+.time-input-container .react-select__control {
+  background-color: var(--color-background-light) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.time-input-container .react-select__control--is-focused {
+  background-color: var(--color-form-focus-bg) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.4) !important;
+}
+
+.time-input-container .react-select__single-value {
+  color: var(--color-text-dark) !important;
+}
+
+.time-input-container .react-select__placeholder {
+  color: var(--color-text-secondary) !important;
+}
+
+.time-input-container .react-select__indicator-separator {
+  background-color: var(--color-border) !important;
+}
+
+.time-input-container .react-select__dropdown-indicator {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Estilos para todos los selects (días y empleados) */
+.react-select__control {
+  background-color: var(--color-background-light) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-dark) !important;
+}
+
+.react-select__control--is-focused {
+  background-color: var(--color-form-focus-bg) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.4) !important;
+}
+
+.react-select__single-value,
+.react-select__multi-value__label {
+  color: var(--color-text-dark) !important;
+}
+
+.react-select__placeholder {
+  color: var(--color-text-secondary) !important;
+}
+
+.react-select__indicator-separator {
+  background-color: var(--color-border) !important;
+}
+
+.react-select__dropdown-indicator {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Estilos para modo noche - todos los controles */
+.dark .react-select__control,
+.dark .time-input-container .react-select__control,
+body.dark .react-select__control,
+body.dark .time-input-container .react-select__control {
+  background-color: var(--color-background-light) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.dark .react-select__control--is-focused,
+.dark .time-input-container .react-select__control--is-focused,
+body.dark .react-select__control--is-focused,
+body.dark .time-input-container .react-select__control--is-focused {
+  background-color: var(--color-form-focus-bg) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.4) !important;
+}
+
+/* Scroll personalizado para el select de horas */
+.time-input-container .react-select__menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.time-input-container .react-select__menu::-webkit-scrollbar-track {
+  background: var(--color-background-page);
+  border-radius: 3px;
+}
+
+.time-input-container .react-select__menu::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 3px;
+}
+
+.time-input-container .react-select__menu::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Scroll personalizado para selects de días y empleados */
+.react-select__menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.react-select__menu::-webkit-scrollbar-track {
+  background: var(--color-background-page);
+  border-radius: 3px;
+}
+
+.react-select__menu::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 3px;
+}
+
+.react-select__menu::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Estilos para asteriscos de campos obligatorios */
+.required-asterisk {
+  color: #dc3545 !important;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+.dark .required-asterisk,
+body.dark .required-asterisk {
+  color: #ff6b6b !important;
+}
+
+/* Estilos para mensajes de error */
+.admin-form-error {
+  color: #dc3545 !important;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.dark .admin-form-error,
+body.dark .admin-form-error {
+  color: #ff6b6b !important;
+}
+
+/* Estilos para campos con error */
+.admin-form-group .react-datepicker__input-container input.error,
+.admin-form-group .react-select__control.error {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
+}
+
+.dark .admin-form-group .react-datepicker__input-container input.error,
+.dark .admin-form-group .react-select__control.error,
+body.dark .admin-form-group .react-datepicker__input-container input.error,
+body.dark .admin-form-group .react-select__control.error {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.25) !important;
+}
+
+/* Estilos para campos con error - más específicos */
+.admin-form-group:has(.admin-form-error) .react-datepicker__input-container input,
+.admin-form-group:has(.admin-form-error) .react-select__control {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
+}
+
+.dark .admin-form-group:has(.admin-form-error) .react-datepicker__input-container input,
+.dark .admin-form-group:has(.admin-form-error) .react-select__control,
+body.dark .admin-form-group:has(.admin-form-error) .react-datepicker__input-container input,
+body.dark .admin-form-group:has(.admin-form-error) .react-select__control {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.25) !important;
+}
+
+/* Estilos para botón deshabilitado */
+.admin-form-button:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  background-color: #6c757d !important;
+  color: #ffffff !important;
+}
+
+.dark .admin-form-button:disabled,
+body.dark .admin-form-button:disabled {
+  background-color: #495057 !important;
+  color: #ffffff !important;
+}
+
+/* Estilos para placeholders en modo noche */
+.dark .react-datepicker__input-container input::placeholder,
+body.dark .react-datepicker__input-container input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Estilos para input de texto de fecha */
+.date-text-input {
+  width: 100% !important;
+  padding: 8px 12px !important;
+  margin-top: 4px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 4px !important;
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
+  font-size: 14px !important;
+}
+
+.date-text-input:focus {
+  outline: none !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.2) !important;
+}
+
+.dark .date-text-input,
+body.dark .date-text-input {
+  background-color: var(--color-background-dark) !important;
+  color: #ffffff !important;
+  border-color: var(--color-border-dark) !important;
+}
+
+.dark .date-text-input:focus,
+body.dark .date-text-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.3) !important;
+}
+
+.dark .date-text-input::placeholder,
+body.dark .date-text-input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Estilos para input de hora */
+.time-input {
+  width: 100% !important;
+  padding: 8px 12px !important;
+  margin-bottom: 4px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 4px !important;
+  background-color: var(--color-background-light) !important;
+  color: var(--color-text-dark) !important;
+  font-size: 14px !important;
+}
+
+.time-input:focus {
+  outline: none !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.2) !important;
+}
+
+.dark .time-input,
+body.dark .time-input {
+  background-color: var(--color-background-dark) !important;
+  color: #ffffff !important;
+  border-color: var(--color-border-dark) !important;
+}
+
+.dark .time-input:focus,
+body.dark .time-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(154, 122, 159, 0.3) !important;
+}
+
+.dark .time-input::placeholder,
+body.dark .time-input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Estilos para select de hora */
+.time-select {
+  margin-top: 4px !important;
+}
+
+/* Estilos para alertas visuales más prominentes */
+.admin-form-error {
+  animation: shake 0.5s ease-in-out;
+  font-weight: 600;
+  padding: 8px 12px;
+  background-color: rgba(220, 53, 69, 0.15);
+  border-radius: 6px;
+  border-left: 4px solid #dc3545;
+  margin-top: 6px;
+  display: block;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.dark .admin-form-error,
+body.dark .admin-form-error {
+  background-color: rgba(255, 107, 107, 0.15);
+  border-left-color: #ff6b6b;
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.2);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Estilos para campos con error - animación */
+.admin-form-group:has(.admin-form-error) {
+  animation: errorPulse 0.3s ease-in-out;
+}
+
+@keyframes errorPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
 }
 
 .novedad-form .button-primary {

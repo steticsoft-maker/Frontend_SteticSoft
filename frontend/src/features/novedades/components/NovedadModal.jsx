@@ -47,7 +47,6 @@ const NovedadModal = ({ onClose, onSuccess, novedadToEdit, isEditing }) => {
       <div className="admin-modal-content large" onClick={(e) => e.stopPropagation()}>
         <div className="admin-modal-header">
           <h2 className="admin-modal-title">{isEditing ? 'Editar Novedad' : 'Crear Nueva Novedad'}</h2>
-          <button className="admin-modal-close" onClick={onClose}>&times;</button>
         </div>
 
         <div className="admin-modal-body">
@@ -58,9 +57,6 @@ const NovedadModal = ({ onClose, onSuccess, novedadToEdit, isEditing }) => {
             initialData={novedadToEdit}
             isEditing={isEditing}
           />
-        </div>
-        <div className="admin-modal-footer">
-          <button className="admin-form-button secondary" onClick={onClose}>Cancelar</button>
         </div>
       </div>
     </div>
