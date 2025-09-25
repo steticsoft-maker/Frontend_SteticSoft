@@ -1,7 +1,6 @@
 // src/features/home/pages/PublicServiciosPage.jsx
 import React, { useState, useEffect } from "react";
 import {
-  FaShoppingCart,
   FaCalendarAlt,
   FaHeart,
   FaGem,
@@ -11,15 +10,12 @@ import {
 } from "react-icons/fa";
 import ServiceCard from "../components/ServiceCard";
 import { getPublicServicios } from "../../../shared/services/publicServices";
-import { formatPrice, calculateTotal } from "../../../shared/utils/priceUtils";
 import Footer from "../../../shared/components/layout/Footer";
 import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
 import "../css/PublicServicios.css";
 
 function PublicServiciosPage() {
   const [services, setServices] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [showCart, setShowCart] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
   const [loading, setLoading] = useState(true);
   const [showPulse, setShowPulse] = useState(false);
@@ -64,66 +60,9 @@ function PublicServiciosPage() {
   }, []);
 
   useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("publicCart")) || [];
     const savedSchedule = localStorage.getItem("selectedSchedule") || "";
-    setCart(savedCart);
     setSelectedSchedule(savedSchedule);
   }, []);
-
-  const addToCart = (service) => {
-    setCart((prevCart) => {
-      const serviceId = service.idServicio || service.id;
-      const existingService = prevCart.find(
-        (item) =>
-          (item.idServicio || item.id) === serviceId && item.type === "service"
-      );
-      let newCart;
-      if (existingService) {
-        newCart = prevCart.map((item) =>
-          (item.idServicio || item.id) === serviceId && item.type === "service"
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        newCart = [...prevCart, { ...service, quantity: 1, type: "service" }];
-      }
-      localStorage.setItem("publicCart", JSON.stringify(newCart));
-      return newCart;
-    });
-  };
-
-  const handleOrder = () => {
-    if (!selectedSchedule) {
-      alert(
-        "💕 Por favor, selecciona un horario en la sección de Novedades antes de realizar el pedido del servicio."
-      );
-      return;
-    }
-    alert(
-      `✨ ¡Tu pedido de servicio ha sido registrado con éxito!\n🕐 Horario seleccionado: ${selectedSchedule}\n💖 Gracias por utilizar nuestros servicios\n💳 El pago debe ser realizado al finalizar el servicio.`
-    );
-    setCart((prevCart) => {
-      const newCart = prevCart.filter((item) => item.type !== "service");
-      localStorage.setItem("publicCart", JSON.stringify(newCart));
-      return newCart;
-    });
-  };
-
-  const getTotal = () => {
-    return cart.reduce((total, item) => {
-      if (item.type === "service") {
-        const price =
-          typeof item.price === "string" ? parseFloat(item.price) : item.price;
-        const precio =
-          typeof item.precio === "string"
-            ? parseFloat(item.precio)
-            : item.precio;
-        const finalPrice = price || precio || 0;
-        return total + finalPrice * (item.quantity || 0);
-      }
-      return total;
-    }, 0);
-  };
 
   return (
     <div className="public-servicios-page">
@@ -153,82 +92,6 @@ function PublicServiciosPage() {
         </div>
       </section>
 
-      {/* Cart Icon */}
-      <div className="cart-icon" onClick={() => setShowCart(!showCart)}>
-        <FaShoppingCart size={24} />
-        {cart.filter((item) => item.type === "service").length > 0 && (
-          <span className="cart-count">
-            {cart
-              .filter((item) => item.type === "service")
-              .reduce((acc, item) => acc + item.quantity, 0)}
-          </span>
-        )}
-      </div>
-
-      {/* Cart Modal */}
-      {showCart && (
-        <div className="cart-modal">
-          <h3>
-            <FaHeart style={{ marginRight: "10px", color: "#e91e63" }} />
-            Tu Carrito de Servicios
-          </h3>
-          {cart.filter((item) => item.type === "service").length === 0 ? (
-            <div style={{ textAlign: "center", padding: "20px" }}>
-              <FaGem
-                style={{
-                  fontSize: "2rem",
-                  color: "#e91e63",
-                  marginBottom: "10px",
-                }}
-              />
-              <p>Tu carrito está vacío</p>
-            </div>
-          ) : (
-            <>
-              <ul>
-                {cart
-                  .filter((item) => item.type === "service")
-                  .map((item) => {
-                    const price =
-                      typeof item.price === "string"
-                        ? parseFloat(item.price)
-                        : item.price;
-                    const precio =
-                      typeof item.precio === "string"
-                        ? parseFloat(item.precio)
-                        : item.precio;
-                    const finalPrice = price || precio || 0;
-                    const total = finalPrice * (item.quantity || 1);
-                    return (
-                      <li key={`cart-serv-${item.idServicio || item.id}`}>
-                        <FaStar
-                          style={{ marginRight: "8px", color: "#e91e63" }}
-                        />
-                        {item.nombre} - {item.quantity || 1} x $
-                        {formatPrice(finalPrice, 2)} = ${formatPrice(total, 2)}
-                      </li>
-                    );
-                  })}
-              </ul>
-              <div className="schedule-info">
-                <FaCalendarAlt
-                  style={{ marginRight: "8px", color: "#e91e63" }}
-                />
-                <strong>Horario Seleccionado:</strong> {selectedSchedule}
-              </div>
-              <div className="cart-total">
-                <FaGem style={{ marginRight: "8px" }} />
-                Total Servicios: ${formatPrice(getTotal(), 2)}
-              </div>
-              <button onClick={handleOrder} className="cart-order-btn">
-                <FaHeart style={{ marginRight: "8px" }} />
-                Realizar Pedido
-              </button>
-            </>
-          )}
-        </div>
-      )}
-
       {/* Services Section */}
       <section className="servicios-section">
         <div className="servicios-grid-container">
@@ -253,7 +116,7 @@ function PublicServiciosPage() {
                     animation: "fadeInUp 0.6s ease-out both",
                   }}
                 >
-                  <ServiceCard service={service} onAddToCart={addToCart} />
+                  <ServiceCard service={service} />
                 </div>
               ))}
             </div>

@@ -6,6 +6,23 @@
 @import "@/shared/styles/theme-enhancements.css";
 @import "@/shared/styles/performance-optimizations.css";
 
+/* === Override Bootstrap CSS que puede interferir con iconos === */
+svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  fill: currentColor !important;
+}
+
+/* Asegurar que los iconos de React Icons no sean afectados por Bootstrap */
+button svg,
+.btn svg {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: currentColor !important;
+  color: inherit !important;
+}
+
 /* Override Bootstrap JS controllers to prevent conflicts */
 * {
   --bs-line-height: inherit;

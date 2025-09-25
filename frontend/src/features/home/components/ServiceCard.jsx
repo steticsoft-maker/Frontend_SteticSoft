@@ -1,11 +1,12 @@
 // src/features/home/components/ServiceCard.jsx
 import React from "react";
-import { FaCrown, FaHeart } from "react-icons/fa";
+import { FaCrown, FaCalendarAlt } from "react-icons/fa";
 import { formatPrice } from "../../../shared/utils/priceUtils";
 
-const ServiceCard = ({ service, onAddToCart }) => {
-  const handleAddToCart = () => {
-    onAddToCart(service);
+const ServiceCard = ({ service }) => {
+  const handleScheduleService = () => {
+    // Redirigir a la página de agendar citas
+    window.location.href = "/admin/citas/agendar";
   };
 
   return (
@@ -74,8 +75,8 @@ const ServiceCard = ({ service, onAddToCart }) => {
 
         <div>
           <div className="service-price">${formatPrice(service.precio)}</div>
-          <button className="service-button" onClick={handleAddToCart}>
-            <FaHeart style={{ marginRight: "8px" }} />
+          <button className="service-button" onClick={handleScheduleService}>
+            <FaCalendarAlt style={{ marginRight: "8px" }} />
             Agendar Servicio
           </button>
         </div>

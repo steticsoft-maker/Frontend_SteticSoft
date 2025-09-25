@@ -324,6 +324,175 @@
   background: var(--servicios-gradient-primary) !important;
 }
 
+/* === Mejoras específicas para iconos del carrito === */
+.dark-theme .quantity-btn svg {
+  color: white !important;
+}
+
+.dark-theme .remove-item-btn svg {
+  color: white !important;
+}
+
+.dark-theme .cart-clear-btn svg {
+  color: white !important;
+}
+
+.dark-theme .cart-order-btn svg {
+  color: white !important;
+}
+
+.dark-theme .cart-close-btn svg {
+  color: white !important;
+}
+
+/* Asegurar que los iconos sean visibles en tema claro también */
+.light-theme .quantity-btn svg,
+.light-theme .remove-item-btn svg,
+.light-theme .cart-clear-btn svg,
+.light-theme .cart-order-btn svg,
+.light-theme .cart-close-btn svg {
+  color: white !important;
+}
+
+/* === Estilos globales para iconos de React Icons === */
+svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* Forzar visualización de iconos en botones del carrito */
+.quantity-btn svg,
+.remove-item-btn svg,
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: currentColor !important;
+  color: white !important;
+}
+
+/* Asegurar que los iconos no se oculten */
+.quantity-btn svg,
+.remove-item-btn svg,
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+/* === Estilos específicos para forzar visualización de iconos === */
+.quantity-btn svg,
+.remove-item-btn svg,
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: white !important;
+  color: white !important;
+  width: auto !important;
+  height: auto !important;
+  font-size: inherit !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+}
+
+/* Asegurar que los iconos no se oculten por CSS global */
+.quantity-btn svg,
+.remove-item-btn svg,
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Forzar el tamaño específico de cada tipo de icono */
+.quantity-btn svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.remove-item-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.cart-clear-btn svg,
+.cart-order-btn svg,
+.cart-close-btn svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* === Estilos adicionales para asegurar visibilidad === */
+.quantity-btn,
+.remove-item-btn,
+.cart-clear-btn,
+.cart-order-btn,
+.cart-close-btn {
+  position: relative;
+}
+
+.quantity-btn::before,
+.remove-item-btn::before,
+.cart-clear-btn::before,
+.cart-order-btn::before,
+.cart-close-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Fallback para iconos que no se muestran */
+.quantity-btn:not(:has(svg))::before {
+  content: '−';
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.quantity-btn:not(:has(svg)):last-child::before {
+  content: '+';
+}
+
+.remove-item-btn:not(:has(svg))::before {
+  content: '×';
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.cart-clear-btn:not(:has(svg))::before {
+  content: '🗑';
+  font-size: 14px;
+}
+
+.cart-order-btn:not(:has(svg))::before {
+  content: '❤';
+  font-size: 14px;
+}
+
+.cart-close-btn:not(:has(svg))::before {
+  content: '×';
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 /* Mejoras para el tema toggle */
 .dark-theme .theme-toggle {
   background: var(--color-button-primary) !important;

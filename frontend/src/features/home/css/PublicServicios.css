@@ -286,152 +286,51 @@
   animation: pulse 2s infinite;
 }
 
-/* Cart Icon */
-.cart-icon {
+/* Floating Elements */
+.floating-elements {
   position: fixed;
-  top: 100px;
-  right: 30px;
-  background: var(--gradient-primary);
-  color: white;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-soft);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
-  animation: float 3s ease-in-out infinite;
-}
-
-.cart-icon:hover {
-  transform: scale(1.1) translateY(-5px);
-  box-shadow: var(--shadow-hover);
-  animation: pulse 0.6s ease-in-out;
-}
-
-.cart-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
-  color: white;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: bold;
-  box-shadow: 0 2px 10px rgba(255, 71, 87, 0.3);
-  animation: pulse 2s infinite;
-}
-
-/* Cart Modal */
-.cart-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border-radius: var(--radius-large);
-  padding: 30px;
-  box-shadow: var(--shadow-hover);
-  max-width: 450px;
-  width: 90%;
-  z-index: 2000;
-  animation: fadeInUp 0.4s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(233, 30, 99, 0.1);
-}
-
-.cart-modal h3 {
-  margin-bottom: 20px;
-  color: var(--feminine-primary);
-  font-size: 1.6rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-.cart-modal ul {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 15px;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.cart-modal li {
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(233, 30, 99, 0.1);
-  font-size: 0.95rem;
-  color: #555;
-  transition: all 0.3s ease;
-}
-
-.cart-modal li:hover {
-  background: rgba(233, 30, 99, 0.05);
-  padding-left: 10px;
-}
-
-.schedule-info {
-  background: rgba(233, 30, 99, 0.1);
-  padding: 12px;
-  border-radius: var(--radius-medium);
-  margin-bottom: 15px;
-  font-size: 0.9rem;
-  color: #555;
-  text-align: center;
-  border: 1px solid rgba(233, 30, 99, 0.2);
-}
-
-.cart-total {
-  text-align: center;
-  margin-bottom: 25px;
-  font-size: 1.3rem;
-  color: var(--feminine-primary);
-  font-weight: 700;
-  padding: 15px;
-  background: rgba(233, 30, 99, 0.1);
-  border-radius: var(--radius-medium);
-}
-
-.cart-order-btn {
-  width: 100%;
-  background: var(--gradient-primary);
-  color: white;
-  border: none;
-  padding: 15px;
-  border-radius: var(--radius-medium);
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.cart-order-btn::before {
-  content: '';
-  position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.cart-order-btn:hover::before {
-  left: 100%;
+.floating-element {
+  position: absolute;
+  color: rgba(212, 165, 216, 0.3);
+  animation: float 6s ease-in-out infinite;
 }
 
-.cart-order-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
+.floating-element:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.floating-element:nth-child(2) {
+  top: 60%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+.floating-element:nth-child(3) {
+  top: 40%;
+  left: 80%;
+  animation-delay: 4s;
+}
+
+.floating-element:nth-child(4) {
+  top: 80%;
+  left: 20%;
+  animation-delay: 1s;
+}
+
+.floating-element:nth-child(5) {
+  top: 10%;
+  right: 30%;
+  animation-delay: 3s;
 }
 
 /* Floating Appointment Button */
@@ -439,58 +338,26 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  background: var(--servicios-gradient-primary);
   color: white;
   border: none;
-  padding: 18px 24px;
-  border-radius: var(--radius-full);
-  font-size: 1rem;
+  padding: 20px 25px;
+  border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: var(--shadow-soft);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--servicios-shadow-card);
+  transition: all 0.3s ease;
   z-index: 1000;
+  animation: pulse 3s infinite;
   display: flex;
   align-items: center;
   gap: 10px;
-  animation: float 4s ease-in-out infinite;
 }
 
 .floating-appointment-btn:hover {
   transform: translateY(-5px) scale(1.05);
-  box-shadow: var(--shadow-hover);
-  animation: pulse 0.6s ease-in-out;
+  box-shadow: var(--servicios-shadow-hover);
 }
-
-.floating-appointment-btn.pulse {
-  animation: pulse 2s infinite;
-}
-
-.btn-icon {
-  font-size: 1.2rem;
-}
-
-/* Floating Elements */
-.floating-elements {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.floating-element {
-  position: absolute;
-  color: rgba(233, 30, 99, 0.2);
-  font-size: 1.5rem;
-  animation: float 6s ease-in-out infinite;
-}
-
-.floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-.floating-element:nth-child(2) { top: 60%; right: 15%; animation-delay: 2s; }
-.floating-element:nth-child(3) { top: 40%; left: 80%; animation-delay: 4s; }
-.floating-element:nth-child(4) { top: 80%; left: 20%; animation-delay: 1s; }
-.floating-element:nth-child(5) { top: 30%; right: 30%; animation-delay: 3s; }
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -515,19 +382,6 @@
     gap: 20px;
   }
   
-  .cart-icon {
-    width: 60px;
-    height: 60px;
-    top: 80px;
-    right: 20px;
-  }
-  
-  .cart-count {
-    width: 24px;
-    height: 24px;
-    font-size: 0.7rem;
-  }
-  
   .floating-appointment-btn {
     bottom: 20px;
     right: 20px;
@@ -550,13 +404,26 @@
     padding: 0 15px;
   }
   
-  .floating-appointment-btn {
-    padding: 12px 16px;
-    font-size: 0.8rem;
+  .servicios-hero {
+    padding: 80px 0 40px;
   }
   
-  .cart-modal {
-    padding: 20px;
-    max-width: 350px;
+  .servicios-section {
+    padding: 40px 0;
+  }
+  
+  .service-card-container {
+    min-height: 350px;
+  }
+  
+  .service-image-container {
+    height: 150px !important;
+  }
+  
+  .floating-appointment-btn {
+    bottom: 15px;
+    right: 15px;
+    padding: 12px 16px;
+    font-size: 0.8rem;
   }
 }
