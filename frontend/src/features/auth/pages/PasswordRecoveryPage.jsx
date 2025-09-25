@@ -1,5 +1,5 @@
 // src/features/auth/pages/PasswordRecoveryPage.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import PasswordRecoveryForm from "../components/PasswordRecoveryForm";
@@ -13,7 +13,20 @@ function PasswordRecoveryPage() {
   const [token, setToken] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isTokenValidated, setIsTokenValidated] = useState(false);
+  const [tokenValidationError, setTokenValidationError] = useState("");
   const navigate = useNavigate();
+
+  // Resetear estado de validación del token cuando cambia la vista
+  useEffect(() => {
+    if (view === "verify") {
+      setIsTokenValidated(false);
+      setTokenValidationError("");
+    } else if (view === "reset") {
+      setIsTokenValidated(true);
+      setTokenValidationError("");
+    }
+  }, [view]);
 
   const handleRequestSubmit = async (formData) => {
     setIsLoading(true);
@@ -38,9 +51,19 @@ function PasswordRecoveryPage() {
   const handleVerifySubmit = async (formData) => {
     setIsLoading(true);
     setError("");
+    setTokenValidationError("");
+    setIsTokenValidated(false);
+
+    console.log("🚀 Iniciando verificación de token");
+    console.log("📝 Datos del formulario:", formData);
+    console.log("🔑 Token a verificar:", formData.token);
+    console.log("📧 Email asociado:", email);
+
     try {
       await authService.verificarTokenAPI(formData.token);
       setToken(formData.token);
+      setIsTokenValidated(true);
+      setTokenValidationError("");
       setView("reset");
       Swal.fire({
         title: "¡Token verificado!",
@@ -50,16 +73,22 @@ function PasswordRecoveryPage() {
       });
     } catch (err) {
       console.error("Error verificando token:", err);
+      setIsTokenValidated(false);
+
       if (err.status === 500) {
-        setError(
+        setTokenValidationError(
           "Error del servidor. Por favor, intenta nuevamente más tarde."
         );
       } else if (err.status === 404) {
-        setError("Token no encontrado. Verifica que el token sea correcto.");
+        setTokenValidationError(
+          "Token no encontrado. Verifica que el token sea correcto."
+        );
       } else if (err.status === 400) {
-        setError("Token inválido o malformado.");
+        setTokenValidationError("Token inválido o malformado.");
       } else {
-        setError(err.message || "El token es inválido o ha expirado.");
+        setTokenValidationError(
+          err.message || "El token es inválido o ha expirado."
+        );
       }
     } finally {
       setIsLoading(false);
@@ -109,6 +138,26 @@ function PasswordRecoveryPage() {
     }
   };
 
+  // Función de depuración temporal
+  const debugTokenValidation = async () => {
+    console.log("🔧 Iniciando depuración de validación de tokens...");
+
+    const testTokens = ["958914", "123456", "390577"];
+
+    for (const token of testTokens) {
+      console.log(`\n🧪 Probando token: ${token}`);
+      console.log(`📏 Longitud: ${token.length}`);
+      console.log(`🔢 Solo números: ${/^\d+$/.test(token)}`);
+
+      try {
+        const result = await authService.verificarTokenAPI(token);
+        console.log(`✅ Token ${token} VÁLIDO:`, result);
+      } catch (error) {
+        console.log(`❌ Token ${token} INVÁLIDO:`, error);
+      }
+    }
+  };
+
   const handleSubmit = (formData) => {
     if (view === "request") {
       handleRequestSubmit(formData);
@@ -130,6 +179,24 @@ function PasswordRecoveryPage() {
         <h2 className="auth-form-title">{getTitle()}</h2>
         <div className="auth-theme-toggle-container">
           <ThemeToggle />
+          {import.meta.env.DEV && view === "verify" && (
+            <button
+              type="button"
+              onClick={debugTokenValidation}
+              style={{
+                marginLeft: "10px",
+                padding: "5px 10px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "12px",
+              }}
+            >
+              🔧 Debug Tokens
+            </button>
+          )}
         </div>
         <PasswordRecoveryForm
           view={view}
@@ -137,6 +204,8 @@ function PasswordRecoveryPage() {
           error={error}
           isLoading={isLoading}
           email={email}
+          tokenValidationError={tokenValidationError}
+          isTokenValidated={isTokenValidated}
         />
       </div>
     </div>

@@ -4,7 +4,15 @@ import { Link } from "react-router-dom";
 import PasswordInput from "../../../shared/components/PasswordInput/PasswordInput";
 import "../css/Auth.css";
 
-function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
+function PasswordRecoveryForm({
+  view,
+  onSubmit,
+  error,
+  isLoading,
+  email,
+  tokenValidationError,
+  isTokenValidated,
+}) {
   const [formData, setFormData] = useState({
     email: "",
     token: "",
@@ -13,8 +21,6 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
   });
   const [passwordError, setPasswordError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [isTokenValidated, setIsTokenValidated] = useState(false);
-  const [tokenValidationError, setTokenValidationError] = useState("");
 
   // Expresiones regulares para validación
   const passwordRegex =
@@ -28,13 +34,8 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
 
   // Resetear estado cuando cambia la vista
   useEffect(() => {
-    if (view === "verify") {
-      setIsTokenValidated(false);
-      setTokenValidationError("");
-    } else if (view === "reset") {
-      setIsTokenValidated(true);
-      setTokenValidationError("");
-    }
+    // El estado de validación del token ahora se maneja en el componente padre
+    // No necesitamos resetear aquí ya que viene como props
   }, [view]);
 
   const validatePassword = (password) => {
@@ -69,10 +70,8 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
         : "";
       setFieldErrors((prev) => ({ ...prev, token: tokenError }));
 
-      // Limpiar errores de validación del token cuando el usuario escribe
-      if (tokenValidationError) {
-        setTokenValidationError("");
-      }
+      // Los errores de validación del token se manejan en el componente padre
+      // No necesitamos limpiarlos aquí
     }
 
     if (name === "nuevaContrasena") {
@@ -126,18 +125,9 @@ function PasswordRecoveryForm({ view, onSubmit, error, isLoading, email }) {
       } else if (!/^\d{6}$/.test(formData.token)) {
         newFieldErrors.token = "El código debe tener exactamente 6 dígitos.";
         hasErrors = true;
-      } else {
-        // Si el token tiene formato correcto, simular validación
-        // En una implementación real, aquí harías la llamada al API
-        // Por ahora, simulamos que el token "123456" es válido
-        if (formData.token === "123456") {
-          setIsTokenValidated(true);
-          setTokenValidationError("");
-        } else {
-          setTokenValidationError("Token no válido");
-          hasErrors = true;
-        }
       }
+      // La validación real del token se hace en el componente padre (PasswordRecoveryPage)
+      // que llama a verificarTokenAPI del servicio
     }
 
     if (view === "reset") {

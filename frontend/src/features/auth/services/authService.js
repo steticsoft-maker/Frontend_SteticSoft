@@ -27,7 +27,9 @@ export const loginAPI = async (credentials) => {
     // pueda manejarlo y informar al usuario adecuadamente.
     throw (
       error.response?.data ||
-      new Error(error.message || "Error desconocido durante el inicio de sesión.")
+      new Error(
+        error.message || "Error desconocido durante el inicio de sesión."
+      )
     );
   }
 };
@@ -49,7 +51,9 @@ export const registerAPI = async (userData) => {
   } catch (error) {
     throw (
       error.response?.data ||
-      new Error(error.message || "Error desconocido durante el proceso de registro.")
+      new Error(
+        error.message || "Error desconocido durante el proceso de registro."
+      )
     );
   }
 };
@@ -70,7 +74,10 @@ export const solicitarRecuperacionAPI = async (emailSolicitud) => {
   } catch (error) {
     throw (
       error.response?.data ||
-      new Error(error.message || "Error desconocido al solicitar la recuperación de contraseña.")
+      new Error(
+        error.message ||
+          "Error desconocido al solicitar la recuperación de contraseña."
+      )
     );
   }
 };
@@ -87,9 +94,18 @@ export const solicitarRecuperacionAPI = async (emailSolicitud) => {
  */
 export const verificarTokenAPI = async (token) => {
   try {
+    console.log("🔍 Verificando token:", token);
+    console.log("📤 Enviando petición a /auth/verificar-token con:", { token });
+
     const response = await apiClient.post("/auth/verificar-token", { token });
+
+    console.log("✅ Respuesta exitosa:", response.data);
     return response.data;
   } catch (error) {
+    console.error("❌ Error verificando token:", error);
+    console.error("📥 Respuesta del servidor:", error.response?.data);
+    console.error("🔢 Status code:", error.response?.status);
+
     throw (
       error.response?.data ||
       new Error(error.message || "Error desconocido al verificar el token.")
@@ -123,7 +139,10 @@ export const resetearContrasenaAPI = async (data) => {
   } catch (error) {
     throw (
       error.response?.data ||
-      new Error(error.message || "Error desconocido al intentar restablecer la contraseña.")
+      new Error(
+        error.message ||
+          "Error desconocido al intentar restablecer la contraseña."
+      )
     );
   }
 };
@@ -135,7 +154,7 @@ export const resetearContrasenaAPI = async (data) => {
 export const logoutAPI = async () => {
   // Si el backend tuviera un endpoint de logout, la llamada iría aquí:
   // await apiClient.post("/auth/logout");
-  
+
   // Se mantiene como 'async' para asegurar que la función siempre retorne una promesa,
   // manteniendo la consistencia con otras llamadas a la API.
   return { success: true, message: "Logout procesado por el cliente." };
