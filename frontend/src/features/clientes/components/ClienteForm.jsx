@@ -11,6 +11,7 @@ const ClienteForm = ({
   onFormBlur,
   isEditing,
   formErrors,
+  isVerifyingEmail,
 }) => {
   return (
     <>
@@ -66,20 +67,33 @@ const ClienteForm = ({
           <label htmlFor="correo" className="admin-form-label">
             Correo: <span className="required-asterisk">*</span>
           </label>
-          <input
-            type="email"
-            id="correo"
-            name="correo"
-            value={formData.correo || ""}
-            onChange={onFormChange}
-            onBlur={onFormBlur}
-            placeholder="Correo electrónico"
-            autoComplete="email"
-            required
-            className={`admin-form-input ${formErrors.correo ? "error" : ""}`}
-          />
+          <div className="admin-form-input-container">
+            <input
+              type="email"
+              id="correo"
+              name="correo"
+              value={formData.correo || ""}
+              onChange={onFormChange}
+              onBlur={onFormBlur}
+              placeholder="Correo electrónico"
+              autoComplete="email"
+              required
+              className={`admin-form-input ${formErrors.correo ? "error" : ""}`}
+              disabled={isVerifyingEmail}
+            />
+            {isVerifyingEmail && (
+              <div className="admin-form-loading-spinner">
+                <div className="spinner"></div>
+              </div>
+            )}
+          </div>
           {formErrors.correo && (
             <span className="admin-form-error">{formErrors.correo}</span>
+          )}
+          {isVerifyingEmail && !formErrors.correo && (
+            <span className="admin-form-info">
+              Verificando disponibilidad del correo...
+            </span>
           )}
         </div>
 

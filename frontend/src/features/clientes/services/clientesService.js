@@ -6,7 +6,8 @@ import apiClient from "../../../shared/services/apiClient"; // Asegúrate de que
  * @param {string} [searchTerm=''] - El término de búsqueda para filtrar clientes.
  * @returns {Promise<Array>} Una promesa que resuelve con un array de objetos cliente.
  */
-export const fetchClientes = async (searchTerm = '') => { // Ahora acepta un searchTerm opcional
+export const fetchClientes = async (searchTerm = "") => {
+  // Ahora acepta un searchTerm opcional
   try {
     let url = "/clientes";
     // Si hay un término de búsqueda, lo añadimos como parámetro de consulta
@@ -16,15 +17,18 @@ export const fetchClientes = async (searchTerm = '') => { // Ahora acepta un sea
     }
 
     const response = await apiClient.get(url);
-    
+
     // El backend devuelve { success: true, data: clientes }.
     // Asegúrate de retornar directamente el array de clientes.
     if (response.data && Array.isArray(response.data.data)) {
       return response.data.data;
     }
-    
+
     // Si la respuesta no es el formato esperado, puedes loggear o devolver un array vacío
-    console.warn("Formato de respuesta inesperado para fetchClientes:", response.data);
+    console.warn(
+      "Formato de respuesta inesperado para fetchClientes:",
+      response.data
+    );
     return [];
   } catch (error) {
     console.error("Error al obtener clientes:", error);
@@ -35,13 +39,28 @@ export const fetchClientes = async (searchTerm = '') => { // Ahora acepta un sea
 /**
  * Verifica si un correo electrónico ya existe en el sistema para un cliente.
  * @param {string} correo - El correo electrónico a verificar.
+ * @param {number|null} [idClienteExcluir=null] - ID del cliente a excluir de la verificación (para edición).
  * @returns {Promise<object>} La respuesta de la API.
  */
-export const verificarCorreoClienteAPI = async (correo) => {
+export const verificarCorreoClienteAPI = async (
+  correo,
+  idClienteExcluir = null
+) => {
   try {
-    const response = await apiClient.get(
-      `/clientes/verificar-correo?correo=${encodeURIComponent(correo)}`
-    );
+    let url = `/clientes/verificar-correo?correo=${encodeURIComponent(correo)}`;
+
+    // Solo enviar idCliente cuando se está editando un cliente existente
+    // Para crear nuevo cliente, no enviar el parámetro idCliente
+    if (
+      idClienteExcluir &&
+      Number.isInteger(idClienteExcluir) &&
+      idClienteExcluir > 0
+    ) {
+      url += `&idCliente=${idClienteExcluir}`;
+    }
+    // Si no hay idCliente válido, no agregar el parámetro
+
+    const response = await apiClient.get(url);
     return response.data;
   } catch (error) {
     throw (
@@ -61,10 +80,13 @@ export const getClienteById = async (clienteId) => {
   try {
     const response = await apiClient.get(`/clientes/${clienteId}`);
     // El backend devuelve { success: true, data: cliente }.
-    if (response.data && typeof response.data.data === 'object') {
+    if (response.data && typeof response.data.data === "object") {
       return response.data.data;
     }
-    console.warn("Formato de respuesta inesperado para getClienteById:", response.data);
+    console.warn(
+      "Formato de respuesta inesperado para getClienteById:",
+      response.data
+    );
     return null; // O un objeto vacío si es lo que tu UI espera
   } catch (error) {
     console.error(`Error al obtener cliente con ID ${clienteId}:`, error);
@@ -80,7 +102,11 @@ export const getClienteById = async (clienteId) => {
  * @param {number|null} [currentEditingClienteId=null] - El ID del cliente que se está editando (solo relevante si `isCreating` es `false`).
  * @returns {Promise<object>} Una promesa que resuelve con el objeto cliente guardado/actualizado.
  */
-export const saveCliente = async (clienteData, isCreating, currentEditingClienteId = null) => {
+export const saveCliente = async (
+  clienteData,
+  isCreating,
+  currentEditingClienteId = null
+) => {
   try {
     if (isCreating) {
       const dataToSend = {
@@ -96,7 +122,8 @@ export const saveCliente = async (clienteData, isCreating, currentEditingCliente
       };
       const response = await apiClient.post("/clientes", dataToSend);
       return response.data.data; // Asumiendo que devuelve { success: true, data: nuevoCliente }
-    } else { // Editando un cliente existente
+    } else {
+      // Editando un cliente existente
       const dataToSend = { ...clienteData };
 
       // Eliminar el campo 'contrasena' si existe al actualizar
@@ -111,7 +138,7 @@ export const saveCliente = async (clienteData, isCreating, currentEditingCliente
 
       // Mapear 'estado' del frontend a 'estadoCliente' y 'estadoUsuario' para el backend
       // ¡ESTO ES CLAVE PARA EL 400!
-      if (Object.prototype.hasOwnProperty.call(dataToSend, 'estado')) {
+      if (Object.prototype.hasOwnProperty.call(dataToSend, "estado")) {
         dataToSend.estadoCliente = dataToSend.estado;
         dataToSend.estadoUsuario = dataToSend.estado; // Asumiendo que el estado del usuario se sincroniza con el del cliente
         delete dataToSend.estado; // Eliminar el campo 'estado' original del frontend
@@ -120,7 +147,10 @@ export const saveCliente = async (clienteData, isCreating, currentEditingCliente
       // Si tu backend espera el idCliente en el cuerpo al editar, descomenta la siguiente línea:
       // dataToSend.idCliente = currentEditingClienteId;
 
-      const response = await apiClient.put(`/clientes/${currentEditingClienteId}`, dataToSend);
+      const response = await apiClient.put(
+        `/clientes/${currentEditingClienteId}`,
+        dataToSend
+      );
       return response.data.data; // Asumiendo que devuelve { success: true, data: clienteActualizado }
     }
   } catch (error) {
@@ -137,7 +167,7 @@ export const saveCliente = async (clienteData, isCreating, currentEditingCliente
  * Elimina un cliente por su ID a través de la API del backend.
  * @param {number} clienteId - El ID del cliente a eliminar.
  * @returns {Promise<boolean>} Una promesa que resuelve a `true` si la eliminación fue exitosa.
-*/
+ */
 export const deleteClienteById = async (clienteId) => {
   try {
     const response = await apiClient.delete(`/clientes/${clienteId}`);
@@ -163,12 +193,18 @@ export const toggleClienteEstado = async (clienteId, nuevoEstado) => {
     // Tu backend espera un campo 'estado' en la ruta PATCH /:idCliente/estado
     // No 'estadoCliente' y 'estadoUsuario' en esta ruta específica.
     const dataToSend = {
-        estado: nuevoEstado // Enviar el campo 'estado' con el booleano
+      estado: nuevoEstado, // Enviar el campo 'estado' con el booleano
     };
-    const response = await apiClient.patch(`/clientes/${clienteId}/estado`, dataToSend);
+    const response = await apiClient.patch(
+      `/clientes/${clienteId}/estado`,
+      dataToSend
+    );
     return response.data.data; // Asumiendo que devuelve { success: true, data: clienteActualizado }
   } catch (error) {
-    console.error(`Error al cambiar el estado del cliente ID ${clienteId}:`, error);
+    console.error(
+      `Error al cambiar el estado del cliente ID ${clienteId}:`,
+      error
+    );
     if (error.response && error.response.data && error.response.data.message) {
       throw new Error(error.response.data.message);
     }

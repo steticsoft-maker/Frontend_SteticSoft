@@ -12,6 +12,7 @@ const ClienteCrearModal = ({
   handleInputBlur,
   handleSave,
   isSubmitting,
+  isVerifyingEmail,
 }) => {
   if (!isOpen) return null;
 
@@ -37,6 +38,7 @@ const ClienteCrearModal = ({
               onFormBlur={handleInputBlur}
               isEditing={false}
               formErrors={formErrors}
+              isVerifyingEmail={isVerifyingEmail}
             />
           </form>
         </div>

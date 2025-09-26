@@ -263,7 +263,16 @@ const useClientes = () => {
         if (value !== originalEmail) {
           setIsVerifyingEmail(true);
           try {
-            const res = await verificarCorreoClienteAPI(value);
+            // Pasar el ID del cliente actual si se está editando
+            // Asegurar que sea un número entero positivo
+            const idClienteExcluir =
+              isEditarModalOpen && currentCliente?.idCliente
+                ? parseInt(currentCliente.idCliente, 10)
+                : null;
+            const res = await verificarCorreoClienteAPI(
+              value,
+              idClienteExcluir
+            );
             if (res.estaEnUso) {
               setFormErrors((prev) => ({
                 ...prev,
@@ -272,6 +281,17 @@ const useClientes = () => {
             }
           } catch (apiError) {
             console.error("Error al verificar el correo:", apiError);
+            // Solo mostrar error si es un error de validación (correo duplicado)
+            if (
+              apiError.message &&
+              apiError.message.includes("ya está registrado")
+            ) {
+              setFormErrors((prev) => ({
+                ...prev,
+                correo: "Este correo ya está registrado.",
+              }));
+            }
+            // Para otros errores (red, servidor), no mostrar error al usuario
           } finally {
             setIsVerifyingEmail(false);
           }
@@ -354,6 +374,57 @@ const useClientes = () => {
       return;
     }
 
+    // Verificar correo antes de guardar
+    if (formData.correo) {
+      const originalEmail = isEditarModalOpen ? currentCliente?.correo : null;
+      if (formData.correo !== originalEmail) {
+        setIsVerifyingEmail(true);
+        try {
+          // Pasar el ID del cliente actual si se está editando
+          // Asegurar que sea un número entero positivo
+          const idClienteExcluir =
+            isEditarModalOpen && currentCliente?.idCliente
+              ? parseInt(currentCliente.idCliente, 10)
+              : null;
+          const res = await verificarCorreoClienteAPI(
+            formData.correo,
+            idClienteExcluir
+          );
+          if (res.estaEnUso) {
+            setFormErrors((prev) => ({
+              ...prev,
+              correo: "Este correo ya está registrado.",
+            }));
+            setIsVerifyingEmail(false);
+            return;
+          }
+        } catch (apiError) {
+          console.error("Error al verificar el correo:", apiError);
+          // Solo mostrar error si es un error de validación (correo duplicado)
+          if (
+            apiError.message &&
+            apiError.message.includes("ya está registrado")
+          ) {
+            setFormErrors((prev) => ({
+              ...prev,
+              correo: "Este correo ya está registrado.",
+            }));
+          } else {
+            // Para errores de red/servidor, mostrar mensaje genérico
+            MySwal.fire(
+              "Error",
+              "Error al verificar el correo. Inténtalo de nuevo.",
+              "error"
+            );
+          }
+          setIsVerifyingEmail(false);
+          return;
+        } finally {
+          setIsVerifyingEmail(false);
+        }
+      }
+    }
+
     setIsSubmitting(true);
     try {
       const dataParaAPI = { ...formData };
@@ -384,6 +455,8 @@ const useClientes = () => {
     loadClientes,
     closeModal,
     searchTerm,
+    isEditarModalOpen,
+    currentCliente,
   ]);
 
   const handleDelete = useCallback(
