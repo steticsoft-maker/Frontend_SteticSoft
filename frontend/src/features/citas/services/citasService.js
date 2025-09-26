@@ -92,9 +92,10 @@ export const fetchServiciosDisponiblesParaCitas = async () => {
 /**
  * ✅ Traer clientes disponibles para el formulario de citas
  */
-export const fetchClientesParaCitas = async () => {
+export const fetchClientesParaCitas = async (searchTerm = '') => {
   try {
-    const response = await apiClient.get("/clientes"); 
+    const params = searchTerm ? { search: searchTerm } : {};
+    const response = await apiClient.get("/clientes", { params }); 
     return response.data?.data || [];
   } catch (error) {
     console.error("Error al obtener clientes:", error);
@@ -116,17 +117,16 @@ export const fetchNovedades = async () => {
 };
 
 /**
- * ✅ Traer empleados disponibles
+ * ✅ Traer empleados disponibles para una novedad específica
  */
-export const fetchEmpleadosDisponiblesParaCitas = async () => {
+export const fetchEmpleadosDisponiblesParaCitas = async (novedadId) => {
   try {
-    const response = await apiClient.get("/empleados");
-    return (response.data?.data || []).map(emp => ({
-        ...emp,
-        id: emp.idUsuario 
-    }));
+    if (!novedadId) return [];
+    const response = await apiClient.get(`/novedades/${novedadId}`);
+    const novedad = response.data?.data;
+    return novedad?.empleados || [];
   } catch (error) {
-    console.error("Error al obtener empleados:", error);
+    console.error("Error al obtener empleados de la novedad:", error);
     return [];
   }
 };
