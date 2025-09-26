@@ -1438,6 +1438,150 @@
 }
 
 /* ======================================================== */
+/* ============= ESTILOS PARA MODAL DE AGENDAR CITA ======= */
+/* ======================================================== */
+
+/* Contenedor de botones del modal centrados */
+.modal-buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+/* Botón primario (Guardar) a la izquierda */
+.admin-form-button.primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  order: 1; /* Primero (izquierda) */
+}
+
+.admin-form-button.primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.admin-form-button.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Botón secundario (Cancelar) a la derecha */
+.admin-form-button.secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  order: 2; /* Segundo (derecha) */
+}
+
+.admin-form-button.secondary:hover:not(:disabled) {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.admin-form-button.secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Mejoras para el calendario de novedades */
+.novedad-calendar .react-datepicker__day--disabled {
+  background-color: #f8f9fa !important;
+  color: #6c757d !important;
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
+}
+
+.novedad-calendar .dia-no-disponible {
+  background-color: #f8f9fa !important;
+  color: #6c757d !important;
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
+}
+
+.novedad-calendar .dia-disponible {
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.novedad-calendar .dia-disponible:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Colores específicos para cada día usando las variables de novedades */
+.novedad-calendar .dia-lunes {
+  background-color: var(--color-dia-lunes, #e3f2fd) !important;
+  color: #000 !important;
+}
+
+.novedad-calendar .dia-martes {
+  background-color: var(--color-dia-martes, #f3e5f5) !important;
+  color: #000 !important;
+}
+
+.novedad-calendar .dia-miercoles {
+  background-color: var(--color-dia-miercoles, #e8f5e8) !important;
+  color: #000 !important;
+}
+
+.novedad-calendar .dia-jueves {
+  background-color: var(--color-dia-jueves, #fff3e0) !important;
+  color: #000 !important;
+}
+
+.novedad-calendar .dia-viernes {
+  background-color: var(--color-dia-viernes, #fce4ec) !important;
+  color: #000 !important;
+}
+
+.novedad-calendar .dia-sabado {
+  background-color: var(--color-dia-sabado, #e0f2f1) !important;
+  color: #000 !important;
+}
+
+.novedad-calendar .dia-domingo {
+  background-color: var(--color-dia-domingo, #f1f8e9) !important;
+  color: #000 !important;
+}
+
+/* Día seleccionado */
+.novedad-calendar .react-datepicker__day--selected {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+  font-weight: 600 !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 12px rgba(154, 122, 159, 0.4) !important;
+}
+
+/* Día de hoy */
+.novedad-calendar .react-datepicker__day--today {
+  border: 2px solid var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+/* ======================================================== */
 /* ============= PAGINACIÓN =============================== */
 /* ======================================================== */
 

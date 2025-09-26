@@ -126,10 +126,17 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
 
   // Opciones para los selects
   const novedadOptions = useMemo(() => {
-    return novedades.map(novedad => ({
-      value: novedad,
-      label: `${moment(novedad.fechaInicio).format('DD/MM/YYYY')} - ${moment(novedad.fechaFin).format('DD/MM/YYYY')}`
-    }));
+    return novedades
+      .filter(novedad => {
+        // Filtrar novedades que ya finalizaron
+        const fechaFin = moment(novedad.fechaFin);
+        const hoy = moment();
+        return fechaFin.isAfter(hoy) || fechaFin.isSame(hoy, 'day');
+      })
+      .map(novedad => ({
+        value: novedad,
+        label: `${moment(novedad.fechaInicio).format('DD/MM/YYYY')} - ${moment(novedad.fechaFin).format('DD/MM/YYYY')}`
+      }));
   }, [novedades]);
 
   const empleadoOptions = useMemo(() => {
@@ -164,7 +171,8 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
     return clientesList.map(c => ({
       ...c,
       value: c.idCliente,
-      label: `${c.nombre} ${c.apellido || ''}`.trim()
+      label: `${c.nombre} ${c.apellido || ''}`.trim(),
+      displayName: `${c.nombre} ${c.apellido || ''}`.trim()
     }));
   }, [clientesList]);
   
@@ -275,6 +283,10 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                           return `dia-disponible dia-${diaNormalizado}`;
                         }
                         return 'dia-no-disponible';
+                      }}
+                      disabled={(date) => {
+                        const diaDeLaSemana = moment(date).day();
+                        return !diasPermitidosNumeros.includes(diaDeLaSemana);
                       }}
                     />
                   </div>
@@ -400,12 +412,14 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
           )}
         </div>
         <div className="admin-modal-footer">
-          <button type="button" className="admin-form-button secondary" onClick={onClose} disabled={isLoading}>
-            Cancelar
-          </button>
-          <button type="submit" className="admin-form-button" disabled={isLoading || isLoadingDependencies || !formData.servicios.length} onClick={handleSubmitForm}>
-            {isLoading ? "Guardando..." : "Agendar Cita"}
-          </button>
+          <div className="modal-buttons-container">
+            <button type="submit" className="admin-form-button primary" disabled={isLoading || isLoadingDependencies || !formData.servicios.length} onClick={handleSubmitForm}>
+              {isLoading ? "Guardando..." : "Agendar Cita"}
+            </button>
+            <button type="button" className="admin-form-button secondary" onClick={onClose} disabled={isLoading}>
+              Cancelar
+            </button>
+          </div>
         </div>
       </div>
 
@@ -419,6 +433,9 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
           setFormData(prev => ({ ...prev, cliente: selectedItem })); 
           setShowClienteSelectModal(false); 
         }}
+        itemKey="idCliente"
+        itemName="nombre"
+        displayProperty="displayName"
         searchPlaceholder="Buscar cliente por nombre..."
       />
     </div>

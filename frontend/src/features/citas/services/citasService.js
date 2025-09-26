@@ -109,7 +109,28 @@ export const fetchClientesParaCitas = async (searchTerm = '') => {
 export const fetchNovedades = async () => {
   try {
     const response = await apiClient.get("/novedades");
-    return response.data?.data || [];
+    const novedades = response.data?.data || [];
+    
+    // Filtrar y desactivar automáticamente novedades que ya finalizaron
+    const novedadesFiltradas = [];
+    for (const novedad of novedades) {
+      const fechaFin = moment(novedad.fechaFin);
+      const hoy = moment();
+      
+      // Si la novedad ya finalizó y está activa, desactivarla automáticamente
+      if (novedad.estado && fechaFin.isBefore(hoy, 'day')) {
+        try {
+          await apiClient.patch(`/novedades/${novedad.idNovedad}/estado`, { estado: false });
+          console.log(`Novedad ${novedad.idNovedad} desactivada automáticamente por fecha vencida`);
+        } catch (error) {
+          console.warn(`No se pudo desactivar la novedad ${novedad.idNovedad}:`, error);
+        }
+      } else {
+        novedadesFiltradas.push(novedad);
+      }
+    }
+    
+    return novedadesFiltradas;
   } catch (error) {
     console.error("Error al obtener novedades:", error);
     throw new Error("No se pudieron cargar los horarios disponibles.");
