@@ -163,6 +163,21 @@ const RolForm = ({
           </div>
         </div>
 
+        {formErrors.permisos && (
+          <div
+            className="admin-form-error"
+            style={{
+              marginBottom: "15px",
+              padding: "10px",
+              backgroundColor: "rgba(231, 76, 60, 0.1)",
+              border: "1px solid rgba(231, 76, 60, 0.3)",
+              borderRadius: "5px",
+            }}
+          >
+            {formErrors.permisos}
+          </div>
+        )}
+
         <PermisosSelector
           permisosAgrupados={permisosAgrupados}
           permisosSeleccionadosIds={formData.idPermisos || []}
