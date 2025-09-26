@@ -12,6 +12,7 @@ const ClienteEditarModal = ({
   handleInputBlur,
   handleSave,
   isSubmitting,
+  isVerifyingEmail,
 }) => {
   if (!isOpen) return null;
 
@@ -37,6 +38,7 @@ const ClienteEditarModal = ({
               onFormBlur={handleInputBlur}
               isEditing={true}
               formErrors={formErrors}
+              isVerifyingEmail={isVerifyingEmail}
             />
           </form>
         </div>

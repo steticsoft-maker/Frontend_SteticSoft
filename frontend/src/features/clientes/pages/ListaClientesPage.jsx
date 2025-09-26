@@ -35,6 +35,7 @@ function ListaClientesPage() {
     isSubmitting,
     handleInputChange,
     handleInputBlur,
+    isVerifyingEmail,
   } = useClientes();
 
   return (
@@ -124,6 +125,7 @@ function ListaClientesPage() {
         handleInputBlur={handleInputBlur}
         handleSave={handleSave}
         isSubmitting={isSubmitting}
+        isVerifyingEmail={isVerifyingEmail}
       />
       <ClienteEditarModal
         isOpen={isEditarModalOpen}
@@ -134,6 +136,7 @@ function ListaClientesPage() {
         handleInputBlur={handleInputBlur}
         handleSave={handleSave}
         isSubmitting={isSubmitting}
+        isVerifyingEmail={isVerifyingEmail}
       />
       <ClienteDetalleModal
         isOpen={isDetailsModalOpen}
