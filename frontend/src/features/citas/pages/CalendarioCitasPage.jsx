@@ -27,6 +27,10 @@ function CitasPage() {
   const [estadosCita, setEstadosCita] = useState([]); // Estado para guardar los estados
   const [searchTerm, setSearchTerm] = useState("");
   const [estadoFiltro, setEstadoFiltro] = useState("Todos");
+  
+  // Estados para paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -211,6 +215,30 @@ function CitasPage() {
     });
   }, [citasAgendadas, searchTerm, estadoFiltro]);
 
+  // Paginación
+  const paginatedCitas = useMemo(() => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    return citasFiltradas.slice(startIndex, startIndex + rowsPerPage);
+  }, [citasFiltradas, currentPage, rowsPerPage]);
+
+  const totalPages = Math.ceil(citasFiltradas.length / rowsPerPage);
+
+  // Manejadores de paginación
+  const handleSearchChange = (event) => { 
+    setSearchTerm(event.target.value); 
+    setCurrentPage(1); 
+  };
+  
+  const handleFilterChange = (event) => { 
+    setEstadoFiltro(event.target.value); 
+    setCurrentPage(1); 
+  };
+  
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setCurrentPage(1);
+  };
+
   return (
     <div className="admin-page-layout">
       <div className="admin-main-content-area">
@@ -227,7 +255,7 @@ function CitasPage() {
                     className="citas-search-input"
                     placeholder="Buscar por cliente, empleado..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleSearchChange}
                   />
                 </div>
 
@@ -235,7 +263,7 @@ function CitasPage() {
                   <select
                     className="citas-filtro-estado-select"
                     value={estadoFiltro}
-                    onChange={(e) => setEstadoFiltro(e.target.value)}
+                    onChange={handleFilterChange}
                   >
                     <option value="Todos">Todos los Estados</option>
                     <option value="Activa">Activas</option>
@@ -259,7 +287,7 @@ function CitasPage() {
 
           <div className="lista-citas-container">
             <CitasTable
-              citas={citasFiltradas}
+              citas={paginatedCitas}
               onViewDetails={(cita) => {
                 setSelectedSlotOrEvent(cita);
                 setCitaParaOperacion(cita);
@@ -272,6 +300,28 @@ function CitasPage() {
               onStatusChange={handleStatusChange}
               estadosCita={estadosCita}
             />
+            {citasFiltradas.length > 0 && (
+              <div className="pagination-wrapper">
+                <div className="pagination-container">
+                  <label htmlFor="rows-per-page">Filas:</label>
+                  <select id="rows-per-page" value={rowsPerPage} onChange={handleRowsPerPageChange}>
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                    <option value={20}>20</option>
+                  </select>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
+                    <button
+                      key={pageNumber}
+                      className={`page-number ${currentPage === pageNumber ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

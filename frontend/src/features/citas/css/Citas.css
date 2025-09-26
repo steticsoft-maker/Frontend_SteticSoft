@@ -138,133 +138,7 @@
   margin: 20px 0;
 }
 
-/* Hacer la tabla más pequeña y centrada - igual que servicios */
-.lista-citas-container .table-container {
-  width: 100% !important;
-  max-width: 90% !important;
-  margin: 0 auto !important;
-}
-
-/* Centrar el título de las columnas */
-.lista-citas-container .table-main th {
-  text-align: center !important;
-  background-color: var(--color-table-header);
-  color: var(--color-table-header-text);
-  font-weight: bold;
-  padding: 16px 12px;
-  border: 1px solid var(--color-table-header);
-}
-
-/* Celdas de la tabla */
-.lista-citas-container .table-main td {
-  border: 1px solid var(--color-table-header);
-  text-align: left;
-  padding: 16px 12px;
-  vertical-align: middle;
-  font-size: 1rem;
-  color: var(--color-text-dark);
-  border: none !important;
-  background-color: var(--color-background-light);
-  vertical-align: middle;
-}
-
-/* Centrar el título de la columna Estado */
-.lista-citas-container .table-main th:nth-child(5) {
-  text-align: center !important;
-}
-
-/* Centrar el título de la columna Acciones */
-.lista-citas-container .table-main th:nth-child(6) {
-  text-align: center !important;
-}
-
-/* Centrar la columna de acciones */
-.lista-citas-container .table-main td:nth-child(6) {
-  text-align: center !important;
-}
-
-/* Centrar la columna de estado */
-.lista-citas-container .table-main td:nth-child(5) {
-  text-align: center !important;
-}
-
-/* Centrar la columna # */
-.lista-citas-container .table-main td:nth-child(1) {
-  text-align: center !important;
-  font-weight: 600;
-}
-
-/* Eliminar bordes inferiores de la última fila */
-.lista-citas-container .table-main tbody tr:last-child td {
-  border-bottom: none !important;
-}
-
-/* ============= BOTONES DE ACCIONES ====================== */
-
-/* Contenedor de acciones */
-.actions-cell {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: nowrap;
-  min-width: 150px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Botones de acción en la tabla */
-.lista-citas-container .btn {
-  padding: 6px 10px;
-  margin: 0 1px;
-  font-size: 0.8rem;
-  border: none;
-  border-radius: 6px;
-  color: var(--color-text-light);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 32px;
-  height: 32px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-weight: 500;
-  flex-shrink: 0;
-}
-
-.lista-citas-container .btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Botones específicos con colores unificados */
-.lista-citas-container .btn:nth-child(1) {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-}
-
-.lista-citas-container .btn:nth-child(1):hover {
-  background-color: var(--color-primary-hover);
-}
-
-.lista-citas-container .btn:nth-child(2) {
-  background-color: var(--color-secondary);
-  color: var(--color-secondary-text);
-}
-
-.lista-citas-container .btn:nth-child(2):hover {
-  background-color: var(--color-secondary-hover);
-}
-
-.lista-citas-container .btn:nth-child(3) {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.lista-citas-container .btn:nth-child(3):hover {
-  background-color: #c0392b;
-}
+/* ============= ESTILOS ESPECÍFICOS PARA CITAS ====================== */
 
 /* === Badges de Estado === */
 /* ==========================================================================
@@ -1561,6 +1435,63 @@
         padding: 4px 5px;
         font-size: 0.65rem;
     }
+}
+
+/* ======================================================== */
+/* ============= PAGINACIÓN =============================== */
+/* ======================================================== */
+
+/* --- Paginación --- */
+.pagination-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 0;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.pagination-container select {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--color-form-border);
+  cursor: pointer;
+  background-color: var(--color-background-light);
+  margin-right: 15px; 
+}
+
+.pagination-container .page-number {
+  padding: 6px 12px;
+  min-width: 34px;
+  text-align: center;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.pagination-container .page-number:hover:not(.active) {
+  background-color: var(--color-form-focus-bg);
+  border-color: var(--color-form-border);
+}
+
+.pagination-container .page-number.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-color: var(--color-primary);
+  font-weight: 500;
+  cursor: default;
 }
 
 /* ======================================================== */
