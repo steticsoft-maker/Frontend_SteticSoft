@@ -44,7 +44,14 @@ const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, es
           {citasOrdenadas.map((cita, index) => (
             <tr key={cita.id}>
               <td data-label="#">{index + 1}</td>
-              <td data-label="Cliente">{cita.clienteNombre || "N/A"}</td>
+              <td data-label="Cliente">
+                <div className="cliente-info">
+                  <div className="cliente-nombre">{cita.clienteNombre || "N/A"}</div>
+                  {cita.clienteDocumento && (
+                    <div className="cliente-documento">Doc: {cita.clienteDocumento}</div>
+                  )}
+                </div>
+              </td>
               <td data-label="Encargado(a)">{cita.empleadoNombre || "N/A"}</td>
               <td data-label="Fecha y Hora">{moment(cita.start).format("DD/MM/YYYY hh:mm A")}</td>
               

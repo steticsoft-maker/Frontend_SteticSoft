@@ -26,11 +26,21 @@ const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
             <div className="detalle-columna">
               <div className="detalle-item">
                 <span className="detalle-label">Cliente</span>
-                <span className="detalle-valor">{cita.clienteNombre || "N/A"}</span>
+                <div className="detalle-valor">
+                  <div className="persona-nombre">{cita.clienteNombre || "N/A"}</div>
+                  {cita.clienteDocumento && (
+                    <div className="persona-documento">Doc: {cita.clienteDocumento}</div>
+                  )}
+                </div>
               </div>
               <div className="detalle-item">
                 <span className="detalle-label">Encargado(a)</span>
-                <span className="detalle-valor">{cita.empleadoNombre || "N/A"}</span>
+                <div className="detalle-valor">
+                  <div className="persona-nombre">{cita.empleadoNombre || "N/A"}</div>
+                  {cita.empleadoDocumento && (
+                    <div className="persona-documento">Doc: {cita.empleadoDocumento}</div>
+                  )}
+                </div>
               </div>
               <div className="detalle-item">
                 <span className="detalle-label">Fecha y Hora</span>

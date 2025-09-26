@@ -109,10 +109,15 @@ const CalendarView = ({
           e.stopPropagation();
           onViewDetails(cita);
         }}
-        title={`${cita.clienteNombre} - ${hora} - ${cita.estadoCita}`}
+        title={`${cita.clienteNombre}${cita.clienteDocumento ? ` (Doc: ${cita.clienteDocumento})` : ''} - ${hora} - ${cita.estadoCita}`}
       >
         <div className="cita-hora">{hora}</div>
-        <div className="cita-cliente">{cita.clienteNombre}</div>
+        <div className="cita-cliente">
+          <div className="cliente-nombre">{cita.clienteNombre}</div>
+          {cita.clienteDocumento && (
+            <div className="cliente-documento">Doc: {cita.clienteDocumento}</div>
+          )}
+        </div>
         <div className="cita-estado">{cita.estadoCita}</div>
       </div>
     );

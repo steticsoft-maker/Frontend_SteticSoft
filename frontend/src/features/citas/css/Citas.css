@@ -191,6 +191,36 @@
 
 /* ============= ESTILOS ESPECÍFICOS PARA CITAS ====================== */
 
+/* === Información del Cliente y Empleado === */
+.cliente-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cliente-nombre {
+  font-weight: 500;
+  color: var(--color-text-dark);
+}
+
+.cliente-documento {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.persona-nombre {
+  font-weight: 500;
+  color: var(--color-text-dark);
+  margin-bottom: 2px;
+}
+
+.persona-documento {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
 /* === Badges de Estado === */
 /* ==========================================================================
    ESTILOS PARA EL SELECT DE ESTADO COMBINADO

@@ -200,6 +200,19 @@
   font-size: 0.7rem;
 }
 
+.cita-cliente .cliente-nombre {
+  font-weight: 500;
+  color: var(--color-text-dark);
+  font-size: 0.7rem;
+}
+
+.cita-cliente .cliente-documento {
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: 1px;
+}
+
 .cita-estado {
   font-size: 0.65rem;
   color: #666;

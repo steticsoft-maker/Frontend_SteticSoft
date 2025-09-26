@@ -64,21 +64,32 @@ function CitasPage() {
       ]);
       setEstadosCita(estados);
 
-      const normalizadas = agendadas.map((c) => ({
-        ...c,
-        id: c.idCita,
-        clienteNombre: c.cliente
-          ? `${c.cliente.nombre} ${c.cliente.apellido || ""}`.trim()
-          : "Sin cliente",
-        empleadoNombre: c.empleado?.empleado
-          ? `${c.empleado.empleado.nombre} ${
-              c.empleado.empleado.apellido || ""
-            }`.trim()
-          : "Sin asignar",
-        serviciosNombres: (c.servicios || []).map((s) => s.nombre).join(", "),
-        estadoCita: c.estadoDetalle?.nombreEstado || "Desconocido",
-        idEstado: c.idEstado,
-      }));
+      // Debug: Verificar estructura de datos
+      console.log("Datos de citas recibidos:", agendadas[0]);
+
+      const normalizadas = agendadas.map((c) => {
+        // Debug: Verificar estructura de cliente y empleado
+        console.log("Cliente estructura:", c.cliente);
+        console.log("Empleado estructura:", c.empleado);
+        
+        return {
+          ...c,
+          id: c.idCita,
+          clienteNombre: c.cliente
+            ? `${c.cliente.nombre} ${c.cliente.apellido || ""}`.trim()
+            : "Sin cliente",
+          clienteDocumento: c.cliente?.numeroDocumento || null,
+          empleadoNombre: c.empleado?.empleado
+            ? `${c.empleado.empleado.nombre} ${
+                c.empleado.empleado.apellido || ""
+              }`.trim()
+            : "Sin asignar",
+          empleadoDocumento: c.empleado?.empleado?.numeroDocumento || null,
+          serviciosNombres: (c.servicios || []).map((s) => s.nombre).join(", "),
+          estadoCita: c.estadoDetalle?.nombreEstado || "Desconocido",
+          idEstado: c.idEstado,
+        };
+      });
 
       setCitasAgendadas(normalizadas);
     } catch (error) {
