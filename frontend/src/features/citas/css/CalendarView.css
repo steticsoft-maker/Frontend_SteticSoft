@@ -1,0 +1,485 @@
+/* ======================================================== */
+/* ============= ESTILOS PARA VISTA DE CALENDARIO ========= */
+/* ======================================================== */
+
+.calendar-view-container {
+  background-color: var(--color-background-light);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Header del calendario */
+.calendar-header {
+  margin-bottom: 20px;
+}
+
+.calendar-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.nav-button {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+}
+
+.nav-button:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.calendar-month-year {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.month-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.today-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.today-button:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* Días de la semana */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  margin-bottom: 10px;
+  background-color: var(--color-form-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.weekday-header {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  padding: 12px 8px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Grid del calendario */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background-color: var(--color-form-border);
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.calendar-day {
+  background-color: var(--color-background-light);
+  min-height: 120px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.calendar-day:hover {
+  background-color: var(--color-background-hover);
+}
+
+.calendar-day.today {
+  background-color: rgba(154, 122, 159, 0.1);
+  border: 2px solid var(--color-primary);
+}
+
+.calendar-day.other-month {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  opacity: 0.6;
+}
+
+.day-number {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: var(--color-text-dark);
+}
+
+.calendar-day.today .day-number {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.day-citas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.no-citas {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-style: italic;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.citas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.calendar-cita-item {
+  background-color: #e3f2fd;
+  border: 1px solid #bbdefb;
+  border-radius: 4px;
+  padding: 4px 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.calendar-cita-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  position: relative;
+}
+
+.cita-hora {
+  font-weight: 600;
+  color: #1976d2;
+  font-size: 0.7rem;
+}
+
+.cita-cliente {
+  font-weight: 500;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.7rem;
+}
+
+.cita-estado {
+  font-size: 0.65rem;
+  color: #666;
+  text-transform: capitalize;
+}
+
+.more-citas {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 0.65rem;
+  text-align: center;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.more-citas:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Colores por estado */
+.calendar-cita-item.activa {
+  background-color: #cfe2ff;
+  border-color: #b6d4fe;
+}
+
+.calendar-cita-item.pendiente {
+  background-color: #e2e3e5;
+  border-color: #d3d6d8;
+}
+
+.calendar-cita-item.en-proceso {
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+}
+
+.calendar-cita-item.completado {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.calendar-cita-item.finalizado {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.calendar-cita-item.cancelado {
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+}
+
+/* Leyenda */
+.calendar-legend {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-form-border);
+}
+
+.calendar-legend h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 10px;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.legend-color.activa {
+  background-color: #cfe2ff;
+  border-color: #b6d4fe;
+}
+
+.legend-color.pendiente {
+  background-color: #e2e3e5;
+  border-color: #d3d6d8;
+}
+
+.legend-color.en-proceso {
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+}
+
+.legend-color.completado {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.legend-color.finalizado {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.legend-color.cancelado {
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+}
+
+/* ============= RESPONSIVE STYLES ============= */
+
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+  .calendar-view-container {
+    padding: 15px;
+  }
+  
+  .month-title {
+    font-size: 1.6rem;
+  }
+  
+  .calendar-day {
+    min-height: 100px;
+    padding: 6px;
+  }
+  
+  .day-number {
+    font-size: 0.9rem;
+  }
+  
+  .calendar-cita-item {
+    font-size: 0.7rem;
+    padding: 3px 4px;
+  }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+  .calendar-view-container {
+    padding: 10px;
+  }
+  
+  .calendar-navigation {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .calendar-month-year {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .month-title {
+    font-size: 1.4rem;
+  }
+  
+  .calendar-day {
+    min-height: 80px;
+    padding: 4px;
+  }
+  
+  .day-number {
+    font-size: 0.8rem;
+  }
+  
+  .calendar-cita-item {
+    font-size: 0.65rem;
+    padding: 2px 3px;
+  }
+  
+  .cita-hora {
+    font-size: 0.6rem;
+  }
+  
+  .cita-cliente {
+    font-size: 0.6rem;
+  }
+  
+  .cita-estado {
+    font-size: 0.55rem;
+  }
+  
+  .legend-items {
+    gap: 10px;
+  }
+  
+  .legend-item {
+    font-size: 0.8rem;
+  }
+  
+  .legend-color {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* Mobile Landscape (640px and below) */
+@media (max-width: 640px) {
+  .calendar-day {
+    min-height: 70px;
+    padding: 3px;
+  }
+  
+  .day-number {
+    font-size: 0.75rem;
+  }
+  
+  .calendar-cita-item {
+    font-size: 0.6rem;
+    padding: 1px 2px;
+  }
+  
+  .weekday-header {
+    padding: 8px 4px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+  .calendar-view-container {
+    padding: 8px;
+  }
+  
+  .calendar-day {
+    min-height: 60px;
+    padding: 2px;
+  }
+  
+  .day-number {
+    font-size: 0.7rem;
+  }
+  
+  .calendar-cita-item {
+    font-size: 0.55rem;
+    padding: 1px;
+  }
+  
+  .weekday-header {
+    padding: 6px 2px;
+    font-size: 0.7rem;
+  }
+  
+  .nav-button {
+    padding: 8px 12px;
+    min-width: 35px;
+    height: 35px;
+  }
+  
+  .today-button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+  .calendar-day {
+    min-height: 50px;
+    padding: 1px;
+  }
+  
+  .day-number {
+    font-size: 0.65rem;
+  }
+  
+  .calendar-cita-item {
+    font-size: 0.5rem;
+  }
+  
+  .weekday-header {
+    padding: 4px 1px;
+    font-size: 0.65rem;
+  }
+}

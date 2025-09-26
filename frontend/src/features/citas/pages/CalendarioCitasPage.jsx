@@ -1,13 +1,18 @@
 // src/features/citas/pages/CalendarioCitasPage.jsx
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import moment from 'moment';
-import 'moment/locale/es';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import moment from "moment";
+import "moment/locale/es";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // Removido: NavbarAdmin no es necesario en el módulo de administración
-import { CitaFormModal, CitaDetalleModal, CitasTable } from '../components';
-import ConfirmModal from '../../../shared/components/common/ConfirmModal';
-import ValidationModal from '../../../shared/components/common/ValidationModal';
+import {
+  CitaFormModal,
+  CitaDetalleModal,
+  CitasTable,
+  CalendarView,
+} from "../components";
+import ConfirmModal from "../../../shared/components/common/ConfirmModal";
+import ValidationModal from "../../../shared/components/common/ValidationModal";
 
 import {
   fetchCitasAgendadas,
@@ -15,19 +20,20 @@ import {
   deleteCitaById as serviceDeleteCitaById,
   cambiarEstadoCita,
   fetchEstadosCita,
-} from '../services/citasService';
-import '../../../shared/styles/crud-common.css';
-import '../../../shared/styles/admin-layout.css';
-import '../css/Citas.css';
+} from "../services/citasService";
+import "../../../shared/styles/crud-common.css";
+import "../../../shared/styles/admin-layout.css";
+import "../css/Citas.css";
 
-moment.locale('es');
+moment.locale("es");
 
 function CitasPage() {
   const [citasAgendadas, setCitasAgendadas] = useState([]);
   const [estadosCita, setEstadosCita] = useState([]); // Estado para guardar los estados
   const [searchTerm, setSearchTerm] = useState("");
   const [estadoFiltro, setEstadoFiltro] = useState("Todos");
-  
+  const [vistaActual, setVistaActual] = useState("calendario"); // "calendario" o "tabla"
+
   // Estados para paginación
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -37,36 +43,40 @@ function CitasPage() {
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-  
 
   const [selectedSlotOrEvent, setSelectedSlotOrEvent] = useState(null);
   const [citaParaOperacion, setCitaParaOperacion] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [validationMessage, setValidationMessage] = useState('');
-  const [validationTitle, setValidationTitle] = useState('Aviso');
+  const [validationMessage, setValidationMessage] = useState("");
+  const [validationTitle, setValidationTitle] = useState("Aviso");
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  
   const clientePreseleccionado = location.state?.clientePreseleccionado || null;
   const cargarDatosCompletos = useCallback(async () => {
     setIsLoading(true);
     try {
       const [agendadas, estados] = await Promise.all([
         fetchCitasAgendadas(),
-        fetchEstadosCita()
+        fetchEstadosCita(),
       ]);
       setEstadosCita(estados);
-      
-      const normalizadas = agendadas.map(c => ({
+
+      const normalizadas = agendadas.map((c) => ({
         ...c,
         id: c.idCita,
-        clienteNombre: c.cliente ? `${c.cliente.nombre} ${c.cliente.apellido || ""}`.trim() : "Sin cliente",
-        empleadoNombre: c.empleado?.empleado ? `${c.empleado.empleado.nombre} ${c.empleado.empleado.apellido || ""}`.trim() : "Sin asignar",
-        serviciosNombres: (c.servicios || []).map(s => s.nombre).join(", "),
-        estadoCita: c.estadoDetalle?.nombreEstado || 'Desconocido',
+        clienteNombre: c.cliente
+          ? `${c.cliente.nombre} ${c.cliente.apellido || ""}`.trim()
+          : "Sin cliente",
+        empleadoNombre: c.empleado?.empleado
+          ? `${c.empleado.empleado.nombre} ${
+              c.empleado.empleado.apellido || ""
+            }`.trim()
+          : "Sin asignar",
+        serviciosNombres: (c.servicios || []).map((s) => s.nombre).join(", "),
+        estadoCita: c.estadoDetalle?.nombreEstado || "Desconocido",
         idEstado: c.idEstado,
       }));
 
@@ -74,12 +84,14 @@ function CitasPage() {
     } catch (error) {
       console.error("Error al cargar datos:", error);
       setValidationTitle("Error de Carga");
-      setValidationMessage("No se pudieron cargar los datos necesarios: " + error.message);
+      setValidationMessage(
+        "No se pudieron cargar los datos necesarios: " + error.message
+      );
       setIsValidationModalOpen(true);
     } finally {
       setIsLoading(false);
     }
-  }, []); 
+  }, []);
 
   useEffect(() => {
     cargarDatosCompletos();
@@ -88,7 +100,7 @@ function CitasPage() {
   const handleStatusChange = async (citaId, nuevoEstadoId) => {
     try {
       await cambiarEstadoCita(citaId, nuevoEstadoId);
-      cargarDatosCompletos(); 
+      cargarDatosCompletos();
       setValidationTitle("Éxito");
       setValidationMessage(`Estado de la cita #${citaId} actualizado.`);
       setIsValidationModalOpen(true);
@@ -128,13 +140,15 @@ function CitasPage() {
     setIsConfirmCancelOpen(true);
   };
 
-   const handleSaveCitaSubmit = async (formDataFromModal) => {
+  const handleSaveCitaSubmit = async (formDataFromModal) => {
     try {
       await saveCita(formDataFromModal);
       cargarDatosCompletos();
       handleCloseModals();
       setValidationTitle("Éxito");
-      setValidationMessage(formDataFromModal.id ? "Cita actualizada." : "Cita guardada.");
+      setValidationMessage(
+        formDataFromModal.id ? "Cita actualizada." : "Cita guardada."
+      );
       setIsValidationModalOpen(true);
     } catch (error) {
       console.error("Error al guardar cita:", error);
@@ -151,7 +165,9 @@ function CitasPage() {
         cargarDatosCompletos();
         handleCloseModals();
         setValidationTitle("Éxito");
-        setValidationMessage(`Cita para "${citaParaOperacion.clienteNombre}" eliminada exitosamente.`);
+        setValidationMessage(
+          `Cita para "${citaParaOperacion.clienteNombre}" eliminada exitosamente.`
+        );
         setIsValidationModalOpen(true);
       } catch (error) {
         console.error("Error al eliminar cita:", error);
@@ -185,7 +201,9 @@ function CitasPage() {
         cargarDatosCompletos();
         handleCloseModals();
         setValidationTitle("Éxito");
-        setValidationMessage(`Cita #${citaParaOperacion.id} para "${citaParaOperacion.clienteNombre}" ha sido cancelada.`);
+        setValidationMessage(
+          `Cita #${citaParaOperacion.id} para "${citaParaOperacion.clienteNombre}" ha sido cancelada.`
+        );
         setIsValidationModalOpen(true);
       } catch (error) {
         handleCloseModals();
@@ -198,18 +216,22 @@ function CitasPage() {
 
   const citasFiltradas = useMemo(() => {
     const term = (searchTerm || "").trim().toLowerCase();
-    return citasAgendadas.filter(cita => {
+    return citasAgendadas.filter((cita) => {
       const matchesSearch =
         !term ||
         (cita.id && cita.id.toString().toLowerCase().includes(term)) ||
-        (cita.clienteNombre && cita.clienteNombre.toLowerCase().includes(term)) ||
-        (cita.empleadoNombre && cita.empleadoNombre.toLowerCase().includes(term)) ||
+        (cita.clienteNombre &&
+          cita.clienteNombre.toLowerCase().includes(term)) ||
+        (cita.empleadoNombre &&
+          cita.empleadoNombre.toLowerCase().includes(term)) ||
         (cita.estadoCita && cita.estadoCita.toLowerCase().includes(term)) ||
-        (cita.serviciosNombres && cita.serviciosNombres.toLowerCase().includes(term));
+        (cita.serviciosNombres &&
+          cita.serviciosNombres.toLowerCase().includes(term));
 
       const matchesEstado =
         estadoFiltro === "Todos" ||
-        (cita.estadoCita && cita.estadoCita.toLowerCase() === estadoFiltro.toLowerCase());
+        (cita.estadoCita &&
+          cita.estadoCita.toLowerCase() === estadoFiltro.toLowerCase());
 
       return matchesSearch && matchesEstado;
     });
@@ -224,106 +246,156 @@ function CitasPage() {
   const totalPages = Math.ceil(citasFiltradas.length / rowsPerPage);
 
   // Manejadores de paginación
-  const handleSearchChange = (event) => { 
-    setSearchTerm(event.target.value); 
-    setCurrentPage(1); 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
-  
-  const handleFilterChange = (event) => { 
-    setEstadoFiltro(event.target.value); 
-    setCurrentPage(1); 
+
+  const handleFilterChange = (event) => {
+    setEstadoFiltro(event.target.value);
+    setCurrentPage(1);
   };
-  
+
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(1);
   };
 
   return (
-    <div className="admin-page-layout">
-      <div className="admin-main-content-area">
-        <div className="citas-page-container">
-          <div className="citas-admin-controls">
-            <h1>Gestión de Citas</h1>
-            {isLoading && <div className="cargando-pagina"><span>Cargando citas...</span><div className="spinner"></div></div>}
+    <div className="lista-citas-container">
+      <div className="citas-content-wrapper">
+        <h1>Gestión de Citas ({citasFiltradas.length})</h1>
+        <div className="citas-actions-bar">
+          <div className="citas-filters">
+            <div className="citas-search-bar">
+              <input
+                type="search"
+                className="citas-search-input"
+                placeholder="Buscar por cliente, empleado..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+            </div>
 
-            <div className="citas-admin-actions-bar">
-              <div className="citas-filters">
-                <div className="citas-search-bar">
-                  <input
-                    type="search"
-                    className="citas-search-input"
-                    placeholder="Buscar por cliente, empleado..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-
-                <div className="citas-filtro-estado-grupo">
-                  <select
-                    className="citas-filtro-estado-select"
-                    value={estadoFiltro}
-                    onChange={handleFilterChange}
-                  >
-                    <option value="Todos">Todos los Estados</option>
-                    <option value="Activa">Activas</option>
-                    <option value="Pendiente">Pendientes</option>
-                    <option value="En proceso">En proceso</option>
-                    <option value="Completado">Completadas</option>
-                    <option value="Finalizado">Finalizadas</option>
-                    <option value="Cancelado">Canceladas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <button
-                className="botonAgregarCita"
-                onClick={() => navigate('/admin/citas/agendar')}
+            <div className="citas-filtro-estado-grupo">
+              <select
+                className="citas-filtro-estado-select"
+                value={estadoFiltro}
+                onChange={handleFilterChange}
               >
-                Agendar Cita
+                <option value="Todos">Todos los Estados</option>
+                <option value="Activa">Activas</option>
+                <option value="Pendiente">Pendientes</option>
+                <option value="En proceso">En proceso</option>
+                <option value="Completado">Completadas</option>
+                <option value="Finalizado">Finalizadas</option>
+                <option value="Cancelado">Canceladas</option>
+              </select>
+            </div>
+
+            <div className="citas-vista-selector">
+              <button
+                className={`vista-button ${
+                  vistaActual === "calendario" ? "active" : ""
+                }`}
+                onClick={() => setVistaActual("calendario")}
+                title="Vista de calendario"
+              >
+                📅 Calendario
+              </button>
+              <button
+                className={`vista-button ${
+                  vistaActual === "tabla" ? "active" : ""
+                }`}
+                onClick={() => setVistaActual("tabla")}
+                title="Vista de tabla"
+              >
+                📋 Tabla
               </button>
             </div>
           </div>
 
-          <div className="lista-citas-container">
-            <CitasTable
-              citas={paginatedCitas}
-              onViewDetails={(cita) => {
-                setSelectedSlotOrEvent(cita);
-                setCitaParaOperacion(cita);
-                setIsDetailsModalOpen(true);
-              }}
-              onEdit={handleOpenEditModal}
-              onMarkAsCompleted={handleMarkAsCompleted}
-              onCancel={handleOpenCancelConfirm}
-              onDelete={handleOpenDeleteConfirm}
-              onStatusChange={handleStatusChange}
-              estadosCita={estadosCita}
-            />
-            {citasFiltradas.length > 0 && (
-              <div className="pagination-wrapper">
-                <div className="pagination-container">
-                  <label htmlFor="rows-per-page">Filas:</label>
-                  <select id="rows-per-page" value={rowsPerPage} onChange={handleRowsPerPageChange}>
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={15}>15</option>
-                    <option value={20}>20</option>
-                  </select>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
-                    <button
-                      key={pageNumber}
-                      className={`page-number ${currentPage === pageNumber ? 'active' : ''}`}
-                      onClick={() => setCurrentPage(pageNumber)}
-                    >
-                      {pageNumber}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          <button
+            className="citas-add-button"
+            onClick={() => navigate("/admin/citas/agendar")}
+          >
+            Agendar Cita
+          </button>
         </div>
+
+        {isLoading && (
+          <p style={{ textAlign: "center", margin: "20px 0" }}>
+            Cargando citas...
+          </p>
+        )}
+
+        {!isLoading && (
+          <>
+            {vistaActual === "calendario" ? (
+              <CalendarView
+                citas={citasFiltradas}
+                onViewDetails={(cita) => {
+                  setSelectedSlotOrEvent(cita);
+                  setCitaParaOperacion(cita);
+                  setIsDetailsModalOpen(true);
+                }}
+                onEdit={handleOpenEditModal}
+                onDelete={handleOpenDeleteConfirm}
+                onStatusChange={handleStatusChange}
+                estadosCita={estadosCita}
+              />
+            ) : (
+              <>
+                <div className="table-container">
+                  <CitasTable
+                    citas={paginatedCitas}
+                    onViewDetails={(cita) => {
+                      setSelectedSlotOrEvent(cita);
+                      setCitaParaOperacion(cita);
+                      setIsDetailsModalOpen(true);
+                    }}
+                    onEdit={handleOpenEditModal}
+                    onMarkAsCompleted={handleMarkAsCompleted}
+                    onCancel={handleOpenCancelConfirm}
+                    onDelete={handleOpenDeleteConfirm}
+                    onStatusChange={handleStatusChange}
+                    estadosCita={estadosCita}
+                  />
+                </div>
+                {citasFiltradas.length > 0 && (
+                  <div className="pagination-wrapper">
+                    <div className="pagination-container">
+                      <label htmlFor="rows-per-page">Filas:</label>
+                      <select
+                        id="rows-per-page"
+                        value={rowsPerPage}
+                        onChange={handleRowsPerPageChange}
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
+                      </select>
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                        (pageNumber) => (
+                          <button
+                            key={pageNumber}
+                            className={`page-number ${
+                              currentPage === pageNumber ? "active" : ""
+                            }`}
+                            onClick={() => setCurrentPage(pageNumber)}
+                          >
+                            {pageNumber}
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </>
+        )}
       </div>
 
       <CitaFormModal
@@ -345,7 +417,13 @@ function CitasPage() {
         onClose={handleCloseModals}
         onConfirm={handleDeleteCitaConfirmada}
         title="Confirmar Eliminación"
-        message={`¿Está seguro que desea eliminar la cita para "${citaParaOperacion?.clienteNombre || ''}" con ${citaParaOperacion?.empleadoNombre || ''} el ${citaParaOperacion?.start ? moment(citaParaOperacion.start).format("DD/MM/YY HH:mm") : ''}?`}
+        message={`¿Está seguro que desea eliminar la cita para "${
+          citaParaOperacion?.clienteNombre || ""
+        }" con ${citaParaOperacion?.empleadoNombre || ""} el ${
+          citaParaOperacion?.start
+            ? moment(citaParaOperacion.start).format("DD/MM/YY HH:mm")
+            : ""
+        }?`}
         confirmText="Sí, Eliminar"
         cancelText="No, Conservar"
       />
@@ -354,7 +432,9 @@ function CitasPage() {
         onClose={handleCloseModals}
         onConfirm={handleConfirmCancelCita}
         title="Confirmar Cancelación de Cita"
-        message={`¿Está seguro de que desea cancelar la cita #${citaParaOperacion?.id || ''} para "${citaParaOperacion?.clienteNombre || ''}"?`}
+        message={`¿Está seguro de que desea cancelar la cita #${
+          citaParaOperacion?.id || ""
+        } para "${citaParaOperacion?.clienteNombre || ""}"?`}
         confirmText="Sí, Cancelar Cita"
         cancelText="No, Mantener Cita"
       />

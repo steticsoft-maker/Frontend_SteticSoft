@@ -1,54 +1,66 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/responsive-template.css";
 @import "@/shared/styles/table-common.css";
+@import "@/shared/styles/admin-crud-unified.css";
+@import "@/shared/styles/admin-migration-guide.css";
 
 /* ======================================================== */
 /* ============= ESTRUCTURA PRINCIPAL ==================== */
 /* ======================================================== */
 
-/* Contenedor principal de citas */
-.citas-content {
-  padding: 2rem;
-  margin-left: 270px;
+/* ESTRUCTURA COMO ROLES Y USUARIOS - FUNCIONA CORRECTAMENTE */
+.lista-citas-container {
+  display: flex;
   min-height: 100vh;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
   background-color: var(--color-background-light);
+}
+
+.citas-content-wrapper {
+  flex: 1;
+  padding: 40px;
+  margin: 0 auto;
+  overflow-y: auto;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.citas-content-wrapper h1 {
+  padding-left: 200px;
+  text-align: center;
+  color: var(--color-text-dark);
+  margin-top: 0;
+  margin-bottom: 0px;
+  font-size: 1.8rem;
 }
 
 /* ======================================================== */
 /* ============= BARRA DE ACCIONES SUPERIORES ============= */
 /* ======================================================== */
 
-/* Contenedor principal de controles */
-.citas-admin-controls {
+.citas-actions-bar {
+  padding-left: 0;
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 0;
-}
-
-/* Título principal */
-.citas-admin-controls h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--color-text-dark);
-  margin: 0;
-  text-align: left;
-}
-
-/* Barra de acciones */
-.citas-admin-actions-bar {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 25px; 
   gap: 20px;
-  flex-wrap: wrap;
+  flex-wrap: wrap; 
   width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 /* Contenedor de filtros */
 .citas-filters {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   flex-grow: 1;
   align-items: center;
   flex-wrap: wrap;
@@ -71,6 +83,7 @@
   background-color: var(--color-form-bg);
   color: var(--color-text-dark);
   box-sizing: border-box;
+  height: 52px;
 }
 
 .citas-search-input:focus {
@@ -84,6 +97,49 @@
 .citas-filtro-estado-grupo {
   display: flex;
   align-items: center;
+}
+
+/* Selector de vista */
+.citas-vista-selector {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--color-background-light);
+  border: 1px solid var(--color-form-border);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.vista-button {
+  padding: 8px 16px;
+  border: none;
+  background-color: transparent;
+  color: var(--color-text-dark);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.vista-button:hover {
+  background-color: var(--color-background-hover);
+  color: var(--color-primary);
+}
+
+.vista-button.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vista-button.active:hover {
+  background-color: var(--color-primary-hover);
+  color: var(--color-text-light);
 }
 
 .citas-filtro-estado-select {
@@ -107,36 +163,31 @@
 /* ============= BOTONES UNIFICADOS ====================== */
 
 /* Botón de agregar cita */
-.citas-add-button,
-.botonAgregarCita {
-  padding: 10px 20px;
+.citas-add-button {
+  padding: 12px 24px;
   background-color: var(--color-primary);
   color: var(--color-text-light);
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.citas-add-button:hover,
-.botonAgregarCita:hover {
+.citas-add-button:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Contenedor de la tabla de citas */
-.lista-citas-container {
-  background-color: var(--color-background-light);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 20px 0;
-}
+/* Contenedor de la tabla de citas - ya definido arriba como contenedor principal */
 
 /* ============= ESTILOS ESPECÍFICOS PARA CITAS ====================== */
 
@@ -570,32 +621,42 @@
 
 /* Tablet Portrait (768px and below) - Controles de citas */
 @media (max-width: 768px) {
-    .citas-content {
+    .citas-content-wrapper {
         padding: 1rem;
-        margin-left: 0;
     }
 
-    .citas-admin-controls h1 {
+    .citas-content-wrapper h1 {
         font-size: 1.6rem;
         margin-bottom: 1.2rem;
+        padding-left: 0;
     }
 
-    .citas-admin-controls {
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 1.2rem;
-    }
-
-    .citas-admin-actions-bar {
+    .citas-actions-bar {
         flex-direction: column;
         width: 100%;
         gap: 1rem;
+    }
+
+    .citas-filters {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
     }
 
     .citas-search-input,
     .citas-filtro-estado-select,
-    .botonAgregarCita {
+    .citas-add-button {
         width: 100%;
+    }
+
+    .citas-vista-selector {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .vista-button {
+        flex: 1;
+        justify-content: center;
     }
 
     .citas-search-input,
@@ -604,7 +665,7 @@
         font-size: 0.9rem;
     }
 
-    .botonAgregarCita {
+    .citas-add-button {
         padding: 10px 16px;
         font-size: 0.9rem;
     }
@@ -612,17 +673,12 @@
 
 /* Mobile Landscape (640px and below) - Controles de citas */
 @media (max-width: 640px) {
-    .citas-content {
+    .citas-content-wrapper {
         padding: 0.8rem;
     }
 
-    .citas-admin-controls h1 {
+    .citas-content-wrapper h1 {
         font-size: 1.4rem;
-        margin-bottom: 1rem;
-    }
-
-    .citas-admin-controls {
-        gap: 0.8rem;
         margin-bottom: 1rem;
     }
 
@@ -632,7 +688,7 @@
         font-size: 0.85rem;
     }
 
-    .botonAgregarCita {
+    .citas-add-button {
         padding: 9px 14px;
         font-size: 0.85rem;
     }
@@ -640,17 +696,12 @@
 
 /* Mobile Portrait (480px and below) - Controles de citas */
 @media (max-width: 480px) {
-    .citas-content {
+    .citas-content-wrapper {
         padding: 0.6rem;
     }
 
-    .citas-admin-controls h1 {
+    .citas-content-wrapper h1 {
         font-size: 1.2rem;
-        margin-bottom: 0.8rem;
-    }
-
-    .citas-admin-controls {
-        gap: 0.6rem;
         margin-bottom: 0.8rem;
     }
 
@@ -660,7 +711,7 @@
         font-size: 0.8rem;
     }
 
-    .botonAgregarCita {
+    .citas-add-button {
         padding: 8px 12px;
         font-size: 0.8rem;
     }
@@ -668,17 +719,12 @@
 
 /* Small Mobile (360px and below) - Controles de citas */
 @media (max-width: 360px) {
-    .citas-content {
+    .citas-content-wrapper {
         padding: 0.4rem;
     }
 
-    .citas-admin-controls h1 {
+    .citas-content-wrapper h1 {
         font-size: 1.1rem;
-        margin-bottom: 0.6rem;
-    }
-
-    .citas-admin-controls {
-        gap: 0.4rem;
         margin-bottom: 0.6rem;
     }
 
@@ -688,7 +734,7 @@
         font-size: 0.75rem;
     }
 
-    .botonAgregarCita {
+    .citas-add-button {
         padding: 7px 10px;
         font-size: 0.75rem;
     }
@@ -700,9 +746,10 @@
 
 /* Contenedor principal del formulario */
 .agendar-cita-container {
-  padding: 2rem;
-  margin-left: 270px;
+  display: flex;
   min-height: 100vh;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
   background-color: var(--color-background-light);
 }
 
