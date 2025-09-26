@@ -51,6 +51,53 @@ const validateTimeFormat = (value) => {
   return true;
 };
 
+// Función para validar espacios al inicio y final
+const validateSpaces = (value, fieldName) => {
+  if (typeof value === 'string') {
+    if (value !== value.trim()) {
+      return `No se pueden dejar espacios al inicio o final en ${fieldName}`;
+    }
+  }
+  return true;
+};
+
+// Función para validar espacios en arrays de objetos
+const validateArraySpaces = (value, fieldName) => {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      if (typeof item.label === 'string' && item.label !== item.label.trim()) {
+        return `No se pueden dejar espacios al inicio o final en ${fieldName}`;
+      }
+    }
+  }
+  return true;
+};
+
+// Función para simular espacios en arrays (para testing)
+const simulateSpacesInArray = (value, fieldName) => {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      if (typeof item.label === 'string') {
+        // Simular espacios al inicio o final
+        const hasLeadingSpace = item.label.startsWith(' ');
+        const hasTrailingSpace = item.label.endsWith(' ');
+        if (hasLeadingSpace || hasTrailingSpace) {
+          return `No se pueden dejar espacios al inicio o final en ${fieldName}`;
+        }
+      }
+    }
+  }
+  return true;
+};
+
+// Función para validar espacios en campos de texto
+const validateTextSpaces = (value, fieldName) => {
+  if (typeof value === 'string' && value !== value.trim()) {
+    return `No se pueden dejar espacios al inicio o final en ${fieldName}`;
+  }
+  return true;
+};
+
 // Función para comparar horas
 const compareTimes = (time1, time2) => {
   const [h1, m1] = time1.split(':').map(Number);
@@ -191,6 +238,8 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
   const handleFieldBlur = (fieldName, currentValue, setValue) => {
     if (typeof currentValue === 'string' && currentValue !== currentValue.trim()) {
       setValue(fieldName, currentValue.trim());
+      // Disparar validación después de limpiar
+      setTimeout(() => trigger(fieldName), 0);
     }
   };
 
@@ -202,6 +251,8 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
         label: typeof item.label === 'string' ? item.label.trim() : item.label
       }));
       setValue(fieldName, cleanedValue);
+      // Disparar validación después de limpiar
+      setTimeout(() => trigger(fieldName), 0);
     }
   };
 
@@ -274,6 +325,7 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
             />
             <span className="date-icon">📅</span>
           </div>
+          <div className="format-message">Formato permitido: DD/MM/AAAA</div>
           {errors.fechaInicio && <span className="admin-form-error">{errors.fechaInicio.message}</span>}
         </div>
         <div className="admin-form-group">
@@ -346,6 +398,7 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
             />
             <span className="date-icon">📅</span>
           </div>
+          <div className="format-message">Formato permitido: DD/MM/AAAA</div>
           {errors.fechaFin && <span className="admin-form-error">{errors.fechaFin.message}</span>}
         </div>
       </div>
@@ -361,6 +414,10 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
                 required: 'La hora de inicio es obligatoria',
                 validate: (value) => {
                   if (!value) return 'La hora de inicio es obligatoria';
+                  
+                  // Validar espacios
+                  const spaceValidation = validateTextSpaces(value, 'hora de inicio');
+                  if (spaceValidation !== true) return spaceValidation;
                   
                   // Verificar formato de hora (HH:mm)
                   const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -402,6 +459,7 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
             />
             <span className="time-icon">🕐</span>
           </div>
+          <div className="format-message">Formato permitido: 24 horas (HH:mm)</div>
           {errors.horaInicio && <span className="admin-form-error">{errors.horaInicio.message}</span>}
         </div>
         <div className="admin-form-group">
@@ -413,6 +471,12 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
               rules={{
                 required: 'La hora de fin es obligatoria',
                 validate: (value) => {
+                  if (!value) return 'La hora de fin es obligatoria';
+                  
+                  // Validar espacios
+                  const spaceValidation = validateTextSpaces(value, 'hora de fin');
+                  if (spaceValidation !== true) return spaceValidation;
+                  
                   const timeValidation = validateTimeFormat(value);
                   if (timeValidation !== true) return timeValidation;
                   
@@ -456,6 +520,7 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
             />
             <span className="time-icon">🕐</span>
           </div>
+          <div className="format-message">Formato permitido: 24 horas (HH:mm)</div>
           {errors.horaFin && <span className="admin-form-error">{errors.horaFin.message}</span>}
         </div>
       </div>
@@ -472,6 +537,11 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
                 if (!value || value.length === 0) {
                   return 'Debe seleccionar al menos un día';
                 }
+                
+                // Validar espacios en los labels
+                const spaceValidation = simulateSpacesInArray(value, 'días');
+                if (spaceValidation !== true) return spaceValidation;
+                
                 return true;
               }
             }}
@@ -488,7 +558,10 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
                   field.onChange(selectedOptions);
                   trigger('dias');
                 }}
-                onBlur={() => handleArrayFieldBlur('dias', field.value, setValue)}
+                onBlur={() => {
+                  handleArrayFieldBlur('dias', field.value, setValue);
+                  trigger('dias');
+                }}
                 components={{
                   MultiValue: DiaPill,
                 }}
@@ -509,6 +582,11 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
                 if (!value || value.length === 0) {
                   return 'Debe seleccionar al menos un empleado';
                 }
+                
+                // Validar espacios en los labels
+                const spaceValidation = simulateSpacesInArray(value, 'empleados');
+                if (spaceValidation !== true) return spaceValidation;
+                
                 return true;
               }
             }}
@@ -526,7 +604,10 @@ const NovedadForm = ({ onFormSubmit, onCancel, isLoading, initialData, isEditing
                   field.onChange(selectedOptions);
                   trigger('empleados');
                 }}
-                onBlur={() => handleArrayFieldBlur('empleados', field.value, setValue)}
+                onBlur={() => {
+                  handleArrayFieldBlur('empleados', field.value, setValue);
+                  trigger('empleados');
+                }}
               />
             )}
           />
