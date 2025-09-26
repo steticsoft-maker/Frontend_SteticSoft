@@ -112,7 +112,7 @@ function ConfigHorariosPage() {
   return (
     <div className="lista-novedades-container">
       <div className="novedades-content-wrapper">
-        <h1>Gestión de Novedades de Horario ({novedades.length})</h1>
+        <h1>Gestión de Novedades de Horario </h1>
         
         <div className="novedades-actions-bar">
           <div className="novedades-filters">
