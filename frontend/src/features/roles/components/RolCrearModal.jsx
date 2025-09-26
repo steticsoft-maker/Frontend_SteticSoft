@@ -33,9 +33,66 @@ const RolCrearModal = ({
 
   const handleFormChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (formErrors[name]) {
-      setFormErrors((prevErr) => ({ ...prevErr, [name]: "" }));
+    // Validar en tiempo real
+    validateField(name, value);
+  };
+
+  const validateField = (name, value) => {
+    const errors = { ...formErrors };
+
+    switch (name) {
+      case "nombre":
+        if (!value || !value.trim()) {
+          errors.nombre = "El nombre del rol es obligatorio.";
+        } else if (value.trim().length < 3) {
+          errors.nombre = "El nombre debe tener al menos 3 caracteres.";
+        } else if (value.trim().length > 50) {
+          errors.nombre = "El nombre no debe exceder los 50 caracteres.";
+        } else if (!nameRegex.test(value)) {
+          errors.nombre =
+            "El nombre solo puede contener letras, espacios y guiones bajos.";
+        } else {
+          errors.nombre = "";
+        }
+        break;
+
+      case "descripcion":
+        if (!value || !value.trim()) {
+          errors.descripcion = "La descripción es obligatoria.";
+        } else if (value.trim().length < 3) {
+          errors.descripcion =
+            "La descripción debe tener al menos 3 caracteres.";
+        } else if (value.trim().length > 250) {
+          errors.descripcion =
+            "La descripción no debe exceder los 250 caracteres.";
+        } else if (!descriptionRegex.test(value)) {
+          errors.descripcion = "La descripción contiene caracteres no válidos.";
+        } else {
+          errors.descripcion = "";
+        }
+        break;
+
+      case "tipoPerfil":
+        if (!value) {
+          errors.tipoPerfil = "Debe seleccionar un tipo de perfil.";
+        } else {
+          errors.tipoPerfil = "";
+        }
+        break;
+
+      case "idPermisos":
+        if (!value || value.length === 0) {
+          errors.permisos = "Debe seleccionar al menos un módulo.";
+        } else {
+          errors.permisos = "";
+        }
+        break;
+
+      default:
+        break;
     }
+
+    setFormErrors(errors);
   };
 
   const handleToggleModulo = (permisoId) => {
@@ -44,17 +101,22 @@ const RolCrearModal = ({
       const idPermisosNuevos = idPermisosActuales.includes(permisoId)
         ? idPermisosActuales.filter((id) => id !== permisoId)
         : [...idPermisosActuales, permisoId];
-      return { ...prev, idPermisos: idPermisosNuevos };
+      const newFormData = { ...prev, idPermisos: idPermisosNuevos };
+      // Validar permisos en tiempo real
+      validateField("idPermisos", idPermisosNuevos);
+      return newFormData;
     });
   };
 
   const handleSelectAll = () => {
     const allIds = permisosDisponibles.map((p) => p.idPermiso);
     setFormData((prev) => ({ ...prev, idPermisos: allIds }));
+    validateField("idPermisos", allIds);
   };
 
   const handleDeselectAll = () => {
     setFormData((prev) => ({ ...prev, idPermisos: [] }));
+    validateField("idPermisos", []);
   };
 
   // INICIO DE MODIFICACIÓN: Lógica de validación completada

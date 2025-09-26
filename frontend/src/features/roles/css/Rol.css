@@ -784,7 +784,7 @@ input:checked+.slider:before {
 
 /* Card de módulo */
 .rol-modulo-card {
-    background: white;
+    background: var(--color-background-card);
     border: 2px solid var(--color-form-border);
     border-radius: 12px;
     overflow: hidden;
@@ -838,7 +838,7 @@ input:checked+.slider:before {
 
 .rol-modulo-name {
     margin: 0;
-    color: var(--color-primary);
+    color: var(--color-text-dark);
     font-size: 1.1rem;
     font-weight: 600;
 }
@@ -856,7 +856,7 @@ input:checked+.slider:before {
 
 .rol-modulo-toggle {
     font-size: 1.2rem;
-    color: var(--color-primary);
+    color: var(--color-text-dark);
     transition: transform 0.2s ease;
     font-weight: bold;
 }
@@ -1096,7 +1096,7 @@ input:checked+.slider:before {
 }
 
 .rol-selected-permission-tag {
-    background: white;
+    background: var(--color-background-card);
     color: #27ae60;
     padding: 4px 8px;
     border-radius: 6px;
@@ -1122,31 +1122,26 @@ input:checked+.slider:before {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
+    padding: 2rem;
     text-align: center;
     color: var(--color-text-secondary);
-    background-color: rgba(154, 122, 159, 0.03);
-    border: 2px dashed var(--color-form-border);
-    border-radius: 12px;
 }
 
-.rol-no-selected-icon {
-    font-size: 3rem;
-    margin-bottom: 12px;
+.rol-no-selected-modules .rol-no-selected-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
     opacity: 0.6;
 }
 
 .rol-no-selected-modules p {
-    margin: 0 0 8px 0;
+    margin: 0.5rem 0;
     font-size: 1rem;
-    font-weight: 500;
+    color: var(--color-text-secondary);
 }
 
 .rol-no-selected-modules small {
-    margin: 0;
     font-size: 0.85rem;
-    font-style: italic;
-    opacity: 0.8;
+    color: var(--color-text-muted);
 }
 
 /* Título en formulario */
