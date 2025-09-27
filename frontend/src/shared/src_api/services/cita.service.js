@@ -22,7 +22,14 @@ const obtenerCitaCompletaPorIdInterno = async (idCita, transaction = null) => {
       {
         model: db.Cliente,
         as: "cliente",
-        attributes: ["idCliente", "nombre", "apellido", "correo", "estado", "numeroDocumento"],
+        attributes: [
+          "idCliente",
+          "nombre",
+          "apellido",
+          "correo",
+          "estado",
+          "numeroDocumento",
+        ],
       },
       {
         model: db.Usuario,
@@ -422,8 +429,138 @@ const cancelarCitaPorCliente = async (idCita, idCliente) => {
   }
 };
 
+/**
+ * Crea una cita para un cliente específico (usado por el endpoint /mis-citas)
+ */
+const crearCitaParaCliente = async (datosCita, clienteId) => {
+  const { start, empleadoId, servicios = [], novedadId } = datosCita;
+
+  if (!servicios || servicios.length === 0)
+    throw new BadRequestError("Debes seleccionar al menos un servicio.");
+  if (!start)
+    throw new BadRequestError("La fecha y hora de inicio son requeridas.");
+  if (!novedadId)
+    throw new BadRequestError("La novedad de horario es requerida.");
+
+  // Convertir start a fecha y hora
+  const fecha = moment(start).format("YYYY-MM-DD");
+  const hora_inicio = moment(start).format("HH:mm:ss");
+
+  const transaction = await db.sequelize.transaction();
+  try {
+    // Verificar que el cliente existe y está activo
+    const cliente = await db.Cliente.findOne({
+      where: { idCliente: clienteId, estado: true },
+      transaction,
+    });
+
+    if (!cliente) {
+      throw new NotFoundError("Cliente no encontrado o inactivo.");
+    }
+
+    // Si se especifica empleado, verificar que existe
+    let usuarioId = empleadoId;
+    if (empleadoId) {
+      const empleado = await db.Usuario.findOne({
+        where: { idUsuario: empleadoId, estado: true },
+        include: [{ model: db.Empleado, as: "empleado" }],
+        transaction,
+      });
+
+      if (!empleado || !empleado.empleado) {
+        throw new BadRequestError("Empleado no encontrado o inactivo.");
+      }
+    }
+
+    // Verificar que la novedad existe y está activa
+    const novedad = await db.Novedad.findOne({
+      where: { idNovedad: novedadId, estado: true },
+      transaction,
+    });
+
+    if (!novedad) {
+      throw new BadRequestError("Novedad de horario no encontrada o inactiva.");
+    }
+
+    // Verificar que no hay conflicto de horarios si se especifica empleado
+    if (usuarioId) {
+      const citaExistente = await db.Cita.findOne({
+        where: {
+          idUsuario: usuarioId,
+          fecha: fecha,
+          hora_inicio: hora_inicio,
+          idEstado: { [Op.ne]: 4 }, // Excluir citas canceladas
+        },
+        transaction,
+      });
+
+      if (citaExistente) {
+        throw new ConflictError(
+          "El empleado ya tiene otra cita programada exactamente a esa misma hora."
+        );
+      }
+    }
+
+    // Verificar que los servicios existen y están activos
+    const serviciosConsultados = await db.Servicio.findAll({
+      where: { idServicio: servicios, estado: true },
+      transaction,
+    });
+
+    if (serviciosConsultados.length !== servicios.length) {
+      throw new BadRequestError(
+        "Uno o más servicios no existen o están inactivos."
+      );
+    }
+
+    // Calcular precio total
+    const precio_total = serviciosConsultados.reduce(
+      (total, servicio) => total + parseFloat(servicio.precio),
+      0
+    );
+
+    // Crear la cita
+    const nuevaCita = await db.Cita.create(
+      {
+        fecha,
+        hora_inicio,
+        idCliente: clienteId,
+        idUsuario: usuarioId,
+        idEstado: 2, // Estado "pendiente"
+        idNovedad: novedadId,
+        precio_total,
+      },
+      { transaction }
+    );
+
+    // Asociar servicios a la cita
+    await nuevaCita.setServiciosProgramados(servicios, { transaction });
+
+    await transaction.commit();
+
+    // Obtener la cita completa con todas las relaciones
+    const citaCompleta = await obtenerCitaCompletaPorIdInterno(
+      nuevaCita.idCita
+    );
+
+    // Enviar correo de confirmación
+    try {
+      await enviarCorreoCita(citaCompleta);
+    } catch (emailError) {
+      console.error("Error al enviar correo de confirmación:", emailError);
+      // No lanzar error, la cita ya se creó exitosamente
+    }
+
+    return citaCompleta;
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
+};
+
 module.exports = {
   crearCita,
+  crearCitaParaCliente,
   obtenerTodasLasCitas,
   obtenerCitaPorId,
   actualizarCita,
