@@ -137,7 +137,7 @@ const CategoriaForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode, cat
           </button>
         </div>
         <div className="admin-modal-body">
-          <form onSubmit={handleSubmit} noValidate>
+          <form id="categoria-servicio-form" onSubmit={handleSubmit} noValidate>
             <div className="admin-form-section">
               <h3 className="admin-form-section-title">Información de la Categoría</h3>
               <div className="admin-form-group">
