@@ -120,6 +120,7 @@ export const saveCliente = async (
         fechaNacimiento: clienteData.fechaNacimiento,
         contrasena: clienteData.contrasena, // Ahora usamos clienteData.contrasena directamente del ClienteForm
       };
+
       const response = await apiClient.post("/clientes", dataToSend);
       return response.data.data; // Asumiendo que devuelve { success: true, data: nuevoCliente }
     } else {
@@ -154,12 +155,15 @@ export const saveCliente = async (
       return response.data.data; // Asumiendo que devuelve { success: true, data: clienteActualizado }
     }
   } catch (error) {
-    console.error("Error al guardar cliente:", error);
-    // Verificar si el error tiene una respuesta con datos (por ejemplo, mensajes de validación del backend)
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message); // Lanza el mensaje de error específico del backend
+    // Si hay una respuesta del servidor con errores de validación
+    if (error.response?.data) {
+      throw error.response.data;
     }
-    throw error; // Re-lanzar el error genérico si no hay mensaje específico
+
+    // Si es un error de red o conexión
+    throw new Error(
+      error.message || "Error desconocido al guardar el cliente."
+    );
   }
 };
 

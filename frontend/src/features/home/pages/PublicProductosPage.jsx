@@ -1,5 +1,6 @@
 // src/features/home/pages/PublicProductosPage.jsx
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaShoppingCart,
   FaHeart,
@@ -10,21 +11,28 @@ import {
   FaMinus,
   FaPlus,
   FaTrash,
+  FaUser,
+  FaInfoCircle,
+  FaCalendarAlt,
 } from "react-icons/fa";
 import ProductCard from "../components/ProductCard";
 import { getPublicProducts } from "../services/publicProductosService";
+import { createPublicVenta } from "../../../shared/services/publicServices";
 import { formatPrice } from "../../../shared/utils/priceUtils";
+import { useAuth } from "../../../shared/contexts/authHooks";
 import Footer from "../../../shared/components/layout/Footer";
 import FooterSpacer from "../../../shared/components/layout/FooterSpacer";
+import Swal from "sweetalert2";
 import "../css/PublicProductos.css";
-
-
 
 function PublicProductosPage() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isProcessingOrder, setIsProcessingOrder] = useState(false);
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -59,6 +67,23 @@ function PublicProductosPage() {
     const savedCart = JSON.parse(localStorage.getItem("productCart")) || [];
     setCart(savedCart);
   }, []);
+
+  // Restaurar carrito guardado cuando el usuario se autentica
+  useEffect(() => {
+    if (isAuthenticated && user?.rol?.nombre === "Cliente") {
+      const savedCart = JSON.parse(localStorage.getItem("productCart")) || [];
+      if (savedCart.length > 0) {
+        Swal.fire({
+          title: "¡Bienvenido!",
+          text: "Hemos restaurado los productos que tenías en tu carrito. ¡Ya puedes proceder con tu compra!",
+          icon: "info",
+          confirmButtonText: "Continuar",
+          timer: 4000,
+          timerProgressBar: true,
+        });
+      }
+    }
+  }, [isAuthenticated, user]);
 
   const addToCart = (product) => {
     setCart((prevCart) => {
@@ -107,9 +132,161 @@ function PublicProductosPage() {
     localStorage.removeItem("productCart");
   };
 
-  const handleOrder = () => {
-    alert("¡Tu pedido ha sido registrado! Gracias por elegirnos 💕");
-    clearCart();
+  const handleOrder = async () => {
+    if (cart.length === 0) {
+      Swal.fire({
+        title: "Carrito vacío",
+        text: "Agrega algunos productos antes de proceder con la compra.",
+        icon: "warning",
+        confirmButtonText: "Entendido",
+      });
+      return;
+    }
+
+    // Verificar si el usuario está autenticado
+    if (!isAuthenticated) {
+      const result = await Swal.fire({
+        title: "Inicia sesión para continuar",
+        html: `
+          <div style="text-align: left; margin: 20px 0;">
+            <p><strong>Para realizar tu compra necesitas:</strong></p>
+            <ul style="margin: 15px 0; padding-left: 20px;">
+              <li>Iniciar sesión como cliente</li>
+              <li>Completar tu información de contacto</li>
+            </ul>
+            <p style="margin-top: 15px; font-style: italic;">
+              <strong>¡No te preocupes!</strong> Tu carrito se guardará automáticamente 
+              y podrás continuar con tu compra después de iniciar sesión.
+            </p>
+          </div>
+        `,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Iniciar sesión",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#6B46C1",
+        cancelButtonColor: "#6c757d",
+      });
+
+      if (result.isConfirmed) {
+        navigate("/login", {
+          state: {
+            from: "/productos",
+            message: "Inicia sesión para continuar con tu compra",
+          },
+        });
+      }
+      return;
+    }
+
+    // Verificar si el usuario es un cliente
+    if (user?.rol?.nombre !== "Cliente") {
+      Swal.fire({
+        title: "Acceso restringido",
+        text: "Solo los clientes pueden realizar compras desde la tienda.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+      });
+      return;
+    }
+
+    // Mostrar información sobre el proceso de compra
+    const processInfo = await Swal.fire({
+      title: "Proceso de Compra",
+      html: `
+        <div style="text-align: left; margin: 20px 0;">
+          <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <h4 style="color: #1976d2; margin: 0 0 10px 0;">
+              <i class="fas fa-info-circle"></i> Información Importante
+            </h4>
+            <ul style="margin: 0; padding-left: 20px; color: #424242;">
+              <li>Este es un <strong>pedido de reserva</strong></li>
+              <li>Los productos serán separados del inventario</li>
+              <li>Debes acercarte al local para realizar el pago</li>
+              <li>El pedido estará disponible por <strong>24 horas</strong></li>
+              <li>Puedes cancelar desde "Mis Pedidos" si está pendiente</li>
+            </ul>
+          </div>
+          <p><strong>Total a pagar:</strong> $${formatPrice(
+            getTotal() * 1.19
+          )}</p>
+          <p><em>¿Deseas continuar con tu pedido?</em></p>
+        </div>
+      `,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Confirmar Pedido",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#6B46C1",
+      cancelButtonColor: "#6c757d",
+    });
+
+    if (!processInfo.isConfirmed) {
+      return;
+    }
+
+    // Procesar la compra
+    setIsProcessingOrder(true);
+
+    try {
+      // Preparar los datos para enviar
+      const productosParaEnviar = cart.map((item) => ({
+        idProducto: item.id,
+        cantidad: item.quantity,
+      }));
+
+      const ventaData = {
+        productos: productosParaEnviar,
+        servicios: [], // No hay servicios en este caso
+      };
+
+      const response = await createPublicVenta(ventaData);
+
+      // Mostrar mensaje de éxito
+      await Swal.fire({
+        title: "¡Pedido realizado exitosamente!",
+        html: `
+          <div style="text-align: center; margin: 20px 0;">
+            <p><strong>ID del Pedido:</strong> ${
+              response.data?.idVenta || "N/A"
+            }</p>
+            <p style="margin: 15px 0;">
+              Te hemos enviado un email con los detalles de tu pedido.
+            </p>
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
+              <p style="margin: 0; font-weight: bold; color: #6B46C1;">
+                ¡Recuerda acercarte al local para realizar el pago y retirar tu pedido!
+              </p>
+            </div>
+          </div>
+        `,
+        icon: "success",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#6B46C1",
+      });
+
+      // Limpiar el carrito después de una compra exitosa
+      clearCart();
+
+      // Opcional: redirigir a una página de confirmación o a "Mis Pedidos"
+      // navigate('/mis-pedidos');
+    } catch (error) {
+      console.error("Error al procesar la compra:", error);
+
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Ocurrió un error inesperado al procesar tu pedido.";
+
+      Swal.fire({
+        title: "Error al procesar el pedido",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonText: "Intentar de nuevo",
+      });
+    } finally {
+      setIsProcessingOrder(false);
+    }
   };
 
   const getTotal = () => {
@@ -261,11 +438,39 @@ function PublicProductosPage() {
                       <span>Subtotal:</span>
                       <span>${formatPrice(getTotal())}</span>
                     </div>
+                    <div className="cart-tax">
+                      <span>IVA (19%):</span>
+                      <span>${formatPrice(getTotal() * 0.19)}</span>
+                    </div>
                     <div className="cart-total">
                       <FaStar style={{ marginRight: "8px" }} />
-                      <span>Total: ${formatPrice(getTotal())}</span>
+                      <span>Total: ${formatPrice(getTotal() * 1.19)}</span>
                     </div>
                   </div>
+
+                  {/* Información de autenticación */}
+                  {!isAuthenticated && (
+                    <div className="auth-notice">
+                      <FaUser className="auth-icon" />
+                      <span>Inicia sesión para continuar con tu compra</span>
+                    </div>
+                  )}
+
+                  {isAuthenticated && user?.rol?.nombre !== "Cliente" && (
+                    <div className="auth-notice error">
+                      <FaInfoCircle className="auth-icon" />
+                      <span>Solo los clientes pueden realizar compras</span>
+                    </div>
+                  )}
+
+                  {isAuthenticated && user?.rol?.nombre === "Cliente" && (
+                    <div className="auth-notice success">
+                      <FaUser className="auth-icon" />
+                      <span>
+                        ¡Hola {user.nombre}! Tu carrito está listo para comprar
+                      </span>
+                    </div>
+                  )}
 
                   <div className="cart-actions">
                     <button
@@ -278,9 +483,19 @@ function PublicProductosPage() {
                     <button
                       onClick={handleOrder}
                       className="cart-order-btn cart-order-btn-alt"
+                      disabled={isProcessingOrder}
                     >
-                      <FaHeart style={{ marginRight: "8px" }} />
-                      Realizar Pedido
+                      {isProcessingOrder ? (
+                        <>
+                          <div className="spinner-small"></div>
+                          Procesando...
+                        </>
+                      ) : (
+                        <>
+                          <FaHeart style={{ marginRight: "8px" }} />
+                          Realizar Pedido
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -321,6 +536,15 @@ function PublicProductosPage() {
           )}
         </div>
       </section>
+
+      {/* Floating Appointment Button */}
+      <button
+        className="floating-appointment-btn"
+        onClick={() => (window.location.href = "/citas")}
+      >
+        <FaCalendarAlt className="btn-icon" />
+        Agendar Cita
+      </button>
 
       <FooterSpacer />
       <Footer />

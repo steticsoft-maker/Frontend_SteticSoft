@@ -45,15 +45,23 @@ export const loginAPI = async (credentials) => {
  */
 export const registerAPI = async (userData) => {
   try {
-    // Petición POST al endpoint de registro del backend con los datos del usuario.
-    const response = await apiClient.post("/auth/registrar", userData);
+    // Usar publicApiClient ya que el registro es público y no requiere autenticación
+    const publicApiClient = (
+      await import("../../../shared/services/publicApiClient")
+    ).default;
+    const response = await publicApiClient.post("/auth/registrar", userData);
     return response.data;
   } catch (error) {
-    throw (
-      error.response?.data ||
-      new Error(
-        error.message || "Error desconocido durante el proceso de registro."
-      )
+    console.error("Error en registerAPI:", error);
+
+    // Si hay una respuesta del servidor con errores de validación
+    if (error.response?.data) {
+      throw error.response.data;
+    }
+
+    // Si es un error de red o conexión
+    throw new Error(
+      error.message || "Error desconocido durante el proceso de registro."
     );
   }
 };

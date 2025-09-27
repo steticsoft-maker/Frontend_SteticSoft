@@ -28,39 +28,107 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
 
     return (
         <div className="details-modal-overlay" onClick={onClose}>
-            <div className="details-modal-content" onClick={(e) => e.stopPropagation()}>
-                
-                <button className="details-modal-close-button" onClick={onClose} aria-label="Cerrar modal">
-                    &times;
-                </button>
-
-                <h3>Detalles del Servicio</h3>
-
-                <div className="details-list">
-                    <p><strong>Nombre:</strong> {servicio.nombre || 'N/A'}</p>
-                    <p><strong>Descripción:</strong> {servicio.descripcion || 'Sin descripción'}</p>
-                    <p><strong>Precio:</strong> {formatCurrency(servicio.precio)}</p>
-                    <p><strong>Categoría:</strong> {servicio.categoria?.nombre || 'Sin categoría'}</p>
+            <div className="details-modal-content servicios-details-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="servicios-modal-header">
+                    <h3 className="servicios-modal-title">
+                        <span className="servicios-modal-icon">🛍️</span>
+                        Detalles del Servicio
+                    </h3>
+                    <button
+                        type="button"
+                        className="servicios-modal-close-button"
+                        onClick={onClose}
+                        title="Cerrar"
+                    >
+                        &times;
+                    </button>
                 </div>
-                
-                <div className="details-image-container">
-                    <strong>Imagen:</strong>
-                    {servicio.imagen ? (
-                        <img
-                            src={getImageUrl(servicio.imagen)}
-                            alt={`Imagen de ${servicio.nombre}`}
-                            className="details-image"
-                            onError={(e) => {
-                                e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'flex';
-                            }}
-                        />
-                    ) : null}
-                    <div className="details-image-placeholder" style={{ display: servicio.imagen ? 'none' : 'flex' }}>
-                        📷 No hay imagen disponible
+
+                <div className="servicios-modal-body">
+                    <div className="servicios-details-container">
+                        <div className="servicios-details-section">
+                            <h4 className="servicios-details-section-title">
+                                <span className="section-icon">📋</span>
+                                Información Básica
+                            </h4>
+                            <div className="servicios-details-grid">
+                                <div className="servicios-detail-item servicios-detail-item-full">
+                                    <label className="servicios-detail-label">Nombre</label>
+                                    <span className="servicios-detail-value servicios-name-text">
+                                        {servicio.nombre || 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="servicios-detail-item servicios-detail-item-full">
+                                    <label className="servicios-detail-label">Categoría</label>
+                                    <span className="servicios-detail-value servicios-category-text">
+                                        {servicio.categoria?.nombre || 'Sin categoría'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="servicios-details-section">
+                            <h4 className="servicios-details-section-title">
+                                <span className="section-icon">💰</span>
+                                Información Comercial
+                            </h4>
+                            <div className="servicios-details-grid">
+                                <div className="servicios-detail-item servicios-detail-item-full">
+                                    <label className="servicios-detail-label">Precio</label>
+                                    <span className="servicios-detail-value servicios-price-text">
+                                        {formatCurrency(servicio.precio)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="servicios-details-section">
+                            <h4 className="servicios-details-section-title">
+                                <span className="section-icon">📝</span>
+                                Descripción
+                            </h4>
+                            <div className="servicios-details-grid">
+                                <div className="servicios-detail-item servicios-detail-item-full">
+                                    <span className="servicios-detail-value servicios-description-text">
+                                        {servicio.descripcion || 'Sin descripción'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {servicio.imagen && (
+                            <div className="servicios-details-section servicios-image-section">
+                                <h4 className="servicios-details-section-title">
+                                    <span className="section-icon">🖼️</span>
+                                    Imagen del Servicio
+                                </h4>
+                                <div className="servicios-image-container">
+                                    <img
+                                        src={getImageUrl(servicio.imagen)}
+                                        alt={`Imagen de ${servicio.nombre}`}
+                                        className="servicios-detail-image"
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                    />
+                                    <div className="servicios-image-placeholder" style={{ display: servicio.imagen ? 'none' : 'flex' }}>
+                                        📷 No hay imagen disponible
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
+                <div className="servicios-modal-footer">
+                    <button 
+                        className="servicios-detalle-modal-button-cerrar" 
+                        onClick={onClose}
+                    >
+                        Cerrar
+                    </button>
+                </div>
             </div>
         </div>
     );

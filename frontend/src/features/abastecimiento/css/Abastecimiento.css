@@ -678,61 +678,292 @@
     max-width: 400px;
     text-align: center;
   }
-  
-  .abastecimiento-modal-title,
-  .modal-abastecimiento-content h2,
-  .modal-abastecimiento-content h3 {
-    text-align: center;
+
+  /* === NUEVO DISEÑO DEL MODAL DE DETALLES === */
+  .modal-abastecimiento-content.abastecimiento-details-modal {
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-background-light);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+
+  .abastecimiento-modal-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .abastecimiento-modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .abastecimiento-modal-icon {
+    font-size: 1.3rem;
+  }
+
+  .abastecimiento-modal-close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .abastecimiento-modal-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+
+  .abastecimiento-modal-body {
+    padding: 25px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .abastecimiento-details-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .abastecimiento-details-section {
+    background: var(--color-background-light);
+    border: 1px solid var(--color-border-light);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.2s ease;
+  }
+
+  .abastecimiento-details-section:hover {
+    border-color: var(--color-primary-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .abastecimiento-depleted-section {
+    border-color: var(--color-warning-light);
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 152, 0, 0.05) 100%);
+  }
+
+  .abastecimiento-details-section-title {
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
     color: var(--color-text-dark);
-    margin-top: 0;
-    margin-bottom: 25px;
-    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px solid var(--color-primary-light);
+    padding-bottom: 8px;
   }
-  
-  .modal-abastecimiento-content.confirm-modal.deplete-confirmation h3 {
-    color: var(--color-warning-dark, #f57c00);
+
+  .section-icon {
+    font-size: 1rem;
   }
-  .modal-abastecimiento-content.confirm-modal.delete-confirmation h3 {
-    color: var(--color-danger, #e74c3c);
+
+  .abastecimiento-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
   }
-  
-  .abastecimiento-details-text p {
-    text-align: left;
-    margin-bottom: 12px;
-    line-height: 1.6;
+
+  .abastecimiento-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .abastecimiento-detail-item-full {
+    grid-column: 1 / -1;
+  }
+
+  .abastecimiento-detail-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+
+  .abastecimiento-detail-value {
+    font-size: 0.95rem;
+    color: var(--color-text-dark);
+    word-break: break-word;
+  }
+
+  /* === BADGES Y ELEMENTOS ESPECIALES === */
+  .abastecimiento-id-badge {
+    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .abastecimiento-quantity-badge {
+    background: var(--color-success-light);
+    color: var(--color-success-dark);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .abastecimiento-product-name {
+    font-weight: 600;
     color: var(--color-text-dark);
     font-size: 1rem;
   }
-  
-  .abastecimiento-details-text p strong {
-    color: var(--color-primary);
-    margin-right: 8px;
+
+  .abastecimiento-employee-info {
     font-weight: 600;
-    min-width: 180px;
+    color: var(--color-primary);
+  }
+
+  .abastecimiento-email-text {
+    color: var(--color-text-secondary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+  }
+
+  .abastecimiento-date-text {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .abastecimiento-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     display: inline-block;
+    width: fit-content;
   }
-  
-  .depleted-text {
-    color: var(--color-text-warning-dark, #e65100);
-    font-weight: bold;
+
+  .abastecimiento-status-badge.active {
+    background: var(--color-success-light);
+    color: var(--color-success-dark);
   }
-  .modal-abastecimiento-button-cerrar {
-    background-color: var(--color-secondary);
+
+  .abastecimiento-status-badge.inactive {
+    background: var(--color-danger-light);
+    color: var(--color-danger-dark);
+  }
+
+  .abastecimiento-depleted-badge {
+    background: var(--color-warning-light);
+    color: var(--color-warning-dark);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .abastecimiento-reason-text {
+    font-style: italic;
+    color: var(--color-text-secondary);
+    background: var(--color-background-secondary);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 3px solid var(--color-warning);
+  }
+
+  .abastecimiento-modal-footer {
+    background: var(--color-background-secondary);
+    padding: 20px 25px;
+    border-top: 1px solid var(--color-border-light);
+    display: flex;
+    justify-content: center;
+  }
+
+  .abastecimiento-modal-button-cerrar {
+    background: var(--color-secondary);
     color: var(--color-secondary-text);
-    display: block;
-    width: auto;
-    min-width: 120px;
-    margin: 25px auto 0;
-    padding: 10px 20px;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 6px;
     font-size: 1rem;
     font-weight: 500;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
   }
-  .modal-abastecimiento-button-cerrar:hover {
-    background-color: var(--color-secondary-hover);
+
+  .abastecimiento-modal-button-cerrar:hover {
+    background: var(--color-secondary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* === RESPONSIVE PARA EL MODAL DE DETALLES === */
+  @media (max-width: 768px) {
+    .modal-abastecimiento-content.abastecimiento-details-modal {
+      width: 95%;
+      max-height: 90vh;
+    }
+
+    .abastecimiento-details-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .abastecimiento-detail-item-full {
+      grid-column: 1;
+    }
+
+    .abastecimiento-modal-header {
+      padding: 15px 20px;
+    }
+
+    .abastecimiento-modal-title {
+      font-size: 1.3rem;
+    }
+
+    .abastecimiento-modal-body {
+      padding: 20px;
+    }
+
+    .abastecimiento-details-section {
+      padding: 15px;
+    }
+
+    .abastecimiento-modal-footer {
+      padding: 15px 20px;
+    }
   }
   
   /* === FORMULARIO MODAL === */
@@ -989,5 +1220,438 @@
     position: relative; /* Para asegurar que z-index funcione correctamente */
     width: 90%; /* Ancho responsivo */
     max-width: 600px; /* Un max-width razonable */
+  }
+
+  /* === ESTILOS MEJORADOS PARA MODAL DE AGOTAMIENTO === */
+  .modal-abastecimiento-content.deplete-confirmation {
+    max-width: 500px;
+    width: 90%;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid var(--color-border-light);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .deplete-confirmation .abastecimiento-modal-title {
+    background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
+    color: white;
+    margin: -25px -30px 20px -30px;
+    padding: 20px 30px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 3px solid var(--color-warning-dark);
+  }
+
+  .deplete-confirmation .abastecimiento-modal-title::before {
+    content: "⚠️";
+    font-size: 1.2rem;
+  }
+
+  .deplete-confirmation p {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%);
+    border: 1px solid var(--color-warning-light);
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin: 0 0 25px 0;
+    color: var(--color-text-dark);
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .deplete-confirmation strong {
+    color: var(--color-warning-dark);
+    font-weight: 700;
+  }
+
+  .deplete-confirmation .form-group-abastecimiento {
+    margin-bottom: 20px;
+  }
+
+  .deplete-confirmation .form-label-abastecimiento {
+    color: var(--color-warning-dark);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .deplete-confirmation .form-label-abastecimiento::before {
+    content: "📝";
+    font-size: 0.9rem;
+  }
+
+  .deplete-confirmation .form-input-abastecimiento {
+    border: 2px solid var(--color-warning-light);
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    background: var(--color-background-light);
+    transition: all 0.3s ease;
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .deplete-confirmation .form-input-abastecimiento:focus {
+    border-color: var(--color-warning);
+    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
+    background: white;
+  }
+
+  .deplete-confirmation .form-input-abastecimiento::placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .deplete-confirmation .error-abastecimiento {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+    border: 1px solid var(--color-danger-light);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    color: var(--color-danger);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .deplete-confirmation .form-actions-abastecimiento {
+    background: var(--color-background-secondary);
+    margin: 25px -30px -25px -30px;
+    padding: 20px 30px;
+    border-top: 1px solid var(--color-border-light);
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .deplete-confirmation .form-button-cancelar-abastecimiento {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .deplete-confirmation .form-button-cancelar-abastecimiento:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .deplete-confirmation .deplete-button-abastecimiento {
+    background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 160px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .deplete-confirmation .deplete-button-abastecimiento::before {
+    content: "⚠️";
+    font-size: 0.9rem;
+  }
+
+  .deplete-confirmation .deplete-button-abastecimiento:hover {
+    background: linear-gradient(135deg, var(--color-warning-dark) 0%, #e65100 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(255, 152, 0, 0.3);
+  }
+
+  .deplete-confirmation .deplete-button-abastecimiento:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* === NUEVO DISEÑO DEL MODAL DE AGOTAMIENTO === */
+  .modal-abastecimiento-content.abastecimiento-deplete-modal {
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-background-light);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px var(--color-shadow-dark);
+    overflow: hidden;
+  }
+
+  .abastecimiento-deplete-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .abastecimiento-deplete-warning {
+    background: var(--color-warning-bg);
+    border: 2px solid var(--color-warning-light);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    transition: all 0.3s ease;
+  }
+
+  .abastecimiento-deplete-warning:hover {
+    border-color: var(--color-warning);
+    box-shadow: 0 4px 12px var(--color-shadow-medium);
+  }
+
+  .abastecimiento-deplete-warning-icon {
+    font-size: 2rem;
+    color: var(--color-warning);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .abastecimiento-deplete-warning-content h3 {
+    margin: 0 0 10px 0;
+    color: var(--color-warning-dark);
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .abastecimiento-deplete-warning-content p {
+    margin: 0;
+    color: var(--color-text-dark);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .abastecimiento-deplete-warning-content strong {
+    color: var(--color-warning-dark);
+    font-weight: 700;
+  }
+
+  .abastecimiento-deplete-form {
+    background: var(--color-background-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.2s ease;
+  }
+
+  .abastecimiento-deplete-form:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 8px var(--color-shadow-light);
+  }
+
+  .abastecimiento-deplete-form .form-group-abastecimiento {
+    margin-bottom: 0;
+  }
+
+  .abastecimiento-deplete-form .form-label-abastecimiento {
+    color: var(--color-warning-dark);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .abastecimiento-deplete-form .form-input-abastecimiento {
+    border: 2px solid var(--color-warning-light);
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    background: var(--color-form-bg);
+    color: var(--color-text-dark);
+    transition: all 0.3s ease;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+  }
+
+  .abastecimiento-deplete-form .form-input-abastecimiento:focus {
+    border-color: var(--color-warning);
+    box-shadow: 0 0 0 3px var(--color-shadow-light);
+    background: var(--color-form-focus-bg);
+    outline: none;
+  }
+
+  .abastecimiento-deplete-form .form-input-abastecimiento::placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .abastecimiento-deplete-form .error-abastecimiento {
+    background: var(--color-danger-bg);
+    border: 1px solid var(--color-danger-light);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    color: var(--color-danger);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .abastecimiento-modal-button-cancelar {
+    background: var(--color-secondary);
+    color: var(--color-secondary-text);
+    border: 1px solid var(--color-border-medium);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    box-shadow: 0 2px 4px var(--color-shadow-light);
+  }
+
+  .abastecimiento-modal-button-cancelar:hover {
+    background: var(--color-secondary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--color-shadow-medium);
+  }
+
+  .abastecimiento-modal-button-deplete {
+    background: var(--color-warning);
+    color: var(--color-warning-text);
+    border: 1px solid var(--color-warning-dark);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 180px;
+    box-shadow: 0 2px 4px var(--color-shadow-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .abastecimiento-modal-button-deplete:hover {
+    background: var(--color-warning-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px var(--color-shadow-medium);
+  }
+
+  .abastecimiento-modal-button-deplete:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px var(--color-shadow-light);
+  }
+
+  .button-icon {
+    font-size: 0.9rem;
+  }
+
+  /* === ESTILOS PARA TOAST DE SWEETALERT2 === */
+  .swal2-toast-custom {
+    background: var(--color-background-light) !important;
+    color: var(--color-text-dark) !important;
+    border: 1px solid var(--color-border-light) !important;
+    box-shadow: 0 4px 12px var(--color-shadow-medium) !important;
+  }
+
+  .swal2-toast-custom .swal2-title,
+  .swal2-toast-title-custom {
+    color: var(--color-text-dark) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+  }
+
+  .swal2-toast-custom .swal2-timer-progress-bar {
+    background: var(--color-primary) !important;
+  }
+
+  .swal2-toast-custom .swal2-icon {
+    color: var(--color-success) !important;
+  }
+
+  .swal2-toast-custom .swal2-icon.swal2-error {
+    color: var(--color-danger) !important;
+  }
+
+  /* Estilos específicos para tema oscuro */
+  .dark-theme .swal2-toast-custom {
+    background: var(--color-background-card) !important;
+    color: var(--color-text-light) !important;
+    border: 1px solid var(--color-border-medium) !important;
+    box-shadow: 0 4px 12px var(--color-shadow-dark) !important;
+  }
+
+  .dark-theme .swal2-toast-custom .swal2-title,
+  .dark-theme .swal2-toast-title-custom {
+    color: var(--color-text-light) !important;
+  }
+
+  /* Forzar estilos para sobrescribir SweetAlert2 */
+  .swal2-popup.swal2-toast.swal2-toast-custom {
+    background: var(--color-background-light) !important;
+    color: var(--color-text-dark) !important;
+  }
+
+  .dark-theme .swal2-popup.swal2-toast.swal2-toast-custom {
+    background: var(--color-background-card) !important;
+    color: var(--color-text-light) !important;
+  }
+
+  /* === RESPONSIVE PARA MODAL DE AGOTAMIENTO === */
+  @media (max-width: 768px) {
+    .modal-abastecimiento-content.abastecimiento-deplete-modal {
+      width: 95%;
+      margin: 10px;
+    }
+
+    .abastecimiento-deplete-warning {
+      padding: 15px;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .abastecimiento-deplete-warning-icon {
+      font-size: 1.5rem;
+      margin-top: 0;
+    }
+
+    .abastecimiento-deplete-warning-content h3 {
+      font-size: 1.1rem;
+    }
+
+    .abastecimiento-deplete-warning-content p {
+      font-size: 0.9rem;
+    }
+
+    .abastecimiento-deplete-form {
+      padding: 15px;
+    }
+
+    .abastecimiento-modal-footer {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .abastecimiento-modal-button-cancelar,
+    .abastecimiento-modal-button-deplete {
+      width: 100%;
+      padding: 14px 20px;
+    }
   }
   

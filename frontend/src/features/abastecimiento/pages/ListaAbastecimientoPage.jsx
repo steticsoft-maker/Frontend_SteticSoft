@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 // Importación de todos nuestros componentes
 import AbastecimientoTable from "../components/AbastecimientoTable";
@@ -6,9 +8,9 @@ import AbastecimientoCrearModal from "../components/AbastecimientoCrearModal";
 import AbastecimientoEditarModal from "../components/AbastecimientoEditarModal";
 import AbastecimientoDetalleModal from "../components/AbastecimientoDetailsModal";
 import DepleteProductModal from "../components/DepleteProductModal";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
-import ValidationModal from "../../../shared/components/common/ValidationModal";
 import Pagination from "../../../shared/components/common/Pagination";
+
+const MySwal = withReactContent(Swal);
 
 // Importación de todas las funciones del servicio
 import {
@@ -32,10 +34,7 @@ function ListaAbastecimientoPage() {
     const [isCrearModalOpen, setIsCrearModalOpen] = useState(false);
     const [isEditarModalOpen, setIsEditarModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const [isRazonAgotamientoOpen, setIsRazonAgotamientoOpen] = useState(false);
-    const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
-    const [validationMessage, setValidationMessage] = useState("");
     const [currentAbastecimiento, setCurrentAbastecimiento] = useState(null);
 
     // La función para cargar datos no cambia
@@ -69,7 +68,22 @@ function ListaAbastecimientoPage() {
         if (type === 'create') setIsCrearModalOpen(true);
         if (type === 'details') setIsDetailsModalOpen(true);
         if (type === 'edit') setIsEditarModalOpen(true);
-        if (type === 'delete') setIsConfirmDeleteOpen(true);
+        if (type === 'delete' && item) {
+            MySwal.fire({
+                title: "¿Estás seguro?",
+                text: `¿Deseas eliminar el registro de abastecimiento para ${item.empleado?.empleado?.nombre || 'el empleado'} (${item.empleado?.correo || ''})?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, ¡eliminar!",
+                cancelButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    handleDelete(item);
+                }
+            });
+        }
         if (type === 'deplete') setIsRazonAgotamientoOpen(true);
     };
     
@@ -77,39 +91,76 @@ function ListaAbastecimientoPage() {
         setIsCrearModalOpen(false);
         setIsEditarModalOpen(false);
         setIsDetailsModalOpen(false);
-        setIsConfirmDeleteOpen(false);
         setIsRazonAgotamientoOpen(false);
-        setIsValidationModalOpen(false);
         setCurrentAbastecimiento(null);
     };
 
     const handleSaveSuccess = (message = "Operación exitosa.") => {
         handleCloseAllModals();
-        setValidationMessage(message);
-        setIsValidationModalOpen(true);
+        MySwal.fire("¡Éxito!", message, "success");
         loadAbastecimientos(); // Recargar los datos
     };
     
     const handleToggleEstado = async (item) => {
         try {
             await toggleAbastecimientoEstado(item.idAbastecimiento, !item.estado);
-            handleSaveSuccess("Estado actualizado exitosamente.");
+            MySwal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "Estado actualizado exitosamente.",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: "swal2-toast-custom",
+                    title: "swal2-toast-title-custom"
+                },
+                didOpen: () => {
+                    const popup = MySwal.getPopup();
+                    if (popup) {
+                        popup.style.background = "var(--color-background-light)";
+                        popup.style.color = "var(--color-text-dark)";
+                        popup.style.border = "1px solid var(--color-border-light)";
+                        popup.style.boxShadow = "0 4px 12px var(--color-shadow-medium)";
+                    }
+                }
+            });
+            loadAbastecimientos(); // Recargar los datos
         } catch (error) {
-            handleCloseAllModals();
-            setValidationMessage(error.response?.data?.message || "Error al cambiar el estado.");
-            setIsValidationModalOpen(true);
+            MySwal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "error",
+                title: error.response?.data?.message || "Error al cambiar el estado.",
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: "swal2-toast-custom",
+                    title: "swal2-toast-title-custom"
+                },
+                didOpen: () => {
+                    const popup = MySwal.getPopup();
+                    if (popup) {
+                        popup.style.background = "var(--color-background-light)";
+                        popup.style.color = "var(--color-text-dark)";
+                        popup.style.border = "1px solid var(--color-border-light)";
+                        popup.style.boxShadow = "0 4px 12px var(--color-shadow-medium)";
+                    }
+                }
+            });
         }
     };
 
-    const handleDelete = async () => {
-        if (!currentAbastecimiento) return;
+    const handleDelete = async (item) => {
+        if (!item) return;
         try {
-            await deleteAbastecimientoById(currentAbastecimiento.idAbastecimiento);
+            await deleteAbastecimientoById(item.idAbastecimiento);
             handleSaveSuccess("Registro eliminado exitosamente.");
         } catch (error) {
             handleCloseAllModals();
-            setValidationMessage(error.response?.data?.message || "Error al eliminar el registro.");
-            setIsValidationModalOpen(true);
+            MySwal.fire("Error", error.response?.data?.message || "Error al eliminar el registro.", "error");
         }
     };
 
@@ -119,8 +170,7 @@ function ListaAbastecimientoPage() {
             handleSaveSuccess("El producto ha sido marcado como agotado.");
         } catch (error) {
             handleCloseAllModals();
-            setValidationMessage(error.response?.data?.message || "Error al marcar como agotado.");
-            setIsValidationModalOpen(true);
+            MySwal.fire("Error", error.response?.data?.message || "Error al marcar como agotado.", "error");
         }
     };
     
@@ -210,22 +260,6 @@ function ListaAbastecimientoPage() {
                 onClose={handleCloseAllModals}
                 onSubmit={handleAgotarSubmit}
                 abastecimiento={currentAbastecimiento}
-            />
-
-            {/* ✅ MODAL DE CONFIRMACIÓN CORREGIDO */}
-            <ConfirmModal
-                isOpen={isConfirmDeleteOpen}
-                onClose={handleCloseAllModals}
-                onConfirm={handleDelete}
-                title="Confirmar Eliminación"
-                message={`¿Está seguro de eliminar el registro para ${currentAbastecimiento?.usuario?.empleadoInfo?.nombre || 'el empleado'} (${currentAbastecimiento?.usuario?.correo || ''})?`}
-            />
-            
-            <ValidationModal
-                isOpen={isValidationModalOpen}
-                onClose={handleCloseAllModals}
-                title="Aviso del Sistema"
-                message={validationMessage}
             />
         </div>
     );

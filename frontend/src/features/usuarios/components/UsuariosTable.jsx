@@ -68,7 +68,7 @@ const UsuariosTable = ({
                     <FaEye />
                   </button>
                   {nombreRol !== "Administrador" && (
-                    <>
+                    <React.Fragment>
                       <button
                         className="table-button btn-edit"
                         onClick={() => onEdit(usuario)}
@@ -83,7 +83,7 @@ const UsuariosTable = ({
                       >
                         <FaTrash />
                       </button>
-                    </>
+                    </React.Fragment>
                   )}
                 </div>
               </td>

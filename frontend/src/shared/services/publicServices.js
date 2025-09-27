@@ -48,3 +48,48 @@ export const getPublicProductos = async (filtros = {}) => {
     }
   }
 };
+
+/**
+ * Crea una venta pública desde la landing (requiere autenticación de cliente)
+ * @param {Object} ventaData Los datos de la nueva venta con productos del carrito.
+ * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta creada.
+ */
+export const createPublicVenta = async (ventaData) => {
+  try {
+    // Usar el endpoint móvil que está diseñado para clientes
+    const apiClient = (await import("./apiClient")).default;
+    const response = await apiClient.post("/movil/ventas", ventaData);
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear venta pública:", error);
+    throw error;
+  }
+};
+
+/**
+ * Crea una cita pública desde la landing (requiere autenticación de cliente)
+ * @param {Object} citaData Los datos de la nueva cita.
+ * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la cita creada.
+ */
+export const createPublicCita = async (citaData) => {
+  try {
+    // Usar el endpoint específico para clientes crear sus propias citas
+    const apiClient = (await import("./apiClient")).default;
+
+    // Convertir los datos al formato que espera el endpoint /mis-citas
+    const dataToSend = {
+      start: `${citaData.fecha} ${citaData.horaInicio}:00`, // Formato: YYYY-MM-DD HH:MM:SS
+      empleadoId: citaData.empleadoId,
+      servicios: citaData.servicios || [],
+      novedadId: citaData.novedadId,
+    };
+
+    console.log("Datos convertidos para endpoint /mis-citas:", dataToSend);
+
+    const response = await apiClient.post("/citas/mis-citas", dataToSend);
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear cita pública:", error);
+    throw error;
+  }
+};

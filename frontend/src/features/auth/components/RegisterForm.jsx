@@ -78,8 +78,8 @@ function RegisterForm({
         else {
           const docType = formData.tipoDocumento;
           if (
-            docType === "Cédula de Ciudadanía" ||
-            docType === "Cédula de Extranjería"
+            docType === "Cedula de Ciudadania" ||
+            docType === "Cedula de Extranjeria"
           ) {
             if (!numericOnlyRegex.test(value))
               error = "Para este tipo de documento, ingrese solo números.";
@@ -216,7 +216,7 @@ function RegisterForm({
     }
 
     // Remover confirmPassword del objeto que se envía
-    const { ...userData } = formData;
+    const { confirmPassword, ...userData } = formData;
     onSubmit(userData);
   };
 
@@ -377,8 +377,8 @@ function RegisterForm({
             <option value="" disabled>
               Selecciona un tipo...
             </option>
-            <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
-            <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+            <option value="Cedula de Ciudadania">Cédula de Ciudadanía</option>
+            <option value="Cedula de Extranjeria">Cédula de Extranjería</option>
           </select>
           {fieldErrors.tipoDocumento && (
             <span className="error-message">{fieldErrors.tipoDocumento}</span>

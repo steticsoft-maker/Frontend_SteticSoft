@@ -131,8 +131,8 @@ const useClientes = () => {
           } else {
             const docType = currentData.tipoDocumento;
             if (
-              docType === "Cédula de Ciudadanía" ||
-              docType === "Cédula de Extranjería"
+              docType === "Cedula de Ciudadania" ||
+              docType === "Cedula de Extranjeria"
             ) {
               if (!numericOnlyRegex.test(value)) {
                 error = "Para este tipo de documento, ingrese solo números.";
@@ -305,7 +305,7 @@ const useClientes = () => {
     setFormErrors({});
     if (type === "create") {
       setFormData({
-        tipoDocumento: "Cédula de Ciudadanía",
+        tipoDocumento: "Cedula de Ciudadania",
         estado: true,
         nombre: "",
         apellido: "",
@@ -330,7 +330,7 @@ const useClientes = () => {
           estado: fullClientData.estado,
           nombre: fullClientData.nombre || "",
           apellido: fullClientData.apellido || "",
-          tipoDocumento: fullClientData.tipoDocumento || "Cédula de Ciudadanía",
+          tipoDocumento: fullClientData.tipoDocumento || "Cedula de Ciudadania",
           numeroDocumento: fullClientData.numeroDocumento || "",
           telefono: fullClientData.telefono || "",
           direccion: fullClientData.direccion || "",
@@ -440,11 +440,32 @@ const useClientes = () => {
       closeModal();
       MySwal.fire("¡Éxito!", successMessage, "success");
     } catch (err) {
-      const apiErrorMessage =
-        err.response?.data?.message ||
-        err.message ||
-        "Error al guardar el cliente.";
-      MySwal.fire("Error", apiErrorMessage, "error");
+      // Manejar errores de validación del backend
+      if (err.errors && typeof err.errors === "object") {
+        // Si hay errores específicos por campo, mostrarlos
+        const errorMessages = Object.values(err.errors).flat();
+        MySwal.fire({
+          title: "Errores de validación",
+          html: `<div style="text-align: left;">
+            <ul style="margin: 0; padding-left: 20px;">
+              ${errorMessages.map((msg) => `<li>${msg}</li>`).join("")}
+            </ul>
+          </div>`,
+          icon: "error",
+          confirmButtonText: "Entendido",
+        });
+
+        // También actualizar los errores de campo específicos
+        const fieldErrors = {};
+        Object.keys(err.errors).forEach((field) => {
+          fieldErrors[field] = err.errors[field][0]; // Tomar el primer error de cada campo
+        });
+        setFormErrors(fieldErrors);
+      } else {
+        // Error general
+        const apiErrorMessage = err.message || "Error al guardar el cliente.";
+        MySwal.fire("Error", apiErrorMessage, "error");
+      }
     } finally {
       setIsSubmitting(false);
     }

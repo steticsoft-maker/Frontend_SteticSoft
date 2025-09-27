@@ -40,16 +40,29 @@ function RegisterPage() {
         }, 1500);
       }
     } catch (err) {
-      const errorMessage =
-        err.message ||
-        "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
-      setErrorApi(errorMessage);
-    } finally {
-      // No cambiar isSubmitting a false inmediatamente si hay éxito,
-      // para mantener el botón deshabilitado hasta la redirección.
-      if (errorApi) {
-        setIsSubmitting(false);
+      console.error("Error en registro:", err);
+
+      // Manejar errores de validación del backend
+      if (err.errors && typeof err.errors === "object") {
+        // Si hay errores específicos por campo, mostrarlos
+        const errorMessages = Object.values(err.errors).flat();
+        setErrorApi(errorMessages.join(", "));
+
+        // También actualizar los errores de campo específicos
+        const fieldErrors = {};
+        Object.keys(err.errors).forEach((field) => {
+          fieldErrors[field] = err.errors[field][0]; // Tomar el primer error de cada campo
+        });
+        setFieldErrors(fieldErrors);
+      } else {
+        // Error general
+        const errorMessage =
+          err.message ||
+          "Ocurrió un error de conexión o registro. Inténtalo de nuevo.";
+        setErrorApi(errorMessage);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
