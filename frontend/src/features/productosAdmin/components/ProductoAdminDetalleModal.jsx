@@ -42,59 +42,152 @@ const ProductoAdminDetalleModal = ({ isOpen, onClose, producto }) => {
   if (!isOpen || !producto) return null;
 
   return (
-    <div className="modalProductosAdministrador"> 
-      <div className="modal-content-ProductosAdministrador detalle-modal"> 
-        <h2>Detalles del Producto</h2>
-        
-        <div className="producto-admin-details-list"> 
-          <p><strong>Nombre:</strong> {producto.nombre}</p>
-          <p><strong>Categoría:</strong> {producto.categoria ? producto.categoria.nombre : 'N/A'}</p> 
-          <p><strong>Tipo de Uso:</strong> {producto.tipoUso || 'No especificado'}</p>
-          <p><strong>Vida Útil:</strong> {producto.vidaUtilDias ? `${producto.vidaUtilDias} días` : 'No especificado'}</p>
-          <p><strong>Precio:</strong> ${producto.precio ? producto.precio.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0.00'}</p>
-          <p><strong>Existencia (Stock):</strong> {producto.existencia}</p>
-          <p><strong>Stock Mínimo:</strong> {producto.stockMinimo ?? 'No definido'}</p>
-          <p><strong>Stock Máximo:</strong> {producto.stockMaximo ?? 'No definido'}</p>
-          <p><strong>Descripción:</strong> {producto.descripcion || 'N/A'}</p>
-          <p><strong>Estado:</strong> {producto.estado ? "Activo" : "Inactivo"}</p>
-          
-          {/* ✅ Imagen con URL completa */}
-          {imageUrl ? ( 
-            <div className="detalle-imagen-container"> 
-              <p><strong>Imagen:</strong></p>
-              <img 
-                src={imageUrl} 
-                alt={producto.nombre} 
-                className="producto-admin-detalle-imagen" 
-                onError={handleImageError}
-                onLoad={handleImageLoad}
-              />
-              {imageError && (
-                <div style={{ color: 'red', marginTop: '10px' }}>
-                  <p>❌ Error al cargar la imagen</p>
-                  <p>URL intentada: {imageUrl}</p>
-                  <button 
-                    onClick={() => window.open(imageUrl, '_blank')}
-                    style={{ marginTop: '5px', padding: '5px 10px' }}
-                  >
-                    Abrir imagen en nueva pestaña
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <p><strong>Imagen:</strong> No disponible</p>
-          )}
-
-          {/* Información de debug para desarrolladores */}
+    <div className="modalProductosAdministrador" onClick={onClose}> 
+      <div className="modal-content-ProductosAdministrador productos-details-modal" onClick={(e) => e.stopPropagation()}> 
+        <div className="productos-modal-header">
+          <h3 className="productos-modal-title">
+            <span className="productos-modal-icon">📦</span>
+            Detalles del Producto
+          </h3>
+          <button
+            type="button"
+            className="productos-modal-close-button"
+            onClick={onClose}
+            title="Cerrar"
+          >
+            &times;
+          </button>
         </div>
-        
-        <button 
-          className="productos-admin-modal-button-cerrar" 
-          onClick={onClose}
-        >
-          Cerrar
-        </button>
+
+        <div className="productos-modal-body">
+          <div className="productos-details-container">
+            <div className="productos-details-section">
+              <h4 className="productos-details-section-title">
+                <span className="section-icon">📋</span>
+                Información Básica
+              </h4>
+              <div className="productos-details-grid">
+                <div className="productos-detail-item">
+                  <label className="productos-detail-label">Estado</label>
+                  <span className={`productos-status-badge ${producto.estado ? 'active' : 'inactive'}`}>
+                    {producto.estado ? 'Activo' : 'Inactivo'}
+                  </span>
+                </div>
+                <div className="productos-detail-item">
+                  <label className="productos-detail-label">Tipo de Uso</label>
+                  <span className={`productos-type-badge ${producto.tipoUso?.toLowerCase()}`}>
+                    {producto.tipoUso || 'No especificado'}
+                  </span>
+                </div>
+                <div className="productos-detail-item productos-detail-item-full">
+                  <label className="productos-detail-label">Nombre</label>
+                  <span className="productos-detail-value productos-name-text">
+                    {producto.nombre}
+                  </span>
+                </div>
+                <div className="productos-detail-item productos-detail-item-full">
+                  <label className="productos-detail-label">Categoría</label>
+                  <span className="productos-detail-value productos-category-text">
+                    {producto.categoria ? producto.categoria.nombre : 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="productos-details-section">
+              <h4 className="productos-details-section-title">
+                <span className="section-icon">💰</span>
+                Información Comercial
+              </h4>
+              <div className="productos-details-grid">
+                <div className="productos-detail-item">
+                  <label className="productos-detail-label">Precio</label>
+                  <span className="productos-detail-value productos-price-text">
+                    ${producto.precio ? producto.precio.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0.00'}
+                  </span>
+                </div>
+                <div className="productos-detail-item">
+                  <label className="productos-detail-label">Existencia</label>
+                  <span className="productos-detail-value productos-stock-text">
+                    {producto.existencia} unidades
+                  </span>
+                </div>
+                <div className="productos-detail-item">
+                  <label className="productos-detail-label">Stock Mínimo</label>
+                  <span className="productos-detail-value productos-stock-min-text">
+                    {producto.stockMinimo ?? 'No definido'}
+                  </span>
+                </div>
+                <div className="productos-detail-item">
+                  <label className="productos-detail-label">Stock Máximo</label>
+                  <span className="productos-detail-value productos-stock-max-text">
+                    {producto.stockMaximo ?? 'No definido'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="productos-details-section">
+              <h4 className="productos-details-section-title">
+                <span className="section-icon">⏰</span>
+                Información Técnica
+              </h4>
+              <div className="productos-details-grid">
+                <div className="productos-detail-item productos-detail-item-full">
+                  <label className="productos-detail-label">Vida Útil</label>
+                  <span className="productos-detail-value productos-lifespan-text">
+                    {producto.vidaUtilDias ? `${producto.vidaUtilDias} días` : 'No especificado'}
+                  </span>
+                </div>
+                <div className="productos-detail-item productos-detail-item-full">
+                  <label className="productos-detail-label">Descripción</label>
+                  <span className="productos-detail-value productos-description-text">
+                    {producto.descripcion || 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {imageUrl && (
+              <div className="productos-details-section productos-image-section">
+                <h4 className="productos-details-section-title">
+                  <span className="section-icon">🖼️</span>
+                  Imagen del Producto
+                </h4>
+                <div className="productos-image-container">
+                  <img 
+                    src={imageUrl} 
+                    alt={producto.nombre} 
+                    className="productos-detail-image" 
+                    onError={handleImageError}
+                    onLoad={handleImageLoad}
+                  />
+                  {imageError && (
+                    <div className="productos-image-error">
+                      <p>❌ Error al cargar la imagen</p>
+                      <p>URL intentada: {imageUrl}</p>
+                      <button 
+                        onClick={() => window.open(imageUrl, '_blank')}
+                        className="productos-image-debug-button"
+                      >
+                        Abrir imagen en nueva pestaña
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="productos-modal-footer">
+          <button 
+            className="productos-detalle-modal-button-cerrar" 
+            onClick={onClose}
+          >
+            Cerrar
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -133,6 +133,7 @@ const AbastecimientoCrearModal = ({ isOpen, onClose, onSaveSuccess }) => {
                     idUsuario: formData.empleado.id_usuario,
                     idProducto: producto.idProducto,
                     cantidad: producto.cantidad,
+                    fechaIngreso: new Date().toISOString().split('T')[0], // Enviar fecha en formato YYYY-MM-DD
                 };
                 return createAbastecimiento(dataParaAPI);
             });

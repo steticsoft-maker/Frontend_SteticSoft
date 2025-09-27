@@ -14,8 +14,11 @@ const AbastecimientoTable = ({
 }) => {
 
     const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('es-CO', options);
+        // Para fechas DATEONLY, crear la fecha directamente sin ajustes de zona horaria
+        const date = new Date(dateString + 'T00:00:00');
+        return date.toLocaleDateString('es-CO', options);
     };
 
     return (
@@ -35,7 +38,7 @@ const AbastecimientoTable = ({
                     <tr key={item.idAbastecimiento} className={item.estaAgotado ? 'depleted-row' : ''}>
                         <td data-label="#">{startIndex + index + 1}</td>
                         <td data-label="Empleado:">
-                            {`${item.usuario?.rol?.nombre || 'Empleado'} (${item.usuario?.correo || 'N/A'})`}
+                            {`${item.empleado?.empleado?.nombre || ''} ${item.empleado?.empleado?.apellido || ''}`.trim() || 'Empleado'} ({item.empleado?.correo || 'N/A'})
                         </td>
                         <td data-label="Producto(s):">
                             {item.producto?.nombre || 'N/A'}

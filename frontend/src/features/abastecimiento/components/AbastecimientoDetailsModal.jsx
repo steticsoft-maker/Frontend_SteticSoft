@@ -10,9 +10,8 @@ const AbastecimientoDetalleModal = ({ isOpen, onClose, abastecimiento }) => {
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        // Se suma un día porque DATEONLY puede tener problemas de zona horaria
-        const date = new Date(dateString);
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+        // Para fechas DATEONLY, crear la fecha directamente sin ajustes de zona horaria
+        const date = new Date(dateString + 'T00:00:00');
         return date.toLocaleDateString('es-CO', options);
     };
 
@@ -72,13 +71,13 @@ const AbastecimientoDetalleModal = ({ isOpen, onClose, abastecimiento }) => {
                                 <div className="abastecimiento-detail-item abastecimiento-detail-item-full">
                                     <label className="abastecimiento-detail-label">Empleado</label>
                                     <span className="abastecimiento-detail-value abastecimiento-employee-info">
-                                        {abastecimiento.usuario?.rol?.nombre || 'Empleado'}
+                                        {`${abastecimiento.empleado?.empleado?.nombre || ''} ${abastecimiento.empleado?.empleado?.apellido || ''}`.trim() || 'Empleado'}
                                     </span>
                                 </div>
                                 <div className="abastecimiento-detail-item abastecimiento-detail-item-full">
                                     <label className="abastecimiento-detail-label">Correo</label>
                                     <span className="abastecimiento-detail-value abastecimiento-email-text">
-                                        {abastecimiento.usuario?.correo || 'N/A'}
+                                        {abastecimiento.empleado?.correo || 'N/A'}
                                     </span>
                                 </div>
                             </div>
