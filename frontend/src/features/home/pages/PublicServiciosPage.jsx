@@ -127,7 +127,7 @@ function PublicServiciosPage() {
       {/* Floating Appointment Button */}
       <button
         className={`floating-appointment-btn ${showPulse ? "pulse" : ""}`}
-        onClick={() => (window.location.href = "/admin/citas/agendar")}
+        onClick={() => (window.location.href = "/citas")}
       >
         <FaCalendarAlt className="btn-icon" />
         Agendar Cita

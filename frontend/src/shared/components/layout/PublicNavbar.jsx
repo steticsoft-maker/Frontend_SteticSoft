@@ -15,6 +15,7 @@ import {
   FaBars,
   FaTimes,
   FaTachometerAlt,
+  FaCalendarAlt,
 } from "react-icons/fa";
 
 function PublicNavbar() {
@@ -88,6 +89,12 @@ function PublicNavbar() {
             >
               <FaStore className="navbar-icon" />
               Servicios
+            </Link>
+          </li>
+          <li>
+            <Link to="/citas" className="navbar-link" onClick={closeMobileMenu}>
+              <FaCalendarAlt className="navbar-icon" />
+              Agendar Cita
             </Link>
           </li>
 

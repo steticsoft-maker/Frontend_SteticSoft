@@ -65,3 +65,20 @@ export const createPublicVenta = async (ventaData) => {
     throw error;
   }
 };
+
+/**
+ * Crea una cita pública desde la landing (requiere autenticación de cliente)
+ * @param {Object} citaData Los datos de la nueva cita.
+ * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la cita creada.
+ */
+export const createPublicCita = async (citaData) => {
+  try {
+    // Usar el endpoint móvil que está diseñado para clientes
+    const apiClient = (await import("./apiClient")).default;
+    const response = await apiClient.post("/movil/citas", citaData);
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear cita pública:", error);
+    throw error;
+  }
+};

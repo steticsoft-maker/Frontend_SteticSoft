@@ -13,6 +13,7 @@ import {
   FaTrash,
   FaUser,
   FaInfoCircle,
+  FaCalendarAlt,
 } from "react-icons/fa";
 import ProductCard from "../components/ProductCard";
 import { getPublicProducts } from "../services/publicProductosService";
@@ -535,6 +536,15 @@ function PublicProductosPage() {
           )}
         </div>
       </section>
+
+      {/* Floating Appointment Button */}
+      <button
+        className="floating-appointment-btn"
+        onClick={() => (window.location.href = "/citas")}
+      >
+        <FaCalendarAlt className="btn-icon" />
+        Agendar Cita
+      </button>
 
       <FooterSpacer />
       <Footer />
