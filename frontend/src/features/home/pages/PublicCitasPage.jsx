@@ -817,15 +817,29 @@ function PublicCitasPage() {
                   }`}
                   onClick={() => toggleService(service)}
                 >
-                  <div className="service-header">
-                    <h3>{service.nombre}</h3>
-                    <span className="service-price">
-                      {formatPrice(service.precio)}
-                    </span>
-                  </div>
-                  {service.descripcion && (
-                    <p className="service-description">{service.descripcion}</p>
+                  {service.imagen && (
+                    <img
+                      src={service.imagen}
+                      alt={service.nombre}
+                      className="service-image"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
                   )}
+                  <div className="service-content">
+                    <div className="service-header">
+                      <h3>{service.nombre}</h3>
+                      <span className="service-price">
+                        {formatPrice(service.precio)}
+                      </span>
+                    </div>
+                    {service.descripcion && (
+                      <p className="service-description">
+                        {service.descripcion}
+                      </p>
+                    )}
+                  </div>
                   {selectedServices.some(
                     (s) => s.idServicio === service.idServicio
                   ) && <FaCheck className="selected-icon" />}
