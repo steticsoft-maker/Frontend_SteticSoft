@@ -131,8 +131,8 @@ const useClientes = () => {
           } else {
             const docType = currentData.tipoDocumento;
             if (
-              docType === "Cédula de Ciudadanía" ||
-              docType === "Cédula de Extranjería"
+              docType === "Cedula de Ciudadania" ||
+              docType === "Cedula de Extranjeria"
             ) {
               if (!numericOnlyRegex.test(value)) {
                 error = "Para este tipo de documento, ingrese solo números.";
@@ -305,7 +305,7 @@ const useClientes = () => {
     setFormErrors({});
     if (type === "create") {
       setFormData({
-        tipoDocumento: "Cédula de Ciudadanía",
+        tipoDocumento: "Cedula de Ciudadania",
         estado: true,
         nombre: "",
         apellido: "",
@@ -330,7 +330,7 @@ const useClientes = () => {
           estado: fullClientData.estado,
           nombre: fullClientData.nombre || "",
           apellido: fullClientData.apellido || "",
-          tipoDocumento: fullClientData.tipoDocumento || "Cédula de Ciudadanía",
+          tipoDocumento: fullClientData.tipoDocumento || "Cedula de Ciudadania",
           numeroDocumento: fullClientData.numeroDocumento || "",
           telefono: fullClientData.telefono || "",
           direccion: fullClientData.direccion || "",
