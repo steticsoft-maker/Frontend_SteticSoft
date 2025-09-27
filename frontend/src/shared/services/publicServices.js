@@ -73,23 +73,24 @@ export const createPublicVenta = async (ventaData) => {
  */
 export const createPublicCita = async (citaData) => {
   try {
-    // Usar el endpoint web correcto para aplicación web (ahora que el backend está actualizado)
+    // Usar temporalmente el endpoint móvil hasta que se arreglen los errores 500
     const apiClient = (await import("./apiClient")).default;
 
-    // Convertir los datos al formato que espera el endpoint web /mis-citas
+    // Convertir los datos al formato que espera el endpoint móvil
     const dataToSend = {
-      start: `${citaData.fecha} ${citaData.horaInicio}:00`, // Formato: YYYY-MM-DD HH:MM:SS
-      empleadoId: citaData.empleadoId, // Opcional - puede ser null para asignación automática
+      fecha: citaData.fecha, // Formato: YYYY-MM-DD
+      hora_inicio: citaData.horaInicio, // Formato: HH:MM (sin segundos) - con guión bajo
+      usuarioId: citaData.empleadoId, // usuarioId en lugar de empleadoId
       servicios: citaData.servicios || [],
-      novedadId: citaData.novedadId,
+      // No enviar novedadId - el endpoint móvil no lo espera
     };
 
     console.log(
-      "Datos convertidos para endpoint web /citas/mis-citas:",
+      "Datos convertidos para endpoint móvil /movil/citas:",
       dataToSend
     );
 
-    const response = await apiClient.post("/citas/mis-citas", dataToSend);
+    const response = await apiClient.post("/movil/citas", dataToSend);
     return response.data;
   } catch (error) {
     console.error("Error al crear cita pública:", error);
