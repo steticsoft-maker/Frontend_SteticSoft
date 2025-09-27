@@ -1,5 +1,6 @@
 // src/shared/components/layout/Footer.jsx
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 import {
   FaFacebookF,
@@ -27,13 +28,13 @@ function Footer() {
             <h3>Enlaces</h3>
             <ul>
               <li>
-                <a href="/">Inicio</a>
+                <Link to="/">Inicio</Link>
               </li>
               <li>
-                <a href="/servicios">Servicios</a>
+                <Link to="/servicios">Servicios</Link>
               </li>
               <li>
-                <a href="/productos">Productos</a>
+                <Link to="/productos">Productos</Link>
               </li>
             </ul>
           </div>
@@ -72,7 +73,10 @@ function Footer() {
               </a>
             </div>
           </div>
-          <div className="footer-bottom-text">
+          <div
+            className="footer-bottom-text"
+            style={{ textAlign: "center", width: "100%" }}
+          >
             <h4>
               © {new Date().getFullYear()} La Fuente del Peluquero. Todos los
               derechos reservados.
