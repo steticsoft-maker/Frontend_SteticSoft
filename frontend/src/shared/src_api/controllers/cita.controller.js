@@ -208,14 +208,12 @@ const obtenerEstadosCita = async (req, res, next) => {
 
 const listarMisCitas = async (req, res, next) => {
   try {
-    const idCliente = req.user.clienteInfo?.idCliente;
+    const idCliente = req.usuario.clienteInfo?.idCliente;
     if (!idCliente) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Acceso denegado. Perfil de cliente no encontrado.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Acceso denegado. Perfil de cliente no encontrado.",
+      });
     }
 
     const citas = await citaService.obtenerCitasPorCliente(idCliente);
@@ -230,14 +228,12 @@ const listarMisCitas = async (req, res, next) => {
 
 const crearMiCita = async (req, res, next) => {
   try {
-    const idCliente = req.user.clienteInfo?.idCliente;
+    const idCliente = req.usuario.clienteInfo?.idCliente;
     if (!idCliente) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Acceso denegado. Perfil de cliente no encontrado.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Acceso denegado. Perfil de cliente no encontrado.",
+      });
     }
     const nuevaCita = await citaService.crearCitaParaCliente(
       req.body,
@@ -255,14 +251,12 @@ const crearMiCita = async (req, res, next) => {
 
 const obtenerMiCitaPorId = async (req, res, next) => {
   try {
-    const idCliente = req.user.clienteInfo?.idCliente;
+    const idCliente = req.usuario.clienteInfo?.idCliente;
     if (!idCliente) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Acceso denegado. Perfil de cliente no encontrado.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Acceso denegado. Perfil de cliente no encontrado.",
+      });
     }
     const { id } = req.params;
     const cita = await citaService.obtenerCitaDeClientePorId(

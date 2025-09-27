@@ -534,7 +534,9 @@ const crearCitaParaCliente = async (datosCita, clienteId) => {
     );
 
     // Asociar servicios a la cita
-    await nuevaCita.setServiciosProgramados(servicios, { transaction });
+    await nuevaCita.setServiciosProgramados(serviciosConsultados, {
+      transaction,
+    });
 
     await transaction.commit();
 
@@ -545,7 +547,23 @@ const crearCitaParaCliente = async (datosCita, clienteId) => {
 
     // Enviar correo de confirmación
     try {
-      await enviarCorreoCita(citaCompleta);
+      if (citaCompleta && citaCompleta.cliente?.correo) {
+        const fechaHoraParaCorreo = moment(
+          `${citaCompleta.fecha} ${citaCompleta.hora_inicio}`
+        ).toDate();
+        await enviarCorreoCita({
+          correo: citaCompleta.cliente.correo,
+          nombreCliente: citaCompleta.cliente.nombre,
+          citaInfo: {
+            accion: "agendada",
+            fechaHora: formatDateTime(fechaHoraParaCorreo),
+            empleado: citaCompleta.empleado?.empleado?.nombre || "No asignado",
+            estado: citaCompleta.estadoDetalle?.nombreEstado || "Pendiente",
+            servicios: citaCompleta.serviciosProgramados,
+            total: citaCompleta.precio_total,
+          },
+        });
+      }
     } catch (emailError) {
       console.error("Error al enviar correo de confirmación:", emailError);
       // No lanzar error, la cita ya se creó exitosamente

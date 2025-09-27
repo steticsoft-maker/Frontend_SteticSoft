@@ -16,10 +16,25 @@ const crearCitaValidators = [
   body("start")
     .notEmpty()
     .withMessage("El campo 'start' es obligatorio.")
-    .isISO8601()
-    .withMessage(
-      "El campo 'start' debe ser una fecha y hora válida en formato ISO 8601."
-    ),
+    .custom((value) => {
+      // Aceptar formato ISO 8601 o formato "YYYY-MM-DD HH:mm:ss"
+      const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+      const dateTimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
+      if (!iso8601Regex.test(value) && !dateTimeRegex.test(value)) {
+        throw new Error(
+          "El campo 'start' debe ser una fecha y hora válida en formato ISO 8601 o 'YYYY-MM-DD HH:mm:ss'."
+        );
+      }
+
+      // Verificar que la fecha sea válida
+      const date = new Date(value);
+      if (isNaN(date.getTime())) {
+        throw new Error("El campo 'start' debe ser una fecha y hora válida.");
+      }
+
+      return true;
+    }),
 
   body("clienteId")
     .notEmpty()
@@ -65,8 +80,27 @@ const actualizarCitaValidators = [
     .withMessage("El ID de la cita debe ser un entero positivo."),
   body("start")
     .optional()
-    .isISO8601()
-    .withMessage("El campo 'start' debe ser una fecha y hora válida."),
+    .custom((value) => {
+      if (!value) return true; // Si es opcional y no se proporciona, está bien
+
+      // Aceptar formato ISO 8601 o formato "YYYY-MM-DD HH:mm:ss"
+      const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+      const dateTimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
+      if (!iso8601Regex.test(value) && !dateTimeRegex.test(value)) {
+        throw new Error(
+          "El campo 'start' debe ser una fecha y hora válida en formato ISO 8601 o 'YYYY-MM-DD HH:mm:ss'."
+        );
+      }
+
+      // Verificar que la fecha sea válida
+      const date = new Date(value);
+      if (isNaN(date.getTime())) {
+        throw new Error("El campo 'start' debe ser una fecha y hora válida.");
+      }
+
+      return true;
+    }),
 
   body("clienteId")
     .optional()
@@ -118,6 +152,64 @@ const buscarValidators = [
   handleValidationErrors,
 ];
 
+const crearMiCitaValidators = [
+  body("start")
+    .notEmpty()
+    .withMessage("El campo 'start' es obligatorio.")
+    .custom((value) => {
+      // Aceptar formato ISO 8601 o formato "YYYY-MM-DD HH:mm:ss"
+      const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+      const dateTimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
+      if (!iso8601Regex.test(value) && !dateTimeRegex.test(value)) {
+        throw new Error(
+          "El campo 'start' debe ser una fecha y hora válida en formato ISO 8601 o 'YYYY-MM-DD HH:mm:ss'."
+        );
+      }
+
+      // Verificar que la fecha sea válida
+      const date = new Date(value);
+      if (isNaN(date.getTime())) {
+        throw new Error("El campo 'start' debe ser una fecha y hora válida.");
+      }
+
+      return true;
+    }),
+
+  // empleadoId es opcional para clientes (puede ser asignado automáticamente)
+  body("empleadoId")
+    .optional({ nullable: true })
+    .custom((value) => {
+      if (value === null || value === undefined) {
+        return true; // Permitir null/undefined
+      }
+      if (!Number.isInteger(value) || value <= 0) {
+        throw new Error("El ID del empleado debe ser un entero positivo.");
+      }
+      return true;
+    }),
+
+  body("novedadId")
+    .notEmpty()
+    .withMessage("La novedad de horario es obligatoria.")
+    .isInt({ gt: 0 })
+    .withMessage("El ID de la novedad debe ser un entero positivo."),
+
+  body("servicios")
+    .isArray({ min: 1 })
+    .withMessage("Debe seleccionar al menos un servicio.")
+    .custom((servicios) => {
+      if (!servicios.every((id) => Number.isInteger(id) && id > 0)) {
+        throw new Error(
+          "Cada ID de servicio debe ser un número entero positivo."
+        );
+      }
+      return true;
+    }),
+
+  handleValidationErrors,
+];
+
 const obtenerDisponibilidadValidators = [
   param("id")
     .isInt({ gt: 0 })
@@ -140,6 +232,7 @@ const obtenerDisponibilidadValidators = [
 module.exports = {
   idValidator,
   crearCitaValidators,
+  crearMiCitaValidators,
   actualizarCitaValidators,
   cambiarEstadoCitaValidators,
   buscarValidators,

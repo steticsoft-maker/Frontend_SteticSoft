@@ -5,6 +5,7 @@ const citaController = require("../controllers/cita.controller.js");
 const {
   idValidator,
   crearCitaValidators,
+  crearMiCitaValidators,
   actualizarCitaValidators,
   cambiarEstadoCitaValidators,
   buscarValidators,
@@ -31,7 +32,7 @@ router.post(
   "/mis-citas",
   authMiddleware,
   checkPermission("MODULO_CITAS_CLIENTE"),
-  crearCitaValidators,
+  crearMiCitaValidators,
   citaController.crearMiCita
 );
 
