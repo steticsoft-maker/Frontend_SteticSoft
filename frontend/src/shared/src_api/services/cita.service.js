@@ -450,7 +450,7 @@ const crearCitaParaCliente = async (datosCita, clienteId) => {
   try {
     // Verificar que el cliente existe y está activo
     const cliente = await db.Cliente.findOne({
-      where: { idCliente: clienteId, estado: true },
+      where: { idCliente: clienteId, estado: 1 },
       transaction,
     });
 
@@ -462,7 +462,7 @@ const crearCitaParaCliente = async (datosCita, clienteId) => {
     let usuarioId = empleadoId;
     if (empleadoId) {
       const empleado = await db.Usuario.findOne({
-        where: { idUsuario: empleadoId, estado: true },
+        where: { idUsuario: empleadoId, estado: 1 },
         include: [{ model: db.Empleado, as: "empleado" }],
         transaction,
       });
@@ -474,7 +474,7 @@ const crearCitaParaCliente = async (datosCita, clienteId) => {
 
     // Verificar que la novedad existe y está activa
     const novedad = await db.Novedad.findOne({
-      where: { idNovedad: novedadId, estado: true },
+      where: { idNovedad: novedadId, estado: 1 },
       transaction,
     });
 
@@ -503,7 +503,7 @@ const crearCitaParaCliente = async (datosCita, clienteId) => {
 
     // Verificar que los servicios existen y están activos
     const serviciosConsultados = await db.Servicio.findAll({
-      where: { idServicio: servicios, estado: true },
+      where: { idServicio: servicios, estado: 1 },
       transaction,
     });
 

@@ -32,31 +32,42 @@ export const getPublicEmpleados = async () => {
  */
 export const getPublicNovedades = async () => {
   try {
-    // Intentar obtener novedades desde el endpoint normal (requiere autenticación)
-    const apiClient = (await import("../../../shared/services/apiClient"))
-      .default;
-    const response = await apiClient.get("/novedades");
+    // Primero intentar el endpoint público
+    const response = await publicApiClient.get("/novedades/public");
     return response;
   } catch (error) {
     console.warn(
-      "No se pudieron cargar novedades, usando horario por defecto:",
+      "Endpoint público falló, intentando endpoint agendables:",
       error
     );
 
-    // Crear una novedad por defecto que coincida con la migración
-    const novedadPorDefecto = {
-      idNovedad: 1, // ID que existe gracias a la migración
-      nombre: "Horario General",
-      descripcion: "Horario de atención general",
-      horaInicio: "08:00:00",
-      horaFin: "18:00:00",
-      dias: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-      estado: true,
-      fechaInicio: moment().format("YYYY-MM-DD"),
-      fechaFin: moment().add(1, "year").format("YYYY-MM-DD"),
-    };
+    try {
+      // Si el usuario está autenticado, usar el endpoint agendables
+      const apiClient = (await import("../../../shared/services/apiClient"))
+        .default;
+      const response = await apiClient.get("/novedades/agendables");
+      return response;
+    } catch (authError) {
+      console.warn(
+        "No se pudieron cargar novedades, usando horario por defecto:",
+        authError
+      );
 
-    return { data: { data: [novedadPorDefecto] } };
+      // Crear una novedad por defecto que coincida con la migración
+      const novedadPorDefecto = {
+        idNovedad: 1, // ID que existe gracias a la migración
+        nombre: "Horario General",
+        descripcion: "Horario de atención general",
+        horaInicio: "08:00:00",
+        horaFin: "18:00:00",
+        dias: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+        estado: true,
+        fechaInicio: moment().format("YYYY-MM-DD"),
+        fechaFin: moment().add(1, "year").format("YYYY-MM-DD"),
+      };
+
+      return { data: { data: [novedadPorDefecto] } };
+    }
   }
 };
 

@@ -17,8 +17,6 @@ module.exports = {
           [
             {
               id_novedad: 1,
-              nombre: "Horario General",
-              descripcion: "Horario de atención general para citas públicas",
               fecha_inicio: new Date(),
               fecha_fin: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 año desde ahora
               hora_inicio: "08:00:00",
@@ -32,8 +30,6 @@ module.exports = {
                 "Sábado",
               ]),
               estado: true,
-              created_at: new Date(),
-              updated_at: new Date(),
             },
           ],
           { transaction }
@@ -52,7 +48,7 @@ module.exports = {
     try {
       // Eliminar la novedad por defecto
       await queryInterface.sequelize.query(
-        `DELETE FROM novedades WHERE id_novedad = 1 AND nombre = 'Horario General'`,
+        `DELETE FROM novedades WHERE id_novedad = 1`,
         { transaction }
       );
 
