@@ -440,8 +440,6 @@ const useClientes = () => {
       closeModal();
       MySwal.fire("¡Éxito!", successMessage, "success");
     } catch (err) {
-      console.error("Error en handleSave:", err);
-
       // Manejar errores de validación del backend
       if (err.errors && typeof err.errors === "object") {
         // Si hay errores específicos por campo, mostrarlos

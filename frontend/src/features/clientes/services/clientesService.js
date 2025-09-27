@@ -121,7 +121,6 @@ export const saveCliente = async (
         contrasena: clienteData.contrasena, // Ahora usamos clienteData.contrasena directamente del ClienteForm
       };
 
-      console.log("Datos a enviar al backend:", dataToSend);
       const response = await apiClient.post("/clientes", dataToSend);
       return response.data.data; // Asumiendo que devuelve { success: true, data: nuevoCliente }
     } else {
@@ -156,11 +155,8 @@ export const saveCliente = async (
       return response.data.data; // Asumiendo que devuelve { success: true, data: clienteActualizado }
     }
   } catch (error) {
-    console.error("Error al guardar cliente:", error);
-
     // Si hay una respuesta del servidor con errores de validación
     if (error.response?.data) {
-      console.error("Error response data:", error.response.data);
       throw error.response.data;
     }
 
