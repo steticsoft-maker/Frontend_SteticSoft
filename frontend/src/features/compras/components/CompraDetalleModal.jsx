@@ -23,115 +23,173 @@ const CompraDetalleModal = ({ compra, onClose }) => {
   return (
     <div className="modal-Compras" onClick={onClose}>
       <div
-        className="modal-content-Compras detalle-modal"
+        className="modal-content-Compras compras-details-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="compras-modal-title">Detalle de la Compra</h3>
-
-        <div className="proveedor-details-list">
-          <p>
-            <strong>ID Compra:</strong> {idCompra}
-          </p>
-
-          {/* ✅ CAMBIO APLICADO: Usamos la nueva función para mostrar la fecha. */}
-          <p>
-            <strong>Fecha:</strong> {formatFechaSinTimezone(fecha)}
-          </p>
-
-          <p>
-            <strong>Proveedor:</strong> {proveedor?.nombre || 'N/A'}
-          </p>
-          <p>
-            <strong>
-              {proveedor?.tipo === 'Natural'
-                ? 'Documento:'
-                : proveedor?.tipo === 'Juridico'
-                ? 'NIT'
-                : 'Documento'}
-              :
-            </strong>{' '}
-            {proveedor?.estado
-              ? proveedor?.tipo === 'Natural'
-                ? `${proveedor?.tipoDocumento || ''} ${
-                    proveedor?.numeroDocumento || 'N/A'
-                  }`
-                : proveedor?.tipo === 'Juridico'
-                ? proveedor?.nitEmpresa || 'N/A'
-                : 'N/A'
-              : 'Proveedor inactivo'}
-          </p>
-          <p>
-            <strong>Registrado por:</strong> {usuario?.nombre || 'N/A'}
-          </p>
-          <p>
-            <strong>Estado:</strong>
-            <span className={`estado ${estado ? 'completado' : 'anulada'}`}>
-              {estado ? 'Completado' : 'Anulada'}
-            </span>
-          </p>
+        <div className="compras-modal-header">
+          <h3 className="compras-modal-title">
+            <span className="compras-modal-icon">🛒</span>
+            Detalle de la Compra
+          </h3>
+          <button
+            type="button"
+            className="compras-modal-close-button"
+            onClick={onClose}
+            title="Cerrar"
+          >
+            &times;
+          </button>
         </div>
 
-        <h4 className="modal-subtitle-compras">Productos y Totales</h4>
-        <table className="detalle-productos-simple">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th className="text-center">Cant.</th>
-              <th className="text-right">V. Unitario</th>
-              <th className="text-right">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productosDeLaCompra.length > 0 ? (
-              productosDeLaCompra.map((detalle, index) => {
-                const pivot =
-                  detalle.detalleCompra || detalle.CompraXProducto || {};
-                const cantidad = pivot.cantidad || 0;
-                const valorUnitario = pivot.valorUnitario || 0;
-                const subtotalItem = cantidad * valorUnitario;
-                return (
-                  <tr key={detalle.idProducto || index}>
-                    <td>{detalle.nombre || 'N/A'}</td>
-                    <td className="text-center">{cantidad}</td>
-                    <td className="text-right">
-                      $
-                      {Math.round(valorUnitario).toLocaleString('es-CO')}
-                    </td>
-                    <td className="text-right">
-                      ${Math.round(subtotalItem).toLocaleString('es-CO')}
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td
-                  colSpan="4"
-                  style={{ textAlign: 'center', fontStyle: 'italic' }}
-                >
-                  No hay productos en esta compra.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <div className="compras-modal-body">
+          <div className="compras-details-container">
+            <div className="compras-details-section">
+              <h4 className="compras-details-section-title">
+                <span className="section-icon">📋</span>
+                Información Básica
+              </h4>
+              <div className="compras-details-grid">
+                <div className="compras-detail-item">
+                  <label className="compras-detail-label">ID Compra</label>
+                  <span className="compras-detail-value compras-id-badge">
+                    #{idCompra || 'N/A'}
+                  </span>
+                </div>
+                <div className="compras-detail-item">
+                  <label className="compras-detail-label">Fecha</label>
+                  <span className="compras-detail-value compras-date-text">
+                    {formatFechaSinTimezone(fecha)}
+                  </span>
+                </div>
+                <div className="compras-detail-item">
+                  <label className="compras-detail-label">Estado</label>
+                  <span className={`compras-status-badge ${estado ? 'completed' : 'cancelled'}`}>
+                    {estado ? 'Completado' : 'Anulada'}
+                  </span>
+                </div>
+                <div className="compras-detail-item compras-detail-item-full">
+                  <label className="compras-detail-label">Registrado por</label>
+                  <span className="compras-detail-value compras-user-text">
+                    {usuario?.nombre || 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        <div className="compra-totales-detalle">
-          <div className="total-row">
-            <span>Subtotal:</span>
-            <span>${Math.round(subtotal).toLocaleString('es-CO')}</span>
-          </div>
-          <div className="total-row">
-            <span>IVA (19%):</span>
-            <span>${Math.round(iva).toLocaleString('es-CO')}</span>
-          </div>
-          <div className="total-row total-final">
-            <strong>Total:</strong>
-            <strong>${Math.round(total).toLocaleString('es-CO')}</strong>
+            <div className="compras-details-section">
+              <h4 className="compras-details-section-title">
+                <span className="section-icon">🏢</span>
+                Información del Proveedor
+              </h4>
+              <div className="compras-details-grid">
+                <div className="compras-detail-item compras-detail-item-full">
+                  <label className="compras-detail-label">Proveedor</label>
+                  <span className="compras-detail-value compras-supplier-name">
+                    {proveedor?.nombre || 'N/A'}
+                  </span>
+                </div>
+                <div className="compras-detail-item compras-detail-item-full">
+                  <label className="compras-detail-label">
+                    {proveedor?.tipo === 'Natural'
+                      ? 'Documento:'
+                      : proveedor?.tipo === 'Juridico'
+                      ? 'NIT'
+                      : 'Documento'}
+                  </label>
+                  <span className="compras-detail-value compras-document-text">
+                    {proveedor?.estado
+                      ? proveedor?.tipo === 'Natural'
+                        ? `${proveedor?.tipoDocumento || ''} ${
+                            proveedor?.numeroDocumento || 'N/A'
+                          }`
+                        : proveedor?.tipo === 'Juridico'
+                        ? proveedor?.nitEmpresa || 'N/A'
+                        : 'N/A'
+                      : 'Proveedor inactivo'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="compras-details-section">
+              <h4 className="compras-details-section-title">
+                <span className="section-icon">📦</span>
+                Productos de la Compra ({productosDeLaCompra.length})
+              </h4>
+              <div className="compras-products-container">
+                {productosDeLaCompra.length > 0 ? (
+                  <div className="compras-products-table-wrapper">
+                    <table className="compras-products-table">
+                      <thead>
+                        <tr>
+                          <th>Producto</th>
+                          <th className="text-center">Cant.</th>
+                          <th className="text-right">V. Unitario</th>
+                          <th className="text-right">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {productosDeLaCompra.map((detalle, index) => {
+                          const pivot =
+                            detalle.detalleCompra || detalle.CompraXProducto || {};
+                          const cantidad = pivot.cantidad || 0;
+                          const valorUnitario = pivot.valorUnitario || 0;
+                          const subtotalItem = cantidad * valorUnitario;
+                          return (
+                            <tr key={detalle.idProducto || index}>
+                              <td className="compras-product-name">{detalle.nombre || 'N/A'}</td>
+                              <td className="text-center compras-quantity-badge">{cantidad}</td>
+                              <td className="text-right compras-unit-price">
+                                ${Math.round(valorUnitario).toLocaleString('es-CO')}
+                              </td>
+                              <td className="text-right compras-item-total">
+                                ${Math.round(subtotalItem).toLocaleString('es-CO')}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="compras-no-products">
+                    <span className="no-products-icon">📭</span>
+                    <p>No hay productos en esta compra</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="compras-details-section compras-totals-section">
+              <h4 className="compras-details-section-title">
+                <span className="section-icon">💰</span>
+                Resumen de Totales
+              </h4>
+              <div className="compras-totals-container">
+                <div className="compras-total-row">
+                  <span className="compras-total-label">Subtotal:</span>
+                  <span className="compras-total-value compras-subtotal">
+                    ${Math.round(subtotal).toLocaleString('es-CO')}
+                  </span>
+                </div>
+                <div className="compras-total-row">
+                  <span className="compras-total-label">IVA (19%):</span>
+                  <span className="compras-total-value compras-iva">
+                    ${Math.round(iva).toLocaleString('es-CO')}
+                  </span>
+                </div>
+                <div className="compras-total-row compras-total-final">
+                  <span className="compras-total-label">Total:</span>
+                  <span className="compras-total-value compras-total">
+                    ${Math.round(total).toLocaleString('es-CO')}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="compras-form-actions">
+        <div className="compras-modal-footer">
           <button
             className="compras-detalle-modal-button-cerrar"
             onClick={onClose}
