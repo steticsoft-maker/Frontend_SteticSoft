@@ -4,6 +4,53 @@
 @import "@/shared/styles/admin-crud-unified.css";
 @import "@/shared/styles/admin-migration-guide.css";
 
+/* Variables para colores de días de la semana */
+:root {
+  --color-dia-lunes: #e0f2fe;     /* Celeste */
+  --color-dia-martes: #d1fae5;    /* Verde menta */
+  --color-dia-miercoles: #fef3c7; /* Amarillo pálido */
+  --color-dia-jueves: #fee2e2;    /* Rojo pálido */
+  --color-dia-viernes: #e5e7eb;   /* Gris claro */
+  --color-dia-sabado: #fae8ff;    /* Lavanda */
+  --color-dia-domingo: #ffedd5;   /* Naranja pálido */
+}
+
+/* Debug: Estilos para verificar que las variables funcionan */
+.debug-calendar .dia-lunes {
+  background-color: var(--color-dia-lunes) !important;
+  border: 2px solid #007bff !important;
+}
+
+.debug-calendar .dia-martes {
+  background-color: var(--color-dia-martes) !important;
+  border: 2px solid #28a745 !important;
+}
+
+.debug-calendar .dia-miercoles {
+  background-color: var(--color-dia-miercoles) !important;
+  border: 2px solid #ffc107 !important;
+}
+
+.debug-calendar .dia-jueves {
+  background-color: var(--color-dia-jueves) !important;
+  border: 2px solid #dc3545 !important;
+}
+
+.debug-calendar .dia-viernes {
+  background-color: var(--color-dia-viernes) !important;
+  border: 2px solid #6c757d !important;
+}
+
+.debug-calendar .dia-sabado {
+  background-color: var(--color-dia-sabado) !important;
+  border: 2px solid #6f42c1 !important;
+}
+
+.debug-calendar .dia-domingo {
+  background-color: var(--color-dia-domingo) !important;
+  border: 2px solid #fd7e14 !important;
+}
+
 /* ======================================================== */
 /* ============= ESTRUCTURA PRINCIPAL ==================== */
 /* ======================================================== */
@@ -1816,6 +1863,43 @@
     color: #999 !important;
 }
 
+/* Colores específicos para cada día - con mayor especificidad */
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-lunes {
+    background-color: var(--color-dia-lunes) !important;
+    color: #000 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-martes {
+    background-color: var(--color-dia-martes) !important;
+    color: #000 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-miercoles {
+    background-color: var(--color-dia-miercoles) !important;
+    color: #000 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-jueves {
+    background-color: var(--color-dia-jueves) !important;
+    color: #000 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-viernes {
+    background-color: var(--color-dia-viernes) !important;
+    color: #000 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-sabado {
+    background-color: var(--color-dia-sabado) !important;
+    color: #000 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-domingo {
+    background-color: var(--color-dia-domingo) !important;
+    color: #000 !important;
+}
+
+/* Fallback para compatibilidad */
 .novedad-calendar .dia-lunes {
     background-color: var(--color-dia-lunes) !important;
     color: #000 !important;
@@ -1864,6 +1948,85 @@
 .novedad-calendar .react-datepicker__day--today {
     border: 2px solid var(--color-primary) !important;
     font-weight: 600 !important;
+}
+
+/* Hover para días disponibles con colores */
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-lunes:hover {
+    background-color: var(--color-dia-lunes) !important;
+    filter: brightness(0.9) !important;
+    transform: scale(1.05) !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-martes:hover {
+    background-color: var(--color-dia-martes) !important;
+    filter: brightness(0.9) !important;
+    transform: scale(1.05) !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-miercoles:hover {
+    background-color: var(--color-dia-miercoles) !important;
+    filter: brightness(0.9) !important;
+    transform: scale(1.05) !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-jueves:hover {
+    background-color: var(--color-dia-jueves) !important;
+    filter: brightness(0.9) !important;
+    transform: scale(1.05) !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-viernes:hover {
+    background-color: var(--color-dia-viernes) !important;
+    filter: brightness(0.9) !important;
+    transform: scale(1.05) !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-sabado:hover {
+    background-color: var(--color-dia-sabado) !important;
+    filter: brightness(0.9) !important;
+    transform: scale(1.05) !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-disponible.dia-domingo:hover {
+    background-color: var(--color-dia-domingo) !important;
+    filter: brightness(0.9) !important;
+    transform: scale(1.05) !important;
+}
+
+/* Asegurar que los colores se mantengan incluso cuando el día está seleccionado */
+.novedad-calendar .react-datepicker__day--selected.dia-lunes {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-light) !important;
+}
+
+.novedad-calendar .react-datepicker__day--selected.dia-martes {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-light) !important;
+}
+
+.novedad-calendar .react-datepicker__day--selected.dia-miercoles {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-light) !important;
+}
+
+.novedad-calendar .react-datepicker__day--selected.dia-jueves {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-light) !important;
+}
+
+.novedad-calendar .react-datepicker__day--selected.dia-viernes {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-light) !important;
+}
+
+.novedad-calendar .react-datepicker__day--selected.dia-sabado {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-light) !important;
+}
+
+.novedad-calendar .react-datepicker__day--selected.dia-domingo {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-light) !important;
 }
 
 /* Resumen de la cita */

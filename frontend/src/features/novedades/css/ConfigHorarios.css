@@ -1521,3 +1521,60 @@ body.dark .admin-form-error {
 body.dark .format-message {
   color: rgba(255, 255, 255, 0.7);
 }
+
+/* Estilos para advertencias de campos */
+.field-warning {
+  color: #f59e0b !important;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+  padding: 4px 8px;
+  background-color: rgba(245, 158, 11, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #f59e0b;
+}
+
+.dark .field-warning,
+body.dark .field-warning {
+  color: #fbbf24 !important;
+  background-color: rgba(251, 191, 36, 0.1);
+  border-left-color: #fbbf24;
+}
+
+/* Estilos para errores de campos */
+.field-error {
+  color: #dc3545 !important;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+  padding: 4px 8px;
+  background-color: rgba(220, 53, 69, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #dc3545;
+}
+
+.dark .field-error,
+body.dark .field-error {
+  color: #ff6b6b !important;
+  background-color: rgba(255, 107, 107, 0.1);
+  border-left-color: #ff6b6b;
+}
+
+/* Contenedores para advertencias y errores */
+.field-warnings-container,
+.field-errors-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.field-warnings-container .field-warning,
+.field-errors-container .field-error {
+  margin-bottom: 6px;
+}
+
+.field-warnings-container .field-warning:last-child,
+.field-errors-container .field-error:last-child {
+  margin-bottom: 0;
+}

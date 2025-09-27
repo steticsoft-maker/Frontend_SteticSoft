@@ -9,6 +9,7 @@ const CitaForm = ({ onSubmit }) => {
     telefono: '',
   });
   const [errors, setErrors] = useState({});
+  const [warnings, setWarnings] = useState({});
 
   const validate = () => {
     const newErrors = {};
@@ -24,12 +25,48 @@ const CitaForm = ({ onSubmit }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateField = (fieldName, value) => {
+    const newErrors = { ...errors };
+    const newWarnings = { ...warnings };
+    
+    // Validar espacios al inicio y final
+    if (value && typeof value === 'string' && (value !== value.trim())) {
+      newWarnings[fieldName] = 'No se permiten espacios al inicio o final';
+    } else {
+      delete newWarnings[fieldName];
+    }
+    
+    // Validar caracteres especiales para nombres
+    if (fieldName === 'nombre' && value && typeof value === 'string') {
+      const caracteresEspeciales = /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/;
+      if (caracteresEspeciales.test(value)) {
+        newErrors[fieldName] = 'No se permiten caracteres especiales, solo letras y espacios';
+      } else {
+        delete newErrors[fieldName];
+      }
+    }
+    
+    setErrors(newErrors);
+    setWarnings(newWarnings);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    validateField(name, value);
   };
 
-  const handleBlur = () => {
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    // Limpiar espacios al perder el foco
+    const trimmedValue = typeof value === 'string' ? value.trim() : value;
+    setFormData(prev => ({ ...prev, [name]: trimmedValue }));
+    
+    // Limpiar warnings después de limpiar espacios
+    const newWarnings = { ...warnings };
+    delete newWarnings[name];
+    setWarnings(newWarnings);
+    
     // Validar en el evento onBlur para feedback en tiempo real
     validate();
   };
@@ -55,6 +92,7 @@ const CitaForm = ({ onSubmit }) => {
           required
         />
         <label htmlFor="nombre" className={formData.nombre ? 'filled' : ''}>Nombre Completo</label>
+        {warnings.nombre && <span className="field-warning">{warnings.nombre}</span>}
         {errors.nombre && <span className="error-message">{errors.nombre}</span>}
       </div>
       <div className="form-field">
@@ -68,6 +106,7 @@ const CitaForm = ({ onSubmit }) => {
           required
         />
         <label htmlFor="email" className={formData.email ? 'filled' : ''}>Correo Electrónico</label>
+        {warnings.email && <span className="field-warning">{warnings.email}</span>}
         {errors.email && <span className="error-message">{errors.email}</span>}
       </div>
       <div className="form-field">
@@ -81,6 +120,7 @@ const CitaForm = ({ onSubmit }) => {
           required
         />
         <label htmlFor="telefono" className={formData.telefono ? 'filled' : ''}>Teléfono</label>
+        {warnings.telefono && <span className="field-warning">{warnings.telefono}</span>}
         {errors.telefono && <span className="error-message">{errors.telefono}</span>}
       </div>
       <button type="submit" className="submit-button">Confirmar Cita</button>

@@ -10,6 +10,7 @@ import {
   fetchEmpleadosDisponiblesParaCitas,
   fetchClientesParaCitas,
   fetchNovedades,
+  fetchCitasAgendadas,
 } from '../services/citasService';
 import ItemSelectionModal from '../../../shared/components/common/ItemSelectionModal';
 import '../../../shared/styles/admin-layout.css';
@@ -33,6 +34,9 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   const [empleadosDisponibles, setEmpleadosDisponibles] = useState([]);
   const [clientesList, setClientesList] = useState([]);
   const [showClienteSelectModal, setShowClienteSelectModal] = useState(false);
+  const [citasAgendadas, setCitasAgendadas] = useState([]);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [fieldWarnings, setFieldWarnings] = useState({});
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +50,15 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
         .catch(() => setClientesList([]));
     }
   }, [showClienteSelectModal]);
+
+  // Cargar citas agendadas para validaciones
+  useEffect(() => {
+    if (isOpen) {
+      fetchCitasAgendadas()
+        .then(citas => setCitasAgendadas(citas))
+        .catch(() => setCitasAgendadas([]));
+    }
+  }, [isOpen]);
   useEffect(() => {
     if (isOpen) {
       setIsLoadingDependencies(true);
@@ -105,6 +118,14 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
 
   const filtrarDiasDisponibles = (date) => {
     const diaDeLaSemana = moment(date).day();
+    const hoy = moment().startOf('day');
+    const fechaSeleccionada = moment(date).startOf('day');
+    
+    // No permitir días anteriores al actual
+    if (fechaSeleccionada.isBefore(hoy)) {
+      return false;
+    }
+    
     return diasPermitidosNumeros.includes(diaDeLaSemana);
   };
 
@@ -114,15 +135,26 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
     const horas = [];
     let tiempoActual = moment(formData.novedad.horaInicio, 'HH:mm:ss');
     const tiempoFin = moment(formData.novedad.horaFin, 'HH:mm:ss');
+    const ahora = moment();
+    const esHoy = formData.fecha && moment(formData.fecha).isSame(ahora, 'day');
+    
     while (tiempoActual.isBefore(tiempoFin)) {
+      const horaFormateada = tiempoActual.format('HH:mm');
+      
+      // Si es hoy, solo mostrar horas iguales o mayores a la actual
+      if (esHoy && tiempoActual.isBefore(ahora, 'hour')) {
+        tiempoActual.add(60, 'minutes');
+        continue;
+      }
+      
       horas.push({
-        value: tiempoActual.format('HH:mm'),
-        label: tiempoActual.format('HH:mm')
+        value: horaFormateada,
+        label: horaFormateada
       });
       tiempoActual.add(60, 'minutes');
     }
     return horas;
-  }, [formData.novedad]);
+  }, [formData.novedad, formData.fecha]);
 
   // Opciones para los selects
   const novedadOptions = useMemo(() => {
@@ -140,12 +172,25 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   }, [novedades]);
 
   const empleadoOptions = useMemo(() => {
-    if (!formData.novedad) return [];
-    return formData.novedad.empleados.map(empleado => ({
+    if (!formData.novedad || !formData.fecha || !formData.hora) return [];
+    
+    // Filtrar empleados que ya tienen citas en esa fecha y hora
+    const fechaHoraSeleccionada = moment(`${moment(formData.fecha).format('YYYY-MM-DD')} ${formData.hora}`);
+    
+    const empleadosDisponibles = formData.novedad.empleados.filter(empleado => {
+      const tieneCita = citasAgendadas.some(cita => {
+        const citaDateTime = moment(cita.start);
+        return cita.empleadoId === empleado.idUsuario && 
+               citaDateTime.isSame(fechaHoraSeleccionada, 'minute');
+      });
+      return !tieneCita;
+    });
+    
+    return empleadosDisponibles.map(empleado => ({
       value: empleado,
       label: `${empleado.nombre} ${empleado.apellido || ''}`.trim()
     }));
-  }, [formData.novedad]);
+  }, [formData.novedad, formData.fecha, formData.hora, citasAgendadas]);
 
   const servicioOptions = useMemo(() => {
     return serviciosDisponibles.map(servicio => ({
@@ -168,23 +213,117 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
   };
 
   const clientesParaModal = useMemo(() => {
-    return clientesList.map(c => ({
+    if (!formData.fecha || !formData.hora) {
+      return clientesList.map(c => ({
+        ...c,
+        value: c.idCliente,
+        label: `${c.nombre} ${c.apellido || ''}`.trim(),
+        displayName: `${c.nombre} ${c.apellido || ''}`.trim()
+      }));
+    }
+    
+    // Filtrar clientes que ya tienen citas en esa fecha y hora
+    const fechaHoraSeleccionada = moment(`${moment(formData.fecha).format('YYYY-MM-DD')} ${formData.hora}`);
+    
+    const clientesDisponibles = clientesList.filter(cliente => {
+      const tieneCita = citasAgendadas.some(cita => {
+        const citaDateTime = moment(cita.start);
+        return cita.clienteId === cliente.idCliente && 
+               citaDateTime.isSame(fechaHoraSeleccionada, 'minute');
+      });
+      return !tieneCita;
+    });
+    
+    return clientesDisponibles.map(c => ({
       ...c,
       value: c.idCliente,
       label: `${c.nombre} ${c.apellido || ''}`.trim(),
       displayName: `${c.nombre} ${c.apellido || ''}`.trim()
     }));
-  }, [clientesList]);
+  }, [clientesList, formData.fecha, formData.hora, citasAgendadas]);
   
+  // Validaciones de campos
+  const validateField = (fieldName, value) => {
+    const newErrors = { ...fieldErrors };
+    const newWarnings = { ...fieldWarnings };
+    
+    // Validar espacios al inicio y final
+    if (value && typeof value === 'string' && (value !== value.trim())) {
+      newWarnings[fieldName] = 'No se permiten espacios al inicio o final';
+    } else {
+      delete newWarnings[fieldName];
+    }
+    
+    // Validar caracteres especiales para nombres
+    if (fieldName === 'nombre' && value && typeof value === 'string') {
+      const caracteresEspeciales = /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/;
+      if (caracteresEspeciales.test(value)) {
+        newErrors[fieldName] = 'No se permiten caracteres especiales, solo letras y espacios';
+      } else {
+        delete newErrors[fieldName];
+      }
+    }
+    
+    setFieldErrors(newErrors);
+    setFieldWarnings(newWarnings);
+  };
+  
+  const handleFieldChange = (fieldName, value) => {
+    // Limpiar espacios automáticamente al perder el foco
+    const trimmedValue = typeof value === 'string' ? value.trim() : value;
+    
+    setFormData(prev => ({ ...prev, [fieldName]: trimmedValue }));
+    validateField(fieldName, value);
+  };
+  
+  const handleFieldBlur = (fieldName, value) => {
+    // Limpiar espacios al perder el foco
+    const trimmedValue = typeof value === 'string' ? value.trim() : value;
+    setFormData(prev => ({ ...prev, [fieldName]: trimmedValue }));
+    
+    // Limpiar warnings después de limpiar espacios
+    const newWarnings = { ...fieldWarnings };
+    delete newWarnings[fieldName];
+    setFieldWarnings(newWarnings);
+  };
+
   // Lógica de envío del formulario
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-    // Validaciones básicas del front-end
-    if (!formData.cliente) { setError("Debe seleccionar un cliente."); return; }
-    if (!formData.empleado) { setError("Debe seleccionar un empleado."); return; }
-    if (!formData.servicios || formData.servicios.length === 0) { setError("Debe seleccionar al menos un servicio."); return; }
-    if (!formData.fecha) { setError("Debe seleccionar una fecha."); return; }
-    if (!formData.hora) { setError("Debe seleccionar una hora."); return; }
+    
+    // Limpiar errores previos
+    setError('');
+    setFieldErrors({});
+    
+    // Validaciones básicas del front-end con errores específicos
+    const newFieldErrors = { ...fieldErrors };
+    
+    if (!formData.novedad) {
+      newFieldErrors.novedad = "Debe seleccionar una novedad.";
+    }
+    if (!formData.fecha) {
+      newFieldErrors.fecha = "Debe seleccionar una fecha.";
+    }
+    if (!formData.hora) {
+      newFieldErrors.hora = "Debe seleccionar una hora.";
+    }
+    if (!formData.cliente) {
+      newFieldErrors.cliente = "Debe seleccionar un cliente.";
+    }
+    if (!formData.empleado) {
+      newFieldErrors.empleado = "Debe seleccionar un empleado.";
+    }
+    if (!formData.servicios || formData.servicios.length === 0) {
+      newFieldErrors.servicios = "Debe seleccionar al menos un servicio.";
+    }
+    
+    setFieldErrors(newFieldErrors);
+    
+    // Si hay errores, no continuar
+    if (Object.keys(newFieldErrors).length > 0) {
+      setError("Por favor complete todos los campos requeridos.");
+      return;
+    }
 
     setError('');
     setIsLoading(true);
@@ -242,6 +381,12 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                         empleado: null,
                         servicios: []
                       }));
+                      // Limpiar errores cuando se selecciona una novedad
+                      if (selectedOption) {
+                        const newErrors = { ...fieldErrors };
+                        delete newErrors.novedad;
+                        setFieldErrors(newErrors);
+                      }
                     }}
                     options={novedadOptions}
                     className="react-select-container"
@@ -249,6 +394,17 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                     placeholder="Selecciona una novedad..."
                     noOptionsMessage={() => 'No hay novedades disponibles'}
                   />
+                  {fieldWarnings.novedad && (
+                    <div className="field-warning">{fieldWarnings.novedad}</div>
+                  )}
+                  {fieldErrors.novedad && (
+                    <div className="field-error">{fieldErrors.novedad}</div>
+                  )}
+                  {novedadOptions.length === 0 && (
+                    <div className="field-warning">
+                      No hay novedades activas disponibles para agendar citas.
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -259,27 +415,40 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                   <div className="datepicker-wrapper">
                     <DatePicker
                       selected={formData.fecha}
-                      onChange={(date) => setFormData(prev => ({ ...prev, fecha: date, hora: null }))}
-                      minDate={moment(formData.novedad.fechaInicio).toDate()}
+                      onChange={(date) => {
+                        setFormData(prev => ({ ...prev, fecha: date, hora: null }));
+                        // Limpiar errores cuando se selecciona una fecha
+                        if (date) {
+                          const newErrors = { ...fieldErrors };
+                          delete newErrors.fecha;
+                          setFieldErrors(newErrors);
+                        }
+                      }}
+                      minDate={moment().toDate()}
                       maxDate={moment(formData.novedad.fechaFin).toDate()}
                       filterDate={filtrarDiasDisponibles}
                       locale="es"
                       inline
-                      calendarClassName="novedad-calendar"
+                      calendarClassName="novedad-calendar debug-calendar"
                       dayClassName={(date) => {
                         const diaDeLaSemana = moment(date).day();
-                        const diaNombre = moment(date).format('dddd');
-                        const diaNormalizado = diaNombre
-                          .toLowerCase()
-                          .normalize('NFD')
-                          .replace(/[\u0300-\u036f]/g, '')
-                          .replace('á', 'a')
-                          .replace('é', 'e')
-                          .replace('í', 'i')
-                          .replace('ó', 'o')
-                          .replace('ú', 'u');
+                        const hoy = moment().startOf('day');
+                        const fechaSeleccionada = moment(date).startOf('day');
                         
-                        if (diasPermitidosNumeros.includes(diaDeLaSemana)) {
+                        // Mapeo directo de números de día a nombres normalizados
+                        const diaMap = {
+                          0: 'domingo',
+                          1: 'lunes', 
+                          2: 'martes',
+                          3: 'miercoles',
+                          4: 'jueves',
+                          5: 'viernes',
+                          6: 'sabado'
+                        };
+                        
+                        const diaNormalizado = diaMap[diaDeLaSemana];
+                        
+                        if (diasPermitidosNumeros.includes(diaDeLaSemana) && !fechaSeleccionada.isBefore(hoy)) {
                           return `dia-disponible dia-${diaNormalizado}`;
                         }
                         return 'dia-no-disponible';
@@ -289,6 +458,15 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                         return !diasPermitidosNumeros.includes(diaDeLaSemana);
                       }}
                     />
+                  </div>
+                  {fieldWarnings.fecha && (
+                    <div className="field-warning">{fieldWarnings.fecha}</div>
+                  )}
+                  {fieldErrors.fecha && (
+                    <div className="field-error">{fieldErrors.fecha}</div>
+                  )}
+                  <div className="format-message">
+                    Los días coloreados están disponibles para agendar. Los días en gris no están disponibles.
                   </div>
                 </div>
               )}
@@ -303,11 +481,34 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                         key={hora.value} 
                         type="button"
                         className={`hora-btn ${formData.hora === hora.value ? 'selected' : ''}`}
-                        onClick={() => setFormData(prev => ({ ...prev, hora: hora.value }))}
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, hora: hora.value }));
+                          // Limpiar errores cuando se selecciona una hora
+                          const newErrors = { ...fieldErrors };
+                          delete newErrors.hora;
+                          setFieldErrors(newErrors);
+                        }}
                       >
                         {hora.label}
                       </button>
                     ))}
+                  </div>
+                  {fieldWarnings.hora && (
+                    <div className="field-warning">{fieldWarnings.hora}</div>
+                  )}
+                  {fieldErrors.hora && (
+                    <div className="field-error">{fieldErrors.hora}</div>
+                  )}
+                  {horasDisponibles.length === 0 && (
+                    <div className="field-warning">
+                      No hay horarios disponibles para la fecha seleccionada.
+                    </div>
+                  )}
+                  <div className="format-message">
+                    {formData.fecha && moment(formData.fecha).isSame(moment(), 'day') 
+                      ? "Solo se muestran horarios disponibles para hoy."
+                      : "Selecciona un horario disponible."
+                    }
                   </div>
                 </div>
               )}
@@ -338,13 +539,36 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                       value={formData.empleado ? empleadoOptions.find(opt => opt.value.idUsuario === formData.empleado.idUsuario) : null}
                       onChange={(selectedOption) => {
                         setFormData(prev => ({ ...prev, empleado: selectedOption?.value || null }));
+                        // Limpiar errores cuando se selecciona un empleado
+                        if (selectedOption) {
+                          const newErrors = { ...fieldErrors };
+                          delete newErrors.empleado;
+                          setFieldErrors(newErrors);
+                        }
                       }}
                       options={empleadoOptions}
                       className="react-select-container"
                       classNamePrefix="react-select"
                       placeholder="Selecciona un empleado..."
-                      noOptionsMessage={() => 'No hay empleados disponibles'}
+                      noOptionsMessage={() => 'No hay empleados disponibles para esta fecha y hora'}
+                      isDisabled={!formData.fecha || !formData.hora}
                     />
+                    {fieldWarnings.empleado && (
+                      <div className="field-warning">{fieldWarnings.empleado}</div>
+                    )}
+                    {fieldErrors.empleado && (
+                      <div className="field-error">{fieldErrors.empleado}</div>
+                    )}
+                    {empleadoOptions.length === 0 && formData.fecha && formData.hora && (
+                      <div className="field-warning">
+                        No hay empleados disponibles para la fecha y hora seleccionada. Todos los empleados ya tienen citas agendadas.
+                      </div>
+                    )}
+                    {(!formData.fecha || !formData.hora) && (
+                      <div className="format-message">
+                        Primero selecciona una fecha y hora para ver los empleados disponibles.
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -363,6 +587,12 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                           ...prev, 
                           servicios: selectedOptions?.map(opt => opt.value) || []
                         }));
+                        // Limpiar errores cuando se seleccionan servicios
+                        if (selectedOptions && selectedOptions.length > 0) {
+                          const newErrors = { ...fieldErrors };
+                          delete newErrors.servicios;
+                          setFieldErrors(newErrors);
+                        }
                       }}
                       options={servicioOptions}
                       className="react-select-container"
@@ -371,6 +601,17 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
                       noOptionsMessage={() => 'No hay servicios disponibles'}
                       isMulti
                     />
+                    {fieldWarnings.servicios && (
+                      <div className="field-warning">{fieldWarnings.servicios}</div>
+                    )}
+                    {fieldErrors.servicios && (
+                      <div className="field-error">{fieldErrors.servicios}</div>
+                    )}
+                    {servicioOptions.length === 0 && (
+                      <div className="field-warning">
+                        No hay servicios disponibles para seleccionar.
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -408,6 +649,24 @@ const CitaFormModal = ({ isOpen, onClose, onSubmit, initialSlotData, clientePres
               )}
 
               {error && <div className="admin-form-error">{error}</div>}
+              
+              {/* Mostrar advertencias de campos */}
+              {Object.keys(fieldWarnings).length > 0 && (
+                <div className="field-warnings-container">
+                  {Object.entries(fieldWarnings).map(([field, warning]) => (
+                    <div key={field} className="field-warning">{warning}</div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Mostrar errores de campos */}
+              {Object.keys(fieldErrors).length > 0 && (
+                <div className="field-errors-container">
+                  {Object.entries(fieldErrors).map(([field, error]) => (
+                    <div key={field} className="field-error">{error}</div>
+                  ))}
+                </div>
+              )}
             </form>
           )}
         </div>
