@@ -18,6 +18,11 @@ const {
   FRONTEND_URL,
 } = require("../config/env.config.js");
 const optimizedMailerService = require("./optimized-mailer.service.js");
+const {
+  generarTemplateBienvenida,
+  generarTemplateRecuperacion,
+  generarTemplateConfirmacionCambio,
+} = require("../utils/emailTemplates.utils.js");
 
 const JWT_EXPIRATION = "1d";
 const TOKEN_RECUPERACION_EXPIRATION_MINUTES = 60;
@@ -30,6 +35,7 @@ const saltRounds = 10;
  * @returns {Promise<object>} El usuario creado (sin contraseña) y el token JWT.
  */
 const registrarUsuario = async (datosRegistro) => {
+  // --- Nodo 1: Inicio y desestructuración de datos ---
   const {
     nombre,
     apellido,
@@ -42,31 +48,47 @@ const registrarUsuario = async (datosRegistro) => {
     direccion,
   } = datosRegistro;
 
+  // --- Nodo 2: Buscar si el correo ya existe en la tabla Usuario ---
   const usuarioExistente = await db.Usuario.findOne({ where: { correo } });
+
+  // --- Nodo 3: (Decisión) ¿El correo ya está registrado en Usuarios? ---
   if (usuarioExistente) {
+    // --- Nodo 4: Lanzar error de conflicto por correo en Usuario ---
     throw new ConflictError(
       `El correo electrónico '${correo}' ya está registrado para una cuenta.`
     );
   }
 
+  // --- Nodo 5: Buscar si el documento ya existe en la tabla Cliente ---
   const clienteConDocumento = await db.Cliente.findOne({
     where: { numeroDocumento },
   });
+
+  // --- Nodo 6: (Decisión) ¿El documento ya está registrado en Clientes? ---
   if (clienteConDocumento) {
+    // --- Nodo 7: Lanzar error de conflicto por documento ---
     throw new ConflictError(
       `El número de documento '${numeroDocumento}' ya está registrado para un cliente.`
     );
   }
 
+  // --- Nodo 8: Buscar si el correo ya existe en la tabla Cliente ---
   const clienteConCorreo = await db.Cliente.findOne({ where: { correo } });
+
+  // --- Nodo 9: (Decisión) ¿El correo ya está registrado en Clientes? ---
   if (clienteConCorreo) {
+    // --- Nodo 10: Lanzar error de conflicto por correo en Cliente ---
     throw new ConflictError(
       `El correo electrónico '${correo}' ya está registrado para un perfil de cliente.`
     );
   }
 
+  // --- Nodo 11: Buscar el rol "Cliente" ---
   const rolCliente = await db.Rol.findOne({ where: { nombre: "Cliente" } });
+
+  // --- Nodo 12: (Decisión) ¿Existe el rol "Cliente"? ---
   if (!rolCliente) {
+    // --- Nodo 13: Log de error crítico y Lanzar error de configuración ---
     console.error(
       "Error crítico: El rol 'Cliente' no se encuentra en la base de datos."
     );
@@ -76,10 +98,13 @@ const registrarUsuario = async (datosRegistro) => {
     );
   }
 
+  // --- Nodo 14: Iniciar transacción y bloque try/catch ---
   const transaction = await db.sequelize.transaction();
   try {
+    // --- Nodo 15: Crear hash de la contraseña ---
     const contrasenaHasheada = await bcrypt.hash(contrasena, saltRounds);
 
+    // --- Nodo 16: Crear el registro del Usuario ---
     const nuevoUsuario = await db.Usuario.create(
       {
         correo,
@@ -90,6 +115,7 @@ const registrarUsuario = async (datosRegistro) => {
       { transaction }
     );
 
+    // --- Nodo 17: Crear el registro del Cliente ---
     await db.Cliente.create(
       {
         idUsuario: nuevoUsuario.idUsuario,
@@ -106,8 +132,10 @@ const registrarUsuario = async (datosRegistro) => {
       { transaction }
     );
 
+    // --- Nodo 18: Confirmar la transacción ---
     await transaction.commit();
 
+    // --- Nodo 19: Generar token JWT y preparar respuesta ---
     const payload = {
       idUsuario: nuevoUsuario.idUsuario,
       idRol: nuevoUsuario.idRol,
@@ -115,101 +143,60 @@ const registrarUsuario = async (datosRegistro) => {
       correo: nuevoUsuario.correo,
     };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
-
     const { contrasena: _, ...usuarioSinContrasena } = nuevoUsuario.toJSON();
 
+    // --- Nodo 20: Iniciar bloque try/catch para envío de correo ---
     try {
-      const htmlBienvenida = `
-        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px; border-radius: 15px;">
-          <div style="background: white; padding: 40px 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #2c3e50; font-size: 28px; margin: 0; font-weight: 600;">¡Bienvenido/a ${
-                APP_NAME || "La fuente del peluquero"
-              }!</h1>
-              <div style="width: 60px; height: 4px; background: linear-gradient(135deg, #667eea, #764ba2); margin: 15px auto; border-radius: 2px;"></div>
-            </div>
-            
-            <div style="text-align: center; margin-bottom: 25px;">
-              <h2 style="color: #34495e; font-size: 22px; margin: 0; font-weight: 500;">Hola ${nombre} 👋</h2>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border-left: 4px solid #667eea;">
-              <p style="color: #495057; font-size: 16px; line-height: 1.6; margin: 0; text-align: center;">
-                <strong>¡Tu cuenta ha sido creada exitosamente!</strong><br>
-                Estamos emocionados de tenerte como parte de nuestra familia de belleza y cuidado personal.
-              </p>
-            </div>
-            
-            <div style="margin: 25px 0;">
-              <h3 style="color: #2c3e50; font-size: 18px; margin-bottom: 15px; font-weight: 600;">✨ ¿Qué puedes hacer ahora?</h3>
-              <ul style="color: #495057; font-size: 15px; line-height: 1.8; padding-left: 20px;">
-                <li>📅 <strong>Agendar citas</strong> con nuestros especialistas</li>
-                <li>🛍️ <strong>Explorar servicios</strong> y productos de calidad</li>
-                <li>👤 <strong>Gestionar tu perfil</strong> y preferencias</li>
-                <li>📱 <strong>Recibir notificaciones</strong> sobre tus citas</li>
-              </ul>
-            </div>
-            
-            <div style="text-align: center; margin: 30px 0;">
-                <a href="${
-                  FRONTEND_URL || "https://lafuentedelpeluquero.onrender.com"
-                }" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; display: inline-block; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
-                🚀 Comenzar ahora
-              </a>
-            </div>
-            
-            <div style="border-top: 1px solid #e9ecef; padding-top: 25px; margin-top: 30px; text-align: center;">
-              <p style="color: #6c757d; font-size: 14px; line-height: 1.5; margin: 0;">
-                Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.<br>
-                <strong>Estamos aquí para ti 💙</strong>
-              </p>
-              <p style="color: #495057; font-size: 15px; margin: 15px 0 0 0; font-weight: 500;">
-                Con cariño,<br>
-                <span style="color: #667eea; font-weight: 600;">El equipo de ${
-                  APP_NAME || "La fuente del peluquero"
-                }</span>
-              </p>
-            </div>
-          </div>
-        </div>`;
-      const result = await optimizedMailerService.sendMail({
+      const htmlBienvenida = generarTemplateBienvenida(nombre); // Asumiendo que esta función existe
+      await optimizedMailerService.sendMail({
         to: nuevoUsuario.correo,
-        subject: `🎉 ¡Bienvenido/a a ${
-          APP_NAME || "La fuente del peluquero"
-        }! Tu cuenta está lista`,
+        subject: `🎉 ¡Bienvenido/a a La fuente del peluquero! Tu cuenta está lista`,
         html: htmlBienvenida,
       });
-
-      if (result.success) {
-        console.log(
-          `✅ Correo de bienvenida enviado a ${nuevoUsuario.correo} en ${result.duration}ms`
-        );
-      }
     } catch (emailError) {
+      // --- Nodo 21: Log de error de envío de correo (no detiene el flujo) ---
       console.error(
         `Error al enviar correo de bienvenida a ${nuevoUsuario.correo}:`,
         emailError
       );
     }
 
+    // --- Nodo 22: Retornar el usuario y token (Éxito Final) ---
     return { usuario: usuarioSinContrasena, token };
   } catch (error) {
+    // --- Nodo 23: Revertir transacción ---
     await transaction.rollback();
-    if (error instanceof ConflictError) throw error;
+
+    // --- Nodo 24: (Decisión) ¿Es un ConflictError conocido? ---
+    if (error instanceof ConflictError) {
+      // --- Nodo 25: Relanzar ConflictError ---
+      throw error;
+    }
+
+    // --- Nodo 26: (Decisión) ¿Es un error de unicidad de BD? ---
     if (error.name === "SequelizeUniqueConstraintError") {
+      // --- Nodo 27: Determinar mensaje de conflicto específico ---
       let mensajeConflicto =
         "Uno de los datos proporcionados ya está en uso (correo o número de documento).";
+
+      // --- Nodo 28: (Decisión) ¿El error tiene un campo 'fields'? ---
       if (error.fields) {
+        // --- Nodo 29: (Decisión) ¿El conflicto es en el campo 'correo'? ---
         if (error.fields.correo && error.fields.correo === correo)
           mensajeConflicto = `El correo electrónico '${correo}' ya está registrado.`;
+
+        // --- Nodo 30: (Decisión) ¿El conflicto es en el campo 'numerodocumento'? ---
         if (
           error.fields.numerodocumento &&
           error.fields.numerodocumento === numeroDocumento
         )
           mensajeConflicto = `El número de documento '${numeroDocumento}' ya está registrado.`;
       }
+      // --- Nodo 31: Lanzar error de conflicto formateado ---
       throw new ConflictError(mensajeConflicto);
     }
+
+    // --- Nodo 32: Lanzar error genérico para cualquier otro fallo ---
     console.error(
       "Error al registrar el usuario en el servicio:",
       error.message,
@@ -383,73 +370,12 @@ const solicitarRecuperacionContrasena = async (correo) => {
 
   // --- INICIO DE MODIFICACIÓN: Template de Correo para OTP ---
   // Ya no necesitamos 'enlaceRecuperacion'
-  const htmlCorreo = `
-    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px; border-radius: 15px;">
-      <div style="background: white; padding: 40px 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <div style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
-            🔐
-          </div>
-          <h1 style="color: #2c3e50; font-size: 24px; margin: 0; font-weight: 600;">Recuperación de Contraseña</h1>
-          <div style="width: 60px; height: 4px; background: linear-gradient(135deg, #667eea, #764ba2); margin: 15px auto; border-radius: 2px;"></div>
-        </div>
-        
-        <div style="text-align: center; margin-bottom: 25px;">
-          <h2 style="color: #34495e; font-size: 18px; margin: 0; font-weight: 500;">Hola ${nombreUsuario} 👋</h2>
-          <p style="color: #6c757d; font-size: 14px; margin: 5px 0 0 0;">${
-            usuario.correo
-          }</p>
-        </div>
-        
-        <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 10px; margin: 25px 0; border-left: 4px solid #f39c12;">
-          <p style="color: #856404; font-size: 15px; line-height: 1.6; margin: 0; text-align: center;">
-            <strong>¡Hemos recibido tu solicitud!</strong><br>
-            Has solicitado restablecer tu contraseña para tu cuenta en <strong>${
-              APP_NAME || "La fuente del peluquero"
-            }</strong>.
-          </p>
-        </div>
-        
-        <div style="margin: 30px 0;">
-          <h3 style="color: #2c3e50; font-size: 16px; margin-bottom: 15px; font-weight: 600; text-align: center;">🔑 Tu Código de Verificación</h3>
-          <p style="color: #495057; font-size: 14px; text-align: center; margin-bottom: 20px;">
-            Usa el siguiente código de 6 dígitos para completar el proceso. Este código es confidencial y no lo compartas con nadie.
-          </p>
-          
-          <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 25px; border-radius: 15px; text-align: center; margin: 25px 0; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);">
-            <div style="font-size: 42px; font-weight: bold; color: white; letter-spacing: 8px; font-family: 'Courier New', monospace; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-              ${tokenRecuperacion}
-            </div>
-          </div>
-          
-          <div style="background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #17a2b8;">
-            <p style="color: #0c5460; font-size: 14px; margin: 0; text-align: center;">
-              ⏰ <strong>Importante:</strong> Este código expirará en <strong>${TOKEN_RECUPERACION_EXPIRATION_MINUTES} minutos</strong> por seguridad.
-            </p>
-          </div>
-        </div>
-        
-        <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #dc3545;">
-          <p style="color: #721c24; font-size: 14px; margin: 0; text-align: center;">
-            🛡️ <strong>¿No solicitaste este cambio?</strong><br>
-            Si no fuiste tú quien solicitó restablecer la contraseña, por favor ignora este correo. Tu cuenta está segura.
-          </p>
-        </div>
-        
-        <div style="border-top: 1px solid #e9ecef; padding-top: 25px; margin-top: 30px; text-align: center;">
-          <p style="color: #6c757d; font-size: 14px; line-height: 1.5; margin: 0;">
-            Si tienes problemas con el código o necesitas ayuda, contáctanos.<br>
-            <strong>Estamos aquí para ayudarte 💙</strong>
-          </p>
-          <p style="color: #495057; font-size: 15px; margin: 15px 0 0 0; font-weight: 500;">
-            Con cariño,<br>
-            <span style="color: #667eea; font-weight: 600;">El equipo de ${
-              APP_NAME || "La fuente del peluquero"
-            }</span>
-          </p>
-        </div>
-      </div>
-    </div>`;
+  const htmlCorreo = generarTemplateRecuperacion(
+    nombreUsuario, 
+    usuario.correo, 
+    tokenRecuperacion, 
+    TOKEN_RECUPERACION_EXPIRATION_MINUTES
+  );
   // --- FIN DE MODIFICACIÓN ---
 
   try {
@@ -564,14 +490,7 @@ const resetearContrasena = async (correo, tokenCodigo, nuevaContrasena) => {
     );
 
     // (Opcional pero recomendado) Enviar correo de confirmación de cambio
-    const htmlConfirmacion = `
-    <div style="font-family: Arial, sans-serif; color: #333;">
-        <p>Hola ${usuario.correo},</p>
-        <p>Tu contraseña para ${
-          APP_NAME || "La fuente del peluquero"
-        } ha sido actualizada exitosamente.</p>
-        <p>Si no realizaste este cambio, por favor contacta a soporte inmediatamente.</p>
-    </div>`;
+    const htmlConfirmacion = generarTemplateConfirmacionCambio(usuario.correo);
     try {
       const result = await optimizedMailerService.sendMail({
         to: usuario.correo,

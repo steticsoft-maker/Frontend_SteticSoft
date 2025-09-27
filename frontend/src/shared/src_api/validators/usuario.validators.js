@@ -92,12 +92,7 @@ const crearUsuarioValidators = [
     .withMessage("El teléfono debe tener entre 7 y 15 dígitos."),
   body("tipoDocumento")
     .optional({ checkFalsy: true })
-    .isIn([
-      "Cédula de Ciudadanía",
-      "Cédula de Extranjería",
-      "Pasaporte",
-      "Tarjeta de Identidad",
-    ]),
+    .isIn(["Cedula de Ciudadania", "Cedula de Extranjeria"]),
   body("numeroDocumento")
     .optional({ checkFalsy: true })
     .trim()
@@ -106,16 +101,11 @@ const crearUsuarioValidators = [
     .custom((value, { req }) => {
       const docType = req.body.tipoDocumento;
       if (
-        docType === "Cédula de Ciudadanía" ||
-        docType === "Tarjeta de Identidad" ||
-        docType === "Cédula de Extranjería"
+        docType === "Cedula de Ciudadania" ||
+        docType === "Cedula de Extranjeria"
       ) {
         if (!numericOnlyRegex.test(value)) {
           throw new Error("Para este tipo de documento, ingrese solo números.");
-        }
-      } else if (docType === "Pasaporte") {
-        if (!alphanumericRegex.test(value)) {
-          throw new Error("Para Pasaporte, ingrese solo letras y números.");
         }
       }
       return true;
@@ -231,12 +221,7 @@ const actualizarUsuarioValidators = [
     .withMessage("El teléfono debe tener entre 7 y 15 dígitos."),
   body("tipoDocumento")
     .optional({ checkFalsy: true })
-    .isIn([
-      "Cédula de Ciudadanía",
-      "Cédula de Extranjería",
-      "Pasaporte",
-      "Tarjeta de Identidad",
-    ]),
+    .isIn(["Cedula de Ciudadania", "Cedula de Extranjeria"]),
 
   // CORRECCIÓN CRÍTICA: Añadida validación de unicidad para numeroDocumento
   body("numeroDocumento")
@@ -247,16 +232,11 @@ const actualizarUsuarioValidators = [
     .custom((value, { req }) => {
       const docType = req.body.tipoDocumento;
       if (
-        docType === "Cédula de Ciudadanía" ||
-        docType === "Tarjeta de Identidad" ||
-        docType === "Cédula de Extranjería"
+        docType === "Cedula de Ciudadania" ||
+        docType === "Cedula de Extranjeria"
       ) {
         if (!numericOnlyRegex.test(value)) {
           throw new Error("Para este tipo de documento, ingrese solo números.");
-        }
-      } else if (docType === "Pasaporte") {
-        if (!alphanumericRegex.test(value)) {
-          throw new Error("Para Pasaporte, ingrese solo letras y números.");
         }
       }
       return true;

@@ -106,8 +106,17 @@ const validarCrearCitaMovil = [
     .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
     .withMessage("La hora debe estar en formato HH:MM (24 horas)"),
   body("usuarioId")
-    .isInt({ min: 1 })
-    .withMessage("El ID del empleado debe ser un número entero positivo"),
+    .optional()
+    .custom((value) => {
+      if (value !== undefined && value !== null && value !== "") {
+        if (!Number.isInteger(Number(value)) || Number(value) < 1) {
+          throw new Error(
+            "El ID del empleado debe ser un número entero positivo"
+          );
+        }
+      }
+      return true;
+    }),
   body("servicios")
     .isArray({ min: 1 })
     .withMessage("Debes seleccionar al menos un servicio"),

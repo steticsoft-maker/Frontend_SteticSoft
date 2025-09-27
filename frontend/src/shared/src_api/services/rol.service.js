@@ -30,78 +30,86 @@ const cambiarEstadoRol = async (idRol, nuevoEstado) => {
  * @returns {Promise<object>} El rol recién creado con sus permisos.
  */
 const crearRol = async (datosRol) => {
-  // Extraer datos del rol, haciendo tipoPerfil mutable.
+  // --- Nodo 1: Inicio y desestructuración de datos ---
   const { nombre, descripcion, estado, idPermisos } = datosRol;
   let tipoPerfil = datosRol.tipoPerfil;
 
-  // Forzar el tipo de perfil correcto para roles del sistema.
+  // --- Nodo 2: (Decisión) ¿Nombre es "Cliente"? ---
   if (nombre === "Cliente") {
     tipoPerfil = "CLIENTE";
   } else if (nombre === "Empleado") {
+    // --- Nodo 3: (Decisión) ¿Nombre es "Empleado"? ---
     tipoPerfil = "EMPLEADO";
   } else if (nombre === "Administrador") {
+    // --- Nodo 4: (Decisión) ¿Nombre es "Administrador"? ---
     tipoPerfil = "NINGUNO";
   } else if (!tipoPerfil) {
-    // Para roles personalizados, si no se especifica un tipo, se asume NINGUNO.
+    // --- Nodo 5: (Decisión) ¿No se especificó tipoPerfil? ---
     tipoPerfil = "NINGUNO";
   }
 
-  // Se utiliza una única transacción para toda la operación.
+  // --- Nodo 6: Iniciar transacción y bloque try/catch ---
   const t = await db.sequelize.transaction();
-
   try {
-    // 1. Verificar si ya existe un rol con el mismo nombre
-    const rolExistente = await db.Rol.findOne({ where: { nombre }, transaction: t });
+    // --- Nodo 7: Buscar si el rol ya existe por nombre ---
+    const rolExistente = await db.Rol.findOne({
+      where: { nombre },
+      transaction: t,
+    });
+
+    // --- Nodo 8: (Decisión) ¿El rol ya existe? ---
     if (rolExistente) {
+      // --- Nodo 9: Lanzar error de conflicto por nombre duplicado ---
       throw new ConflictError(`El rol con el nombre '${nombre}' ya existe.`);
     }
 
-    // 2. Crear el rol principal
+    // --- Nodo 10: Crear el registro del Rol principal ---
     const nuevoRol = await db.Rol.create(
       {
         nombre,
         descripcion,
-        estado: typeof estado === "boolean" ? estado : true, // Valor por defecto si no se especifica
-        tipoPerfil, // Usar el tipoPerfil validado
+        estado: typeof estado === "boolean" ? estado : true,
+        tipoPerfil,
       },
       { transaction: t }
     );
 
-    // 3. Asignar los permisos si se proporcionaron en el array
+    // --- Nodo 11: (Decisión) ¿Se proporcionaron permisos para asignar? ---
     if (idPermisos && idPermisos.length > 0) {
-      const permisosParaAsignar = idPermisos.map(idPermiso => ({
+      // --- Nodo 12: Preparar y crear los registros de asignación de permisos ---
+      const permisosParaAsignar = idPermisos.map((idPermiso) => ({
         idRol: nuevoRol.idRol,
         idPermiso: idPermiso,
       }));
       await db.PermisosXRol.bulkCreate(permisosParaAsignar, { transaction: t });
     }
 
-    // 4. Si todo fue exitoso, confirmar la transacción
+    // --- Nodo 13: Confirmar la transacción ---
     await t.commit();
 
-    // 5. Devolver el rol creado con todos sus permisos asociados
+    // --- Nodo 14: Obtener y retornar el rol creado con sus permisos (Éxito Final) ---
     const rolConPermisos = await db.Rol.findByPk(nuevoRol.idRol, {
-      include: [{
-        model: db.Permisos,
-        as: 'permisos',
-        attributes: ['idPermiso', 'nombre'],
-        through: { attributes: [] }
-      }]
+      include: [
+        {
+          model: db.Permisos,
+          as: "permisos",
+          attributes: ["idPermiso", "nombre"],
+          through: { attributes: [] },
+        },
+      ],
     });
-    
-    // Devolvemos un objeto JSON plano para evitar problemas de serialización
     return rolConPermisos.toJSON();
-
   } catch (error) {
-    // Si algo falla, revertir todos los cambios
+    // --- Nodo 15: Revertir transacción ---
     await t.rollback();
-    
-    // Re-lanzar errores conocidos para que el controlador los maneje
+
+    // --- Nodo 16: (Decisión) ¿Es un error conocido (ConflictError o CustomError)? ---
     if (error instanceof ConflictError || error instanceof CustomError) {
+      // --- Nodo 17: Relanzar el error conocido ---
       throw error;
     }
-    // Para cualquier otro error, lo registramos y lanzamos un error genérico
-    console.error('Error al crear el rol en el servicio:', error.message);
+    // --- Nodo 18: Lanzar un error genérico para cualquier otro fallo ---
+    console.error("Error al crear el rol en el servicio:", error.message);
     throw new CustomError(`Error al crear el rol: ${error.message}`, 500);
   }
 };

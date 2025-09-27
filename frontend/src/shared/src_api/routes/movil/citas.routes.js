@@ -36,10 +36,10 @@ router.get(
   citasController.obtenerMisCitas
 );
 
-// POST /api/movil/citas - Crear una nueva cita
+// POST /api/movil/citas - Crear una nueva cita con asignación automática
 router.post(
   "/citas",
-  checkPermission("MODULO_CITAS_CREAR_PROPIA"),
+  checkPermission("MODULO_MOVIL_CITAS_ASIGNAR_EMPLEADO"),
   validarFechaFutura,
   validarHorarioTrabajo,
   validarCrearCitaMovil,

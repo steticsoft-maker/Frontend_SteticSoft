@@ -101,6 +101,16 @@ export const deleteServicio = async (id) => {
     await apiClient.delete(`/servicios/${id}`);
   } catch (error) {
     console.error(`Error al eliminar el servicio ${id}:`, error);
+
+    // Manejar errores específicos del backend
+    if (error.response?.status === 400) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "No se puede eliminar el servicio porque está asociado a citas existentes.";
+      throw new Error(errorMessage);
+    }
+
     throw error.response?.data || new Error(error.message);
   }
 };

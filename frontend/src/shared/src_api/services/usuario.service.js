@@ -99,7 +99,11 @@ const cambiarEstadoUsuario = async (idUsuario, nuevoEstado) => {
  * @returns {Promise<object>} El objeto del usuario recién creado con todas sus relaciones.
  */
 const crearUsuario = async (usuarioData) => {
-  console.log("DEBUG: Iniciando crearUsuario con los siguientes datos:", usuarioData);
+  console.log(
+    "DEBUG: Iniciando crearUsuario con los siguientes datos:",
+    usuarioData
+  );
+  // --- Nodo 1: Inicio y desestructuración de datos ---
   const {
     correo,
     contrasena,
@@ -114,68 +118,96 @@ const crearUsuario = async (usuarioData) => {
     estado,
   } = usuarioData;
 
+  // --- Nodo 2: Convertir idRol a número ---
   const rolIdNumerico = Number(idRol);
+
+  // --- Nodo 3: (Decisión) ¿Es idRol un número válido (isNaN)? ---
   if (isNaN(rolIdNumerico)) {
+    // --- Nodo 4: Lanzar error por ID de rol inválido ---
     throw new BadRequestError(
       "El ID del rol proporcionado no es un número válido."
     );
   }
 
+  // --- Nodo 5: Buscar el rol en la BD ---
   const rol = await db.Rol.findOne({
     where: { idRol: rolIdNumerico, estado: true },
   });
-  console.log("DEBUG: Rol encontrado:", rol ? rol.toJSON() : "No se encontró rol");
+  console.log(
+    "DEBUG: Rol encontrado:",
+    rol ? rol.toJSON() : "No se encontró rol"
+  );
+  // --- Nodo 6: (Decisión) ¿Se encontró el rol y está activo? ---
   if (!rol) {
     console.error(
       `[usuario.service.js] Rol no encontrado o inactivo para idRol: ${rolIdNumerico}`
     );
+    // --- Nodo 7: Lanzar error por rol no encontrado ---
     throw new NotFoundError(
       `El rol especificado con ID ${rolIdNumerico} no existe o no está activo.`
     );
   }
 
+  // --- Nodo 8: (Decisión) ¿El rol es "Administrador"? ---
   if (rol.nombre === "Administrador") {
+    // --- Nodo 9: Buscar si ya existe un administrador ---
     const adminExistente = await db.Usuario.findOne({
       where: { idRol: rolIdNumerico },
     });
+    // --- Nodo 10: (Decisión) ¿Ya existe un administrador? ---
     if (adminExistente) {
+      // --- Nodo 11: Lanzar error de administrador duplicado ---
       throw new ConflictError(
         "Ya existe un usuario Administrador. No se pueden crear más con este rol."
       );
     }
   }
 
+  // --- Nodo 12: Iniciar transacción y bloque try/catch ---
   const t = await db.sequelize.transaction();
   try {
+    // --- Nodo 13: Buscar si el correo ya existe ---
     const usuarioExistenteCorreo = await db.Usuario.findOne({
       where: { correo },
       transaction: t,
     });
+    // --- Nodo 14: (Decisión) ¿El correo ya existe? ---
     if (usuarioExistenteCorreo) {
+      // --- Nodo 15: Revertir y lanzar error de correo duplicado ---
       await t.rollback();
       throw new ConflictError("El correo electrónico ya está registrado.");
     }
 
+    // --- Nodo 16: Determinar si el rol requiere perfil ---
     const requierePerfil = ["CLIENTE", "EMPLEADO"].includes(rol.tipoPerfil);
 
+    // --- Nodo 17: (Decisión) ¿Requiere perfil y se proporcionó documento? ---
     if (requierePerfil && numeroDocumento) {
+      // --- Nodo 18: (Decisión) ¿El tipo de perfil es "CLIENTE"? ---
       if (rol.tipoPerfil === "CLIENTE") {
+        // --- Nodo 19: Buscar si el documento de cliente ya existe ---
         const clienteExistente = await db.Cliente.findOne({
           where: { numeroDocumento },
           transaction: t,
         });
+        // --- Nodo 20: (Decisión) ¿Documento de cliente duplicado? ---
         if (clienteExistente) {
+          // --- Nodo 21: Revertir y lanzar error de documento de cliente duplicado ---
           await t.rollback();
           throw new ConflictError(
             "El número de documento ya está registrado para un cliente."
           );
         }
       } else if (rol.tipoPerfil === "EMPLEADO") {
+        // --- Nodo 22: (Decisión) ¿El tipo de perfil es "EMPLEADO"? ---
+        // --- Nodo 23: Buscar si el documento de empleado ya existe ---
         const empleadoExistente = await db.Empleado.findOne({
           where: { numeroDocumento },
           transaction: t,
         });
+        // --- Nodo 24: (Decisión) ¿Documento de empleado duplicado? ---
         if (empleadoExistente) {
+          // --- Nodo 25: Revertir y lanzar error de documento de empleado duplicado ---
           await t.rollback();
           throw new ConflictError(
             "El número de documento ya está registrado para un empleado."
@@ -184,9 +216,11 @@ const crearUsuario = async (usuarioData) => {
       }
     }
 
+    // --- Nodo 26: Hashear la contraseña ---
     const salt = await bcrypt.genSalt(saltRounds);
     const hashedPassword = await bcrypt.hash(contrasena, salt);
 
+    // --- Nodo 27: Crear el registro del Usuario ---
     const nuevoUsuario = await db.Usuario.create(
       {
         correo,
@@ -197,7 +231,9 @@ const crearUsuario = async (usuarioData) => {
       { transaction: t }
     );
 
+    // --- Nodo 28: (Decisión) ¿El rol requiere crear un perfil? ---
     if (requierePerfil) {
+      // --- Nodo 29: Preparar datos del perfil ---
       const perfilData = {
         nombre,
         apellido,
@@ -210,29 +246,48 @@ const crearUsuario = async (usuarioData) => {
         estado: nuevoUsuario.estado,
       };
 
+      // --- Nodo 30: (Decisión) ¿El perfil a crear es de "CLIENTE"? ---
       if (rol.tipoPerfil === "CLIENTE") {
+        // --- Nodo 31: (Decisión) ¿Falta la dirección para el cliente? ---
         if (!direccion) {
+          // --- Nodo 32: Revertir y lanzar error por falta de dirección ---
           await t.rollback();
           throw new BadRequestError(
             "Para el perfil CLIENTE, la dirección es requerida."
           );
         }
+        // --- Nodo 33: Crear el registro del Cliente ---
         perfilData.direccion = direccion;
         await db.Cliente.create(perfilData, { transaction: t });
       } else if (rol.tipoPerfil === "EMPLEADO") {
-        console.log("DEBUG: El rol es de tipo EMPLEADO. Preparando para crear perfil de empleado.");
-        console.log("DEBUG: Datos para crear el empleado (perfilData):", perfilData);
+        // --- Nodo 34: (Decisión) ¿El perfil a crear es de "EMPLEADO"? ---
+        console.log(
+          "DEBUG: El rol es de tipo EMPLEADO. Preparando para crear perfil de empleado."
+        );
+        console.log(
+          "DEBUG: Datos para crear el empleado (perfilData):",
+          perfilData
+        );
         // --- INICIO DE LA CORRECCIÓN ---
         // Se elimina la validación redundante que causaba el error.
         // El validador de middleware ya ha confirmado que los campos necesarios existen.
-        const nuevoEmpleado = await db.Empleado.create(perfilData, { transaction: t });
-        console.log("DEBUG: Resultado de la creación del empleado:", nuevoEmpleado ? nuevoEmpleado.toJSON() : "Falló la creación del empleado");
+        const nuevoEmpleado = await db.Empleado.create(perfilData, {
+          transaction: t,
+        });
+        console.log(
+          "DEBUG: Resultado de la creación del empleado:",
+          nuevoEmpleado
+            ? nuevoEmpleado.toJSON()
+            : "Falló la creación del empleado"
+        );
         // --- FIN DE LA CORRECCIÓN ---
       }
     }
 
+    // --- Nodo 36: Confirmar la transacción ---
     await t.commit();
 
+    // --- Nodo 37: Obtener y retornar el usuario completo (Éxito Final) ---
     const usuarioCompleto = await db.Usuario.findByPk(nuevoUsuario.idUsuario, {
       include: [
         { model: db.Rol, as: "rol" },
@@ -244,27 +299,33 @@ const crearUsuario = async (usuarioData) => {
 
     return usuarioCompleto;
   } catch (error) {
+    // --- Nodo 38: Revertir transacción ---
     await t.rollback();
+
+    // --- Nodo 39: Log del error ---
     console.error(
       "[usuario.service.js] Error al crear el usuario:",
       error.message,
       error.stack
     );
+
+    // --- Nodo 40: (Decisión) ¿Es un error conocido (lanzado manualmente)? ---
     if (
       error instanceof NotFoundError ||
       error instanceof ConflictError ||
       error instanceof BadRequestError ||
       error instanceof CustomError
     ) {
+      // --- Nodo 41: Relanzar el error conocido ---
       throw error;
     }
+    // --- Nodo 42: Lanzar un error genérico ---
     throw new CustomError(
       `Error en el servicio al crear usuario: ${error.message}`,
       500
     );
   }
 };
-
 
 /**
  * Verifica si un correo electrónico ya existe.

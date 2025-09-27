@@ -15,47 +15,63 @@ const {
 } = require("../utils/cloudinary.util");
 
 const crearServicio = async (datosServicio) => {
+ // 1. INICIO - NODO DE PROCESO
   const {
-    nombre,
-    precio,
-    idCategoriaServicio,
-    descripcion,
-    imagen,
-    imagenPublicId,
+   nombre,
+   precio,
+   idCategoriaServicio,
+   descripcion,
+   imagen,
+   imagenPublicId,
   } = datosServicio;
 
+   // 2. NODO DE PROCESO (Búsqueda en DB)
   const servicioExistente = await db.Servicio.findOne({ where: { nombre } });
+
+  // 3. NODO DE DECISIÓN (if/else) - Pregunta: ¿El servicio existe?
   if (servicioExistente) {
-    throw new ConflictError(`El servicio con el nombre '${nombre}' ya existe.`);
+   // 3A. NODO DE PROCESO/SALIDA (Lanzar error) - CAMINO 1
+   throw new ConflictError(`El servicio con el nombre '${nombre}' ya existe.`);
   }
 
+  // 4. NODO DE PROCESO (Búsqueda en DB) - CONTINUACIÓN DEL CAMINO
   const categoriaServicio =
-    await db.CategoriaServicio.findByPk(idCategoriaServicio);
+   await db.CategoriaServicio.findByPk(idCategoriaServicio);
+
+   // 5. NODO DE DECISIÓN (if/else) - Pregunta: ¿La categoría no existe o está inactiva?
   if (!categoriaServicio || !categoriaServicio.estado) {
-    throw new BadRequestError(
-      "La categoría de servicio no existe o no está activa."
+   // 5A. NODO DE PROCESO/SALIDA (Lanzar error) - CAMINO 2
+   throw new BadRequestError(
+     "La categoría de servicio no existe o no está activa."
     );
   }
 
+   // 6. NODO DE PROCESO (Inicio del bloque de excepción) - CONTINUACIÓN DEL CAMINO
   try {
+    // 7. NODO DE PROCESO (Preparación de datos)
     const servicioParaCrear = {
-      nombre: nombre.trim(),
-      descripcion: descripcion || null,
-      precio: parseFloat(precio).toFixed(2),
-      idCategoriaServicio: parseInt(idCategoriaServicio),
-      imagen: imagen || null,
-      imagenPublicId: imagenPublicId || null,
-      estado: true,
-    };
+   nombre: nombre.trim(),
+   descripcion: descripcion || null,
+   precio: parseFloat(precio).toFixed(2),
+   idCategoriaServicio: parseInt(idCategoriaServicio),
+   imagen: imagen || null,
+   imagenPublicId: imagenPublicId || null,
+   estado: true,
+  };
 
-    return await db.Servicio.create(servicioParaCrear);
+   // 8. NODO DE PROCESO/SALIDA (Creación exitosa) - CAMINO 3
+  return await db.Servicio.create(servicioParaCrear);
   } catch (error) {
+     // 9. NODO DE PROCESO (Manejo del error) - CAMINO 4 (Se ejecuta solo si falla NODO 8)
     console.error("Error al crear el servicio:", error);
-    throw new CustomError(
-      `Error en el servidor al crear el servicio: ${error.message}`,
-      500
-    );
+ 
+    // 10. NODO DE PROCESO/SALIDA (Lanzar error de servidor)
+   throw new CustomError(
+     `Error en el servidor al crear el servicio: ${error.message}`,
+     500  
+     );
   }
+  // 11. NODO FINAL/SALIDA - Se llega aquí si la ejecución no lanza una excepción.
 };
 
 const obtenerTodosLosServicios = async (opcionesDeFiltro = {}) => {

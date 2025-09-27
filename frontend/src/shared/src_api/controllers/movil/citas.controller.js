@@ -1,6 +1,8 @@
 // src/controllers/movil/citas.controller.js
 const citaService = require("../../services/cita.service.js");
 const servicioService = require("../../services/servicio.service.js");
+const empleadoService = require("../../services/empleado.service.js");
+const novedadesService = require("../../services/novedades.service.js");
 
 /**
  * Obtiene las citas del cliente autenticado
@@ -28,21 +30,50 @@ const obtenerMisCitas = async (req, res, next) => {
 
 /**
  * Crea una nueva cita para el cliente autenticado
+ * Implementa asignación automática de empleado si no se especifica
  */
 const crearCitaMovil = async (req, res, next) => {
   try {
     const { fecha, hora_inicio, usuarioId, servicios = [] } = req.body;
     const idCliente = req.usuario.clienteInfo.idCliente;
 
+    // Si no se especifica empleado, asignar automáticamente
+    let empleadoAsignado = usuarioId;
+
+    if (
+      !empleadoAsignado ||
+      empleadoAsignado === "" ||
+      empleadoAsignado === null
+    ) {
+      empleadoAsignado = await empleadoService.asignarEmpleadoAutomatico(
+        fecha,
+        hora_inicio
+      );
+    } else {
+      // Validar disponibilidad del empleado especificado
+      await empleadoService.validarDisponibilidadEmpleado(
+        empleadoAsignado,
+        fecha,
+        hora_inicio
+      );
+    }
+
+    // Obtener novedad del empleado para esa fecha
+    const novedadId = await novedadesService.obtenerNovedadEmpleado(
+      empleadoAsignado,
+      fecha
+    );
+
     // Estado por defecto para citas móviles (Pendiente)
-    const idEstadoPendiente = 1;
+    const idEstadoPendiente = 2;
 
     const datosCita = {
       fecha,
       hora_inicio,
       clienteId: idCliente,
-      usuarioId,
+      usuarioId: empleadoAsignado,
       idEstado: idEstadoPendiente,
+      novedadId,
       servicios,
     };
 

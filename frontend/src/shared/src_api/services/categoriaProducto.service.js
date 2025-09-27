@@ -22,52 +22,62 @@ const cambiarEstadoCategoriaProducto = async (idCategoria, nuevoEstado) => {
 /**
  * Crear una nueva categoría de producto.
  */
-const crearCategoriaProducto = async (datosCategoria) => {
+const crearCategoriaProducto = async (datosCategoria) => {                        /* (1) Inicio */
   const {
     nombre,
     descripcion,
     estado,
   } = datosCategoria;
 
-  const categoriaExistente = await db.CategoriaProducto.findOne({
+  const categoriaExistente = await db.CategoriaProducto.findOne({                /* (2) Buscar si ya existe */
     where: { nombre },
   });
+
+  /* (3) Verificar unicidad del nombre */
   if (categoriaExistente) {
-    throw new ConflictError(
+    throw new ConflictError(                                                     /* (4) → Fin por nombre duplicado */
       `La categoría de producto con el nombre '${nombre}' ya existe.`
     );
   }
 
+  /* (5) Intentar crear nueva categoría */
   try {
     const nuevaCategoria = await db.CategoriaProducto.create({
       nombre,
       descripcion: descripcion || null,
       estado: typeof estado === "boolean" ? estado : true,
     });
-    return nuevaCategoria;
+
+    return nuevaCategoria;                                                       /* (6) Retorno exitoso → Fin */
   } catch (error) {
+    /* (7) Error por unicidad en base de datos */
     if (error.name === "SequelizeUniqueConstraintError") {
-      throw new ConflictError(
+      throw new ConflictError(                                                   /* (8) → Fin por conflicto de nombre */
         `La categoría de producto con el nombre '${nombre}' ya existe.`
       );
     }
+
+    /* (9) Error de validación */
     if (error.name === "SequelizeValidationError") {
-      throw new CustomError(
+      throw new CustomError(                                                     /* (10) → Fin por error de validación */
         `Error de validación al crear categoría: ${error.message}`,
         400
       );
     }
-    console.error(
+
+    console.error(                                                               /* (11) Error inesperado */
       "Error al crear la categoría de producto en el servicio:",
       error.message,
       error.stack
     );
-    throw new CustomError(
+
+    throw new CustomError(                                                       /* (12) → Fin por error genérico */
       `Error al crear la categoría de producto: ${error.message}`,
       500
     );
   }
-};
+}; /* (Fin) */
+
 
 /**
  * Obtener todas las categorías de producto con soporte para búsqueda y filtrado.

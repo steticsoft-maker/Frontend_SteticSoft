@@ -11,30 +11,37 @@ const {
 const { checkAndSendStockAlert } = require("../utils/stockAlertHelper.js");
 
 // --- CREAR ABASTECIMIENTO ---
-const crearAbastecimiento = async (datosAbastecimiento) => {
-  // ✅ CORRECCIÓN: Se espera 'idUsuario' en lugar de 'empleadoAsignado'.
+const crearAbastecimiento = async (datosAbastecimiento) => {                     /* (1) Inicio */
   const { idProducto, cantidad, fechaIngreso, estado, idUsuario } =
     datosAbastecimiento;
 
-  const producto = await Producto.findByPk(idProducto);
+  const producto = await Producto.findByPk(idProducto);                          /* (2) Buscar producto */
+
+  /* (3) Verificar si el producto existe */
   if (!producto)
     throw new BadRequestError(`Producto con ID ${idProducto} no encontrado.`);
+
+  /* (4) Verificar si el producto está activo */
   if (!producto.estado)
     throw new BadRequestError(`Producto '${producto.nombre}' no está activo.`);
 
+  /* (5) Verificar si el tipo de uso es 'Interno' */
   if (producto.tipoUso?.toLowerCase() !== "interno") {
     throw new BadRequestError(
       `El producto '${producto.nombre}' (ID: ${idProducto}) no es de tipo 'Interno' y no puede ser asignado mediante este módulo de abastecimiento.`
     );
   }
 
+  /* (6) Verificar si hay stock suficiente */
   if (producto.existencia < cantidad) {
     throw new ConflictError(
       `No hay suficiente stock para '${producto.nombre}'. Solicitado: ${cantidad}, Disponible: ${producto.existencia}.`
     );
   }
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize.transaction();                             /* (7) Iniciar transacción */
+
+  /* (8) Manejo de éxito o error en la transacción */
   try {
     const nuevoAbastecimiento = await Abastecimiento.create(
       {
@@ -43,7 +50,6 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
         fechaIngreso: fechaIngreso || new Date(),
         estaAgotado: false,
         estado: typeof estado === "boolean" ? estado : true,
-        // ✅ CORRECCIÓN: Se usa 'idUsuario' directamente.
         idUsuario: idUsuario,
       },
       { transaction }
@@ -53,26 +59,28 @@ const crearAbastecimiento = async (datosAbastecimiento) => {
       by: Number(cantidad),
       transaction,
     });
-    await transaction.commit();
 
-    const productoActualizado = await Producto.findByPk(idProducto);
+    await transaction.commit();                                                  /* (9) Confirmar transacción */
+
+    const productoActualizado = await Producto.findByPk(idProducto);            /* (10) Verificar producto actualizado */
     if (productoActualizado) {
-      await checkAndSendStockAlert(
+      await checkAndSendStockAlert(                                              /* (11) Enviar alerta si aplica */
         productoActualizado,
         `tras abastecimiento ID ${nuevoAbastecimiento.idAbastecimiento}`
       );
     }
 
-    return nuevoAbastecimiento;
+    return nuevoAbastecimiento;                                                  /* (12) Retorno exitoso → Fin */
   } catch (error) {
     await transaction.rollback();
     console.error("Error detallado al crear abastecimiento:", error);
-    throw new CustomError(
+    throw new CustomError(                                                       /* (13) Lanzar error → Fin */
       `Error al crear el abastecimiento: ${error.message}`,
       500
     );
   }
-};
+}; /* (Fin) */
+
 
 // --- OBTENER TODOS LOS ABASTECIMIENTOS ---
 const obtenerTodosLosAbastecimientos = async (opcionesDeFiltro = {}) => {

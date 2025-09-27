@@ -69,7 +69,7 @@ function HomePage() {
         <div className="hero-content">
           <h1 className="hero-title">
             <FaCrown style={{ marginRight: "15px", fontSize: "0.8em" }} />
-            SteticSoft
+            La Fuente del Peluquero
             <FaCrown style={{ marginLeft: "15px", fontSize: "0.8em" }} />
           </h1>
           <p className="hero-subtitle">

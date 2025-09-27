@@ -1,5 +1,5 @@
 // src/validators/cliente.validators.js
-const { body, param } = require("express-validator");
+const { body, param, query } = require("express-validator");
 const {
   handleValidationErrors,
 } = require("../middlewares/validation.middleware.js");
@@ -59,12 +59,7 @@ const clienteCreateValidators = [
     .trim()
     .notEmpty()
     .withMessage("El tipo de documento es obligatorio.")
-    .isIn([
-      "Cédula de Ciudadanía",
-      "Cédula de Extranjería",
-      "Pasaporte",
-      "Tarjeta de Identidad",
-    ])
+    .isIn(["Cedula de Ciudadania", "Cedula de Extranjeria"])
     .withMessage("Tipo de documento no válido."),
 
   body("numeroDocumento")
@@ -182,12 +177,7 @@ const clienteUpdateValidators = [
   body("tipoDocumento")
     .optional()
     .trim()
-    .isIn([
-      "Cédula de Ciudadanía",
-      "Cédula de Extranjería",
-      "Pasaporte",
-      "Tarjeta de Identidad",
-    ])
+    .isIn(["Cedula de Ciudadania", "Cedula de Extranjeria"])
     .withMessage("Tipo de documento no válido."),
 
   body("numeroDocumento")
@@ -321,10 +311,30 @@ const updateMiPerfilValidators = [
   handleValidationErrors,
 ];
 
+// Validador para verificar correo de cliente
+const verificarCorreoClienteValidators = [
+  query("correo")
+    .trim()
+    .notEmpty()
+    .withMessage("El correo es requerido.")
+    .isEmail()
+    .withMessage("Debe proporcionar un correo electrónico válido.")
+    .normalizeEmail(),
+
+  query("idCliente")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("El ID del cliente debe ser un entero no negativo.")
+    .toInt(),
+
+  handleValidationErrors,
+];
+
 module.exports = {
   clienteCreateValidators,
   clienteUpdateValidators,
   idClienteValidator,
   cambiarEstadoClienteValidators,
   updateMiPerfilValidators,
+  verificarCorreoClienteValidators,
 };

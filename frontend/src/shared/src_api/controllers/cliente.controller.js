@@ -275,6 +275,38 @@ const updateMiPerfil = async (req, res, next) => {
   }
 };
 
+/**
+ * Verifica si un correo electrónico está disponible para un cliente.
+ * Para crear cliente: verifica en todo el sistema
+ * Para editar cliente: verifica excluyendo el cliente actual
+ */
+const verificarCorreo = async (req, res, next) => {
+  try {
+    const { correo, idCliente } = req.query;
+    
+    // Verificar si el correo está en uso
+    const estaEnUso = await clienteService.verificarCorreoExistente(
+      correo, 
+      idCliente ? parseInt(idCliente) : null
+    );
+
+    return res.status(200).json({
+      success: true,
+      estaEnUso: estaEnUso,
+      message: estaEnUso
+        ? "El correo electrónico ya está registrado."
+        : "Correo disponible",
+    });
+  } catch (error) {
+    console.error(
+      `[cliente.controller.js] Error en verificarCorreo para el correo "${req.query.correo}":`,
+      error.message,
+      error.stack
+    );
+    next(error);
+  }
+};
+
 module.exports = {
   crearCliente,
   listarClientes,
@@ -288,4 +320,5 @@ module.exports = {
   buscarClientes,
   getMiPerfil,
   updateMiPerfil,
+  verificarCorreo,
 };

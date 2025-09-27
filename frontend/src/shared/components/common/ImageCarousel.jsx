@@ -8,7 +8,7 @@ import image3 from "../../../assets/images/shampoo.jpg";
 const slides = [
   {
     image: image1,
-    title: "Bienvenido a SteticSoft",
+    title: "Bienvenido a La Fuente del Peluquero",
     text: "Transformamos tu estilo, cuidamos tu imagen.",
   },
   {

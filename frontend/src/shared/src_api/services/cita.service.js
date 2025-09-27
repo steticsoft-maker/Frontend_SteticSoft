@@ -81,7 +81,7 @@ const crearCita = async (datosCita) => {
         idUsuario: usuarioId,
         fecha: fecha,
         hora_inicio: hora_inicio,
-        idEstado: { [Op.ne]: 2 },
+        idEstado: { [Op.ne]: 4 }, // Excluir citas canceladas
       },
       transaction,
     });
@@ -395,16 +395,16 @@ const cancelarCitaPorCliente = async (idCita, idCliente) => {
       );
     }
 
-    // Solo permitir cancelar citas pendientes o confirmadas
-    const estadosPermitidos = ["Pendiente", "Confirmada"];
+    // Solo permitir cancelar citas pendientes, confirmadas o en proceso
+    const estadosPermitidos = ["Pendiente", "Confirmada", "En proceso"];
     if (!estadosPermitidos.includes(cita.estadoDetalle.nombreEstado)) {
       throw new BadRequestError(
-        "Solo puedes cancelar citas que estén pendientes o confirmadas."
+        "Solo puedes cancelar citas que estén pendientes, confirmadas o en proceso."
       );
     }
 
-    // Cambiar estado a cancelada (ID 2)
-    await cita.update({ idEstado: 2 }, { transaction });
+    // Cambiar estado a cancelada (ID 4)
+    await cita.update({ idEstado: 4 }, { transaction });
 
     await transaction.commit();
 

@@ -74,12 +74,7 @@ const registrarUsuarioValidators = [
     .trim()
     .notEmpty()
     .withMessage("El tipo de documento es obligatorio.")
-    .isIn([
-      "Cédula de Ciudadanía",
-      "Cédula de Extranjería",
-      "Pasaporte",
-      "Tarjeta de Identidad",
-    ])
+    .isIn(["Cedula de Ciudadania", "Cedula de Extranjeria"])
     .withMessage("El tipo de documento no es válido."),
   body("numeroDocumento")
     .trim()
@@ -90,16 +85,11 @@ const registrarUsuarioValidators = [
     .custom((value, { req }) => {
       const docType = req.body.tipoDocumento;
       if (
-        docType === "Cédula de Ciudadanía" ||
-        docType === "Tarjeta de Identidad" ||
-        docType === "Cédula de Extranjería"
+        docType === "Cedula de Ciudadania" ||
+        docType === "Cedula de Extranjeria"
       ) {
         if (!numericOnlyRegex.test(value)) {
           throw new Error("Para este tipo de documento, ingrese solo números.");
-        }
-      } else if (docType === "Pasaporte") {
-        if (!alphanumericRegex.test(value)) {
-          throw new Error("Para Pasaporte, ingrese solo letras y números.");
         }
       }
       return true;

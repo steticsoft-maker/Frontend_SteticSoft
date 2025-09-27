@@ -53,7 +53,7 @@ const crearVentaMovil = async (req, res, next) => {
     const idCliente = req.usuario.clienteInfo.idCliente;
 
     // Estado por defecto para ventas móviles (Pendiente)
-    const idEstadoPendiente = 1;
+    const idEstadoPendiente = 2;
 
     const datosVenta = {
       fecha: new Date(),
