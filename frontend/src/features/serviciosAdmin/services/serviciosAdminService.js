@@ -12,7 +12,7 @@ export const getServicios = async (filtros = {}) => {
   try {
     const response = await apiClient.get("/servicios", { params: filtros });
     return response;
-  } catch (error) {
+  } catch {
     return { data: { data: [] } };
   }
 };
@@ -111,7 +111,12 @@ export const deleteServicio = async (id) => {
       throw new Error(errorMessage);
     }
 
-    throw error.response?.data || new Error(error.message);
+    // Para otros errores, también intentar extraer el mensaje del response
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+
+    throw new Error(error.message || "Error al eliminar el servicio.");
   }
 };
 

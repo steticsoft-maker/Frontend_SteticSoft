@@ -3,6 +3,10 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import moment from "moment";
 import "moment/locale/es";
 import { useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Removido: NavbarAdmin no es necesario en el módulo de administración
 import {
@@ -11,8 +15,6 @@ import {
   CitasTable,
   CalendarView,
 } from "../components";
-import ConfirmModal from "../../../shared/components/common/ConfirmModal";
-import ValidationModal from "../../../shared/components/common/ValidationModal";
 
 import {
   fetchCitasAgendadas,
@@ -27,6 +29,8 @@ import "../css/Citas.css";
 
 moment.locale("es");
 
+const MySwal = withReactContent(Swal);
+
 function CitasPage() {
   const [citasAgendadas, setCitasAgendadas] = useState([]);
   const [estadosCita, setEstadosCita] = useState([]); // Estado para guardar los estados
@@ -40,16 +44,11 @@ function CitasPage() {
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
-  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
   const [selectedSlotOrEvent, setSelectedSlotOrEvent] = useState(null);
   const [citaParaOperacion, setCitaParaOperacion] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [validationMessage, setValidationMessage] = useState("");
-  const [validationTitle, setValidationTitle] = useState("Aviso");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -112,22 +111,16 @@ function CitasPage() {
     try {
       await cambiarEstadoCita(citaId, nuevoEstadoId);
       cargarDatosCompletos();
-      setValidationTitle("Éxito");
-      setValidationMessage(`Estado de la cita #${citaId} actualizado.`);
-      setIsValidationModalOpen(true);
+      toast.success(`Estado de la cita #${citaId} actualizado.`);
     } catch (error) {
-      setValidationTitle("Error al actualizar");
-      setValidationMessage(error.message);
-      setIsValidationModalOpen(true);
+      const errorMessage = error.response?.data?.message || error.message || "Error al actualizar el estado de la cita.";
+      toast.error(errorMessage);
     }
   };
 
   const handleCloseModals = () => {
     setIsFormModalOpen(false);
     setIsDetailsModalOpen(false);
-    setIsConfirmDeleteOpen(false);
-    setIsConfirmCancelOpen(false);
-    setIsValidationModalOpen(false);
     setSelectedSlotOrEvent(null);
     setCitaParaOperacion(null);
   };
@@ -140,15 +133,39 @@ function CitasPage() {
   };
 
   const handleOpenDeleteConfirm = (citaAEliminar) => {
-    handleCloseModals();
-    setCitaParaOperacion(citaAEliminar);
-    setIsConfirmDeleteOpen(true);
+    MySwal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas eliminar la cita para "${citaAEliminar.clienteNombre}"? Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, ¡eliminar!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setCitaParaOperacion(citaAEliminar);
+        handleDeleteCitaConfirmada();
+      }
+    });
   };
 
   const handleOpenCancelConfirm = (citaACancelar) => {
-    handleCloseModals();
-    setCitaParaOperacion(citaACancelar);
-    setIsConfirmCancelOpen(true);
+    MySwal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas cancelar la cita para "${citaACancelar.clienteNombre}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#f39c12',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, ¡cancelar!',
+      cancelButtonText: 'No cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setCitaParaOperacion(citaACancelar);
+        handleConfirmCancelCita();
+      }
+    });
   };
 
   const handleSaveCitaSubmit = async (formDataFromModal) => {
@@ -156,16 +173,15 @@ function CitasPage() {
       await saveCita(formDataFromModal);
       cargarDatosCompletos();
       handleCloseModals();
-      setValidationTitle("Éxito");
-      setValidationMessage(
-        formDataFromModal.id ? "Cita actualizada." : "Cita guardada."
-      );
-      setIsValidationModalOpen(true);
+      
+      const successMessage = formDataFromModal.id 
+        ? "Cita actualizada exitosamente!" 
+        : "Cita creada exitosamente!";
+      toast.success(successMessage);
     } catch (error) {
       console.error("Error al guardar cita:", error);
-      setValidationTitle("Error al Guardar");
-      setValidationMessage(error.message || "No se pudo guardar la cita.");
-      setIsValidationModalOpen(true);
+      const errorMessage = error.response?.data?.message || error.message || "No se pudo guardar la cita.";
+      toast.error(errorMessage);
     }
   };
 
@@ -175,17 +191,14 @@ function CitasPage() {
         await serviceDeleteCitaById(citaParaOperacion.id);
         cargarDatosCompletos();
         handleCloseModals();
-        setValidationTitle("Éxito");
-        setValidationMessage(
-          `Cita para "${citaParaOperacion.clienteNombre}" eliminada exitosamente.`
-        );
-        setIsValidationModalOpen(true);
+        
+        const successMessage = `Cita para "${citaParaOperacion.clienteNombre}" eliminada exitosamente.`;
+        toast.success(successMessage);
       } catch (error) {
         console.error("Error al eliminar cita:", error);
         handleCloseModals();
-        setValidationTitle("Error al Eliminar");
-        setValidationMessage(error.message || "No se pudo eliminar la cita.");
-        setIsValidationModalOpen(true);
+        const errorMessage = error.response?.data?.message || error.message || "No se pudo eliminar la cita.";
+        toast.error(errorMessage);
       }
     }
   };
@@ -194,13 +207,10 @@ function CitasPage() {
     try {
       await cambiarEstadoCita(citaId, "Completada");
       cargarDatosCompletos();
-      setValidationTitle("Éxito");
-      setValidationMessage(`Cita #${citaId} marcada como Completada.`);
-      setIsValidationModalOpen(true);
+      toast.success(`Cita #${citaId} marcada como Completada.`);
     } catch (error) {
-      setValidationTitle("Error");
-      setValidationMessage(error.message);
-      setIsValidationModalOpen(true);
+      const errorMessage = error.response?.data?.message || error.message || "Error al cambiar el estado de la cita.";
+      toast.error(errorMessage);
     }
   };
 
@@ -211,16 +221,13 @@ function CitasPage() {
         await cambiarEstadoCita(citaParaOperacion.id, "Cancelada", motivo);
         cargarDatosCompletos();
         handleCloseModals();
-        setValidationTitle("Éxito");
-        setValidationMessage(
-          `Cita #${citaParaOperacion.id} para "${citaParaOperacion.clienteNombre}" ha sido cancelada.`
-        );
-        setIsValidationModalOpen(true);
+        
+        const successMessage = `Cita #${citaParaOperacion.id} para "${citaParaOperacion.clienteNombre}" ha sido cancelada.`;
+        toast.success(successMessage);
       } catch (error) {
         handleCloseModals();
-        setValidationTitle("Error al Cancelar");
-        setValidationMessage(error.message);
-        setIsValidationModalOpen(true);
+        const errorMessage = error.response?.data?.message || error.message || "Error al cancelar la cita.";
+        toast.error(errorMessage);
       }
     }
   };
@@ -422,38 +429,6 @@ function CitasPage() {
         cita={citaParaOperacion}
         onEdit={handleOpenEditModal}
         onDeleteConfirm={() => handleOpenDeleteConfirm(citaParaOperacion)}
-      />
-      <ConfirmModal
-        isOpen={isConfirmDeleteOpen}
-        onClose={handleCloseModals}
-        onConfirm={handleDeleteCitaConfirmada}
-        title="Confirmar Eliminación"
-        message={`¿Está seguro que desea eliminar la cita para "${
-          citaParaOperacion?.clienteNombre || ""
-        }" con ${citaParaOperacion?.empleadoNombre || ""} el ${
-          citaParaOperacion?.start
-            ? moment(citaParaOperacion.start).format("DD/MM/YY HH:mm")
-            : ""
-        }?`}
-        confirmText="Sí, Eliminar"
-        cancelText="No, Conservar"
-      />
-      <ConfirmModal
-        isOpen={isConfirmCancelOpen}
-        onClose={handleCloseModals}
-        onConfirm={handleConfirmCancelCita}
-        title="Confirmar Cancelación de Cita"
-        message={`¿Está seguro de que desea cancelar la cita #${
-          citaParaOperacion?.id || ""
-        } para "${citaParaOperacion?.clienteNombre || ""}"?`}
-        confirmText="Sí, Cancelar Cita"
-        cancelText="No, Mantener Cita"
-      />
-      <ValidationModal
-        isOpen={isValidationModalOpen}
-        onClose={handleCloseModals}
-        title={validationTitle}
-        message={validationMessage}
       />
     </div>
   );
