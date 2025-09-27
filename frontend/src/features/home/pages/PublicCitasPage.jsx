@@ -115,6 +115,11 @@ function PublicCitasPage() {
         const novedadesActivas = novedadesData.filter((n) => n.estado === true);
         setNovedades(novedadesActivas);
 
+        // Seleccionar automáticamente la primera novedad disponible
+        if (novedadesActivas.length > 0 && !selectedNovedad) {
+          setSelectedNovedad(novedadesActivas[0]);
+        }
+
         // Procesar citas existentes
         const citasData = citasRes.data?.data || [];
         setCitasExistentes(citasData);
@@ -527,7 +532,7 @@ function PublicCitasPage() {
         horaInicio: selectedTime, // Formato HH:MM como espera el backend
         servicios: selectedServices.map((s) => s.idServicio),
         empleadoId: selectedEmpleado?.idUsuario || null,
-        novedadId: selectedNovedad?.idNovedad || null,
+        novedadId: selectedNovedad?.idNovedad || 1, // Usar 1 como fallback
       };
 
       console.log("Datos que se envían al backend:", citaData);
