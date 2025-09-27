@@ -6,7 +6,8 @@ const HeroSection = () => (
   <header className="home-hero">
     <div className="hero-overlay">
       <h1 className="hero-title">
-        Bienvenido a <span className="text-primary">La Fuente del Peluquero</span>
+        Bienvenido a{" "}
+        <span className="text-primary">La Fuente del Peluquero</span>
       </h1>
       <p className="hero-subtitle">
         Transformamos tu estilo, cuidamos tu imagen

@@ -74,7 +74,11 @@ const UserProfileCard = ({ user }) => {
       >
         {/* Logo de La Fuente del Peluquero */}
         <div className="logo-container">
-          <img src={SteticLogo} alt="La Fuente del Peluquero Logo" className="stetic-logo" />
+          <img
+            src={SteticLogo}
+            alt="La Fuente del Peluquero Logo"
+            className="stetic-logo"
+          />
         </div>
 
         {/* Información principal del usuario */}
