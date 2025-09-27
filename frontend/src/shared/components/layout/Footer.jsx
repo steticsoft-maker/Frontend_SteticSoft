@@ -35,9 +35,6 @@ function Footer() {
               <li>
                 <a href="/productos">Productos</a>
               </li>
-              <li>
-                <a href="/novedades">Novedades</a>
-              </li>
             </ul>
           </div>
 
@@ -45,10 +42,11 @@ function Footer() {
           <div className="footer-contact">
             <h3>Contacto</h3>
             <p>
-              <FaMapMarkerAlt /> Medellín, Colombia
+              <FaMapMarkerAlt /> Cr 32 #106a-62, La Esperanza, Medellín,
+              Popular, Medellín, Antioquia
             </p>
             <p>
-              <FaPhoneAlt /> 123 456 7891
+              <FaPhoneAlt /> 3022840206
             </p>
             <p>
               <FaEnvelope /> lafuentedelpeluquero@gmail.com
