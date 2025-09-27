@@ -440,11 +440,34 @@ const useClientes = () => {
       closeModal();
       MySwal.fire("¡Éxito!", successMessage, "success");
     } catch (err) {
-      const apiErrorMessage =
-        err.response?.data?.message ||
-        err.message ||
-        "Error al guardar el cliente.";
-      MySwal.fire("Error", apiErrorMessage, "error");
+      console.error("Error en handleSave:", err);
+
+      // Manejar errores de validación del backend
+      if (err.errors && typeof err.errors === "object") {
+        // Si hay errores específicos por campo, mostrarlos
+        const errorMessages = Object.values(err.errors).flat();
+        MySwal.fire({
+          title: "Errores de validación",
+          html: `<div style="text-align: left;">
+            <ul style="margin: 0; padding-left: 20px;">
+              ${errorMessages.map((msg) => `<li>${msg}</li>`).join("")}
+            </ul>
+          </div>`,
+          icon: "error",
+          confirmButtonText: "Entendido",
+        });
+
+        // También actualizar los errores de campo específicos
+        const fieldErrors = {};
+        Object.keys(err.errors).forEach((field) => {
+          fieldErrors[field] = err.errors[field][0]; // Tomar el primer error de cada campo
+        });
+        setFormErrors(fieldErrors);
+      } else {
+        // Error general
+        const apiErrorMessage = err.message || "Error al guardar el cliente.";
+        MySwal.fire("Error", apiErrorMessage, "error");
+      }
     } finally {
       setIsSubmitting(false);
     }
