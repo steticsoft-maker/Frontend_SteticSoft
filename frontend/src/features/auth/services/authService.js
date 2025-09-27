@@ -45,8 +45,11 @@ export const loginAPI = async (credentials) => {
  */
 export const registerAPI = async (userData) => {
   try {
-    // Petición POST al endpoint de registro del backend con los datos del usuario.
-    const response = await apiClient.post("/auth/registrar", userData);
+    // Usar publicApiClient ya que el registro es público y no requiere autenticación
+    const publicApiClient = (
+      await import("../../../shared/services/publicApiClient")
+    ).default;
+    const response = await publicApiClient.post("/auth/registrar", userData);
     return response.data;
   } catch (error) {
     throw (

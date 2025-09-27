@@ -48,3 +48,20 @@ export const getPublicProductos = async (filtros = {}) => {
     }
   }
 };
+
+/**
+ * Crea una venta pública desde la landing (requiere autenticación de cliente)
+ * @param {Object} ventaData Los datos de la nueva venta con productos del carrito.
+ * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta creada.
+ */
+export const createPublicVenta = async (ventaData) => {
+  try {
+    // Usar el endpoint móvil que está diseñado para clientes
+    const apiClient = (await import("./apiClient")).default;
+    const response = await apiClient.post("/movil/ventas", ventaData);
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear venta pública:", error);
+    throw error;
+  }
+};

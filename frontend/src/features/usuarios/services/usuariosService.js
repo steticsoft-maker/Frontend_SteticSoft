@@ -27,7 +27,11 @@ export const getUsuariosAPI = async (params) => {
  */
 export const verificarCorreoAPI = async (correo) => {
   try {
-    const response = await apiClient.get(
+    // Usar publicApiClient ya que la verificación de correo debería ser pública
+    const publicApiClient = (
+      await import("../../../shared/services/publicApiClient")
+    ).default;
+    const response = await publicApiClient.get(
       `/usuarios/verificar-correo?correo=${encodeURIComponent(correo)}`
     );
     // El backend devuelve { success: true, estaEnUso: boolean, message: "..." }
@@ -149,7 +153,8 @@ export const eliminarUsuarioFisicoAPI = async (idUsuario) => {
   } catch (error) {
     // Lanzamos el mensaje de error que viene de la API o uno genérico.
     throw (
-      error.response?.data || new Error("Error al eliminar permanentemente el usuario.")
+      error.response?.data ||
+      new Error("Error al eliminar permanentemente el usuario.")
     );
   }
 };

@@ -216,7 +216,7 @@ function RegisterForm({
     }
 
     // Remover confirmPassword del objeto que se envía
-    const { ...userData } = formData;
+    const { confirmPassword, ...userData } = formData;
     onSubmit(userData);
   };
 
