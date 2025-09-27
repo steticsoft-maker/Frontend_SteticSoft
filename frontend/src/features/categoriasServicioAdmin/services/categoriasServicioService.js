@@ -68,3 +68,18 @@ export const deleteCategoriaServicio = (id) => {
   // CORRECCIÓN: Se añadió /api al inicio de la ruta.
   return apiClient.delete(`/categorias-servicio/${id}`);
 };
+
+/**
+ * Obtiene servicios asociados a una categoría específica.
+ * @param {string|number} idCategoria - El ID de la categoría.
+ * @returns {Promise<Array>} Una promesa que resuelve con la lista de servicios asociados.
+ */
+export const getServiciosByCategoria = async (idCategoria) => {
+  try {
+    const response = await apiClient.get(`/servicios?idCategoriaServicio=${idCategoria}`);
+    return response?.data?.data || response?.data || [];
+  } catch (error) {
+    console.error(`Error al obtener servicios de la categoría ${idCategoria}:`, error);
+    return [];
+  }
+};

@@ -151,7 +151,7 @@ const CategoriaProductoCrearModal = ({ isOpen, onClose, onSubmit }) => {
           </button>
         </div>
         <div className="admin-modal-body">
-          <form onSubmit={handleSubmitForm} noValidate>
+          <form id="categoria-form" onSubmit={handleSubmitForm} noValidate>
             <CategoriaProductoForm
               formData={formData}
               onFormChange={handleFormChange}

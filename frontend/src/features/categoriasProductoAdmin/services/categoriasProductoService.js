@@ -125,3 +125,19 @@ export const deleteCategoriaProductoById = async (idCategoria) => {
     throw error;
   }
 };
+
+/**
+ * Función para obtener productos asociados a una categoría específica.
+ * @param {number} idCategoria - El ID de la categoría.
+ * @returns {Promise<Array>} Una promesa que resuelve con la lista de productos asociados.
+ */
+export const getProductosByCategoria = async (idCategoria) => {
+  try {
+    const response = await apiClient.get(`/productos?idCategoria=${idCategoria}`);
+    // La respuesta tiene estructura: { data: { totalItems, totalPages, currentPage, productos: [...] } }
+    return response?.data?.data?.productos || response?.data?.productos || [];
+  } catch (error) {
+    console.error(`Error al obtener productos de la categoría ${idCategoria}:`, error);
+    return [];
+  }
+};
