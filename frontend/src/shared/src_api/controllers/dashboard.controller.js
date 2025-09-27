@@ -13,7 +13,8 @@ class DashboardController {
 
   async getServiciosMasVendidos(req, res, next) {
     try {
-      const data = await dashboardService.getServiciosMasVendidos();
+      const { timePeriod } = req.query;
+      const data = await dashboardService.getServiciosMasVendidos(timePeriod);
       res.status(200).json(data);
     } catch (error) {
       next(error);
@@ -22,7 +23,8 @@ class DashboardController {
 
   async getProductosMasVendidos(req, res, next) {
     try {
-      const data = await dashboardService.getProductosMasVendidos();
+      const { timePeriod } = req.query;
+      const data = await dashboardService.getProductosMasVendidos(timePeriod);
       res.status(200).json(data);
     } catch (error) {
       next(error);
@@ -40,7 +42,8 @@ class DashboardController {
 
   async getSubtotalIva(req, res, next) {
     try {
-      const data = await dashboardService.getSubtotalIva();
+      const { timePeriod } = req.query;
+      const data = await dashboardService.getSubtotalIva(timePeriod);
       res.status(200).json(data);
     } catch (error) {
       next(error);

@@ -53,6 +53,7 @@ const whitelist = [
   "http://127.0.0.1:5000", // Flutter web localhost alternative
   "https://steticsoft-frontend.vercel.app", // Agregar tu dominio de producción
   "https://la-fuente-del-peluquero.onrender.com", // Dominio de producción del frontend
+  "https://backend-steticsoft.onrender.com", // Backend en Render
 ];
 
 const corsOptions = {
