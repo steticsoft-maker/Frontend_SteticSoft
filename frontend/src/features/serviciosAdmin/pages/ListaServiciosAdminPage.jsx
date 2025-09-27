@@ -95,8 +95,12 @@ function ListaServiciosAdminPage() {
         await createServicio(servicioData);
         toast.success('Servicio creado exitosamente!');
       }
-      handleCloseModal();
-      cargarDatos(); // Recargar datos para mostrar los cambios
+      
+      // Cerrar modal y recargar datos después de un pequeño delay para asegurar que la alerta se muestre
+      setTimeout(() => {
+        handleCloseModal();
+        cargarDatos(); // Recargar datos para mostrar los cambios
+      }, 100);
     } catch (err) {
       const errorMsg = err.message || "Error al guardar el servicio.";
       toast.error(errorMsg);
@@ -112,7 +116,23 @@ function ListaServiciosAdminPage() {
       toast.success(`Servicio "${servicio.nombre}" eliminado.`);
       cargarDatos(); // Recargar datos
     } catch (err) {
-      toast.error(err.message || "Error al eliminar el servicio.");
+      console.error("Error al eliminar servicio:", err);
+      const errorMessage = err.message || "Error al eliminar el servicio.";
+      toast.error(errorMessage);
+      
+      // Si el error es específico sobre servicios en uso, mostrar una alerta adicional
+      if (errorMessage.includes("asociado a citas") || 
+          errorMessage.includes("en uso") || 
+          errorMessage.includes("citas existentes") ||
+          errorMessage.includes("No se puede eliminar")) {
+        MySwal.fire({
+          title: 'No se puede eliminar',
+          text: errorMessage,
+          icon: 'warning',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#3085d6'
+        });
+      }
     } finally {
       setLoadingId(null);
     }

@@ -522,3 +522,402 @@
   color: var(--color-primary);
   margin-top: 0.5rem;
 }
+
+/* ======================================================== */
+/* ============= NUEVO DISEÑO DEL MODAL DE DETALLES ============= */
+/* ======================================================== */
+
+.modal-content-Compras.compras-details-modal {
+  max-width: 800px;
+  width: 90%;
+  max-height: 85vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background-light);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.compras-modal-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.compras-modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.compras-modal-icon {
+  font-size: 1.3rem;
+}
+
+.compras-modal-close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.compras-modal-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.compras-modal-body {
+  padding: 25px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.compras-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.compras-details-section {
+  background: var(--color-background-light);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.compras-details-section:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.compras-totals-section {
+  border-color: var(--color-success-light);
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(139, 195, 74, 0.05) 100%);
+}
+
+.compras-details-section-title {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid var(--color-primary-light);
+  padding-bottom: 8px;
+}
+
+.section-icon {
+  font-size: 1rem;
+}
+
+.compras-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.compras-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.compras-detail-item-full {
+  grid-column: 1 / -1;
+}
+
+.compras-detail-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.compras-detail-value {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  word-break: break-word;
+}
+
+/* === BADGES Y ELEMENTOS ESPECIALES === */
+.compras-id-badge {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+  width: fit-content;
+}
+
+.compras-date-text {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.compras-user-text {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.compras-supplier-name {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 1rem;
+}
+
+.compras-document-text {
+  color: var(--color-text-secondary);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.compras-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.compras-status-badge.completed {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.compras-status-badge.cancelled {
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+/* === TABLA DE PRODUCTOS === */
+.compras-products-container {
+  margin-top: 10px;
+}
+
+.compras-products-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+}
+
+.compras-products-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-background-light);
+}
+
+.compras-products-table th {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.compras-products-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 0.9rem;
+}
+
+.compras-products-table tr:hover {
+  background: var(--color-background-secondary);
+}
+
+.compras-product-name {
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.compras-quantity-badge {
+  background: var(--color-info-light);
+  color: var(--color-info-dark);
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 25px;
+  text-align: center;
+}
+
+.compras-unit-price,
+.compras-item-total {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-family: 'Courier New', monospace;
+}
+
+.compras-no-products {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-secondary);
+}
+
+.no-products-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* === TOTALES === */
+.compras-totals-container {
+  background: var(--color-background-secondary);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--color-border-light);
+}
+
+.compras-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.compras-total-row:last-child {
+  border-bottom: none;
+}
+
+.compras-total-label {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.compras-total-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-family: 'Courier New', monospace;
+}
+
+.compras-total-final {
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 2px solid var(--color-primary);
+  font-size: 1.1rem;
+}
+
+.compras-total-final .compras-total-label,
+.compras-total-final .compras-total-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.compras-subtotal {
+  color: var(--color-text-dark);
+}
+
+.compras-iva {
+  color: var(--color-warning-dark);
+}
+
+.compras-total {
+  color: var(--color-success-dark);
+}
+
+.compras-modal-footer {
+  background: var(--color-background-secondary);
+  padding: 20px 25px;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  justify-content: center;
+}
+
+.compras-detalle-modal-button-cerrar {
+  background: var(--color-secondary);
+  color: var(--color-secondary-text);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.compras-detalle-modal-button-cerrar:hover {
+  background: var(--color-secondary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* === RESPONSIVE PARA EL MODAL DE DETALLES === */
+@media (max-width: 768px) {
+  .modal-content-Compras.compras-details-modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .compras-details-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .compras-detail-item-full {
+    grid-column: 1;
+  }
+
+  .compras-modal-header {
+    padding: 15px 20px;
+  }
+
+  .compras-modal-title {
+    font-size: 1.3rem;
+  }
+
+  .compras-modal-body {
+    padding: 20px;
+  }
+
+  .compras-details-section {
+    padding: 15px;
+  }
+
+  .compras-modal-footer {
+    padding: 15px 20px;
+  }
+
+  .compras-products-table {
+    font-size: 0.85rem;
+  }
+
+  .compras-products-table th,
+  .compras-products-table td {
+    padding: 8px 6px;
+  }
+}

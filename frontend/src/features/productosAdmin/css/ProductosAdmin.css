@@ -683,52 +683,332 @@ input:checked+.slider:before { transform: translateX(16px); }
     font-size: 1.6rem;
 }
 
-/* === ESTILOS PARA MODAL DE DETALLES === */
-.modal-content-ProductosAdministrador.detalle-modal {
-    max-width: 500px; /* Ancho para modal de detalles */
+/* === NUEVO DISEÑO DEL MODAL DE DETALLES === */
+.modal-content-ProductosAdministrador.productos-details-modal {
+  max-width: 800px;
+  width: 90%;
+  max-height: 85vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background-light);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
-.modal-content-ProductosAdministrador.detalle-modal p {
-    text-align: left;
-    margin-bottom: 12px;
-    line-height: 1.6;
-    color: var(--color-text-dark);
-    font-size: 1rem;
+
+.productos-modal-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-light);
 }
-.modal-content-ProductosAdministrador.detalle-modal p strong {
-    color: var(--color-primary);
-    margin-right: 8px;
-    font-weight: 600;
-    min-width: 100px;
-    display: inline-block;
+
+.productos-modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.modal-content-ProductosAdministrador.detalle-modal .detalle-imagen-container { /* Si tienes esta clase en el JSX */
-    margin-top: 10px;
-    margin-bottom: 15px;
-    text-align: left;
+
+.productos-modal-icon {
+  font-size: 1.3rem;
 }
-.modal-content-ProductosAdministrador.detalle-modal .detalle-imagen-container strong {
-    display: block;
-    margin-bottom: 5px;
+
+.productos-modal-close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
-.modal-content-ProductosAdministrador.detalle-modal .producto-admin-detalle-imagen { /* Si usas esta clase en JSX */
-    max-width: 180px;
-    max-height: 180px;
-    display: block; /* O inline-block si quieres texto al lado */
-    margin: 5px 0 15px 0;
-    border-radius: 4px;
-    border: 1px solid var(--color-form-border);
-    object-fit: contain;
+
+.productos-modal-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
 }
-.productos-admin-modal-button-cerrar { /* Botón Cerrar en modal de detalles */
-    background-color: var(--color-primary);
-    color: var(--color-text-light);
-    display: block; width: auto; min-width: 120px;
-    margin: 25px auto 0;
-    padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
-    font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
+
+.productos-modal-body {
+  padding: 25px;
+  flex: 1;
+  overflow-y: auto;
 }
-.productos-admin-modal-button-cerrar:hover {
-    background-color: var(--color-primary-hover);
+
+.productos-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.productos-details-section {
+  background: var(--color-background-light);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.productos-details-section:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.productos-image-section {
+  border-color: var(--color-info-light);
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(3, 169, 244, 0.05) 100%);
+}
+
+.productos-details-section-title {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid var(--color-primary-light);
+  padding-bottom: 8px;
+}
+
+.section-icon {
+  font-size: 1rem;
+}
+
+.productos-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.productos-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.productos-detail-item-full {
+  grid-column: 1 / -1;
+}
+
+.productos-detail-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.productos-detail-value {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  word-break: break-word;
+}
+
+/* === BADGES Y ELEMENTOS ESPECIALES === */
+.productos-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.productos-status-badge.active {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.productos-status-badge.inactive {
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+.productos-type-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.productos-type-badge.externo {
+  background: var(--color-info-light);
+  color: var(--color-info-dark);
+}
+
+.productos-type-badge.interno {
+  background: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}
+
+.productos-name-text {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 1rem;
+}
+
+.productos-category-text {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.productos-price-text {
+  font-weight: 600;
+  color: var(--color-success-dark);
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+}
+
+.productos-stock-text {
+  color: var(--color-text-dark);
+  font-weight: 500;
+}
+
+.productos-stock-min-text,
+.productos-stock-max-text {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.productos-lifespan-text {
+  color: var(--color-text-dark);
+  font-weight: 500;
+}
+
+.productos-description-text {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* === IMAGEN === */
+.productos-image-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.productos-detail-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border: 3px solid var(--color-primary);
+  transition: all 0.3s ease;
+}
+
+.productos-detail-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.productos-image-error {
+  color: var(--color-danger);
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--color-danger-light);
+  border-radius: 8px;
+  border: 1px solid var(--color-danger);
+}
+
+.productos-image-debug-button {
+  margin-top: 5px;
+  padding: 5px 10px;
+  background: var(--color-danger);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.productos-image-debug-button:hover {
+  background: var(--color-danger-dark);
+}
+
+/* === FOOTER === */
+.productos-modal-footer {
+  background: var(--color-background-secondary);
+  padding: 20px 25px;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  justify-content: center;
+}
+
+.productos-detalle-modal-button-cerrar {
+  background: var(--color-secondary);
+  color: var(--color-secondary-text);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.productos-detalle-modal-button-cerrar:hover {
+  background: var(--color-secondary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* === RESPONSIVE PARA EL MODAL DE DETALLES === */
+@media (max-width: 768px) {
+  .modal-content-ProductosAdministrador.productos-details-modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .productos-details-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .productos-detail-item-full {
+    grid-column: 1;
+  }
+
+  .productos-modal-header {
+    padding: 15px 20px;
+  }
+
+  .productos-modal-title {
+    font-size: 1.3rem;
+  }
+
+  .productos-modal-body {
+    padding: 20px;
+  }
+
+  .productos-details-section {
+    padding: 15px;
+  }
+
+  .productos-modal-footer {
+    padding: 15px 20px;
+  }
 }
 
 /* === ESTILOS PARA MODAL DE FORMULARIO (Crear/Editar) === */

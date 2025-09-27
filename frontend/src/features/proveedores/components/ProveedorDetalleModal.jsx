@@ -1,56 +1,160 @@
 // src/features/proveedores/components/ProveedorDetalleModal.jsx
 import React from 'react';
+import '../css/Proveedores.css';
 
 const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
   if (!isOpen || !proveedor) return null;
 
   return (
-    // Se utilizan las clases que ya tienes en Proveedores.css
-    <div className="modal-Proveedores">
-      <div className="modal-content-Proveedores detalle-modal">
-        <h3>Detalles del Proveedor</h3>
-        
-        <div className="proveedor-details-list">
-          {/* CORRECCIÓN 1: La condición debe basarse en el campo 'tipo' */}
-          {proveedor.tipo === "Natural" ? (
-            <>
-              {/* CORRECCIÓN 2: 'nombre' se usa para el nombre de la persona natural. */}
-              <p><strong>Nombre Completo:</strong> {proveedor.nombre || 'N/A'}</p>
-              {/* CORRECCIÓN 3: Se usa 'tipoDocumento' para mostrar "CC", "CE", etc. */}
-              <p><strong>Tipo de Documento:</strong> {proveedor.tipoDocumento || 'N/A'}</p>
-              <p><strong>Número de Documento:</strong> {proveedor.numeroDocumento || 'N/A'}</p>
-            </>
-          ) : ( // Si el tipo es "Jurídico"
-            <>
-              {/* CORRECCIÓN 4: 'nombre' también se usa para el nombre de la empresa. */}
-              <p><strong>Nombre de la Empresa:</strong> {proveedor.nombre || 'N/A'}</p>
-              {/* CORRECCIÓN 5: Se usa 'nitEmpresa' en lugar de 'nit'. */}
-              <p><strong>NIT:</strong> {proveedor.nitEmpresa || 'N/A'}</p>
-            </>
-          )}
-          
-          {/* --- Campos Comunes Corregidos --- */}
-          <p><strong>Teléfono Principal:</strong> {proveedor.telefono || 'N/A'}</p>
-          {/* CORRECCIÓN 6: Se usa 'correo' en lugar de 'email'. */}
-          <p><strong>Email Principal:</strong> {proveedor.correo || 'N/A'}</p>
-          <p><strong>Dirección:</strong> {proveedor.direccion || 'N/A'}</p>
-          {/* CORRECCIÓN 7: Se muestra un texto legible para el estado booleano. */}
-          <p><strong>Estado:</strong> {proveedor.estado ? "Activo" : "Inactivo"}</p>
-
-          {/* CORRECCIÓN 8: Se añaden los detalles de la persona encargada, que faltaban. */}
-          {(proveedor.nombrePersonaEncargada || proveedor.telefonoPersonaEncargada) && (
-            <>
-              <h4 className="modal-subtitle-proveedores">Datos de la Persona Encargada</h4>
-              {proveedor.nombrePersonaEncargada && <p><strong>Nombre Encargado:</strong> {proveedor.nombrePersonaEncargada}</p>}
-              {proveedor.telefonoPersonaEncargada && <p><strong>Teléfono Encargado:</strong> {proveedor.telefonoPersonaEncargada}</p>}
-              {proveedor.emailPersonaEncargada && <p><strong>Email Encargado:</strong> {proveedor.emailPersonaEncargada}</p>}
-            </>
-          )}
+    <div className="modal-Proveedores" onClick={onClose}>
+      <div className="modal-content-Proveedores proveedores-details-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="proveedores-modal-header">
+          <h3 className="proveedores-modal-title">
+            <span className="proveedores-modal-icon">🏢</span>
+            Detalles del Proveedor
+          </h3>
+          <button
+            type="button"
+            className="proveedores-modal-close-button"
+            onClick={onClose}
+            title="Cerrar"
+          >
+            &times;
+          </button>
         </div>
-        
-        <button className="proveedores-detalle-modal-button-cerrar" onClick={onClose}>
-          Cerrar
-        </button>
+
+        <div className="proveedores-modal-body">
+          <div className="proveedores-details-container">
+            <div className="proveedores-details-section">
+              <h4 className="proveedores-details-section-title">
+                <span className="section-icon">📋</span>
+                Información Básica
+              </h4>
+              <div className="proveedores-details-grid">
+                <div className="proveedores-detail-item">
+                  <label className="proveedores-detail-label">Tipo</label>
+                  <span className={`proveedores-type-badge ${proveedor.tipo?.toLowerCase()}`}>
+                    {proveedor.tipo === 'Natural' ? 'Persona Natural' : 'Persona Jurídica'}
+                  </span>
+                </div>
+                <div className="proveedores-detail-item">
+                  <label className="proveedores-detail-label">Estado</label>
+                  <span className={`proveedores-status-badge ${proveedor.estado ? 'active' : 'inactive'}`}>
+                    {proveedor.estado ? 'Activo' : 'Inactivo'}
+                  </span>
+                </div>
+                <div className="proveedores-detail-item proveedores-detail-item-full">
+                  <label className="proveedores-detail-label">
+                    {proveedor.tipo === 'Natural' ? 'Nombre Completo' : 'Nombre de la Empresa'}
+                  </label>
+                  <span className="proveedores-detail-value proveedores-name-text">
+                    {proveedor.nombre || 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="proveedores-details-section">
+              <h4 className="proveedores-details-section-title">
+                <span className="section-icon">📄</span>
+                Documentación
+              </h4>
+              <div className="proveedores-details-grid">
+                {proveedor.tipo === "Natural" ? (
+                  <>
+                    <div className="proveedores-detail-item">
+                      <label className="proveedores-detail-label">Tipo de Documento</label>
+                      <span className="proveedores-detail-value proveedores-document-type">
+                        {proveedor.tipoDocumento || 'N/A'}
+                      </span>
+                    </div>
+                    <div className="proveedores-detail-item">
+                      <label className="proveedores-detail-label">Número de Documento</label>
+                      <span className="proveedores-detail-value proveedores-document-number">
+                        {proveedor.numeroDocumento || 'N/A'}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="proveedores-detail-item proveedores-detail-item-full">
+                    <label className="proveedores-detail-label">NIT</label>
+                    <span className="proveedores-detail-value proveedores-nit-text">
+                      {proveedor.nitEmpresa || 'N/A'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="proveedores-details-section">
+              <h4 className="proveedores-details-section-title">
+                <span className="section-icon">📞</span>
+                Información de Contacto
+              </h4>
+              <div className="proveedores-details-grid">
+                <div className="proveedores-detail-item">
+                  <label className="proveedores-detail-label">Teléfono Principal</label>
+                  <span className="proveedores-detail-value proveedores-phone-text">
+                    {proveedor.telefono || 'N/A'}
+                  </span>
+                </div>
+                <div className="proveedores-detail-item">
+                  <label className="proveedores-detail-label">Email Principal</label>
+                  <span className="proveedores-detail-value proveedores-email-text">
+                    {proveedor.correo || 'N/A'}
+                  </span>
+                </div>
+                <div className="proveedores-detail-item proveedores-detail-item-full">
+                  <label className="proveedores-detail-label">Dirección</label>
+                  <span className="proveedores-detail-value proveedores-address-text">
+                    {proveedor.direccion || 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {(proveedor.nombrePersonaEncargada || proveedor.telefonoPersonaEncargada || proveedor.emailPersonaEncargada) && (
+              <div className="proveedores-details-section proveedores-contact-section">
+                <h4 className="proveedores-details-section-title">
+                  <span className="section-icon">👤</span>
+                  Datos de la Persona Encargada
+                </h4>
+                <div className="proveedores-details-grid">
+                  {proveedor.nombrePersonaEncargada && (
+                    <div className="proveedores-detail-item proveedores-detail-item-full">
+                      <label className="proveedores-detail-label">Nombre del Encargado</label>
+                      <span className="proveedores-detail-value proveedores-contact-name">
+                        {proveedor.nombrePersonaEncargada}
+                      </span>
+                    </div>
+                  )}
+                  {proveedor.telefonoPersonaEncargada && (
+                    <div className="proveedores-detail-item">
+                      <label className="proveedores-detail-label">Teléfono del Encargado</label>
+                      <span className="proveedores-detail-value proveedores-contact-phone">
+                        {proveedor.telefonoPersonaEncargada}
+                      </span>
+                    </div>
+                  )}
+                  {proveedor.emailPersonaEncargada && (
+                    <div className="proveedores-detail-item">
+                      <label className="proveedores-detail-label">Email del Encargado</label>
+                      <span className="proveedores-detail-value proveedores-contact-email">
+                        {proveedor.emailPersonaEncargada}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="proveedores-modal-footer">
+          <button className="proveedores-detalle-modal-button-cerrar" onClick={onClose}>
+            Cerrar
+          </button>
+        </div>
       </div>
     </div>
   );

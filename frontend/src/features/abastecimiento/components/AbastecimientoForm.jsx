@@ -18,8 +18,9 @@ const AbastecimientoForm = ({
 
     const formatEmpleadoDisplay = (empleado) => {
         if (!empleado) return 'Seleccionar un empleado';
-        // Muestra: "Rol (correo@ejemplo.com)"
-        return `${empleado.rol?.nombre || 'Empleado'} (${empleado.correo})`;
+        // Muestra: "Nombre Apellido (correo@ejemplo.com)"
+        const nombreCompleto = `${empleado.empleado?.nombre || ''} ${empleado.empleado?.apellido || ''}`.trim();
+        return `${nombreCompleto || 'Empleado'} (${empleado.correo})`;
     };
 
     return (

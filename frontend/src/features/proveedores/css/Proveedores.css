@@ -201,6 +201,242 @@
     max-width: 750px; 
 }
 
+/* === NUEVO DISEÑO DEL MODAL DE DETALLES === */
+.modal-content-Proveedores.proveedores-details-modal {
+  max-width: 800px;
+  width: 90%;
+  max-height: 85vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background-light);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.proveedores-modal-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.proveedores-modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.proveedores-modal-icon {
+  font-size: 1.3rem;
+}
+
+.proveedores-modal-close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.proveedores-modal-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.proveedores-modal-body {
+  padding: 25px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.proveedores-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.proveedores-details-section {
+  background: var(--color-background-light);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.proveedores-details-section:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.proveedores-contact-section {
+  border-color: var(--color-info-light);
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(3, 169, 244, 0.05) 100%);
+}
+
+.proveedores-details-section-title {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid var(--color-primary-light);
+  padding-bottom: 8px;
+}
+
+.section-icon {
+  font-size: 1rem;
+}
+
+.proveedores-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.proveedores-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.proveedores-detail-item-full {
+  grid-column: 1 / -1;
+}
+
+.proveedores-detail-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.proveedores-detail-value {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  word-break: break-word;
+}
+
+/* === BADGES Y ELEMENTOS ESPECIALES === */
+.proveedores-type-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.proveedores-type-badge.natural {
+  background: var(--color-info-light);
+  color: var(--color-info-dark);
+}
+
+.proveedores-type-badge.juridico {
+  background: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}
+
+.proveedores-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.proveedores-status-badge.active {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.proveedores-status-badge.inactive {
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+.proveedores-name-text {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 1rem;
+}
+
+.proveedores-document-type {
+  color: var(--color-text-secondary);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.proveedores-document-number {
+  color: var(--color-text-secondary);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.proveedores-nit-text {
+  color: var(--color-text-secondary);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.proveedores-phone-text {
+  color: var(--color-text-dark);
+  font-weight: 500;
+}
+
+.proveedores-email-text {
+  color: var(--color-primary);
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.proveedores-address-text {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.proveedores-contact-name {
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.proveedores-contact-phone {
+  color: var(--color-text-dark);
+  font-weight: 500;
+}
+
+.proveedores-contact-email {
+  color: var(--color-primary);
+  font-weight: 500;
+  word-break: break-all;
+}
+
 .modal-content-Proveedores > h2, 
 .modal-content-Proveedores > h3,
 .proveedores-modal-title /* Aseguramos que el título del modal también tenga este estilo */
@@ -237,18 +473,32 @@
     border-bottom: 1px solid var(--color-form-border);
     text-align: left; 
 }
+.proveedores-modal-footer {
+  background: var(--color-background-secondary);
+  padding: 20px 25px;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  justify-content: center;
+}
+
 .botonCerrarModalVerDetallesProveedores, /* Tu clase original */
 .proveedores-detalle-modal-button-cerrar { /* Nueva clase sugerida si la usaste */
-    background-color: var(--color-secondary); /* Rosa Claro consistente */
-    color: var(--color-secondary-text); /* Texto oscuro para contraste con rosa claro */
-    display: block; width: auto; min-width: 120px;
-    margin: 30px auto 10px; 
-    padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; 
-    font-size: 1rem; font-weight: 500; transition: background-color 0.3s ease;
+    background: var(--color-secondary);
+    color: var(--color-secondary-text);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
 }
 .botonCerrarModalVerDetallesProveedores:hover,
 .proveedores-detalle-modal-button-cerrar:hover {
-    background-color: var(--color-secondary-hover);
+    background: var(--color-secondary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* === ESTILOS PARA MODAL DE FORMULARIO (Crear/Editar) === */
@@ -576,6 +826,41 @@ input.is-invalid, .input-documento.is-invalid {
     .proveedores-form-button-guardar,
     .proveedores-form-button-cancelar {
         width: 100%;
+    }
+
+    /* === RESPONSIVE PARA EL MODAL DE DETALLES === */
+    .modal-content-Proveedores.proveedores-details-modal {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .proveedores-details-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .proveedores-detail-item-full {
+        grid-column: 1;
+    }
+
+    .proveedores-modal-header {
+        padding: 15px 20px;
+    }
+
+    .proveedores-modal-title {
+        font-size: 1.3rem;
+    }
+
+    .proveedores-modal-body {
+        padding: 20px;
+    }
+
+    .proveedores-details-section {
+        padding: 15px;
+    }
+
+    .proveedores-modal-footer {
+        padding: 15px 20px;
     }
 }
 

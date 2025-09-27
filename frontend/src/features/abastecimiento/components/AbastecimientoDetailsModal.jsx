@@ -10,45 +10,139 @@ const AbastecimientoDetalleModal = ({ isOpen, onClose, abastecimiento }) => {
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        // Se suma un día porque DATEONLY puede tener problemas de zona horaria
-        const date = new Date(dateString);
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+        // Para fechas DATEONLY, crear la fecha directamente sin ajustes de zona horaria
+        const date = new Date(dateString + 'T00:00:00');
         return date.toLocaleDateString('es-CO', options);
     };
 
     return (
         <div className="modal-abastecimiento-overlay" onClick={onClose}>
-            <div className="modal-abastecimiento-content detalle-modal" onClick={(e) => e.stopPropagation()}>
-                <h2 className="abastecimiento-modal-title">Detalles del Abastecimiento</h2>
-                
-                <div className="abastecimiento-details-text">
-                    <p><strong>ID Registro:</strong> {abastecimiento.idAbastecimiento}</p>
-                    <p>
-    <strong>Empleado:</strong> 
-    {`${abastecimiento.usuario?.rol?.nombre || 'Empleado'} (${abastecimiento.usuario?.correo || 'N/A'})`}
-</p>
-                    <p><strong>Producto:</strong> {abastecimiento.producto?.nombre || 'No disponible'}</p>
-                    <p><strong>Cantidad Asignada:</strong> {abastecimiento.cantidad}</p>
-                    <p><strong>Fecha de Asignación:</strong> {formatDate(abastecimiento.fechaIngreso)}</p>
-                    <p><strong>Estado del Registro:</strong> 
-                        <span style={{ color: abastecimiento.estado ? 'green' : 'red', fontWeight: 'bold' }}>
-                            {abastecimiento.estado ? " Activo" : " Inactivo"}
-                        </span>
-                    </p>
-
-                    {abastecimiento.estaAgotado && (
-                        <>
-                            <hr style={{ margin: '15px 0' }} />
-                            <p><strong>Estado del Insumo:</strong> <span className="depleted-text">Agotado</span></p>
-                            <p><strong>Fecha de Agotamiento:</strong> {formatDate(abastecimiento.fechaAgotamiento)}</p>
-                            <p><strong>Razón de Agotamiento:</strong> {abastecimiento.razonAgotamiento || 'No especificada'}</p>
-                        </>
-                    )}
+            <div className="modal-abastecimiento-content abastecimiento-details-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="abastecimiento-modal-header">
+                    <h2 className="abastecimiento-modal-title">
+                        <span className="abastecimiento-modal-icon">📦</span>
+                        Detalles del Abastecimiento
+                    </h2>
+                    <button
+                        type="button"
+                        className="abastecimiento-modal-close-button"
+                        onClick={onClose}
+                        title="Cerrar"
+                    >
+                        &times;
+                    </button>
                 </div>
 
-                <button onClick={onClose} className="modal-abastecimiento-button-cerrar">
-                    Cerrar
-                </button>
+                <div className="abastecimiento-modal-body">
+                    <div className="abastecimiento-details-container">
+                        <div className="abastecimiento-details-section">
+                            <h3 className="abastecimiento-details-section-title">
+                                <span className="section-icon">📋</span>
+                                Información Básica
+                            </h3>
+                            <div className="abastecimiento-details-grid">
+                                <div className="abastecimiento-detail-item">
+                                    <label className="abastecimiento-detail-label">ID Registro</label>
+                                    <span className="abastecimiento-detail-value abastecimiento-id-badge">
+                                        #{abastecimiento.idAbastecimiento || 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="abastecimiento-detail-item">
+                                    <label className="abastecimiento-detail-label">Cantidad Asignada</label>
+                                    <span className="abastecimiento-detail-value abastecimiento-quantity-badge">
+                                        {abastecimiento.cantidad || 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="abastecimiento-detail-item abastecimiento-detail-item-full">
+                                    <label className="abastecimiento-detail-label">Producto</label>
+                                    <span className="abastecimiento-detail-value abastecimiento-product-name">
+                                        {abastecimiento.producto?.nombre || 'No disponible'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="abastecimiento-details-section">
+                            <h3 className="abastecimiento-details-section-title">
+                                <span className="section-icon">👤</span>
+                                Información del Empleado
+                            </h3>
+                            <div className="abastecimiento-details-grid">
+                                <div className="abastecimiento-detail-item abastecimiento-detail-item-full">
+                                    <label className="abastecimiento-detail-label">Empleado</label>
+                                    <span className="abastecimiento-detail-value abastecimiento-employee-info">
+                                        {`${abastecimiento.empleado?.empleado?.nombre || ''} ${abastecimiento.empleado?.empleado?.apellido || ''}`.trim() || 'Empleado'}
+                                    </span>
+                                </div>
+                                <div className="abastecimiento-detail-item abastecimiento-detail-item-full">
+                                    <label className="abastecimiento-detail-label">Correo</label>
+                                    <span className="abastecimiento-detail-value abastecimiento-email-text">
+                                        {abastecimiento.empleado?.correo || 'N/A'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="abastecimiento-details-section">
+                            <h3 className="abastecimiento-details-section-title">
+                                <span className="section-icon">📅</span>
+                                Fechas y Estado
+                            </h3>
+                            <div className="abastecimiento-details-grid">
+                                <div className="abastecimiento-detail-item">
+                                    <label className="abastecimiento-detail-label">Fecha de Asignación</label>
+                                    <span className="abastecimiento-detail-value abastecimiento-date-text">
+                                        {formatDate(abastecimiento.fechaIngreso)}
+                                    </span>
+                                </div>
+                                <div className="abastecimiento-detail-item">
+                                    <label className="abastecimiento-detail-label">Estado del Registro</label>
+                                    <span className={`abastecimiento-status-badge ${abastecimiento.estado ? 'active' : 'inactive'}`}>
+                                        {abastecimiento.estado ? 'Activo' : 'Inactivo'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {abastecimiento.estaAgotado && (
+                            <div className="abastecimiento-details-section abastecimiento-depleted-section">
+                                <h3 className="abastecimiento-details-section-title">
+                                    <span className="section-icon">⚠️</span>
+                                    Estado de Agotamiento
+                                </h3>
+                                <div className="abastecimiento-details-grid">
+                                    <div className="abastecimiento-detail-item">
+                                        <label className="abastecimiento-detail-label">Estado del Insumo</label>
+                                        <span className="abastecimiento-depleted-badge">
+                                            Agotado
+                                        </span>
+                                    </div>
+                                    <div className="abastecimiento-detail-item">
+                                        <label className="abastecimiento-detail-label">Fecha de Agotamiento</label>
+                                        <span className="abastecimiento-detail-value abastecimiento-date-text">
+                                            {formatDate(abastecimiento.fechaAgotamiento)}
+                                        </span>
+                                    </div>
+                                    <div className="abastecimiento-detail-item abastecimiento-detail-item-full">
+                                        <label className="abastecimiento-detail-label">Razón de Agotamiento</label>
+                                        <span className="abastecimiento-detail-value abastecimiento-reason-text">
+                                            {abastecimiento.razonAgotamiento || 'No especificada'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="abastecimiento-modal-footer">
+                    <button
+                        className="abastecimiento-modal-button-cerrar"
+                        onClick={onClose}
+                    >
+                        Cerrar
+                    </button>
+                </div>
             </div>
         </div>
     );

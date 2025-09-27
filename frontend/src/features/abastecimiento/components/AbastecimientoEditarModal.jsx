@@ -18,7 +18,7 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSaveSuccess, initialData
             setFormData({
                 idAbastecimiento: initialData.idAbastecimiento,
                 fechaIngreso: initialData.fechaIngreso,
-                empleado: initialData.usuario,
+                empleado: initialData.empleado,
                 producto: initialData.producto,
                 cantidad: initialData.cantidad,
                 estado: initialData.estado,
@@ -40,7 +40,7 @@ const AbastecimientoEditarModal = ({ isOpen, onClose, onSaveSuccess, initialData
 
     const empleadosParaSeleccion = empleados.map(emp => ({
         ...emp,
-        displayName: `Empleado (${emp.correo})`
+        displayName: `${emp.nombre || ''} ${emp.apellido || ''}`.trim() || 'Empleado' + ` (${emp.correo})`
     }));
 
     const handleEmpleadoSelect = (empleado) => {
