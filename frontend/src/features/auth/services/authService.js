@@ -52,11 +52,16 @@ export const registerAPI = async (userData) => {
     const response = await publicApiClient.post("/auth/registrar", userData);
     return response.data;
   } catch (error) {
-    throw (
-      error.response?.data ||
-      new Error(
-        error.message || "Error desconocido durante el proceso de registro."
-      )
+    console.error("Error en registerAPI:", error);
+
+    // Si hay una respuesta del servidor con errores de validación
+    if (error.response?.data) {
+      throw error.response.data;
+    }
+
+    // Si es un error de red o conexión
+    throw new Error(
+      error.message || "Error desconocido durante el proceso de registro."
     );
   }
 };
