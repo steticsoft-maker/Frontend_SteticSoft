@@ -10,7 +10,7 @@ function Footer() {
         <div className="footer-container">
           {/* Logo / Nombre */}
           <div className="footer-brand">
-            <h2>SteticSoft</h2>
+            <h2>La Fuente del Peluquero</h2>
             <p>Transformamos tu estilo, cuidamos tu imagen</p>
           </div>
           {/* Enlaces rápidos */}
@@ -42,7 +42,7 @@ function Footer() {
             </div>
           </div>
           <div  className="footer-bottom-text">
-          <h4>© {new Date().getFullYear()} SteticSoft. Todos los derechos reservados.</h4>
+          <h4>© {new Date().getFullYear()} La Fuente del Peluquero. Todos los derechos reservados.</h4>
           </div>
         </div>
       </div>

@@ -133,7 +133,7 @@ export const generarPDFVentaUtil = (venta) => {
     const pageHeight = doc.internal.pageSize.getHeight();
     doc.setFontSize(9);
     doc.setTextColor(150);
-    doc.text("SteticSoft - Reporte generado automáticamente", 105, pageHeight - 10, {
+    doc.text("La Fuente del Peluquero - Reporte generado automáticamente", 105, pageHeight - 10, {
         align: "center",
     });
 

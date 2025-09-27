@@ -162,7 +162,7 @@ export const generarPDFCompraUtil = (compra) => {
   doc.setFontSize(9);
   doc.setTextColor(150);
   doc.text(
-    "SteticSoft - Reporte generado automáticamente",
+    "La Fuente del Peluquero - Reporte generado automáticamente",
     105,
     pageHeight - 10,
     { align: "center" }

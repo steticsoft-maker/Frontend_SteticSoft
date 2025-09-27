@@ -58,7 +58,7 @@ function AdminNavbar() {
         <Link to="/" className="navbar-logo">
           <img
             src="/Stetic2.svg"
-            alt="SteticSoft Logo"
+            alt="La Fuente del Peluquero Logo"
             className="navbar-logo-img"
           />
         </Link>
