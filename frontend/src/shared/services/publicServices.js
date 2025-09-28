@@ -1,5 +1,6 @@
 // src/shared/services/publicServices.js
 import publicApiClient from "./publicApiClient";
+import apiClient from "./apiClient";
 
 /**
  * Obtiene servicios públicos (sin autenticación requerida)
@@ -57,7 +58,6 @@ export const getPublicProductos = async (filtros = {}) => {
 export const createPublicVenta = async (ventaData) => {
   try {
     // Usar el endpoint móvil que está diseñado para clientes
-    const apiClient = (await import("./apiClient")).default;
     const response = await apiClient.post("/movil/ventas", ventaData);
     return response.data;
   } catch (error) {
@@ -74,8 +74,6 @@ export const createPublicVenta = async (ventaData) => {
 export const createPublicCita = async (citaData) => {
   try {
     // Usar temporalmente el endpoint móvil hasta que se arreglen los errores 500
-    const apiClient = (await import("./apiClient")).default;
-
     // Convertir los datos al formato que espera el endpoint móvil
     const dataToSend = {
       fecha: citaData.fecha, // Formato: YYYY-MM-DD

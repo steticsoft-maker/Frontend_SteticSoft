@@ -1,5 +1,6 @@
 // src/features/usuarios/services/usuariosService.js
 import apiClient from "../../../shared/services/api"; // Ajusta la ruta a tu apiClient
+import publicApiClient from "../../../shared/services/publicApiClient";
 
 /**
  * Obtiene la lista de todos los usuarios desde la API.
@@ -28,9 +29,6 @@ export const getUsuariosAPI = async (params) => {
 export const verificarCorreoAPI = async (correo) => {
   try {
     // Usar publicApiClient ya que la verificación de correo debería ser pública
-    const publicApiClient = (
-      await import("../../../shared/services/publicApiClient")
-    ).default;
     const response = await publicApiClient.get(
       `/usuarios/verificar-correo?correo=${encodeURIComponent(correo)}`
     );
