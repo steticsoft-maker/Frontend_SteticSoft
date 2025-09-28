@@ -190,6 +190,7 @@ const actualizarUsuarioValidators = [
       for (const field of requiredFields) {
         if (
           req.body[field] !== undefined &&
+          req.body[field] !== null &&
           String(req.body[field]).trim() === ""
         ) {
           throw new Error(
@@ -243,6 +244,24 @@ const actualizarUsuarioValidators = [
     })
     .custom(async (value, { req }) => {
       if (!value || !req.body.idRol) return true;
+
+      // Obtener el usuario actual para verificar si el número de documento ya le pertenece
+      const usuarioActual = await db.Usuario.findByPk(req.params.idUsuario, {
+        include: [
+          { model: db.Cliente, as: "clienteInfo", required: false },
+          { model: db.Empleado, as: "empleado", required: false },
+        ],
+      });
+
+      if (usuarioActual) {
+        const perfilActual =
+          usuarioActual.clienteInfo || usuarioActual.empleado;
+        if (perfilActual && perfilActual.numeroDocumento === value) {
+          // Si el número de documento es el mismo que ya tiene el usuario, no hay conflicto
+          return true;
+        }
+      }
+
       const rol = await db.Rol.findByPk(req.body.idRol);
       if (
         !rol ||
