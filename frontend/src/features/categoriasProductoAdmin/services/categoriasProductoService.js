@@ -15,13 +15,13 @@ export const fetchCategoriasProducto = async (filters = {}) => {
 
     // Añade cada filtro a los parámetros solo si tiene un valor.
     if (filters.search) {
-      params.append('search', filters.search);
+      params.append("search", filters.search);
     }
     if (filters.estado !== undefined) {
-      params.append('estado', filters.estado);
+      params.append("estado", filters.estado);
     }
     if (filters.tipoUso) {
-      params.append('tipoUso', filters.tipoUso);
+      params.append("tipoUso", filters.tipoUso);
     }
 
     // Define el endpoint específico para esta solicitud.
@@ -35,9 +35,11 @@ export const fetchCategoriasProducto = async (filters = {}) => {
     // Si `response.data` o `response.data.data` no existen, devuelve un array vacío
     // para evitar que la aplicación se rompa.
     return response?.data?.data || [];
-
   } catch (error) {
-    console.error("Error al obtener categorías de producto desde la API:", error);
+    console.error(
+      "Error al obtener categorías de producto desde la API:",
+      error
+    );
     // Se retorna un array vacío también en caso de error para mantener la consistencia
     // y evitar que la UI falle. El error ya se registró en la consola.
     return [];
@@ -54,7 +56,10 @@ export const getCategoriaProductoById = async (idCategoria) => {
     const response = await apiClient.get(`${API_BASE_PATH}/${idCategoria}`);
     return response.data.data;
   } catch (error) {
-    console.error(`Error al obtener categoría con ID ${idCategoria} desde la API:`, error);
+    console.error(
+      `Error al obtener categoría con ID ${idCategoria} desde la API:`,
+      error
+    );
     throw error;
   }
 };
@@ -69,20 +74,21 @@ export const saveCategoriaProducto = async (categoriaData) => {
     let response;
     // La validación de campos obligatorios y formato debe hacerse en el frontend
     // antes de llamar a esta función, o se manejará el error del backend.
-    if (categoriaData.idCategoriaProducto) { // Si tiene ID, es una actualización (PUT)
-      response = await apiClient.put(`${API_BASE_PATH}/${categoriaData.idCategoriaProducto}`, {
-        nombre: categoriaData.nombre,
-        descripcion: categoriaData.descripcion,
-        vidaUtilDias: categoriaData.vidaUtilDias, // Asegúrate que el nombre de campo coincida con el backend
-        tipoUso: categoriaData.tipoUso,
-        estado: categoriaData.estado,
-      });
-    } else { // Si no tiene ID, es una creación (POST)
+    if (categoriaData.idCategoriaProducto) {
+      // Si tiene ID, es una actualización (PUT)
+      response = await apiClient.put(
+        `${API_BASE_PATH}/${categoriaData.idCategoriaProducto}`,
+        {
+          nombre: categoriaData.nombre,
+          descripcion: categoriaData.descripcion,
+          estado: categoriaData.estado,
+        }
+      );
+    } else {
+      // Si no tiene ID, es una creación (POST)
       response = await apiClient.post(API_BASE_PATH, {
         nombre: categoriaData.nombre,
         descripcion: categoriaData.descripcion,
-        vidaUtilDias: categoriaData.vidaUtilDias,
-        tipoUso: categoriaData.tipoUso,
         estado: categoriaData.estado,
       });
     }
@@ -99,17 +105,24 @@ export const saveCategoriaProducto = async (categoriaData) => {
  * @param {boolean} nuevoEstado - El nuevo estado (true para habilitar, false para anular).
  * @returns {Promise<object>} Una promesa que resuelve con la categoría actualizada.
  */
-export const toggleCategoriaProductoEstado = async (idCategoria, nuevoEstado) => {
+export const toggleCategoriaProductoEstado = async (
+  idCategoria,
+  nuevoEstado
+) => {
   try {
-    const endpoint = nuevoEstado ? `${API_BASE_PATH}/${idCategoria}/habilitar` : `${API_BASE_PATH}/${idCategoria}/anular`;
+    const endpoint = nuevoEstado
+      ? `${API_BASE_PATH}/${idCategoria}/habilitar`
+      : `${API_BASE_PATH}/${idCategoria}/anular`;
     const response = await apiClient.patch(endpoint); // Para anular/habilitar no necesitamos body según tus rutas
     return response.data.data;
   } catch (error) {
-    console.error(`Error al cambiar el estado de la categoría con ID ${idCategoria} a ${nuevoEstado} en la API:`, error);
+    console.error(
+      `Error al cambiar el estado de la categoría con ID ${idCategoria} a ${nuevoEstado} en la API:`,
+      error
+    );
     throw error;
   }
 };
-
 
 /**
  * Función para eliminar físicamente una categoría de producto del backend.
@@ -121,7 +134,10 @@ export const deleteCategoriaProductoById = async (idCategoria) => {
     await apiClient.delete(`${API_BASE_PATH}/${idCategoria}`);
     // No hay data en la respuesta 204, solo se confirma la eliminación.
   } catch (error) {
-    console.error(`Error al eliminar categoría con ID ${idCategoria} desde la API:`, error);
+    console.error(
+      `Error al eliminar categoría con ID ${idCategoria} desde la API:`,
+      error
+    );
     throw error;
   }
 };
@@ -133,11 +149,16 @@ export const deleteCategoriaProductoById = async (idCategoria) => {
  */
 export const getProductosByCategoria = async (idCategoria) => {
   try {
-    const response = await apiClient.get(`/productos?idCategoria=${idCategoria}`);
+    const response = await apiClient.get(
+      `/productos?idCategoria=${idCategoria}`
+    );
     // La respuesta tiene estructura: { data: { totalItems, totalPages, currentPage, productos: [...] } }
     return response?.data?.data?.productos || response?.data?.productos || [];
   } catch (error) {
-    console.error(`Error al obtener productos de la categoría ${idCategoria}:`, error);
+    console.error(
+      `Error al obtener productos de la categoría ${idCategoria}:`,
+      error
+    );
     return [];
   }
 };
