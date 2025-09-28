@@ -274,23 +274,26 @@
    ========================================================================== */
 
 .citas-status-select {
-  /* Apariencia de badge */
-  padding: 5px 10px;
-  border-radius: 15px;
-  border: 1px solid transparent; /* Borde sutil */
-  font-weight: 500;
-  font-size: 0.8rem;
-  text-transform: capitalize;
+  /* Apariencia de badge mejorada */
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  border: 1px solid !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
   cursor: pointer;
-  -webkit-appearance: none; /* Oculta la flecha por defecto en WebKit */
-  -moz-appearance: none;    /* Oculta la flecha por defecto en Firefox */
-  appearance: none;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
   width: 100%;
-  min-width: 130px;
-  background-position: right 10px center;
+  min-width: 120px;
+  background-position: right 8px center;
   background-repeat: no-repeat;
-  background-size: 12px;
+  background-size: 10px;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease !important;
 }
 
 .citas-status-select:focus {
@@ -299,21 +302,337 @@
   box-shadow: 0 0 0 0.2rem var(--color-shadow-light);
 }
 
-/* Colores dinámicos para el select */
-.status-select-activa {
-  background-color: #cfe2ff;
-  color: #0a58ca;
-  border-color: #b6d4fe;
-}
+/* Colores dinámicos para el select - Sincronizados con el modal de detalles */
 .status-select-pendiente {
-  background-color: #e2e3e5;
-  color: #41464b;
-  border-color: #d3d6d8;
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  border-color: #e0a800 !important;
 }
+
+.status-select-confirmada {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-select-confirmado {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-select-completada {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.status-select-completado {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.status-select-cancelada {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+.status-select-cancelado {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+.status-select-finalizada {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+.status-select-finalizado {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
 .status-select-en-proceso {
-  background-color: #fff3cd;
-  color: #664d03;
-  border-color: #ffecb5;
+  background-color: #fd7e14 !important;
+  color: #fff !important;
+  border-color: #e8681b !important;
+}
+
+.status-select-reprogramada {
+  background-color: #6f42c1 !important;
+  color: #fff !important;
+  border-color: #5a32a3 !important;
+}
+
+.status-select-reprogramado {
+  background-color: #6f42c1 !important;
+  color: #fff !important;
+  border-color: #5a32a3 !important;
+}
+
+.status-select-aceptada {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-select-aceptado {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-select-procesada {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.status-select-procesado {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.status-select-activa {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-select-activo {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-select-inactiva {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+.status-select-inactivo {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+/* Estados adicionales */
+.status-select-en-uso {
+  background-color: #fd7e14 !important;
+  color: #fff !important;
+  border-color: #e8681b !important;
+}
+
+.status-select-disponible {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-select-no-disponible {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+/* Fallback para estados no definidos */
+.status-select-desconocido {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+/* Estilos adicionales para asegurar que los colores se apliquen */
+.table-container .citas-status-select.status-select-cancelado {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+.table-container .citas-status-select.status-select-cancelada {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+.table-container .citas-status-select.status-select-completado {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.table-container .citas-status-select.status-select-completada {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+/* ==========================================================================
+   ESTILOS PARA LOS BADGES ESTÁTICOS (cuando el estado NO es accionable)
+   ========================================================================== */
+
+.status-badge {
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  display: inline-block !important;
+  border: 1px solid !important;
+}
+
+.status-badge-pendiente {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  border-color: #e0a800 !important;
+}
+
+.status-badge-confirmada {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-badge-confirmado {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-badge-completada {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.status-badge-completado {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.status-badge-cancelada {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+.status-badge-cancelado {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+.status-badge-finalizada {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+.status-badge-finalizado {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+.status-badge-en-proceso {
+  background-color: #fd7e14 !important;
+  color: #fff !important;
+  border-color: #e8681b !important;
+}
+
+.status-badge-reprogramada {
+  background-color: #6f42c1 !important;
+  color: #fff !important;
+  border-color: #5a32a3 !important;
+}
+
+.status-badge-reprogramado {
+  background-color: #6f42c1 !important;
+  color: #fff !important;
+  border-color: #5a32a3 !important;
+}
+
+.status-badge-aceptada {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-badge-aceptado {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-badge-procesada {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.status-badge-procesado {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.status-badge-activa {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-badge-activo {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-badge-inactiva {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+.status-badge-inactivo {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+/* Estados adicionales para badges */
+.status-badge-en-uso {
+  background-color: #fd7e14 !important;
+  color: #fff !important;
+  border-color: #e8681b !important;
+}
+
+.status-badge-disponible {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.status-badge-no-disponible {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+/* Fallback para badges no definidos */
+.status-badge-desconocido {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
 }
 
 /* Estilos para cuando el estado NO es accionable */
@@ -1630,17 +1949,15 @@
 
 /* Mejoras para el calendario de novedades */
 .novedad-calendar .react-datepicker__day--disabled {
-  background-color: #f8f9fa !important;
-  color: #6c757d !important;
   cursor: not-allowed !important;
-  opacity: 0.5 !important;
+  opacity: 0.4 !important;
+  /* Mantener colores predeterminados pero con opacidad */
 }
 
 .novedad-calendar .dia-no-disponible {
-  background-color: #f8f9fa !important;
-  color: #6c757d !important;
   cursor: not-allowed !important;
-  opacity: 0.5 !important;
+  opacity: 0.4 !important;
+  /* Mantener colores predeterminados pero con opacidad */
 }
 
 .novedad-calendar .dia-disponible {
@@ -1857,10 +2174,52 @@
 }
 
 .novedad-calendar .dia-no-disponible {
-    opacity: 0.3 !important;
+    opacity: 0.4 !important;
     cursor: not-allowed !important;
-    background-color: #f5f5f5 !important;
-    color: #999 !important;
+    /* Mantener colores predeterminados pero con opacidad */
+}
+
+/* Colores específicos para días no disponibles manteniendo los colores de cada día */
+.novedad-calendar .react-datepicker__day.dia-no-disponible.dia-lunes {
+    background-color: var(--color-dia-lunes) !important;
+    color: #000 !important;
+    opacity: 0.4 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-no-disponible.dia-martes {
+    background-color: var(--color-dia-martes) !important;
+    color: #000 !important;
+    opacity: 0.4 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-no-disponible.dia-miercoles {
+    background-color: var(--color-dia-miercoles) !important;
+    color: #000 !important;
+    opacity: 0.4 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-no-disponible.dia-jueves {
+    background-color: var(--color-dia-jueves) !important;
+    color: #000 !important;
+    opacity: 0.4 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-no-disponible.dia-viernes {
+    background-color: var(--color-dia-viernes) !important;
+    color: #000 !important;
+    opacity: 0.4 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-no-disponible.dia-sabado {
+    background-color: var(--color-dia-sabado) !important;
+    color: #000 !important;
+    opacity: 0.4 !important;
+}
+
+.novedad-calendar .react-datepicker__day.dia-no-disponible.dia-domingo {
+    background-color: var(--color-dia-domingo) !important;
+    color: #000 !important;
+    opacity: 0.4 !important;
 }
 
 /* Colores específicos para cada día - con mayor especificidad */
@@ -1991,6 +2350,430 @@
     background-color: var(--color-dia-domingo) !important;
     filter: brightness(0.9) !important;
     transform: scale(1.05) !important;
+}
+
+/* ======================================================== */
+/* ============= MODAL DE DETALLES DE CITAS ============== */
+/* ======================================================== */
+
+.details-modal-content.citas-details-modal {
+  background-color: var(--color-background-light);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.citas-modal-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.citas-modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-dark) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.citas-modal-icon {
+  font-size: 1.3rem;
+}
+
+.citas-modal-close-button {
+  background: rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.citas-modal-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+  color: #333;
+}
+
+.citas-modal-body {
+  padding: 25px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.citas-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.citas-details-section {
+  background: var(--color-background-light);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.citas-details-section:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.citas-details-section-title {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid var(--color-primary-light);
+  padding-bottom: 8px;
+}
+
+.citas-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.citas-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.citas-detail-item-full {
+  grid-column: 1 / -1;
+}
+
+.citas-detail-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.citas-detail-value {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  word-break: break-word;
+}
+
+/* === ELEMENTOS ESPECIALES === */
+.citas-datetime-text {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  background-color: rgba(var(--color-primary-rgb, 33, 150, 243), 0.1);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--color-primary);
+}
+
+.citas-client-text {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 1rem;
+}
+
+.citas-employee-text {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 1rem;
+}
+
+.citas-servicios-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.citas-servicio-item {
+  background-color: var(--color-background-secondary);
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid var(--color-border-light);
+}
+
+.citas-servicio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.citas-servicio-nombre {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 1rem;
+}
+
+.citas-servicio-precio {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 1rem;
+}
+
+.citas-total-container {
+  margin-top: 15px;
+  padding-top: 15px;
+}
+
+.citas-total-line {
+  border-top: 2px solid var(--color-border-light);
+  margin-bottom: 10px;
+}
+
+.citas-total-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.citas-total-label {
+  font-size: 1.1rem;
+}
+
+.citas-total-value {
+  font-size: 1.2rem;
+}
+
+.citas-no-servicios {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  padding: 20px;
+  text-align: center;
+  justify-content: center;
+}
+
+.citas-no-servicios-icon {
+  font-size: 1.5rem;
+}
+
+.citas-modal-footer {
+  padding: 20px 25px;
+  border-top: 1px solid var(--color-border-light);
+  background-color: var(--color-background-light);
+  display: flex;
+  justify-content: center;
+}
+
+.citas-detalle-modal-button-cerrar {
+  background-color: var(--color-secondary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.citas-detalle-modal-button-cerrar:hover {
+  background-color: var(--color-secondary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Badges para estados de citas - Específicos para el modal */
+.citas-details-modal .badge {
+  display: inline-block !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  border: 2px solid !important;
+  min-width: 80px !important;
+  text-align: center !important;
+  margin: 4px 0 !important;
+}
+
+.citas-details-modal .badge-pendiente {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  border-color: #e0a800 !important;
+}
+
+.citas-details-modal .badge-confirmada {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.citas-details-modal .badge-completada {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.citas-details-modal .badge-cancelada {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+.citas-details-modal .badge-finalizada {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+/* Estados adicionales */
+.citas-details-modal .badge-en-proceso {
+  background-color: #fd7e14 !important;
+  color: #fff !important;
+  border-color: #e8681b !important;
+}
+
+.citas-details-modal .badge-reprogramada {
+  background-color: #6f42c1 !important;
+  color: #fff !important;
+  border-color: #5a32a3 !important;
+}
+
+/* Estados genéricos para casos no específicos */
+.citas-details-modal .badge-aceptada {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.citas-details-modal .badge-procesada {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+  border-color: #117a8b !important;
+}
+
+.citas-details-modal .badge-activa {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.citas-details-modal .badge-inactiva {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+/* Estados específicos que podrían aparecer */
+.citas-details-modal .badge-en-uso {
+  background-color: #fd7e14 !important;
+  color: #fff !important;
+  border-color: #e8681b !important;
+}
+
+.citas-details-modal .badge-disponible {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  border-color: #1e7e34 !important;
+}
+
+.citas-details-modal .badge-no-disponible {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border-color: #bd2130 !important;
+}
+
+/* Fallback para cualquier estado no definido */
+.citas-details-modal .badge:not([class*="badge-"]) {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  border-color: #545b62 !important;
+}
+
+/* Debug temporal - para verificar que los badges se estén aplicando */
+.citas-details-modal .badge {
+  position: relative !important;
+}
+
+.citas-details-modal .badge::before {
+  content: "🏷️ " !important;
+  margin-right: 4px !important;
+}
+
+/* Asegurar que los badges tengan prioridad sobre otros estilos */
+.citas-details-modal .citas-detail-value .badge {
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+
+/* Responsive para modal de citas */
+@media (max-width: 768px) {
+  .details-modal-content.citas-details-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .citas-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .citas-modal-header {
+    padding: 15px 20px;
+  }
+
+  .citas-modal-title {
+    font-size: 1.3rem;
+  }
+
+  .citas-modal-body {
+    padding: 20px;
+  }
+
+  .citas-details-section {
+    padding: 15px;
+  }
+
+  .citas-servicio-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .citas-total-item {
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+  }
 }
 
 /* Asegurar que los colores se mantengan incluso cuando el día está seleccionado */

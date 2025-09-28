@@ -181,7 +181,7 @@ function ConfigHorariosPage() {
       </div>
       
       {modalType === 'form' && <NovedadModal onClose={closeModal} onSuccess={handleSuccess} novedadToEdit={currentNovedad} isEditing={!!currentNovedad} />}
-      {modalType === 'details' && <NovedadDetalleModal novedad={currentNovedad} onClose={closeModal} />}
+      {modalType === 'details' && <NovedadDetalleModal isOpen={modalType === 'details'} novedad={currentNovedad} onClose={closeModal} />}
     </div>
   );
 }

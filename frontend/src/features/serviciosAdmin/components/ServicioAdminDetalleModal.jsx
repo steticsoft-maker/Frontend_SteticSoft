@@ -121,14 +121,6 @@ const ServicioAdminDetalleModal = ({ isOpen, onClose, servicio }) => {
                     </div>
                 </div>
 
-                <div className="servicios-modal-footer">
-                    <button 
-                        className="servicios-detalle-modal-button-cerrar" 
-                        onClick={onClose}
-                    >
-                        Cerrar
-                    </button>
-                </div>
             </div>
         </div>
     );

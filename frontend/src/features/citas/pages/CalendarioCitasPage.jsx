@@ -93,11 +93,8 @@ function CitasPage() {
       setCitasAgendadas(normalizadas);
     } catch (error) {
       console.error("Error al cargar datos:", error);
-      setValidationTitle("Error de Carga");
-      setValidationMessage(
-        "No se pudieron cargar los datos necesarios: " + error.message
-      );
-      setIsValidationModalOpen(true);
+      const errorMessage = error.response?.data?.message || error.message || "Error al cargar los datos necesarios.";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -282,7 +279,7 @@ function CitasPage() {
   return (
     <div className="lista-citas-container">
       <div className="citas-content-wrapper">
-        <h1>Gestión de Citas ({citasFiltradas.length})</h1>
+        <h1>Gestión de Citas</h1>
         <div className="citas-actions-bar">
           <div className="citas-filters">
             <div className="citas-search-bar">

@@ -19,7 +19,24 @@ const CitasTable = ({ citas, onViewDetails, onEdit, onDelete, onStatusChange, es
   );
 
   const getEstadoClass = (estado) => {
-    return (estado || "desconocido").toLowerCase().replace(/\s+/g, "-");
+    if (!estado) return "desconocido";
+    
+    // Normalizar el estado para crear la clase CSS
+    const estadoNormalizado = estado.toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[áä]/g, 'a')
+      .replace(/[éë]/g, 'e')
+      .replace(/[íï]/g, 'i')
+      .replace(/[óö]/g, 'o')
+      .replace(/[úü]/g, 'u')
+      .replace(/ñ/g, 'n')
+      .replace(/[^a-z0-9-]/g, '');
+    
+    // Debug: mostrar en consola qué clases se están generando
+    console.log('Estado original en tabla:', estado);
+    console.log('Estado normalizado en tabla:', estadoNormalizado);
+    
+    return estadoNormalizado;
   };
   
   const isActionable = (estado) => {

@@ -746,6 +746,8 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: var(--color-text-dark) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .servicios-modal-icon {
@@ -753,8 +755,8 @@ input:checked + .slider:before {
 }
 
 .servicios-modal-close-button {
-  background: none;
-  border: none;
+  background: rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   color: white;
   font-size: 1.8rem;
   cursor: pointer;
@@ -766,11 +768,14 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  font-weight: bold;
 }
 
 .servicios-modal-close-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
   transform: scale(1.1);
+  color: #333;
 }
 
 .servicios-modal-body {

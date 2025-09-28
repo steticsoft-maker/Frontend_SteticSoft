@@ -1578,3 +1578,425 @@ body.dark .field-error {
 .field-errors-container .field-error:last-child {
   margin-bottom: 0;
 }
+
+/* ======================================================== */
+/* ============= MODAL DE DETALLES DE NOVEDADES ========= */
+/* ======================================================== */
+
+/* Modal overlay y estructura base - Mismo estilo que servicios */
+.details-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.details-modal-content.novedades-details-modal {
+  background-color: var(--color-background-light);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.novedades-modal-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.novedades-modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-dark) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.novedades-modal-icon {
+  font-size: 1.3rem;
+}
+
+.novedades-modal-close-button {
+  background: rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.novedades-modal-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+  color: #333;
+}
+
+.novedades-modal-body {
+  padding: 25px;
+  flex: 1;
+  overflow-y: visible;
+}
+
+.novedades-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.novedades-details-section {
+  background: var(--color-background-light);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.novedades-details-section:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.novedades-details-section-title {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid var(--color-primary-light);
+  padding-bottom: 8px;
+}
+
+.section-icon {
+  font-size: 1rem;
+}
+
+.novedades-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.novedades-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.novedades-detail-item-full {
+  grid-column: 1 / -1;
+}
+
+.novedades-detail-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.novedades-detail-value {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  word-break: break-word;
+}
+
+/* === ELEMENTOS ESPECIALES === */
+.novedades-time-text {
+  font-weight: 600;
+  color: var(--color-success-dark);
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+}
+
+.novedades-dias-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.novedades-empleados-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.novedades-empleado-item {
+  background-color: var(--color-background-secondary);
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid var(--color-border-light);
+}
+
+.novedades-empleado-header {
+  margin-bottom: 10px;
+}
+
+.novedades-empleado-nombre {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 1rem;
+}
+
+.novedades-empleado-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.novedades-empleado-detail {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.novedades-no-empleados {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  padding: 20px;
+  text-align: center;
+  justify-content: center;
+}
+
+.novedades-no-empleados-icon {
+  font-size: 1.5rem;
+}
+
+.novedades-modal-footer {
+  padding: 20px 25px;
+  border-top: 1px solid var(--color-border-light);
+  background-color: var(--color-background-light);
+  display: flex;
+  justify-content: center;
+}
+
+.novedades-detalle-modal-button-cerrar {
+  background-color: var(--color-secondary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.novedades-detalle-modal-button-cerrar:hover {
+  background-color: var(--color-secondary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Badges para estados de novedades - Específicos para el modal */
+.novedades-details-modal .badge {
+  display: inline-block !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  text-align: center !important;
+  margin: 4px 0 !important;
+  position: relative !important;
+  /* Aura que resalta */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 0, 0, 0.2), 0 0 45px rgba(0, 0, 0, 0.1) !important;
+  border: 2px solid !important;
+  min-width: 80px !important;
+  /* Transición suave para el aura */
+  transition: all 0.3s ease !important;
+}
+
+/* Efecto de aura más intenso en hover */
+.novedades-details-modal .badge:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(0, 0, 0, 0.2) !important;
+}
+
+.novedades-details-modal .badge::before {
+  content: "🏷️ " !important;
+  margin-right: 4px !important;
+}
+
+/* Estados específicos para novedades */
+.novedades-details-modal .badge-activa {
+  background-color: #28a745 !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #1e7e34 !important;
+}
+
+.novedades-details-modal .badge-activo {
+  background-color: #28a745 !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #1e7e34 !important;
+}
+
+.novedades-details-modal .badge-inactiva {
+  background-color: #6c757d !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #545b62 !important;
+}
+
+.novedades-details-modal .badge-inactivo {
+  background-color: #6c757d !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #545b62 !important;
+}
+
+.novedades-details-modal .badge-habilitada {
+  background-color: #28a745 !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #1e7e34 !important;
+}
+
+.novedades-details-modal .badge-habilitado {
+  background-color: #28a745 !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #1e7e34 !important;
+}
+
+.novedades-details-modal .badge-deshabilitada {
+  background-color: #6c757d !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #545b62 !important;
+}
+
+.novedades-details-modal .badge-deshabilitado {
+  background-color: #6c757d !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #545b62 !important;
+}
+
+/* Fallback para cualquier estado no definido */
+.novedades-details-modal .badge:not([class*="badge-"]) {
+  background-color: #6c757d !important;
+  color: var(--color-text-light, #fff) !important;
+  border-color: #545b62 !important;
+}
+
+/* Asegurar que los badges tengan prioridad sobre otros estilos */
+.novedades-details-modal .novedades-detail-value .badge {
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+
+/* Asegurar que los días mantengan sus colores originales en el modal */
+.novedades-details-modal .badge.dia-pill-lunes { 
+  background-color: var(--color-dia-lunes) !important; 
+  color: #000 !important;
+  /* Quitar efectos de estado */
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+.novedades-details-modal .badge.dia-pill-martes { 
+  background-color: var(--color-dia-martes) !important; 
+  color: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+.novedades-details-modal .badge.dia-pill-miercoles { 
+  background-color: var(--color-dia-miercoles) !important; 
+  color: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+.novedades-details-modal .badge.dia-pill-jueves { 
+  background-color: var(--color-dia-jueves) !important; 
+  color: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+.novedades-details-modal .badge.dia-pill-viernes { 
+  background-color: var(--color-dia-viernes) !important; 
+  color: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+.novedades-details-modal .badge.dia-pill-sabado { 
+  background-color: var(--color-dia-sabado) !important; 
+  color: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+.novedades-details-modal .badge.dia-pill-domingo { 
+  background-color: var(--color-dia-domingo) !important; 
+  color: #000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Quitar emoji de días */
+.novedades-details-modal .badge.dia-pill::before {
+  content: "" !important;
+  margin-right: 0 !important;
+}
+
+/* Responsive para modal de novedades */
+@media (max-width: 768px) {
+  .details-modal-content.novedades-details-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .novedades-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .novedades-modal-header {
+    padding: 15px 20px;
+  }
+
+  .novedades-modal-title {
+    font-size: 1.3rem;
+  }
+
+  .novedades-modal-body {
+    padding: 20px;
+  }
+
+  .novedades-details-section {
+    padding: 15px;
+  }
+}
