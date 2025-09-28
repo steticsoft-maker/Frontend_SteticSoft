@@ -47,9 +47,7 @@ const requiredInProduction = [
   "JWT_SECRET",
   "SESSION_SECRET",
   "DATABASE_URL",
-  "EMAIL_HOST",
-  "EMAIL_USER",
-  "EMAIL_PASS",
+  "SENDGRID_API_KEY",
 ];
 
 const requiredInDevelopment = ["JWT_SECRET", "SESSION_SECRET"];
@@ -89,13 +87,8 @@ module.exports = {
   JWT_SECRET: process.env.JWT_SECRET,
   SESSION_SECRET: process.env.SESSION_SECRET,
 
-  EMAIL_HOST: process.env.EMAIL_HOST,
-  EMAIL_PORT: process.env.EMAIL_PORT
-    ? parseInt(process.env.EMAIL_PORT, 10)
-    : undefined,
-  EMAIL_SECURE: process.env.EMAIL_SECURE === "true",
-  EMAIL_USER: process.env.EMAIL_USER,
-  EMAIL_PASS: process.env.EMAIL_PASS,
+  // Configuración de SendGrid
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   EMAIL_FROM:
     process.env.EMAIL_FROM ||
     `"La fuente del peluquero - Notificaciones" <Lafuentedelpeluquero.com>`,

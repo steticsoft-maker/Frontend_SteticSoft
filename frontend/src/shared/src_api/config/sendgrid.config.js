@@ -21,7 +21,7 @@ const sendGridConfig = {
   from:
     EMAIL_FROM ||
     '"La fuente del peluquero" <noreply@lafuentedelpeluquero.com>',
-  replyTo: process.env.EMAIL_USER || "lafuentedelpeluquero@gmail.com",
+  replyTo: process.env.EMAIL_FROM || "lafuentedelpeluquero@gmail.com",
 };
 
 module.exports = {
