@@ -1,6 +1,6 @@
 // src/features/usuarios/components/UsuarioCrearModal.jsx
-import React from 'react';
-import UsuarioForm from './UsuarioForm';
+import React from "react";
+import UsuarioForm from "./UsuarioForm";
 
 const UsuarioCrearModal = ({
   isOpen,
@@ -29,36 +29,34 @@ const UsuarioCrearModal = ({
   if (!isOpen) return null;
 
   // Determina si los campos de perfil son necesarios
-  const selectedRole = availableRoles.find(r => r.idRol === parseInt(formData.idRol, 10));
-  const isCliente = selectedRole?.tipoPerfil === 'CLIENTE';
+  const selectedRole = availableRoles.find(
+    (r) => r.idRol === parseInt(formData.idRol, 10)
+  );
+  const isCliente = selectedRole?.tipoPerfil === "CLIENTE";
 
   return (
     <div className="admin-modal-overlay">
       <div className="admin-modal-content large">
         <div className="admin-modal-header">
           <h2 className="admin-modal-title">Crear Nuevo Usuario</h2>
-          <button
-            type="button"
-            className="admin-modal-close"
-            onClick={onClose}
-          >
+          <button type="button" className="admin-modal-close" onClick={onClose}>
             &times;
           </button>
         </div>
         <div className="admin-modal-body">
-          <form onSubmit={handleSubmit} noValidate>
-          <UsuarioForm
-            formData={formData}
-            formErrors={formErrors}
-            onInputChange={handleInputChange}
-            onInputBlur={handleInputBlur}
-            availableRoles={availableRoles}
-            isEditing={false}
-            isVerifyingEmail={isVerifyingEmail}
-            requiresProfile={requiresProfile}
-            isCliente={isCliente}
-            isUserAdmin={false} // En creación, nunca es el admin
-          />
+          <form id="usuario-form" onSubmit={handleSubmit} noValidate>
+            <UsuarioForm
+              formData={formData}
+              formErrors={formErrors}
+              onInputChange={handleInputChange}
+              onInputBlur={handleInputBlur}
+              availableRoles={availableRoles}
+              isEditing={false}
+              isVerifyingEmail={isVerifyingEmail}
+              requiresProfile={requiresProfile}
+              isCliente={isCliente}
+              isUserAdmin={false} // En creación, nunca es el admin
+            />
           </form>
         </div>
         <div className="admin-modal-footer">
