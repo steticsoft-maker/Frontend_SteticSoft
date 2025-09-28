@@ -332,6 +332,44 @@
 
 /* ============= RESPONSIVE STYLES ============= */
 
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+  .calendar-view-container {
+    padding: 25px;
+    max-width: 100%;
+  }
+  
+  .month-title {
+    font-size: 2rem;
+  }
+  
+  .calendar-day {
+    min-height: 140px;
+    padding: 12px;
+  }
+  
+  .calendar-cita-item {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+}
+
+/* Desktop (1200px and below) */
+@media (max-width: 1200px) {
+  .calendar-view-container {
+    padding: 20px;
+  }
+  
+  .month-title {
+    font-size: 1.8rem;
+  }
+  
+  .calendar-day {
+    min-height: 120px;
+    padding: 8px;
+  }
+}
+
 /* Tablet Landscape (1024px and below) */
 @media (max-width: 1024px) {
   .calendar-view-container {
@@ -355,87 +393,195 @@
     font-size: 0.7rem;
     padding: 3px 4px;
   }
+  
+  .weekday-header {
+    padding: 10px 6px;
+    font-size: 0.85rem;
+  }
 }
 
 /* Tablet Portrait (768px and below) */
 @media (max-width: 768px) {
   .calendar-view-container {
-    padding: 10px;
+    padding: 12px;
+    margin: 0;
   }
   
   .calendar-navigation {
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
+    align-items: center;
+    justify-content: space-between;
   }
   
   .calendar-month-year {
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
   }
   
   .month-title {
     font-size: 1.4rem;
   }
   
+  .calendar-grid {
+    min-height: 400px;
+  }
+  
   .calendar-day {
-    min-height: 80px;
-    padding: 4px;
+    min-height: 90px;
+    padding: 5px;
   }
   
   .day-number {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    margin-bottom: 3px;
   }
   
   .calendar-cita-item {
     font-size: 0.65rem;
-    padding: 2px 3px;
+    padding: 3px 4px;
+    line-height: 1.1;
   }
   
   .cita-hora {
     font-size: 0.6rem;
+    font-weight: 700;
   }
   
   .cita-cliente {
     font-size: 0.6rem;
   }
   
+  .cita-cliente .cliente-nombre {
+    font-size: 0.6rem;
+  }
+  
+  .cita-cliente .cliente-documento {
+    font-size: 0.55rem;
+  }
+  
   .cita-estado {
     font-size: 0.55rem;
   }
   
+  .more-citas {
+    font-size: 0.6rem;
+    padding: 1px 3px;
+  }
+  
+  .weekday-header {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+  }
+  
   .legend-items {
-    gap: 10px;
+    gap: 8px;
+    justify-content: center;
   }
   
   .legend-item {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   
   .legend-color {
     width: 12px;
     height: 12px;
   }
+  
+  .nav-button {
+    padding: 8px 12px;
+    min-width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+  
+  .today-button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
 }
 
 /* Mobile Landscape (640px and below) */
 @media (max-width: 640px) {
+  .calendar-view-container {
+    padding: 10px;
+  }
+  
+  .calendar-navigation {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .calendar-month-year {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .month-title {
+    font-size: 1.3rem;
+  }
+  
+  .calendar-grid {
+    min-height: 350px;
+  }
+  
   .calendar-day {
-    min-height: 70px;
-    padding: 3px;
+    min-height: 75px;
+    padding: 4px;
   }
   
   .day-number {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
   }
   
   .calendar-cita-item {
     font-size: 0.6rem;
+    padding: 2px 3px;
+    line-height: 1.0;
+  }
+  
+  .cita-hora {
+    font-size: 0.55rem;
+  }
+  
+  .cita-cliente {
+    font-size: 0.55rem;
+  }
+  
+  .cita-cliente .cliente-nombre {
+    font-size: 0.55rem;
+  }
+  
+  .cita-cliente .cliente-documento {
+    font-size: 0.5rem;
+  }
+  
+  .cita-estado {
+    font-size: 0.5rem;
+  }
+  
+  .more-citas {
+    font-size: 0.55rem;
     padding: 1px 2px;
   }
   
   .weekday-header {
-    padding: 8px 4px;
+    padding: 6px 3px;
+    font-size: 0.7rem;
+  }
+  
+  .nav-button {
+    padding: 6px 10px;
+    min-width: 32px;
+    height: 32px;
     font-size: 0.8rem;
+  }
+  
+  .today-button {
+    padding: 5px 10px;
+    font-size: 0.75rem;
   }
 }
 
@@ -445,54 +591,244 @@
     padding: 8px;
   }
   
+  .month-title {
+    font-size: 1.2rem;
+  }
+  
+  .calendar-grid {
+    min-height: 300px;
+  }
+  
   .calendar-day {
-    min-height: 60px;
-    padding: 2px;
+    min-height: 65px;
+    padding: 3px;
   }
   
   .day-number {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
+    margin-bottom: 1px;
   }
   
   .calendar-cita-item {
     font-size: 0.55rem;
-    padding: 1px;
+    padding: 1px 2px;
+    line-height: 0.9;
+  }
+  
+  .cita-hora {
+    font-size: 0.5rem;
+  }
+  
+  .cita-cliente {
+    font-size: 0.5rem;
+  }
+  
+  .cita-cliente .cliente-nombre {
+    font-size: 0.5rem;
+  }
+  
+  .cita-cliente .cliente-documento {
+    font-size: 0.45rem;
+  }
+  
+  .cita-estado {
+    font-size: 0.45rem;
+  }
+  
+  .more-citas {
+    font-size: 0.5rem;
+    padding: 1px 2px;
   }
   
   .weekday-header {
-    padding: 6px 2px;
-    font-size: 0.7rem;
+    padding: 5px 2px;
+    font-size: 0.65rem;
   }
   
   .nav-button {
-    padding: 8px 12px;
-    min-width: 35px;
-    height: 35px;
+    padding: 5px 8px;
+    min-width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
   }
   
   .today-button {
-    padding: 6px 12px;
-    font-size: 0.8rem;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+  
+  .legend-items {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .legend-item {
+    font-size: 0.7rem;
+  }
+  
+  .legend-color {
+    width: 10px;
+    height: 10px;
   }
 }
 
 /* Small Mobile (360px and below) */
 @media (max-width: 360px) {
+  .calendar-view-container {
+    padding: 6px;
+  }
+  
+  .month-title {
+    font-size: 1.1rem;
+  }
+  
+  .calendar-grid {
+    min-height: 250px;
+  }
+  
   .calendar-day {
-    min-height: 50px;
+    min-height: 55px;
+    padding: 2px;
+  }
+  
+  .day-number {
+    font-size: 0.7rem;
+    margin-bottom: 1px;
+  }
+  
+  .calendar-cita-item {
+    font-size: 0.5rem;
+    padding: 1px;
+    line-height: 0.8;
+  }
+  
+  .cita-hora {
+    font-size: 0.45rem;
+  }
+  
+  .cita-cliente {
+    font-size: 0.45rem;
+  }
+  
+  .cita-cliente .cliente-nombre {
+    font-size: 0.45rem;
+  }
+  
+  .cita-cliente .cliente-documento {
+    font-size: 0.4rem;
+  }
+  
+  .cita-estado {
+    font-size: 0.4rem;
+  }
+  
+  .more-citas {
+    font-size: 0.45rem;
+    padding: 1px;
+  }
+  
+  .weekday-header {
+    padding: 4px 1px;
+    font-size: 0.6rem;
+  }
+  
+  .nav-button {
+    padding: 4px 6px;
+    min-width: 24px;
+    height: 24px;
+    font-size: 0.6rem;
+  }
+  
+  .today-button {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .legend-color {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Extra Small Mobile (320px and below) */
+@media (max-width: 320px) {
+  .calendar-view-container {
+    padding: 4px;
+  }
+  
+  .month-title {
+    font-size: 1rem;
+  }
+  
+  .calendar-grid {
+    min-height: 200px;
+  }
+  
+  .calendar-day {
+    min-height: 45px;
     padding: 1px;
   }
   
   .day-number {
     font-size: 0.65rem;
+    margin-bottom: 1px;
   }
   
   .calendar-cita-item {
-    font-size: 0.5rem;
+    font-size: 0.45rem;
+    padding: 1px;
+    line-height: 0.7;
+  }
+  
+  .cita-hora {
+    font-size: 0.4rem;
+  }
+  
+  .cita-cliente {
+    font-size: 0.4rem;
+  }
+  
+  .cita-cliente .cliente-nombre {
+    font-size: 0.4rem;
+  }
+  
+  .cita-cliente .cliente-documento {
+    font-size: 0.35rem;
+  }
+  
+  .cita-estado {
+    font-size: 0.35rem;
+  }
+  
+  .more-citas {
+    font-size: 0.4rem;
+    padding: 1px;
   }
   
   .weekday-header {
-    padding: 4px 1px;
-    font-size: 0.65rem;
+    padding: 3px 1px;
+    font-size: 0.55rem;
+  }
+  
+  .nav-button {
+    padding: 3px 5px;
+    min-width: 20px;
+    height: 20px;
+    font-size: 0.55rem;
+  }
+  
+  .today-button {
+    padding: 2px 5px;
+    font-size: 0.55rem;
+  }
+  
+  .legend-color {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .legend-item {
+    font-size: 0.6rem;
   }
 }

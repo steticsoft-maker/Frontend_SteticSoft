@@ -110,6 +110,15 @@ const CalendarView = ({
           onViewDetails(cita);
         }}
         title={`${cita.clienteNombre}${cita.clienteDocumento ? ` (Doc: ${cita.clienteDocumento})` : ''} - ${hora} - ${cita.estadoCita}`}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            onViewDetails(cita);
+          }
+        }}
       >
         <div className="cita-hora">{hora}</div>
         <div className="cita-cliente">
@@ -132,6 +141,7 @@ const CalendarView = ({
             className="nav-button"
             onClick={() => navigateMonth(-1)}
             title="Mes anterior"
+            aria-label="Mes anterior"
           >
             <FaChevronLeft />
           </button>
@@ -142,6 +152,7 @@ const CalendarView = ({
               className="today-button"
               onClick={goToToday}
               title="Ir a hoy"
+              aria-label="Ir al día de hoy"
             >
               Hoy
             </button>
@@ -151,6 +162,7 @@ const CalendarView = ({
             className="nav-button"
             onClick={() => navigateMonth(1)}
             title="Mes siguiente"
+            aria-label="Mes siguiente"
           >
             <FaChevronRight />
           </button>
@@ -167,7 +179,7 @@ const CalendarView = ({
       </div>
 
       {/* Grid del calendario */}
-      <div className="calendar-grid">
+      <div className="calendar-grid" role="grid" aria-label="Calendario de citas">
         {calendarDays.map((day, index) => {
           const citasDelDia = getCitasDelDia(day);
           const esHoy = isToday(day);
@@ -179,6 +191,9 @@ const CalendarView = ({
               className={`calendar-day ${esHoy ? "today" : ""} ${
                 !esMesActual ? "other-month" : ""
               }`}
+              role="gridcell"
+              aria-label={`${day.format("D")} de ${day.format("MMMM")}${esHoy ? ", día de hoy" : ""}${citasDelDia.length > 0 ? `, ${citasDelDia.length} cita${citasDelDia.length > 1 ? 's' : ''}` : ", sin citas"}`}
+              tabIndex={esHoy ? 0 : -1}
             >
               <div className="day-number">{day.format("D")}</div>
 
@@ -187,13 +202,13 @@ const CalendarView = ({
                   <div className="citas-container">
                     {citasDelDia.slice(0, 3).map(renderCitaEnCalendario)}
                     {citasDelDia.length > 3 && (
-                      <div className="more-citas">
+                      <div className="more-citas" role="button" tabIndex={0}>
                         +{citasDelDia.length - 3} más
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div className="no-citas">Sin citas</div>
+                  <div className="no-citas" aria-hidden="true">Sin citas</div>
                 )}
               </div>
             </div>
@@ -204,13 +219,14 @@ const CalendarView = ({
       {/* Leyenda de estados */}
       <div className="calendar-legend">
         <h4>Estados de Citas:</h4>
-        <div className="legend-items">
+        <div className="legend-items" role="list" aria-label="Leyenda de estados de citas">
           {estadosCita.map((estado) => (
-            <div key={estado.idEstado} className="legend-item">
+            <div key={estado.idEstado} className="legend-item" role="listitem">
               <div
                 className={`legend-color ${getEstadoClass(
                   estado.nombreEstado
                 )}`}
+                aria-hidden="true"
               ></div>
               <span>{estado.nombreEstado}</span>
             </div>
