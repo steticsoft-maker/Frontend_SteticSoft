@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 
 const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
   if (!isOpen || !cita) return null;
