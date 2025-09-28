@@ -60,15 +60,8 @@ const corsOptions = {
     // Permitir requests sin origin (ej: Postman, etc.)
     if (!origin) return callback(null, true);
 
-    // Log para debugging en producción
-    if (NODE_ENV === "production") {
-      console.log(`🌐 CORS: Verificando origen - ${origin}`);
-      console.log(`📋 CORS: Whitelist actual -`, whitelist);
-    }
-
     // Verificar si está en la whitelist
     if (whitelist.indexOf(origin) !== -1) {
-      console.log(`✅ CORS: Origen permitido - ${origin}`);
       callback(null, true);
     } else {
       // Permitir localhost con cualquier puerto para desarrollo Flutter

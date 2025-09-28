@@ -87,7 +87,7 @@ const verifySendGridConnection = async () => {
   try {
     console.log("🔄 Verificando configuración de SendGrid...");
 
-    // SendGrid no tiene un método verify() como Nodemailer,
+    // SendGrid no tiene un método verify() como otros servicios de email,
     // pero podemos verificar que la API key sea válida enviando un correo de prueba
     // Por ahora, solo verificamos que la API key esté configurada
     console.log("📨 SendGrid configurado correctamente.");

@@ -17,7 +17,7 @@ const {
   APP_NAME,
   FRONTEND_URL,
 } = require("../config/env.config.js");
-const optimizedMailerService = require("./optimized-mailer.service.js");
+const sendMail = require("./mailer.service.js");
 const {
   generarTemplateBienvenida,
   generarTemplateRecuperacion,
@@ -148,7 +148,7 @@ const registrarUsuario = async (datosRegistro) => {
     // --- Nodo 20: Iniciar bloque try/catch para envío de correo ---
     try {
       const htmlBienvenida = generarTemplateBienvenida(nombre); // Asumiendo que esta función existe
-      await optimizedMailerService.sendMail({
+      await sendMail({
         to: nuevoUsuario.correo,
         subject: `🎉 ¡Bienvenido/a a La fuente del peluquero! Tu cuenta está lista`,
         html: htmlBienvenida,
@@ -371,15 +371,15 @@ const solicitarRecuperacionContrasena = async (correo) => {
   // --- INICIO DE MODIFICACIÓN: Template de Correo para OTP ---
   // Ya no necesitamos 'enlaceRecuperacion'
   const htmlCorreo = generarTemplateRecuperacion(
-    nombreUsuario, 
-    usuario.correo, 
-    tokenRecuperacion, 
+    nombreUsuario,
+    usuario.correo,
+    tokenRecuperacion,
     TOKEN_RECUPERACION_EXPIRATION_MINUTES
   );
   // --- FIN DE MODIFICACIÓN ---
 
   try {
-    const result = await optimizedMailerService.sendMail({
+    const result = await sendMail({
       to: usuario.correo,
       subject: `🔐 Tu código de recuperación de contraseña - ${
         APP_NAME || "La fuente del peluquero"
@@ -492,7 +492,7 @@ const resetearContrasena = async (correo, tokenCodigo, nuevaContrasena) => {
     // (Opcional pero recomendado) Enviar correo de confirmación de cambio
     const htmlConfirmacion = generarTemplateConfirmacionCambio(usuario.correo);
     try {
-      const result = await optimizedMailerService.sendMail({
+      const result = await sendMail({
         to: usuario.correo,
         subject: `Confirmación de Cambio de Contraseña - ${
           APP_NAME || "La fuente del peluquero"

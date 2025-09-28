@@ -139,8 +139,8 @@ const useUsuarios = () => {
           } else if (value) {
             const docType = currentData.tipoDocumento;
             if (
-              docType === "Cédula de Ciudadanía" ||
-              docType === "Cédula de Extranjería"
+              docType === "Cedula de Ciudadania" ||
+              docType === "Cedula de Extranjeria"
             ) {
               if (!numericOnlyRegex.test(value)) {
                 error = "Para este tipo de documento, ingrese solo números.";
@@ -330,7 +330,7 @@ const useUsuarios = () => {
           null;
         setFormData({
           idRol: defaultRole ? defaultRole.idRol : "",
-          tipoDocumento: "Cédula de Ciudadanía",
+          tipoDocumento: "Cedula de Ciudadania",
           estado: true,
           nombre: "",
           apellido: "",
@@ -352,6 +352,9 @@ const useUsuarios = () => {
           const perfil =
             fullUserData.clienteInfo || fullUserData.empleado || {};
 
+          console.log("DEBUG - fullUserData:", fullUserData);
+          console.log("DEBUG - perfil:", perfil);
+
           const initialFormData = {
             idUsuario: fullUserData.idUsuario,
             correo: fullUserData.correo,
@@ -359,7 +362,12 @@ const useUsuarios = () => {
             estado: fullUserData.estado,
             nombre: perfil.nombre || "",
             apellido: perfil.apellido || "",
-            tipoDocumento: perfil.tipoDocumento || "Cédula de Ciudadanía",
+            tipoDocumento:
+              perfil.tipoDocumento === "Cédula de Ciudadanía"
+                ? "Cedula de Ciudadania"
+                : perfil.tipoDocumento === "Cédula de Extranjería"
+                ? "Cedula de Extranjeria"
+                : perfil.tipoDocumento || "Cedula de Ciudadania",
             numeroDocumento: perfil.numeroDocumento || "",
             telefono: perfil.telefono || "",
             direccion: perfil.direccion || "",
@@ -367,6 +375,8 @@ const useUsuarios = () => {
               ? perfil.fechaNacimiento.split("T")[0]
               : "",
           };
+
+          console.log("DEBUG - initialFormData:", initialFormData);
 
           setFormData(initialFormData);
           setIsEditarModalOpen(true);
@@ -460,6 +470,11 @@ const useUsuarios = () => {
 
       // 3. Si se requiere perfil, se recopilan los datos y se APLANAN en el objeto principal
       if (needsProfile) {
+        console.log(
+          "DEBUG - formData antes de construir profileData:",
+          formData
+        );
+
         const profileData = {
           nombre: formData.nombre,
           apellido: formData.apellido,
@@ -469,13 +484,22 @@ const useUsuarios = () => {
           fechaNacimiento: formData.fechaNacimiento,
         };
 
+        console.log("DEBUG - profileData construido:", profileData);
+
         // El campo 'direccion' solo se añade si el rol es 'CLIENTE'
         if (selectedRole.tipoPerfil === "CLIENTE") {
           profileData.direccion = formData.direccion;
         }
 
+        console.log("DEBUG - profileData final:", profileData);
+
         // Se combinan los datos del perfil con los datos de la cuenta
         Object.assign(dataParaAPI, profileData);
+
+        console.log(
+          "DEBUG - dataParaAPI después de Object.assign:",
+          dataParaAPI
+        );
       }
       // --- FIN DE LA CORRECCIÓN ---
 

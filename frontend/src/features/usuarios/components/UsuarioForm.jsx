@@ -186,10 +186,10 @@ const UsuarioForm = ({
                   errors.tipoDocumento ? "error" : ""
                 }`}
               >
-                <option value="Cédula de Ciudadanía">
+                <option value="Cedula de Ciudadania">
                   Cédula de Ciudadanía
                 </option>
-                <option value="Cédula de Extranjería">
+                <option value="Cedula de Extranjeria">
                   Cédula de Extranjería
                 </option>
               </select>

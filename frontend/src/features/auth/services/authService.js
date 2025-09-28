@@ -1,5 +1,6 @@
 // src/features/auth/services/authService.js
 import apiClient from "../../../shared/services/apiClient"; // apiClient es tu instancia configurada de Axios
+import publicApiClient from "../../../shared/services/publicApiClient";
 
 /**
  * Realiza la llamada al endpoint de inicio de sesión de la API.
@@ -46,9 +47,6 @@ export const loginAPI = async (credentials) => {
 export const registerAPI = async (userData) => {
   try {
     // Usar publicApiClient ya que el registro es público y no requiere autenticación
-    const publicApiClient = (
-      await import("../../../shared/services/publicApiClient")
-    ).default;
     const response = await publicApiClient.post("/auth/registrar", userData);
     return response.data;
   } catch (error) {
