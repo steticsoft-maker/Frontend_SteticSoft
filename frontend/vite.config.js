@@ -25,60 +25,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Vendor chunks - Simplified to avoid circular dependencies
+          // Vendor chunks - Disable manual chunking to avoid circular dependencies
           if (id.includes("node_modules")) {
-            // Core React ecosystem - keep together to avoid initialization issues
-            if (
-              id.includes("react") ||
-              id.includes("react-dom") ||
-              id.includes("react-router") ||
-              id.includes("react-hook-form") ||
-              id.includes("react-select") ||
-              id.includes("react-datepicker") ||
-              id.includes("react-calendar") ||
-              id.includes("react-modal") ||
-              id.includes("react-toastify")
-            ) {
-              return "react-vendor";
-            }
-            // UI libraries
-            if (
-              id.includes("@mui") ||
-              id.includes("react-bootstrap") ||
-              id.includes("bootstrap")
-            ) {
-              return "ui-vendor";
-            }
-            // Charts
-            if (id.includes("chart.js") || id.includes("react-chartjs")) {
-              return "chart-vendor";
-            }
-            // Utilities
-            if (
-              id.includes("axios") ||
-              id.includes("moment") ||
-              id.includes("date-fns") ||
-              id.includes("jwt-decode")
-            ) {
-              return "utils-vendor";
-            }
-            // PDF generation
-            if (id.includes("jspdf") || id.includes("dompurify")) {
-              return "pdf-vendor";
-            }
-            // SweetAlert
-            if (id.includes("sweetalert2")) {
-              return "sweet-vendor";
-            }
-            // Icons
-            if (id.includes("@fortawesome") || id.includes("react-icons")) {
-              return "icons-vendor";
-            }
-            // HTML2Canvas
-            if (id.includes("html2canvas")) {
-              return "html2canvas-vendor";
-            }
-            // Everything else goes to vendor
+            // Put everything in a single vendor chunk to avoid initialization issues
             return "vendor";
           }
           // Feature chunks
