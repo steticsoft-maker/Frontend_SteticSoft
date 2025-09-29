@@ -1,6 +1,6 @@
 /* ============= ESTILOS COMUNES PARA MODALES DE DETALLES ============= */
 
-/* Variables CSS para colores consistentes */
+/* Variables CSS para colores consistentes - Modo Día */
 :root {
   --modal-primary: #8b5cf6;
   --modal-primary-light: #a78bfa;
@@ -11,6 +11,24 @@
   --modal-border: #e5e7eb;
   --modal-border-primary: #8b5cf6;
   --modal-success: #10b981;
+  --modal-overlay: rgba(0, 0, 0, 0.6);
+}
+
+/* Variables CSS para modo oscuro */
+.dark-theme {
+  --modal-background: #1f2937;
+  --modal-text: #f9fafb;
+  --modal-text-light: #d1d5db;
+  --modal-border: #374151;
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+}
+
+/* Variables CSS para modo día - FORZAR */
+.light-theme {
+  --modal-background: #ffffff;
+  --modal-text: #1f2937;
+  --modal-text-light: #6b7280;
+  --modal-border: #e5e7eb;
   --modal-overlay: rgba(0, 0, 0, 0.6);
 }
 
@@ -132,6 +150,29 @@
   margin-bottom: 0;
 }
 
+/* Secciones de detalles en modo día - FORZAR */
+.light-theme [class*="-details-section"],
+.light-theme .usuario-details-section,
+.light-theme .cliente-details-section,
+.light-theme .proveedor-details-section,
+.light-theme .compra-details-section,
+.light-theme .venta-details-section,
+.light-theme .rol-details-section,
+.light-theme .cita-details-section,
+.light-theme .producto-details-section,
+.light-theme .servicio-details-section,
+.light-theme .categoria-details-section,
+.light-theme .novedad-details-section,
+.light-theme .abastecimiento-details-section {
+  background-color: #fafafa !important;
+  color: #1f2937 !important;
+}
+
+/* Secciones de detalles en modo oscuro */
+.dark-theme [class*="-details-section"] {
+  background-color: #374151;
+}
+
 /* Títulos de sección */
 [class*="-details-section-title"] {
   display: flex;
@@ -143,6 +184,40 @@
   color: var(--modal-primary);
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+/* Títulos de sección en modo día - FORZAR */
+.light-theme [class*="-details-section-title"],
+.light-theme .usuario-details-section-title,
+.light-theme .cliente-details-section-title,
+.light-theme .proveedor-details-section-title,
+.light-theme .compra-details-section-title,
+.light-theme .venta-details-section-title,
+.light-theme .rol-details-section-title,
+.light-theme .cita-details-section-title,
+.light-theme .producto-details-section-title,
+.light-theme .servicio-details-section-title,
+.light-theme .categoria-details-section-title,
+.light-theme .novedad-details-section-title,
+.light-theme .abastecimiento-details-section-title {
+  color: #1f2937 !important;
+}
+
+/* Iconos de sección en modo día - FORZAR */
+.light-theme [class*="-details-section-title"] .section-icon,
+.light-theme .usuario-details-section-title .section-icon,
+.light-theme .cliente-details-section-title .section-icon,
+.light-theme .proveedor-details-section-title .section-icon,
+.light-theme .compra-details-section-title .section-icon,
+.light-theme .venta-details-section-title .section-icon,
+.light-theme .rol-details-section-title .section-icon,
+.light-theme .cita-details-section-title .section-icon,
+.light-theme .producto-details-section-title .section-icon,
+.light-theme .servicio-details-section-title .section-icon,
+.light-theme .categoria-details-section-title .section-icon,
+.light-theme .novedad-details-section-title .section-icon,
+.light-theme .abastecimiento-details-section-title .section-icon {
+  color: #1f2937 !important;
 }
 
 [class*="-details-section-title"] .section-icon {
@@ -160,7 +235,7 @@
 
 /* Items de detalle */
 [class*="-detail-item"] {
-  background-color: var(--modal-background);
+  background-color: #ffffff;
   border: 1px solid var(--modal-border-primary);
   border-radius: 6px;
   padding: 14px 16px;
@@ -169,6 +244,29 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/* Items de detalle en modo día - FORZAR */
+.light-theme [class*="-detail-item"],
+.light-theme .usuario-detail-item,
+.light-theme .cliente-detail-item,
+.light-theme .proveedor-detail-item,
+.light-theme .compra-detail-item,
+.light-theme .venta-detail-item,
+.light-theme .rol-detail-item,
+.light-theme .cita-detail-item,
+.light-theme .producto-detail-item,
+.light-theme .servicio-detail-item,
+.light-theme .categoria-detail-item,
+.light-theme .novedad-detail-item,
+.light-theme .abastecimiento-detail-item {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+/* Items de detalle en modo oscuro */
+.dark-theme [class*="-detail-item"] {
+  background-color: #1f2937;
 }
 
 [class*="-detail-item"]:hover {
@@ -194,6 +292,23 @@
   line-height: 1.2;
 }
 
+/* Labels en modo día - FORZAR */
+.light-theme [class*="-detail-label"],
+.light-theme .usuario-detail-label,
+.light-theme .cliente-detail-label,
+.light-theme .proveedor-detail-label,
+.light-theme .compra-detail-label,
+.light-theme .venta-detail-label,
+.light-theme .rol-detail-label,
+.light-theme .cita-detail-label,
+.light-theme .producto-detail-label,
+.light-theme .servicio-detail-label,
+.light-theme .categoria-detail-label,
+.light-theme .novedad-detail-label,
+.light-theme .abastecimiento-detail-label {
+  color: #6b7280 !important;
+}
+
 /* Valores de los campos */
 [class*="-detail-value"] {
   display: block;
@@ -202,6 +317,23 @@
   font-weight: 500;
   line-height: 1.4;
   word-wrap: break-word;
+}
+
+/* Valores en modo día - FORZAR */
+.light-theme [class*="-detail-value"],
+.light-theme .usuario-detail-value,
+.light-theme .cliente-detail-value,
+.light-theme .proveedor-detail-value,
+.light-theme .compra-detail-value,
+.light-theme .venta-detail-value,
+.light-theme .rol-detail-value,
+.light-theme .cita-detail-value,
+.light-theme .producto-detail-value,
+.light-theme .servicio-detail-value,
+.light-theme .categoria-detail-value,
+.light-theme .novedad-detail-value,
+.light-theme .abastecimiento-detail-value {
+  color: #1f2937 !important;
 }
 
 /* Badges de estado */
@@ -242,6 +374,7 @@
 /* Footer del modal mejorado */
 [class*="-modal-footer"] {
   padding: 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   border-top: 2px solid var(--modal-border-primary);
   display: flex;
   justify-content: center;
@@ -249,6 +382,11 @@
   border-radius: 0 0 12px 12px;
   position: relative;
   margin-top: 8px;
+}
+
+/* Footer del modal en modo oscuro */
+.dark-theme [class*="-modal-footer"] {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
 }
 
 [class*="-modal-footer"]::before {
@@ -388,283 +526,11 @@
   }
 }
 
-/* Modo oscuro */
-[data-theme="dark"],
-.dark-mode,
-body.dark {
-  --modal-background: #1f2937;
-  --modal-text: #f9fafb;
-  --modal-text-light: #d1d5db;
-  --modal-border: #374151;
-  --modal-overlay: rgba(0, 0, 0, 0.8);
-}
 
-[data-theme="dark"] [class*="-details-section"],
-.dark-mode [class*="-details-section"],
-body.dark [class*="-details-section"] {
-  background-color: #111827;
-  border-color: #374151;
-}
 
-[data-theme="dark"] [class*="-modal-footer"],
-.dark-mode [class*="-modal-footer"],
-body.dark [class*="-modal-footer"] {
-  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-  border-color: var(--modal-primary);
-}
 
-[data-theme="dark"] [class*="-modal-footer"]::before,
-.dark-mode [class*="-modal-footer"]::before,
-body.dark [class*="-modal-footer"]::before {
-  background: linear-gradient(90deg, var(--modal-primary) 0%, var(--modal-primary-light) 100%);
-}
 
-/* Estilos específicos para sección de totales en modo oscuro */
-[data-theme="dark"] .ventas-totals-section,
-.dark-mode .ventas-totals-section,
-body.dark .ventas-totals-section {
-  background: #1f2937;
-  border-color: var(--modal-primary);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
-}
 
-[data-theme="dark"] .ventas-total-row,
-.dark-mode .ventas-total-row,
-body.dark .ventas-total-row {
-  background-color: #1f2937;
-  border-color: rgba(139, 92, 246, 0.2);
-  color: #f9fafb;
-}
-
-[data-theme="dark"] .ventas-total-row:hover,
-.dark-mode .ventas-total-row:hover,
-body.dark .ventas-total-row:hover {
-  background-color: rgba(139, 92, 246, 0.1);
-}
-
-[data-theme="dark"] .ventas-total-label,
-.dark-mode .ventas-total-label,
-body.dark .ventas-total-label {
-  color: #d1d5db !important;
-}
-
-[data-theme="dark"] .ventas-total-value,
-.dark-mode .ventas-total-value,
-body.dark .ventas-total-value {
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] [class*="-detail-item"],
-.dark-mode [class*="-detail-item"],
-body.dark [class*="-detail-item"] {
-  background-color: #1f2937;
-  border-color: var(--modal-primary);
-}
-
-/* Contraste mejorado para modo oscuro */
-[data-theme="dark"] [class*="-detail-label"],
-.dark-mode [class*="-detail-label"],
-body.dark [class*="-detail-label"] {
-  color: #a78bfa !important; /* Púrpura más claro para mejor contraste */
-}
-
-[data-theme="dark"] [class*="-detail-value"],
-.dark-mode [class*="-detail-value"],
-body.dark [class*="-detail-value"] {
-  color: #f9fafb !important; /* Texto blanco para máximo contraste */
-}
-
-[data-theme="dark"] [class*="-details-section-title"],
-.dark-mode [class*="-details-section-title"],
-body.dark [class*="-details-section-title"] {
-  color: #a78bfa !important; /* Púrpura claro para títulos */
-}
-
-[data-theme="dark"] [class*="-details-section-title"] .section-icon,
-.dark-mode [class*="-details-section-title"] .section-icon,
-body.dark [class*="-details-section-title"] .section-icon {
-  color: #a78bfa !important;
-}
-
-/* Estilos específicos para modo oscuro en tablas de ventas */
-[data-theme="dark"] .ventas-items-table,
-.dark-mode .ventas-items-table,
-body.dark .ventas-items-table {
-  background-color: #1f2937;
-  color: #f9fafb;
-}
-
-[data-theme="dark"] .ventas-items-table td,
-.dark-mode .ventas-items-table td,
-body.dark .ventas-items-table td {
-  color: #f9fafb;
-  border-color: #374151;
-}
-
-[data-theme="dark"] .ventas-items-table tbody tr:hover,
-.dark-mode .ventas-items-table tbody tr:hover,
-body.dark .ventas-items-table tbody tr:hover {
-  background-color: #374151;
-}
-
-[data-theme="dark"] .ventas-total-label,
-.dark-mode .ventas-total-label,
-body.dark .ventas-total-label {
-  color: #d1d5db !important;
-}
-
-[data-theme="dark"] .ventas-total-value,
-.dark-mode .ventas-total-value,
-body.dark .ventas-total-value {
-  color: #a78bfa !important;
-}
-
-/* Mejorar contraste específico para elementos problemáticos */
-[data-theme="dark"] [class*="-detail-value"] span,
-.dark-mode [class*="-detail-value"] span,
-body.dark [class*="-detail-value"] span {
-  color: #f9fafb !important;
-}
-
-[data-theme="dark"] [class*="-detail-value"] p,
-.dark-mode [class*="-detail-value"] p,
-body.dark [class*="-detail-value"] p {
-  color: #f9fafb !important;
-}
-
-[data-theme="dark"] [class*="-detail-value"] div,
-.dark-mode [class*="-detail-value"] div,
-body.dark [class*="-detail-value"] div {
-  color: #f9fafb !important;
-}
-
-/* Estilos específicos para badges en modo oscuro */
-[data-theme="dark"] [class*="-status-badge"],
-.dark-mode [class*="-status-badge"],
-body.dark [class*="-status-badge"] {
-  color: white !important;
-  font-weight: 600 !important;
-}
-
-[data-theme="dark"] [class*="-role-badge"],
-[data-theme="dark"] [class*="-type-badge"],
-[data-theme="dark"] [class*="-name-badge"],
-[data-theme="dark"] [class*="-id-badge"],
-.dark-mode [class*="-role-badge"],
-.dark-mode [class*="-type-badge"],
-.dark-mode [class*="-name-badge"],
-.dark-mode [class*="-id-badge"],
-body.dark [class*="-role-badge"],
-body.dark [class*="-type-badge"],
-body.dark [class*="-name-badge"],
-body.dark [class*="-id-badge"] {
-  color: white !important;
-  font-weight: 600 !important;
-}
-
-/* Mejorar contraste en modo oscuro para elementos de texto */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --modal-background: #1f2937;
-    --modal-text: #f9fafb;
-    --modal-text-light: #d1d5db;
-    --modal-border: #374151;
-    --modal-overlay: rgba(0, 0, 0, 0.8);
-  }
-  
-  [class*="-details-section"] {
-    background-color: #111827;
-    border-color: #374151;
-  }
-  
-  [class*="-modal-footer"] {
-    background-color: #111827;
-    border-color: #374151;
-  }
-  
-  [class*="-detail-item"] {
-    background-color: #1f2937;
-    border-color: var(--modal-primary);
-  }
-  
-  [class*="-detail-label"] {
-    color: #a78bfa !important;
-  }
-  
-  [class*="-detail-value"] {
-    color: #f9fafb !important;
-  }
-  
-  [class*="-details-section-title"] {
-    color: #a78bfa !important;
-  }
-  
-  [class*="-details-section-title"] .section-icon {
-    color: #a78bfa !important;
-  }
-  
-  /* Forzar contraste alto en modo oscuro */
-  [class*="-detail-value"] * {
-    color: #f9fafb !important;
-  }
-  
-  [class*="-detail-label"] {
-    color: #a78bfa !important;
-    font-weight: 700 !important;
-  }
-}
-
-/* Estilos adicionales para mejorar legibilidad en modo oscuro */
-[data-theme="dark"] [class*="-modal-content"],
-.dark-mode [class*="-modal-content"],
-body.dark [class*="-modal-content"] {
-  background-color: #1f2937 !important;
-  color: #f9fafb !important;
-}
-
-/* Mejorar contraste para texto específico problemático */
-[data-theme="dark"] [class*="-detail-value"] strong,
-.dark-mode [class*="-detail-value"] strong,
-body.dark [class*="-detail-value"] strong {
-  color: #f9fafb !important;
-  font-weight: 600 !important;
-}
-
-[data-theme="dark"] [class*="-detail-value"] em,
-.dark-mode [class*="-detail-value"] em,
-body.dark [class*="-detail-value"] em {
-  color: #e5e7eb !important;
-  font-style: normal !important;
-}
-
-/* Asegurar que todos los textos sean visibles en modo oscuro */
-[data-theme="dark"] *,
-.dark-mode *,
-body.dark * {
-  text-shadow: none !important;
-}
-
-[data-theme="dark"] [class*="-detail-value"],
-.dark-mode [class*="-detail-value"],
-body.dark [class*="-detail-value"] {
-  text-shadow: none !important;
-}
-
-/* Estilos específicos para el botón X en modo oscuro */
-[data-theme="dark"] [class*="-modal-close-button"],
-.dark-mode [class*="-modal-close-button"],
-body.dark [class*="-modal-close-button"] {
-  color: white !important;
-  opacity: 0.9;
-}
-
-[data-theme="dark"] [class*="-modal-close-button"]:hover,
-.dark-mode [class*="-modal-close-button"]:hover,
-body.dark [class*="-modal-close-button"]:hover {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
-  opacity: 1;
-}
 
 /* Asegurar que el botón X no se mueva demasiado en responsive */
 @media (max-width: 768px) {
@@ -784,6 +650,198 @@ body.dark [class*="-modal-close-button"]:hover {
 .novedades-details-modal .badge-inactivo {
   background-color: #6b7280 !important;
   color: white !important;
+}
+
+/* ============= CORRECCIÓN COMPLETA PARA MODO OSCURO ============= */
+
+/* Variables CSS para modo oscuro - CORREGIDAS */
+.dark-theme {
+  --modal-background: #1f2937;
+  --modal-text: #f9fafb;
+  --modal-text-light: #d1d5db;
+  --modal-border: #374151;
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+}
+
+/* Contenedor principal del modal en modo oscuro */
+.dark-theme [class*="-modalContent"] {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+/* Secciones de detalles en modo oscuro - TODAS LAS VARIACIONES */
+.dark-theme [class*="-details-section"],
+.dark-theme .usuario-details-section,
+.dark-theme .cliente-details-section,
+.dark-theme .proveedor-details-section,
+.dark-theme .compra-details-section,
+.dark-theme .venta-details-section,
+.dark-theme .rol-details-section,
+.dark-theme .cita-details-section,
+.dark-theme .producto-details-section,
+.dark-theme .servicio-details-section,
+.dark-theme .categoria-details-section,
+.dark-theme .novedad-details-section,
+.dark-theme .abastecimiento-details-section {
+  background-color: #374151 !important;
+  border-color: #374151 !important;
+}
+
+/* Items de detalle en modo oscuro - TODAS LAS VARIACIONES */
+.dark-theme [class*="-detail-item"],
+.dark-theme .usuario-detail-item,
+.dark-theme .cliente-detail-item,
+.dark-theme .proveedor-detail-item,
+.dark-theme .compra-detail-item,
+.dark-theme .venta-detail-item,
+.dark-theme .rol-detail-item,
+.dark-theme .cita-detail-item,
+.dark-theme .producto-detail-item,
+.dark-theme .servicio-detail-item,
+.dark-theme .categoria-detail-item,
+.dark-theme .novedad-detail-item,
+.dark-theme .abastecimiento-detail-item {
+  background-color: #1f2937 !important;
+  border-color: var(--modal-primary) !important;
+  color: #f9fafb !important;
+}
+
+/* Footer del modal en modo oscuro - TODAS LAS VARIACIONES */
+.dark-theme [class*="-modal-footer"],
+.dark-theme .usuarios-modal-footer,
+.dark-theme .clientes-modal-footer,
+.dark-theme .proveedores-modal-footer,
+.dark-theme .compras-modal-footer,
+.dark-theme .ventas-modal-footer,
+.dark-theme .roles-modal-footer,
+.dark-theme .citas-modal-footer,
+.dark-theme .productos-modal-footer,
+.dark-theme .servicios-modal-footer,
+.dark-theme .categorias-modal-footer,
+.dark-theme .novedades-modal-footer,
+.dark-theme .abastecimiento-modal-footer {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
+}
+
+/* Contraste mejorado para modo oscuro - TODAS LAS VARIACIONES */
+.dark-theme [class*="-detail-label"],
+.dark-theme .usuario-detail-label,
+.dark-theme .cliente-detail-label,
+.dark-theme .proveedor-detail-label,
+.dark-theme .compra-detail-label,
+.dark-theme .venta-detail-label,
+.dark-theme .rol-detail-label,
+.dark-theme .cita-detail-label,
+.dark-theme .producto-detail-label,
+.dark-theme .servicio-detail-label,
+.dark-theme .categoria-detail-label,
+.dark-theme .novedad-detail-label,
+.dark-theme .abastecimiento-detail-label {
+  color: #a78bfa !important;
+}
+
+.dark-theme [class*="-detail-value"],
+.dark-theme .usuario-detail-value,
+.dark-theme .cliente-detail-value,
+.dark-theme .proveedor-detail-value,
+.dark-theme .compra-detail-value,
+.dark-theme .venta-detail-value,
+.dark-theme .rol-detail-value,
+.dark-theme .cita-detail-value,
+.dark-theme .producto-detail-value,
+.dark-theme .servicio-detail-value,
+.dark-theme .categoria-detail-value,
+.dark-theme .novedad-detail-value,
+.dark-theme .abastecimiento-detail-value {
+  color: #f9fafb !important;
+}
+
+.dark-theme [class*="-details-section-title"],
+.dark-theme .usuario-details-section-title,
+.dark-theme .cliente-details-section-title,
+.dark-theme .proveedor-details-section-title,
+.dark-theme .compra-details-section-title,
+.dark-theme .venta-details-section-title,
+.dark-theme .rol-details-section-title,
+.dark-theme .cita-details-section-title,
+.dark-theme .producto-details-section-title,
+.dark-theme .servicio-details-section-title,
+.dark-theme .categoria-details-section-title,
+.dark-theme .novedad-details-section-title,
+.dark-theme .abastecimiento-details-section-title {
+  color: #a78bfa !important;
+}
+
+.dark-theme [class*="-details-section-title"] .section-icon,
+.dark-theme .usuario-details-section-title .section-icon,
+.dark-theme .cliente-details-section-title .section-icon,
+.dark-theme .proveedor-details-section-title .section-icon,
+.dark-theme .compra-details-section-title .section-icon,
+.dark-theme .venta-details-section-title .section-icon,
+.dark-theme .rol-details-section-title .section-icon,
+.dark-theme .cita-details-section-title .section-icon,
+.dark-theme .producto-details-section-title .section-icon,
+.dark-theme .servicio-details-section-title .section-icon,
+.dark-theme .categoria-details-section-title .section-icon,
+.dark-theme .novedad-details-section-title .section-icon,
+.dark-theme .abastecimiento-details-section-title .section-icon {
+  color: #a78bfa !important;
+}
+
+/* Botón X en modo oscuro - TODAS LAS VARIACIONES */
+.dark-theme [class*="-modal-close-button"],
+.dark-theme .usuarios-modal-close-button,
+.dark-theme .clientes-modal-close-button,
+.dark-theme .proveedores-modal-close-button,
+.dark-theme .compras-modal-close-button,
+.dark-theme .ventas-modal-close-button,
+.dark-theme .roles-modal-close-button,
+.dark-theme .citas-modal-close-button,
+.dark-theme .productos-modal-close-button,
+.dark-theme .servicios-modal-close-button,
+.dark-theme .categorias-modal-close-button,
+.dark-theme .novedades-modal-close-button,
+.dark-theme .abastecimiento-modal-close-button {
+  color: white !important;
+  opacity: 0.9;
+}
+
+.dark-theme [class*="-modal-close-button"]:hover,
+.dark-theme .usuarios-modal-close-button:hover,
+.dark-theme .clientes-modal-close-button:hover,
+.dark-theme .proveedores-modal-close-button:hover,
+.dark-theme .compras-modal-close-button:hover,
+.dark-theme .ventas-modal-close-button:hover,
+.dark-theme .roles-modal-close-button:hover,
+.dark-theme .citas-modal-close-button:hover,
+.dark-theme .productos-modal-close-button:hover,
+.dark-theme .servicios-modal-close-button:hover,
+.dark-theme .categorias-modal-close-button:hover,
+.dark-theme .novedades-modal-close-button:hover,
+.dark-theme .abastecimiento-modal-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Labels específicos en modo oscuro */
+.dark-theme label {
+  color: #a78bfa !important;
+}
+
+/* Textos específicos en modo oscuro */
+.dark-theme span,
+.dark-theme p,
+.dark-theme div {
+  color: #f9fafb !important;
+}
+
+/* Campos de entrada en modo oscuro */
+.dark-theme input,
+.dark-theme textarea,
+.dark-theme select {
+  background-color: #374151 !important;
+  color: #f9fafb !important;
+  border-color: #6b7280 !important;
 }
 
 /* Estilos específicos para el modal de novedades */
@@ -953,8 +1011,13 @@ body.dark [class*="-modal-close-button"]:hover {
 .ventas-items-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: var(--modal-background);
+  background-color: #ffffff;
   font-size: 0.875rem;
+}
+
+/* Tabla de ventas en modo oscuro */
+.dark-theme .ventas-items-table {
+  background-color: #1f2937;
 }
 
 .ventas-items-table thead {
@@ -982,9 +1045,15 @@ body.dark [class*="-modal-close-button"]:hover {
 
 .ventas-items-table td {
   padding: 12px 16px;
-  border-bottom: 1px solid var(--modal-border);
-  color: var(--modal-text);
+  border-bottom: 1px solid #e5e7eb;
+  color: #1f2937;
   font-size: 0.875rem;
+}
+
+/* Celdas de tabla en modo oscuro */
+.dark-theme .ventas-items-table td {
+  color: #f9fafb;
+  border-bottom: 1px solid #374151;
 }
 
 .ventas-items-table tbody tr:hover {
@@ -1055,12 +1124,17 @@ body.dark [class*="-modal-close-button"]:hover {
 
 /* Sección de totales mejorada */
 .ventas-totals-section {
-  background: var(--modal-background);
+  background: #f8fafc;
   border: 2px solid var(--modal-border-primary);
   border-radius: 10px;
   padding: 0;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+}
+
+/* Sección de totales en modo oscuro */
+.dark-theme .ventas-totals-section {
+  background: #374151;
 }
 
 .ventas-totals-container {
@@ -1075,9 +1149,14 @@ body.dark [class*="-modal-close-button"]:hover {
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background-color: var(--modal-background);
+  background-color: #ffffff;
   border-bottom: 1px solid rgba(139, 92, 246, 0.1);
   transition: background-color 0.2s ease;
+}
+
+/* Filas de totales en modo oscuro */
+.dark-theme .ventas-total-row {
+  background-color: #1f2937;
 }
 
 .ventas-totals-container .ventas-total-row:last-child {
