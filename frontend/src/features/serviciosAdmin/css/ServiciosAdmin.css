@@ -1,6 +1,7 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/responsive-template.css";
 @import "@/shared/styles/table-common.css";
+@import "@/shared/styles/detail-modals.css";
 
 /* ======================================================== */
 /* ============= ESTRUCTURA PRINCIPAL ==================== */

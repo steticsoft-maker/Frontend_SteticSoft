@@ -2,6 +2,7 @@
 @import "@/shared/styles/responsive-template.css";
 @import "@/shared/styles/admin-crud-unified.css";
 @import "@/shared/styles/admin-migration-guide.css";
+@import "@/shared/styles/detail-modals.css";
 
 /* src/features/proveedores/css/Proveedores.css */
 /* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */

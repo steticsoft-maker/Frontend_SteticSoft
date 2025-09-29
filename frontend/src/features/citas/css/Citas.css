@@ -3,6 +3,7 @@
 @import "@/shared/styles/table-common.css";
 @import "@/shared/styles/admin-crud-unified.css";
 @import "@/shared/styles/admin-migration-guide.css";
+@import "@/shared/styles/detail-modals.css";
 
 /* Variables para colores de días de la semana */
 :root {

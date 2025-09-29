@@ -2,6 +2,7 @@
 @import "@/shared/styles/admin-crud-unified.css";
 @import "@/shared/styles/admin-migration-guide.css";
 @import "@/shared/styles/table-common.css";
+@import "@/shared/styles/detail-modals.css";
 
 /* src/features/categoriasProductoAdmin/css/CategoriasProducto.css */
 /* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */ 

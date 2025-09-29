@@ -1,6 +1,7 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/admin-crud-unified.css";
 @import "@/shared/styles/admin-migration-guide.css";
+@import "@/shared/styles/detail-modals.css";
 
 /* src/features/productosAdmin/css/ProductosAdmin.css */
 /* Ahora usando estilos unificados - mantener clases específicas para compatibilidad */

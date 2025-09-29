@@ -1,5 +1,6 @@
 @import "@/shared/styles/_variables.css";
 @import "@/shared/styles/responsive-template.css";
+@import "@/shared/styles/detail-modals.css";
 
 :root {
   --color-dia-lunes: #e0f2fe;     /* Celeste */
