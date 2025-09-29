@@ -1,17 +1,19 @@
-import React from 'react';
+import React from "react";
+import "../../../shared/styles/detail-modals.css";
 
 const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
   if (!isOpen || !cita) return null;
-  
+
   const totalServicios = (cita.serviciosProgramados || []).reduce(
-    (total, s) => total + parseFloat(s.precio || 0), 0
+    (total, s) => total + parseFloat(s.precio || 0),
+    0
   );
 
   // Formateador de moneda colombiana
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
       minimumFractionDigits: 0,
     }).format(parseFloat(value) || 0);
   };
@@ -19,87 +21,109 @@ const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
   // Función para formatear fecha en español
   const formatDateInSpanish = (dateString) => {
     const date = new Date(dateString);
-    
-    const diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
-                   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-    
+
+    const diasSemana = [
+      "domingo",
+      "lunes",
+      "martes",
+      "miércoles",
+      "jueves",
+      "viernes",
+      "sábado",
+    ];
+    const meses = [
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre",
+    ];
+
     const diaSemana = diasSemana[date.getDay()];
     const dia = date.getDate();
     const mes = meses[date.getMonth()];
     const año = date.getFullYear();
-    const horas = date.getHours().toString().padStart(2, '0');
-    const minutos = date.getMinutes().toString().padStart(2, '0');
-    
+    const horas = date.getHours().toString().padStart(2, "0");
+    const minutos = date.getMinutes().toString().padStart(2, "0");
+
     return `${diaSemana}, ${dia} de ${mes} de ${año}, ${horas}:${minutos}`;
   };
 
   const getEstadoBadge = () => {
     const estado = cita.estadoCita || cita.estado;
-    let estadoClass = 'badge-pendiente';
-    let estadoText = 'Pendiente';
-    
+    let estadoClass = "badge-pendiente";
+    let estadoText = "Pendiente";
+
     if (estado) {
       // Normalizar el estado para crear la clase CSS
-      const estadoNormalizado = estado.toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[áä]/g, 'a')
-        .replace(/[éë]/g, 'e')
-        .replace(/[íï]/g, 'i')
-        .replace(/[óö]/g, 'o')
-        .replace(/[úü]/g, 'u')
-        .replace(/ñ/g, 'n')
-        .replace(/[^a-z0-9-]/g, '');
-      
+      const estadoNormalizado = estado
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[áä]/g, "a")
+        .replace(/[éë]/g, "e")
+        .replace(/[íï]/g, "i")
+        .replace(/[óö]/g, "o")
+        .replace(/[úü]/g, "u")
+        .replace(/ñ/g, "n")
+        .replace(/[^a-z0-9-]/g, "");
+
       // Mapear estados específicos a sus clases correspondientes
       const estadoMap = {
-        'pendiente': 'badge-pendiente',
-        'confirmada': 'badge-confirmada',
-        'confirmado': 'badge-confirmada',
-        'completada': 'badge-completada',
-        'completado': 'badge-completada',
-        'cancelada': 'badge-cancelada',
-        'cancelado': 'badge-cancelada',
-        'finalizada': 'badge-finalizada',
-        'finalizado': 'badge-finalizada',
-        'en-proceso': 'badge-en-proceso',
-        'reprogramada': 'badge-reprogramada',
-        'reprogramado': 'badge-reprogramada',
-        'aceptada': 'badge-aceptada',
-        'aceptado': 'badge-aceptada',
-        'procesada': 'badge-procesada',
-        'procesado': 'badge-procesada',
-        'activa': 'badge-activa',
-        'activo': 'badge-activa',
-        'inactiva': 'badge-inactiva',
-        'inactivo': 'badge-inactiva'
+        pendiente: "badge-pendiente",
+        confirmada: "badge-confirmada",
+        confirmado: "badge-confirmada",
+        completada: "badge-completada",
+        completado: "badge-completada",
+        cancelada: "badge-cancelada",
+        cancelado: "badge-cancelada",
+        finalizada: "badge-finalizada",
+        finalizado: "badge-finalizada",
+        "en-proceso": "badge-en-proceso",
+        reprogramada: "badge-reprogramada",
+        reprogramado: "badge-reprogramada",
+        aceptada: "badge-aceptada",
+        aceptado: "badge-aceptada",
+        procesada: "badge-procesada",
+        procesado: "badge-procesada",
+        activa: "badge-activa",
+        activo: "badge-activa",
+        inactiva: "badge-inactiva",
+        inactivo: "badge-inactiva",
       };
-      
-      estadoClass = estadoMap[estadoNormalizado] || `badge-${estadoNormalizado}`;
+
+      estadoClass =
+        estadoMap[estadoNormalizado] || `badge-${estadoNormalizado}`;
       estadoText = estado;
-      
+
       // Debug: mostrar en consola qué clases se están aplicando
-      console.log('Estado original:', estado);
-      console.log('Estado normalizado:', estadoNormalizado);
-      console.log('Clase CSS:', estadoClass);
+      console.log("Estado original:", estado);
+      console.log("Estado normalizado:", estadoNormalizado);
+      console.log("Clase CSS:", estadoClass);
     }
-    
-    return <span className={`badge ${estadoClass}`} title={`Estado: ${estadoText}`}>{estadoText}</span>;
+
+    return (
+      <span className={`badge ${estadoClass}`} title={`Estado: ${estadoText}`}>
+        {estadoText}
+      </span>
+    );
   };
 
   return (
-    <div className="details-modal-overlay" onClick={onClose}>
-      <div className="details-modal-content citas-details-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="citas-modalOverlay">
+      <div className="citas-modalContent citas-modalContent-details">
         <div className="citas-modal-header">
-          <h3 className="citas-modal-title">
-            <span className="citas-modal-icon">📅</span>
-            Detalles de la Cita
-          </h3>
+          <h2>Detalles de la Cita</h2>
           <button
             type="button"
             className="citas-modal-close-button"
             onClick={onClose}
-            title="Cerrar"
           >
             &times;
           </button>
@@ -115,9 +139,7 @@ const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
               <div className="citas-details-grid">
                 <div className="citas-detail-item">
                   <label className="citas-detail-label">Estado</label>
-                  <span className="citas-detail-value">
-                    {getEstadoBadge()}
-                  </span>
+                  <span className="citas-detail-value">{getEstadoBadge()}</span>
                 </div>
                 <div className="citas-detail-item">
                   <label className="citas-detail-label">Fecha y Hora</label>
@@ -137,12 +159,14 @@ const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
                 <div className="citas-detail-item">
                   <label className="citas-detail-label">Cliente</label>
                   <span className="citas-detail-value citas-client-text">
-                    {cita.clienteNombre || 'N/A'}
+                    {cita.clienteNombre || "N/A"}
                   </span>
                 </div>
                 {cita.clienteDocumento && (
                   <div className="citas-detail-item">
-                    <label className="citas-detail-label">Documento Cliente</label>
+                    <label className="citas-detail-label">
+                      Documento Cliente
+                    </label>
                     <span className="citas-detail-value">
                       {cita.clienteDocumento}
                     </span>
@@ -160,12 +184,14 @@ const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
                 <div className="citas-detail-item">
                   <label className="citas-detail-label">Encargado(a)</label>
                   <span className="citas-detail-value citas-employee-text">
-                    {cita.empleadoNombre || 'N/A'}
+                    {cita.empleadoNombre || "N/A"}
                   </span>
                 </div>
                 {cita.empleadoDocumento && (
                   <div className="citas-detail-item">
-                    <label className="citas-detail-label">Documento Empleado</label>
+                    <label className="citas-detail-label">
+                      Documento Empleado
+                    </label>
                     <span className="citas-detail-value">
                       {cita.empleadoDocumento}
                     </span>
@@ -181,13 +207,17 @@ const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
               </h4>
               <div className="citas-details-grid">
                 <div className="citas-detail-item citas-detail-item-full">
-                  {cita.serviciosProgramados && cita.serviciosProgramados.length > 0 ? (
+                  {cita.serviciosProgramados &&
+                  cita.serviciosProgramados.length > 0 ? (
                     <div className="citas-servicios-container">
                       {cita.serviciosProgramados.map((servicio, index) => (
-                        <div key={servicio.idServicio || index} className="citas-servicio-item">
+                        <div
+                          key={servicio.idServicio || index}
+                          className="citas-servicio-item"
+                        >
                           <div className="citas-servicio-header">
                             <span className="citas-servicio-nombre">
-                              {servicio.nombre || 'Servicio sin nombre'}
+                              {servicio.nombre || "Servicio sin nombre"}
                             </span>
                             <span className="citas-servicio-precio">
                               {formatCurrency(servicio.precio)}
@@ -198,8 +228,12 @@ const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
                       <div className="citas-total-container">
                         <div className="citas-total-line"></div>
                         <div className="citas-total-item">
-                          <span className="citas-total-label">Total Estimado:</span>
-                          <span className="citas-total-value">{formatCurrency(totalServicios)}</span>
+                          <span className="citas-total-label">
+                            Total Estimado:
+                          </span>
+                          <span className="citas-total-value">
+                            {formatCurrency(totalServicios)}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -215,6 +249,11 @@ const CitaDetalleModal = ({ isOpen, onClose, cita }) => {
           </div>
         </div>
 
+        <div className="citas-modal-footer">
+          <button className="citas-modalButton-cerrar" onClick={onClose}>
+            Cerrar
+          </button>
+        </div>
       </div>
     </div>
   );

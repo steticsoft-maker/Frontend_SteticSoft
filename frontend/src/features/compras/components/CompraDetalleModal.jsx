@@ -1,12 +1,13 @@
-import React from 'react';
-import '../css/Compras.css';
+import React from "react";
+import "../css/Compras.css";
+import "../../../shared/styles/detail-modals.css";
 
 // ✅ FUNCIÓN AUXILIAR: Añadida para formatear la fecha de forma segura.
 const formatFechaSinTimezone = (fechaString) => {
-  if (!fechaString) return 'N/A';
+  if (!fechaString) return "N/A";
   // Extrae solo la parte de la fecha (ej: "2025-07-01") del string que viene de la BD.
-  const fechaPart = fechaString.split('T')[0];
-  const [year, month, day] = fechaPart.split('-');
+  const fechaPart = fechaString.split("T")[0];
+  const [year, month, day] = fechaPart.split("-");
   // Reordena al formato DÍA/MES/AÑO.
   return `${day}/${month}/${year}`;
 };
@@ -21,21 +22,14 @@ const CompraDetalleModal = ({ compra, onClose }) => {
   const subtotal = total - iva;
 
   return (
-    <div className="modal-Compras" onClick={onClose}>
-      <div
-        className="modal-content-Compras compras-details-modal"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="compras-modalOverlay">
+      <div className="compras-modalContent compras-modalContent-details">
         <div className="compras-modal-header">
-          <h3 className="compras-modal-title">
-            <span className="compras-modal-icon">🛒</span>
-            Detalle de la Compra
-          </h3>
+          <h2>Detalles de la Compra</h2>
           <button
             type="button"
             className="compras-modal-close-button"
             onClick={onClose}
-            title="Cerrar"
           >
             &times;
           </button>
@@ -52,7 +46,7 @@ const CompraDetalleModal = ({ compra, onClose }) => {
                 <div className="compras-detail-item">
                   <label className="compras-detail-label">ID Compra</label>
                   <span className="compras-detail-value compras-id-badge">
-                    #{idCompra || 'N/A'}
+                    #{idCompra || "N/A"}
                   </span>
                 </div>
                 <div className="compras-detail-item">
@@ -63,14 +57,18 @@ const CompraDetalleModal = ({ compra, onClose }) => {
                 </div>
                 <div className="compras-detail-item">
                   <label className="compras-detail-label">Estado</label>
-                  <span className={`compras-status-badge ${estado ? 'completed' : 'cancelled'}`}>
-                    {estado ? 'Completado' : 'Anulada'}
+                  <span
+                    className={`compras-status-badge ${
+                      estado ? "completed" : "cancelled"
+                    }`}
+                  >
+                    {estado ? "Completado" : "Anulada"}
                   </span>
                 </div>
                 <div className="compras-detail-item compras-detail-item-full">
                   <label className="compras-detail-label">Registrado por</label>
                   <span className="compras-detail-value compras-user-text">
-                    {usuario?.nombre || 'N/A'}
+                    {usuario?.nombre || "N/A"}
                   </span>
                 </div>
               </div>
@@ -85,27 +83,27 @@ const CompraDetalleModal = ({ compra, onClose }) => {
                 <div className="compras-detail-item compras-detail-item-full">
                   <label className="compras-detail-label">Proveedor</label>
                   <span className="compras-detail-value compras-supplier-name">
-                    {proveedor?.nombre || 'N/A'}
+                    {proveedor?.nombre || "N/A"}
                   </span>
                 </div>
                 <div className="compras-detail-item compras-detail-item-full">
                   <label className="compras-detail-label">
-                    {proveedor?.tipo === 'Natural'
-                      ? 'Documento:'
-                      : proveedor?.tipo === 'Juridico'
-                      ? 'NIT'
-                      : 'Documento'}
+                    {proveedor?.tipo === "Natural"
+                      ? "Documento:"
+                      : proveedor?.tipo === "Juridico"
+                      ? "NIT"
+                      : "Documento"}
                   </label>
                   <span className="compras-detail-value compras-document-text">
                     {proveedor?.estado
-                      ? proveedor?.tipo === 'Natural'
-                        ? `${proveedor?.tipoDocumento || ''} ${
-                            proveedor?.numeroDocumento || 'N/A'
+                      ? proveedor?.tipo === "Natural"
+                        ? `${proveedor?.tipoDocumento || ""} ${
+                            proveedor?.numeroDocumento || "N/A"
                           }`
-                        : proveedor?.tipo === 'Juridico'
-                        ? proveedor?.nitEmpresa || 'N/A'
-                        : 'N/A'
-                      : 'Proveedor inactivo'}
+                        : proveedor?.tipo === "Juridico"
+                        ? proveedor?.nitEmpresa || "N/A"
+                        : "N/A"
+                      : "Proveedor inactivo"}
                   </span>
                 </div>
               </div>
@@ -131,19 +129,31 @@ const CompraDetalleModal = ({ compra, onClose }) => {
                       <tbody>
                         {productosDeLaCompra.map((detalle, index) => {
                           const pivot =
-                            detalle.detalleCompra || detalle.CompraXProducto || {};
+                            detalle.detalleCompra ||
+                            detalle.CompraXProducto ||
+                            {};
                           const cantidad = pivot.cantidad || 0;
                           const valorUnitario = pivot.valorUnitario || 0;
                           const subtotalItem = cantidad * valorUnitario;
                           return (
                             <tr key={detalle.idProducto || index}>
-                              <td className="compras-product-name">{detalle.nombre || 'N/A'}</td>
-                              <td className="text-center compras-quantity-badge">{cantidad}</td>
+                              <td className="compras-product-name">
+                                {detalle.nombre || "N/A"}
+                              </td>
+                              <td className="text-center compras-quantity-badge">
+                                {cantidad}
+                              </td>
                               <td className="text-right compras-unit-price">
-                                ${Math.round(valorUnitario).toLocaleString('es-CO')}
+                                $
+                                {Math.round(valorUnitario).toLocaleString(
+                                  "es-CO"
+                                )}
                               </td>
                               <td className="text-right compras-item-total">
-                                ${Math.round(subtotalItem).toLocaleString('es-CO')}
+                                $
+                                {Math.round(subtotalItem).toLocaleString(
+                                  "es-CO"
+                                )}
                               </td>
                             </tr>
                           );
@@ -169,19 +179,19 @@ const CompraDetalleModal = ({ compra, onClose }) => {
                 <div className="compras-total-row">
                   <span className="compras-total-label">Subtotal:</span>
                   <span className="compras-total-value compras-subtotal">
-                    ${Math.round(subtotal).toLocaleString('es-CO')}
+                    ${Math.round(subtotal).toLocaleString("es-CO")}
                   </span>
                 </div>
                 <div className="compras-total-row">
                   <span className="compras-total-label">IVA (19%):</span>
                   <span className="compras-total-value compras-iva">
-                    ${Math.round(iva).toLocaleString('es-CO')}
+                    ${Math.round(iva).toLocaleString("es-CO")}
                   </span>
                 </div>
                 <div className="compras-total-row compras-total-final">
                   <span className="compras-total-label">Total:</span>
                   <span className="compras-total-value compras-total">
-                    ${Math.round(total).toLocaleString('es-CO')}
+                    ${Math.round(total).toLocaleString("es-CO")}
                   </span>
                 </div>
               </div>
@@ -190,10 +200,7 @@ const CompraDetalleModal = ({ compra, onClose }) => {
         </div>
 
         <div className="compras-modal-footer">
-          <button
-            className="compras-detalle-modal-button-cerrar"
-            onClick={onClose}
-          >
+          <button className="compras-modalButton-cerrar" onClick={onClose}>
             Cerrar
           </button>
         </div>

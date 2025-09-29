@@ -1,6 +1,7 @@
 // src/features/usuarios/components/UsuarioDetalleModal.jsx
 import React from "react";
 import "../css/Usuarios.css";
+import "../../../shared/styles/detail-modals.css";
 
 const UsuarioDetalleModal = ({ isOpen, onClose, usuario }) => {
   if (!isOpen || !usuario) return null;

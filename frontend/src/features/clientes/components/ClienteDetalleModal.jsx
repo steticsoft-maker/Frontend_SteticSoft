@@ -1,6 +1,7 @@
 // src/features/clientes/components/ClienteDetalleModal.jsx
 import React from "react";
 import "../css/Clientes.css";
+import "../../../shared/styles/detail-modals.css";
 
 const ClienteDetalleModal = ({ isOpen, onClose, cliente }) => {
   if (!isOpen || !cliente) return null;

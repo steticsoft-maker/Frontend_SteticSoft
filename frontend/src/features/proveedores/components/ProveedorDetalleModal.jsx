@@ -1,23 +1,20 @@
 // src/features/proveedores/components/ProveedorDetalleModal.jsx
-import React from 'react';
-import '../css/Proveedores.css';
+import React from "react";
+import "../css/Proveedores.css";
+import "../../../shared/styles/detail-modals.css";
 
 const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
   if (!isOpen || !proveedor) return null;
 
   return (
-    <div className="modal-Proveedores" onClick={onClose}>
-      <div className="modal-content-Proveedores proveedores-details-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="proveedores-modalOverlay">
+      <div className="proveedores-modalContent proveedores-modalContent-details">
         <div className="proveedores-modal-header">
-          <h3 className="proveedores-modal-title">
-            <span className="proveedores-modal-icon">🏢</span>
-            Detalles del Proveedor
-          </h3>
+          <h2>Detalles del Proveedor</h2>
           <button
             type="button"
             className="proveedores-modal-close-button"
             onClick={onClose}
-            title="Cerrar"
           >
             &times;
           </button>
@@ -33,22 +30,32 @@ const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
               <div className="proveedores-details-grid">
                 <div className="proveedores-detail-item">
                   <label className="proveedores-detail-label">Tipo</label>
-                  <span className={`proveedores-type-badge ${proveedor.tipo?.toLowerCase()}`}>
-                    {proveedor.tipo === 'Natural' ? 'Persona Natural' : 'Persona Jurídica'}
+                  <span
+                    className={`proveedores-type-badge ${proveedor.tipo?.toLowerCase()}`}
+                  >
+                    {proveedor.tipo === "Natural"
+                      ? "Persona Natural"
+                      : "Persona Jurídica"}
                   </span>
                 </div>
                 <div className="proveedores-detail-item">
                   <label className="proveedores-detail-label">Estado</label>
-                  <span className={`proveedores-status-badge ${proveedor.estado ? 'active' : 'inactive'}`}>
-                    {proveedor.estado ? 'Activo' : 'Inactivo'}
+                  <span
+                    className={`proveedores-status-badge ${
+                      proveedor.estado ? "active" : "inactive"
+                    }`}
+                  >
+                    {proveedor.estado ? "Activo" : "Inactivo"}
                   </span>
                 </div>
                 <div className="proveedores-detail-item proveedores-detail-item-full">
                   <label className="proveedores-detail-label">
-                    {proveedor.tipo === 'Natural' ? 'Nombre Completo' : 'Nombre de la Empresa'}
+                    {proveedor.tipo === "Natural"
+                      ? "Nombre Completo"
+                      : "Nombre de la Empresa"}
                   </label>
                   <span className="proveedores-detail-value proveedores-name-text">
-                    {proveedor.nombre || 'N/A'}
+                    {proveedor.nombre || "N/A"}
                   </span>
                 </div>
               </div>
@@ -63,15 +70,19 @@ const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
                 {proveedor.tipo === "Natural" ? (
                   <>
                     <div className="proveedores-detail-item">
-                      <label className="proveedores-detail-label">Tipo de Documento</label>
+                      <label className="proveedores-detail-label">
+                        Tipo de Documento
+                      </label>
                       <span className="proveedores-detail-value proveedores-document-type">
-                        {proveedor.tipoDocumento || 'N/A'}
+                        {proveedor.tipoDocumento || "N/A"}
                       </span>
                     </div>
                     <div className="proveedores-detail-item">
-                      <label className="proveedores-detail-label">Número de Documento</label>
+                      <label className="proveedores-detail-label">
+                        Número de Documento
+                      </label>
                       <span className="proveedores-detail-value proveedores-document-number">
-                        {proveedor.numeroDocumento || 'N/A'}
+                        {proveedor.numeroDocumento || "N/A"}
                       </span>
                     </div>
                   </>
@@ -79,7 +90,7 @@ const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
                   <div className="proveedores-detail-item proveedores-detail-item-full">
                     <label className="proveedores-detail-label">NIT</label>
                     <span className="proveedores-detail-value proveedores-nit-text">
-                      {proveedor.nitEmpresa || 'N/A'}
+                      {proveedor.nitEmpresa || "N/A"}
                     </span>
                   </div>
                 )}
@@ -93,27 +104,33 @@ const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
               </h4>
               <div className="proveedores-details-grid">
                 <div className="proveedores-detail-item">
-                  <label className="proveedores-detail-label">Teléfono Principal</label>
+                  <label className="proveedores-detail-label">
+                    Teléfono Principal
+                  </label>
                   <span className="proveedores-detail-value proveedores-phone-text">
-                    {proveedor.telefono || 'N/A'}
+                    {proveedor.telefono || "N/A"}
                   </span>
                 </div>
                 <div className="proveedores-detail-item">
-                  <label className="proveedores-detail-label">Email Principal</label>
+                  <label className="proveedores-detail-label">
+                    Email Principal
+                  </label>
                   <span className="proveedores-detail-value proveedores-email-text">
-                    {proveedor.correo || 'N/A'}
+                    {proveedor.correo || "N/A"}
                   </span>
                 </div>
                 <div className="proveedores-detail-item proveedores-detail-item-full">
                   <label className="proveedores-detail-label">Dirección</label>
                   <span className="proveedores-detail-value proveedores-address-text">
-                    {proveedor.direccion || 'N/A'}
+                    {proveedor.direccion || "N/A"}
                   </span>
                 </div>
               </div>
             </div>
 
-            {(proveedor.nombrePersonaEncargada || proveedor.telefonoPersonaEncargada || proveedor.emailPersonaEncargada) && (
+            {(proveedor.nombrePersonaEncargada ||
+              proveedor.telefonoPersonaEncargada ||
+              proveedor.emailPersonaEncargada) && (
               <div className="proveedores-details-section proveedores-contact-section">
                 <h4 className="proveedores-details-section-title">
                   <span className="section-icon">👤</span>
@@ -122,7 +139,9 @@ const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
                 <div className="proveedores-details-grid">
                   {proveedor.nombrePersonaEncargada && (
                     <div className="proveedores-detail-item proveedores-detail-item-full">
-                      <label className="proveedores-detail-label">Nombre del Encargado</label>
+                      <label className="proveedores-detail-label">
+                        Nombre del Encargado
+                      </label>
                       <span className="proveedores-detail-value proveedores-contact-name">
                         {proveedor.nombrePersonaEncargada}
                       </span>
@@ -130,7 +149,9 @@ const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
                   )}
                   {proveedor.telefonoPersonaEncargada && (
                     <div className="proveedores-detail-item">
-                      <label className="proveedores-detail-label">Teléfono del Encargado</label>
+                      <label className="proveedores-detail-label">
+                        Teléfono del Encargado
+                      </label>
                       <span className="proveedores-detail-value proveedores-contact-phone">
                         {proveedor.telefonoPersonaEncargada}
                       </span>
@@ -138,7 +159,9 @@ const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
                   )}
                   {proveedor.emailPersonaEncargada && (
                     <div className="proveedores-detail-item">
-                      <label className="proveedores-detail-label">Email del Encargado</label>
+                      <label className="proveedores-detail-label">
+                        Email del Encargado
+                      </label>
                       <span className="proveedores-detail-value proveedores-contact-email">
                         {proveedor.emailPersonaEncargada}
                       </span>
@@ -151,7 +174,7 @@ const ProveedorDetalleModal = ({ isOpen, onClose, proveedor }) => {
         </div>
 
         <div className="proveedores-modal-footer">
-          <button className="proveedores-detalle-modal-button-cerrar" onClick={onClose}>
+          <button className="proveedores-modalButton-cerrar" onClick={onClose}>
             Cerrar
           </button>
         </div>

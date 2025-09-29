@@ -1,6 +1,7 @@
 // src/features/roles/components/RolDetailsModal.jsx
 import React from "react";
 import "../css/Rol.css";
+import "../../../shared/styles/detail-modals.css";
 
 const RolDetailsModal = ({ isOpen, onClose, role }) => {
   // Guarda de entrada: Si no está abierto o no hay datos del rol, no renderizar nada.
