@@ -801,6 +801,158 @@ body.dark [class*="-modal-close-button"]:hover {
   color: white !important;
 }
 
+/* Estilos específicos para el modal de novedades */
+.novedades-modalContent {
+  max-height: 95vh !important;
+  overflow: hidden;
+}
+
+.novedades-modal-body {
+  overflow-y: auto !important;
+  max-height: calc(95vh - 140px) !important;
+  padding: 24px !important;
+}
+
+/* Contenedor de empleados con scroll interno */
+.novedades-empleados-container {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-top: 8px;
+}
+
+.novedades-empleados-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.novedades-empleados-container::-webkit-scrollbar-track {
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 3px;
+}
+
+.novedades-empleados-container::-webkit-scrollbar-thumb {
+  background: var(--modal-primary);
+  border-radius: 3px;
+}
+
+.novedades-empleados-container::-webkit-scrollbar-thumb:hover {
+  background: var(--modal-primary-dark);
+}
+
+/* Items de empleado */
+.novedades-empleado-item {
+  background-color: var(--modal-background);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.novedades-empleado-item:last-child {
+  margin-bottom: 0;
+}
+
+.novedades-empleado-item:hover {
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+  transform: translateY(-1px);
+}
+
+.novedades-empleado-header {
+  margin-bottom: 12px;
+}
+
+.novedades-empleado-nombre {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--modal-primary);
+}
+
+.novedades-empleado-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.novedades-empleado-detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--modal-text);
+}
+
+.novedades-empleado-detail strong {
+  color: var(--modal-primary-light);
+  font-weight: 600;
+}
+
+/* Contenedor de días */
+.novedades-dias-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Mensaje cuando no hay empleados */
+.novedades-no-empleados {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--modal-text-light);
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 2px dashed var(--modal-border);
+}
+
+.novedades-no-empleados-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+/* Responsive para novedades */
+@media (max-width: 768px) {
+  .novedades-modal-body {
+    max-height: calc(95vh - 120px) !important;
+    padding: 16px !important;
+  }
+  
+  .novedades-empleados-container {
+    max-height: 250px;
+  }
+  
+  .novedades-empleado-item {
+    padding: 12px;
+  }
+  
+  .novedades-empleado-nombre {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .novedades-modal-body {
+    max-height: calc(95vh - 100px) !important;
+    padding: 12px !important;
+  }
+  
+  .novedades-empleados-container {
+    max-height: 200px;
+  }
+  
+  .novedades-empleado-item {
+    padding: 10px;
+  }
+  
+  .novedades-empleado-detail {
+    font-size: 0.85rem;
+  }
+}
+
 /* Estilos específicos para la tabla de ventas */
 .ventas-items-container {
   width: 100%;
