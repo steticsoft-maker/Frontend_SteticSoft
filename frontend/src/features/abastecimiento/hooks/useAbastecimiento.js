@@ -1,4 +1,4 @@
-import apiClient from "../../../shared/services/api"; // Asegúrate que la ruta a tu cliente API sea correcta
+import apiClient from "../../../shared/services/apiClient";
 
 const API_PATH = "/abastecimientos";
 
@@ -70,13 +70,18 @@ export const updateAbastecimiento = async (id, updateData) => {
  * @returns {Promise<object>} - La respuesta de la API.
  */
 export const toggleAbastecimientoEstado = async (id, estado) => {
-    try {
-        const response = await apiClient.patch(`${API_PATH}/${id}/estado`, { estado });
-        return response.data;
-    } catch (error) {
-        console.error(`Error al cambiar estado del abastecimiento con ID ${id}:`, error);
-        throw error;
-    }
+  try {
+    const response = await apiClient.patch(`${API_PATH}/${id}/estado`, {
+      estado,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error al cambiar estado del abastecimiento con ID ${id}:`,
+      error
+    );
+    throw error;
+  }
 };
 
 /**
@@ -87,7 +92,9 @@ export const toggleAbastecimientoEstado = async (id, estado) => {
  */
 export const agotarAbastecimiento = async (id, razon_agotamiento) => {
   try {
-    const response = await apiClient.patch(`${API_PATH}/${id}/agotar`, { razon_agotamiento });
+    const response = await apiClient.patch(`${API_PATH}/${id}/agotar`, {
+      razon_agotamiento,
+    });
     return response.data;
   } catch (error) {
     console.error(`Error al agotar el abastecimiento con ID ${id}:`, error);
@@ -114,11 +121,11 @@ export const deleteAbastecimientoById = async (id) => {
  * @returns {Promise<Array>} - Una lista de empleados.
  */
 export const fetchEmpleados = async () => {
-    try {
-        const response = await apiClient.get(`${API_PATH}/empleados`);
-        return response.data;
-    } catch (error) {
-        console.error("Error al obtener la lista de empleados:", error);
-        throw error;
-    }
+  try {
+    const response = await apiClient.get(`${API_PATH}/empleados`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener la lista de empleados:", error);
+    throw error;
+  }
 };

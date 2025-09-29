@@ -5,19 +5,41 @@
 if (typeof window !== "undefined") {
   // Prevent Bootstrap from auto-initializing controllers
   document.addEventListener("DOMContentLoaded", function () {
-    // Remove any problematic controller registrations
-    if (window.bootstrap) {
-      // Override Bootstrap's controller registry
-      const originalGetController =
-        window.bootstrap.BaseComponent.prototype.getController;
-      window.bootstrap.BaseComponent.prototype.getController = function (name) {
-        // Skip problematic controller names
-        if (name === "line") {
-          console.warn("Skipping problematic Bootstrap controller:", name);
-          return null;
+    try {
+      // Remove any problematic controller registrations
+      if (
+        window.bootstrap &&
+        window.bootstrap.BaseComponent &&
+        window.bootstrap.BaseComponent.prototype
+      ) {
+        // Override Bootstrap's controller registry
+        const originalGetController =
+          window.bootstrap.BaseComponent.prototype.getController;
+
+        if (typeof originalGetController === "function") {
+          window.bootstrap.BaseComponent.prototype.getController = function (
+            name
+          ) {
+            // Skip problematic controller names that can cause initialization errors
+            if (name === "line" || name === "Ru" || name === "ru") {
+              console.warn("Skipping problematic Bootstrap controller:", name);
+              return null;
+            }
+            try {
+              return originalGetController.call(this, name);
+            } catch (error) {
+              console.warn(
+                "Error accessing Bootstrap controller:",
+                name,
+                error
+              );
+              return null;
+            }
+          };
         }
-        return originalGetController.call(this, name);
-      };
+      }
+    } catch (error) {
+      console.warn("Bootstrap initialization error:", error);
     }
   });
 }

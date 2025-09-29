@@ -1,4 +1,4 @@
-import apiClient from "../../../shared/services/api"; // Asegúrate de que esta ruta sea correcta para tu `apiClient`
+import apiClient from "../../../shared/services/apiClient";
 
 const API_BASE_PATH = "/categorias-producto"; // Ruta base de la API para categorías de producto
 

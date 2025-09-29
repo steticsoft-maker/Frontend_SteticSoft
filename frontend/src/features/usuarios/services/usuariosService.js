@@ -1,5 +1,5 @@
 // src/features/usuarios/services/usuariosService.js
-import apiClient from "../../../shared/services/api"; // Ajusta la ruta a tu apiClient
+import apiClient from "../../../shared/services/apiClient";
 import publicApiClient from "../../../shared/services/publicApiClient";
 
 /**

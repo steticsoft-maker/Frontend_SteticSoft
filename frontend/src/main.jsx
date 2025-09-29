@@ -11,12 +11,28 @@ import "./index.css";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 
-registerLocale("es", es);
-setDefaultLocale("es");
+// Initialize date picker locale
+try {
+  registerLocale("es", es);
+  setDefaultLocale("es");
+} catch (error) {
+  console.warn("Error initializing date picker locale:", error);
+}
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// Initialize React app with error boundary
+try {
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+} catch (error) {
+  console.error("Error initializing React app:", error);
+  // Fallback rendering
+  const rootElement = document.getElementById("root");
+  if (rootElement) {
+    rootElement.innerHTML =
+      '<div style="padding: 20px; color: red;">Error loading application. Please refresh the page.</div>';
+  }
+}

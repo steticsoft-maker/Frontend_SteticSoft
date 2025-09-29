@@ -1,12 +1,12 @@
-import apiClient from "../../../shared/services/api";
+import apiClient from "../../../shared/services/apiClient";
 // Importa el objeto completo que contiene las funciones de productos.
-import { productosAdminService } from '../../productosAdmin/services/productosAdminService';
+import { productosAdminService } from "../../productosAdmin/services/productosAdminService";
 // Importa la función de servicios.
-import { getServicios as fetchServiciosAdmin } from '../../serviciosAdmin/services/serviciosAdminService';
+import { getServicios as fetchServiciosAdmin } from "../../serviciosAdmin/services/serviciosAdminService";
 // Importa la función de clientes.
-import { fetchClientes as getClientesActivos } from '../../clientes/services/clientesService';
+import { fetchClientes as getClientesActivos } from "../../clientes/services/clientesService";
 
-const VENTAS_API_URL = '/ventas';
+const VENTAS_API_URL = "/ventas";
 
 // --- Funciones para el Proceso de Venta (Formulario) ---
 
@@ -15,13 +15,13 @@ const VENTAS_API_URL = '/ventas';
  * @returns {Promise<Array>} Una promesa que resuelve con un array de clientes.
  */
 export const getClientesParaVenta = async () => {
-    try {
-        const response = await getClientesActivos();
-        return response.data?.data || [];
-    } catch (error) {
-        console.error("Error al obtener clientes para la venta:", error);
-        throw error;
-    }
+  try {
+    const response = await getClientesActivos();
+    return response.data?.data || [];
+  } catch (error) {
+    console.error("Error al obtener clientes para la venta:", error);
+    throw error;
+  }
 };
 
 /**
@@ -29,15 +29,15 @@ export const getClientesParaVenta = async () => {
  * @returns {Promise<Array>} Una promesa que resuelve con un array de productos.
  */
 export const getProductosParaVenta = async () => {
-    try {
-        // Asumiendo que getProductos() de productosAdminService ya llama a la API.
-        const productos = await productosAdminService.getProductos();
-        // Filtra los productos con estado activo (true).
-        return productos.filter(p => p.estado === true);
-    } catch (error) {
-        console.error("Error al obtener productos para la venta:", error);
-        throw error;
-    }
+  try {
+    // Asumiendo que getProductos() de productosAdminService ya llama a la API.
+    const productos = await productosAdminService.getProductos();
+    // Filtra los productos con estado activo (true).
+    return productos.filter((p) => p.estado === true);
+  } catch (error) {
+    console.error("Error al obtener productos para la venta:", error);
+    throw error;
+  }
 };
 
 /**
@@ -45,16 +45,16 @@ export const getProductosParaVenta = async () => {
  * @returns {Promise<Array>} Una promesa que resuelve con un array de servicios.
  */
 export const getServiciosParaVenta = async () => {
-    try {
-        // Se pasa el filtro "estado: true" directamente a la función de la API.
-        // Esto optimiza el código ya que la API se encarga de filtrar los servicios.
-        const response = await fetchServiciosAdmin({ estado: true });
-        const serviciosActivos = response?.data?.data || [];
-        return serviciosActivos;
-    } catch (error) {
-        console.error("Error al obtener servicios para la venta:", error);
-        throw error;
-    }
+  try {
+    // Se pasa el filtro "estado: true" directamente a la función de la API.
+    // Esto optimiza el código ya que la API se encarga de filtrar los servicios.
+    const response = await fetchServiciosAdmin({ estado: true });
+    const serviciosActivos = response?.data?.data || [];
+    return serviciosActivos;
+  } catch (error) {
+    console.error("Error al obtener servicios para la venta:", error);
+    throw error;
+  }
 };
 
 // --- Funciones de CRUD para Ventas (Lista de Ventas) ---
@@ -65,19 +65,19 @@ export const getServiciosParaVenta = async () => {
  * @returns {Promise<Array>} Una promesa que resuelve con un array de ventas.
  */
 export const fetchVentas = async (filters = {}) => {
-    try {
-        const params = new URLSearchParams();
-        // ✅ Cambio clave: Usa 'idEstado' para construir los parámetros
-        if (filters.idEstado) {
-            params.append('idEstado', filters.idEstado);
-        }
-
-        const response = await apiClient.get(VENTAS_API_URL, { params });
-        return response.data?.data || [];
-    } catch (error) {
-        console.error("Error al obtener las ventas:", error);
-        throw error;
+  try {
+    const params = new URLSearchParams();
+    // ✅ Cambio clave: Usa 'idEstado' para construir los parámetros
+    if (filters.idEstado) {
+      params.append("idEstado", filters.idEstado);
     }
+
+    const response = await apiClient.get(VENTAS_API_URL, { params });
+    return response.data?.data || [];
+  } catch (error) {
+    console.error("Error al obtener las ventas:", error);
+    throw error;
+  }
 };
 
 /**
@@ -86,13 +86,13 @@ export const fetchVentas = async (filters = {}) => {
  * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta.
  */
 export const getVentaById = async (ventaId) => {
-    try {
-        const response = await apiClient.get(`${VENTAS_API_URL}/${ventaId}`);
-        return response.data?.data;
-    } catch (error) {
-        console.error(`Error al obtener la venta con ID ${ventaId}:`, error);
-        throw error;
-    }
+  try {
+    const response = await apiClient.get(`${VENTAS_API_URL}/${ventaId}`);
+    return response.data?.data;
+  } catch (error) {
+    console.error(`Error al obtener la venta con ID ${ventaId}:`, error);
+    throw error;
+  }
 };
 
 /**
@@ -101,14 +101,14 @@ export const getVentaById = async (ventaId) => {
  * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta creada.
  */
 export const saveNuevaVenta = async (ventaData) => {
-    try {
-        // El backend debe manejar la generación del ID y la validación.
-        const response = await apiClient.post(VENTAS_API_URL, ventaData);
-        return response.data;
-    } catch (error) {
-        console.error("Error al guardar la nueva venta:", error);
-        throw error;
-    }
+  try {
+    // El backend debe manejar la generación del ID y la validación.
+    const response = await apiClient.post(VENTAS_API_URL, ventaData);
+    return response.data;
+  } catch (error) {
+    console.error("Error al guardar la nueva venta:", error);
+    throw error;
+  }
 };
 
 /**
@@ -117,14 +117,16 @@ export const saveNuevaVenta = async (ventaData) => {
  * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta actualizada.
  */
 export const anularVentaById = async (ventaId) => {
-    try {
-        // Asumiendo un endpoint para actualizar el estado.
-        const response = await apiClient.patch(`${VENTAS_API_URL}/${ventaId}/anular`);
-        return response.data;
-    } catch (error) {
-        console.error(`Error al anular la venta con ID ${ventaId}:`, error);
-        throw error;
-    }
+  try {
+    // Asumiendo un endpoint para actualizar el estado.
+    const response = await apiClient.patch(
+      `${VENTAS_API_URL}/${ventaId}/anular`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error al anular la venta con ID ${ventaId}:`, error);
+    throw error;
+  }
 };
 
 /**
@@ -134,15 +136,18 @@ export const anularVentaById = async (ventaId) => {
  * @returns {Promise<Object>} Una promesa que resuelve con el objeto de la venta actualizada.
  */
 export const cambiarEstadoVenta = async (ventaId, nuevoIdEstado) => {
-    try {
-        // ✅ URL y método CORRECTOS
-        const url = `${VENTAS_API_URL}/${ventaId}/estado-proceso`;
-        const payload = { idEstado: nuevoIdEstado };
+  try {
+    // ✅ URL y método CORRECTOS
+    const url = `${VENTAS_API_URL}/${ventaId}/estado-proceso`;
+    const payload = { idEstado: nuevoIdEstado };
 
-        const response = await apiClient.put(url, payload);
-        return response.data;
-    } catch (error) {
-        console.error(`Error al cambiar el estado de la venta con ID ${ventaId}:`, error);
-        throw error;
-    }
+    const response = await apiClient.put(url, payload);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error al cambiar el estado de la venta con ID ${ventaId}:`,
+      error
+    );
+    throw error;
+  }
 };
